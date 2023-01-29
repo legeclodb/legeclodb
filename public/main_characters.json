@@ -1,0 +1,1670 @@
+﻿[
+  {
+    "name": "アーサー",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E382A2E383BCE382B5E383BC5F69636F6E5F726575702E706E67.png",
+    "date": "",
+    "rarity": "SSR",
+    "symbol": "ゼニス",
+    "class": "ソルジャー",
+    "damageType": "アタック",
+    "range": 1,
+    "move": 3,
+    "talent": {
+      "name": "騎士王の栄冠",
+      "desc": "戦闘前、自ユニットの与ダメージ+20％。\n自身を中心とした範囲2マス以内の全ての敵ユニットのアタック/ディフェンスｰ15%。",
+      "icon": "https://legeclo.wikiru.jp/attach2/E382A2E383BCE382B5E383BC_736B5F743031362E706E67.png"
+    },
+    "tags": [ "デバフ:アタック", "デバフ:ディフェンス" ],
+    "skills": [ "ソードダンス", "ラッキープライズ", "テンプテーション", "騎士王精神", "完全へと進む王令", "切り開け、勝利の剣" ]
+  },
+  {
+    "name": "クー・フーリン",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E382AFE383BCE383BBE38395E383BCE383AAE383B35F69636F6E5F726575702E706E67.png",
+    "date": "",
+    "rarity": "SSR",
+    "symbol": "ナディア",
+    "class": "ランサー",
+    "damageType": "アタック",
+    "range": 1,
+    "move": 3,
+    "talent": {
+      "name": "戦魔髄身・深鋭牙",
+      "desc": "戦闘前、自ユニットのアタック+10％、物理ダメージ耐性+5％(4ターン/最大4回まで重複可能)。",
+      "icon": "https://legeclo.wikiru.jp/attach2/E382AFE383BCE383BBE38395E383BCE383AAE383B3_736B5F743034362E706E67.png"
+    },
+    "tags": [],
+    "skills": [ "ライトニングヒット", "グッドレスト", "魔煌護陣・闇幻ノ守", "防御の加護", "スプリントグレース", "フレイムバースト" ]
+  },
+  {
+    "name": "クレオパトラ",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E382AFE383ACE382AAE38391E38388E383A95F69636F6E5F726575702E706E67.png",
+    "date": "",
+    "rarity": "SSR",
+    "symbol": "ナディア",
+    "class": "ライダー",
+    "damageType": "アタック",
+    "range": 1,
+    "move": 5,
+    "talent": {
+      "name": "絶世の幼惑",
+      "desc": "1マス移動につき、その味方ターンの戦闘時、自ユニットのダメージ耐性+10%(最大50％)。\nその戦闘後、確率(50％)で「スタン」を付与する(1ターン)。",
+      "icon": "https://legeclo.wikiru.jp/attach2/E382AFE383ACE382AAE38391E38388E383A9_736B5F743032362E706E67.png"
+    },
+    "tags": [ "デバフ:スタン" ],
+    "skills": [ "シェルストライク", "ヒット＆アウェイ", "ガードクライ", "アタックリザーブ", "旋風", "王蛇の毒" ]
+  },
+  {
+    "name": "ナポレオン",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E3838AE3839DE383ACE382AAE383B35F69636F6E5F726575702E706E67.png",
+    "date": "",
+    "rarity": "SSR",
+    "symbol": "ゼニス",
+    "class": "シューター",
+    "damageType": "アタック",
+    "range": 2,
+    "move": 5,
+    "talent": {
+      "name": "絶対可能皇帝",
+      "desc": "自ユニットのレジスト+20%。\n自身を中心とした範囲2マス以内の味方ユニットの魔法ダメージ耐性+30%。",
+      "icon": "https://legeclo.wikiru.jp/attach2/E3838AE3839DE383ACE382AAE383B3_736B5F743035302E706E67.png"
+    },
+    "tags": [ "バフ:ダメージ耐性(魔法)" ],
+    "skills": [ "エアロスナイプ", "ヒット＆アウェイ", "エリアルショット", "トネール・ド・ランペルール", "クイックアクション", "スナイプ" ]
+  },
+  {
+    "name": "呂布",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E59182E5B8835F69636F6E2E706E67.png",
+    "date": "",
+    "rarity": "SSR",
+    "symbol": "ナディア",
+    "class": "エアリアル",
+    "damageType": "アタック",
+    "range": 1,
+    "move": 5,
+    "talent": {
+      "name": "人馬一心の飛将",
+      "desc": "自ユニットのダメージ耐性+15％。\n敵ユニットを倒した時、再行動できる(この再行動は発動してから2ターン毎に発動可能)。",
+      "icon": "https://legeclo.wikiru.jp/attach2/E59182E5B883_736B5F743031302E706E67.png"
+    },
+    "tags": [ "再攻撃(敵撃破時)" ],
+    "skills": [ "連撃", "旋風", "グッドレスト", "スターティングアップ", "一撃突破", "崩天画撃" ]
+  },
+  {
+    "name": "ジークフリート",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E382B8E383BCE382AFE38395E383AAE383BCE383885F69636F6E2E706E67.png",
+    "date": "",
+    "rarity": "SSR",
+    "symbol": "ナディア",
+    "class": "ソルジャー",
+    "damageType": "アタック",
+    "range": 1,
+    "move": 3,
+    "talent": {
+      "name": "竜血武装",
+      "desc": "味方ターンでの戦闘時、自ユニットの与ダメージ(+30%)。\n戦闘後、確率(100%)で、味方メインが与えたダメージの30%分HPを回復する。",
+      "icon": "https://legeclo.wikiru.jp/attach2/E382B8E383BCE382AFE38395E383AAE383BCE38388_736B5F743033302E706E67.png"
+    },
+    "tags": [],
+    "skills": [ "ブラッディブレード", "ビートスクリーム", "タイラント", "ドラゴニック・ロアー", "哀を断つ刃", "滅竜剣" ]
+  },
+  {
+    "name": "ネロ",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E3838DE383AD5F69636F6E2E706E67.png",
+    "date": "",
+    "rarity": "SSR",
+    "symbol": "ゼニス",
+    "class": "ライダー",
+    "damageType": "アタック",
+    "range": 1,
+    "move": 5,
+    "talent": {
+      "name": "暴君の祭宴",
+      "desc": "1マス移動につき、その味方ターンの戦闘時、自ユニットの与ダメージ+4％(最大20％)、ディフェンス+20％(最大100％)。\n戦闘後、再び移動することができる。",
+      "icon": "https://legeclo.wikiru.jp/attach2/E3838DE383AD_736B5F743032352E706E67.png"
+    },
+    "tags": [ "再移動" ],
+    "skills": [ "ハードアグレッション", "スターティングアップ", "アサルトブレイク", "オーヴァーリザーブ", "享楽に振るう暴鞭", "ブレイクストライク" ]
+  },
+  {
+    "name": "ヤマトタケル",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E383A4E3839EE38388E382BFE382B1E383AB5F69636F6E2E706E67.png",
+    "date": "",
+    "rarity": "SSR",
+    "symbol": "オリジン",
+    "class": "セイント",
+    "damageType": "アタック",
+    "range": 1,
+    "move": 3,
+    "talent": {
+      "name": "暁光の構え",
+      "desc": "自ユニットのダメージ耐性+15%。\n近距離による敵からの戦闘時、かつ自ユニットのHPが50％以上の時、2回攻撃できる。",
+      "icon": "https://legeclo.wikiru.jp/attach2/E383A4E3839EE38388E382BFE382B1E383AB_736B5F743032372E706E67.png"
+    },
+    "tags": [ "2回攻撃" ],
+    "skills": [ "ブラッディブレード", "ラッキーウォール", "シャープネス", "守護陣・迎火", "万物を薙ぐ剣", "剛剣・都牟刈" ]
+  },
+  {
+    "name": "マリー・アントワネット",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E3839EE383AAE383BCE383BBE382A2E383B3E38388E383AFE3838DE38383E383885F69636F6E2E706E67.png",
+    "date": "",
+    "rarity": "SSR",
+    "symbol": "オリジン",
+    "class": "セイント",
+    "damageType": "マジック",
+    "range": 2,
+    "move": 5,
+    "talent": {
+      "name": "咲き誇る薔薇の芳香",
+      "desc": "行動終了時、自身を中心とした範囲2マス以内の自ユニット以外の全ての味方ユニットに「戦闘後、確率(100％)でHPをメインのマジックの3倍回復」の効果を付与(2ターン)。",
+      "icon": "https://legeclo.wikiru.jp/attach2/E3839EE383AAE383BCE383BBE382A2E383B3E38388E383AFE3838DE38383E38388_736B5F743034382E706E67.png"
+    },
+    "tags": [ "バフ:リジェネ" ],
+    "skills": [ "ヒールライト", "チアダンス", "メンタルグレース", "ヒールカーテン", "ロサ・センティフォリア", "響きわたる栄華の記憶" ]
+  },
+  {
+    "name": "ソロモン",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E382BDE383ADE383A2E383B35F69636F6E2E706E67.png",
+    "date": "",
+    "rarity": "SSR",
+    "symbol": "オリジン",
+    "class": "ソーサラー",
+    "damageType": "マジック",
+    "range": 2,
+    "move": 3,
+    "talent": {
+      "name": "強化魔術六十八・ヘルレス",
+      "desc": "自ユニットの魔法与ダメージ+30%。味方メインのスキル使用時の射程+1。",
+      "icon": "https://legeclo.wikiru.jp/attach2/E382BDE383ADE383A2E383B3_736B5F743034392E706E67.png"
+    },
+    "tags": [],
+    "skills": [ "デスサイズ", "ストーンブラスト", "サンダーストーム", "ライトロード", "使役魔術十二・スィーハ", "シャドウフレア" ]
+  },
+  {
+    "name": "ランスロット",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E383A9E383B3E382B9E383ADE38383E383885F69636F6E2E706E67.png",
+    "date": "",
+    "rarity": "SSR",
+    "symbol": "ゼニス",
+    "class": "ライダー",
+    "damageType": "アタック",
+    "range": 1,
+    "move": 5,
+    "talent": {
+      "name": "湖の騎士",
+      "desc": "敵ユニットを倒した時、自ユニットのアタック/マジック/ディフェンス/レジスト+20%(3ターン/最大2回まで重複可能)。\n更に、再び移動することができる。",
+      "icon": "https://legeclo.wikiru.jp/attach2/E383A9E383B3E382B9E383ADE38383E38388_736B5F743035352E706E67.png"
+    },
+    "tags": [ "再移動" ],
+    "skills": [ "アタックリザーブ", "威武", "ハードアグレッション", "フィールドステップ", "アベンジャー", "ノックダウン" ]
+  },
+  {
+    "name": "沖田総司",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E6B296E794B0E7B78FE58FB85F69636F6E5F726575702E706E67.png",
+    "date": "",
+    "rarity": "SR",
+    "symbol": "ナディア",
+    "class": "ソルジャー",
+    "damageType": "アタック",
+    "range": 1,
+    "move": 3,
+    "talent": {
+      "name": " 天然理心流・無明",
+      "desc": "戦闘前、自ユニットのアタック+15%/ディフェンスｰ15%(2ターン/最大3回まで重複可能)。\n敵ユニットを倒した時、再び移動することができる。",
+      "icon": "https://legeclo.wikiru.jp/attach2/E6B296E794B0E7B78FE58FB8_736B5F743035312E706E67.png"
+    },
+    "tags": [ "再移動(敵撃破時)" ],
+    "skills": [ "烈閃", "ビートスクリーム", "アベンジャー", "オーバーフロー", "破守", "一射両断" ]
+  },
+  {
+    "name": "ティムール",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E38386E382A3E383A0E383BCE383AB5F69636F6E2E706E67.png",
+    "date": "",
+    "rarity": "SR",
+    "symbol": "ゼニス",
+    "class": "ソルジャー",
+    "damageType": "アタック",
+    "range": 1,
+    "move": 3,
+    "talent": {
+      "name": "星座の支配者",
+      "desc": "自ユニットのクリティカル率+15%。\n戦闘後、確率(50%)で味方メインが与えたダメージの20%分HPを回復する。",
+      "icon": "https://legeclo.wikiru.jp/attach2/E38386E382A3E383A0E383BCE383AB_736B5F743035322E706E67.png"
+    },
+    "tags": [],
+    "skills": [ "スティングレイ", "アタックブースト", "コンビネーションアタック", "マインドアイ", "ビートスクリーム", "烈閃" ]
+  },
+  {
+    "name": "弁慶",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E5BC81E685B65F69636F6E2E706E67.png",
+    "date": "",
+    "rarity": "SR",
+    "symbol": "オリジン",
+    "class": "ランサー",
+    "damageType": "アタック",
+    "range": 1,
+    "move": 3,
+    "talent": {
+      "name": "応報覿面",
+      "desc": "戦闘前、自ユニットのHPが低いほど、自ユニットのアタックと物理ダメージ耐性が上がる(+10～30%)。",
+      "icon": "https://legeclo.wikiru.jp/attach2/E5BC81E685B6_736B5F743035332E706E67.png"
+    },
+    "tags": [],
+    "skills": [ "戦士の守り", "ラッキーウォール", "テンプテーション", "仁王立ち", "カウンター", "ユニオンドライブ" ]
+  },
+  {
+    "name": "エリザベート・バートリ",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E382A8E383AAE382B6E38399E383BCE38388E383BBE38390E383BCE38388E383AA5F69636F6E5F726575702E706E67.png",
+    "date": "",
+    "rarity": "SR",
+    "symbol": "ゼニス",
+    "class": "ランサー",
+    "damageType": "アタック",
+    "range": 1,
+    "move": 3,
+    "talent": {
+      "name": "アイアン・メイデン・ガーデン",
+      "desc": "戦闘前、かつ自身のHPが50%以上の時、敵ユニットに味方メインのディフェンスの3.5倍の固定ダメージ。",
+      "icon": "https://legeclo.wikiru.jp/attach2/E382A8E383AAE382B6E38399E383BCE38388E383BBE38390E383BCE38388E383AA_736B5F743035342E706E67.png"
+    },
+    "tags": [],
+    "skills": [ "カウンター", "ガードカウンター", "ガードストック", "シールドウォール", "美しき血の残花", "一撃突破" ]
+  },
+  {
+    "name": "アスクレピオス",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E382A2E382B9E382AFE383ACE38394E382AAE382B95F69636F6E5F726575702E706E67.png",
+    "date": "",
+    "rarity": "SR",
+    "symbol": "ナディア",
+    "class": "セイント",
+    "damageType": "マジック",
+    "range": 2,
+    "move": 3,
+    "talent": {
+      "name": "完全医術領域",
+      "desc": "味方ユニットにスキル使用時、その味方ユニットの被治療効果+20%/ディフェンス+30%(2ターン)。",
+      "icon": "https://legeclo.wikiru.jp/attach2/E382A2E382B9E382AFE383ACE38394E382AAE382B9_736B5F743035362E706E67.png"
+    },
+    "tags": [ "バフ:被治療効果", "バフ:ディフェンス" ],
+    "skills": [ "ヒールライト", "チアダンス", "サンダーストーム", "ヒールカーテン", "リジェネレーション", "ハイスピード・オペレーション" ]
+  },
+  {
+    "name": "リチャード1世",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E383AAE38381E383A3E383BCE3838931E4B8965F69636F6E2E706E67.png",
+    "date": "",
+    "rarity": "SR",
+    "symbol": "ゼニス",
+    "class": "セイント",
+    "damageType": "マジック",
+    "range": 1,
+    "move": 3,
+    "talent": {
+      "name": "三獅子の咆哮",
+      "desc": "自ユニットの与ダメージ+20%。\n行動終了時、自身を中心とした範囲3マス以内の全ての味方ユニットの弱化効果を1個解除する。",
+      "icon": "https://legeclo.wikiru.jp/attach2/E383AAE38381E383A3E383BCE3838931E4B896_736B5F743035372E706E67.png"
+    },
+    "tags": [ "デバフ解除" ],
+    "skills": [ "ホーリーリンクベル", "福音", "ディフェンドグレース", "チアレジスト", "ブレイズ・ライオンハート", "ホーリー・ライオンハート" ]
+  },
+  {
+    "name": "菅原道真",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E88F85E58E9FE98193E79C9F5F69636F6E5F726575702E706E67.png",
+    "date": "",
+    "rarity": "SR",
+    "symbol": "ナディア",
+    "class": "ソーサラー",
+    "damageType": "マジック",
+    "range": 2,
+    "move": 3,
+    "talent": {
+      "name": "怨念の詩歌",
+      "desc": "味方ターン時、かつ敵ユニットにダメージを与えた時、追加で味方メインのマジックの2倍の固定ダメージを与える。",
+      "icon": "https://legeclo.wikiru.jp/attach2/E88F85E58E9FE98193E79C9F_736B5F743031352E706E67.png"
+    },
+    "tags": [],
+    "skills": [ "ペイン", "マジックフィアー", "ストーンブラスト", "デスサイズ", "怨嗟万恨の疾雷", "アンダーシール" ]
+  },
+  {
+    "name": "ツタンカーメン",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E38384E382BFE383B3E382ABE383BCE383A1E383B35F69636F6E5F726575702E706E67.png",
+    "date": "",
+    "rarity": "SR",
+    "symbol": "オリジン",
+    "class": "ソーサラー",
+    "damageType": "マジック",
+    "range": 2,
+    "move": 3,
+    "talent": {
+      "name": "王家の呪い",
+      "desc": "行動終了時、自身を中心とした範囲3マス以内のランダムな敵ユニット2隊に「行動終了時、ツタンカーメンのマジックの4倍の固定ダメージを与える」効果（1ターン）を付与する。",
+      "icon": "https://legeclo.wikiru.jp/attach2/E38384E382BFE383B3E382ABE383BCE383A1E383B3_736B5F743035382E706E67.png"
+    },
+    "tags": [ "デバフ:DoT" ],
+    "skills": [ "ウィンドエッジ", "チアレジスト", "サイクロン", "冥魂召喚", "ペイン", "アクセルステップ" ]
+  },
+  {
+    "name": "トリスタン",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E38388E383AAE382B9E382BFE383B35F69636F6E5F726575702E706E67.png",
+    "date": "",
+    "rarity": "SR",
+    "symbol": "オリジン",
+    "class": "シューター",
+    "damageType": "アタック",
+    "range": 2,
+    "move": 3,
+    "talent": {
+      "name": "フェイル☆ノート",
+      "desc": "行動終了時、自身を中心とした範囲2マス以内の全ての味方ユニットの範囲スキル与ダメージ+20%(1ターン}。",
+      "icon": "https://legeclo.wikiru.jp/attach2/E38388E383AAE382B9E382BFE383B3_736B5F743035392E706E67.png"
+    },
+    "tags": [ "バフ:与ダメージ(スキル)" ],
+    "skills": [ "グッドレスト", "タフネス", "アクセルステップ", "アロー☆レイン", "アサルトグレース", "ハントダウン" ]
+  },
+  {
+    "name": "レオナルド・ダ・ヴィンチ",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E383ACE382AAE3838AE383ABE38389E383BBE38380E383BBE383B4E382A3E383B3E383815F69636F6E5F726575702E706E67.png",
+    "date": "",
+    "rarity": "SR",
+    "symbol": "オリジン",
+    "class": "エアリアル",
+    "damageType": "アタック",
+    "range": 1,
+    "move": 5,
+    "talent": {
+      "name": "万能の天才",
+      "desc": "「エアリアル/ライダー」がメインの敵ユニットと戦闘する時、自ユニットのアタック/ディフェンス+30%。",
+      "icon": "https://legeclo.wikiru.jp/attach2/E383ACE382AAE3838AE383ABE38389E383BBE38380E383BBE383B4E382A3E383B3E38381_736B5F743036302E706E67.png"
+    },
+    "tags": [],
+    "skills": [ "旋風", "連撃", "攻撃の加護", "ラッシュチャージ", "解き明かすは芸術", "ガードクライ" ]
+  },
+  {
+    "name": "ガラハッド",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E382ACE383A9E3838FE38383E383895F69636F6E5F726575702E706E67.png",
+    "date": "",
+    "rarity": "SR",
+    "symbol": "ナディア",
+    "class": "ライダー",
+    "damageType": "アタック",
+    "range": 1,
+    "move": 5,
+    "talent": {
+      "name": "高潔なる騎士剣術",
+      "desc": "近距離による戦闘時、自ユニットのアタック+30%、遠距離による戦闘時、自ユニットのディフェンス+30%。",
+      "icon": "https://legeclo.wikiru.jp/attach2/E382ACE383A9E3838FE38383E38389_736B5F743036322E706E67.png"
+    },
+    "tags": [],
+    "skills": [ "威武", "ディフェンドブレイク", "ディフェンスブースト", "破守", "ブレイクストライク", "ハードアグレッション" ]
+  },
+  {
+    "name": "モードレッド",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E383A2E383BCE38389E383ACE38383E383895F69636F6E2E706E67.png",
+    "date": "",
+    "rarity": "SR",
+    "symbol": "ナディア",
+    "class": "ランサー",
+    "damageType": "アタック",
+    "range": 1,
+    "move": 3,
+    "talent": {
+      "name": "ケイオス・ナイト",
+      "desc": "自ユニットの残りHPが多いほど、自ユニットの物理ダメージ耐性が上がる(+10～30%)。\n1度だけ、味方メインのHPが0になった時、戦闘不能にならず、自ユニットのメイン、サポートそれぞれのHPが最大HPの7.5％分回復する。",
+      "icon": "https://legeclo.wikiru.jp/attach2/696D67_736B5F743031342E706E67.png"
+    },
+    "tags": [ "死亡時復活" ],
+    "skills": [ "アーマーブレイク", "アベンジャー", "ラッキープライズ", "グリムフェイス", "アサルトクライシス", "破守" ]
+  },
+  {
+    "name": "風魔小太郎",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E9A2A8E9AD94E5B08FE5A4AAE9838E5F69636F6E2E706E67.png",
+    "date": "",
+    "rarity": "SR",
+    "symbol": "ゼニス",
+    "class": "アサシン",
+    "damageType": "アタック",
+    "range": 2,
+    "move": 3,
+    "talent": {
+      "name": "風魔忍法",
+      "desc": "自ユニットに1個アクティブによる強化効果が付与される度、自ユニットのアタック/ディフェンス+7％(最大21％まで重複可能)。\n戦闘中クリティカルが発動した時、戦闘後、強化効果を最大2個奪う。",
+      "icon": "https://legeclo.wikiru.jp/attach2/E9A2A8E9AD94E5B08FE5A4AAE9838E_736B5F743031372E706E67.png"
+    },
+    "tags": [ "バフ奪取" ],
+    "skills": [ "クリティカルリザーブ", "スティングレイ", "クリティカルキラー", "スネークストライク", "クリティカルアーマー", "キラーエスケープ" ]
+  },
+  {
+    "name": "主人公",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E4B8BBE4BABAE585AC5F69636F6E2E706E67.png",
+    "date": "",
+    "rarity": "SSR",
+    "symbol": "ナディア",
+    "class": "ソルジャー",
+    "damageType": "アタック",
+    "range": 1,
+    "move": 3,
+    "talent": {
+      "name": "ブレイブハート",
+      "desc": "戦闘前、確率（100%）で自ユニットのアタック/ディフェンス+20%",
+      "icon": "https://legeclo.wikiru.jp/attach2/E4B8BBE4BABAE585AC_736B5F743031312E706E67.png"
+    },
+    "tags": [],
+    "skills": [ "コンビネーションアタック", "ラッキープライズ", "攻撃の加護", "アタックリザーブ", "集いし英雄の力", "ソードダンス" ]
+  },
+  {
+    "name": "ジャンヌ・ダルク",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E382B8E383A3E383B3E3838CE383BBE38380E383ABE382AF5F69636F6E2E706E67.png",
+    "date": "",
+    "rarity": "SSR",
+    "symbol": "ナディア",
+    "class": "ランサー",
+    "damageType": "アタック",
+    "range": 1,
+    "move": 3,
+    "talent": {
+      "name": "救国の意思",
+      "desc": "敵ターンでの戦闘時、その戦闘後、確率(100%)で自ユニットのアタック/ディフェンス+10%(2ターン/最大2回まで重複可能)。",
+      "icon": "https://legeclo.wikiru.jp/attach2/E382B8E383A3E383B3E3838CE383BBE38380E383ABE382AF_736B5F743030332E706E67.png"
+    },
+    "tags": [],
+    "skills": [ "御旗のもとに", "アイアンアーム", "ディフェンスブースト", "ガードカウンター", "フォトンベール", "白百合の槍撃" ]
+  },
+  {
+    "name": "藤堂高虎",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E897A4E5A082E9AB98E8998E5F69636F6E5F726575702E706E67.png",
+    "date": "",
+    "rarity": "R",
+    "symbol": "オリジン",
+    "class": "ランサー",
+    "damageType": "アタック",
+    "range": 1,
+    "move": 3,
+    "talent": {
+      "name": "藤堂式築城術",
+      "desc": "自ユニットの残りHPが少ないほど、戦闘前、自ユニットの物理ダメージ耐性が上がる（+10％～40%）",
+      "icon": "https://legeclo.wikiru.jp/attach2/E897A4E5A082E9AB98E8998E_736B5F743036312E706E67.png"
+    },
+    "tags": [],
+    "skills": [ "戦士の守り", "ガードストック", "テンプテーション", "アイアンアーム", "グッドレスト", "アーマーブレイク" ]
+  },
+  {
+    "name": "ロバート・E・リー",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E383ADE38390E383BCE38388E383BB45E383BBE383AAE383BC5F69636F6E5F726575702E706E67.png",
+    "date": "",
+    "rarity": "R",
+    "symbol": "オリジン",
+    "class": "ソルジャー",
+    "damageType": "アタック",
+    "range": 1,
+    "move": 3,
+    "talent": {
+      "name": "遊撃のギャロップ",
+      "desc": "味方ターンでの戦闘時、その戦闘前、自ユニットのアタック/ディフェンス+15%(1ターン)。\n更に戦闘後、確率(100%)で自ユニットのメイン、サポートそれぞれのHPが最大HPの15%分回復する。",
+      "icon": "https://legeclo.wikiru.jp/attach2/E383ADE38390E383BCE38388E383BB45E383BBE383AAE383BC_736B5F743036332E706E67.png"
+    },
+    "tags": [],
+    "skills": [ "ビートスクリーム", "カバーリング", "グリムフェイス", "威武", "防御の加護", "ブラッディブレード" ]
+  },
+  {
+    "name": "甘寧",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E79498E5AFA75F69636F6E5F726575702E706E67.png",
+    "date": "",
+    "rarity": "R",
+    "symbol": "オリジン",
+    "class": "ライダー",
+    "damageType": "アタック",
+    "range": 1,
+    "move": 5,
+    "talent": {
+      "name": "遊侠者の仁義",
+      "desc": "「水中」マスでの戦闘時、自ユニットのアタック/ディフェンス+15%。\n戦闘後の行動終了時「水中」マスにいる時、自ユニットのメイン、サポートそれぞれのHPが最大HPの40%分回復する。",
+      "icon": "https://legeclo.wikiru.jp/attach2/E79498E5AFA7_736B5F743031332E706E67.png"
+    },
+    "tags": [],
+    "skills": [ "アクアライド", "フックショット", "クレードル", "オーバーフロー", "スティール", "アクアショット" ]
+  },
+  {
+    "name": "アナスタシア",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E382A2E3838AE382B9E382BFE382B7E382A25F69636F6E2E706E67.png",
+    "date": "",
+    "rarity": "R",
+    "symbol": "ゼニス",
+    "class": "セイント",
+    "damageType": "マジック",
+    "range": 2,
+    "move": 3,
+    "talent": {
+      "name": "凍土の皇女",
+      "desc": "自ユニットの最大HP+20%。味方ユニットにスキル使用時、ランダムな強化効果を1個付与する。",
+      "icon": "https://legeclo.wikiru.jp/attach2/E382A2E3838AE382B9E382BFE382B7E382A2_736B5F743033312E706E67.png"
+    },
+    "tags": [ "バフ:ランダム" ],
+    "skills": [ "ヒールライト", "リジェネレーション", "アサルトグレース", "ディフェンドグレース", "ブライトベル", "メンタルグレース" ]
+  },
+  {
+    "name": "ジル・ド・レ",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E382B8E383ABE383BBE38389E383BBE383AC5F69636F6E5F726575702E706E67.png",
+    "date": "",
+    "rarity": "R",
+    "symbol": "ゼニス",
+    "class": "ソーサラー",
+    "damageType": "マジック",
+    "range": 2,
+    "move": 3,
+    "talent": {
+      "name": "漆黒の魔煌",
+      "desc": "自ユニットのレジスト+20%。自ユニットのHPが100%の時、自ユニットのマジック+15%。",
+      "icon": "https://legeclo.wikiru.jp/attach2/E382B8E383ABE383BBE38389E383BBE383AC_736B5F743031322E706E67.png"
+    },
+    "tags": [],
+    "skills": [ "ウィンドエッジ", "テレポーテーション", "サイクロン", "ヒールカーテン", "慟哭せよ漆黒の魔杖", "ヴァンフレイム" ]
+  },
+  {
+    "name": "プラトン",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E38397E383A9E38388E383B35F69636F6E5F726575702E706E67.png",
+    "date": "",
+    "rarity": "R",
+    "symbol": "ナディア",
+    "class": "ソーサラー",
+    "damageType": "マジック",
+    "range": 2,
+    "move": 3,
+    "talent": {
+      "name": "激情のイデア",
+      "desc": "戦闘前、自ユニットの与ダメージ+15%。\n行動終了時、自身を中心とした範囲3マス以内の自ユニット以外のすべての味方ユニットに「戦闘時、自ユニットの与ダメージ+10%」効果(1ターン)を付与する。",
+      "icon": "https://legeclo.wikiru.jp/attach2/E38397E383A9E38388E383B3_736B5F743036342E706E67.png"
+    },
+    "tags": [ "バフ:与ダメージ" ],
+    "skills": [ "サンダーボルト", "アサルトグレース", "レジストクライシス", "サンダーストーム", "アサルトクライシス", "アシッドレイン" ]
+  },
+  {
+    "name": "新島八重",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E696B0E5B3B6E585ABE9878D5F69636F6E5F726575702E706E67.png",
+    "date": "",
+    "rarity": "R",
+    "symbol": "ゼニス",
+    "class": "シューター",
+    "damageType": "アタック",
+    "range": 2,
+    "move": 3,
+    "talent": {
+      "name": "鵺の戦略眼",
+      "desc": "味方ターンでの戦闘時、その戦闘前、確率(100%)で敵ユニットのディフェンス-30%(1ターン)",
+      "icon": "https://legeclo.wikiru.jp/attach2/E696B0E5B3B6E585ABE9878D_736B5F743036352E706E67.png"
+    },
+    "tags": [ "デバフ:ディフェンス" ],
+    "skills": [ "ハントダウン", "アサルトブレイク", "攻撃の加護", "ストレングス", "エアロスナイプ", "アクセルステップ" ]
+  },
+  {
+    "name": "フランシス・ドレーク",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E38395E383A9E383B3E382B7E382B9E383BBE38389E383ACE383BCE382AF5F69636F6E5F726575702E706E67.png",
+    "date": "",
+    "rarity": "R",
+    "symbol": "オリジン",
+    "class": "エアリアル",
+    "damageType": "アタック",
+    "range": 1,
+    "move": 5,
+    "talent": {
+      "name": "パイレーツ・ソサエティ",
+      "desc": "敵ターンでの戦闘時、自ユニットの物理ダメージ耐性+30%。",
+      "icon": "https://legeclo.wikiru.jp/attach2/E38395E383A9E383B3E382B7E382B9E383BBE38389E383ACE383BCE382AF_736B5F743036362E706E67.png"
+    },
+    "tags": [],
+    "skills": [ "エリアルショット", "クイックウォール", "連撃", "ラッシュチャージ", "七海を征くはわが黄金", "旋風" ]
+  },
+  {
+    "name": "シャルロット・コルデー",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E382B7E383A3E383ABE383ADE38383E38388E383BBE382B3E383ABE38387E383BC5F69636F6E5F726575702E706E67.png",
+    "date": "",
+    "rarity": "R",
+    "symbol": "ゼニス",
+    "class": "アサシン",
+    "damageType": "アタック",
+    "range": 2,
+    "move": 3,
+    "talent": {
+      "name": "天使の凶刃",
+      "desc": "自ユニットのクリティカル率/クリティカルダメージ倍率+20%",
+      "icon": "https://legeclo.wikiru.jp/attach2/E382B7E383A3E383ABE383ADE38383E38388E383BBE382B3E383ABE38387E383BC_736B5F743036372E706E67.png"
+    },
+    "tags": [],
+    "skills": [ "スティール", "クリティカルリザーブ", "グリムフェイス", "フィールドステップ", "アタックブースト", "クリティカルアーマー" ]
+  },
+  {
+    "name": "ラスプーチン",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E383A9E382B9E38397E383BCE38381E383B35F69636F6E5F726575702E706E67.png",
+    "date": "",
+    "rarity": "R",
+    "symbol": "オリジン",
+    "class": "アサシン",
+    "damageType": "アタック",
+    "range": 2,
+    "move": 3,
+    "talent": {
+      "name": "破戒の闘気",
+      "desc": "自ユニットのクリティカル率+15%。\n1度だけ、味方メインのHPが0になった時、戦闘不能にならず、自ユニットのメイン、サポートそれぞれのHPが最大HPの25%分回復する。",
+      "icon": "https://legeclo.wikiru.jp/attach2/E383A9E382B9E38397E383BCE38381E383B3_736B5F743036382E706E67.png"
+    },
+    "tags": [ "死亡時復活" ],
+    "skills": [ "クリティカルキラー", "スティングレイ", "ハイドアンドシーク", "クリティカルリザーブ", "グッドレスト", "一撃突破" ]
+  },
+  {
+    "name": "ナイチンゲール",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E3838AE382A4E38381E383B3E382B2E383BCE383AB5F69636F6E2E706E67.png",
+    "date": "2021/10/29",
+    "rarity": "SSR",
+    "symbol": "ゼニス",
+    "class": "セイント",
+    "damageType": "マジック",
+    "range": 2,
+    "move": 3,
+    "talent": {
+      "name": "白衣の天使",
+      "desc": "行動終了時、自身を中心とした周囲2マス以内の全ての味方ユニットの弱化効果を2個解除し、HPをメインのマジックの3倍回復する。",
+      "icon": "https://legeclo.wikiru.jp/attach2/E3838AE382A4E38381E383B3E382B2E383BCE383AB_736B5F743235302E706E67.png"
+    },
+    "tags": [ "デバフ解除" ],
+    "skills": [ "ヒールライト", "慈愛者の激励", "ウィンドエッジ", "フォーチュンギフト", "ディフェンドグレース", "看護の極意" ]
+  },
+  {
+    "name": "ソロモン(ハロウィン)",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E382BDE383ADE383A2E383B328E3838FE383ADE382A6E382A3E383B3295F69636F6E2E706E67.png",
+    "date": "2021/11/12",
+    "rarity": "SSR",
+    "symbol": "ナディア",
+    "class": "ソーサラー",
+    "damageType": "マジック",
+    "range": 2,
+    "move": 3,
+    "talent": {
+      "name": "魔女っ娘トリート",
+      "desc": "自身の範囲スキル与ダメージ+15%。\n味方ターンで敵ユニットにダメージを与えた時、確率(100%)でランダムで弱化効果を1個付与する。\n移動タイプが「エアリアル」と同じになる。",
+      "icon": "https://legeclo.wikiru.jp/attach2/E382BDE383ADE383A2E383B328E3838FE383ADE382A6E382A3E383B329_736B5F743235342E706E67.png"
+    },
+    "tags": [ "地形無視", "デバフ:ランダム" ],
+    "skills": [ "バインディングパープル", "ウィッチ・ブラスト", "シャドウフレア", "アンダーシール", "ハロウィンオカルティック", "パンプキンランドマイン" ]
+  },
+  {
+    "name": "レオナルド・ダ・ヴィンチ(ハロウィン)",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E383ACE382AAE3838AE383ABE38389E383BBE38380E383BBE383B4E382A3E383B3E3838128E3838FE383ADE382A6E382A3E383B3295F69636F6E2E706E67.png",
+    "date": "2021/11/12",
+    "rarity": "SR",
+    "symbol": "オリジン",
+    "class": "セイント",
+    "damageType": "マジック",
+    "range": 2,
+    "move": 3,
+    "talent": {
+      "name": "ハロウィントリック",
+      "desc": "行動終了時、現在HP割合が最も低い味方ユニットのHPをレオナルド・ダ・ヴィンチのマジックの2.5倍回復し、自身を中心とした範囲4マス以内の敵ユニット3隊に、ランダムで弱化効果を1個付与する。",
+      "icon": "https://legeclo.wikiru.jp/attach2/E383ACE382AAE3838AE383ABE38389E383BBE38380E383BBE383B4E382A3E383B3E3838128E3838FE383ADE382A6E382A3E383B329_736B5F743235352E706E67.png"
+    },
+    "tags": [ "デバフ:ランダム" ],
+    "skills": [ "ヒールライト", "クレードル", "ホーリースペル", "ヒールカーテン", "メンタルプロテクト", "キャンディエクスプロード" ]
+  },
+  {
+    "name": "ベートーヴェン",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E38399E383BCE38388E383BCE383B4E382A7E383B35F69636F6E2E706E67.png",
+    "date": "2021/11/30",
+    "rarity": "SSR",
+    "symbol": "ナディア",
+    "class": "シューター",
+    "damageType": "アタック",
+    "range": 2,
+    "move": 3,
+    "talent": {
+      "name": "「熱情」の調べ",
+      "desc": "自ユニットの残りHPが多いほど、自ユニットのアタックが上がる(+5%～+20%)。\n味方ターンで敵ユニットに自身がダメージを与えた時、確率(100%)で全てのスキルのクールタイム-1。",
+      "icon": "https://legeclo.wikiru.jp/attach2/E38399E383BCE38388E383BCE383B4E382A7E383B3_736B5F743235312E706E67.png"
+    },
+    "tags": [ "CT減(自身)" ],
+    "skills": [ "シャドーハント", "シールライザー", "グッドレスト", "アクセルステップ", "英雄たちへの行進曲", "ジェノサイダー" ]
+  },
+  {
+    "name": "鉄腕ゲッツ",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E98984E88595E382B2E38383E383845F69636F6E5F726575702E706E67.png",
+    "date": "2021/11/30",
+    "rarity": "SR",
+    "symbol": "ナディア",
+    "class": "ライダー",
+    "damageType": "アタック",
+    "range": 1,
+    "move": 5,
+    "talent": {
+      "name": "騎士道の誓約",
+      "desc": "味方ターンでの戦闘時、その戦闘前、自ユニットのアタック/ダメージ耐性+20％。\n行動終了時、確率(50%)で、自身を中心とした範囲2マス以内の敵ユニットの移動-2/「ガード不可」(1ターン)を付与する。",
+      "icon": "https://legeclo.wikiru.jp/attach2/E98984E88595E382B2E38383E38384_736B5F743235322E706E67.png"
+    },
+    "tags": [ "デバフ:移動", "デバフ:ガード不可" ],
+    "skills": [ "シェルストライク", "ノックダウン", "ディフェンドブレイク", "ガードクライ", "ラッシュチャージ", "破守" ]
+  },
+  {
+    "name": "アーサー(クリスマス)",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E382A2E383BCE382B5E383BC28E382AFE383AAE382B9E3839EE382B9295F69636F6E2E706E67.png",
+    "date": "2021/12/14",
+    "rarity": "SSR",
+    "symbol": "オリジン",
+    "class": "ソルジャー",
+    "damageType": "アタック",
+    "range": 1,
+    "move": 3,
+    "talent": {
+      "name": "ホーリーゴールドナイト",
+      "desc": "自身を中心とした範囲3マス以内に敵ユニットがいる時、1隊につき、自ユニットの最大HP以外の全ステータス+5%(最大+20％)。\n敵ユニットを倒した行動終了時、自ユニットに「近距離による戦闘時、その戦闘前、自ユニットのダメージ耐性+20%、\n敵ユニットに味方メインのアタックの2倍の固定ダメージを与える」の効果(1ターン)を付与する。",
+      "icon": "https://legeclo.wikiru.jp/attach2/E382A2E383BCE382B5E383BC28E382AFE383AAE382B9E3839EE382B929_736B5F743235362E706E67.png"
+    },
+    "tags": [],
+    "skills": [ "コンビネーションアタック", "ビートスクリーム", "サンタクロースの務め", "グッドレスト", "聖夜のアヴァロン", "クリスマスカリバー" ]
+  },
+  {
+    "name": "ジル・ド・レ(クリスマス)",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E382B8E383ABE383BBE38389E383BBE383AC28E382AFE383AAE382B9E3839EE382B9295F69636F6E2E706E67.png",
+    "date": "2021/12/14",
+    "rarity": "SR",
+    "symbol": "ゼニス",
+    "class": "エアリアル",
+    "damageType": "アタック",
+    "range": 1,
+    "move": 5,
+    "talent": {
+      "name": "立ち向かう聖夜",
+      "desc": "自ユニットがいる地形に「DEF効果」がある時、ダメージ耐性+15%。\n自ユニットがいる地形に「DEF効果」がない時、アタック+15%。",
+      "icon": "https://legeclo.wikiru.jp/attach2/E382B8E383ABE383BBE38389E383BBE383AC28E382AFE383AAE382B9E3839EE382B929_736B5F743235372E706E67.png"
+    },
+    "tags": [],
+    "skills": [ "連撃", "攻撃の加護", "ブレイクインパクト", "アサルトクライシス", "ラッシュチャージ", "フレイムバースト" ]
+  },
+  {
+    "name": "ジャンヌ・ダルク(お正月)",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E382B8E383A3E383B3E3838CE383BBE38380E383ABE382AF28E3818AE6ADA3E69C88295F69636F6E2E706E67.png",
+    "date": "2021/12/27",
+    "rarity": "SSR",
+    "symbol": "オリジン",
+    "class": "ライダー",
+    "damageType": "アタック",
+    "range": 1,
+    "move": 5,
+    "talent": {
+      "name": "新年とジャンヌと主に虎",
+      "desc": "敵ターンで遠距離による戦闘時、その戦闘前、自身の通常攻撃の射程+1、自ユニットのダメージ耐性+20%。\n行動終了時、自身を中心とした範囲3マス以下に味方ユニットがいる時、自ユニットのアタック+20%/ディフェンス+25％/レジスト+25％(1ターン)。",
+      "icon": "https://legeclo.wikiru.jp/attach2/E382B8E383A3E383B3E3838CE383BBE38380E383ABE382AF28E3818AE6ADA3E69C8829_736B5F743235382E706E67.png"
+    },
+    "tags": [ "射程+" ],
+    "skills": [ "ハゴイタイガー闘法", "ラストスタンド", "ノックダウン", "フィールドステップ", "新春サクラメント", "ブラッディブレード" ]
+  },
+  {
+    "name": "ヤマトタケル(お正月)",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E383A4E3839EE38388E382BFE382B1E383AB28E3818AE6ADA3E69C88295F69636F6E2E706E67.png",
+    "date": "2021/12/27",
+    "rarity": "SR",
+    "symbol": "ナディア",
+    "class": "シューター",
+    "damageType": "アタック",
+    "range": 2,
+    "move": 3,
+    "talent": {
+      "name": "新たなる覚悟",
+      "desc": "自ユニットのHPが100%の時、自ユニットのアタック+30%。\n行動終了時、自身を中心とした範囲3マス以内の味方ユニット4隊のダメージ耐性+10%(2ターン)。",
+      "icon": "https://legeclo.wikiru.jp/attach2/E383A4E3839EE38388E382BFE382B1E383AB28E3818AE6ADA3E69C8829_736B5F743235392E706E67.png"
+    },
+    "tags": [ "バフ:ダメージ耐性" ],
+    "skills": [ "エアロスナイプ", "ヒット＆アウェイ", "ディフェンドブレイク", "初春神楽", "攻撃の加護", "心願千矢" ]
+  },
+  {
+    "name": "偽ドミトリー",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E581BDE38389E3839FE38388E383AAE383BC5F69636F6E2E706E67.png",
+    "date": "2022/01/11",
+    "rarity": "SSR",
+    "symbol": "ゼニス",
+    "class": "シューター",
+    "damageType": "アタック",
+    "range": 2,
+    "move": 3,
+    "talent": {
+      "name": "僭称皇帝の詭謀",
+      "desc": "行動終了時、自身を中心とした範囲4マス以内の敵ユニット4隊のディフェンス/レジスト-10%(1ターン)、味方ユニット4隊のディフェンス/レジスト+10%(1ターン)。",
+      "icon": "https://legeclo.wikiru.jp/attach2/E581BDE38389E3839FE38388E383AAE383BC_736B5F743235332E706E67.png"
+    },
+    "tags": [ "バフ:ディフェンス", "バフ:レジスト", "デバフ:ディフェンス", "デバフ:レジスト" ],
+    "skills": [ "アームブレイク", "狂騒と混乱の革命劇", "ディフェンスブースト", "詐術砲撃", "グランド・セフト・カイザー", "灰詰めの炸裂弾" ]
+  },
+  {
+    "name": "葛飾北斎",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E8919BE9A3BEE58C97E6968E5F69636F6E2E706E67.png",
+    "date": "2022/01/25",
+    "rarity": "SSR",
+    "symbol": "オリジン",
+    "class": "ランサー",
+    "damageType": "アタック",
+    "range": 1,
+    "move": 3,
+    "talent": {
+      "name": "画狂の一筆",
+      "desc": "自ユニットのHPが100％の時、自ユニットの与ダメージ+20％/移動+1。\nメインが「ランサー/ライダー」の敵ユニットとの戦闘時、その戦闘前、自ユニットのアタック/ディフェンス+20％。\n敵ターンでの戦闘時、その戦闘前、敵ユニットの与ダメージ-20％。",
+      "icon": "https://legeclo.wikiru.jp/attach2/E8919BE9A3BEE58C97E6968E_736B5F743236372E706E67.png"
+    },
+    "tags": [],
+    "skills": [ "森羅万象", "ラストスタンド", "ディフェンスブースト", "ガードカウンター", "パーフェクトヒール", "富嶽三十六景" ]
+  },
+  {
+    "name": "スパルタクス",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E382B9E38391E383ABE382BFE382AFE382B95F69636F6E2E706E67.png",
+    "date": "2022/01/25",
+    "rarity": "SR",
+    "symbol": "オリジン",
+    "class": "ソルジャー",
+    "damageType": "アタック",
+    "range": 1,
+    "move": 3,
+    "talent": {
+      "name": "叛逆の意志",
+      "desc": "敵ターンで近距離による戦闘時、その戦闘前、自ユニットの物理ダメージ耐性+30％。",
+      "icon": "https://legeclo.wikiru.jp/attach2/E382B9E38391E383ABE382BFE382AFE382B9_736B5F743236382E706E67.png"
+    },
+    "tags": [],
+    "skills": [ "ラッキープライズ", "ブレイクストライク", "ディフェンスブースト", "ソードダンス", "アベンジャー", "ブラッディブレード" ]
+  },
+  {
+    "name": "エリザベート・バートリ(バレンタイン)",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E382A8E383AAE382B6E38399E383BCE38388E383BBE38390E383BCE38388E383AA28E38390E383ACE383B3E382BFE382A4E383B3295F69636F6E2E706E67.png",
+    "date": "2022/02/08",
+    "rarity": "SSR",
+    "symbol": "ゼニス",
+    "class": "エアリアル",
+    "damageType": "アタック",
+    "range": 1,
+    "move": 5,
+    "talent": {
+      "name": "ラブ・メイデン",
+      "desc": "戦闘前、かつ自身のHPが50%以上の時、敵ユニットに味方メインのレジストの3.5倍の固定ダメージを与える。\n戦闘後、自ユニットに「ラブパワー」を1個付与する(4ターン/最大4個)、「ラブパワー」1個につき与ダメージ＋5%、更に自身を中心とした範囲1マス以内に味方ユニットがいない時、自ユニットのメイン、サポートそれぞれのHPが最大HPの15%分回復する。",
+      "icon": "https://legeclo.wikiru.jp/attach2/E382A8E383AAE382B6E38399E383BCE38388E383BBE38390E383BCE38388E383AA28E38390E383ACE383B3E382BFE382A4E383B329_736B5F743237352E706E67.png"
+    },
+    "tags": [],
+    "skills": [ "破守", "デュエルオーラ", "連撃", "吸愛コウモリ", "ビター・ビター・バレンタイン", "弾ける愛情" ]
+  },
+  {
+    "name": "ナポレオン(バレンタイン)",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E3838AE3839DE383ACE382AAE383B328E38390E383ACE383B3E382BFE382A4E383B3295F69636F6E2E706E67.png",
+    "date": "2022/02/08",
+    "rarity": "SR",
+    "symbol": "ナディア",
+    "class": "セイント",
+    "damageType": "マジック",
+    "range": 2,
+    "move": 3,
+    "talent": {
+      "name": "チョコレート革命",
+      "desc": "治療効果＋30％。\n行動終了時、自身を中心とした範囲2マス以内の味方ユニット4隊にランダムな強化効果を1個付与する。",
+      "icon": "https://legeclo.wikiru.jp/attach2/E3838AE3839DE383ACE382AAE383B328E38390E383ACE383B3E382BFE382A4E383B329_736B5F743237362E706E67.png"
+    },
+    "tags": [ "バフ:ランダム" ],
+    "skills": [ "ヒールライト", "ホーリーリンクベル", "福音", "ヒールカーテン", "サンダーストーム", "エンペラー・ド・アモーレ" ]
+  },
+  {
+    "name": "レオニダス",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E383ACE382AAE3838BE38380E382B95F69636F6E5F726575702E706E67.png",
+    "date": "2022/02/22",
+    "rarity": "SSR",
+    "symbol": "オリジン",
+    "class": "ソルジャー",
+    "damageType": "アタック",
+    "range": 1,
+    "move": 3,
+    "talent": {
+      "name": "不降伏の誇り",
+      "desc": "自身を中心とした範囲1マス以内に味方ユニットがいない時、最大HP以外の全ステータス+20%。\n味方ターンで敵ユニットに自身がダメージを与えた時、自ユニットのメイン、サポートそれぞれのHPが最大HPの20%分回復する。",
+      "icon": "https://legeclo.wikiru.jp/attach2/E383ACE382AAE3838BE38380E382B9_736B5F743237392E706E67.png"
+    },
+    "tags": [],
+    "skills": [ "誇り高き突撃", "止まらぬ戦士", "クリティカルキラー", "コンビネーションアタック", "ブラッディブレード", "スパルタ王の猛攻" ]
+  },
+  {
+    "name": "石川五右衛門",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E79FB3E5B79DE4BA94E58FB3E8A19BE996805F69636F6E2E706E67.png",
+    "date": "2022/02/22",
+    "rarity": "SR",
+    "symbol": "ナディア",
+    "class": "アサシン",
+    "damageType": "アタック",
+    "range": 2,
+    "move": 3,
+    "talent": {
+      "name": "我こそ天下の大泥棒",
+      "desc": "自ユニットのクリティカル率＋15%。\n戦闘中クリティカルが発動した時、戦闘後、味方メインが与えたダメージの20%分HPを回復し、確率(100%)で、使用したスキルのクールタイム-1。",
+      "icon": "https://legeclo.wikiru.jp/attach2/E79FB3E5B79DE4BA94E58FB3E8A19BE99680_736B5F743238302E706E67.png"
+    },
+    "tags": [],
+    "skills": [ "一撃突破", "オーバーフロー", "キラーエスケープ", "スティングレイ", "クリティカルアーマー", "スネークストライク" ]
+  },
+  {
+    "name": "リシュリュー",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E383AAE382B7E383A5E383AAE383A5E383BC5F69636F6E2E706E67.png",
+    "date": "2022/03/04",
+    "rarity": "SSR",
+    "symbol": "ゼニス",
+    "class": "ソーサラー",
+    "damageType": "マジック",
+    "range": 2,
+    "move": 3,
+    "talent": {
+      "name": "宰相の手腕",
+      "desc": "自身の魔法与ダメージ+50%。\n戦闘後、自身の魔法与ダメージ-13%(3ターン/最大2回まで重複可能)。\n自身を中心とした範囲1マス以内に味方ユニットがいない時、自ユニットのマジック+15%。",
+      "icon": "https://legeclo.wikiru.jp/attach2/E383AAE382B7E383A5E383AAE383A5E383BC_736B5F743238332E706E67.png"
+    },
+    "tags": [],
+    "skills": [ "フレイムボール", "謀略は僻地まで達す", "攻撃の加護", "消耗戦ならお手の物", "レジストクライシス", "国家理性に従え" ]
+  },
+  {
+    "name": "閻魔",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E996BBE9AD945F69636F6E2E706E67.png",
+    "date": "2022/03/14",
+    "rarity": "SSR",
+    "symbol": "ナディア",
+    "class": "ライダー",
+    "damageType": "アタック",
+    "range": 1,
+    "move": 5,
+    "talent": {
+      "name": "罪を数えよ",
+      "desc": "自身がダメージを与えた時、敵ユニットに「罪」を1個付与する(3ターン/最大2個)、「罪」1個につきダメージ耐性-10%。\n「罪」が付与された敵ユニットと戦闘時、その戦闘前、「罪」の数に応じて自ユニットに以下効果を得る。\n1個の時：アタック/ディフェンス+20%/与ダメージ+30%。\n2個の時：アタック/ディフェンス+30%/与ダメージ+45%。",
+      "icon": "https://legeclo.wikiru.jp/attach2/E996BBE9AD94_736B5F743238342E706E67.png"
+    },
+    "tags": [ "デバフ:ダメージ耐性" ],
+    "skills": [ "冥界の枷", "ハードアグレッション", "ラッキープライズ", "フレイムバースト", "キラーエスケープ", "断罪" ]
+  },
+  {
+    "name": "服部半蔵",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E69C8DE983A8E58D8AE894B55F69636F6E2E706E67.png",
+    "date": "2022/03/22",
+    "rarity": "SSR",
+    "symbol": "オリジン",
+    "class": "アサシン",
+    "damageType": "アタック",
+    "range": 2,
+    "move": 3,
+    "talent": {
+      "name": "伊賀の教え",
+      "desc": "自ユニットの物理与ダメージ/クリティカル率+20%。\n味方ターンでの戦闘時、その戦闘後、味方メインが与えたダメージの25%分HPを回復し、再び移動することができる。\n戦闘中、クリティカルが発動した時、その戦闘後、自ユニットに「忍の極意」を1個付与する(最大3個)。\n「忍の極意」1個につきアタック+5%。",
+      "icon": "https://legeclo.wikiru.jp/attach2/E69C8DE983A8E58D8AE894B5_736B5F743238352E706E67.png"
+    },
+    "tags": [ "再移動", "与ダメ回復" ],
+    "skills": [ "無情なる手裏剣", "暗影に忍ぶ", "ラストスタンド", "スティール", "クリティカルアーマー", "伊賀流奥義" ]
+  },
+  {
+    "name": "ツタンカーメン(ハーフアニバーサリー)",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E38384E382BFE383B3E382ABE383BCE383A1E383B328E3838FE383BCE38395E382A2E3838BE38390E383BCE382B5E383AAE383BC295F69636F6E2E706E67.png",
+    "date": "2022/04/05",
+    "rarity": "SSR",
+    "symbol": "ナディア",
+    "class": "セイント",
+    "damageType": "マジック",
+    "range": 1,
+    "move": 3,
+    "talent": {
+      "name": "私だって、アイドルだから！",
+      "desc": "自ユニットのHPが50％以上の時、自ユニットのスキル与ダメージ+25％。\n単体攻撃スキル使用時、全ての味方ユニットのHPを最大HPの30％分回復し、「キラキラ☆エール」を1個付与する(4ターン/最大3個)、\n「キラキラ☆エール」1個につき最大HP以外の全ステータス+5％、更にその数に応じて様々な効果を得る効果(4ターン)を付与する。\nその効果内容は以下となる。\n1個以上の時：行動終了時、自ユニットの弱体効果を1個解除する。\n2個以上の時：戦闘前、敵ユニットの与ダメージ/ダメージ耐性-10％。\n3個以上の時：戦闘前、自ユニットの与ダメージ/ダメージ耐性+15％。",
+      "icon": "https://legeclo.wikiru.jp/attach2/E38384E382BFE383B3E382ABE383BCE383A1E383B328E3838FE383BCE38395E382A2E3838BE38390E383BCE382B5E383AAE383BC29_736B5F743238392E706E67.png"
+    },
+    "tags": [ "デバフ解除", "バフ:アタック", "バフ:マジック", "バフ:ディフェンス", "バフ:レジスト", "バフ:テクニック" ],
+    "skills": [ "ホーリーリンクベル", "センターの誇り", "シャープネス", "鳴り響け、砂漠の歌", "鼓舞の歌声", "心を貫く歌唱" ]
+  },
+  {
+    "name": "クレオパトラ(ハーフアニバーサリー)",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E382AFE383ACE382AAE38391E38388E383A928E3838FE383BCE38395E382A2E3838BE38390E383BCE382B5E383AAE383BC295F69636F6E2E706E67.png",
+    "date": "2022/04/05",
+    "rarity": "SR",
+    "symbol": "ゼニス",
+    "class": "セイント",
+    "damageType": "マジック",
+    "range": 2,
+    "move": 5,
+    "talent": {
+      "name": "くーるびゅーちー・あいどる",
+      "desc": "遠距離での戦闘時、その戦闘前、自ユニットのディフェンス/レジスト+20%。\n自ユニットを中心とした範囲3マス以内の全ての味方ユニットの被治療効果+30%。",
+      "icon": "https://legeclo.wikiru.jp/attach2/E382AFE383ACE382AAE38391E38388E383A928E3838FE383BCE38395E382A2E3838BE38390E383BCE382B5E383AAE383BC29_736B5F743239302E706E67.png"
+    },
+    "tags": [ "バフ:被治療効果" ],
+    "skills": [ "ヒールライト", "リジェネレーション", "防御の加護", "メンタルグレース", "ヒールカーテン", "チアダンス" ]
+  },
+  {
+    "name": "ヤマトタケル(ハーフアニバーサリー)",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E383A4E3839EE38388E382BFE382B1E383AB28E3838FE383BCE38395E382A2E3838BE38390E383BCE382B5E383AAE383BC295F69636F6E2E706E67.png",
+    "date": "2022/04/22",
+    "rarity": "SSR",
+    "symbol": "オリジン",
+    "class": "ソーサラー",
+    "damageType": "マジック",
+    "range": 2,
+    "move": 5,
+    "talent": {
+      "name": "才能と情熱のアイドル",
+      "desc": "味方ターンでの戦闘時、その戦闘前、敵ユニットの魔法ダメージ耐性-15%。\n単体攻撃スキル使用時、自ユニットに「ばーにんぐソウル！」を1個付与する(4ターン/最大3個)、「ばーにんぐソウル！」1個につき最大HP以外のステータス+10%。\n自ユニットに付与されている「ばーにんぐソウル！」の数に応じて以下の効果を得る。\n1個以上の時：戦闘時、その戦闘前、自ユニットの魔法与ダメージ+10%\n2個以上の時：味方ターン開始時、全ての味方ユニットの与ダメージ+10%(1ターン)。\n3個以上の時：味方ターンで遠距離での戦闘時、その戦闘後、味方メインが与えたダメージの15%分HPを回復する。",
+      "icon": "https://legeclo.wikiru.jp/attach2/E383A4E3839EE38388E382BFE382B1E383AB28E3838FE383BCE38395E382A2E3838BE38390E383BCE382B5E383AAE383BC29_736B5F743239312E706E67.png"
+    },
+    "tags": [ "バフ:与ダメージ" ],
+    "skills": [ "進み続ける覇者の歌", "アイドル界の平定", "ヒット＆アウェイ", "ノってきた！", "ブラックイレイザー", "この歌で決める！" ]
+  },
+  {
+    "name": "マスター・リア",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E3839EE382B9E382BFE383BCE383BBE383AAE382A25F69636F6E2E706E67.png",
+    "date": "2022/04/26",
+    "rarity": "SSR",
+    "symbol": "ゼニス",
+    "class": "ソルジャー",
+    "damageType": "アタック",
+    "range": 1,
+    "move": 3,
+    "talent": {
+      "name": "この世の兵士、その全ての記憶",
+      "desc": "自ユニットが敵ユニットのディフェンスの10%分を無視して攻撃できる。\n戦闘前、自ユニットの物理与ダメージ+20%、敵ユニットの物理ダメージ耐性-20%。\n「ソルジャー」クラスの全ての味方キャラの最大HP以外の全ステータス+10%。",
+      "icon": "https://legeclo.wikiru.jp/attach2/696D67_736B5F743239332E706E67.png"
+    },
+    "tags": [ "クラスバフ:ソルジャー" ],
+    "skills": [ "ビートスクリーム", "気を抜かぬ進軍", "ブレイクストライク", "総員、突撃用意", "オーバーフロー", "記憶を乗せた剣" ]
+  },
+  {
+    "name": "真田幸村",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E79C9FE794B0E5B9B8E69D915F69636F6E2E706E67.png",
+    "date": "2022/05/10",
+    "rarity": "SSR",
+    "symbol": "ゼニス",
+    "class": "ランサー",
+    "damageType": "アタック",
+    "range": 1,
+    "move": 3,
+    "talent": {
+      "name": "情熱の特攻隊長",
+      "desc": "自身を中心とした範囲3マス以内の全ての敵ユニットのアタック/マジック-10%。\n戦闘時、その戦闘前、自ユニットのアタック/ディフェンス+10%(4ターン/最大3回まで重複可能)。\n敵ターンでの戦闘時、その戦闘前、自ユニットの物理与ダメージ+20%。",
+      "icon": "https://legeclo.wikiru.jp/attach2/E79C9FE794B0E5B9B8E69D91_736B5F743239362E706E67.png"
+    },
+    "tags": [ "デバフ:アタック", "デバフ:マジック" ],
+    "skills": [ "どけどけどけー！", "これで痛くない！", "エスコート", "逃がさねえ！", "破守", "どうだ参ったか！" ]
+  },
+  {
+    "name": "マスター・ルルア",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E3839EE382B9E382BFE383BCE383BBE383ABE383ABE382A25F69636F6E2E706E67.png",
+    "date": "2022/05/24",
+    "rarity": "SSR",
+    "symbol": "オリジン",
+    "class": "ライダー",
+    "damageType": "アタック",
+    "range": 1,
+    "move": 5,
+    "talent": {
+      "name": "全ての騎兵が辿りし道",
+      "desc": "最大HP+20%/移動する時、全ての通過可能な地形を「平地」マスとして扱う。\n「ライダー」クラスの全ての味方キャラの最大HP以外の全ステータス+10%。\n自身がアクティブスキルでダメージを与えた時、自ユニットに「ナイトパワー」を1個付与する(2ターン/最大2個)、「ナイトパワー」1個につき物理与ダメージ+10%。\n自ユニットに「ナイトパワー」が1個以上付与されている時かつ味方ターンでの戦闘時、通常攻撃した場合、2回攻撃できる。",
+      "icon": "https://legeclo.wikiru.jp/attach2/E3839EE382B9E382BFE383BCE383BBE383ABE383ABE382A2_736B5F743239382E706E67.png"
+    },
+    "tags": [ "地形無視", "2回攻撃", "クラスバフ:ライダー" ],
+    "skills": [ "ナイトくんの超火力", "一撃離脱", "グッドレスト", "ナイトくんのおまじない", "デュエルオーラ", "ライディング・アタック！" ]
+  },
+  {
+    "name": "カエサル",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E382ABE382A8E382B5E383AB5F69636F6E2E706E67.png",
+    "date": "2022/05/31",
+    "rarity": "SSR",
+    "symbol": "ナディア",
+    "class": "ソルジャー",
+    "damageType": "マジック",
+    "range": 1,
+    "move": 3,
+    "talent": {
+      "name": "賽は投げられた",
+      "desc": "自身のマジックにアタック(装備を含む基本ステータス)を40%加算する。\n味方ターンでの戦闘時、その戦闘前、敵ユニットの魔法ダメージ耐性-15%(1ターン)。\n1度だけ、味方メインのHPが0になった時、戦闘不能にならず、自ユニットのメイン、サポートそれぞれのHPが最大HPの20%分回復する。",
+      "icon": "https://legeclo.wikiru.jp/attach2/E382ABE382A8E382B5E383AB_736B5F743330342E706E67.png"
+    },
+    "tags": [ "異種攻撃タイプ", "死亡時復活", "デバフ:ダメージ耐性(魔法)" ],
+    "skills": [ "ブラックイレイザー", "今世は油断しませんよー？", "遠征の準備は万端です！", "その野心にひれ伏せ", "攻撃の加護", "来た、見た、勝った" ]
+  },
+  {
+    "name": "ウィリアム・テル",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E382A6E382A3E383AAE382A2E383A0E383BBE38386E383AB5F69636F6E5F726575702E706E67.png",
+    "date": "2022/06/14",
+    "rarity": "SSR",
+    "symbol": "オリジン",
+    "class": "シューター",
+    "damageType": "アタック",
+    "range": 2,
+    "move": 3,
+    "talent": {
+      "name": "クロスボウの名手",
+      "desc": "戦闘時、その戦闘前、自ユニットのアタック/クリティカル率+10%(4ターン/最大3回まで重複可能)。\nアクティブスキルで敵を倒した時、そのスキルのクールタイム-1。\n自身を中心とした範囲2マス以内に味方ユニットがいない時、自ユニットのスキル与ダメージ+30%。",
+      "icon": "https://legeclo.wikiru.jp/attach2/E382A6E382A3E383AAE382A2E383A0E383BBE38386E383AB_736B5F743330352E706E67.png"
+    },
+    "tags": [ "再攻撃(スキル使用時)", "CT減(自身)" ],
+    "skills": [ "ハントダウン", "狙った的は外さない", "マインドアイ", "弱いとこ見抜いちゃった", "アームブレイク", "2本目の矢" ]
+  },
+  {
+    "name": "マスター・メル",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E3839EE382B9E382BFE383BCE383BBE383A1E383AB5F69636F6E2E706E67.png",
+    "date": "2022/06/21",
+    "rarity": "SSR",
+    "symbol": "ナディア",
+    "class": "エアリアル",
+    "damageType": "アタック",
+    "range": 1,
+    "move": 5,
+    "talent": {
+      "name": "天空の全てを知る翼",
+      "desc": "自ユニットの物理与ダメージ/魔法ダメージ耐性+20%。\n味方ターンでの戦闘時、その戦闘前、自ユニットの与ダメージ+10%。\n敵ターンで遠距離による戦闘時、その戦闘前、自ユニットのダメージ耐性+10%、自身の通常攻撃の射程+1。\n「」クラスの全ての味方キャラの最大HP以外の全ステータス+10%。",
+      "icon": "https://legeclo.wikiru.jp/attach2/E3839EE382B9E382BFE383BCE383BBE383A1E383AB_736B5F743330362E706E67.png"
+    },
+    "tags": [ "射程+", "クラスバフ:エアリアル" ],
+    "skills": [ "笑顔を守る羽撃き", "テンプテーション", "立つ鳥、追撃を残す", "お届け物です！", "アサルトクライシス", "急降下突撃" ]
+  },
+  {
+    "name": "呂布(浴衣)",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E59182E5B88328E6B5B4E8A1A3295F69636F6E2E706E67.png",
+    "date": "2022/06/28",
+    "rarity": "SSR",
+    "symbol": "ゼニス",
+    "class": "アサシン",
+    "damageType": "アタック",
+    "range": 2,
+    "move": 3,
+    "talent": {
+      "name": "1年に1度きりの夢",
+      "desc": "自ユニットのクリティカルダメージ倍率+20%。\n自身を中心とした範囲1マス以内に味方ユニットがいない時、自ユニットのアタック+25%。\n戦時中、クリティカルが発動した時、戦闘後、自ユニットのダメージ耐性+30%(1ターン)、自身を中心とした4マス以内の全ての敵ユニットに味方メインのアタックの2倍の固定ダメージを与える。",
+      "icon": "https://legeclo.wikiru.jp/attach2/E59182E5B88328E6B5B4E8A1A329_736B5F743330382E706E67.png"
+    },
+    "tags": [ "固定ダメージ" ],
+    "skills": [ "スネークストライク", "引き合う二人", "クリティカルキラー", "星に願いを", "グリムフェイス", "一生ものの浴衣" ]
+  },
+  {
+    "name": "マンサ・ムーサ",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E3839EE383B3E382B5E383BBE383A0E383BCE382B55F69636F6E2E706E67.png",
+    "date": "2022/07/12",
+    "rarity": "SSR",
+    "symbol": "ナディア",
+    "class": "ソーサラー",
+    "damageType": "マジック",
+    "range": 2,
+    "move": 3,
+    "talent": {
+      "name": "これが金の力だ！",
+      "desc": "自ユニットのスキル与ダメージ+25%。\n味方のゴールデンボックスのアタック+25%。\n自ユニットに付与された「黄金に輝くモノ」の数に応じて以下の効果を得る。\n1個の時：自ユニットの移動+1。\n味方ターンでの戦闘時、その戦闘前、自ユニットのマジック+25%/ダメージ耐性+15%。\n2個の時：自ユニットの移動+1。\n味方ターンでの戦闘時、その戦闘前、自ユニットのマジック+30%/ダメージ耐性+20%、その戦闘後、敵ユニットのダメージ耐性-10%(1ターン)。",
+      "icon": "https://legeclo.wikiru.jp/attach2/E3839EE383B3E382B5E383BBE383A0E383BCE382B5_736B5F743330392E706E67.png"
+    },
+    "tags": [ "デバフ:ダメージ耐性" ],
+    "skills": [ "マネー・イズ・パワー", "ブラッディカーズ", "攻撃の加護", "目が眩むほどの財", "ヴァンフレイム", "黄金王の華やかなる進撃" ]
+  },
+  {
+    "name": "左慈",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E5B7A6E685885F69636F6E5F726575702E706E67.png",
+    "date": "2022/07/12",
+    "rarity": "SR",
+    "symbol": "ゼニス",
+    "class": "ソーサラー",
+    "damageType": "マジック",
+    "range": 2,
+    "move": 3,
+    "talent": {
+      "name": "愛の方術",
+      "desc": "近距離による戦闘時、その戦闘前、自ユニットのダメージ耐性+20%。\n味方ターン時、自ユニットのマジック+20%。",
+      "icon": "https://legeclo.wikiru.jp/attach2/E5B7A6E68588_736B5F743238362E706E67.png"
+    },
+    "tags": [],
+    "skills": [ "サンダーボルト", "ストーンブラスト", "防御の加護", "サンダーストーム", "フォトンベール", "アシッドレイン" ]
+  },
+  {
+    "name": "マスター・カロリナ",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E3839EE382B9E382BFE383BCE383BBE382ABE383ADE383AAE3838A5F69636F6E2E706E67.png",
+    "date": "2022/07/19",
+    "rarity": "SSR",
+    "symbol": "オリジン",
+    "class": "ランサー",
+    "damageType": "アタック",
+    "range": 1,
+    "move": 3,
+    "talent": {
+      "name": "全ての矛よ、今こそ貫け",
+      "desc": "自ユニットのHPが70%以上の時、自ユニットの移動+1。\n自身を中心とした範囲3マス以内の全ての味方ユニットの物理ダメージ耐性+15%。\n敵ターンでの戦闘時、その戦闘前、自ユニットのクリティカル率+20%、敵ユニットのディフェンスの15%分を無視して攻撃できる。\n「ランサー」クラスの全ての味方キャラの最大HP以外の全ステータス+10%。",
+      "icon": "https://legeclo.wikiru.jp/attach2/E3839EE382B9E382BFE383BCE383BBE382ABE383ADE383AAE3838A_736B5F743331302E706E67.png"
+    },
+    "tags": [ "クラスバフ:ランサー", "バフ:ダメージ耐性(物理)" ],
+    "skills": [ "必殺の時を待つ", "グッドレスト", "ラストスタンド", "強襲の導き", "破守", "手の平で踊り、穿たれよ" ]
+  },
+  {
+    "name": "ジャンヌ・ダルク(水着)",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E382B8E383A3E383B3E3838CE383BBE38380E383ABE382AF28E6B0B4E79D80295F69636F6E2E706E67.png",
+    "date": "2022/07/26",
+    "rarity": "SSR",
+    "symbol": "ゼニス",
+    "class": "ソルジャー",
+    "damageType": "アタック",
+    "range": 1,
+    "move": 3,
+    "talent": {
+      "name": "一夏の思い出",
+      "desc": "味方ターンでの戦闘時、その戦闘前、自ユニットのアタック+20%\n自身を中心とした範囲1マス以内に味方ユニットがいない時、自ユニットのディフェンス/レジスト+25%。\n戦闘後、自ユニットに「夏のロマンス」を1個付与する(4ターン/最大3個)、「夏のロマンス」1個につきクリティカル率+8%。",
+      "icon": "https://legeclo.wikiru.jp/attach2/E382B8E383A3E383B3E3838CE383BBE38380E383ABE382AF28E6B0B4E79D8029_736B5F743331322E706E67.png"
+    },
+    "tags": [],
+    "skills": [ "しゃ～！食べちゃうぞ～！", "ブラッディブレード", "マインドアイ", "夏限定聖女", "波乗り聖女の祈り", "砂埋めの刑" ]
+  },
+  {
+    "name": "アンドロメダ",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E382A2E383B3E38389E383ADE383A1E383805F69636F6E2E706E67.png",
+    "date": "2022/08/09",
+    "rarity": "SSR",
+    "symbol": "オリジン",
+    "class": "シューター",
+    "damageType": "アタック",
+    "range": 2,
+    "move": 3,
+    "talent": {
+      "name": "神に勝る美",
+      "desc": "自ユニットのアタック+25%。\n自ユニットのHPが75％以上の時、味方メインのスキル使用時の射程+1/スキル使用時の範囲+1/移動+2。\n自ユニットのHPが75%以下の時、自ユニットのスキル与ダメージ+30%。",
+      "icon": "https://legeclo.wikiru.jp/attach2/E382A2E383B3E38389E383ADE383A1E38380_736B5F743331332E706E67.png"
+    },
+    "tags": [ "移動+", "射程+", "範囲+" ],
+    "skills": [ "スーパーシュート", "めんどいからドカーンで", "アタックブースト", "一番痛いの撃っとくね", "キラーエスケープ", "イマドキの護身術" ]
+  },
+  {
+    "name": "マスター・エリノア",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E3839EE382B9E382BFE383BCE383BBE382A8E383AAE3838EE382A25F69636F6E2E706E67.png",
+    "date": "2022/08/23",
+    "rarity": "SSR",
+    "symbol": "ゼニス",
+    "class": "ソーサラー",
+    "damageType": "マジック",
+    "range": 2,
+    "move": 3,
+    "talent": {
+      "name": "その知、魔を統べし力なり",
+      "desc": "自ユニットの魔法与ダメージ+20%。\n自身を中心とした範囲3マス以内の全ての敵ユニットの魔法ダメージ耐性-10%。\n1度だけ、味方メインのHPが0になった時、戦闘不能にならず、自ユニットのメイン、サポートそれぞれのHPが最大HPの20%分回復し、自ユニットの与ダメージ+35%(1ターン)。\n「ソーサラー」クラスの全ての味方キャラの最大HP以外の全ステータス+10%。",
+      "icon": "https://legeclo.wikiru.jp/attach2/E3839EE382B9E382BFE383BCE383BBE382A8E383AAE3838EE382A2_736B5F743331342E706E67.png"
+    },
+    "tags": [ "死亡時復活", "クラスバフ:ソーサラー", "デバフ:ダメージ耐性(魔法)" ],
+    "skills": [ "シャドウフレア", "破壊の実験", "サンダーボルト", "愚者に分け与えし知", "デスサイズ", "魔手の抱擁" ]
+  },
+  {
+    "name": "犬山たまき",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E78AACE5B1B1E3819FE381BEE3818D5F69636F6E2E706E67.png",
+    "date": "2022/08/30",
+    "rarity": "SSR",
+    "symbol": "ナディア",
+    "class": "セイント",
+    "damageType": "アタック",
+    "range": 1,
+    "move": 3,
+    "talent": {
+      "name": "ご主人様、わんたま～！",
+      "desc": "味方ターンでの戦闘時、その戦闘前、自ユニットのアタック/与ダメージ+30%。\n敵ターンでの戦闘時、その戦闘前、自ユニットのディフェンス/レジスト+30%。\n行動終了時、自ユニットのメイン、サポートそれぞれのHPが最大HPの20%分回復する。",
+      "icon": "https://legeclo.wikiru.jp/attach2/E78AACE5B1B1E3819FE381BEE3818D_736B5F743331372E706E67.png"
+    },
+    "tags": [],
+    "skills": [ "連撃", "制御装置の真の力", "パーフェクトヒール", "配信の時間だよ！", "ブラッディブレード", "コラボ攻撃だ！" ]
+  },
+  {
+    "name": "アレクサンダー",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E382A2E383ACE382AFE382B5E383B3E38380E383BC5F69636F6E2E706E67.png",
+    "date": "2022/09/13",
+    "rarity": "SSR",
+    "symbol": "ゼニス",
+    "class": "ライダー",
+    "damageType": "アタック",
+    "range": 1,
+    "move": 5,
+    "talent": {
+      "name": "世界を征服せし軍",
+      "desc": "自身を中心とした範囲3マス以内に敵ユニットがいる時、自ユニットのアタック/ディフェンス+25%。\n自ユニットが戦陣兵のタレント範囲内にいる時、以下の効果を得る。\n戦闘前、自ユニットの与ダメージ/ダメージ耐性+25%。\n近距離による戦闘時、その戦闘後、自ユニットのメイン、サポートそれぞれのHPが最大HPの10%分回復する。",
+      "icon": "https://legeclo.wikiru.jp/attach2/E382A2E383ACE382AFE382B5E383B3E38380E383BC_736B5F743331382E706E67.png"
+    },
+    "tags": [],
+    "skills": [ "大王の号令", "コンビネーションアタック", "フィールドステップ", "蹂躙の刃", "征服王の指揮", "止まらぬ征服" ]
+  },
+  {
+    "name": "マスター・サフィー",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E3839EE382B9E382BFE383BCE383BBE382B5E38395E382A3E383BC5F69636F6E2E706E67.png",
+    "date": "2022/09/20",
+    "rarity": "SSR",
+    "symbol": "ナディア",
+    "class": "セイント",
+    "damageType": "マジック",
+    "range": 1,
+    "move": 3,
+    "talent": {
+      "name": "全ての闇を照らす光",
+      "desc": "自ユニットの魔法与ダメージ+25%。\n自身を中心とした周囲1マス以内に味方ユニットがいる時、自ユニットの移動+2。\n味方ターンでの戦闘時、その戦闘前、敵ユニットのレジスト-25%、更に戦闘後、敵ユニットのHPが50%以上の時、再行動できる(この再行動は発動してから1ターン毎に発動可能)。\n「セイント」クラスの全ての味方キャラの最大HP以外の全ステータス+10%。",
+      "icon": "https://legeclo.wikiru.jp/attach2/E3839EE382B9E382BFE383BCE383BBE382B5E38395E382A3E383BC_736B5F743332302E706E67.png"
+    },
+    "tags": [ "再行動", "再攻撃", "移動+", "クラスバフ:セイント" ],
+    "skills": [ "邪には害を、正には祝福を", "抗魔の光", "ブライトベル", "守護の光をここに", "福音", "闇を滅する力" ]
+  },
+  {
+    "name": "土方歳三",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E59C9FE696B9E6ADB3E4B8895F69636F6E2E706E67.png",
+    "date": "2022/09/27",
+    "rarity": "SSR",
+    "symbol": "ナディア",
+    "class": "アサシン",
+    "damageType": "アタック",
+    "range": 2,
+    "move": 3,
+    "talent": {
+      "name": "新選組、いざ参る",
+      "desc": "戦闘後、自ユニットに「誠の矜持」を1個付与する(4ターン/最大3個)、「誠の矜持」1個につき、アタック/クリティカル率+12%/ディフェンス-12%。\n自ユニットに付与されている「誠の矜持」の数に応じて以下の効果を得る。\n1個の時:戦闘前、自ユニットのクリティカルダメージ倍率+10%。\n2個の時:戦闘前、自ユニットのクリティカルダメージ倍率+20%、敵ユニットの物理ダメージ耐性-10%。\n3個の時:戦闘前、自ユニットのクリティカルダメージ倍率+30%、敵ユニットの物理ダメージ耐性-15%。",
+      "icon": "https://legeclo.wikiru.jp/attach2/E59C9FE696B9E6ADB3E4B889_736B5F743332312E706E67.png"
+    },
+    "tags": [],
+    "skills": [ "勝つための刃", "隊士よ、ここに集え！", "グリムフェイス", "精神的支柱", "オーバーフロー", "不屈の副長" ]
+  },
+  {
+    "name": "ドン・キホーテ",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E38389E383B3E383BBE382ADE3839BE383BCE383865F69636F6E2E706E67.png",
+    "date": "2022/09/27",
+    "rarity": "SR",
+    "symbol": "ゼニス",
+    "class": "ライダー",
+    "damageType": "アタック",
+    "range": 1,
+    "move": 5,
+    "talent": {
+      "name": "騎士の精神",
+      "desc": "自身を中心とした範囲２マス以内に味方ユニットがいないとき、自ユニットのアタック+25％。\n自身を中心とした範囲２マス以内に味方ユニットがいるとき、自ユニットのディフェンス+25％。",
+      "icon": "https://legeclo.wikiru.jp/attach2/E38389E383B3E383BBE382ADE3839BE383BCE38386_736B5F743332332E706E67.png"
+    },
+    "tags": [],
+    "skills": [ "ブレイクストライク", "シールドウォール", "ラッキープライズ", "ガードカウンター", "防御の加護", "コンビネーションアタック" ]
+  },
+  {
+    "name": "クー・フーリン(ハロウィン)",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E382AFE383BCE383BBE38395E383BCE383AAE383B328E3838FE383ADE382A6E382A3E383B3295F69636F6E2E706E67.png",
+    "date": "2022/10/11",
+    "rarity": "SSR",
+    "symbol": "ゼニス",
+    "class": "ソーサラー",
+    "damageType": "マジック",
+    "range": 2,
+    "move": 3,
+    "talent": {
+      "name": "戦魔仮装・万霊節",
+      "desc": "自ユニットの残りHPが多いほど、自ユニットのマジックが上がる(+5%～30%)。\nアクティブによる弱加効果が1個以上付与された敵ユニットと戦闘時、その戦闘前、自ユニットのクリティカル率/魔法与ダメージが上がる。\nアクティブによる弱化効果1個につき、クリティカル率+15%/魔法与ダメージ+10%(最大4個まで重複可能)。",
+      "icon": "https://legeclo.wikiru.jp/attach2/E382AFE383BCE383BBE38395E383BCE383AAE383B328E3838FE383ADE382A6E382A3E383B329_736B5F743332355F302E706E67.png"
+    },
+    "tags": [],
+    "skills": [ "マジックフィアー", "魔杖解放・祝祭ノ勧", "キラーエスケープ", "闇宴戦陣・霊攻自在", "サイクロン", "絶牙影撃・夢幻滅砕" ]
+  },
+  {
+    "name": "マスター・メビウス",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E3839EE382B9E382BFE383BCE383BBE383A1E38393E382A6E382B95F69636F6E2E706E67.png",
+    "date": "2022/10/18",
+    "rarity": "SSR",
+    "symbol": "オリジン",
+    "class": "シューター",
+    "damageType": "アタック",
+    "range": 2,
+    "move": 3,
+    "talent": {
+      "name": "その矢、全ての標的を逃さず",
+      "desc": "自ユニットの与ダメージ+20%。\n隣接していない敵ユニットとの戦闘前、1マス離れる毎に自ユニットのクリティカル率/クリティカルダメージ倍率+13%(最大39%)。\n遠距離による戦闘時、敵ユニットの物理ダメージ耐性-15%、その戦闘後、味方メインが与えたダメージの15%分HPを回復する。\n単体攻撃スキルを使用した戦闘時、その戦闘前、敵ユニットに「1度だけ味方メインのHPが0になった時、自身を中心とした範囲3マス以内の全ての味方ユニットにマスター・メビウスのアタックの2倍の固定ダメージを与える」効果(1ターン)を付与する。\n「シューター」クラスの全ての味方キャラの最大HP以外の全ステータス+10%。",
+      "icon": "https://legeclo.wikiru.jp/attach2/E3839EE382B9E382BFE383BCE383BBE383A1E38393E382A6E382B9_736B5F743332362E706E67.png"
+    },
+    "tags": [ "クラスバフ:シューター", "与ダメ回復" ],
+    "skills": [ "幕引きの狙撃", "スナイプ", "クリティカルキラー", "斉射用意", "オーバーフロー", "丸裸にしてやる！" ]
+  },
+  {
+    "name": "ジークフリート(1stアニバーサリー)",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E382B8E383BCE382AFE38395E383AAE383BCE3838828317374E382A2E3838BE38390E383BCE382B5E383AAE383BC295F69636F6E2E706E67.png",
+    "date": "2022/10/25",
+    "rarity": "SSR",
+    "symbol": "ゼニス",
+    "class": "セイント",
+    "damageType": "アタック",
+    "range": 1,
+    "move": 3,
+    "talent": {
+      "name": "これまでの冒険を祝して",
+      "desc": "自ユニットのアタック+30%/ダメージ耐性+10%。\n戦闘前、自ユニットのHPが50%以上の時、自ユニットの与ダメージ/ディフェンス/レジスト+25%。\n敵ターンで近距離による戦闘時、2回攻撃できる。\n行動終了時、現在HP割合が最も低い味方ユニットのメイン、サポートそれぞれのHPが最大HPの20%分回復する。",
+      "icon": "https://legeclo.wikiru.jp/attach2/E382B8E383BCE382AFE38395E383AAE383BCE3838828317374E382A2E3838BE38390E383BCE382B5E383AAE383BC29_736B5F743332372E706E67.png"
+    },
+    "tags": [ "2回攻撃" ],
+    "skills": [ "宴を慶する刃", "アニバーサリー・ハート", "チアダンス", "パーティー・ナイト", "エスコート", "ゲスト以外はお断り" ]
+  },
+  {
+    "name": "ジャンヌ・ダルク(1stアニバーサリー)",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E382B8E383A3E383B3E3838CE383BBE38380E383ABE382AF28317374E382A2E3838BE38390E383BCE382B5E383AAE383BC295F69636F6E2E706E67.png",
+    "date": "2022/10/25",
+    "rarity": "SR",
+    "symbol": "ナディア",
+    "class": "セイント",
+    "damageType": "アタック",
+    "range": 1,
+    "move": 3,
+    "talent": {
+      "name": "共に歩んだ1年の重み",
+      "desc": "自身を中心とした範囲2マス以内に味方ユニットがいる時、味方ターンでの戦闘時、その戦闘前、自ユニットのアタック/与ダメージ+25%。\n行動終了時、自身を中心とした範囲2マス以内の全ての味方ユニットのディフェンス/レジスト+10%(1ターン)。",
+      "icon": "https://legeclo.wikiru.jp/attach2/E382B8E383A3E383B3E3838CE383BBE38380E383ABE382AF28317374E382A2E3838BE38390E383BCE382B5E383AAE383BC29_736B5F743332382E706E67.png"
+    },
+    "tags": [ "バフ:ディフェンス", "バフ:レジスト" ],
+    "skills": [ "ブレイクストライク", "グッドレスト", "リジェネレーション", "アサルトグレース", "デュエルオーラ", "ブラッディブレード" ]
+  },
+  {
+    "name": "太公望",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E5A4AAE585ACE69C9B5F69636F6E2E706E67.png",
+    "date": "2022/11/08",
+    "rarity": "SSR",
+    "symbol": "オリジン",
+    "class": "エアリアル",
+    "damageType": "アタック",
+    "range": 1,
+    "move": 5,
+    "talent": {
+      "name": "封神の執行者",
+      "desc": "自ユニットのスキル与ダメージ+25%。\n味方ターンでの戦闘時、自ユニットの最大HP以外の全ステータス+15%、その戦闘後、味方メインが与えたダメージの10%分を回復する。\n味方ターンで敵ユニットに自身がダメージを与えた時、自身を中心とした周囲3マス以内の全ての敵ユニットのディフェンス/レジスト-15%(2ターン)。",
+      "icon": "https://legeclo.wikiru.jp/attach2/E5A4AAE585ACE69C9B_736B5F743332392E706E67.png"
+    },
+    "tags": [ "与ダメ回復", "デバフ:ディフェンス", "デバフ:レジスト" ],
+    "skills": [ "ライトニングヒット", "正義は勝つ！", "シャープネス", "釣り人の軍略", "グッドレスト", "封神演舞" ]
+  },
+  {
+    "name": "マスター・イェンナ",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E3839EE382B9E382BFE383BCE383BBE382A4E382A7E383B3E3838A5F69636F6E2E706E67.png",
+    "date": "2022/11/15",
+    "rarity": "SSR",
+    "symbol": "ゼニス",
+    "class": "アサシン",
+    "damageType": "アタック",
+    "range": 2,
+    "move": 3,
+    "talent": {
+      "name": "全ての闇を支配せし刃",
+      "desc": "自ユニットのクリティカル/クリティカルダメージ倍率+20%。\n戦闘中、クリティカルが発動した時、その戦闘後、敵ユニットのダメージ耐性-10%(1ターン)、自ユニットの移動+1(1ターン)。\n行動終了時、範囲2マス以内に敵ユニットがいる時、自ユニットの与ダメージ+25%(1ターン)。\n「アサシン」クラスの全ての味方キャラの最大HP以外の全ステータス+10%。",
+      "icon": "https://legeclo.wikiru.jp/attach2/E3839EE382B9E382BFE383BCE383BBE382A4E382A7E383B3E3838A_736B5F743333302E706E67.png"
+    },
+    "tags": [ "クラスバフ:アサシン", "デバフ:ダメージ耐性" ],
+    "skills": [ "超隠密行動", "潤沢な暗器", "ヒット＆アウェイ", "裏の功労者", "スティール", "死角からの強撃" ]
+  },
+  {
+    "name": "ナイチンゲール(クリスマス)",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E3838AE382A4E38381E383B3E382B2E383BCE383AB28E382AFE383AAE382B9E3839EE382B9295F69636F6E2E706E67.png",
+    "date": "2022/11/29",
+    "rarity": "SSR",
+    "symbol": "ナディア",
+    "class": "ライダー",
+    "damageType": "アタック",
+    "range": 1,
+    "move": 5,
+    "talent": {
+      "name": "白雪の天使",
+      "desc": "自ユニットのHPが60％以上の時、自ユニットのアタック＋30％、更に味方ターンでの戦闘時、その戦闘前、自ユニットが敵ユニットのディフェンスの10％を無視して攻撃できる。\n自ユニットのHPが60％以下の時、ディフェンス＋30％、更に敵ターンでの戦闘時、その戦闘前、敵ユニットのアタック/マジック－10％。\n自身がアクティブスキルでダメージを与えた時、再行動できる（この再行動は発動してから2ターン毎に再発動可能）。",
+      "icon": "https://legeclo.wikiru.jp/attach2/E3838AE382A4E38381E383B3E382B2E383BCE383AB28E382AFE383AAE382B9E3839EE382B929_736B5F743333312E706E67.png"
+    },
+    "tags": [ "再行動", "再攻撃" ],
+    "skills": [ "一撃突破", "悪人に罰を善人に癒しを", "クリティカルアーマー", "雪明りの貴婦人", "スプリントグレース", "天使の氷笑" ]
+  },
+  {
+    "name": "アナスタシア(クリスマス)",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E382A2E3838AE382B9E382BFE382B7E382A228E382AFE383AAE382B9E3839EE382B9295F69636F6E2E706E67.png",
+    "date": "2022/12/13",
+    "rarity": "SSR",
+    "symbol": "オリジン",
+    "class": "ソルジャー",
+    "damageType": "マジック",
+    "range": 1,
+    "move": 3,
+    "talent": {
+      "name": "聖夜の皇女",
+      "desc": "自身のマジックにアタック(装備を含む基本ステータス)の20％を加算する。\n自ユニットの残りHPが多いほど、自ユニットのマジック/クリティカル率/クリティカルダメージ倍率が上がる(+6%～+30%)。",
+      "icon": "https://legeclo.wikiru.jp/attach2/E382A2E3838AE382B9E382BFE382B7E382A228E382AFE383AAE382B9E3839EE382B929_736B5F743333322E706E67.png"
+    },
+    "tags": [ "異種攻撃タイプ" ],
+    "skills": [ "プレゼント袋フルスイング", "聖夜の祈り", "防御の加護", "サンタ皇女の奮闘！", "チアダンス", "二人分のプレゼント！" ]
+  },
+  {
+    "name": "スネグーラチカ",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E382B9E3838DE382B0E383BCE383A9E38381E382AB5F69636F6E2E706E67.png",
+    "date": "2022/12/20",
+    "rarity": "SSR",
+    "symbol": "オリジン",
+    "class": "ソーサラー",
+    "damageType": "マジック",
+    "range": 2,
+    "move": 3,
+    "talent": {
+      "name": "悠久の雪うさぎ",
+      "desc": "自ユニットの魔法与ダメージ+20％。\n単体攻撃スキル使用時、自ユニットの範囲スキル与ダメージ+30%(1ターン)。\n範囲スキル使用時、自ユニットのマジック+25%(1ターン)。\n敵ユニットを倒した時、再行動できる(この再行動は発動してから2ターン毎に発動可能)。",
+      "icon": "https://legeclo.wikiru.jp/attach2/E382B9E3838DE382B0E383BCE383A9E38381E382AB_736B5F743333332E706E67.png"
+    },
+    "tags": [ "再行動(敵撃破時)", "再攻撃(敵撃破時)" ],
+    "skills": [ "シャドウフレア", "冬精霊の訪れ", "マジックフィアー", "リトルマロース", "デスサイズ", "集まれ雪うさぎ！" ]
+  },
+  {
+    "name": "沖田総司(お正月)",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E6B296E794B0E7B78FE58FB828E3818AE6ADA3E69C88295F69636F6E2E706E67.png",
+    "date": "2022/12/27",
+    "rarity": "SSR",
+    "symbol": "ゼニス",
+    "class": "ライダー",
+    "damageType": "アタック",
+    "range": 1,
+    "move": 5,
+    "talent": {
+      "name": "うさぎ巫女の舞",
+      "desc": "味方ターンでの戦闘時、その戦闘前、自ユニットのアタック/ディフェンス+25%。\n戦闘後、再び移動することができる。\n自身がアクティブスキルでダメージを与えた時、自ユニットの与ダメージ+15%(3ターン/最大2回まで重複可能)。アクティブスキルで敵ユニットを倒した時、そのスキルのクールタイム-1。",
+      "icon": "https://legeclo.wikiru.jp/attach2/E6B296E794B0E7B78FE58FB828E3818AE6ADA3E69C8829_736B5F743333342E706E67.png"
+    },
+    "tags": [ "再移動", "CT減(自身)" ],
+    "skills": [ "跳兎剣", "連撃", "デュエルオーラ", "兎神信仰", "オーバーフロー", "凜と響くは巫女鈴の音" ]
+  },
+  {
+    "name": "卑弥呼",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E58D91E5BCA5E591BC5F69636F6E2E706E67.png",
+    "date": "2023/01/10",
+    "rarity": "SSR",
+    "symbol": "ゼニス",
+    "class": "セイント",
+    "damageType": "マジック",
+    "range": 2,
+    "move": 3,
+    "talent": {
+      "name": "導きの占い",
+      "desc": "自身を中心とした範囲5マス以内の全ての味方ユニットの与ダメージ+15%/ダメージ耐性+8%/被治療効果+20%。\n味方ターン時、自ユニットのマジック+30%。\nスキル使用時、現在HP割合が最も低い味方ユニットのHPをスキル使用者のマジックの2.5倍回復し、「戦闘後、自ユニットのメイン、サポートそれぞれのHPが最大HPの15%分回復する」の効果(2ターン)を付与する。",
+      "icon": "https://legeclo.wikiru.jp/attach2/E58D91E5BCA5E591BC_736B5F743333352E706E67.png"
+    },
+    "tags": [ "CT減(味方)", "バフ:与ダメージ", "バフ:ダメージ耐性", "バフ:被治療効果", "バフ:リジェネ" ],
+    "skills": [ "チアダンス", "本日のラッキーカラー！", "メンタルグレース", "みんなの幸せの為に", "アサルトクライシス", "本日のラッキーアイテム！" ]
+  },
+  {
+    "name": "アモン",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E382A2E383A2E383B35F69636F6E2E706E67.png",
+    "date": "2023/01/17",
+    "rarity": "SSR",
+    "symbol": "ナディア",
+    "class": "ソルジャー",
+    "damageType": "アタック",
+    "range": 1,
+    "move": 3,
+    "talent": {
+      "name": "心強き共闘",
+      "desc": "自ユニットのアタック+25%。\n1度だけ、味方メインのHPが0になった時、戦闘不能にならず、自ユニットのメイン、サポートそれぞれのHPが最大HPの50%分回復する。\n自ユニットのHPが50%以上の時、スキル与ダメージ＋30%/クリティカル率＋30%/クリティカルダメージ倍率＋15%/ダメージ耐性＋20%。",
+      "icon": "https://legeclo.wikiru.jp/attach2/E382A2E383A2E383B3_736B5F743333362E706E67.png"
+    },
+    "tags": [ "死亡時復活" ],
+    "skills": [ "グッドレスト", "折れない剣", "オーバーフロー", "ジンの収束", "ブラッディブレード", "悪魔の剣技" ]
+  },
+  {
+    "name": "ハンムラビ",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E3838FE383B3E383A0E383A9E383935F69636F6E2E706E67.png",
+    "date": "2023/01/24",
+    "rarity": "SSR",
+    "symbol": "オリジン",
+    "class": "ソーサラー",
+    "damageType": "マジック",
+    "range": 2,
+    "move": 3,
+    "talent": {
+      "name": "法典制定",
+      "desc": "自ユニットの魔法与ダメージ+20%。\n自身を中心とした範囲3マス以内の全ての味方ユニットのマジック/スキル与ダメージ/クリティカル率+10%。\n敵ターンでの戦闘時、その戦闘前、自ユニットのダメージ耐性+10%。\n戦闘後、自ユニットに「対等な存在」を1個付与する(3ターン/最大3個)、「対等な存在」1個につきマジック/スキル与ダメージ/クリティカル率+10%。",
+      "icon": "https://legeclo.wikiru.jp/attach2/E3838FE383B3E383A0E383A9E38393_736B5F743333372E706E67.png"
+    },
+    "tags": [ "バフ:マジック", "バフ:与ダメージ(スキル)", "バフ:クリティカル率" ],
+    "skills": [ "デスサイズ", "民の守護者", "クリティカルアーマー", "法に従え", "マインドアイ", "目には目を、歯には歯を" ]
+  },
+  {
+    "name": "",
+    "icon": "________",
+    "date": "",
+    "rarity": "SSR",
+    "symbol": "____",
+    "class": "____",
+    "damageType": "____",
+    "range": 0,
+    "move": 0,
+    "talent": {
+      "name": "____",
+      "desc": "____",
+      "icon": "____"
+    },
+    "tags": [ "___" ],
+    "skills": [
+      {
+        "name": "____",
+        "desc": "____",
+        "icon": "____",
+        "skillType": "____",
+        "skillTags": [ "____" ],
+        "tags": [ "____" ]
+      },
+      {
+        "name": "____",
+        "desc": "____",
+        "icon": "____",
+        "skillTags": [ "____", "____" ],
+        "tags": [ "____" ]
+      },
+      {
+        "name": "____",
+        "desc": "____",
+        "icon": "____",
+        "skillType": "____",
+        "skillTags": [ "____" ],
+        "tags": [ "____" ]
+      },
+      {
+        "name": "____",
+        "desc": "____",
+        "icon": "____",
+        "skillType": "____",
+        "skillTags": [ "____" ],
+        "tags": [ "____" ]
+      },
+      {
+        "name": "____",
+        "desc": "____",
+        "icon": "____",
+        "skillType": "____",
+        "skillTags": [ "____" ],
+        "tags": [ "____" ]
+      },
+      {
+        "name": "____",
+        "desc": "____",
+        "icon": "____",
+        "skillType": "____",
+        "skillTags": [ "____" ],
+        "tags": [ "____" ]
+      }
+    ]
+  }
+]
