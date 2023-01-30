@@ -429,7 +429,8 @@
     "icon": "https://legeclo.wikiru.jp/attach2/E382BDE383ADE383A2E383B3_736B5F613036312E706E67.png",
     "skillType": "アクティブ",
     "skillTags": [ "補助" ],
-    "tags": [ "トークン設置" ]
+    "tags": [ "トークン設置", "バフ解除", "デバフ:アタック", "デバフ:マジック" ],
+    "note": "＊デバフは魔術剣兵のスキルによるもの"
   },
   {
     "name": "シャドウフレア",
@@ -1044,8 +1045,8 @@
     "desc": "行動済みの味方ユニット1隊を再び行動させる。更に、対象のメイン、サポートそれぞれのHPを最大HPの10%分回復する。",
     "icon": "https://legeclo.wikiru.jp/attach2/E3838AE382A4E38381E383B3E382B2E383BCE383AB_736B5F613139312E706E67.png",
     "skillType": "アクティブ",
-    "skillTags": [ "回復(範囲)", "補助" ],
-    "tags": [ "味方再行動" ]
+    "skillTags": [ "回復(単体)", "補助" ],
+    "tags": [ "再行動(味方)", "再攻撃(味方)" ]
   },
   {
     "name": "フォーチュンギフト",
@@ -1709,7 +1710,8 @@
     "icon": "https://legeclo.wikiru.jp/attach2/E3839EE383B3E382B5E383BBE383A0E383BCE382B5_736B5F613238322E706E67.png",
     "skillType": "アクティブ",
     "skillTags": [ "補助" ],
-    "tags": [ "トークン設置", "再行動", "デバフ:ランダム" ]
+    "tags": [ "トークン設置", "再行動", "デバフ:ランダム" ],
+    "note": "＊デバフはゴールデンボックスによるもの"
   },
   {
     "name": "ブラッディカーズ",
@@ -1877,7 +1879,7 @@
     "icon": "https://legeclo.wikiru.jp/attach2/E382A2E383ACE382AFE382B5E383B3E38380E383BC_736B5F613239372E706E67.png",
     "skillType": "アクティブ",
     "skillTags": [ "補助" ],
-    "tags": [ "トークン設置", "バフ:アタック", "バフ:マジック", "バフ:ディフェンス", "バフ:レジスト", "バフ:テクニック" ]
+    "tags": [ "トークン設置" ]
   },
   {
     "name": "蹂躙の刃",
@@ -2117,7 +2119,7 @@
     "icon": "https://legeclo.wikiru.jp/attach2/E3838AE382A4E38381E383B3E382B2E383BCE383AB28E382AFE383AAE382B9E3839EE382B929_736B5F613332352E706E67.png",
     "skillType": "アクティブ",
     "skillTags": [ "補助" ],
-    "tags": [ "味方再行動" ]
+    "tags": [ "再行動(味方)", "再攻撃(味方)" ]
   },
   {
     "name": "天使の氷笑",

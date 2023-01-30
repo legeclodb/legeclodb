@@ -2,61 +2,77 @@
   <div class="root">
     <div class="menu" :class="{ 'hidden': !showMenu }">
       <div class="menu-content">
-        <div class="menu-widgets flex">
-          <div class="widget">
-            <b-button-group size="sm" id="class_selector">
-              <b-button v-for="(c, i) in classFilter" :key="i" :pressed.sync="c.state" variant="outline-secondary">
-                <b-img-lazy :src="iconTable[classes[i]]" height="25" />
-              </b-button>
-            </b-button-group>
-          </div>
-          <div class="widget">
-            <b-button-group size="sm" id="symbol_selector">
-              <b-button v-for="(c, i) in symbolFilter" :key="i" :pressed.sync="c.state" variant="outline-secondary">
-                <b-img-lazy :src="iconTable[symbols[i]]" height="25" />
-              </b-button>
-            </b-button-group>
-          </div>
-          <div class="widget">
-            <b-button-group size="sm" id="attack_type_selector">
-              <b-button v-for="(c, i) in damageTypeFilter" :key="i" :pressed.sync="c.state" variant="outline-secondary">
-                <b-img-lazy :src="iconTable[damageTypes[i]]" height="25" />
-              </b-button>
-            </b-button-group>
-          </div>
-          <div class="widget">
-            <b-button-group size="sm" id="rareiry_selector">
-              <b-button v-for="(c, i) in rarityFilter" :key="i" :pressed.sync="c.state" variant="outline-secondary">
-                <b-img-lazy :src="iconTable[rarities[i]]" height="25" />
-              </b-button>
-            </b-button-group>
+        <div class="border">
+          <div class="menu-widgets flex">
+            <div class="widget">
+              <b-button-group size="sm" id="class_selector">
+                <b-button v-for="(c, i) in classFilter" :key="i" :pressed.sync="c.state" variant="outline-secondary">
+                  <b-img-lazy :src="iconTable[classes[i]]" height="25" />
+                </b-button>
+              </b-button-group>
+            </div>
+            <div class="widget">
+              <b-button-group size="sm" id="symbol_selector">
+                <b-button v-for="(c, i) in symbolFilter" :key="i" :pressed.sync="c.state" variant="outline-secondary">
+                  <b-img-lazy :src="iconTable[symbols[i]]" height="25" />
+                </b-button>
+              </b-button-group>
+            </div>
+            <div class="widget">
+              <b-button-group size="sm" id="attack_type_selector">
+                <b-button v-for="(c, i) in damageTypeFilter" :key="i" :pressed.sync="c.state" variant="outline-secondary">
+                  <b-img-lazy :src="iconTable[damageTypes[i]]" height="25" />
+                </b-button>
+              </b-button-group>
+            </div>
+            <div class="widget">
+              <b-button-group size="sm" id="rareiry_selector">
+                <b-button v-for="(c, i) in rarityFilter" :key="i" :pressed.sync="c.state" variant="outline-secondary">
+                  <b-img-lazy :src="iconTable[rarities[i]]" height="25" />
+                </b-button>
+              </b-button-group>
+            </div>
           </div>
         </div>
-        <div class="menu-widgets flex">
-          <div class="widget">
-            <span>タレント / スキル検索</span>
+
+        <div class="border">
+          <div class="menu-widgets flex">
+            <div class="widget">
+              <span>タレント / スキル検索</span>
+            </div>
+            <div class="widget">
+              <b-button-group size="sm" id="skill_type_selector">
+                <b-button v-for="(c, i) in skillTypeFilter" :key="i" :pressed.sync="c.state" variant="outline-secondary">
+                  {{ bufTypes[i] }}
+                </b-button>
+              </b-button-group>
+            </div>
+            <div class="widget">
+              <input v-model="tagSearchPattern" type="text" size="sm" placeholder="パターン (正規表現可)" />
+            </div>
           </div>
-          <div class="widget">
-            <b-button-group size="sm" id="skill_type_selector">
-              <b-button v-for="(c, i) in skillTypeFilter" :key="i" :pressed.sync="c.state" variant="outline-secondary">
-                {{ bufTypes[i] }}
-              </b-button>
-            </b-button-group>
-          </div>
-          <div class="widget">
-            <input v-model="tagSearchPattern" type="text" size="sm" placeholder="パターン (正規表現可)" />
-          </div>
-          <div class="widget">
-            <b-button variant="secondary" size="sm" @click="tagSearchPattern='^バフ:.+'">バフ系</b-button>
-            <b-button variant="secondary" size="sm" @click="tagSearchPattern='^デバフ:.+'">デバフ系</b-button>
-          </div>
-          <div class="widget">
-            <span>表示</span>
-            <b-dropdown right :text="showDetailTypes[showDetail]" size="sm" id="detail_selector">
-              <b-dropdown-item v-for="(c, i) in showDetailTypes" :key="i" @click="showDetail=i">
-                {{ showDetailTypes[i] }}
-              </b-dropdown-item>
-            </b-dropdown>
+          
+          <div class="menu-widgets flex">
+            <div class="widget">
+              <b-button variant="secondary" size="sm" @click="tagSearchPattern='^バフ:.+'">バフ系</b-button>
+            </div>
+            <div class="widget">
+              <b-button variant="secondary" size="sm" @click="tagSearchPattern='^デバフ:.+'">デバフ系</b-button>
+            </div>
+            <div class="widget">
+              <b-button variant="secondary" size="sm" @click="tagSearchPattern='^無効化:.+'">無効化系</b-button>
+            </div>
+            <div class="widget">
+              <b-button variant="secondary" size="sm" @click="tagSearchPattern='^無効化:.+'">その他</b-button>
+            </div>
+            <div class="widget">
+              <span>表示</span>
+              <b-dropdown right :text="showDetailTypes[showDetail]" size="sm" id="detail_selector">
+                <b-dropdown-item v-for="(c, i) in showDetailTypes" :key="i" @click="showDetail=i">
+                  {{ showDetailTypes[i] }}
+                </b-dropdown-item>
+              </b-dropdown>
+            </div>
           </div>
         </div>
       </div>
@@ -69,7 +85,7 @@
               <b-img-lazy :src="chr.icon" />
             </div>
             <div class="detail" v-show="showDetail >= 1">
-              <div class="info" v-show="showDetail >= 1">
+              <div class="info">
                 <h5>{{ chr.name }}</h5>
                 <b-img-lazy :src="iconTable[chr.class]" height="25" />
                 <b-img-lazy :src="iconTable[chr.symbol]" height="25" />
@@ -77,18 +93,18 @@
                 <b-img-lazy :src="iconTable[chr.rarity]" height="25" />
                 <b-link :href="'https://legeclo.wikiru.jp/?' + chr.name">Wiki</b-link>
               </div>
-              <div class="talent" :class="{ 'highlighted': isTalentHighlighted(chr) }" v-show="showDetail >= 1">
+              <div class="talent" :class="{ 'highlighted': isTalentHighlighted(chr) }">
                 <div class="flex">
                   <div class="icon">
                     <b-img-lazy :src="chr.talent.icon" with="50" height="50" />
                   </div>
                   <div class="desc">
                     <h5>{{ chr.talent.name }}</h5>
-                    <p v-html="descToHtml(chr.talent.desc)"></p>
+                    <p v-html="descToHtml(chr.talent)"></p>
                   </div>
                 </div>
-                <div class="tags" v-show="showDetail >= 3">
-                  <b-badge class="tag" :key="i" v-for="(tag, i) in chr.tags" variant="info" pill @click="setTagSearchPattern(tag)">{{ tag }}</b-badge>
+                <div class="tags" v-show="showDetail >= 2">
+                  <b-badge class="tag" :key="i" v-for="(tag, i) in chr.talent.tags" variant="info" pill @click="setTagSearchPattern(tag)">{{ tag }}</b-badge>
                 </div>
               </div>
               <div class="skills" v-show="showDetail >= 2">
@@ -100,10 +116,10 @@
                       </div>
                       <div class="desc">
                         <h6>{{ skill.name }}</h6>
-                        <p v-html="descToHtml(skill.desc)"></p>
+                        <p v-html="descToHtml(skill)"></p>
                       </div>
                     </div>
-                    <div class="tags" v-show="showDetail >= 3">
+                    <div class="tags" v-show="showDetail >= 2">
                       <b-badge class="tag" :key="i" v-for="(tag, i) in skill.tags" variant="info" pill @click="setTagSearchPattern(tag)">{{ tag }}</b-badge>
                     </div>
                   </div>
@@ -166,7 +182,6 @@ export default {
         "アイコン",
         "簡易",
         "詳細",
-        "完全",
       ],
 
       iconTable: {
@@ -194,7 +209,7 @@ export default {
       showMenu: true,
       lastScrollPosition: 0,
 
-      showDetail: 3,
+      showDetail: 2,
       
       symbolFilter: [
         { state: false },
@@ -326,7 +341,7 @@ export default {
         return false;
       }
       if (!this.filterEnabled(this.skillTypeFilter) || this.skillTypeFilter[0].state) {
-        if (this.matchTags(chr.tags, re)) {
+        if (this.matchTags(chr.talent.tags, re)) {
           return true;
         }
       }
@@ -369,8 +384,12 @@ export default {
       return ok;
     },
 
-    descToHtml(desc) {
-      return desc.replaceAll("\n", "<br/>");
+    descToHtml(item) {
+      let r = item.desc.replaceAll("\n", "<br/>");
+      if (item.note) {
+        r += "<br /><span style='color: rgb(200, 200, 200);'>" + item.note.replaceAll("\n", "<br/>") + "</span>";
+      }
+      return r;
     },
 
     setupDB() {
@@ -399,7 +418,6 @@ export default {
         chr.rarityId = this.rarities.findIndex(v => v == chr.rarity);
         chr.damageTypeId = this.damageTypes.findIndex(v => v == chr.damageType);
 
-        chr.tags = new Set(chr.tags);
         for (let i = 0; i < chr.skills.length; ++i) {
           let skill = this.mainSkills.get(chr.skills[i]);
           if (!skill) {
@@ -407,10 +425,6 @@ export default {
           }
           this.addUser(skill, chr);
           chr.skills[i] = skill;
-
-          //for (let tag of skill.tags) {
-          //  chr.tags.add(tag);
-          //}
         }
       }
       this.setupCompleted = true;
@@ -521,9 +535,11 @@ div.menu-content {
 }
 
 .menu-widgets {
-  margin: 5px;
-  padding: 5px;
+  margin: 3px;
+  padding: 3px;
+}
 
+.border {
   border: 1px solid rgba(0, 0, 0, 0.2);
   border-radius: 0.3rem;
   background: white;
@@ -542,6 +558,9 @@ div.content {
   margin-left: auto;
   margin-right: auto;
   width: 1000px;
+  
+  display: flex;
+  flex-wrap: wrap;
 }
 
 div.content p {
@@ -550,7 +569,7 @@ div.content p {
 
 div.character {
   padding: 3px;
-  margin: 10px 0px 10px 0px;
+  margin: 5px;
 
   border: 1px solid rgba(0, 0, 0, 0.2);
   border-radius: 0.3rem;
@@ -576,6 +595,7 @@ div.portrait {
 
 div.detail {
   flex: 2;
+  width: 880px;
 }
 
 div.flex {
