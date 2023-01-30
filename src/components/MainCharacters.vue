@@ -24,22 +24,22 @@
             <div class="menu-widgets flex">
               <div class="widget">
                 <b-dropdown text="バフ系" size="sm">
-                  <b-dropdown-item @click="tagSearchPattern='^バフ:.+'">アタック</b-dropdown-item>
+                  <b-dropdown-item v-for="(t, i) in tagsBuff" :key="i" @click="setTagSearchPattern(t)">{{t}}</b-dropdown-item>
                 </b-dropdown>
               </div>
               <div class="widget">
                 <b-dropdown text="デバフ系" size="sm">
-                  <b-dropdown-item @click="tagSearchPattern='^デバフ:.+'">アタック</b-dropdown-item>
+                  <b-dropdown-item v-for="(t, i) in tagsDebuff" :key="i" @click="setTagSearchPattern(t)">{{t}}</b-dropdown-item>
                 </b-dropdown>
               </div>
               <div class="widget">
                 <b-dropdown text="無効化系" size="sm">
-                  <b-dropdown-item @click="tagSearchPattern='^デバフ:.+'">アタック</b-dropdown-item>
+                  <b-dropdown-item v-for="(t, i) in tagsResist" :key="i" @click="setTagSearchPattern(t)">{{t}}</b-dropdown-item>
                 </b-dropdown>
               </div>
               <div class="widget">
                 <b-dropdown text="その他" size="sm">
-                  <b-dropdown-item @click="tagSearchPattern='^デバフ:.+'">アタック</b-dropdown-item>
+                  <b-dropdown-item v-for="(t, i) in tagsOther" :key="i" @click="setTagSearchPattern(t)">{{t}}</b-dropdown-item>
                 </b-dropdown>
               </div>
               <div class="widget">
@@ -92,7 +92,7 @@
           <div class="border">
             <div class="menu-widgets flex">
               <div class="widget">
-                <h6>設定</h6>
+                <h6>設定など</h6>
               </div>
             </div>
             <div class="menu-widgets flex">
@@ -275,6 +275,11 @@ export default {
         { state: false },
       ],
       tagSearchPattern: "",
+
+      tagsBuff: new Set(),
+      tagsDebuff: new Set(),
+      tagsResist: new Set(),
+      tagsOther: new Set(),
     };
   },
 
@@ -441,6 +446,7 @@ export default {
       }
       this.mainSkills = tmpSkillMap;
 
+      let tags = new Set();
       let idSeed = 0;
       for (let chr of this.mainCharacters) {
         chr.id = ++idSeed;
@@ -448,6 +454,8 @@ export default {
         chr.classId = this.classes.findIndex(v => v == chr.class);
         chr.rarityId = this.rarities.findIndex(v => v == chr.rarity);
         chr.damageTypeId = this.damageTypes.findIndex(v => v == chr.damageType);
+        for (const t of chr.talent.tags)
+          tags.add(t);
 
         for (let i = 0; i < chr.skills.length; ++i) {
           let skill = this.mainSkills.get(chr.skills[i]);
@@ -456,8 +464,27 @@ export default {
           }
           this.addUser(skill, chr);
           chr.skills[i] = skill;
+          for (const t of skill.tags)
+            tags.add(t);
         }
       }
+
+      tags = Array.from(tags.values()).sort();
+      for (let t of tags) {
+        let p = t.lastIndexOf('(');
+        if (p != -1)
+          t = t.slice(0, p);
+
+        if (t.match(/^バフ:/))
+          this.tagsBuff.add(t);
+        else if (t.match(/^デバフ:/))
+          this.tagsDebuff.add(t);
+        else if (t.match(/^無効化:/))
+          this.tagsResist.add(t);
+        else 
+          this.tagsOther.add(t);
+      }
+
       this.setupCompleted = true;
     },
 

@@ -1054,7 +1054,7 @@
     "icon": "https://legeclo.wikiru.jp/attach2/E3838AE382A4E38381E383B3E382B2E383BCE383AB_736B5F613139322E706E67.png",
     "skillType": "アクティブ",
     "skillTags": [ "補助" ],
-    "tags": [ "バフ:アタック", "バフ:ディフェンス", "無効化:弱化" ]
+    "tags": [ "バフ:アタック", "バフ:ディフェンス", "無効化:弱化無効" ]
   },
   {
     "name": "看護の極意",
