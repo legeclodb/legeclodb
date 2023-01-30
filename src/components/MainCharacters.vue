@@ -1,45 +1,64 @@
 <template>
   <div class="root">
-    <div class="menu" :class="{ 'menu-hidden': !showMenu }">
-      <div class="menu-widgets">
-        <b-button-group size="sm" id="detail_selector">
-          <b-button variant="outline-secondary" @click="showDetail=0">簡易</b-button>
-          <b-button variant="outline-secondary" @click="showDetail=1">+タレント</b-button>
-          <b-button variant="outline-secondary" @click="showDetail=2">+スキル</b-button>
-        </b-button-group>
-      </div>
-      <div class="menu-widgets">
-        <b-button-group size="sm" id="symbol_selector">
-          <b-button v-for="(c, i) in symbolFilter" :key="i" :pressed.sync="c.state" variant="outline-secondary">
-            {{ symbols[i] }}
-          </b-button>
-        </b-button-group>
-        <b-button-group size="sm" id="attack_type_selector">
-          <b-button v-for="(c, i) in damageTypeFilter" :key="i" :pressed.sync="c.state" variant="outline-secondary">
-            {{ damageTypes[i] }}
-          </b-button>
-        </b-button-group>
-        <b-button-group size="sm" id="rareiry_selector">
-          <b-button v-for="(c, i) in rarityFilter" :key="i" :pressed.sync="c.state" variant="outline-secondary">
-            {{ rarities[i] }}
-          </b-button>
-        </b-button-group>
-      </div>
-      <div class="menu-widgets">
-        <b-button-group size="sm" id="class_selector">
-          <b-button v-for="(c, i) in classFilter" :key="i" :pressed.sync="c.state" variant="outline-secondary">
-            {{ classes[i] }}
-          </b-button>
-        </b-button-group>
-      </div>
-      <div class="menu-widgets">
-        <b-button-group size="sm" id="buf_selector">
-          <b-button v-for="(c, i) in bufTypeFilter" :key="i" :pressed.sync="c.state" variant="outline-secondary">
-            {{ bufTypes[i] }}
-          </b-button>
-        </b-button-group>
-        <b-button variant="secondary" @click="setTagMatchPattern('^バフ:.+')">バフ検索</b-button>
-        <b-button variant="secondary" @click="setTagMatchPattern('^デバフ:.+')">デバフ検索</b-button>
+    <div class="menu" :class="{ 'hidden': !showMenu }">
+      <div class="menu-content">
+        <div class="menu-widgets flex">
+          <div class="widget">
+            <b-button-group size="sm" id="class_selector">
+              <b-button v-for="(c, i) in classFilter" :key="i" :pressed.sync="c.state" variant="outline-secondary">
+                <b-img-lazy :src="iconTable[classes[i]]" height="25" />
+              </b-button>
+            </b-button-group>
+          </div>
+          <div class="widget">
+            <b-button-group size="sm" id="symbol_selector">
+              <b-button v-for="(c, i) in symbolFilter" :key="i" :pressed.sync="c.state" variant="outline-secondary">
+                <b-img-lazy :src="iconTable[symbols[i]]" height="25" />
+              </b-button>
+            </b-button-group>
+          </div>
+          <div class="widget">
+            <b-button-group size="sm" id="attack_type_selector">
+              <b-button v-for="(c, i) in damageTypeFilter" :key="i" :pressed.sync="c.state" variant="outline-secondary">
+                <b-img-lazy :src="iconTable[damageTypes[i]]" height="25" />
+              </b-button>
+            </b-button-group>
+          </div>
+          <div class="widget">
+            <b-button-group size="sm" id="rareiry_selector">
+              <b-button v-for="(c, i) in rarityFilter" :key="i" :pressed.sync="c.state" variant="outline-secondary">
+                <b-img-lazy :src="iconTable[rarities[i]]" height="25" />
+              </b-button>
+            </b-button-group>
+          </div>
+        </div>
+        <div class="menu-widgets flex">
+          <div class="widget">
+            <span>タレント / スキル検索</span>
+          </div>
+          <div class="widget">
+            <b-button-group size="sm" id="skill_type_selector">
+              <b-button v-for="(c, i) in skillTypeFilter" :key="i" :pressed.sync="c.state" variant="outline-secondary">
+                {{ bufTypes[i] }}
+              </b-button>
+            </b-button-group>
+          </div>
+          <div class="widget">
+            <input v-model="tagSearchPattern" type="text" size="sm" placeholder="パターン (正規表現可)" />
+          </div>
+          <div class="widget">
+            <b-button variant="secondary" size="sm" @click="tagSearchPattern='^バフ:.+'">バフ系</b-button>
+            <b-button variant="secondary" size="sm" @click="tagSearchPattern='^デバフ:.+'">デバフ系</b-button>
+          </div>
+          <div class="widget">
+            <span>表示</span>
+            <b-dropdown right :text="showDetailTypes[showDetail]" size="sm" id="detail_selector">
+              <b-dropdown-item v-for="(c, i) in showDetailTypes" :key="i" @click="showDetail=i">
+                {{ showDetailTypes[i] }}
+              </b-dropdown-item>
+            </b-dropdown>
+          </div>
+        </div>
       </div>
     </div>
     <div class="content">
@@ -49,26 +68,48 @@
             <div class="portrait">
               <b-img-lazy :src="chr.icon" />
             </div>
-            <div class="detail">
-              <div class="info" v-show="showDetail >= 0">
+            <div class="detail" v-show="showDetail >= 1">
+              <div class="info" v-show="showDetail >= 1">
                 <h5>{{ chr.name }}</h5>
+                <b-img-lazy :src="iconTable[chr.class]" height="25" />
+                <b-img-lazy :src="iconTable[chr.symbol]" height="25" />
+                <b-img-lazy :src="iconTable[chr.damageType]" height="25" />
+                <b-img-lazy :src="iconTable[chr.rarity]" height="25" />
+                <b-link :href="'https://legeclo.wikiru.jp/?' + chr.name">Wiki</b-link>
               </div>
               <div class="talent" :class="{ 'highlighted': isTalentHighlighted(chr) }" v-show="showDetail >= 1">
-                <h5><b-img-lazy :src="chr.talent.icon" with="40" height="40" />{{ chr.talent.name }}</h5>
-                <p v-html="descToHtml(chr.talent.desc)"></p>
+                <div class="flex">
+                  <div class="icon">
+                    <b-img-lazy :src="chr.talent.icon" with="50" height="50" />
+                  </div>
+                  <div class="desc">
+                    <h5>{{ chr.talent.name }}</h5>
+                    <p v-html="descToHtml(chr.talent.desc)"></p>
+                  </div>
+                </div>
+                <div class="tags" v-show="showDetail >= 3">
+                  <b-badge class="tag" :key="i" v-for="(tag, i) in chr.tags" variant="info" pill @click="setTagSearchPattern(tag)">{{ tag }}</b-badge>
+                </div>
               </div>
               <div class="skills" v-show="showDetail >= 2">
                 <template v-for="(skill, si) in chr.skills">
                   <div class="skill" :class="{'active': skill.skillType == 'アクティブ', 'passive': skill.skillType == 'パッシブ', 'highlighted': isSkillHighlighted(skill) }" :key="si">
-                    <h6><b-img-lazy :src="skill.icon" with="30" height="30" />{{ skill.name }}</h6>
-                    <p v-html="descToHtml(skill.desc)"></p>
+                    <div class="flex">
+                      <div class="icon">
+                        <b-img-lazy :src="skill.icon" with="40" height="40" />
+                      </div>
+                      <div class="desc">
+                        <h6>{{ skill.name }}</h6>
+                        <p v-html="descToHtml(skill.desc)"></p>
+                      </div>
+                    </div>
+                    <div class="tags" v-show="showDetail >= 3">
+                      <b-badge class="tag" :key="i" v-for="(tag, i) in skill.tags" variant="info" pill @click="setTagSearchPattern(tag)">{{ tag }}</b-badge>
+                    </div>
                   </div>
                 </template>
               </div>
             </div>
-          </div>
-          <div class="tags">
-            <b-badge class="tag" :key="i" v-for="(tag, i) in chr.tags" variant="info" pill>{{ tag }}</b-badge>
           </div>
         </div>
       </template>
@@ -108,9 +149,9 @@ export default {
         "アサシン",
       ],
       rarities: [
-        "R",
-        "SR",
         "SSR",
+        "SR",
+        "R",
       ],
       damageTypes: [
         "アタック",
@@ -121,6 +162,34 @@ export default {
         "パッシブ",
         "アクティブ",
       ],
+      showDetailTypes: [
+        "アイコン",
+        "簡易",
+        "詳細",
+        "完全",
+      ],
+
+      iconTable: {
+        "ゼニス": "https://legeclo.wikiru.jp/attach2/696D67_61705F7A656E6974682E706E67.png",
+        "オリジン": "https://legeclo.wikiru.jp/attach2/696D67_61705F6F726967696E2E706E67.png",
+        "ナディア": "https://legeclo.wikiru.jp/attach2/696D67_61705F6E616469612E706E67.png",
+
+        "ソルジャー": "https://legeclo.wikiru.jp/attach2/696D67_73695F736F6C646965722E706E67.png",
+        "ランサー": "https://legeclo.wikiru.jp/attach2/696D67_73695F6C616E6365722E706E67.png",
+        "ライダー": "https://legeclo.wikiru.jp/attach2/696D67_73695F72696465722E706E67.png",
+        "エアリアル": "https://legeclo.wikiru.jp/attach2/696D67_73695F77696E672E706E67.png",
+        "ソーサラー": "https://legeclo.wikiru.jp/attach2/696D67_73695F736F7263657265722E706E67.png",
+        "セイント": "https://legeclo.wikiru.jp/attach2/696D67_73695F7361696E742E706E67.png",
+        "シューター": "https://legeclo.wikiru.jp/attach2/696D67_73695F73686F6F7465722E706E67.png",
+        "アサシン": "https://legeclo.wikiru.jp/attach2/696D67_73695F617373617373696E2E706E67.png",
+
+        "R": "https://legeclo.wikiru.jp/attach2/696D67_522E706E67.png",
+        "SR": "https://legeclo.wikiru.jp/attach2/696D67_53522E706E67.png",
+        "SSR": "https://legeclo.wikiru.jp/attach2/696D67_5353522E706E67.png",
+
+        "アタック": "https://legeclo.wikiru.jp/attach2/696D67_7374695F61747461636B2E706E67.png",
+        "マジック": "https://legeclo.wikiru.jp/attach2/696D67_7374695F6D616769632E706E67.png",
+      },
 
       showMenu: true,
       lastScrollPosition: 0,
@@ -152,12 +221,12 @@ export default {
         { state: false },
       ],
       
-      bufTypeFilter: [
+      skillTypeFilter: [
         { state: false },
         { state: false },
         { state: false },
       ],
-      tagMatchPattern: null,
+      tagSearchPattern: "",
     };
   },
 
@@ -205,6 +274,14 @@ export default {
       this.showMenu = currentScrollPosition < this.lastScrollPosition;
       this.lastScrollPosition = currentScrollPosition;
     },
+
+    setTagSearchPattern(txt) {
+      txt = txt.replace('(', '\\(');
+      txt = txt.replace(')', '\\)');
+      txt = "^" + txt;
+      this.tagSearchPattern = this.tagSearchPattern == txt ? "" : txt;
+      this.showMenu = true;
+    },
     
     compareDate(a, b) {
       return a.date == b.date ? 0 : (a.date < b.date ? -1 : 1);
@@ -235,25 +312,35 @@ export default {
         }
         return false;
     },
+    getTagMatchPattern() {
+      if (this.tagSearchPattern.length == 0) {
+        return null;
+      }
+      else {
+        return new RegExp(this.tagSearchPattern);
+      }
+    },
     isTalentHighlighted(chr) {
-      if(!this.tagMatchPattern) {
+      let re = this.getTagMatchPattern();
+      if (!re) {
         return false;
       }
-      if (!this.filterEnabled(this.bufTypeFilter) || this.bufTypeFilter[0].state) {
-        if (this.matchTags(chr.tags, this.tagMatchPattern)) {
+      if (!this.filterEnabled(this.skillTypeFilter) || this.skillTypeFilter[0].state) {
+        if (this.matchTags(chr.tags, re)) {
           return true;
         }
       }
       return false;
     },
     isSkillHighlighted(skill) {
-      if(!this.tagMatchPattern) {
+      let re = this.getTagMatchPattern();
+      if (!re) {
         return false;
       }
-      if (!this.filterEnabled(this.bufTypeFilter) ||
-        (skill.skillType == "パッシブ" && this.bufTypeFilter[1].state) ||
-        (skill.skillType == "アクティブ" && this.bufTypeFilter[2].state)) {
-        if (this.matchTags(skill.tags, this.tagMatchPattern)) {
+      if (!this.filterEnabled(this.skillTypeFilter) ||
+        (skill.skillType == "パッシブ" && this.skillTypeFilter[1].state) ||
+        (skill.skillType == "アクティブ" && this.skillTypeFilter[2].state)) {
+        if (this.matchTags(skill.tags, re)) {
           return true;
         }
       }
@@ -270,16 +357,13 @@ export default {
       }
       return false;
     },
-    setTagMatchPattern(patternStr) {
-      this.tagMatchPattern = new RegExp(patternStr);
-    },
     filterMainCharacter(chr) {
       let ok = (!this.filterEnabled(this.symbolFilter) || this.symbolFilter[chr.symbolId].state) &&
         (!this.filterEnabled(this.classFilter) || this.classFilter[chr.classId].state) &&
         (!this.filterEnabled(this.rarityFilter) || this.rarityFilter[chr.rarityId].state) &&
         (!this.filterEnabled(this.damageTypeFilter) || this.damageTypeFilter[chr.damageTypeId].state);
 
-      if (ok && this.tagMatchPattern) {
+      if (ok && this.getTagMatchPattern()) {
         ok = this.applytagMatchPattern(chr);
       }
       return ok;
@@ -407,33 +491,57 @@ a {
   color: #42b983;
 }
 
+.btn {
+  font-size: small;
+}
+
 div.root {
   display: flex;
+  font-size: small;
 }
-.menu {
+div.menu {
   height: 200px;
   width: 100vw;
   background: rgb(240, 240, 240);
   position: fixed;
-  box-shadow: 0 2px 15px rgba(71, 120, 120, 0.5);
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.3);
   transform: translate3d(0, 0, 0);
   transition: 0.1s all ease-out;
 }
-
-.menu.menu-hidden {
+div.menu.hidden {
   box-shadow: none;
   transform: translate3d(0, -100%, 0);
 }
 
+div.menu-content {
+  width: 1000px;
+  margin-left: auto;
+  margin-right: auto;
+  align-items: center;
+}
+
 .menu-widgets {
-  margin: 3px;
+  margin: 5px;
+  padding: 5px;
+
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 0.3rem;
+  background: white;
+}
+
+.widget {
+  margin-left: 5px;
+  margin-right: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 div.content {
-  font-size: small;
-  margin-top: 200px;
-  margin-left: 10px;
-  margin-right: 10px;
+  margin-top: 210px;
+  margin-left: auto;
+  margin-right: auto;
+  width: 1000px;
 }
 
 div.content p {
@@ -442,11 +550,11 @@ div.content p {
 
 div.character {
   padding: 3px;
-  margin: 3px;
+  margin: 10px 0px 10px 0px;
 
   border: 1px solid rgba(0, 0, 0, 0.2);
   border-radius: 0.3rem;
-  background: rgb(240, 240, 240);
+  background: rgb(245, 245, 245);
 }
 div.character h5 {
   margin: 0;
@@ -457,7 +565,6 @@ div.character h6 {
 
 div.portrait {
   text-align: left;
-  font-size: small;
   width: 110px;
   padding: 3px;
   margin: 3px;
@@ -477,7 +584,6 @@ div.flex {
 
 div.info {
   text-align: left;
-  font-size: small;
   padding: 3px;
   margin: 3px;
 
@@ -488,7 +594,6 @@ div.info {
 
 div.talent {
   text-align: left;
-  font-size: small;
   padding: 3px;
   margin: 3px;
 
@@ -498,7 +603,6 @@ div.talent {
 }
 div.skill {
   text-align: left;
-  font-size: small;
   padding: 3px;
   margin: 3px;
 
@@ -510,6 +614,10 @@ div.skill {
 }
 .skill.passive {
   background: rgb(234, 234, 234);
+}
+
+.tag {
+  cursor: pointer;
 }
 
 .highlighted {

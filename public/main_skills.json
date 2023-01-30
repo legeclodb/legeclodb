@@ -213,7 +213,7 @@
     "icon": "https://legeclo.wikiru.jp/attach2/E59182E5B883_736B5F613037342E706E67.png",
     "skillType": "アクティブ",
     "skillTags": [ "攻撃(単体)" ],
-    "tags": [ "再攻撃(確率)" ]
+    "tags": [ "再行動(確率)", "再攻撃(確率)" ]
   },
   {
     "name": "ブラッディブレード",
@@ -1386,7 +1386,7 @@
   {
     "name": "冥界の枷",
     "desc": "自身を中心とした範囲5マス以内の敵ユニットに0.15倍の範囲ダメージを与え、アタック、マジック-15%(2ターン)。スキル使用後、再行動できる。",
-    "icon": "https://legeclo.wikiru.jp/attach2/E996BBE9AD94_736B5F613032392E706E67.png",
+    "icon": "https://legeclo.wikiru.jp/attach2/E996BBE9AD94_736B5F613234322E706E67.png",
     "skillType": "アクティブ",
     "skillTags": [ "攻撃(範囲)" ],
     "tags": [ "再行動", "再攻撃", "デバフ:アタック", "デバフ:マジック" ]
