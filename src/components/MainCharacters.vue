@@ -13,7 +13,7 @@
               <div class="widget">
                 <b-button-group size="sm" id="skill_type_selector">
                   <b-button v-for="(c, i) in skillTypeFilter" :key="i" :pressed.sync="c.state" variant="outline-secondary">
-                    {{ bufTypes[i] }}
+                    {{ skillTypes[i] }}
                   </b-button>
                 </b-button-group>
               </div>
@@ -177,9 +177,6 @@ export default {
     return {
       mainSkills: [],
       mainCharacters: [],
-      supportSkills: [],
-      supportCharacters: [],
-      equipments: [],
       setupCompleted: false,
       
       symbols: [
@@ -206,7 +203,7 @@ export default {
         "アタック",
         "マジック",
       ],
-      bufTypes: [
+      skillTypes: [
         "タレント",
         "パッシブ",
         "アクティブ",
@@ -298,15 +295,9 @@ export default {
     Promise.all([
       this.fetchJson("./main_skills.json"),
       this.fetchJson("./main_characters.json"),
-      this.fetchJson("./support_skills.json"),
-      this.fetchJson("./support_characters.json"),
-      this.fetchJson("./equipments.json")
     ]).then((values) => {
       this.mainSkills = values[0];
       this.mainCharacters = values[1];
-      this.supportSkills = values[2];
-      this.supportCharacters = values[3];
-      this.equipments = values[4];
       this.onLoadDB();
     });
     this.decodeURL();
@@ -340,13 +331,6 @@ export default {
 
     fetchJson(uri) {
       return fetch(uri, { cache: "no-cache" }).then(res => res.json());
-    },
-
-    addUser(skill, chr) {
-      if (!skill.users) {
-        skill.users = [];
-      }
-      skill.users.push(chr.name);
     },
 
     isFilterEnabled(filter) {
@@ -433,18 +417,19 @@ export default {
       if (this.mainCharacters[this.mainCharacters.length - 1].name.length == 0) {
         this.mainCharacters.pop();
       }
-      if (this.supportCharacters[this.supportCharacters.length - 1].name.length == 0) {
-        this.supportCharacters.pop();
-      }
-
       //this.mainCharacters.sort(compareDate);
-      //this.supportCharacters.sort(compareDate);
 
       let tmpSkillMap = new Map();
       for (let skill of this.mainSkills) {
         tmpSkillMap.set(skill.name, skill);
       }
       this.mainSkills = tmpSkillMap;
+
+      let addUser = function (skill, chr) {
+        if (!skill.users)
+          skill.users = [];
+        skill.users.push(chr.name);
+      };
 
       let tags = new Set();
       let idSeed = 0;
@@ -462,7 +447,7 @@ export default {
           if (!skill) {
             console.log("不明なスキル: " + chr.name + ":" + chr.skills[i]);
           }
-          this.addUser(skill, chr);
+          addUser(skill, chr);
           chr.skills[i] = skill;
           for (const t of skill.tags)
             tags.add(t);

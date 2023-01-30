@@ -429,7 +429,7 @@
     "icon": "https://legeclo.wikiru.jp/attach2/E382BDE383ADE383A2E383B3_736B5F613036312E706E67.png",
     "skillType": "アクティブ",
     "skillTags": [ "補助" ],
-    "tags": [ "トークン設置", "バフ解除", "デバフ:アタック", "デバフ:マジック" ],
+    "tags": [ "召喚", "バフ解除", "デバフ:アタック", "デバフ:マジック" ],
     "note": "＊デバフは魔術剣兵のスキルによるもの"
   },
   {
@@ -718,7 +718,7 @@
     "icon": "https://legeclo.wikiru.jp/attach2/E38384E382BFE383B3E382ABE383BCE383A1E383B3_736B5F613136352E706E67.png",
     "skillType": "アクティブ",
     "skillTags": [ "補助" ],
-    "tags": [ "トークン設置" ]
+    "tags": [ "召喚" ]
   },
   {
     "name": "アクセルステップ",
@@ -1710,7 +1710,7 @@
     "icon": "https://legeclo.wikiru.jp/attach2/E3839EE383B3E382B5E383BBE383A0E383BCE382B5_736B5F613238322E706E67.png",
     "skillType": "アクティブ",
     "skillTags": [ "補助" ],
-    "tags": [ "トークン設置", "再行動", "デバフ:ランダム" ],
+    "tags": [ "召喚", "再行動", "デバフ:ランダム" ],
     "note": "＊デバフはゴールデンボックスによるもの"
   },
   {
@@ -1879,7 +1879,7 @@
     "icon": "https://legeclo.wikiru.jp/attach2/E382A2E383ACE382AFE382B5E383B3E38380E383BC_736B5F613239372E706E67.png",
     "skillType": "アクティブ",
     "skillTags": [ "補助" ],
-    "tags": [ "トークン設置" ]
+    "tags": [ "召喚", "再行動" ]
   },
   {
     "name": "蹂躙の刃",
@@ -1951,7 +1951,7 @@
     "icon": "https://legeclo.wikiru.jp/attach2/E59C9FE696B9E6ADB3E4B889_736B5F613330332E706E67.png",
     "skillType": "アクティブ",
     "skillTags": [ "補助" ],
-    "tags": [ "トークン設置", "再行動" ]
+    "tags": [ "召喚", "再行動" ]
   },
   {
     "name": "精神的支柱",
