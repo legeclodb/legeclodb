@@ -542,7 +542,7 @@
     "icon": "https://legeclo.wikiru.jp/attach2/E5BC81E685B6_736B5F613033342E706E67.png",
     "skillType": "アクティブ",
     "skillTags": [ "補助", "ステータス置換" ],
-    "tags": [ "ガード" ]
+    "tags": [ "ガード(アタック)" ]
   },
   {
     "name": "仁王立ち",
@@ -574,7 +574,7 @@
     "icon": "https://legeclo.wikiru.jp/attach2/E8919BE9A3BEE58C97E6968E_736B5F613030342E706E67.png",
     "skillType": "アクティブ",
     "skillTags": [ "補助" ],
-    "tags": [ "ガード", "デバフ:DoT" ]
+    "tags": [ "ガード(アタック)", "デバフ:DoT" ]
   },
   {
     "name": "ガードストック",
@@ -2263,7 +2263,7 @@
     "icon": "https://legeclo.wikiru.jp/attach2/E3838FE383B3E383A0E383A9E38393_736B5F613333322E706E67.png",
     "skillType": "アクティブ",
     "skillTags": [ "補助" ],
-    "tags": [ "ガード" ]
+    "tags": [ "ガード", "再行動" ]
   },
   {
     "name": "法に従え",
