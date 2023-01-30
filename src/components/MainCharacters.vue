@@ -24,22 +24,22 @@
             <div class="menu-widgets flex">
               <div class="widget">
                 <b-dropdown text="バフ系" size="sm">
-                  <b-dropdown-item v-for="(t, i) in tagsBuff" :key="i" @click="setTagSearchPattern(t)">{{t}}</b-dropdown-item>
+                  <b-dropdown-item class="d-flex flex-column" v-for="(t, i) in tagsBuff" :key="i" @click="setTagSearchPattern(t)">{{t}}</b-dropdown-item>
                 </b-dropdown>
               </div>
               <div class="widget">
                 <b-dropdown text="デバフ系" size="sm">
-                  <b-dropdown-item v-for="(t, i) in tagsDebuff" :key="i" @click="setTagSearchPattern(t)">{{t}}</b-dropdown-item>
+                  <b-dropdown-item class="d-flex flex-column" v-for="(t, i) in tagsDebuff" :key="i" @click="setTagSearchPattern(t)">{{t}}</b-dropdown-item>
                 </b-dropdown>
               </div>
               <div class="widget">
                 <b-dropdown text="無効化系" size="sm">
-                  <b-dropdown-item v-for="(t, i) in tagsResist" :key="i" @click="setTagSearchPattern(t)">{{t}}</b-dropdown-item>
+                  <b-dropdown-item class="d-flex flex-column" v-for="(t, i) in tagsResist" :key="i" @click="setTagSearchPattern(t)">{{t}}</b-dropdown-item>
                 </b-dropdown>
               </div>
               <div class="widget">
                 <b-dropdown text="その他" size="sm">
-                  <b-dropdown-item v-for="(t, i) in tagsOther" :key="i" @click="setTagSearchPattern(t)">{{t}}</b-dropdown-item>
+                  <b-dropdown-item class="d-flex flex-column" v-for="(t, i) in tagsOther" :key="i" @click="setTagSearchPattern(t)">{{t}}</b-dropdown-item>
                 </b-dropdown>
               </div>
               <div class="widget">
@@ -47,7 +47,6 @@
               </div>
             </div>
           </div>
-
           <div class="border">
             <div class="menu-widgets flex">
               <div class="widget">
@@ -87,8 +86,6 @@
               </div>
             </div>
           </div>
-
-          
           <div class="border">
             <div class="menu-widgets flex">
               <div class="widget">
@@ -106,7 +103,6 @@
               </div>
             </div>
           </div>
-
         </div>
       </div>
     </div>
@@ -170,7 +166,6 @@
 export default {
   name: 'MainCharacters',
   props: {
-    msg: String
   },
 
   data() {
@@ -318,6 +313,7 @@ export default {
     },
 
     setTagSearchPattern(txt) {
+      txt = txt.trim();
       txt = txt.replace('(', '\\(');
       txt = txt.replace(')', '\\)');
       txt = "^" + txt;
@@ -347,7 +343,7 @@ export default {
         }
         return false;
     },
-    getTagMatchPattern() {
+    getTagRE() {
       if (this.tagSearchPattern.length == 0) {
         return null;
       }
@@ -356,7 +352,7 @@ export default {
       }
     },
     isTalentHighlighted(chr) {
-      let re = this.getTagMatchPattern();
+      let re = this.getTagRE();
       if (!re) {
         return false;
       }
@@ -368,7 +364,7 @@ export default {
       return false;
     },
     isSkillHighlighted(skill) {
-      let re = this.getTagMatchPattern();
+      let re = this.getTagRE();
       if (!re) {
         return false;
       }
@@ -381,7 +377,7 @@ export default {
       }
       return false;
     },
-    applytagMatchPattern(chr) {
+    applyTagSearchPattern(chr) {
       if (this.isTalentHighlighted(chr)) {
         return true;
       }
@@ -398,8 +394,8 @@ export default {
         (!this.isFilterEnabled(this.rarityFilter) || this.rarityFilter[chr.rarityId].state) &&
         (!this.isFilterEnabled(this.damageTypeFilter) || this.damageTypeFilter[chr.damageTypeId].state);
 
-      if (ok && this.getTagMatchPattern()) {
-        ok = this.applytagMatchPattern(chr);
+      if (ok && this.getTagRE()) {
+        ok = this.applyTagSearchPattern(chr);
       }
       return ok;
     },
@@ -452,6 +448,15 @@ export default {
           for (const t of skill.tags)
             tags.add(t);
         }
+      }
+
+      // リストの上の方に出すため特別処理
+      const importantTags = [
+        "アタック", "マジック", "ディフェンス", "レジスト", "与ダメージ", "ダメージ耐性", "移動",
+      ];
+      for (const t of importantTags) {
+        this.tagsBuff.add("バフ:" + t);
+        this.tagsDebuff.add("デバフ:" + t);
       }
 
       tags = Array.from(tags.values()).sort();
