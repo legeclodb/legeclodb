@@ -447,9 +447,8 @@ export default {
         chr.classId = this.classes.findIndex(v => v == chr.class);
         chr.rarityId = this.rarities.findIndex(v => v == chr.rarity);
         chr.damageTypeId = this.damageTypes.findIndex(v => v == chr.damageType);
-        for (const t of chr.talent.tags)
-          tags.add(t);
 
+        let aoeAttack = 0;
         for (let i = 0; i < chr.skills.length; ++i) {
           let skill = this.mainSkills.get(chr.skills[i]);
           if (!skill) {
@@ -457,8 +456,21 @@ export default {
           }
           addUser(skill, chr);
           chr.skills[i] = skill;
-          for (const t of skill.tags)
+          for (const t of skill.tags) {
             tags.add(t);
+          }
+          for (const t of skill.skillTags) {
+            if (t == "攻撃(範囲)") {
+              ++aoeAttack;
+            }
+          }
+        }
+        if (aoeAttack > 0) {
+          chr.talent.tags.push(`範囲攻撃所持(${aoeAttack})`);
+        }
+
+        for (const t of chr.talent.tags) {
+          tags.add(t);
         }
       }
 
