@@ -31,22 +31,30 @@
             <div class="menu-widgets flex">
               <div class="widget">
                 <b-dropdown text="バフ系" size="sm">
-                  <b-dropdown-item class="d-flex flex-column" v-for="(t, i) in tagsBuff" :key="i" @click="setTagSearchPattern(t)">{{t}}</b-dropdown-item>
+                  <b-dropdown-item class="d-flex flex-column" v-for="(t, i) in tagsBuff" :key="i" @click="setTagSearchPattern(t)">
+                    {{t}} <span class="note">{{tagNotes[t]}}</span>
+                  </b-dropdown-item>
                 </b-dropdown>
               </div>
               <div class="widget">
                 <b-dropdown text="デバフ系" size="sm">
-                  <b-dropdown-item class="d-flex flex-column" v-for="(t, i) in tagsDebuff" :key="i" @click="setTagSearchPattern(t)">{{t}}</b-dropdown-item>
+                  <b-dropdown-item class="d-flex flex-column" v-for="(t, i) in tagsDebuff" :key="i" @click="setTagSearchPattern(t)">
+                    {{t}} <span class="note">{{tagNotes[t]}}</span>
+                  </b-dropdown-item>
                 </b-dropdown>
               </div>
               <div class="widget">
                 <b-dropdown text="無効化系" size="sm">
-                  <b-dropdown-item class="d-flex flex-column" v-for="(t, i) in tagsResist" :key="i" @click="setTagSearchPattern(t)">{{t}}</b-dropdown-item>
+                  <b-dropdown-item class="d-flex flex-column" v-for="(t, i) in tagsResist" :key="i" @click="setTagSearchPattern(t)">
+                    {{t}} <span class="note">{{tagNotes[t]}}</span>
+                  </b-dropdown-item>
                 </b-dropdown>
               </div>
               <div class="widget">
                 <b-dropdown text="その他" size="sm">
-                  <b-dropdown-item class="d-flex flex-column" v-for="(t, i) in tagsOther" :key="i" @click="setTagSearchPattern(t)">{{t}}</b-dropdown-item>
+                  <b-dropdown-item class="d-flex flex-column" v-for="(t, i) in tagsOther" :key="i" @click="setTagSearchPattern(t)">
+                    {{t}} <span class="note">{{tagNotes[t]}}</span>
+                  </b-dropdown-item>
                 </b-dropdown>
               </div>
               <div class="widget">
@@ -103,7 +111,7 @@
               <div class="widget">
                 <span>表示：</span>
                 <b-dropdown :text="showDetailTypes[showDetail]" size="sm" id="detail_selector">
-                  <b-dropdown-item v-for="(c, i) in showDetailTypes" :key="i" @click="showDetail=i">
+                  <b-dropdown-item class="d-flex flex-column" v-for="(c, i) in showDetailTypes" :key="i" @click="showDetail=i">
                     {{ showDetailTypes[i] }}
                   </b-dropdown-item>
                 </b-dropdown>
@@ -236,6 +244,14 @@ export default {
 
         "アタック": "https://legeclo.wikiru.jp/attach2/696D67_7374695F61747461636B2E706E67.png",
         "マジック": "https://legeclo.wikiru.jp/attach2/696D67_7374695F6D616769632E706E67.png",
+      },
+
+      tagNotes: {
+        "デバフ:DoT": "行動終了時にダメージを与える効果",
+        "2回攻撃": "ランサー/アサシンのマスタークラス特性は除外",
+        "死亡時復活": "セイントのマスタークラス特性は除外",
+        "再攻撃": "1ターンに2回攻撃行動を取れる再行動",
+        "異種攻撃タイプ": "アタックタイプがマジックのソルジャーなど",
       },
 
       showHeader: true,
@@ -415,7 +431,7 @@ export default {
     descToHtml(item) {
       let r = item.desc.replaceAll("\n", "<br/>");
       if (item.note) {
-        r += "<br /><span style='color: rgb(200, 200, 200);'>" + item.note.replaceAll("\n", "<br/>") + "</span>";
+        r += "<br /><span class='note'>" + item.note.replaceAll("\n", "<br/>") + "</span>";
       }
       return r;
     },
@@ -460,7 +476,7 @@ export default {
             tags.add(t);
           }
           for (const t of skill.skillTags) {
-            if (t == "攻撃(範囲)") {
+            if (t == "攻撃(範囲)" && skill.skillType == "アクティブ") {
               ++aoeAttack;
             }
           }
@@ -581,6 +597,10 @@ export default {
       }
     },
     updateURL() {
+      if (!this.setupCompleted) {
+        return;
+      }
+
       let params = [];
       if (this.isFilterEnabled(this.symbolFilter))
         params.push("symbol=" + this.serializeFilter(this.symbolFilter).toString(16));
@@ -797,3 +817,16 @@ div.skill {
   border: 3px solid rgba(255, 0, 0, 0.7) !important;
 }
 </style>
+
+<!-- global scope -->
+<style>
+.note {
+  font-size: 75%;
+  color: rgb(175, 175, 175);
+}
+
+.dropdown-item {
+  padding: 0.2rem !important;
+}
+</style>
+
