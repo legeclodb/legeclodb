@@ -290,6 +290,7 @@ export default {
         { state: false },
       ],
       tagSearchPattern: "",
+      prevTagRE: null,
 
       tagsBuff: new Set(),
       tagsDebuff: new Set(),
@@ -373,10 +374,18 @@ export default {
     },
     getTagRE() {
       if (this.tagSearchPattern.length == 0) {
+        this.prevTagRE = null;
         return null;
       }
       else {
-        return new RegExp(this.tagSearchPattern);
+        try {
+          let re = new RegExp(this.tagSearchPattern);
+          this.prevTagRE = re;
+          return re;
+        }
+        catch (e) {
+          return this.prevTagRE;
+        }
       }
     },
     isTalentHighlighted(chr) {
