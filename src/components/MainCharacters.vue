@@ -2,6 +2,13 @@
   <div class="root">
     <div class="header" :class="{ 'hidden': !showHeader }">
       <div class="menu-content">
+        <div class="border">
+          <div class="menu-widgets flex">
+            <div class="widget">
+              <h5>legeclodb</h5>
+            </div>
+          </div>
+        </div>
         <div class="flex">
           <div class="border">
             <div class="menu-widgets flex">
@@ -18,7 +25,7 @@
                 </b-button-group>
               </div>
               <div class="widget">
-                <input v-model="tagSearchPattern" type="text" size="sm" placeholder="パターン (正規表現可)" :change="updateURL()" />
+                <input v-model="tagSearchPattern" type="text" size="sm" placeholder="パターン (正規表現)" :change="updateURL()" />
               </div>
             </div>
             <div class="menu-widgets flex">
@@ -86,10 +93,10 @@
               </div>
             </div>
           </div>
-          <div class="border">
+          <div class="border grow">
             <div class="menu-widgets flex">
               <div class="widget">
-                <h6>設定など</h6>
+                <h6>設定</h6>
               </div>
             </div>
             <div class="menu-widgets flex">
@@ -106,7 +113,7 @@
         </div>
       </div>
     </div>
-    <div class="content">
+    <div class="content" :style="style">
       <template v-for="chr in mainCharactersDB">
         <div class="character" :id="'mainchar_'+chr.id" :key="chr.id" v-show="filterMainCharacter(chr)">
           <div class="flex">
@@ -281,6 +288,11 @@ export default {
         return null;
       }
       return this.mainCharacters;
+    },
+    style() {
+      return {
+        "--character-flex-grow": `${this.showDetail == 0 ? 0 : 1}`,
+      };
     }
   },
 
@@ -303,9 +315,9 @@ export default {
   },
 
   methods: {
-    onScroll () {
+    onScroll() {
       const pos = window.pageYOffset || document.documentElement.scrollTop;
-      if (pos < 0 || Math.abs(pos - this.lastScrollPosition) < 60) {
+      if (pos < 0 || Math.abs(pos - this.lastScrollPosition) < 30) {
         return;
       }
       this.showHeader = pos < this.lastScrollPosition;
@@ -451,12 +463,13 @@ export default {
       }
 
       // リストの上の方に出すため特別処理
-      const importantTags = [
-        "アタック", "マジック", "ディフェンス", "レジスト", "与ダメージ", "ダメージ耐性", "移動",
-      ];
-      for (const t of importantTags) {
+      this.tagsBuff.add("シンボルスキル");
+      for (const t of ["アタック", "マジック", "ディフェンス", "レジスト", "与ダメージ", "ダメージ耐性", "移動"]) {
         this.tagsBuff.add("バフ:" + t);
         this.tagsDebuff.add("デバフ:" + t);
+      }
+      for (const t of ["アタック", "マジック", "ディフェンス", "レジスト", "移動"]) {
+        this.tagsResist.add("無効化:" + t + "ダウン");
       }
 
       tags = Array.from(tags.values()).sort();
@@ -465,7 +478,7 @@ export default {
         if (p != -1)
           t = t.slice(0, p);
 
-        if (t.match(/^バフ:/))
+        if (t.match(/^(バフ:|シンボルスキル)/))
           this.tagsBuff.add(t);
         else if (t.match(/^デバフ:/))
           this.tagsDebuff.add(t);
@@ -568,11 +581,11 @@ export default {
       if (this.isFilterEnabled(this.skillTypeFilter))
         params.push("skillType=" + this.serializeFilter(this.skillTypeFilter).toString(16));
       if (this.tagSearchPattern.length > 0)
-        params.push("tagPattern=" + this.tagSearchPattern);
+        params.push("tag=" + this.tagSearchPattern);
 
-      let url = "";
+      let url = "?";
       if (params.length != 0) {
-        url = "?" + params.join("&");
+        url += params.join("&");
       }
       window.history.replaceState(null, null, url);
     },
@@ -598,7 +611,7 @@ export default {
             handleFilter.call(this, this.damageTypeFilter, param, /damageType=(\d+)/) ||
             handleFilter.call(this, this.skillTypeFilter, param, /skillType=(\d+)/);
           if (!handled) {
-            let r = param.match(/tagPattern=(.+)/);
+            let r = param.match(/tag=(.+)/);
             if (r) {
               this.tagSearchPattern = r[1];
             }
@@ -643,12 +656,12 @@ div.root {
   font-size: small;
 }
 div.header {
-  padding-top: 40px;
-  height: 200px;
+  padding-top: 10px;
+  height: 180px;
   width: 100vw;
   background: rgb(240, 240, 240);
   position: fixed;
-  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
   transform: translate3d(0, 0, 0);
   transition: 0.1s all ease;
 }
@@ -683,8 +696,12 @@ div.menu-content {
   align-items: center;
 }
 
+.grow {
+  flex-grow: 1;
+}
+
 div.content {
-  margin-top: 220px;
+  margin-top: 200px;
   margin-left: auto;
   margin-right: auto;
   width: 1000px;
@@ -704,6 +721,7 @@ div.character {
   border: 1px solid rgba(0, 0, 0, 0.2);
   border-radius: 0.3rem;
   background: rgb(245, 245, 245);
+  flex-grow: var(--character-flex-grow);
 }
 
 div.portrait {
@@ -719,7 +737,6 @@ div.portrait {
 
 div.detail {
   flex: 2;
-  width: 880px;
 }
 
 div.flex {
