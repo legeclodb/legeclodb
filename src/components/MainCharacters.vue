@@ -24,36 +24,36 @@
                   </b-button>
                 </b-button-group>
               </div>
-              <div class="widget">
-                <input v-model="tagSearchPattern" type="text" size="sm" placeholder="パターン (正規表現)" :change="updateURL()" />
+              <div class="widget" style="width:150px">
+                <b-form-input v-model="tagSearchPattern" type="text" debounce="500" size="sm" placeholder="タグ検索 (正規表現)" :update="onUpdateTagSearchPattern()" />
               </div>
             </div>
             <div class="menu-widgets flex">
-              <div class="widget">
+              <div class="widget" style="margin-right:0px">
                 <b-dropdown text="バフ系" size="sm">
                   <b-dropdown-item class="d-flex flex-column" v-for="(t, i) in tagsBuff" :key="i" @click="setTagSearchPattern(t)">
-                    {{t}} <span class="note">{{tagNotes[t]}}</span>
+                    {{t}} <span class="note">{{getTagNote(t)}}</span>
                   </b-dropdown-item>
                 </b-dropdown>
               </div>
-              <div class="widget">
+              <div class="widget" style="margin-right:0px">
                 <b-dropdown text="デバフ系" size="sm">
                   <b-dropdown-item class="d-flex flex-column" v-for="(t, i) in tagsDebuff" :key="i" @click="setTagSearchPattern(t)">
-                    {{t}} <span class="note">{{tagNotes[t]}}</span>
+                    {{t}} <span class="note">{{getTagNote(t)}}</span>
                   </b-dropdown-item>
                 </b-dropdown>
               </div>
-              <div class="widget">
+              <div class="widget" style="margin-right:0px">
                 <b-dropdown text="無効化系" size="sm">
                   <b-dropdown-item class="d-flex flex-column" v-for="(t, i) in tagsResist" :key="i" @click="setTagSearchPattern(t)">
-                    {{t}} <span class="note">{{tagNotes[t]}}</span>
+                    {{t}} <span class="note">{{getTagNote(t)}}</span>
                   </b-dropdown-item>
                 </b-dropdown>
               </div>
-              <div class="widget">
+              <div class="widget" style="margin-right:0px">
                 <b-dropdown text="その他" size="sm">
                   <b-dropdown-item class="d-flex flex-column" v-for="(t, i) in tagsOther" :key="i" @click="setTagSearchPattern(t)">
-                    {{t}} <span class="note">{{tagNotes[t]}}</span>
+                    {{t}} <span class="note">{{getTagNote(t)}}</span>
                   </b-dropdown-item>
                 </b-dropdown>
               </div>
@@ -71,8 +71,8 @@
             <div class="menu-widgets flex">
               <div class="widget">
                 <b-button-group size="sm" id="class_selector">
-                  <b-button v-for="(c, i) in classFilter" :key="i" :pressed.sync="c.state" @click="updateURL()" variant="outline-secondary">
-                    <b-img-lazy :src="iconTable[classes[i]]" height="25" />
+                  <b-button v-for="(c, i) in classFilter" :key="i" :pressed.sync="c.state" @click="onChangeFilterState()" variant="outline-secondary">
+                    <b-img-lazy :src="getIconURL(classes[i])" height="25" />
                   </b-button>
                 </b-button-group>
               </div>
@@ -80,22 +80,22 @@
             <div class="menu-widgets flex">
               <div class="widget">
                 <b-button-group size="sm" id="symbol_selector">
-                  <b-button v-for="(c, i) in symbolFilter" :key="i" :pressed.sync="c.state" @click="updateURL()" variant="outline-secondary">
-                    <b-img-lazy :src="iconTable[symbols[i]]" height="25" />
+                  <b-button v-for="(c, i) in symbolFilter" :key="i" :pressed.sync="c.state" @click="onChangeFilterState()" variant="outline-secondary">
+                    <b-img-lazy :src="getIconURL(symbols[i])" height="25" />
                   </b-button>
                 </b-button-group>
               </div>
               <div class="widget">
                 <b-button-group size="sm" id="attack_type_selector">
-                  <b-button v-for="(c, i) in damageTypeFilter" :key="i" :pressed.sync="c.state" @click="updateURL()" variant="outline-secondary">
-                    <b-img-lazy :src="iconTable[damageTypes[i]]" height="25" />
+                  <b-button v-for="(c, i) in damageTypeFilter" :key="i" :pressed.sync="c.state" @click="onChangeFilterState()" variant="outline-secondary">
+                    <b-img-lazy :src="getIconURL(damageTypes[i])" height="25" />
                   </b-button>
                 </b-button-group>
               </div>
               <div class="widget">
                 <b-button-group size="sm" id="rareiry_selector">
-                  <b-button v-for="(c, i) in rarityFilter" :key="i" :pressed.sync="c.state" @click="updateURL()" variant="outline-secondary">
-                    <b-img-lazy :src="iconTable[rarities[i]]" height="20" />
+                  <b-button v-for="(c, i) in rarityFilter" :key="i" :pressed.sync="c.state" @click="onChangeFilterState()" variant="outline-secondary">
+                    <b-img-lazy :src="getIconURL(rarities[i])" height="20" />
                   </b-button>
                 </b-button-group>
               </div>
@@ -110,7 +110,7 @@
             <div class="menu-widgets flex">
               <div class="widget">
                 <span>表示：</span>
-                <b-dropdown :text="showDetailTypes[showDetail]" size="sm" id="detail_selector">
+                <b-dropdown :text="showDetailTypes[showDetail]" size="sm" id="detail_selector" style="width:90px">
                   <b-dropdown-item class="d-flex flex-column" v-for="(c, i) in showDetailTypes" :key="i" @click="showDetail=i">
                     {{ showDetailTypes[i] }}
                   </b-dropdown-item>
@@ -126,15 +126,15 @@
         <div class="character" :id="'mainchar_'+chr.id" :key="chr.id" v-show="filterMainCharacter(chr)">
           <div class="flex">
             <div class="portrait">
-              <b-img-lazy :src="chr.icon" />
+              <b-img-lazy :src="chr.icon" :alt="chr.name" />
             </div>
             <div class="detail" v-show="showDetail >= 1">
               <div class="info">
                 <h5>{{ chr.name }}</h5>
-                <b-img-lazy :src="iconTable[chr.class]" height="25" />
-                <b-img-lazy :src="iconTable[chr.symbol]" height="25" />
-                <b-img-lazy :src="iconTable[chr.damageType]" height="25" />
-                <b-img-lazy :src="iconTable[chr.rarity]" height="20" />
+                <b-img-lazy :src="getIconURL(chr.class)" :alt="chr.class" height="25" />
+                <b-img-lazy :src="getIconURL(chr.symbol)" :alt="chr.symbol" height="25" />
+                <b-img-lazy :src="getIconURL(chr.damageType)" :alt="chr.damageType" height="25" />
+                <b-img-lazy :src="getIconURL(chr.rarity)" :alt="chr.rarity" height="20" />
                 <b-link :href="'https://legeclo.wikiru.jp/?' + chr.name" target="_blank">Wiki</b-link>
               </div>
               <div class="talent" :class="{ 'highlighted': isTalentHighlighted(chr) }">
@@ -187,8 +187,9 @@ export default {
     return {
       mainSkills: [],
       mainCharacters: [],
+      mainConsts: {},
       setupCompleted: false,
-      
+
       symbols: [
         "ゼニス",
         "オリジン",
@@ -223,36 +224,6 @@ export default {
         "簡易",
         "詳細",
       ],
-
-      iconTable: {
-        "ゼニス": "https://legeclo.wikiru.jp/attach2/696D67_61705F7A656E6974682E706E67.png",
-        "オリジン": "https://legeclo.wikiru.jp/attach2/696D67_61705F6F726967696E2E706E67.png",
-        "ナディア": "https://legeclo.wikiru.jp/attach2/696D67_61705F6E616469612E706E67.png",
-
-        "ソルジャー": "https://legeclo.wikiru.jp/attach2/696D67_73695F736F6C646965722E706E67.png",
-        "ランサー": "https://legeclo.wikiru.jp/attach2/696D67_73695F6C616E6365722E706E67.png",
-        "ライダー": "https://legeclo.wikiru.jp/attach2/696D67_73695F72696465722E706E67.png",
-        "エアリアル": "https://legeclo.wikiru.jp/attach2/696D67_73695F77696E672E706E67.png",
-        "ソーサラー": "https://legeclo.wikiru.jp/attach2/696D67_73695F736F7263657265722E706E67.png",
-        "セイント": "https://legeclo.wikiru.jp/attach2/696D67_73695F7361696E742E706E67.png",
-        "シューター": "https://legeclo.wikiru.jp/attach2/696D67_73695F73686F6F7465722E706E67.png",
-        "アサシン": "https://legeclo.wikiru.jp/attach2/696D67_73695F617373617373696E2E706E67.png",
-
-        "R": "https://legeclo.wikiru.jp/attach2/696D67_522E706E67.png",
-        "SR": "https://legeclo.wikiru.jp/attach2/696D67_53522E706E67.png",
-        "SSR": "https://legeclo.wikiru.jp/attach2/696D67_5353522E706E67.png",
-
-        "アタック": "https://legeclo.wikiru.jp/attach2/696D67_7374695F61747461636B2E706E67.png",
-        "マジック": "https://legeclo.wikiru.jp/attach2/696D67_7374695F6D616769632E706E67.png",
-      },
-
-      tagNotes: {
-        "デバフ:DoT": "行動終了時にダメージを与える効果",
-        "2回攻撃": "ランサー/アサシンのマスタークラス特性は除外",
-        "死亡時復活": "セイントのマスタークラス特性は除外",
-        "再攻撃": "1ターンに2回攻撃行動を取れる再行動",
-        "異種攻撃タイプ": "アタックタイプがマジックのソルジャーなど",
-      },
 
       showHeader: true,
       lastScrollPosition: 0,
@@ -290,12 +261,16 @@ export default {
         { state: false },
       ],
       tagSearchPattern: "",
+      tagSearchPatternPrev: "",
       prevTagRE: null,
 
       tagsBuff: new Set(),
       tagsDebuff: new Set(),
       tagsResist: new Set(),
       tagsOther: new Set(),
+
+      enableUpdateURL: false,
+      prevURL: "",
     };
   },
 
@@ -313,18 +288,32 @@ export default {
     }
   },
 
-  mounted () {
-    window.addEventListener('scroll', this.onScroll);
+  async beforeCreate() {
+    const fetchJson = function(uri) {
+      return fetch(uri, { cache: "no-cache" }).then(res => res.json());
+    };
 
-    Promise.all([
-      this.fetchJson("./main_skills.json"),
-      this.fetchJson("./main_characters.json"),
+    await Promise.all([
+      fetchJson("./main_skills.json"),
+      fetchJson("./main_characters.json"),
+      fetchJson("./main_consts.json"),
     ]).then((values) => {
       this.mainSkills = values[0];
       this.mainCharacters = values[1];
+      this.mainConsts = values[2];
       this.onLoadDB();
     });
+  },
+
+  mounted() {
+    window.addEventListener('scroll', this.onScroll);
     this.decodeURL();
+
+    window.onpopstate = function() {
+      this.decodeURL(true);
+    }.bind(this);
+
+    this.enableUpdateURL = true;
   },
   
   beforeDestroy () {
@@ -352,10 +341,6 @@ export default {
     
     compareDate(a, b) {
       return a.date == b.date ? 0 : (a.date < b.date ? -1 : 1);
-    },
-
-    fetchJson(uri) {
-      return fetch(uri, { cache: "no-cache" }).then(res => res.json());
     },
 
     isFilterEnabled(filter) {
@@ -445,6 +430,19 @@ export default {
       return r;
     },
 
+    getIconURL(name) {
+      if (this.mainConsts.iconTable && name in this.mainConsts.iconTable) {
+        return this.mainConsts.iconTable[name];
+      }
+      return "./empty.png";
+    },
+    getTagNote(name) {
+      if(this.mainConsts.tagNotes && name in this.mainConsts.tagNotes) {
+        return this.mainConsts.tagNotes[name];
+      }
+      return "";
+    },
+
     setupDB() {
       // 最後の要素は追加用のテンプレになっているので取り除く
       if (this.mainCharacters[this.mainCharacters.length - 1].name.length == 0) {
@@ -464,7 +462,17 @@ export default {
         skill.users.push(chr.name);
       };
 
-      let tags = new Set();
+      let registeredTags = new Set();
+      const registerTags = function(tags) {
+        for(let t of tags) {
+          let p = t.lastIndexOf('(');
+          if (p != -1) {
+            t = t.slice(0, p);
+          }
+          registeredTags.add(t);
+        }
+      };
+
       let idSeed = 0;
       for (let chr of this.mainCharacters) {
         chr.id = ++idSeed;
@@ -481,9 +489,7 @@ export default {
           }
           addUser(skill, chr);
           chr.skills[i] = skill;
-          for (const t of skill.tags) {
-            tags.add(t);
-          }
+          registerTags(skill.tags);
           for (const t of skill.skillTags) {
             if (t == "攻撃(範囲)" && skill.skillType == "アクティブ") {
               ++aoeAttack;
@@ -493,29 +499,29 @@ export default {
         if (aoeAttack > 0) {
           chr.talent.tags.push(`範囲攻撃所持(${aoeAttack})`);
         }
-
-        for (const t of chr.talent.tags) {
-          tags.add(t);
-        }
+        registerTags(chr.talent.tags);
       }
 
       // リストの上の方に出すため特別処理
-      this.tagsBuff.add("シンボルスキル");
-      for (const t of ["アタック", "マジック", "ディフェンス", "レジスト", "与ダメージ", "ダメージ耐性", "移動"]) {
-        this.tagsBuff.add("バフ:" + t);
-        this.tagsDebuff.add("デバフ:" + t);
-      }
-      for (const t of ["アタック", "マジック", "ディフェンス", "レジスト", "移動"]) {
-        this.tagsResist.add("無効化:" + t + "ダウン");
-      }
+      let handledTags = new Set();
+      let handlePredefinedTags = function(dstTags, predefinedTags) {
+        if (Array.isArray(predefinedTags)) {
+          for (let t of predefinedTags) {
+            dstTags.add(t);
+            handledTags.add(t);
+          }
+        }
+      };
+      handlePredefinedTags(this.tagsBuff, this.mainConsts.tagsBuff);
+      handlePredefinedTags(this.tagsDebuff, this.mainConsts.tagsDebuff);
+      handlePredefinedTags(this.tagsResist, this.mainConsts.tagsResist);
+      handlePredefinedTags(this.tagsOther, this.mainConsts.tagsOther);
 
-      tags = Array.from(tags.values()).sort();
-      for (let t of tags) {
-        let p = t.lastIndexOf('(');
-        if (p != -1)
-          t = t.slice(0, p);
+      for (let t of Array.from(registeredTags).sort()) {
+        if (handledTags.has(t))
+          continue;
 
-        if (t.match(/^(バフ:|シンボルスキル)/))
+        if (t.match(/^バフ:/))
           this.tagsBuff.add(t);
         else if (t.match(/^デバフ:/))
           this.tagsDebuff.add(t);
@@ -600,21 +606,19 @@ export default {
     },
     deserializeFilter(filter, v) {
       for (let i = 0; i < filter.length; ++i) {
-        if ((v & (1 << i)) != 0) {
-          filter[i].state = true;
-        }
+        filter[i].state = (v & (1 << i)) != 0;
       }
     },
     updateURL() {
-      if (!this.setupCompleted) {
+      if (!this.enableUpdateURL) {
         return;
       }
 
       let params = [];
-      if (this.isFilterEnabled(this.symbolFilter))
-        params.push("symbol=" + this.serializeFilter(this.symbolFilter).toString(16));
       if (this.isFilterEnabled(this.classFilter))
         params.push("class=" + this.serializeFilter(this.classFilter).toString(16));
+      if (this.isFilterEnabled(this.symbolFilter))
+        params.push("symbol=" + this.serializeFilter(this.symbolFilter).toString(16));
       if (this.isFilterEnabled(this.rarityFilter))
         params.push("rarity=" + this.serializeFilter(this.rarityFilter).toString(16));
       if (this.isFilterEnabled(this.damageTypeFilter))
@@ -628,38 +632,80 @@ export default {
       if (params.length != 0) {
         url += params.join("&");
       }
-      window.history.replaceState(null, null, url);
+      if (url != this.prevURL) {
+        window.history.pushState(null, null, url);
+        this.prevURL = url;
+      }
     },
+    decodeURL(initState = false) {
+      let data = {
+        class: 0,
+        symbol: 0,
+        damageType: 0,
+        rarity: 0,
+        skillType: 0,
+        tag: "",
 
-    decodeURL() {
-      let handleFilter = function (filter, param, re) {
-        let r = param.match(re);
-        if (r) {
-          this.deserializeFilter(filter, parseInt(r[1], 16));
-          return true;
-        }
-        return false;
-      };
-
-      let url = decodeURI(window.location.href);
-      let q = url.lastIndexOf('?');
-      if (q != -1) {
-        let params = url.slice(q + 1).split('&');
-        for (let param of params) {
-          let handled = handleFilter.call(this, this.symbolFilter, param, /symbol=(\d+)/) ||
-            handleFilter.call(this, this.classFilter, param, /class=(\d+)/) ||
-            handleFilter.call(this, this.rarityFilter, param, /rarity=(\\d+)/) ||
-            handleFilter.call(this, this.damageTypeFilter, param, /damageType=(\d+)/) ||
-            handleFilter.call(this, this.skillTypeFilter, param, /skillType=(\d+)/);
-          if (!handled) {
-            let r = param.match(/tag=(.+)/);
-            if (r) {
-              this.tagSearchPattern = r[1];
+        parseNumber(param, name) {
+          let r = param.match(new RegExp(`${name}=([0-9a-f]+)`));
+          if (r) {
+            this[name] = parseInt(r[1], 16);
+            return true;
+          }
+          return false;
+        },
+        parseString(param, name) {
+          let r = param.match(new RegExp(`${name}=(.+)`));
+          if (r) {
+            this[name] = r[1];
+            return true;
+          }
+          return false;
+        },
+        parseURL() {
+          let ok = false;
+          let url = decodeURI(window.location.href);
+          let q = url.lastIndexOf('?');
+          if (q != -1) {
+            let params = url.slice(q + 1).split('&');
+            for (let param of params) {
+              let handled = data.parseNumber(param, "class") || data.parseNumber(param, "symbol") ||
+                data.parseNumber(param, "rarity") || data.parseNumber(param, "damageType") || data.parseNumber(param, "skillType") ||
+                data.parseString(param, "tag");
+              if(handled) {
+                ok = true;
+              }
             }
           }
-        }
+          return ok;
+        },
+      };
+
+      if (data.parseURL() || initState) {
+        this.enableUpdateURL = false;
+        this.deserializeFilter(this.classFilter, data.class);
+        this.deserializeFilter(this.symbolFilter, data.symbol);
+        this.deserializeFilter(this.damageTypeFilter, data.damageType);
+        this.deserializeFilter(this.rarityFilter, data.rarity);
+        this.deserializeFilter(this.skillTypeFilter, data.skillType);
+        this.tagSearchPattern = data.tag;
+        this.$forceUpdate();
+        this.enableUpdateURL = true;
       }
-    }
+    },
+    onChangeFilterState() {
+      if (!this.setupCompleted) {
+        return;
+      }
+      this.updateURL();
+    },
+    onUpdateTagSearchPattern() {
+      // なぜかボタン一個押すたびに呼ばれるので変更チェック…
+      if(this.tagSearchPattern == this.tagSearchPatternPrev)
+        return;
+      this.tagSearchPatternPrev = this.tagSearchPattern;
+      this.updateURL();
+    },
   }
 }
 </script>
