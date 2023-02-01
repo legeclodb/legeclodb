@@ -4,6 +4,10 @@
     "desc": "自身を中心とした周囲1マス以内の全ての敵ユニットに0.55倍の範囲ダメージを与える。",
     "icon": "https://legeclo.wikiru.jp/attach2/E382A2E383BCE382B5E383BC_736B5F613032322E706E67.png",
     "skillType": "アクティブ",
+    "ct": 3,
+    "area": 1,
+    "range": "自ユニット",
+    "cost": 2,
     "skillTags": [ "攻撃(範囲)" ],
     "tags": []
   },
@@ -12,6 +16,7 @@
     "desc": "近距離による戦闘時、その戦闘後、確率（30％）で味方メインが与えたダメージの30%分HPを回復する。",
     "icon": "https://legeclo.wikiru.jp/attach2/E382A2E383BCE382B5E383BC_736B5F703032352E706E67.png",
     "skillType": "パッシブ",
+    "cost": 1,
     "skillTags": [ "自己回復" ],
     "tags": []
   },
@@ -20,6 +25,10 @@
     "desc": "戦闘前、敵ユニットに「スタン(1ターン)」を付与する。敵単体に1倍のダメージを与える。",
     "icon": "https://legeclo.wikiru.jp/attach2/E382A2E383BCE382B5E383BC_736B5F613034312E706E67.png",
     "skillType": "アクティブ",
+    "ct": 3,
+    "area": "単体",
+    "range": 1,
+    "cost": 2,
     "skillTags": [ "攻撃(単体)" ],
     "tags": [ "デバフ:スタン" ]
   },
@@ -28,6 +37,7 @@
     "desc": "近距離による戦闘時、その戦闘前、敵ユニットの強化効果を1個解除し、ディフェンス-20％（1ターン）。",
     "icon": "https://legeclo.wikiru.jp/attach2/E382A2E383BCE382B5E383BC_736B5F703036372E706E67.png",
     "skillType": "パッシブ",
+    "cost": 2,
     "skillTags": [],
     "tags": [ "バフ解除", "デバフ:ディフェンス" ]
   },
@@ -36,6 +46,10 @@
     "desc": "シンボルが「ゼニス」の全ての味方ユニットのアタック+20%、マジック+20%、ディフェンス+20％、レジスト+30％（4ターン）。更に【ゼニスの加護】を付与する。\n【ゼニスの加護】「味方ターンでの戦闘時、敵ユニットに対して有利関係にある時、自ユニットの与ダメージ+20%」の効果（4ターン）を付与する。",
     "icon": "https://legeclo.wikiru.jp/attach2/E382A2E383BCE382B5E383BC_736B5F61653030352E706E67.png",
     "skillType": "アクティブ",
+    "ct": 3,
+    "area": "全体",
+    "range": "自ユニット",
+    "cost": 2,
     "skillTags": [ "補助" ],
     "tags": [ "シンボルスキル" ]
   },
@@ -44,6 +58,7 @@
     "desc": "味方ターンでの攻撃時、ダメージを与えた敵ユニットに味方メインのアタックの2倍の固定ダメージを与える。",
     "icon": "https://legeclo.wikiru.jp/attach2/E382A2E383BCE382B5E383BC_736B5F703033342E706E67.png",
     "skillType": "パッシブ",
+    "cost": 1,
     "skillTags": [ "固定ダメージ" ],
     "tags": []
   },
@@ -52,6 +67,10 @@
     "desc": "戦闘前、自ユニットに「自ユニットのHPが50％以上の時、戦闘前、ダメージ耐性+15％（2ターン）」の効果を付与する。敵単体に1.5倍のダメージを与える。",
     "icon": "https://legeclo.wikiru.jp/attach2/E382AFE383BCE383BBE38395E383BCE383AAE383B3_736B5F613135342E706E67.png",
     "skillType": "アクティブ",
+    "ct": 2,
+    "area": "単体",
+    "range": 2,
+    "cost": 2,
     "skillTags": [ "攻撃(単体)" ],
     "tags": []
   },
@@ -60,6 +79,7 @@
     "desc": "行動終了時、自ユニットのメイン、サポートそれぞれのHPが最大HPの20%分回復する。",
     "icon": "https://legeclo.wikiru.jp/attach2/E38388E383AAE382B9E382BFE383B3_736B5F703030392E706E67.png",
     "skillType": "パッシブ",
+    "cost": 1,
     "skillTags": [ "回復(自身)" ],
     "tags": []
   },
@@ -68,6 +88,10 @@
     "desc": "自身を中心とした範囲2マス以内の味方ユニットが、敵ターンで攻撃タイプ「アタック」からの戦闘時、「ガード」を発動（3ターン）。更に「敵ターンでの戦闘時、自ユニットのディフェンスに基本ステータスのアタックの7%分を加算する」、「近距離による戦闘時、その戦闘後、敵ユニットに味方メインのディフェンスの4倍の固定ダメージを与える」の効果（3ターン）を付与する。",
     "icon": "https://legeclo.wikiru.jp/attach2/E382AFE383BCE383BBE38395E383BCE383AAE383B3_736B5F613036372E706E67.png",
     "skillType": "アクティブ",
+    "ct": 3,
+    "area": "単体",
+    "range": "自ユニット",
+    "cost": 2,
     "skillTags": [ "補助", "ステータス加算" ],
     "tags": [ "ガード(アタック)", "デバフ:DoT" ]
   },
@@ -76,6 +100,7 @@
     "desc": "自身を中心とした範囲2マス以内の全ての味方ユニットのディフェンス+10％。",
     "icon": "https://legeclo.wikiru.jp/attach2/E382AFE383BCE383BBE38395E383BCE383AAE383B3_736B5F703031342E706E67.png",
     "skillType": "パッシブ",
+    "cost": 2,
     "skillTags": [],
     "tags": [ "バフ:ディフェンス" ]
   },
@@ -84,6 +109,10 @@
     "desc": "自身を中心とした範囲3マス以内の全ての味方ユニットの移動+1、アタック+20%、マジック+20％（2ターン）。",
     "icon": "https://legeclo.wikiru.jp/attach2/E382AFE383BCE383BBE38395E383BCE383AAE383B3_736B5F613136382E706E67.png",
     "skillType": "アクティブ",
+    "ct": 2,
+    "area": 3,
+    "range": "自ユニット",
+    "cost": 2,
     "skillTags": [ "補助" ],
     "tags": [ "バフ:アタック", "バフ:マジック", "バフ:移動" ]
   },
@@ -92,6 +121,10 @@
     "desc": "自身を中心とした範囲2マス以内の全ての敵ユニットに0.55倍の範囲ダメージを与え、ランダムで弱化効果を1個付与する。更に自ユニットのディフェンス+10％、レジスト+10％（2ターン）。",
     "icon": "https://legeclo.wikiru.jp/attach2/E382AFE383BCE383BBE38395E383BCE383AAE383B3_736B5F613035312E706E67.png",
     "skillType": "アクティブ",
+    "ct": 5,
+    "area": 3,
+    "range": "自ユニット",
+    "cost": 2,
     "skillTags": [ "攻撃(範囲)" ],
     "tags": [ "デバフ:ランダム" ]
   },
@@ -100,6 +133,10 @@
     "desc": "戦闘前、自ユニットのディフェンス+30%、レジスト+30％。敵単体に1.5倍のダメージを与える。",
     "icon": "https://legeclo.wikiru.jp/attach2/E382AFE383ACE382AAE38391E38388E383A9_736B5F613135372E706E67.png",
     "skillType": "アクティブ",
+    "ct": 2,
+    "area": "単体",
+    "range": 1,
+    "cost": 2,
     "skillTags": [ "攻撃(単体)" ],
     "tags": []
   },
@@ -108,6 +145,7 @@
     "desc": "味方ターンでの戦闘時、自ユニットの与ダメージ+10%。戦闘後、移動が残っている時、残り分の移動ができる。",
     "icon": "https://legeclo.wikiru.jp/attach2/E382AFE383ACE382AAE38391E38388E383A9_736B5F703031352E706E67.png",
     "skillType": "パッシブ",
+    "cost": 1,
     "skillTags": [],
     "tags": [ "再移動" ]
   },
@@ -116,6 +154,7 @@
     "desc": "行動終了時、自身を中心とした範囲2マス以内の全ての敵ユニットのディフェンスｰ15%（1ターン）。",
     "icon": "https://legeclo.wikiru.jp/attach2/E383ACE382AAE3838AE383ABE38389E383BBE38380E383BBE383B4E382A3E383B3E38381_736B5F703034352E706E67.png",
     "skillType": "パッシブ",
+    "cost": 2,
     "skillTags": [],
     "tags": [ "デバフ:ディフェンス" ]
   },
@@ -124,6 +163,10 @@
     "desc": "自ユニットのアタック+20％（1ターン）。スキル使用時、再行動できる。",
     "icon": "https://legeclo.wikiru.jp/attach2/E382AFE383ACE382AAE38391E38388E383A9_736B5F613035362E706E67.png",
     "skillType": "アクティブ",
+    "ct": 3,
+    "area": "単体",
+    "range": "自ユニット",
+    "cost": 2,
     "skillTags": [ "補助" ],
     "tags": [ "再行動" ]
   },
@@ -132,6 +175,10 @@
     "desc": "自身を中心とした周囲1マス以内の全ての敵ユニットに0.45倍の範囲ダメージを与え、ランダムで弱化効果を1個付与する。",
     "icon": "https://legeclo.wikiru.jp/attach2/E383ACE382AAE3838AE383ABE38389E383BBE38380E383BBE383B4E382A3E383B3E38381_736B5F613031372E706E67.png",
     "skillType": "アクティブ",
+    "ct": 2,
+    "area": 1,
+    "range": "自ユニット",
+    "cost": 2,
     "skillTags": [ "攻撃(範囲)" ],
     "tags": [ "デバフ:ランダム" ]
   },
@@ -140,6 +187,10 @@
     "desc": "戦闘前、敵ユニットの強化効果を最大2個奪う。敵単体に1.3倍のダメージを与える（ガード不可）。",
     "icon": "https://legeclo.wikiru.jp/attach2/E382AFE383ACE382AAE38391E38388E383A9_736B5F613037362E706E67.png",
     "skillType": "アクティブ",
+    "ct": 3,
+    "area": "単体",
+    "range": 2,
+    "cost": 2,
     "skillTags": [ "攻撃(単体)", "ガード不可攻撃" ],
     "tags": [ "バフ奪取" ]
   },
