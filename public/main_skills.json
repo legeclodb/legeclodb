@@ -1122,7 +1122,8 @@
     "icon": "https://legeclo.wikiru.jp/attach2/E382BDE383ADE383A2E383B328E3838FE383ADE382A6E382A3E383B329_736B5F613230302E706E67.png",
     "skillType": "アクティブ",
     "skillTags": [ "攻撃(範囲)" ],
-    "tags": [ "バフ解除", "デバフ:スタン" ]
+    "tags": [ "バフ解除", "デバフ:スタン" ],
+    "note": "範囲1マスだが範囲攻撃扱い"
   },
   {
     "name": "ウィッチ・ブラスト",

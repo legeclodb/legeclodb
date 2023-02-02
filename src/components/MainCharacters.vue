@@ -19,7 +19,7 @@
             <div class="menu-widgets flex">
               <div class="widget">
                 <b-button-group size="sm" id="skill_type_selector">
-                  <b-button v-for="(c, i) in skillTypeFilter" :key="i" :pressed.sync="c.state" variant="outline-secondary">
+                  <b-button v-for="(c, i) in skillTypeFilter" :key="i" :pressed.sync="c.state" @click="onChangeFilterState()" variant="outline-secondary">
                     {{ skillTypes[i] }}
                   </b-button>
                 </b-button-group>
@@ -32,9 +32,9 @@
               <div class="widget" style="margin-right:0px" v-for="(tc, tci) in tagCategory" :key="tci">
                 <b-dropdown :text="tc.display" :ref="tc.name" size="sm" @hide="onTagDropdownHide($event, tc)">
                   <b-dropdown-item class="d-flex flex-column" v-for="(t, i) in tc.tags" :key="i" :id="tc.name+'_item'+i" @click="setTagSearchPattern(t); hideTagDropdown(tc);">
-                    {{t}} <span class="note">{{getTagNote(t)}}</span>
+                    {{t}} <span v-if="mainConsts.tagNotes[t]" class="note" v-html="mainConsts.tagNotes[t]"></span>
                     <b-popover v-if="subTagTable[t]" :target="tc.name+'_item'+i" triggers="hover focus" delay="0" no-fade @shown="tc.keepDropdown=true" @hidden="tc.keepDropdown=false">
-                      <b-dropdown-item class="d-flex flex-column" v-for="(st, si) in subTagTable[t]" :key="si" @click="setTagSearchPattern(st); hideTagDropdown(tc);">{{st}}</b-dropdown-item>
+                      <b-dropdown-item class="d-flex flex-column" v-for="(st, si) in subTagTable[t]" :key="si" @click="setTagSearchPattern(st, true); hideTagDropdown(tc);">{{st}}</b-dropdown-item>
                     </b-popover>
                   </b-dropdown-item>
                 </b-dropdown>
@@ -126,7 +126,7 @@
                   </div>
                   <div class="desc">
                     <h5>{{ chr.talent.name }}</h5>
-                    <p v-html="descToHtml(chr.talent)"></p>
+                    <p><span v-html="descToHtml(chr.talent)"></span><span v-if="chr.talent.note" class="note" v-html="chr.talent.note"></span></p>
                   </div>
                 </div>
                 <div class="tags" v-show="showDetail >= 2">
@@ -142,7 +142,7 @@
                       </div>
                       <div class="desc">
                         <h6>{{ skill.name }}</h6>
-                        <p v-html="descToHtml(skill)"></p>
+                        <p><span v-html="descToHtml(skill)"></span><span v-if="skill.note" class="note" v-html="skill.note"></span></p>
                       </div>
                     </div>
                     <div class="tags" v-show="showDetail >= 2">
@@ -233,6 +233,7 @@ export default {
 
       showDetail: 2,
       showHeader: true,
+      preventShowHideHeaderOnScroll: 0,
       lastScrollPosition: 0,
 
       symbolFilter: [
@@ -326,17 +327,30 @@ export default {
       if (pos < 0 || Math.abs(pos - this.lastScrollPosition) < 30) {
         return;
       }
-      this.showHeader = pos < this.lastScrollPosition;
+
+      if (this.preventShowHideHeaderOnScroll > 0) {
+        --this.preventShowHideHeaderOnScroll;
+      }
+      else {
+        this.showHeader = pos < this.lastScrollPosition;
+      }
       this.lastScrollPosition = pos;
     },
 
-    setTagSearchPattern(txt) {
+    setTagSearchPattern(txt, wholeWord = false) {
       txt = txt.trim();
       txt = txt.replace('(', '\\(');
       txt = txt.replace(')', '\\)');
       txt = "^" + txt;
-      this.tagSearchPattern = this.tagSearchPattern == txt ? "" : txt;
-      this.showHeader = true;
+      if (wholeWord) {
+        txt += "$";
+      }
+      this.tagSearchPattern = txt;
+
+      this.preventShowHideHeaderOnScroll = 1;
+      this.$nextTick(function () {
+        this.showHeader = true;
+      }.bind(this));
     },
     
     compareDate(a, b) {
@@ -423,11 +437,7 @@ export default {
     },
 
     descToHtml(item) {
-      let r = item.desc.replaceAll("\n", "<br/>");
-      if (item.note) {
-        r += "<br /><span class='note'>" + item.note.replaceAll("\n", "<br/>") + "</span>";
-      }
-      return r;
+      return item.desc.replaceAll("\n", "<br/>") + "<br/>";
     },
 
     getIconURL(name) {
@@ -435,12 +445,6 @@ export default {
         return this.mainConsts.iconTable[name];
       }
       return "./empty.png";
-    },
-    getTagNote(name) {
-      if(this.mainConsts.tagNotes && name in this.mainConsts.tagNotes) {
-        return this.mainConsts.tagNotes[name];
-      }
-      return "";
     },
 
     setupDB() {
@@ -461,23 +465,32 @@ export default {
           skill.users = [];
         skill.users.push(chr.name);
       };
+
+      let allTags = new Set();
+      let mainTags = new Set();
+
       const addSubTag = function (main, sub) {
-        if (!(main in this.subTagTable)) {
-          this.subTagTable[main] = new Set();
+        let subtags = this.subTagTable[main];
+        if (!subtags) {
+          subtags = new Set();
+          this.subTagTable[main] = subtags;
         }
-        this.subTagTable[main].add(sub);
+        if (!subtags.has(main) && allTags.has(main)) {
+          subtags.add(main);
+        }
+        subtags.add(sub);
       }.bind(this);
 
-      let registeredTags = new Set();
       const registerTags = function(tags) {
-        for(let t of tags) {
+        for (let t of tags) {
+          allTags.add(t);
           let p = t.lastIndexOf('(');
           if (p != -1) {
             let sub = t;
             t = t.slice(0, p);
             addSubTag(t, sub);
           }
-          registeredTags.add(t);
+          mainTags.add(t);
         }
       };
 
@@ -525,7 +538,7 @@ export default {
       handlePredefinedTags(this.tagCategory.resist.tags, this.mainConsts.tagsResist);
       handlePredefinedTags(this.tagCategory.other.tags, this.mainConsts.tagsOther);
 
-      for (let t of Array.from(registeredTags).sort()) {
+      for (let t of Array.from(mainTags).sort()) {
         if (handledTags.has(t))
           continue;
 
@@ -889,19 +902,17 @@ div.skill {
 .tag {
   cursor: pointer;
 }
-
 .highlighted {
   border: 3px solid rgba(255, 0, 0, 0.7) !important;
+}
+.note {
+  font-size: 75%;
+  color: rgb(175, 175, 175);
 }
 </style>
 
 <!-- global scope -->
 <style>
-.note {
-  font-size: 75%;
-  color: rgb(175, 175, 175);
-}
-
 .dropdown-item {
   padding: 0.2rem !important;
 }
