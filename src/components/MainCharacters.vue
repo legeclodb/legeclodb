@@ -29,31 +29,13 @@
               </div>
             </div>
             <div class="menu-widgets flex">
-              <div class="widget" style="margin-right:0px">
-                <b-dropdown text="バフ系" size="sm">
-                  <b-dropdown-item class="d-flex flex-column" v-for="(t, i) in tagsBuff" :key="i" @click="setTagSearchPattern(t)">
+              <div class="widget" style="margin-right:0px" v-for="(tc, tci) in tagCategory" :key="tci">
+                <b-dropdown :text="tc.display" :ref="tc.name" size="sm" @hide="onTagDropdownHide($event, tc)">
+                  <b-dropdown-item class="d-flex flex-column" v-for="(t, i) in tc.tags" :key="i" :id="tc.name+'_item'+i" @click="setTagSearchPattern(t); hideTagDropdown(tc);">
                     {{t}} <span class="note">{{getTagNote(t)}}</span>
-                  </b-dropdown-item>
-                </b-dropdown>
-              </div>
-              <div class="widget" style="margin-right:0px">
-                <b-dropdown text="デバフ系" size="sm">
-                  <b-dropdown-item class="d-flex flex-column" v-for="(t, i) in tagsDebuff" :key="i" @click="setTagSearchPattern(t)">
-                    {{t}} <span class="note">{{getTagNote(t)}}</span>
-                  </b-dropdown-item>
-                </b-dropdown>
-              </div>
-              <div class="widget" style="margin-right:0px">
-                <b-dropdown text="無効化系" size="sm">
-                  <b-dropdown-item class="d-flex flex-column" v-for="(t, i) in tagsResist" :key="i" @click="setTagSearchPattern(t)">
-                    {{t}} <span class="note">{{getTagNote(t)}}</span>
-                  </b-dropdown-item>
-                </b-dropdown>
-              </div>
-              <div class="widget" style="margin-right:0px">
-                <b-dropdown text="その他" size="sm">
-                  <b-dropdown-item class="d-flex flex-column" v-for="(t, i) in tagsOther" :key="i" @click="setTagSearchPattern(t)">
-                    {{t}} <span class="note">{{getTagNote(t)}}</span>
+                    <b-popover v-if="subTagTable[t]" :target="tc.name+'_item'+i" triggers="hover focus" delay="0" no-fade @shown="tc.keepDropdown=true" @hidden="tc.keepDropdown=false">
+                      <b-dropdown-item class="d-flex flex-column" v-for="(st, si) in subTagTable[t]" :key="si" @click="setTagSearchPattern(st); hideTagDropdown(tc);">{{st}}</b-dropdown-item>
+                    </b-popover>
                   </b-dropdown-item>
                 </b-dropdown>
               </div>
@@ -225,11 +207,34 @@ export default {
         "詳細",
       ],
 
+      tagCategory: {
+        buff: {
+          display: "バフ系",
+          name: "tags_buff",
+          tags: new Set(),
+        },
+        debuff: {
+          display: "デバフ系",
+          name: "tags_debuff",
+          tags: new Set(),
+        },
+        resist: {
+          display: "無効化系",
+          name: "tags_resist",
+          tags: new Set(),
+        },
+        other: {
+          display: "その他",
+          name: "tags_other",
+          tags: new Set(),
+        },
+      },
+      subTagTable: {},
+
+      showDetail: 2,
       showHeader: true,
       lastScrollPosition: 0,
 
-      showDetail: 2,
-      
       symbolFilter: [
         { state: false },
         { state: false },
@@ -264,11 +269,6 @@ export default {
       tagSearchPatternPrev: "",
       prevTagRE: null,
 
-      tagsBuff: new Set(),
-      tagsDebuff: new Set(),
-      tagsResist: new Set(),
-      tagsOther: new Set(),
-
       enableUpdateURL: false,
       prevURL: "",
     };
@@ -285,7 +285,7 @@ export default {
       return {
         "--character-flex-grow": `${this.showDetail == 0 ? 0 : 1}`,
       };
-    }
+    },
   },
 
   async beforeCreate() {
@@ -456,18 +456,26 @@ export default {
       }
       this.mainSkills = tmpSkillMap;
 
-      let addUser = function (skill, chr) {
+      const addUser = function (skill, chr) {
         if (!skill.users)
           skill.users = [];
         skill.users.push(chr.name);
       };
+      const addSubTag = function (main, sub) {
+        if (!(main in this.subTagTable)) {
+          this.subTagTable[main] = new Set();
+        }
+        this.subTagTable[main].add(sub);
+      }.bind(this);
 
       let registeredTags = new Set();
       const registerTags = function(tags) {
         for(let t of tags) {
           let p = t.lastIndexOf('(');
           if (p != -1) {
+            let sub = t;
             t = t.slice(0, p);
+            addSubTag(t, sub);
           }
           registeredTags.add(t);
         }
@@ -512,23 +520,23 @@ export default {
           }
         }
       };
-      handlePredefinedTags(this.tagsBuff, this.mainConsts.tagsBuff);
-      handlePredefinedTags(this.tagsDebuff, this.mainConsts.tagsDebuff);
-      handlePredefinedTags(this.tagsResist, this.mainConsts.tagsResist);
-      handlePredefinedTags(this.tagsOther, this.mainConsts.tagsOther);
+      handlePredefinedTags(this.tagCategory.buff.tags, this.mainConsts.tagsBuff);
+      handlePredefinedTags(this.tagCategory.debuff.tags, this.mainConsts.tagsDebuff);
+      handlePredefinedTags(this.tagCategory.resist.tags, this.mainConsts.tagsResist);
+      handlePredefinedTags(this.tagCategory.other.tags, this.mainConsts.tagsOther);
 
       for (let t of Array.from(registeredTags).sort()) {
         if (handledTags.has(t))
           continue;
 
         if (t.match(/^バフ:/))
-          this.tagsBuff.add(t);
+          this.tagCategory.buff.tags.add(t);
         else if (t.match(/^デバフ:/))
-          this.tagsDebuff.add(t);
+          this.tagCategory.debuff.tags.add(t);
         else if (t.match(/^無効化:/))
-          this.tagsResist.add(t);
+          this.tagCategory.resist.tags.add(t);
         else 
-          this.tagsOther.add(t);
+          this.tagCategory.other.tags.add(t);
       }
 
       this.setupCompleted = true;
@@ -706,6 +714,20 @@ export default {
       this.tagSearchPatternPrev = this.tagSearchPattern;
       this.updateURL();
     },
+
+    onTagDropdownHide(event, tagCategory) {
+      if (tagCategory.keepDropdown) {
+        event.preventDefault();
+      }
+    },
+    hideTagDropdown(tagCategory) {
+      this.$root.$emit('bv::hide::popover');
+      tagCategory.keepDropdown = false;
+      this.$nextTick(function () {
+        this.$refs[tagCategory.name][0].hide(true);
+      }.bind(this));
+    },
+
   }
 }
 </script>
