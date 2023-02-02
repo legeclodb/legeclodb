@@ -1,13 +1,1052 @@
 ﻿[
   {
-    "name": "",
-    "icon": "________",
+    "name": "シヴァ",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E382B7E383B4E382A15F69636F6E2E706E67.png",
     "date": "",
-    "cv": "",
     "rarity": "SSR",
-    "supportType": "",
-    "class": "",
-    "damageType": "",
-    "range": 0
+    "supportType": "妨害",
+    "class": "ランサー",
+    "damageType": "アタック",
+    "range": 1,
+    "skills": [
+      {
+        "name": "第三の目、開眼",
+        "desc": "敵ユニット1隊に「スタン(1ターン)」を付与し、1.3倍のダメージを与える。更にランダムな弱化効果を2個付与する。",
+        "icon": "https://legeclo.wikiru.jp/attach2/E382B7E383B4E382A1_736B5F73613030332E706E67.png",
+        "skillType": "アクティブ",
+        "area": "単体",
+        "range": 3,
+        "tags": [ "攻撃(範囲)", "デバフ:スタン", "デバフ:ランダム" ]
+      },
+      {
+        "name": "堅守",
+        "desc": "自ユニットのディフェンス+5%。",
+        "icon": "https://legeclo.wikiru.jp/attach2/E382B7E383B4E382A1_736B5F7370313030332E706E67.png",
+        "skillType": "パッシブ",
+        "tags": [ "自己バフ:ディフェンス" ]
+      },
+      {
+        "name": "破壊と創造の舞踊",
+        "desc": "敵ターンでの戦闘時、その戦闘前、自ユニットのアタック/ディフェンス+10%。",
+        "icon": "https://legeclo.wikiru.jp/attach2/E382B7E383B4E382A1_736B5F7370323030332E706E67.png",
+        "skillType": "パッシブ",
+        "tags": [ "自己バフ:アタック", "自己バフ:ディフェンス" ]
+      }
+    ]
+  },
+  {
+    "name": "スサノオ",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E382B9E382B5E3838EE382AA5F69636F6E2E706E67.png",
+    "date": "",
+    "rarity": "SSR",
+    "supportType": "攻撃",
+    "class": "ソルジャー",
+    "damageType": "アタック",
+    "range": 1,
+    "skills": [
+      {
+        "name": "大蛇薙",
+        "desc": "範囲内の全ての敵ユニットに0.75倍の範囲ダメージを与える。対象が「ソルジャー」の時、威力が上がる。",
+        "icon": "https://legeclo.wikiru.jp/attach2/E382B9E382B5E3838EE382AA_736B5F73613030312E706E67.png",
+        "skillType": "アクティブ",
+        "area": 2,
+        "range": 2,
+        "tags": [ "攻撃(範囲)", "特効(ソルジャー)" ]
+      },
+      {
+        "name": "剛気",
+        "desc": "自ユニットのアタック+5%。",
+        "icon": "https://legeclo.wikiru.jp/attach2/E382B9E382B5E3838EE382AA_736B5F7370313030312E706E67.png",
+        "skillType": "パッシブ",
+        "tags": [ "自己バフ:アタック" ]
+      },
+      {
+        "name": "八塩折之酒",
+        "desc": "戦闘で敵ユニットを倒した時、自ユニットのアタック+5%(2ターン/最大4回まで重複可能)。",
+        "icon": "https://legeclo.wikiru.jp/attach2/E382B9E382B5E3838EE382AA_736B5F7370323030312E706E67.png",
+        "skillType": "パッシブ",
+        "tags": [ "蓄積バフ", "自己バフ:アタック" ]
+      }
+    ]
+  },
+  {
+    "name": "アポロン",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E382A2E3839DE383ADE383B35F69636F6E2E706E67.png",
+    "date": "",
+    "rarity": "SSR",
+    "supportType": "支援",
+    "class": "ソルジャー",
+    "damageType": "アタック",
+    "range": 1,
+    "skills": [
+      {
+        "name": "サンライト・ハーモニー",
+        "desc": "範囲内の全ての味方ユニットの弱化効果を2個解除し、アタック+30%(2ターン)。",
+        "icon": "https://legeclo.wikiru.jp/attach2/E382A2E3839DE383ADE383B3_736B5F73613030322E706E67.png",
+        "skillType": "アクティブ",
+        "area": 2,
+        "range": 3,
+        "tags": [ "デバフ解除", "バフ:アタック" ]
+      },
+      {
+        "name": "奮迅",
+        "desc": "自ユニットのスキルダメージ+5%。",
+        "icon": "https://legeclo.wikiru.jp/attach2/E382A2E3839DE383ADE383B3_736B5F7370313030322E706E67.png",
+        "skillType": "パッシブ",
+        "tags": [ "自己バフ:与ダメージ(スキル)" ]
+      },
+      {
+        "name": "青春のプロミネンス",
+        "desc": "味方ターンでの戦闘時、その戦闘前、自ユニットの与ダメージ+20%/ダメージ耐性+10%。",
+        "icon": "https://legeclo.wikiru.jp/attach2/E382A2E3839DE383ADE383B3_736B5F7370323030322E706E67.png",
+        "skillType": "パッシブ",
+        "tags": [ "自己バフ:与ダメージ", "自己バフ:ダメージ耐性" ]
+      }
+    ]
+  },
+  {
+    "name": "オーディン",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E382AAE383BCE38387E382A3E383B35F69636F6E2E706E67.png",
+    "date": "",
+    "rarity": "SSR",
+    "supportType": "攻撃",
+    "class": "ライダー",
+    "damageType": "アタック",
+    "range": 1,
+    "skills": [
+      {
+        "name": "グングニル",
+        "desc": "敵ユニット1隊に1.5倍のダメージを与え、「HP回復不可(2ターン)」を付与する。",
+        "icon": "https://legeclo.wikiru.jp/attach2/E382AAE383BCE38387E382A3E383B3_736B5F73613030342E706E67.png",
+        "skillType": "アクティブ",
+        "area": 0,
+        "range": 0,
+        "tags": [ "攻撃(単体)", "デバフ:回復不可" ]
+      },
+      {
+        "name": "剛気",
+        "desc": "自ユニットのアタック+5%。",
+        "icon": "https://legeclo.wikiru.jp/attach2/E382B9E382B5E3838EE382AA_736B5F7370313030312E706E67.png",
+        "skillType": "パッシブ",
+        "tags": [ "自己バフ:アタック" ]
+      },
+      {
+        "name": "魔槍戦神",
+        "desc": "味方ターンでの戦闘時、その戦闘前、自ユニットのディフェンス/レジスト+10%。",
+        "icon": "https://legeclo.wikiru.jp/attach2/E382AAE383BCE38387E382A3E383B3_736B5F7370323030342E706E67.png",
+        "skillType": "パッシブ",
+        "tags": [ "自己バフ:ディフェンス", "自己バフ:レジスト" ]
+      }
+    ]
+  },
+  {
+    "name": "アルテミス",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E382A2E383ABE38386E3839FE382B95F69636F6E2E706E67.png",
+    "date": "",
+    "rarity": "SSR",
+    "supportType": "攻撃",
+    "class": "シューター",
+    "damageType": "アタック",
+    "range": 2,
+    "skills": [
+      {
+        "name": "ムーンライト・セレナーデ",
+        "desc": "範囲内の全ての敵ユニットに1倍の範囲ダメージを与える。",
+        "icon": "https://legeclo.wikiru.jp/attach2/E382A2E383ABE38386E3839FE382B9_736B5F73613030372E706E67.png",
+        "skillType": "アクティブ",
+        "area": 2,
+        "range": 2,
+        "tags": [ "攻撃(範囲)" ]
+      },
+      {
+        "name": "集中",
+        "desc": "自ユニットのクリティカル率+5%",
+        "icon": "https://legeclo.wikiru.jp/attach2/E382A2E383ABE38386E3839FE382B9_736B5F7370313030362E706E67.png",
+        "skillType": "パッシブ",
+        "tags": [ "自己バフ:クリティカル率" ]
+      },
+      {
+        "name": "射抜くは銀影の矢",
+        "desc": "味方ターンでの戦闘時、その戦闘前、メインのクリティカル率+15%/サポートのダメージ耐性+30%。",
+        "icon": "https://legeclo.wikiru.jp/attach2/E382A2E383ABE38386E3839FE382B9_736B5F7370323030372E706E67.png",
+        "skillType": "パッシブ",
+        "tags": [ "自己バフ:クリティカル率", "自己バフ:ダメージ耐性" ]
+      }
+    ]
+  },
+  {
+    "name": "アヌビス",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E382A2E3838CE38393E382B95F69636F6E2E706E67.png",
+    "date": "",
+    "rarity": "SSR",
+    "supportType": "支援",
+    "class": "セイント",
+    "damageType": "マジック",
+    "range": 2,
+    "skills": [
+      {
+        "name": "魂の冥支配の天秤",
+        "desc": "範囲内の全ての味方ユニットの弱体効果を2個解除し、HPをサポートのマジックの5倍回復する。",
+        "icon": "https://legeclo.wikiru.jp/attach2/E382A2E3838CE38393E382B9_736B5F73613030352E706E67.png",
+        "skillType": "アクティブ",
+        "area": 2,
+        "range": 2,
+        "tags": [ "回復(範囲)", "デバフ解除" ]
+      },
+      {
+        "name": "治術",
+        "desc": "自ユニットの治療効果+5%。",
+        "icon": "https://legeclo.wikiru.jp/attach2/E382A2E3838CE38393E382B9_736B5F7370313030342E706E67.png",
+        "skillType": "パッシブ",
+        "tags": [ "自己バフ:治療効果" ]
+      },
+      {
+        "name": "魂の安寧",
+        "desc": "行動終了時、自身を中心とした範囲2マス以内の味方ユニットのHPをサポートのマジックの1.5倍回復する。",
+        "icon": "https://legeclo.wikiru.jp/attach2/E382A2E3838CE38393E382B9_736B5F7370323030352E706E67.png",
+        "skillType": "パッシブ",
+        "tags": [ "回復(範囲)" ]
+      }
+    ]
+  },
+  {
+    "name": "ジョカ",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E382B8E383A7E382AB5F69636F6E2E706E67.png",
+    "date": "",
+    "rarity": "SSR",
+    "supportType": "妨害",
+    "class": "ソーサラー",
+    "damageType": "マジック",
+    "range": 2,
+    "skills": [
+      {
+        "name": "錬石補天",
+        "desc": "範囲内の全ての敵ユニットのディフェンス-30%、レジスト-30%(2ターン)。",
+        "icon": "https://legeclo.wikiru.jp/attach2/E382B8E383A7E382AB_736B5F73613030362E706E67.png",
+        "skillType": "アクティブ",
+        "area": 2,
+        "range": 2,
+        "tags": [ "攻撃(範囲)", "デバフ:ディフェンス", "デバフ:レジスト" ]
+      },
+      {
+        "name": "魔性",
+        "desc": "自ユニットのマジック+5％。",
+        "icon": "https://legeclo.wikiru.jp/attach2/E382B8E383A7E382AB_736B5F7370313030352E706E67.png",
+        "skillType": "パッシブ",
+        "tags": [ "自己バフ:マジック" ]
+      },
+      {
+        "name": "女禍造呪",
+        "desc": "味方ターンでの戦闘時、その戦闘後、敵ユニットにランダムな弱体化効果を1個付与する。",
+        "icon": "https://legeclo.wikiru.jp/attach2/E382B8E383A7E382AB_736B5F7370323030362E706E67.png",
+        "skillType": "パッシブ",
+        "tags": [ "デバフ:ランダム" ]
+      }
+    ]
+  },
+  {
+    "name": "アマテラス",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E382A2E3839EE38386E383A9E382B95F69636F6E2E706E67.png",
+    "date": "",
+    "rarity": "SSR",
+    "supportType": "支援",
+    "class": "エアリアル",
+    "damageType": "アタック",
+    "range": 1,
+    "skills": [
+      {
+        "name": "天照羽衣",
+        "desc": "範囲内の全ての味方ユニットのアタック+30%、ディフェンス+30%(2ターン)。",
+        "icon": "https://legeclo.wikiru.jp/attach2/E382A2E3839EE38386E383A9E382B9_736B5F73613030382E706E67.png",
+        "skillType": "アクティブ",
+        "area": 2,
+        "range": 3,
+        "tags": [ "バフ:アタック", "バフ:ディフェンス" ]
+      },
+      {
+        "name": "剛気",
+        "desc": "自ユニットのアタック+5%。",
+        "icon": "https://legeclo.wikiru.jp/attach2/E382B9E382B5E3838EE382AA_736B5F7370313030312E706E67.png",
+        "skillType": "パッシブ",
+        "tags": [ "自己バフ:アタック" ]
+      },
+      {
+        "name": "太陽神の後光",
+        "desc": "行動終了時、自身を中心とした範囲2マス以内の味方ユニット1隊にランダムな強化効果を1個付与する。",
+        "icon": "https://legeclo.wikiru.jp/attach2/E382A2E3839EE38386E383A9E382B9_736B5F7370323030382E706E67.png",
+        "skillType": "パッシブ",
+        "tags": [ "バフ:ランダム" ]
+      }
+    ]
+  },
+  {
+    "name": "サリエル",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E382B5E383AAE382A8E383AB5F69636F6E2E706E67.png",
+    "date": "2021/10/29",
+    "rarity": "SSR",
+    "supportType": "攻撃",
+    "class": "セイント",
+    "damageType": "アタック",
+    "range": 1,
+    "skills": [
+      {
+        "name": "天使の魔眼",
+        "desc": "自身を中心とした範囲3マスの敵ユニットに0.75倍の範囲ダメージを与え、強化効果を1個解除する。",
+        "icon": "https://legeclo.wikiru.jp/attach2/E382B5E383AAE382A8E383AB_736B5F73613033302E706E67.png",
+        "skillType": "アクティブ",
+        "area": 3,
+        "range": "自ユニット",
+        "tags": [ "攻撃(範囲)", "バフ解除" ]
+      },
+      {
+        "name": "治術",
+        "desc": "自ユニットの治療効果+5%。",
+        "icon": "https://legeclo.wikiru.jp/attach2/E382A2E3838CE38393E382B9_736B5F7370313030342E706E67.png",
+        "skillType": "パッシブ",
+        "tags": [ "自己バフ:治療効果" ]
+      },
+      {
+        "name": "ルナトス",
+        "desc": "行動終了時、自ユニットのメイン、サポートそれぞれのHPが最大HPの10%分回復する。",
+        "icon": "https://legeclo.wikiru.jp/attach2/E382B5E383AAE382A8E383AB_736B5F7370323033302E706E67.png",
+        "skillType": "パッシブ",
+        "tags": [ "回復(自身)" ]
+      }
+    ]
+  },
+  {
+    "name": "トール(ハロウィン)",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E38388E383BCE383AB28E3838FE383ADE382A6E382A3E383B3295F69636F6E2E706E67.png",
+    "date": "2021/11/12",
+    "rarity": "SSR",
+    "supportType": "妨害",
+    "class": "ライダー",
+    "damageType": "アタック",
+    "range": 1,
+    "skills": [
+      {
+        "name": "ライトニングハウル",
+        "desc": "範囲内の全ての敵ユニットのディフェンス-25%、レジスト-25%、移動-1(2ターン)。",
+        "icon": "https://legeclo.wikiru.jp/attach2/E38388E383BCE383AB28E3838FE383ADE382A6E382A3E383B329_736B5F73613033362E706E67.png",
+        "skillType": "アクティブ",
+        "area": 2,
+        "range": 2,
+        "tags": [ "デバフ:ディフェンス", "デバフ:レジスト", "デバフ:移動" ]
+      },
+      {
+        "name": "剛気",
+        "desc": "自ユニットのアタック+5%。",
+        "icon": "https://legeclo.wikiru.jp/attach2/E382B9E382B5E3838EE382AA_736B5F7370313030312E706E67.png",
+        "skillType": "パッシブ",
+        "tags": [ "自己バフ:アタック" ]
+      },
+      {
+        "name": "最カワですから！",
+        "desc": "行動終了後、自身を中心とした範囲2マス以内の敵ユニットのダメージ耐性-10%(2ターン)。",
+        "icon": "https://legeclo.wikiru.jp/attach2/E38388E383BCE383AB28E3838FE383ADE382A6E382A3E383B329_736B5F7370323033362E706E67.png",
+        "skillType": "パッシブ",
+        "tags": [ "デバフ:ダメージ耐性" ]
+      }
+    ]
+  },
+  {
+    "name": "ツクヨミ",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E38384E382AFE383A8E3839F5F69636F6E2E706E67.png",
+    "date": "2021/11/30",
+    "rarity": "SSR",
+    "supportType": "攻撃",
+    "class": "ランサー",
+    "damageType": "アタック",
+    "range": 1,
+    "skills": [
+      {
+        "name": "月下千本槍",
+        "desc": "範囲内の全ての敵ユニットに0.75倍の範囲ダメージを与え、追加でツクヨミのアタックの2.5倍の固定ダメージを与える。",
+        "icon": "https://legeclo.wikiru.jp/attach2/E38384E382AFE383A8E3839F_736B5F73613033322E706E67.png",
+        "skillType": "アクティブ",
+        "area": 2,
+        "range": 2,
+        "tags": [ "攻撃(範囲)", "固定ダメージ" ]
+      },
+      {
+        "name": "強靭",
+        "desc": "自ユニットの最大HP+5%。",
+        "icon": "https://legeclo.wikiru.jp/attach2/E38384E382AFE383A8E3839F_736B5F7370313030372E706E67.png",
+        "skillType": "パッシブ",
+        "tags": [ "自己バフ:最大HP" ]
+      },
+      {
+        "name": "月光夜曲",
+        "desc": "味方ターンでの戦闘時、その戦闘前、自ユニットのアタック+20%。",
+        "icon": "https://legeclo.wikiru.jp/attach2/E38384E382AFE383A8E3839F_736B5F7370323033322E706E67.png",
+        "skillType": "パッシブ",
+        "tags": [ "自己バフ:アタック" ]
+      }
+    ]
+  },
+  {
+    "name": "ルサルカ(クリスマス)",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E383ABE382B5E383ABE382AB28E382AFE383AAE382B9E3839EE382B9295F69636F6E2E706E67.png",
+    "date": "2021/12/14",
+    "rarity": "SSR",
+    "supportType": "支援",
+    "class": "ライダー",
+    "damageType": "アタック",
+    "range": 1,
+    "skills": [
+      {
+        "name": "月に寄せる歌",
+        "desc": "範囲内の全ての味方ユニットに「味方ターンでの戦闘時、その戦闘後、味方メインが与えたダメージの30%分HPを回復する」効果(2ターン)を付与する。",
+        "icon": "https://legeclo.wikiru.jp/attach2/E383ABE382B5E383ABE382AB28E382AFE383AAE382B9E3839EE382B929_736B5F73613033372E706E67.png",
+        "skillType": "アクティブ",
+        "area": 2,
+        "range": 2,
+        "tags": [ "バフ:与ダメ回復" ]
+      },
+      {
+        "name": "集中",
+        "desc": "自ユニットのクリティカル率+5%",
+        "icon": "https://legeclo.wikiru.jp/attach2/E382A2E383ABE38386E3839FE382B9_736B5F7370313030362E706E67.png",
+        "skillType": "パッシブ",
+        "tags": [ "自己バフ:クリティカル率" ]
+      },
+      {
+        "name": "クリスマスの決意",
+        "desc": "行動終了時、自ユニットにランダムな強化効果を1個付与。",
+        "icon": "https://legeclo.wikiru.jp/attach2/E383ABE382B5E383ABE382AB28E382AFE383AAE382B9E3839EE382B929_736B5F7370323033372E706E67.png",
+        "skillType": "パッシブ",
+        "tags": [ "自己バフ:ランダム" ]
+      }
+    ]
+  },
+  {
+    "name": "ミカエル(お正月)",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E3839FE382ABE382A8E383AB28E3818AE6ADA3E69C88295F69636F6E2E706E67.png",
+    "date": "2021/12/27",
+    "rarity": "SSR",
+    "supportType": "支援",
+    "class": "ランサー",
+    "damageType": "アタック",
+    "range": 1,
+    "skills": [
+      {
+        "name": "信じる光",
+        "desc": "範囲内の全ての味方ユニットのディフェンス+30%、レジスト+30%、アクティブによる位置移動無効(2ターン)。",
+        "icon": "https://legeclo.wikiru.jp/attach2/E3839FE382ABE382A8E383AB28E3818AE6ADA3E69C8829_736B5F73613033382E706E67.png",
+        "skillType": "アクティブ",
+        "area": 2,
+        "range": 2,
+        "tags": [ "バフ:ディフェンス", "バフ:レジスト", "無効化:位置移動" ]
+      },
+      {
+        "name": "強靭",
+        "desc": "自ユニットの最大HP+5%。",
+        "icon": "https://legeclo.wikiru.jp/attach2/E38384E382AFE383A8E3839F_736B5F7370313030372E706E67.png",
+        "skillType": "パッシブ",
+        "tags": [ "自己バフ:最大HP" ]
+      },
+      {
+        "name": "正しき月に反しても",
+        "desc": "ターンでの戦闘時、その戦闘前、自ユニットの最大HP以外の全ステータス+5%(2ターン/最大4回まで重複可能)。",
+        "icon": "https://legeclo.wikiru.jp/attach2/E3839FE382ABE382A8E383AB28E3818AE6ADA3E69C8829_736B5F7370323033382E706E67.png",
+        "skillType": "パッシブ",
+        "tags": [ "蓄積バフ", "自己バフ:アタック", "自己バフ:マジック", "自己バフ:ディフェンス", "自己バフ:レジスト", "自己バフ:テクニック" ]
+      }
+    ]
+  },
+  {
+    "name": "イシス",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E382A4E382B7E382B95F69636F6E2E706E67.png",
+    "date": "2022/01/11",
+    "rarity": "SSR",
+    "supportType": "攻撃",
+    "class": "ソーサラー",
+    "damageType": "マジック",
+    "range": 2,
+    "skills": [
+      {
+        "name": "破壊魔法アムムト",
+        "desc": "敵ユニット1隊に1.5倍のダメージを与える。対象が「シューター」の時、威力が上がる。",
+        "icon": "https://legeclo.wikiru.jp/attach2/E382A4E382B7E382B9_736B5F73613033342E706E67.png",
+        "skillType": "アクティブ",
+        "area": "単体",
+        "range": 3,
+        "tags": [ "攻撃(単体)", "特効(シューター)" ]
+      },
+      {
+        "name": "魔性",
+        "desc": "自ユニットのマジック+5％。",
+        "icon": "https://legeclo.wikiru.jp/attach2/E382B8E383A7E382AB_736B5F7370313030352E706E67.png",
+        "skillType": "パッシブ",
+        "tags": [ "自己バフ:マジック" ]
+      },
+      {
+        "name": "厄災の魔法使い",
+        "desc": "自ユニットのHPが100%の時、自ユニットのマジック+20%。",
+        "icon": "https://legeclo.wikiru.jp/attach2/E382A4E382B7E382B9_736B5F7370323033342E706E67.png",
+        "skillType": "パッシブ",
+        "tags": [ "自己バフ:マジック" ]
+      }
+    ]
+  },
+  {
+    "name": "観音菩薩",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E8A6B3E99FB3E88FA9E896A95F69636F6E2E706E67.png",
+    "date": "2022/01/25",
+    "rarity": "SSR",
+    "supportType": "攻撃",
+    "class": "エアリアル",
+    "damageType": "アタック",
+    "range": 1,
+    "skills": [
+      {
+        "name": "救世千手",
+        "desc": "自身を中心とした範囲3マス以内の全ての敵ユニットに1倍の範囲ダメージを与える。",
+        "icon": "https://legeclo.wikiru.jp/attach2/E8A6B3E99FB3E88FA9E896A9_736B5F73613034302E706E67.png",
+        "skillType": "アクティブ",
+        "area": 3,
+        "range": "自ユニット",
+        "tags": [ "攻撃(範囲)" ]
+      },
+      {
+        "name": "剛気",
+        "desc": "自ユニットのアタック+5%。",
+        "icon": "https://legeclo.wikiru.jp/attach2/E382B9E382B5E3838EE382AA_736B5F7370313030312E706E67.png",
+        "skillType": "パッシブ",
+        "tags": [ "自己バフ:アタック" ]
+      },
+      {
+        "name": "妙智の力",
+        "desc": "近距離による戦闘時、その戦闘前、自ユニットのアタック+15％。",
+        "icon": "https://legeclo.wikiru.jp/attach2/E8A6B3E99FB3E88FA9E896A9_736B5F7370323034302E706E67.png",
+        "skillType": "パッシブ",
+        "tags": [ "自己バフ:アタック" ]
+      }
+    ]
+  },
+  {
+    "name": "オーディン(バレンタイン)",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E382AAE383BCE38387E382A3E383B328E38390E383ACE383B3E382BFE382A4E383B3295F69636F6E2E706E67.png",
+    "date": "2022/02/08",
+    "rarity": "SSR",
+    "supportType": "支援",
+    "class": "ソルジャー",
+    "damageType": "アタック",
+    "range": 1,
+    "skills": [
+      {
+        "name": "ショコラコーティング",
+        "desc": "範囲内のすべての味方ユニットのアタック+30%、ダメージ耐性+30%(2ターン)。",
+        "icon": "https://legeclo.wikiru.jp/attach2/E382AAE383BCE38387E382A3E383B328E38390E383ACE383B3E382BFE382A4E383B329_736B5F73613034312E706E67.png",
+        "skillType": "アクティブ",
+        "area": 2,
+        "range": 2,
+        "tags": [ "バフ:アタック", "バフ:ダメージ耐性" ]
+      },
+      {
+        "name": "強靭",
+        "desc": "自ユニットの最大HP+5%。",
+        "icon": "https://legeclo.wikiru.jp/attach2/E38384E382AFE383A8E3839F_736B5F7370313030372E706E67.png",
+        "skillType": "パッシブ",
+        "tags": [ "自己バフ:最大HP" ]
+      },
+      {
+        "name": "愛がための自縛",
+        "desc": "味方ターンでの戦闘時、その戦闘前、自ユニットの物理与ダメージ+15%/物理ダメージ耐性+15%。",
+        "icon": "https://legeclo.wikiru.jp/attach2/E382AAE383BCE38387E382A3E383B328E38390E383ACE383B3E382BFE382A4E383B329_736B5F7370323034312E706E67.png",
+        "skillType": "パッシブ",
+        "tags": [ "自己バフ:与ダメージ(物理)", "自己バフ:ダメージ耐性(物理)" ]
+      }
+    ]
+  },
+  {
+    "name": "ソル",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E382BDE383AB5F69636F6E2E706E67.png",
+    "date": "2022/02/22",
+    "rarity": "SSR",
+    "supportType": "支援",
+    "class": "シューター",
+    "damageType": "アタック",
+    "range": 2,
+    "skills": [
+      {
+        "name": "祝福のぬくもり",
+        "desc": "範囲内の全ての味方ユニットのアタック＋30%、マジック＋30%(2ターン)。",
+        "icon": "https://legeclo.wikiru.jp/attach2/E382BDE383AB_736B5F73613034322E706E67.png",
+        "skillType": "アクティブ",
+        "area": 2,
+        "range": 2,
+        "tags": [ "バフ:アタック", "バフ:マジック" ]
+      },
+      {
+        "name": "奮迅",
+        "desc": "自ユニットのスキルダメージ+5%。",
+        "icon": "https://legeclo.wikiru.jp/attach2/E382A2E3839DE383ADE383B3_736B5F7370313030322E706E67.png",
+        "skillType": "パッシブ",
+        "tags": [ "自己バフ:与ダメージ(スキル)" ]
+      },
+      {
+        "name": "陽光の恵み",
+        "desc": "行動終了時、自身を中心とした範囲2マス以内の全ての味方ユニットのスキル与ダメージ＋20%(2ターン)。",
+        "icon": "https://legeclo.wikiru.jp/attach2/E382BDE383AB_736B5F7370323034322E706E67.png",
+        "skillType": "パッシブ",
+        "tags": [ "バフ:与ダメージ(スキル)" ]
+      }
+    ]
+  },
+  {
+    "name": "ニケ",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E3838BE382B15F69636F6E2E706E67.png",
+    "date": "2022/03/04",
+    "rarity": "SSR",
+    "supportType": "妨害",
+    "class": "エアリアル",
+    "damageType": "アタック",
+    "range": 1,
+    "skills": [
+      {
+        "name": "ビクトリーロード",
+        "desc": "敵ユニット1隊に1.3倍のダメージを与え、「アクティブスキル使用不可(1ターン)」、「パッシブスキル使用不可(1ターン)」を付与する。",
+        "icon": "https://legeclo.wikiru.jp/attach2/E3838BE382B1_736B5F73613034332E706E67.png",
+        "skillType": "アクティブ",
+        "area": "単体",
+        "range": 3,
+        "tags": [ "攻撃(単体)", "デバフ:アクティブスキル使用不可", "デバフ:パッシブスキル使用不可" ]
+      },
+      {
+        "name": "迅速",
+        "desc": "自ユニットの移動+1。",
+        "icon": "https://legeclo.wikiru.jp/attach2/E3838BE382B1_736B5F7370313030382E706E67.png",
+        "skillType": "パッシブ",
+        "tags": [ "自己バフ:移動" ]
+      },
+      {
+        "name": "勝利への鼓舞",
+        "desc": "近距離による戦闘時、その戦闘前、自ユニットのアタック/ディフェンス+10%。",
+        "icon": "https://legeclo.wikiru.jp/attach2/E3838BE382B1_736B5F7370323034332E706E67.png",
+        "skillType": "パッシブ",
+        "tags": [ "自己バフ:アタック", "自己バフ:ディフェンス" ]
+      }
+    ]
+  },
+  {
+    "name": "メジェド",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E383A1E382B8E382A7E383895F69636F6E2E706E67.png",
+    "date": "2022/03/14",
+    "rarity": "SSR",
+    "supportType": "支援",
+    "class": "セイント",
+    "damageType": "マジック",
+    "range": 2,
+    "skills": [
+      {
+        "name": "ナイルの賜物",
+        "desc": "自身を中心とした範囲3マス以内の全ての味方ユニットのHPをサポートのマジックの4.5倍回復し、ランダムな強化効果を2個付与する。",
+        "icon": "https://legeclo.wikiru.jp/attach2/E383A1E382B8E382A7E38389_736B5F73613033352E706E67.png",
+        "skillType": "アクティブ",
+        "area": 3,
+        "range": "自ユニット",
+        "tags": [ "回復(範囲)", "バフ:ランダム" ]
+      },
+      {
+        "name": "治術",
+        "desc": "自ユニットの治療効果+5%。",
+        "icon": "https://legeclo.wikiru.jp/attach2/E382A2E3838CE38393E382B9_736B5F7370313030342E706E67.png",
+        "skillType": "パッシブ",
+        "tags": [ "自己バフ:治療効果" ]
+      },
+      {
+        "name": "死者の聖別",
+        "desc": "行動終了時、現在HP割合が最も低い味方ユニットのHPを最大HPの10%分回復する。",
+        "icon": "https://legeclo.wikiru.jp/attach2/E383A1E382B8E382A7E38389_736B5F7370323033352E706E67.png",
+        "skillType": "パッシブ",
+        "tags": [ "回復(単体)" ]
+      }
+    ]
+  },
+  {
+    "name": "バッカス",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E38390E38383E382ABE382B95F69636F6E2E706E67.png",
+    "date": "2022/03/22",
+    "rarity": "SSR",
+    "supportType": "攻撃",
+    "class": "アサシン",
+    "damageType": "アタック",
+    "range": 2,
+    "skills": [
+      {
+        "name": "飲み比べなら負けないよ～？",
+        "desc": "敵ユニット1隊に1.5倍のダメージを与え、「パッシブ使用不可」を与える(2ターン)。",
+        "icon": "https://legeclo.wikiru.jp/attach2/E38390E38383E382ABE382B9_736B5F73613034352E706E67.png",
+        "skillType": "アクティブ",
+        "area": "単体",
+        "range": 3,
+        "tags": [ "攻撃(単体)", "デバフ:パッシブスキル使用不可" ]
+      },
+      {
+        "name": "集中",
+        "desc": "自ユニットのクリティカル率+5%",
+        "icon": "https://legeclo.wikiru.jp/attach2/E382A2E383ABE38386E3839FE382B9_736B5F7370313030362E706E67.png",
+        "skillType": "パッシブ",
+        "tags": [ "自己バフ:クリティカル率" ]
+      },
+      {
+        "name": "酒宴の始まり",
+        "desc": "遠距離による戦闘時、その戦闘前、自ユニットのクリティカルダメージ倍率+25%。",
+        "icon": "https://legeclo.wikiru.jp/attach2/E38390E38383E382ABE382B9_736B5F7370323034352E706E67.png",
+        "skillType": "パッシブ",
+        "tags": [ "自己バフ:クリティカルダメージ倍率" ]
+      }
+    ]
+  },
+  {
+    "name": "アヌビス(ハーフアニバーサリー)",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E382A2E3838CE38393E382B928E3838FE383BCE38395E382A2E3838BE38390E383BCE382B5E383AAE383BC295F69636F6E2E706E67.png",
+    "date": "2022/04/05",
+    "rarity": "SSR",
+    "supportType": "支援",
+    "class": "セイント",
+    "damageType": "マジック",
+    "range": 1,
+    "skills": [
+      {
+        "name": "水分補給の時間なのです",
+        "desc": "自身を中心とした範囲3マス以内の全ての味方ユニットに「行動終了時、自ユニットのメイン、サポートそれぞれのHPが最大HPの20%分回復する」効果(2ターン)を付与し、更にアクティブによる「回復不可」無効(2ターン)を付与する。",
+        "icon": "https://legeclo.wikiru.jp/attach2/E382A2E3838CE38393E382B928E3838FE383BCE38395E382A2E3838BE38390E383BCE382B5E383AAE383BC29_736B5F73613034362E706E67.png",
+        "skillType": "アクティブ",
+        "area": 3,
+        "range": "自ユニット",
+        "tags": [ "バフ:リジェネ", "無効化:回復不可" ]
+      },
+      {
+        "name": "強靭",
+        "desc": "自ユニットの最大HP+5%。",
+        "icon": "https://legeclo.wikiru.jp/attach2/E38384E382AFE383A8E3839F_736B5F7370313030372E706E67.png",
+        "skillType": "パッシブ",
+        "tags": [ "自己バフ:最大HP" ]
+      },
+      {
+        "name": "場を和ませるMC",
+        "desc": "味方ターンでの戦闘時、その戦闘前、自ユニットの弱化効果を1個削除し、その戦闘後、自ユニットのメイン、サポートそれぞれのHPが最大HPの10%分回復する。",
+        "icon": "https://legeclo.wikiru.jp/attach2/E382A2E3838CE38393E382B928E3838FE383BCE38395E382A2E3838BE38390E383BCE382B5E383AAE383BC29_736B5F7370323034362E706E67.png",
+        "skillType": "パッシブ",
+        "tags": [ "デバフ解除(自身)", "回復(自身)" ]
+      }
+    ]
+  },
+  {
+    "name": "アルテミス(ハーフアニバーサリー)",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E382A2E383ABE38386E3839FE382B928E3838FE383BCE38395E382A2E3838BE38390E383BCE382B5E383AAE383BC295F69636F6E2E706E67.png",
+    "date": "2022/04/22",
+    "rarity": "SSR",
+    "supportType": "攻撃",
+    "class": "ソーサラー",
+    "damageType": "マジック",
+    "range": 2,
+    "skills": [
+      {
+        "name": "聞き惚れる歌声",
+        "desc": "範囲内の全ての敵ユニットに0.75倍の範囲ダメージを与え、確率(50%)で「アクティブスキル使用不可(2ターン)」を付与する。",
+        "icon": "https://legeclo.wikiru.jp/attach2/E382A2E383ABE38386E3839FE382B928E3838FE383BCE38395E382A2E3838BE38390E383BCE382B5E383AAE383BC29_736B5F73613034372E706E67.png",
+        "skillType": "アクティブ",
+        "area": 2,
+        "range": 2,
+        "tags": [ "攻撃(範囲)", "デバフ:アクティブスキル使用不可" ]
+      },
+      {
+        "name": "奮迅",
+        "desc": "自ユニットのスキルダメージ+5%。",
+        "icon": "https://legeclo.wikiru.jp/attach2/E382A2E3839DE383ADE383B3_736B5F7370313030322E706E67.png",
+        "skillType": "パッシブ",
+        "tags": [ "自己バフ:与ダメージ(スキル)" ]
+      },
+      {
+        "name": "会場の端まで響け",
+        "desc": "味方ターンで遠距離による戦闘時、その戦闘前、自ユニットのスキル与ダメージ＋30%。",
+        "icon": "https://legeclo.wikiru.jp/attach2/E382A2E383ABE38386E3839FE382B928E3838FE383BCE38395E382A2E3838BE38390E383BCE382B5E383AAE383BC29_736B5F7370323034372E706E67.png",
+        "skillType": "パッシブ",
+        "tags": [ "自己バフ:与ダメージ(スキル)" ]
+      }
+    ]
+  },
+  {
+    "name": "ブリュンヒルデ",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E38396E383AAE383A5E383B3E38392E383ABE383875F69636F6E2E706E67.png",
+    "date": "2022/05/10",
+    "rarity": "SSR",
+    "supportType": "攻撃",
+    "class": "ランサー",
+    "damageType": "アタック",
+    "range": 1,
+    "skills": [
+      {
+        "name": "嫉妬の炎",
+        "desc": "自身から直線範囲7マス以内の全ての敵ユニットに1倍のダメージを与え、移動-2(1ターン)。",
+        "icon": "https://legeclo.wikiru.jp/attach2/E38396E383AAE383A5E383B3E38392E383ABE38387_736B5F73613034392E706E67.png",
+        "skillType": "アクティブ",
+        "area": "直線7マス",
+        "range": "自ユニット",
+        "tags": [ "攻撃(範囲)", "デバフ:移動" ]
+      },
+      {
+        "name": "奮迅",
+        "desc": "自ユニットのスキルダメージ+5%。",
+        "icon": "https://legeclo.wikiru.jp/attach2/E382A2E3839DE383ADE383B3_736B5F7370313030322E706E67.png",
+        "skillType": "パッシブ",
+        "tags": [ "自己バフ:与ダメージ(スキル)" ]
+      },
+      {
+        "name": "戦い続ける運命",
+        "desc": "近距離での戦闘時、その戦闘後、味方メインが与えたダメージの10%分HPを回復する。",
+        "icon": "https://legeclo.wikiru.jp/attach2/E38396E383AAE383A5E383B3E38392E383ABE38387_736B5F7370323034392E706E67.png",
+        "skillType": "パッシブ",
+        "tags": [ "自己バフ:与ダメ回復" ]
+      }
+    ]
+  },
+  {
+    "name": "ラファエル",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E383A9E38395E382A1E382A8E383AB5F69636F6E2E706E67.png",
+    "date": "2022/05/31",
+    "rarity": "SSR",
+    "supportType": "妨害",
+    "class": "ソルジャー",
+    "damageType": "アタック",
+    "range": 1,
+    "skills": [
+      {
+        "name": "大天使の反抗",
+        "desc": "自身を中心とした範囲3マス以内の全ての敵ユニットのディフェンス-30%、レジスト-30%(2ターン)。",
+        "icon": "https://legeclo.wikiru.jp/attach2/E383A9E38395E382A1E382A8E383AB_736B5F73613035302E706E67.png",
+        "skillType": "アクティブ",
+        "area": 3,
+        "range": "自ユニット",
+        "tags": [ "デバフ:ディフェンス", "デバフ:レジスト" ]
+      },
+      {
+        "name": "強靭",
+        "desc": "自ユニットの最大HP+5%。",
+        "icon": "https://legeclo.wikiru.jp/attach2/E38384E382AFE383A8E3839F_736B5F7370313030372E706E67.png",
+        "skillType": "パッシブ",
+        "tags": [ "自己バフ:最大HP" ]
+      },
+      {
+        "name": "掃き溜めの天使",
+        "desc": "味方ターンでの戦闘時、その戦闘前、自ユニットの与ダメージ+25%。",
+        "icon": "https://legeclo.wikiru.jp/attach2/E383A9E38395E382A1E382A8E383AB_736B5F7370323035302E706E67.png",
+        "skillType": "パッシブ",
+        "tags": [ "自己バフ:与ダメージ" ]
+      }
+    ]
+  },
+  {
+    "name": "ガブリエル",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E382ACE38396E383AAE382A8E383AB5F69636F6E2E706E67.png",
+    "date": "2022/06/14",
+    "rarity": "SSR",
+    "supportType": "妨害",
+    "class": "シューター",
+    "damageType": "アタック",
+    "range": 2,
+    "skills": [
+      {
+        "name": "主の裁きに従え",
+        "desc": "範囲内の全ての敵ユニットの物理ダメージ耐性-25%(2ターン)、「HP回復不可(2ターン)」を付与する。",
+        "icon": "https://legeclo.wikiru.jp/attach2/E382ACE38396E383AAE382A8E383AB_736B5F73613035322E706E67.png",
+        "skillType": "アクティブ",
+        "area": 2,
+        "range": 3,
+        "tags": [ "デバフ:ダメージ耐性(物理)", "デバフ:回復不可" ]
+      },
+      {
+        "name": "剛気",
+        "desc": "自ユニットのアタック+5%。",
+        "icon": "https://legeclo.wikiru.jp/attach2/E382B9E382B5E3838EE382AA_736B5F7370313030312E706E67.png",
+        "skillType": "パッシブ",
+        "tags": [ "自己バフ:アタック" ]
+      },
+      {
+        "name": "祝福の呪い",
+        "desc": "行動終了時、自身を中心とした範囲3マス以内の全ての敵ユニットのディフェンス/レジスト-10%(2ターン)。",
+        "icon": "https://legeclo.wikiru.jp/attach2/E382ACE38396E383AAE382A8E383AB_736B5F7370323035322E706E67.png",
+        "skillType": "パッシブ",
+        "tags": [ "デバフ:ディフェンス", "デバフ:レジスト" ]
+      }
+    ]
+  },
+  {
+    "name": "ジョカ(浴衣)",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E382B8E383A7E382AB28E6B5B4E8A1A3295F69636F6E2E706E67.png",
+    "date": "2022/06/28",
+    "rarity": "SSR",
+    "supportType": "支援",
+    "class": "アサシン",
+    "damageType": "アタック",
+    "range": 2,
+    "skills": [
+      {
+        "name": "織姫の願い",
+        "desc": "範囲内の全ての味方ユニットのアタック+30%、クリティカル率+25%(2ターン)。",
+        "icon": "https://legeclo.wikiru.jp/attach2/E382B8E383A7E382AB28E6B5B4E8A1A329_736B5F73613035332E706E67.png",
+        "skillType": "アクティブ",
+        "area": 2,
+        "range": 2,
+        "tags": [ "バフ:アタック", "バフ:クリティカル率" ]
+      },
+      {
+        "name": "剛気",
+        "desc": "自ユニットのアタック+5%。",
+        "icon": "https://legeclo.wikiru.jp/attach2/E382B9E382B5E3838EE382AA_736B5F7370313030312E706E67.png",
+        "skillType": "パッシブ",
+        "tags": [ "自己バフ:アタック" ]
+      },
+      {
+        "name": "天の川はこちらから",
+        "desc": "遠距離による戦闘時、その戦闘前、自ユニットの与ダメージ+20%。",
+        "icon": "https://legeclo.wikiru.jp/attach2/E382B8E383A7E382AB28E6B5B4E8A1A329_736B5F7370323035332E706E67.png",
+        "skillType": "パッシブ",
+        "tags": [ "自己バフ:与ダメージ" ]
+      }
+    ]
+  },
+  {
+    "name": "パンドラ",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E38391E383B3E38389E383A95F69636F6E2E706E67.png",
+    "date": "2022/07/12",
+    "rarity": "SSR",
+    "supportType": "支援",
+    "class": "ソーサラー",
+    "damageType": "マジック",
+    "range": 2,
+    "skills": [
+      {
+        "name": "災いの箱よ、力をもたらせ",
+        "desc": "範囲内の全ての味方ユニットの弱化効果を2個解除し、マジック+30%(2ターン)。",
+        "icon": "https://legeclo.wikiru.jp/attach2/E38391E383B3E38389E383A9_736B5F73613035342E706E67.png",
+        "skillType": "アクティブ",
+        "area": 2,
+        "range": 2,
+        "tags": [ "デバフ解除", "バフ:マジック" ]
+      },
+      {
+        "name": "魔性",
+        "desc": "自ユニットのマジック+5％。",
+        "icon": "https://legeclo.wikiru.jp/attach2/E382B8E383A7E382AB_736B5F7370313030352E706E67.png",
+        "skillType": "パッシブ",
+        "tags": [ "自己バフ:マジック" ]
+      },
+      {
+        "name": "逃れられぬ災厄",
+        "desc": "戦闘前、敵ユニットの魔法ダメージ耐性-20%。",
+        "icon": "https://legeclo.wikiru.jp/attach2/E38391E383B3E38389E383A9_736B5F7370323035342E706E67.png",
+        "skillType": "パッシブ",
+        "tags": [ "単戦デバフ:魔法ダメージ耐性" ]
+      }
+    ]
+  },
+  {
+    "name": "ミカエル(水着)",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E3839FE382ABE382A8E383AB28E6B0B4E79D80295F69636F6E2E706E67.png",
+    "date": "2022/07/26",
+    "rarity": "SSR",
+    "supportType": "支援",
+    "class": "ソルジャー",
+    "damageType": "アタック",
+    "range": 1,
+    "skills": [
+      {
+        "name": "パラソル持ってビーチへゴー！",
+        "desc": "範囲内の全ての味方ユニットの物理与ダメージ+30%、ディフェンス+30%(2ターン)。",
+        "icon": "https://legeclo.wikiru.jp/attach2/E3839FE382ABE382A8E383AB28E6B0B4E79D8029_736B5F73613035352E706E67.png",
+        "skillType": "アクティブ",
+        "area": 2,
+        "range": 2,
+        "tags": [ "バフ:与ダメージ(物理)", "バフ:ディフェンス" ]
+      },
+      {
+        "name": "奮迅",
+        "desc": "自ユニットのスキルダメージ+5%。",
+        "icon": "https://legeclo.wikiru.jp/attach2/E382A2E3839DE383ADE383B3_736B5F7370313030322E706E67.png",
+        "skillType": "パッシブ",
+        "tags": [ "自己バフ:与ダメージ(スキル)" ]
+      },
+      {
+        "name": "夏！海！水着の天使！",
+        "desc": "味方ターンでの戦闘時、その戦闘前、自ユニットのアタック/クリティカル率+15%。",
+        "icon": "https://legeclo.wikiru.jp/attach2/E3839FE382ABE382A8E383AB28E6B0B4E79D8029_736B5F7370323035352E706E67.png",
+        "skillType": "パッシブ",
+        "tags": [ "自己バフ:アタック", "自己バフ:クリティカル率" ]
+      }
+    ]
+  },
+  {
+    "name": "オリオン",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_E382AAE383AAE382AAE383B35F69636F6E2E706E67.png",
+    "date": "2022/08/09",
+    "rarity": "SSR",
+    "supportType": "攻撃",
+    "class": "シューター",
+    "damageType": "アタック",
+    "range": 2,
+    "skills": [
+      {
+        "name": "狩るなら当然、まとめて全部だ！",
+        "desc": "範囲内の全ての敵ユニットに0.9倍の範囲ダメージを与え、強化効果を1個解除する。",
+        "icon": "https://legeclo.wikiru.jp/attach2/E382AAE383AAE382AAE383B3_736B5F73613035372E706E67.png",
+        "skillType": "アクティブ",
+        "area": 2,
+        "range": 3,
+        "tags": [ "攻撃(範囲)", "バフ解除" ]
+      },
+      {
+        "name": "集中",
+        "desc": "自ユニットのクリティカル率+5%",
+        "icon": "https://legeclo.wikiru.jp/attach2/E382A2E383ABE38386E3839FE382B9_736B5F7370313030362E706E67.png",
+        "skillType": "パッシブ",
+        "tags": [ "自己バフ:クリティカル率" ]
+      },
+      {
+        "name": "俺の女に手は出させない",
+        "desc": "自ユニットのHPが75%以上の時、自ユニットのアタック+15%。\n自ユニットのHPが75%以下の時、自ユニットのダメージ耐性+15%。",
+        "icon": "https://legeclo.wikiru.jp/attach2/E382AAE383AAE382AAE383B3_736B5F7370323035372E706E67.png",
+        "skillType": "パッシブ",
+        "tags": [ "自己バフ:アタック", "自己バフ:ダメージ耐性" ]
+      }
+    ]
+  },
+  {
+    "name": "___",
+    "icon": "______",
+    "date": "___",
+    "rarity": "SSR",
+    "supportType": "___",
+    "class": "___",
+    "damageType": "___",
+    "range": 0,
+    "skills": [
+      {
+        "name": "___",
+        "desc": "___",
+        "icon": "______",
+        "skillType": "アクティブ",
+        "area": 0,
+        "range": 0,
+        "tags": [ "___" ]
+      },
+      {
+        "name": "___",
+        "desc": "___",
+        "icon": "______",
+        "skillType": "パッシブ",
+        "tags": [ "___" ]
+      },
+      {
+        "name": "___",
+        "desc": "___",
+        "icon": "______",
+        "skillType": "パッシブ",
+        "tags": [ "___" ]
+      }
+    ]
   }
 ]
