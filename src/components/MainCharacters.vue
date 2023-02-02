@@ -31,10 +31,10 @@
             <div class="menu-widgets flex">
               <div class="widget" style="margin-right:0px" v-for="(tc, tci) in tagCategory" :key="tci">
                 <b-dropdown :text="tc.display" :ref="tc.name" size="sm" @hide="onTagDropdownHide($event, tc)">
-                  <b-dropdown-item class="d-flex flex-column" v-for="(t, i) in tc.tags" :key="i" :id="tc.name+'_item'+i" @click="setTagSearchPattern(t); hideTagDropdown(tc);">
+                  <b-dropdown-item class="d-flex flex-column" v-for="(t, i) in tc.tags" :key="i" :id="tc.name+'_item'+i" @click="setTagSearchPattern(t); hideTagDropdown(tc, tc.name+'_item'+i);">
                     {{t}} <span v-if="mainConsts.tagNotes[t]" class="note" v-html="mainConsts.tagNotes[t]"></span>
-                    <b-popover v-if="subTagTable[t]" :target="tc.name+'_item'+i" triggers="hover focus" delay="0" no-fade @shown="tc.keepDropdown=true" @hidden="tc.keepDropdown=false">
-                      <b-dropdown-item class="d-flex flex-column" v-for="(st, si) in subTagTable[t]" :key="si" @click="setTagSearchPattern(st, true); hideTagDropdown(tc);">{{st}}</b-dropdown-item>
+                    <b-popover v-if="subTagTable[t]" :target="tc.name+'_item'+i" triggers="hover focus" delay="0" no-fade @shown="onSubtagPopoverShow(tc)" @hidden="onSubtagPopoverHide(tc)">
+                      <b-dropdown-item class="d-flex flex-column" v-for="(st, si) in subTagTable[t]" :key="si" @click="setTagSearchPattern(st, true); hideTagDropdown(tc, tc.name+'_item'+i);">{{st}}</b-dropdown-item>
                     </b-popover>
                   </b-dropdown-item>
                 </b-dropdown>
@@ -719,6 +719,7 @@ export default {
         return;
       }
       this.updateURL();
+      this.preventShowHideHeaderOnScroll = 1;
     },
     onUpdateTagSearchPattern() {
       // なぜかボタン一個押すたびに呼ばれるので変更チェック…
@@ -733,12 +734,21 @@ export default {
         event.preventDefault();
       }
     },
-    hideTagDropdown(tagCategory) {
-      this.$root.$emit('bv::hide::popover');
+    onSubtagPopoverShow(tagCategory) {
+      tagCategory.keepDropdown = true;
+    },
+    onSubtagPopoverHide(tagCategory) {
       tagCategory.keepDropdown = false;
-      this.$nextTick(function () {
-        this.$refs[tagCategory.name][0].hide(true);
-      }.bind(this));
+      if (tagCategory.readyToHide) {
+        this.$refs[tagCategory.name][0].hide();
+        tagCategory.readyToHide = false;
+      }
+    },
+    hideTagDropdown(tagCategory, popoverTarget) {
+      if (popoverTarget) {
+        this.$root.$emit('bv::hide::popover', popoverTarget);
+      }
+      tagCategory.readyToHide = true;
     },
 
   }
