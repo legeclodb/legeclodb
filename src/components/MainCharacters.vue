@@ -119,37 +119,35 @@
                 <b-img-lazy :src="getIconURL(chr.rarity)" :alt="chr.rarity" height="20" />
                 <b-link :href="'https://legeclo.wikiru.jp/?' + chr.name" target="_blank">Wiki</b-link>
               </div>
-              <div class="talent" :class="{ 'highlighted': isTalentHighlighted(chr) }">
-                <div class="flex">
-                  <div class="icon">
-                    <b-img-lazy :src="chr.talent.icon" with="50" height="50" />
-                  </div>
-                  <div class="desc">
-                    <h5>{{ chr.talent.name }}</h5>
-                    <p><span v-html="descToHtml(chr.talent)"></span><span v-if="chr.talent.note" class="note" v-html="chr.talent.note"></span></p>
-                  </div>
-                </div>
-                <div class="tags" v-show="showDetail >= 2">
-                  <b-badge class="tag" :key="i" v-for="(tag, i) in chr.talent.tags" variant="info" pill @click="setTagSearchPattern(tag)">{{ tag }}</b-badge>
-                </div>
-              </div>
-              <div class="skills" v-show="showDetail >= 2">
-                <template v-for="(skill, si) in chr.skills">
-                  <div class="skill" :class="{'active': skill.skillType == 'アクティブ', 'passive': skill.skillType == 'パッシブ', 'highlighted': isSkillHighlighted(skill) }" :key="si">
-                    <div class="flex">
-                      <div class="icon">
-                        <b-img-lazy :src="skill.icon" with="40" height="40" />
-                      </div>
-                      <div class="desc">
-                        <h6>{{ skill.name }}</h6>
-                        <p><span v-html="descToHtml(skill)"></span><span v-if="skill.note" class="note" v-html="skill.note"></span></p>
-                      </div>
+              <div class="skills">
+                <div class="talent" :class="{ 'highlighted': isTalentHighlighted(chr) }">
+                  <div class="flex">
+                    <div class="icon">
+                      <b-img-lazy :src="chr.talent.icon" with="50" height="50" />
                     </div>
-                    <div class="tags" v-show="showDetail >= 2">
-                      <b-badge class="tag" :key="i" v-for="(tag, i) in skill.tags" variant="info" pill @click="setTagSearchPattern(tag)">{{ tag }}</b-badge>
+                    <div class="desc" v-show="showDetail >= 2">
+                      <h5>{{ chr.talent.name }}</h5>
+                      <p><span v-html="descToHtml(chr.talent)"></span><span v-if="chr.talent.note" class="note" v-html="chr.talent.note"></span></p>
                     </div>
                   </div>
-                </template>
+                  <div class="tags" v-show="showDetail >= 2">
+                    <b-badge class="tag" :key="i" v-for="(tag, i) in chr.talent.tags" variant="info" pill @click="setTagSearchPattern(tag)">{{ tag }}</b-badge>
+                  </div>
+                </div>
+                <div class="skill" v-for="(skill, si) in chr.skills" :class="{'active': skill.skillType == 'アクティブ', 'passive': skill.skillType == 'パッシブ', 'highlighted': isSkillHighlighted(skill) }" :key="si">
+                  <div class="flex">
+                    <div class="icon">
+                      <b-img-lazy :src="skill.icon" with="50" height="50" />
+                    </div>
+                    <div class="desc" v-show="showDetail >= 2">
+                      <h6>{{ skill.name }}</h6>
+                      <p><span v-html="descToHtml(skill)"></span><span v-if="skill.note" class="note" v-html="skill.note"></span></p>
+                    </div>
+                  </div>
+                  <div class="tags" v-show="showDetail >= 2">
+                    <b-badge class="tag" :key="i" v-for="(tag, i) in skill.tags" variant="info" pill @click="setTagSearchPattern(tag)">{{ tag }}</b-badge>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -284,7 +282,8 @@ export default {
     },
     style() {
       return {
-        "--character-flex-grow": `${this.showDetail == 0 ? 0 : 1}`,
+        "--character-flex-grow": `${this.showDetail < 2 ? 0 : 1}`,
+        "--skill-flex-grow": `${this.showDetail == 2 ? 1 : 0}`,
       };
     },
   },
@@ -786,12 +785,13 @@ a {
 div.root {
   display: flex;
   font-size: small;
+  background: rgb(234, 234, 237);
 }
 div.header {
   padding-top: 10px;
   height: 180px;
   width: 100vw;
-  background: rgb(240, 240, 240);
+  background: rgb(240, 240, 244);
   position: fixed;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
   transform: translate3d(0, 0, 0);
@@ -837,7 +837,6 @@ div.content {
   margin-left: auto;
   margin-right: auto;
   width: 1000px;
-  
   display: flex;
   flex-wrap: wrap;
 }
@@ -849,11 +848,11 @@ div.content p {
 div.character {
   padding: 3px;
   margin: 5px;
-
   border: 1px solid rgba(0, 0, 0, 0.2);
   border-radius: 0.3rem;
   background: rgb(245, 245, 245);
   flex-grow: var(--character-flex-grow);
+  box-shadow: 0 3px 6px rgba(140,149,159,0.5);
 }
 
 div.portrait {
@@ -861,7 +860,6 @@ div.portrait {
   width: 110px;
   padding: 3px;
   margin: 3px;
-
   border: 1px solid rgba(0, 0, 0, 0.2);
   border-radius: 0.3rem;
   background: white;
@@ -879,28 +877,31 @@ div.info {
   text-align: left;
   padding: 3px;
   margin: 3px;
-
   border: 1px solid rgba(0, 0, 0, 0.2);
   border-radius: 0.3rem;
   background: white;
 }
 
+div.skills {
+  display: flex;
+  flex-wrap: wrap;
+}
 div.talent {
   text-align: left;
   padding: 3px;
   margin: 3px;
-
   border: 1px solid rgba(0, 0, 0, 0.2);
   border-radius: 0.3rem;
   background: white;
+  flex-grow: var(--skill-flex-grow);
 }
 div.skill {
   text-align: left;
   padding: 3px;
   margin: 3px;
-
   border: 1px solid rgba(0, 0, 0, 0.2);
   border-radius: 0.3rem;
+  flex-grow: var(--skill-flex-grow);
 }
 .skill.active {
   background: rgb(255, 246, 222);
