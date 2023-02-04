@@ -1,103 +1,95 @@
 <template>
   <div class="root">
     <div class="header" :class="{ 'hidden': !showHeader }">
+      <Navigation />
       <div class="menu-content">
-        <div class="border">
+        <div class="menu-panel">
           <div class="menu-widgets flex">
             <div class="widget">
-              <h5>legeclodb</h5>
+              <h6>タレント / スキル検索</h6>
+            </div>
+          </div>
+          <div class="menu-widgets flex">
+            <div class="widget">
+              <b-button-group size="sm" id="skill_type_selector">
+                <b-button v-for="(c, i) in skillTypeFilter" :key="i" :pressed.sync="c.state" @click="onChangeFilterState()" variant="outline-secondary">
+                  {{ skillTypes[i] }}
+                </b-button>
+              </b-button-group>
+            </div>
+            <div class="widget" style="width:150px">
+              <b-form-input v-model="tagSearchPattern" type="text" debounce="500" size="sm" placeholder="タグ検索 (正規表現)" :update="onUpdateTagSearchPattern()" />
+            </div>
+          </div>
+          <div class="menu-widgets flex">
+            <div class="widget" style="margin-right:0px" v-for="(tc, tci) in tagCategory" :key="tci">
+              <b-dropdown :text="tc.display" :ref="tc.name" size="sm" @hide="onTagDropdownHide($event, tc)">
+                <b-dropdown-item class="d-flex flex-column" v-for="(t, i) in tc.tags" :key="i" :id="tc.name+'_item'+i" @click="setTagSearchPattern(t); hideTagDropdown(tc, tc.name+'_item'+i);">
+                  {{t}} <span v-if="mainConsts.tagNotes[t]" class="note" v-html="mainConsts.tagNotes[t]"></span>
+                  <b-popover v-if="subTagTable[t]" :target="tc.name+'_item'+i" triggers="hover focus" delay="0" no-fade @shown="onSubtagPopoverShow(tc)" @hidden="onSubtagPopoverHide(tc)">
+                    <b-dropdown-item class="d-flex flex-column" v-for="(st, si) in subTagTable[t]" :key="si" @click="setTagSearchPattern(st, true); hideTagDropdown(tc, tc.name+'_item'+i);">{{st}}</b-dropdown-item>
+                  </b-popover>
+                </b-dropdown-item>
+              </b-dropdown>
+            </div>
+            <div class="widget">
+              <b-button variant="secondary" size="sm" @click="tagSearchPattern=''">クリア</b-button>
             </div>
           </div>
         </div>
-        <div class="flex">
-          <div class="border">
-            <div class="menu-widgets flex">
-              <div class="widget">
-                <h6>タレント / スキル検索</h6>
-              </div>
-            </div>
-            <div class="menu-widgets flex">
-              <div class="widget">
-                <b-button-group size="sm" id="skill_type_selector">
-                  <b-button v-for="(c, i) in skillTypeFilter" :key="i" :pressed.sync="c.state" @click="onChangeFilterState()" variant="outline-secondary">
-                    {{ skillTypes[i] }}
-                  </b-button>
-                </b-button-group>
-              </div>
-              <div class="widget" style="width:150px">
-                <b-form-input v-model="tagSearchPattern" type="text" debounce="500" size="sm" placeholder="タグ検索 (正規表現)" :update="onUpdateTagSearchPattern()" />
-              </div>
-            </div>
-            <div class="menu-widgets flex">
-              <div class="widget" style="margin-right:0px" v-for="(tc, tci) in tagCategory" :key="tci">
-                <b-dropdown :text="tc.display" :ref="tc.name" size="sm" @hide="onTagDropdownHide($event, tc)">
-                  <b-dropdown-item class="d-flex flex-column" v-for="(t, i) in tc.tags" :key="i" :id="tc.name+'_item'+i" @click="setTagSearchPattern(t); hideTagDropdown(tc, tc.name+'_item'+i);">
-                    {{t}} <span v-if="mainConsts.tagNotes[t]" class="note" v-html="mainConsts.tagNotes[t]"></span>
-                    <b-popover v-if="subTagTable[t]" :target="tc.name+'_item'+i" triggers="hover focus" delay="0" no-fade @shown="onSubtagPopoverShow(tc)" @hidden="onSubtagPopoverHide(tc)">
-                      <b-dropdown-item class="d-flex flex-column" v-for="(st, si) in subTagTable[t]" :key="si" @click="setTagSearchPattern(st, true); hideTagDropdown(tc, tc.name+'_item'+i);">{{st}}</b-dropdown-item>
-                    </b-popover>
-                  </b-dropdown-item>
-                </b-dropdown>
-              </div>
-              <div class="widget">
-                <b-button variant="secondary" size="sm" @click="tagSearchPattern=''">クリア</b-button>
-              </div>
+        <div class="menu-panel">
+          <div class="menu-widgets flex">
+            <div class="widget">
+              <h6>クラス / シンボル フィルター</h6>
             </div>
           </div>
-          <div class="border">
-            <div class="menu-widgets flex">
-              <div class="widget">
-                <h6>クラス / シンボル フィルター</h6>
-              </div>
-            </div>
-            <div class="menu-widgets flex">
-              <div class="widget">
-                <b-button-group size="sm" id="class_selector">
-                  <b-button v-for="(c, i) in classFilter" :key="i" :pressed.sync="c.state" @click="onChangeFilterState()" variant="outline-secondary">
-                    <b-img-lazy :src="getIconURL(classes[i])" height="25" />
-                  </b-button>
-                </b-button-group>
-              </div>
-            </div>
-            <div class="menu-widgets flex">
-              <div class="widget">
-                <b-button-group size="sm" id="symbol_selector">
-                  <b-button v-for="(c, i) in symbolFilter" :key="i" :pressed.sync="c.state" @click="onChangeFilterState()" variant="outline-secondary">
-                    <b-img-lazy :src="getIconURL(symbols[i])" height="25" />
-                  </b-button>
-                </b-button-group>
-              </div>
-              <div class="widget">
-                <b-button-group size="sm" id="attack_type_selector">
-                  <b-button v-for="(c, i) in damageTypeFilter" :key="i" :pressed.sync="c.state" @click="onChangeFilterState()" variant="outline-secondary">
-                    <b-img-lazy :src="getIconURL(damageTypes[i])" height="25" />
-                  </b-button>
-                </b-button-group>
-              </div>
-              <div class="widget">
-                <b-button-group size="sm" id="rareiry_selector">
-                  <b-button v-for="(c, i) in rarityFilter" :key="i" :pressed.sync="c.state" @click="onChangeFilterState()" variant="outline-secondary">
-                    <b-img-lazy :src="getIconURL(rarities[i])" height="20" />
-                  </b-button>
-                </b-button-group>
-              </div>
+          <div class="menu-widgets flex">
+            <div class="widget">
+              <b-button-group size="sm" id="class_selector">
+                <b-button v-for="(c, i) in classFilter" :key="i" :pressed.sync="c.state" @click="onChangeFilterState()" variant="outline-secondary">
+                  <b-img-lazy :src="getIconURL(classes[i])" height="25" />
+                </b-button>
+              </b-button-group>
             </div>
           </div>
-          <div class="border grow">
-            <div class="menu-widgets flex">
-              <div class="widget">
-                <h6>設定</h6>
-              </div>
+          <div class="menu-widgets flex">
+            <div class="widget">
+              <b-button-group size="sm" id="symbol_selector">
+                <b-button v-for="(c, i) in symbolFilter" :key="i" :pressed.sync="c.state" @click="onChangeFilterState()" variant="outline-secondary">
+                  <b-img-lazy :src="getIconURL(symbols[i])" height="25" />
+                </b-button>
+              </b-button-group>
             </div>
-            <div class="menu-widgets flex">
-              <div class="widget">
-                <span>表示：</span>
-                <b-dropdown :text="showDetailTypes[showDetail]" size="sm" id="detail_selector" style="width:90px">
-                  <b-dropdown-item class="d-flex flex-column" v-for="(c, i) in showDetailTypes" :key="i" @click="showDetail=i">
-                    {{ showDetailTypes[i] }}
-                  </b-dropdown-item>
-                </b-dropdown>
-              </div>
+            <div class="widget">
+              <b-button-group size="sm" id="attack_type_selector">
+                <b-button v-for="(c, i) in damageTypeFilter" :key="i" :pressed.sync="c.state" @click="onChangeFilterState()" variant="outline-secondary">
+                  <b-img-lazy :src="getIconURL(damageTypes[i])" height="25" />
+                </b-button>
+              </b-button-group>
+            </div>
+            <div class="widget">
+              <b-button-group size="sm" id="rareiry_selector">
+                <b-button v-for="(c, i) in rarityFilter" :key="i" :pressed.sync="c.state" @click="onChangeFilterState()" variant="outline-secondary">
+                  <b-img-lazy :src="getIconURL(rarities[i])" height="20" />
+                </b-button>
+              </b-button-group>
+            </div>
+          </div>
+        </div>
+        <div class="menu-panel">
+          <div class="menu-widgets flex">
+            <div class="widget">
+              <h6>設定</h6>
+            </div>
+          </div>
+          <div class="menu-widgets flex">
+            <div class="widget">
+              <span>表示：</span>
+              <b-dropdown :text="showDetailTypes[showDetail]" size="sm" id="detail_selector" style="width:90px">
+                <b-dropdown-item class="d-flex flex-column" v-for="(c, i) in showDetailTypes" :key="i" @click="showDetail=i">
+                  {{ showDetailTypes[i] }}
+                </b-dropdown-item>
+              </b-dropdown>
             </div>
           </div>
         </div>
@@ -158,8 +150,14 @@
 </template>
 
 <script>
+import Navigation from './Navigation.vue'
+
 export default {
   name: 'MainCharacters',
+  components: {
+    Navigation,
+  },
+
   props: {
   },
 
@@ -201,7 +199,7 @@ export default {
       ],
       showDetailTypes: [
         "アイコン",
-        "簡易",
+        "シンプル",
         "詳細",
       ],
 
@@ -283,6 +281,7 @@ export default {
     style() {
       return {
         "--character-flex-grow": `${this.showDetail < 2 ? 0 : 1}`,
+        "--skills-display": `${this.showDetail < 2 ? 'flex': 'display'}`,
         "--skill-flex-grow": `${this.showDetail == 2 ? 1 : 0}`,
       };
     },
@@ -684,7 +683,8 @@ export default {
         },
         parseURL() {
           let ok = false;
-          let url = decodeURI(window.location.href);
+          let url = decodeURIComponent(window.location.href);
+
           let q = url.lastIndexOf('?');
           if (q != -1) {
             let params = url.slice(q + 1).split('&');
@@ -754,178 +754,5 @@ export default {
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-h3 {
-  margin: 40px 0 0;
-}
-h5 {
-  margin: 0;
-}
-h6 {
-  margin: 0;
-}
-
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
-}
-
-.btn {
-  font-size: small;
-}
-
-div.root {
-  display: flex;
-  font-size: small;
-  background: rgb(234, 234, 237);
-}
-div.header {
-  padding-top: 10px;
-  height: 180px;
-  width: 100vw;
-  background: rgb(240, 240, 244);
-  position: fixed;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-  transform: translate3d(0, 0, 0);
-  transition: 0.1s all ease;
-}
-div.header.hidden {
-  box-shadow: none;
-  transform: translate3d(0, -100%, 0);
-}
-
-div.menu-content {
-  width: 1000px;
-  margin-left: auto;
-  margin-right: auto;
-  align-items: center;
-}
-
-.menu-widgets {
-  margin: 3px;
-  padding: 3px;
-}
-
-.border {
-  border: 1px solid rgba(0, 0, 0, 0.2);
-  border-radius: 0.3rem;
-  background: white;
-}
-
-.widget {
-  margin-left: 5px;
-  margin-right: 5px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.grow {
-  flex-grow: 1;
-}
-
-div.content {
-  margin-top: 200px;
-  margin-left: auto;
-  margin-right: auto;
-  width: 1000px;
-  display: flex;
-  flex-wrap: wrap;
-}
-
-div.content p {
-  margin: 0;
-}
-
-div.character {
-  padding: 3px;
-  margin: 5px;
-  border: 1px solid rgba(0, 0, 0, 0.2);
-  border-radius: 0.3rem;
-  background: rgb(245, 245, 245);
-  flex-grow: var(--character-flex-grow);
-  box-shadow: 0 3px 6px rgba(140,149,159,0.5);
-}
-
-div.portrait {
-  text-align: left;
-  width: 110px;
-  padding: 3px;
-  margin: 3px;
-  border: 1px solid rgba(0, 0, 0, 0.2);
-  border-radius: 0.3rem;
-  background: white;
-}
-
-div.detail {
-  flex: 2;
-}
-
-div.flex {
-  display: flex;
-}
-
-div.info {
-  text-align: left;
-  padding: 3px;
-  margin: 3px;
-  border: 1px solid rgba(0, 0, 0, 0.2);
-  border-radius: 0.3rem;
-  background: white;
-}
-
-div.skills {
-  display: flex;
-  flex-wrap: wrap;
-}
-div.talent {
-  text-align: left;
-  padding: 3px;
-  margin: 3px;
-  border: 1px solid rgba(0, 0, 0, 0.2);
-  border-radius: 0.3rem;
-  background: white;
-  flex-grow: var(--skill-flex-grow);
-}
-div.skill {
-  text-align: left;
-  padding: 3px;
-  margin: 3px;
-  border: 1px solid rgba(0, 0, 0, 0.2);
-  border-radius: 0.3rem;
-  flex-grow: var(--skill-flex-grow);
-}
-.skill.active {
-  background: rgb(255, 246, 222);
-}
-.skill.passive {
-  background: rgb(234, 234, 234);
-}
-
-.tag {
-  cursor: pointer;
-}
-.highlighted {
-  border: 3px solid rgba(255, 0, 0, 0.7) !important;
-}
-.note {
-  font-size: 75%;
-  color: rgb(175, 175, 175);
-}
 </style>
-
-<!-- global scope -->
-<style>
-.dropdown-item {
-  padding: 0.2rem !important;
-}
-</style>
-

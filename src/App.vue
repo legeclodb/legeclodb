@@ -1,16 +1,14 @@
 <template>
   <div id="app">
-    <MainCharacters />
+    <router-view />
   </div>
 </template>
 
 <script>
-import MainCharacters from './components/MainCharacters.vue'
 
 export default {
   name: 'App',
   components: {
-    MainCharacters
   }
 }
 </script>

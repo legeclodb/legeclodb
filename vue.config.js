@@ -5,4 +5,7 @@ module.exports = defineConfig({
   outputDir: 'docs',
   assetsDir: './',
   publicPath: './',
+  devServer: {
+    historyApiFallback: true
+  },
 })
