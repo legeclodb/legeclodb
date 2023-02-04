@@ -16,10 +16,6 @@ export default {
   },
   data() {
     return {
-      showDetail: 2,
-      showHeader: true,
-      preventShowHideHeaderOnScroll: 0,
-      lastScrollPosition: 0,
     };
   }
 }

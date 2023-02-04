@@ -48,38 +48,6 @@ div.header.hidden {
   box-shadow: none;
   transform: translate3d(0, -100%, 0);
 }
-div.navi {
-  color: whitesmoke;
-  display: flex;
-  background: rgb(64,64,64);
-  width: 100vw;
-  transform: translate3d(0, 0, 0);
-  transition: 0.1s all ease;
-  font-size: 1.2em;
-  color: whitesmoke;
-  line-height: 50px;
-}
-
-.title {
-  font-size: 1.5em;
-  margin-right: 50px;
-  margin-left: 20px;
-  margin-right: 20px;
-  padding: 12px;
-}
-
-.navi-link {
-  color: whitesmoke;
-  font-size: 1.0em;
-  padding: 12px;
-  margin-left: 10px;
-  margin-right: 10px;
-}
-.navi-link:hover, .navi-link:focus {
-  color: #16181b;
-  text-decoration: none;
-  background-color: #e9ecef;
-}
 
 div.menu-content {
     display: flex;
@@ -173,21 +141,14 @@ div.skills {
   display: var(--skills-display);
   flex-wrap: wrap;
 }
-div.talent {
-  text-align: left;
-  padding: 3px;
-  margin: 3px;
-  border: 1px solid rgba(0, 0, 0, 0.2);
-  border-radius: 0.3rem;
-  background: white;
-  flex-grow: var(--skill-flex-grow);
-}
+div.talent,
 div.skill {
   text-align: left;
   padding: 3px;
   margin: 3px;
   border: 1px solid rgba(0, 0, 0, 0.2);
   border-radius: 0.3rem;
+  background: white;
   flex-grow: var(--skill-flex-grow);
 }
 .skill.active {

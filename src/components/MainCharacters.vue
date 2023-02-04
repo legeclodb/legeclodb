@@ -25,7 +25,7 @@
             <div class="widget" style="margin-right:0px" v-for="(tc, tci) in tagCategory" :key="tci">
               <b-dropdown :text="tc.display" :ref="tc.name" size="sm" @hide="onTagDropdownHide($event, tc)">
                 <b-dropdown-item class="d-flex flex-column" v-for="(t, i) in tc.tags" :key="i" :id="tc.name+'_item'+i" @click="setTagSearchPattern(t); hideTagDropdown(tc, tc.name+'_item'+i);">
-                  {{t}} <span v-if="mainConsts.tagNotes[t]" class="note" v-html="mainConsts.tagNotes[t]"></span>
+                  {{t}} <span v-if="constants.tagNotes[t]" class="note" v-html="constants.tagNotes[t]"></span>
                   <b-popover v-if="subTagTable[t]" :target="tc.name+'_item'+i" triggers="hover focus" delay="0" no-fade @shown="onSubtagPopoverShow(tc)" @hidden="onSubtagPopoverHide(tc)">
                     <b-dropdown-item class="d-flex flex-column" v-for="(st, si) in subTagTable[t]" :key="si" @click="setTagSearchPattern(st, true); hideTagDropdown(tc, tc.name+'_item'+i);">{{st}}</b-dropdown-item>
                   </b-popover>
@@ -47,7 +47,7 @@
             <div class="widget">
               <b-button-group size="sm" id="class_selector">
                 <b-button v-for="(c, i) in classFilter" :key="i" :pressed.sync="c.state" @click="onChangeFilterState()" variant="outline-secondary">
-                  <b-img-lazy :src="getIconURL(classes[i])" height="25" />
+                  <b-img-lazy :src="getImageURL(classes[i])" height="25" />
                 </b-button>
               </b-button-group>
             </div>
@@ -56,21 +56,21 @@
             <div class="widget">
               <b-button-group size="sm" id="symbol_selector">
                 <b-button v-for="(c, i) in symbolFilter" :key="i" :pressed.sync="c.state" @click="onChangeFilterState()" variant="outline-secondary">
-                  <b-img-lazy :src="getIconURL(symbols[i])" height="25" />
+                  <b-img-lazy :src="getImageURL(symbols[i])" height="25" />
                 </b-button>
               </b-button-group>
             </div>
             <div class="widget">
               <b-button-group size="sm" id="attack_type_selector">
                 <b-button v-for="(c, i) in damageTypeFilter" :key="i" :pressed.sync="c.state" @click="onChangeFilterState()" variant="outline-secondary">
-                  <b-img-lazy :src="getIconURL(damageTypes[i])" height="25" />
+                  <b-img-lazy :src="getImageURL(damageTypes[i])" height="25" />
                 </b-button>
               </b-button-group>
             </div>
             <div class="widget">
               <b-button-group size="sm" id="rareiry_selector">
                 <b-button v-for="(c, i) in rarityFilter" :key="i" :pressed.sync="c.state" @click="onChangeFilterState()" variant="outline-secondary">
-                  <b-img-lazy :src="getIconURL(rarities[i])" height="20" />
+                  <b-img-lazy :src="getImageURL(rarities[i])" height="20" />
                 </b-button>
               </b-button-group>
             </div>
@@ -96,8 +96,8 @@
       </div>
     </div>
     <div class="content" :style="style">
-      <template v-for="chr in mainCharactersDB">
-        <div class="character" :id="'mainchar_'+chr.id" :key="chr.id" v-show="filterMainCharacter(chr)">
+      <template v-for="chr in items">
+        <div class="character" :id="'mainchar_'+chr.id" :key="chr.id" v-show="filterItem(chr)">
           <div class="flex">
             <div class="portrait">
               <b-img-lazy :src="chr.icon" :alt="chr.name" />
@@ -105,10 +105,10 @@
             <div class="detail" v-show="showDetail >= 1">
               <div class="info">
                 <h5>{{ chr.name }}</h5>
-                <b-img-lazy :src="getIconURL(chr.class)" :alt="chr.class" height="25" />
-                <b-img-lazy :src="getIconURL(chr.symbol)" :alt="chr.symbol" height="25" />
-                <b-img-lazy :src="getIconURL(chr.damageType)" :alt="chr.damageType" height="25" />
-                <b-img-lazy :src="getIconURL(chr.rarity)" :alt="chr.rarity" height="20" />
+                <b-img-lazy :src="getImageURL(chr.class)" :alt="chr.class" height="25" />
+                <b-img-lazy :src="getImageURL(chr.symbol)" :alt="chr.symbol" height="25" />
+                <b-img-lazy :src="getImageURL(chr.damageType)" :alt="chr.damageType" height="25" />
+                <b-img-lazy :src="getImageURL(chr.rarity)" :alt="chr.rarity" height="20" />
                 <b-link :href="'https://legeclo.wikiru.jp/?' + chr.name" target="_blank">Wiki</b-link>
               </div>
               <div class="skills">
@@ -158,15 +158,11 @@ export default {
     Navigation,
   },
 
-  props: {
-  },
-
   data() {
     return {
-      mainSkills: [],
-      mainCharacters: [],
-      mainConsts: {},
-      setupCompleted: false,
+      skills: [],
+      characters: [],
+      constants: {},
 
       symbols: [
         "ゼニス",
@@ -228,9 +224,6 @@ export default {
       subTagTable: {},
 
       showDetail: 2,
-      showHeader: true,
-      preventShowHideHeaderOnScroll: 0,
-      lastScrollPosition: 0,
 
       symbolFilter: [
         { state: false },
@@ -272,11 +265,8 @@ export default {
   },
 
   computed: {
-    mainCharactersDB() {
-      if (!this.setupCompleted) {
-        return null;
-      }
-      return this.mainCharacters;
+    items() {
+      return this.characters;
     },
     style() {
       return {
@@ -297,15 +287,14 @@ export default {
       fetchJson("./main_characters.json"),
       fetchJson("./main_consts.json"),
     ]).then((values) => {
-      this.mainSkills = values[0];
-      this.mainCharacters = values[1];
-      this.mainConsts = values[2];
+      this.skills = values[0];
+      this.characters = values[1];
+      this.constants = values[2];
       this.onLoadDB();
     });
   },
 
   mounted() {
-    window.addEventListener('scroll', this.onScroll);
     this.decodeURL();
 
     window.onpopstate = function() {
@@ -314,27 +303,8 @@ export default {
 
     this.enableUpdateURL = true;
   },
-  
-  beforeDestroy () {
-    window.removeEventListener('scroll', this.onScroll);
-  },
 
   methods: {
-    onScroll() {
-      const pos = window.pageYOffset || document.documentElement.scrollTop;
-      if (pos < 0 || Math.abs(pos - this.lastScrollPosition) < 30) {
-        return;
-      }
-
-      if (this.preventShowHideHeaderOnScroll > 0) {
-        --this.preventShowHideHeaderOnScroll;
-      }
-      else {
-        this.showHeader = pos < this.lastScrollPosition;
-      }
-      this.lastScrollPosition = pos;
-    },
-
     setTagSearchPattern(txt, wholeWord = false) {
       txt = txt.trim();
       txt = txt.replace('(', '\\(');
@@ -351,24 +321,6 @@ export default {
       }.bind(this));
     },
     
-    compareDate(a, b) {
-      return a.date == b.date ? 0 : (a.date < b.date ? -1 : 1);
-    },
-
-    isFilterEnabled(filter) {
-      for (const v of filter)
-        if (v.state)
-          return true;
-      return false;
-    },
-    matchTags(tags, re) {
-        for (const tag of tags) {
-          if (tag.match(re)) {
-            return true;
-          }
-        }
-        return false;
-    },
     getTagRE() {
       if (this.tagSearchPattern.length == 0) {
         this.prevTagRE = null;
@@ -422,7 +374,7 @@ export default {
       }
       return false;
     },
-    filterMainCharacter(chr) {
+    filterItem(chr) {
       let ok = (!this.isFilterEnabled(this.symbolFilter) || this.symbolFilter[chr.symbolId].state) &&
         (!this.isFilterEnabled(this.classFilter) || this.classFilter[chr.classId].state) &&
         (!this.isFilterEnabled(this.rarityFilter) || this.rarityFilter[chr.rarityId].state) &&
@@ -438,25 +390,25 @@ export default {
       return item.desc.replaceAll("\n", "<br/>") + "<br/>";
     },
 
-    getIconURL(name) {
-      if (this.mainConsts.iconTable && name in this.mainConsts.iconTable) {
-        return this.mainConsts.iconTable[name];
+    getImageURL(name) {
+      if (this.constants.iconTable && name in this.constants.iconTable) {
+        return this.constants.iconTable[name];
       }
       return "./empty.png";
     },
 
     setupDB() {
       // 最後の要素は追加用のテンプレになっているので取り除く
-      if (this.mainCharacters[this.mainCharacters.length - 1].name.length == 0) {
-        this.mainCharacters.pop();
+      if (this.characters[this.characters.length - 1].name.length == 0) {
+        this.characters.pop();
       }
-      //this.mainCharacters.sort(compareDate);
+      //this.characters.sort(compareDate);
 
       let tmpSkillMap = new Map();
-      for (let skill of this.mainSkills) {
+      for (let skill of this.skills) {
         tmpSkillMap.set(skill.name, skill);
       }
-      this.mainSkills = tmpSkillMap;
+      this.skills = tmpSkillMap;
 
       const addUser = function (skill, chr) {
         if (!skill.users)
@@ -493,7 +445,7 @@ export default {
       };
 
       let idSeed = 0;
-      for (let chr of this.mainCharacters) {
+      for (let chr of this.characters) {
         chr.id = ++idSeed;
         chr.symbolId = this.symbols.findIndex(v => v == chr.symbol);
         chr.classId = this.classes.findIndex(v => v == chr.class);
@@ -502,7 +454,7 @@ export default {
 
         let aoeAttack = 0;
         for (let i = 0; i < chr.skills.length; ++i) {
-          let skill = this.mainSkills.get(chr.skills[i]);
+          let skill = this.skills.get(chr.skills[i]);
           if (!skill) {
             console.log("不明なスキル: " + chr.name + ":" + chr.skills[i]);
           }
@@ -531,10 +483,10 @@ export default {
           }
         }
       };
-      handlePredefinedTags(this.tagCategory.buff.tags, this.mainConsts.tagsBuff);
-      handlePredefinedTags(this.tagCategory.debuff.tags, this.mainConsts.tagsDebuff);
-      handlePredefinedTags(this.tagCategory.resist.tags, this.mainConsts.tagsResist);
-      handlePredefinedTags(this.tagCategory.other.tags, this.mainConsts.tagsOther);
+      handlePredefinedTags(this.tagCategory.buff.tags, this.constants.tagsBuff);
+      handlePredefinedTags(this.tagCategory.debuff.tags, this.constants.tagsDebuff);
+      handlePredefinedTags(this.tagCategory.resist.tags, this.constants.tagsResist);
+      handlePredefinedTags(this.tagCategory.other.tags, this.constants.tagsOther);
 
       for (let t of Array.from(mainTags).sort()) {
         if (handledTags.has(t))
@@ -549,17 +501,15 @@ export default {
         else 
           this.tagCategory.other.tags.add(t);
       }
-
-      this.setupCompleted = true;
     },
 
     debugDB() {
       let skillMap = new Map();
-      for (let skill of this.mainSkills) {
+      for (let skill of this.skills) {
         skillMap.set(skill.name, skill);
       }
 
-      for (let chr of this.mainCharacters) {
+      for (let chr of this.characters) {
         if (chr.name.length == 0) {
           continue;
         }
@@ -584,7 +534,7 @@ export default {
       }
 
       let orderdSkills = new Set();
-      for (let chr of this.mainCharacters) {
+      for (let chr of this.characters) {
         if (chr.name.length == 0) {
           continue;
         }
@@ -600,7 +550,7 @@ export default {
       }
 
       console.log(JSON.stringify(Array.from(orderdSkills)));
-      console.log(JSON.stringify(this.mainCharacters));
+      console.log(JSON.stringify(this.characters));
     },
     
     onLoadDB() {
@@ -608,26 +558,6 @@ export default {
       this.setupDB();
     },
 
-    copyToClipboard(value) {
-      if (navigator.clipboard) {
-        return navigator.clipboard.writeText(value);
-      }
-    },
-
-    serializeFilter(filter) {
-      let r = 0;
-      for (let i = 0; i < filter.length; ++i) {
-        if (filter[i].state) {
-          r |= 1 << i;
-        }
-      }
-      return r;
-    },
-    deserializeFilter(filter, v) {
-      for (let i = 0; i < filter.length; ++i) {
-        filter[i].state = (v & (1 << i)) != 0;
-      }
-    },
     updateURL() {
       if (!this.enableUpdateURL) {
         return;
@@ -714,9 +644,6 @@ export default {
       }
     },
     onChangeFilterState() {
-      if (!this.setupCompleted) {
-        return;
-      }
       this.updateURL();
       this.preventShowHideHeaderOnScroll = 1;
     },
