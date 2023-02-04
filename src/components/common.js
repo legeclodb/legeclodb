@@ -119,5 +119,41 @@
         return navigator.clipboard.writeText(value);
       }
     },
+
+    URLSerializer: class {
+      constructor(data) {
+        for (const k in data) {
+          this[k] = data[k];
+        }
+      }
+
+      serialize() {
+        let params = [];
+        for (const k in this) {
+          params.push(k + "=" + this[k].toString());
+        }
+        return "?" + (params.length != 0 ? params.join("&") : "");
+      }
+
+      deserialize(url) {
+        url = decodeURIComponent(url);
+        let numHandled = 0;
+        let q = url.match(/\?([^#]+)/);
+        if (q) {
+          let params = q[1].split('&');
+          for (let param of params) {
+            let kvp = param.split('=');
+            if (kvp.length == 2) {
+              if (typeof this[kvp[0]] === "number")
+                this[kvp[0]] = parseInt(kvp[1]);
+              else
+                this[kvp[0]] = kvp[1];
+              ++numHandled;
+            }
+          }
+        }
+        return numHandled;
+      }
+    },
   }
 }

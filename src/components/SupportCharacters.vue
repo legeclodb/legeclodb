@@ -98,10 +98,10 @@
 
     <div class="content" :style="style">
       <template v-for="chr in items">
-        <div class="character" :id="'mainchar_'+chr.id" :key="chr.id" v-show="filterItem(chr)">
+        <div class="character" :id="'chr_'+chr.id" :key="chr.id" v-show="filterItem(chr)">
           <div class="flex">
             <div class="portrait">
-              <b-img-lazy :src="chr.icon" :alt="chr.name" />
+              <b-link :href="'#chr_'+chr.id"><b-img-lazy :src="chr.icon" :alt="chr.name" width="100" height="100" /></b-link>
             </div>
             <div class="detail" v-show="showDetail >= 1">
               <div class="info">
@@ -271,6 +271,16 @@ export default {
     });
   },
 
+  mounted() {
+    this.decodeURL();
+
+    window.onpopstate = function () {
+      this.decodeURL(true);
+    }.bind(this);
+
+    this.enableUpdateURL = true;
+  },
+
   methods: {
     onLoadDB() {
       this.setupDB();
@@ -388,7 +398,51 @@ export default {
 
 
     updateURL() {
+      if (!this.enableUpdateURL) {
+        return;
+      }
 
+      let seri = new this.URLSerializer();
+      if (this.isFilterEnabled(this.classFilter))
+        seri.class = this.serializeFilter(this.classFilter);
+      if (this.isFilterEnabled(this.supportTypeFilter))
+        seri.supportType = this.serializeFilter(this.supportTypeFilter);
+      if (this.isFilterEnabled(this.rarityFilter))
+        seri.rarity = this.serializeFilter(this.rarityFilter);
+      if (this.isFilterEnabled(this.damageTypeFilter))
+        seri.damageType = this.serializeFilter(this.damageTypeFilter);
+      if (this.isFilterEnabled(this.skillTypeFilter))
+        seri.skillType = this.serializeFilter(this.skillTypeFilter);
+      if (this.tagSearchPattern.length > 0)
+        seri.tag = this.tagSearchPattern;
+
+      let url = seri.serialize();
+      if (url != this.prevURL) {
+        window.history.pushState(null, null, url);
+        this.prevURL = url;
+      }
+    },
+    decodeURL(initState = false) {
+      let data = new this.URLSerializer({
+        class: 0,
+        supportType: 0,
+        damageType: 0,
+        rarity: 0,
+        skillType: 0,
+        tag: "",
+      });
+
+      if (data.deserialize(window.location.href) || initState) {
+        this.enableUpdateURL = false;
+        this.deserializeFilter(this.classFilter, data.class);
+        this.deserializeFilter(this.supportTypeFilter, data.supportType);
+        this.deserializeFilter(this.damageTypeFilter, data.damageType);
+        this.deserializeFilter(this.rarityFilter, data.rarity);
+        this.deserializeFilter(this.skillTypeFilter, data.skillType);
+        this.tagSearchPattern = data.tag;
+        this.$forceUpdate();
+        this.enableUpdateURL = true;
+      }
     },
 
     onChangeFilterState() {
@@ -396,7 +450,6 @@ export default {
       this.preventShowHideHeaderOnScroll = 1;
     },
     onUpdateTagSearchPattern() {
-      // なぜかボタン一個押すたびに呼ばれるので変更チェック…
       if (this.tagSearchPattern == this.tagSearchPatternPrev)
         return;
       this.tagSearchPatternPrev = this.tagSearchPattern;

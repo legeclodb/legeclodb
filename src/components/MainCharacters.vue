@@ -97,10 +97,10 @@
     </div>
     <div class="content" :style="style">
       <template v-for="chr in items">
-        <div class="character" :id="'mainchar_'+chr.id" :key="chr.id" v-show="filterItem(chr)">
+        <div class="character" :id="'chr_'+chr.id" :key="chr.id" v-show="filterItem(chr)">
           <div class="flex">
             <div class="portrait">
-              <b-img-lazy :src="chr.icon" :alt="chr.name" />
+              <b-link :href="'#chr_'+chr.id"><b-img-lazy :src="chr.icon" :alt="chr.name" width="100" height="100" /></b-link>
             </div>
             <div class="detail" v-show="showDetail >= 1">
               <div class="info">
@@ -266,6 +266,7 @@ export default {
   },
 
   async beforeCreate() {
+    // beforeCreate() の中ではまだ mixin が処理されていないため、fetchJson() は common.js に含めない
     const fetchJson = function(uri) {
       return fetch(uri, { cache: "no-cache" }).then(res => res.json());
     };
@@ -518,75 +519,37 @@ export default {
         return;
       }
 
-      let params = [];
+      let seri = new this.URLSerializer();
       if (this.isFilterEnabled(this.classFilter))
-        params.push("class=" + this.serializeFilter(this.classFilter).toString(16));
+        seri.class = this.serializeFilter(this.classFilter);
       if (this.isFilterEnabled(this.symbolFilter))
-        params.push("symbol=" + this.serializeFilter(this.symbolFilter).toString(16));
+        seri.symbol = this.serializeFilter(this.symbolFilter);
       if (this.isFilterEnabled(this.rarityFilter))
-        params.push("rarity=" + this.serializeFilter(this.rarityFilter).toString(16));
+        seri.rarity = this.serializeFilter(this.rarityFilter);
       if (this.isFilterEnabled(this.damageTypeFilter))
-        params.push("damageType=" + this.serializeFilter(this.damageTypeFilter).toString(16));
+        seri.damageType = this.serializeFilter(this.damageTypeFilter);
       if (this.isFilterEnabled(this.skillTypeFilter))
-        params.push("skillType=" + this.serializeFilter(this.skillTypeFilter).toString(16));
+        seri.skillType = this.serializeFilter(this.skillTypeFilter);
       if (this.tagSearchPattern.length > 0)
-        params.push("tag=" + this.tagSearchPattern);
+        seri.tag = this.tagSearchPattern;
 
-      let url = "?";
-      if (params.length != 0) {
-        url += params.join("&");
-      }
+      let url = seri.serialize();
       if (url != this.prevURL) {
         window.history.pushState(null, null, url);
         this.prevURL = url;
       }
     },
     decodeURL(initState = false) {
-      let data = {
+      let data = new this.URLSerializer({
         class: 0,
         symbol: 0,
         damageType: 0,
         rarity: 0,
         skillType: 0,
         tag: "",
+      });
 
-        parseNumber(param, name) {
-          let r = param.match(new RegExp(`${name}=([0-9a-f]+)`));
-          if (r) {
-            this[name] = parseInt(r[1], 16);
-            return true;
-          }
-          return false;
-        },
-        parseString(param, name) {
-          let r = param.match(new RegExp(`${name}=(.+)`));
-          if (r) {
-            this[name] = r[1];
-            return true;
-          }
-          return false;
-        },
-        parseURL() {
-          let ok = false;
-          let url = decodeURIComponent(window.location.href);
-
-          let q = url.lastIndexOf('?');
-          if (q != -1) {
-            let params = url.slice(q + 1).split('&');
-            for (let param of params) {
-              let handled = data.parseNumber(param, "class") || data.parseNumber(param, "symbol") ||
-                data.parseNumber(param, "rarity") || data.parseNumber(param, "damageType") || data.parseNumber(param, "skillType") ||
-                data.parseString(param, "tag");
-              if(handled) {
-                ok = true;
-              }
-            }
-          }
-          return ok;
-        },
-      };
-
-      if (data.parseURL() || initState) {
+      if (data.deserialize(window.location.href) || initState) {
         this.enableUpdateURL = false;
         this.deserializeFilter(this.classFilter, data.class);
         this.deserializeFilter(this.symbolFilter, data.symbol);
