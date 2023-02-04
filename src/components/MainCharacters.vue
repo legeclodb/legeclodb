@@ -95,7 +95,7 @@
         </div>
       </div>
     </div>
-    <div class="content" :style="style">
+    <div class="content" style="margin-top: 210px;" :style="style">
       <template v-for="chr in items">
         <div class="character" :id="'chr_'+chr.id" :key="chr.id" v-show="filterItem(chr)">
           <div class="flex">
@@ -151,6 +151,9 @@
 
 <script>
 import Navigation from './Navigation.vue'
+import jsonSkills from '../assets/main_skills.json'
+import jsonCharacters from '../assets/main_characters.json'
+import jsonConstants from '../assets/constants.json'
 
 export default {
   name: 'MainCharacters',
@@ -160,9 +163,9 @@ export default {
 
   data() {
     return {
-      skills: [],
-      characters: [],
-      constants: {},
+      skills: jsonSkills,
+      characters: jsonCharacters,
+      constants: jsonConstants,
 
       classes: [
         "ソルジャー",
@@ -265,22 +268,9 @@ export default {
     },
   },
 
-  async beforeCreate() {
-    // beforeCreate() の中ではまだ mixin が処理されていないため、fetchJson() は common.js に含めない
-    const fetchJson = function(uri) {
-      return fetch(uri, { cache: "no-cache" }).then(res => res.json());
-    };
-
-    await Promise.all([
-      fetchJson("./main_skills.json"),
-      fetchJson("./main_characters.json"),
-      fetchJson("./main_consts.json"),
-    ]).then((values) => {
-      this.skills = values[0];
-      this.characters = values[1];
-      this.constants = values[2];
-      this.onLoadDB();
-    });
+  created() {
+    //this.debugDB();
+    this.setupDB();
   },
 
   mounted() {
@@ -509,11 +499,6 @@ export default {
       console.log(JSON.stringify(this.characters));
     },
     
-    onLoadDB() {
-      //this.debugDB();
-      this.setupDB();
-    },
-
     updateURL() {
       if (!this.enableUpdateURL) {
         return;

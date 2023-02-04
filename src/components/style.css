@@ -5,6 +5,10 @@ body {
 h1 {
   margin: 0px;
 }
+h2 {
+  margin: 0px;
+  font-size: 1.5em;
+}
 h3 {
   margin: 0px 0 0;
 }
@@ -85,7 +89,6 @@ div.menu-panel {
 }
 
 div.content {
-  margin-top: 200px;
   margin-left: 10px;
   margin-right: auto;
   display: flex;
@@ -96,6 +99,16 @@ div.content {
 
 div.content p {
   margin: 0;
+}
+
+div.about {
+  padding: 3px;
+  margin: 5px;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 0.3rem;
+  background: rgb(245, 245, 245);
+  box-shadow: 0 3px 6px rgba(140,149,159,0.5);
+  width: 750px;
 }
 
 div.character {

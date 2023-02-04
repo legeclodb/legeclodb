@@ -96,7 +96,7 @@
       </div>
     </div>
 
-    <div class="content" :style="style">
+    <div class="content" style="margin-top: 210px;" :style="style">
       <template v-for="chr in items">
         <div class="character" :id="'chr_'+chr.id" :key="chr.id" v-show="filterItem(chr)">
           <div class="flex">
@@ -139,6 +139,9 @@
 
 <script>
 import Navigation from './Navigation.vue'
+import jsonSkills from '../assets/support_skills.json'
+import jsonCharacters from '../assets/support_characters.json'
+import jsonConstants from '../assets/constants.json'
 
 export default {
   name: 'SupportCharacters',
@@ -148,9 +151,9 @@ export default {
 
   data() {
     return {
-      skills: [],
-      characters: [],
-      constants: {},
+      skills: jsonSkills,
+      characters: jsonCharacters,
+      constants: jsonConstants,
 
       classes: [
         "ソルジャー",
@@ -254,21 +257,9 @@ export default {
     },
   },
 
-  async beforeCreate() {
-    const fetchJson = function (uri) {
-      return fetch(uri, { cache: "no-cache" }).then(res => res.json());
-    };
-
-    await Promise.all([
-      fetchJson("./support_skills.json"),
-      fetchJson("./support_characters.json"),
-      fetchJson("./main_consts.json"),
-    ]).then((values) => {
-      this.skills = values[0];
-      this.characters = values[1];
-      this.constants = values[2];
-      this.onLoadDB();
-    });
+  created() {
+    //this.debugDB();
+    this.setupDB();
   },
 
   mounted() {
@@ -282,10 +273,6 @@ export default {
   },
 
   methods: {
-    onLoadDB() {
-      this.setupDB();
-    },
-
     setupDB() {
       //const compareDate = function (a, b) {
       //  return a.date == b.date ? 0 : (a.date < b.date ? -1 : 1);
