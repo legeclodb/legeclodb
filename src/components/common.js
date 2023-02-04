@@ -1,6 +1,10 @@
-﻿export default {
+﻿import jsonImageTable from '../assets/image_table.json'
+
+export default {
   data() {
     return {
+      imageTable: jsonImageTable,
+
       showHeader: true,
       preventShowHideHeaderOnScroll: 0,
       lastScrollPosition: 0,
@@ -47,12 +51,27 @@
       this.lastScrollPosition = pos;
     },
 
+    getImageURL(name) {
+      if (name in this.imageTable) {
+        return this.imageTable[name];
+      }
+      return "./empty.png";
+    },
+
+    compareDate(a, b) {
+      return a.date == b.date ? 0 : (a.date < b.date ? -1 : 1);
+    },
 
     isFilterEnabled(filter) {
       for (const v of filter)
         if (v.state)
           return true;
       return false;
+    },
+    fillFilter(dst, items) {
+      while (dst.length < items.length) {
+        dst.push({ state: false });
+      }
     },
 
     setTagSearchPattern(txt, wholeWord = false) {

@@ -100,7 +100,7 @@
         <div class="character" :id="'chr_'+chr.id" :key="chr.id" v-show="filterItem(chr)">
           <div class="flex">
             <div class="portrait">
-              <b-link :href="'#chr_'+chr.id"><b-img-lazy :src="chr.icon" :alt="chr.name" width="100" height="100" /></b-link>
+              <b-link :href="'#chr_'+chr.id"><b-img-lazy :src="getImageURL(chr.name)" :alt="chr.name" width="100" height="100" /></b-link>
             </div>
             <div class="detail" v-show="showDetail >= 1">
               <div class="info">
@@ -115,7 +115,7 @@
                 <div class="talent" :class="{ 'highlighted': isTalentHighlighted(chr) }">
                   <div class="flex">
                     <div class="icon">
-                      <b-img-lazy :src="chr.talent.icon" with="50" height="50" />
+                      <b-img-lazy :src="getImageURL(chr.talent.name)" with="50" height="50" />
                     </div>
                     <div class="desc" v-show="showDetail >= 2">
                       <h5>{{ chr.talent.name }}</h5>
@@ -129,7 +129,7 @@
                 <div class="skill" v-for="(skill, si) in chr.skills" :class="{'active': skill.skillType == 'アクティブ', 'passive': skill.skillType == 'パッシブ', 'highlighted': isSkillHighlighted(skill) }" :key="si">
                   <div class="flex">
                     <div class="icon">
-                      <b-img-lazy :src="skill.icon" with="50" height="50" />
+                      <b-img-lazy :src="getImageURL(skill.name)" with="50" height="50" />
                     </div>
                     <div class="desc" v-show="showDetail >= 2">
                       <h6>{{ skill.name }}</h6>
@@ -167,35 +167,16 @@ export default {
       characters: jsonCharacters,
       constants: jsonConstants,
 
-      classes: [
-        "ソルジャー",
-        "ランサー",
-        "ライダー",
-        "エアリアル",
-        "ソーサラー",
-        "セイント",
-        "シューター",
-        "アサシン",
-      ],
-      symbols: [
-        "ゼニス",
-        "オリジン",
-        "ナディア",
-      ],
-      damageTypes: [
-        "アタック",
-        "マジック",
-      ],
-      rarities: [
-        "SSR",
-        "SR",
-        "R",
-      ],
+      classes: jsonConstants.classes,
+      symbols: jsonConstants.symbols,
+      damageTypes: jsonConstants.damageTypes,
+      rarities: jsonConstants.rarities,
       skillTypes: [
         "タレント",
         "パッシブ",
         "アクティブ",
       ],
+
       showDetailTypes: [
         "アイコン",
         "シンプル",
@@ -226,36 +207,11 @@ export default {
       },
       subTagTable: {},
 
-      symbolFilter: [
-        { state: false },
-        { state: false },
-        { state: false },
-      ],
-      classFilter: [
-        { state: false },
-        { state: false },
-        { state: false },
-        { state: false },
-        { state: false },
-        { state: false },
-        { state: false },
-        { state: false },
-      ],
-      rarityFilter: [
-        { state: false },
-        { state: false },
-        { state: false },
-      ],
-      damageTypeFilter: [
-        { state: false },
-        { state: false },
-      ],
-      
-      skillTypeFilter: [
-        { state: false },
-        { state: false },
-        { state: false },
-      ],
+      classFilter: [],
+      symbolFilter: [],
+      rarityFilter: [],
+      damageTypeFilter: [],
+      skillTypeFilter: [],
 
       enableUpdateURL: false,
       prevURL: "",
@@ -269,8 +225,13 @@ export default {
   },
 
   created() {
-    //this.debugDB();
     this.setupDB();
+
+    this.fillFilter(this.classFilter, this.classes);
+    this.fillFilter(this.symbolFilter, this.symbols);
+    this.fillFilter(this.rarityFilter, this.rarities);
+    this.fillFilter(this.damageTypeFilter, this.damageTypes);
+    this.fillFilter(this.skillTypeFilter, this.skillTypes);
   },
 
   mounted() {
@@ -333,31 +294,11 @@ export default {
       return ok;
     },
 
-    getImageURL(name) {
-      if (this.constants.iconTable && name in this.constants.iconTable) {
-        return this.constants.iconTable[name];
-      }
-      return "./empty.png";
-    },
-
     setupDB() {
-      // 最後の要素は追加用のテンプレになっているので取り除く
-      if (this.characters[this.characters.length - 1].name.length == 0) {
-        this.characters.pop();
-      }
-      //this.characters.sort(compareDate);
-
-      let tmpSkillMap = new Map();
+      let skillMap = new Map();
       for (let skill of this.skills) {
-        tmpSkillMap.set(skill.name, skill);
+        skillMap.set(skill.name, skill);
       }
-      this.skills = tmpSkillMap;
-
-      const addUser = function (skill, chr) {
-        if (!skill.users)
-          skill.users = [];
-        skill.users.push(chr.name);
-      };
 
       let allTags = new Set();
       let mainTags = new Set();
@@ -390,6 +331,10 @@ export default {
         }
       }.bind(this);
 
+      for (let skill of this.skills) {
+        registerTags(skill.tags);
+      }
+
       let idSeed = 0;
       for (let chr of this.characters) {
         chr.id = ++idSeed;
@@ -400,13 +345,11 @@ export default {
 
         let aoeAttack = 0;
         for (let i = 0; i < chr.skills.length; ++i) {
-          let skill = this.skills.get(chr.skills[i]);
+          let skill = skillMap.get(chr.skills[i]);
           if (!skill) {
             console.log("不明なスキル: " + chr.name + ":" + chr.skills[i]);
           }
-          addUser(skill, chr);
           chr.skills[i] = skill;
-          registerTags(skill.tags);
           for (const t of skill.skillTags) {
             if (t == "攻撃(範囲)" && skill.skillType == "アクティブ") {
               ++aoeAttack;
@@ -447,56 +390,6 @@ export default {
         else 
           this.tagCategory.other.tags.add(t);
       }
-    },
-
-    debugDB() {
-      let skillMap = new Map();
-      for (let skill of this.skills) {
-        skillMap.set(skill.name, skill);
-      }
-
-      for (let chr of this.characters) {
-        if (chr.name.length == 0) {
-          continue;
-        }
-        if (!this.symbols.find(e => e == chr.symbol)) {
-          console.log("無効なシンボル: " + chr.name);
-        }
-        if (!this.classes.find(e => e == chr.class)) {
-          console.log("無効なクラス: " + chr.name);
-        }
-        if (!this.rarities.find(e => e == chr.rarity)) {
-          console.log("無効なレアリティ: " + chr.name);
-        }
-        if (!this.damageTypes.find(e => e == chr.damageType)) {
-          console.log("無効なアタックタイプ: " + chr.name);
-        }
-
-        for (let skill of chr.skills) {
-          if (typeof skill == "object" && typeof skill.icon == "string" && skill.icon.startsWith("https://")) {
-            skillMap.set(skill.name, skill);
-          }
-        }
-      }
-
-      let orderdSkills = new Set();
-      for (let chr of this.characters) {
-        if (chr.name.length == 0) {
-          continue;
-        }
-        for (let i = 0; i < chr.skills.length; ++i) {
-          let skill = chr.skills[i];
-          if (typeof skill == "object") {
-            if (skillMap.has(skill.name)) {
-              chr.skills[i] = skill.name;
-            }
-          }
-          orderdSkills.add(skillMap.get(chr.skills[i]));
-        }
-      }
-
-      console.log(JSON.stringify(Array.from(orderdSkills)));
-      console.log(JSON.stringify(this.characters));
     },
     
     updateURL() {

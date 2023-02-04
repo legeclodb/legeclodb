@@ -101,7 +101,7 @@
         <div class="character" :id="'chr_'+chr.id" :key="chr.id" v-show="filterItem(chr)">
           <div class="flex">
             <div class="portrait">
-              <b-link :href="'#chr_'+chr.id"><b-img-lazy :src="chr.icon" :alt="chr.name" width="100" height="100" /></b-link>
+              <b-link :href="'#chr_'+chr.id"><b-img-lazy :src="getImageURL(chr.name)" :alt="chr.name" width="100" height="100" /></b-link>
             </div>
             <div class="detail" v-show="showDetail >= 1">
               <div class="info">
@@ -116,7 +116,7 @@
                 <div class="skill" v-for="(skill, si) in chr.skills" :class="{'active': skill.skillType == 'アクティブ', 'passive': skill.skillType == 'パッシブ', 'highlighted': isSkillHighlighted(skill) }" :key="si">
                   <div class="flex">
                     <div class="icon">
-                      <b-img-lazy :src="skill.icon" with="50" height="50" />
+                      <b-img-lazy :src="getImageURL(skill.name)" with="50" height="50" />
                     </div>
                     <div class="desc" v-show="showDetail >= 2">
                       <h6>{{ skill.name }}</h6>
@@ -155,35 +155,16 @@ export default {
       characters: jsonCharacters,
       constants: jsonConstants,
 
-      classes: [
-        "ソルジャー",
-        "ランサー",
-        "ライダー",
-        "エアリアル",
-        "ソーサラー",
-        "セイント",
-        "シューター",
-        "アサシン",
-      ],
-      supportTypes: [
-        "攻撃",
-        "支援",
-        "妨害",
-      ],
-      rarities: [
-        "SSR",
-        "SR",
-        "R",
-      ],
-      damageTypes: [
-        "アタック",
-        "マジック",
-      ],
+      classes: jsonConstants.classes,
+      supportTypes: jsonConstants.supportTypes,
+      rarities: jsonConstants.rarities,
+      damageTypes: jsonConstants.damageTypes,
       skillTypes: [
         "アクティブ",
         "パッシブ1",
         "パッシブ2",
       ],
+
       showDetailTypes: [
         "アイコン",
         "シンプル",
@@ -214,36 +195,11 @@ export default {
       },
       subTagTable: {},
 
-      classFilter: [
-        { state: false },
-        { state: false },
-        { state: false },
-        { state: false },
-        { state: false },
-        { state: false },
-        { state: false },
-        { state: false },
-      ],
-      supportTypeFilter: [
-        { state: false },
-        { state: false },
-        { state: false },
-      ],
-      rarityFilter: [
-        { state: false },
-        { state: false },
-        { state: false },
-      ],
-      damageTypeFilter: [
-        { state: false },
-        { state: false },
-      ],
-
-      skillTypeFilter: [
-        { state: false },
-        { state: false },
-        { state: false },
-      ],
+      classFilter: [],
+      supportTypeFilter: [],
+      rarityFilter: [],
+      damageTypeFilter: [],
+      skillTypeFilter: [],
 
       enableUpdateURL: false,
       prevURL: "",
@@ -258,8 +214,13 @@ export default {
   },
 
   created() {
-    //this.debugDB();
     this.setupDB();
+
+    this.fillFilter(this.classFilter, this.classes);
+    this.fillFilter(this.supportTypeFilter, this.supportTypes);
+    this.fillFilter(this.rarityFilter, this.rarities);
+    this.fillFilter(this.damageTypeFilter, this.damageTypes);
+    this.fillFilter(this.skillTypeFilter, this.skillTypes);
   },
 
   mounted() {
@@ -274,11 +235,10 @@ export default {
 
   methods: {
     setupDB() {
-      //const compareDate = function (a, b) {
-      //  return a.date == b.date ? 0 : (a.date < b.date ? -1 : 1);
-      //};
-      //this.characters.sort(compareDate);
-      //console.log(JSON.stringify(this.characters));
+      let skillMap = new Map();
+      for (let skill of this.skills) {
+        skillMap.set(skill.name, skill);
+      }
 
       let allTags = new Set();
       let mainTags = new Set();
@@ -311,6 +271,10 @@ export default {
         }
       }.bind(this);
 
+      for (let skill of this.skills) {
+        registerTags(skill.tags);
+      }
+
       let idSeed = 0;
       for (let chr of this.characters) {
         chr.id = ++idSeed;
@@ -319,8 +283,9 @@ export default {
         chr.rarityId = this.rarities.findIndex(v => v == chr.rarity);
         chr.damageTypeId = this.damageTypes.findIndex(v => v == chr.damageType);
         for (let si = 0; si < chr.skills.length; ++si) {
-          chr.skills[si].skillIndex = si;
-          registerTags(chr.skills[si].tags);
+          let skill = skillMap.get(chr.skills[si]);
+          skill.skillIndex = si; // パッシブ1 のみが複数キャラで共有され、現状全て si==1 なので問題ない
+          chr.skills[si] = skill;
         }
       }
 
@@ -375,14 +340,6 @@ export default {
       }
       return ok;
     },
-
-    getImageURL(name) {
-      if (this.constants.iconTable && name in this.constants.iconTable) {
-        return this.constants.iconTable[name];
-      }
-      return "./empty.png";
-    },
-
 
     updateURL() {
       if (!this.enableUpdateURL) {
