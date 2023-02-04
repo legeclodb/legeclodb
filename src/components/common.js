@@ -28,6 +28,7 @@ export default {
     style() {
       return {
         "--character-width": `${this.showDetail >= 2 ? '750px' : ''}`,
+        "--character-min-width": `${this.showDetail == 1 ? '400px' : ''}`,
         "--character-flex-grow": `${this.showDetail < 2 ? 0 : 1}`,
         "--skills-display": `${this.showDetail < 2 ? 'flex' : 'display'}`,
         "--skill-flex-grow": `${this.showDetail == 2 ? 1 : 0}`,
@@ -114,6 +115,15 @@ export default {
       return false;
     },
 
+    chrNameToHtml(name) {
+      let m = name.match(/([^(]+)(\(.+?\))/);
+      if (m) {
+        return m[1] + `<span class='note'>${m[2]}</span>`;
+      }
+      else {
+        return name;
+      }
+    },
     descToHtml(item) {
       return item.desc.replaceAll("\n", "<br/>") + "<br/>";
     },

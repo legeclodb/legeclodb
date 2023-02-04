@@ -104,7 +104,7 @@
             </div>
             <div class="detail" v-show="showDetail >= 1">
               <div class="info">
-                <h5>{{ chr.name }}</h5>
+                <h5 v-html="chrNameToHtml(chr.name)"></h5>
                 <b-img-lazy :src="getImageURL(chr.class)" :alt="chr.class" height="25" />
                 <b-img-lazy :src="getImageURL(chr.symbol)" :alt="chr.symbol" height="25" />
                 <b-img-lazy :src="getImageURL(chr.damageType)" :alt="chr.damageType" height="25" />
