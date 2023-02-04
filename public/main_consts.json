@@ -1,9 +1,5 @@
 {
   "iconTable": {
-    "ゼニス": "https://legeclo.wikiru.jp/attach2/696D67_61705F7A656E6974682E706E67.png",
-    "オリジン": "https://legeclo.wikiru.jp/attach2/696D67_61705F6F726967696E2E706E67.png",
-    "ナディア": "https://legeclo.wikiru.jp/attach2/696D67_61705F6E616469612E706E67.png",
-
     "ソルジャー": "https://legeclo.wikiru.jp/attach2/696D67_73695F736F6C646965722E706E67.png",
     "ランサー": "https://legeclo.wikiru.jp/attach2/696D67_73695F6C616E6365722E706E67.png",
     "ライダー": "https://legeclo.wikiru.jp/attach2/696D67_73695F72696465722E706E67.png",
@@ -12,6 +8,14 @@
     "セイント": "https://legeclo.wikiru.jp/attach2/696D67_73695F7361696E742E706E67.png",
     "シューター": "https://legeclo.wikiru.jp/attach2/696D67_73695F73686F6F7465722E706E67.png",
     "アサシン": "https://legeclo.wikiru.jp/attach2/696D67_73695F617373617373696E2E706E67.png",
+
+    "ゼニス": "https://legeclo.wikiru.jp/attach2/696D67_61705F7A656E6974682E706E67.png",
+    "オリジン": "https://legeclo.wikiru.jp/attach2/696D67_61705F6F726967696E2E706E67.png",
+    "ナディア": "https://legeclo.wikiru.jp/attach2/696D67_61705F6E616469612E706E67.png",
+
+    "攻撃": "https://legeclo.wikiru.jp/attach2/696D67_7370745F41747461636B547970652E706E67.png",
+    "支援": "https://legeclo.wikiru.jp/attach2/696D67_7370745F537570706F7274547970652E706E67.png",
+    "妨害": "https://legeclo.wikiru.jp/attach2/696D67_7370745F4A616D6D696E67547970652E706E67.png",
 
     "R": "https://legeclo.wikiru.jp/attach2/696D67_522E706E67.png",
     "SR": "https://legeclo.wikiru.jp/attach2/696D67_53522E706E67.png",

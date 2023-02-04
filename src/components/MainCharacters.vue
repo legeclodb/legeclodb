@@ -23,10 +23,10 @@
           </div>
           <div class="menu-widgets flex">
             <div class="widget" style="margin-right:0px" v-for="(tc, tci) in tagCategory" :key="tci">
-              <b-dropdown :text="tc.display" :ref="tc.name" size="sm" @hide="onTagDropdownHide($event, tc)">
+              <b-dropdown :text="tc.display" :ref="tc.name" size="sm" @show="onTagDropdownShow($event, tc)" @hide="onTagDropdownHide($event, tc)">
                 <b-dropdown-item class="d-flex flex-column" v-for="(t, i) in tc.tags" :key="i" :id="tc.name+'_item'+i" @click="setTagSearchPattern(t); hideTagDropdown(tc, tc.name+'_item'+i);">
                   {{t}} <span v-if="constants.tagNotes[t]" class="note" v-html="constants.tagNotes[t]"></span>
-                  <b-popover v-if="subTagTable[t]" :target="tc.name+'_item'+i" triggers="hover focus" :delay="{show:0, hide:100}" no-fade @shown="onSubtagPopoverShow(tc)" @hidden="onSubtagPopoverHide(tc)">
+                  <b-popover v-if="subTagTable[t]" :target="tc.name+'_item'+i" triggers="hover focus" :delay="{show:0, hide:250}" no-fade @show="onSubtagPopoverShow(tc, tc.name+'_item'+i)" @hidden="onSubtagPopoverHide(tc, tc.name+'_item'+i)">
                     <b-dropdown-item class="d-flex flex-column" v-for="(st, si) in subTagTable[t]" :key="si" @click="setTagSearchPattern(st, true); hideTagDropdown(tc, tc.name+'_item'+i);">{{st}}</b-dropdown-item>
                   </b-popover>
                 </b-dropdown-item>
@@ -164,11 +164,6 @@ export default {
       characters: [],
       constants: {},
 
-      symbols: [
-        "ゼニス",
-        "オリジン",
-        "ナディア",
-      ],
       classes: [
         "ソルジャー",
         "ランサー",
@@ -179,14 +174,19 @@ export default {
         "シューター",
         "アサシン",
       ],
-      rarities: [
-        "SSR",
-        "SR",
-        "R",
+      symbols: [
+        "ゼニス",
+        "オリジン",
+        "ナディア",
       ],
       damageTypes: [
         "アタック",
         "マジック",
+      ],
+      rarities: [
+        "SSR",
+        "SR",
+        "R",
       ],
       skillTypes: [
         "タレント",
@@ -204,30 +204,24 @@ export default {
           display: "バフ系",
           name: "tags_buff",
           tags: new Set(),
-          keepDropdown: 0,
         },
         debuff: {
           display: "デバフ系",
           name: "tags_debuff",
           tags: new Set(),
-          keepDropdown: 0,
         },
         resist: {
           display: "無効化系",
           name: "tags_resist",
           tags: new Set(),
-          keepDropdown: 0,
         },
         other: {
           display: "その他",
           name: "tags_other",
           tags: new Set(),
-          keepDropdown: 0,
         },
       },
       subTagTable: {},
-
-      showDetail: 2,
 
       symbolFilter: [
         { state: false },
@@ -259,9 +253,6 @@ export default {
         { state: false },
         { state: false },
       ],
-      tagSearchPattern: "",
-      tagSearchPatternPrev: "",
-      prevTagRE: null,
 
       enableUpdateURL: false,
       prevURL: "",
@@ -271,13 +262,6 @@ export default {
   computed: {
     items() {
       return this.characters;
-    },
-    style() {
-      return {
-        "--character-flex-grow": `${this.showDetail < 2 ? 0 : 1}`,
-        "--skills-display": `${this.showDetail < 2 ? 'flex': 'display'}`,
-        "--skill-flex-grow": `${this.showDetail == 2 ? 1 : 0}`,
-      };
     },
   },
 
@@ -309,38 +293,6 @@ export default {
   },
 
   methods: {
-    setTagSearchPattern(txt, wholeWord = false) {
-      txt = txt.trim();
-      txt = txt.replace('(', '\\(');
-      txt = txt.replace(')', '\\)');
-      txt = "^" + txt;
-      if (wholeWord) {
-        txt += "$";
-      }
-      this.tagSearchPattern = txt;
-
-      this.preventShowHideHeaderOnScroll = 1;
-      this.$nextTick(function () {
-        this.showHeader = true;
-      }.bind(this));
-    },
-    
-    getTagRE() {
-      if (this.tagSearchPattern.length == 0) {
-        this.prevTagRE = null;
-        return null;
-      }
-      else {
-        try {
-          let re = new RegExp(this.tagSearchPattern);
-          this.prevTagRE = re;
-          return re;
-        }
-        catch (e) {
-          return this.prevTagRE;
-        }
-      }
-    },
     isTalentHighlighted(chr) {
       let re = this.getTagRE();
       if (!re) {
@@ -431,24 +383,27 @@ export default {
         subtags.add(sub);
       }.bind(this);
 
-      const registerTags = function(tags) {
+      const registerTags = function (tags) {
         for (let t of tags) {
           allTags.add(t);
-          let p = t.lastIndexOf('(');
+          let p = t.indexOf('(');
           if (p != -1) {
             let sub = t;
             t = t.slice(0, p);
             addSubTag(t, sub);
           }
+          else if (t in this.subTagTable) {
+            this.subTagTable[t].add(t);
+          }
           mainTags.add(t);
         }
-      };
+      }.bind(this);
 
       let idSeed = 0;
       for (let chr of this.characters) {
         chr.id = ++idSeed;
-        chr.symbolId = this.symbols.findIndex(v => v == chr.symbol);
         chr.classId = this.classes.findIndex(v => v == chr.class);
+        chr.symbolId = this.symbols.findIndex(v => v == chr.symbol);
         chr.rarityId = this.rarities.findIndex(v => v == chr.rarity);
         chr.damageTypeId = this.damageTypes.findIndex(v => v == chr.damageType);
 
@@ -655,12 +610,18 @@ export default {
       this.updateURL();
     },
 
+    onTagDropdownShow(event, tagCategory) {
+      tagCategory.keepDropdown = 0;
+      tagCategory.readyToHide = false;
+    },
     onTagDropdownHide(event, tagCategory) {
       if (tagCategory.keepDropdown > 0) {
         event.preventDefault();
       }
     },
-    onSubtagPopoverShow(tagCategory) {
+    onSubtagPopoverShow(tagCategory, popoverTarget) {
+      this.$root.$emit('bv::hide::popover', this.prevPopover);
+      this.prevPopover = popoverTarget;
       tagCategory.keepDropdown++;
     },
     onSubtagPopoverHide(tagCategory) {

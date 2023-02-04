@@ -42,9 +42,7 @@ div.navi {
 .navi-link {
   color: whitesmoke;
   font-size: 1.0em;
-  padding: 12px;
-  margin-left: 10px;
-  margin-right: 10px;
+  padding: 12px 15px 12px 15px;
 }
 .navi-link:hover, .navi-link:focus {
   color: #16181b;

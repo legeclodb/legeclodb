@@ -4,6 +4,11 @@
       showHeader: true,
       preventShowHideHeaderOnScroll: 0,
       lastScrollPosition: 0,
+      showDetail: 2,
+
+      tagSearchPattern: "",
+      tagSearchPatternPrev: "",
+      prevTagRE: null,
     }
   },
 
@@ -13,6 +18,17 @@
 
   beforeDestroy() {
     window.removeEventListener('scroll', this.onScroll);
+  },
+
+  computed: {
+    style() {
+      return {
+        "--character-width": `${this.showDetail >= 2 ? '750px' : ''}`,
+        "--character-flex-grow": `${this.showDetail < 2 ? 0 : 1}`,
+        "--skills-display": `${this.showDetail < 2 ? 'flex' : 'display'}`,
+        "--skill-flex-grow": `${this.showDetail == 2 ? 1 : 0}`,
+      };
+    },
   },
 
   methods: {
@@ -32,14 +48,43 @@
     },
 
 
-    compareDate(a, b) {
-      return a.date == b.date ? 0 : (a.date < b.date ? -1 : 1);
-    },
     isFilterEnabled(filter) {
       for (const v of filter)
         if (v.state)
           return true;
       return false;
+    },
+
+    setTagSearchPattern(txt, wholeWord = false) {
+      txt = txt.trim();
+      txt = txt.replaceAll('(', '\\(');
+      txt = txt.replaceAll(')', '\\)');
+      txt = "^" + txt;
+      if (wholeWord && !txt.endsWith(')')) {
+        txt += "$";
+      }
+      this.tagSearchPattern = txt;
+
+      this.preventShowHideHeaderOnScroll = 1;
+      this.$nextTick(function () {
+        this.showHeader = true;
+      }.bind(this));
+    },
+    getTagRE() {
+      if (this.tagSearchPattern.length == 0) {
+        this.prevTagRE = null;
+        return null;
+      }
+      else {
+        try {
+          let re = new RegExp(this.tagSearchPattern);
+          this.prevTagRE = re;
+          return re;
+        }
+        catch (e) {
+          return this.prevTagRE;
+        }
+      }
     },
     matchTags(tags, re) {
       for (const tag of tags) {

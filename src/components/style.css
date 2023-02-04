@@ -106,6 +106,7 @@ div.character {
   background: rgb(245, 245, 245);
   flex-grow: var(--character-flex-grow);
   box-shadow: 0 3px 6px rgba(140,149,159,0.5);
+  width: var(--character-width);
   max-width: 750px;
 }
 
