@@ -50,6 +50,10 @@
       return false;
     },
 
+    descToHtml(item) {
+      return item.desc.replaceAll("\n", "<br/>") + "<br/>";
+    },
+
     serializeFilter(filter) {
       let r = 0;
       for (let i = 0; i < filter.length; ++i) {

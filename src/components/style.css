@@ -42,7 +42,6 @@ div.header {
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
   transform: translate3d(0, 0, 0);
   transition: 0.1s all ease;
-  z-index: 10000;
 }
 div.header.hidden {
   box-shadow: none;

@@ -26,7 +26,7 @@
               <b-dropdown :text="tc.display" :ref="tc.name" size="sm" @hide="onTagDropdownHide($event, tc)">
                 <b-dropdown-item class="d-flex flex-column" v-for="(t, i) in tc.tags" :key="i" :id="tc.name+'_item'+i" @click="setTagSearchPattern(t); hideTagDropdown(tc, tc.name+'_item'+i);">
                   {{t}} <span v-if="constants.tagNotes[t]" class="note" v-html="constants.tagNotes[t]"></span>
-                  <b-popover v-if="subTagTable[t]" :target="tc.name+'_item'+i" triggers="hover focus" delay="0" no-fade @shown="onSubtagPopoverShow(tc)" @hidden="onSubtagPopoverHide(tc)">
+                  <b-popover v-if="subTagTable[t]" :target="tc.name+'_item'+i" triggers="hover focus" :delay="{show:0, hide:100}" no-fade @shown="onSubtagPopoverShow(tc)" @hidden="onSubtagPopoverHide(tc)">
                     <b-dropdown-item class="d-flex flex-column" v-for="(st, si) in subTagTable[t]" :key="si" @click="setTagSearchPattern(st, true); hideTagDropdown(tc, tc.name+'_item'+i);">{{st}}</b-dropdown-item>
                   </b-popover>
                 </b-dropdown-item>
@@ -204,21 +204,25 @@ export default {
           display: "バフ系",
           name: "tags_buff",
           tags: new Set(),
+          keepDropdown: 0,
         },
         debuff: {
           display: "デバフ系",
           name: "tags_debuff",
           tags: new Set(),
+          keepDropdown: 0,
         },
         resist: {
           display: "無効化系",
           name: "tags_resist",
           tags: new Set(),
+          keepDropdown: 0,
         },
         other: {
           display: "その他",
           name: "tags_other",
           tags: new Set(),
+          keepDropdown: 0,
         },
       },
       subTagTable: {},
@@ -384,10 +388,6 @@ export default {
         ok = this.applyTagSearchPattern(chr);
       }
       return ok;
-    },
-
-    descToHtml(item) {
-      return item.desc.replaceAll("\n", "<br/>") + "<br/>";
     },
 
     getImageURL(name) {
@@ -656,15 +656,15 @@ export default {
     },
 
     onTagDropdownHide(event, tagCategory) {
-      if (tagCategory.keepDropdown) {
+      if (tagCategory.keepDropdown > 0) {
         event.preventDefault();
       }
     },
     onSubtagPopoverShow(tagCategory) {
-      tagCategory.keepDropdown = true;
+      tagCategory.keepDropdown++;
     },
     onSubtagPopoverHide(tagCategory) {
-      tagCategory.keepDropdown = false;
+      tagCategory.keepDropdown--;
       if (tagCategory.readyToHide) {
         this.$refs[tagCategory.name][0].hide();
         tagCategory.readyToHide = false;
