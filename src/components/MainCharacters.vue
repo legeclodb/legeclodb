@@ -335,6 +335,8 @@ export default {
         registerTags(skill.tags);
       }
 
+      // 外部 json 由来のデータへの変更はセッションをまたいでしまうので、deep copy しておく
+      this.characters = structuredClone(this.characters);
       let idSeed = 0;
       for (let chr of this.characters) {
         chr.id = ++idSeed;
@@ -343,13 +345,16 @@ export default {
         chr.rarityId = this.rarities.findIndex(v => v == chr.rarity);
         chr.damageTypeId = this.damageTypes.findIndex(v => v == chr.damageType);
 
-        let aoeAttack = 0;
         for (let i = 0; i < chr.skills.length; ++i) {
           let skill = skillMap.get(chr.skills[i]);
           if (!skill) {
             console.log("不明なスキル: " + chr.name + ":" + chr.skills[i]);
           }
           chr.skills[i] = skill;
+        }
+
+        let aoeAttack = 0;
+        for (let skill of chr.skills) {
           for (const t of skill.skillTags) {
             if (t == "攻撃(範囲)" && skill.skillType == "アクティブ") {
               ++aoeAttack;

@@ -1,8 +1,18 @@
-<template>
+﻿<template>
   <div class="root">
     <div class="header" :class="{ 'hidden': !showHeader }">
       <Navigation />
     </div>
+
+    <div class="content" style="margin-top: 70px;" :style="style">
+      <div class="about">
+        <div>
+          <h2>このサイトについて</h2>
+
+        </div>
+      </div>
+    </div>
+
   </div>
 </template>
 

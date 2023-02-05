@@ -275,6 +275,12 @@ export default {
         registerTags(skill.tags);
       }
 
+      for (let k in this.subTagTable) {
+        this.sortSet(this.subTagTable[k]);
+      }
+
+      // 外部 json 由来のデータへの変更はセッションをまたいでしまうので、deep copy しておく
+      this.characters = structuredClone(this.characters);
       let idSeed = 0;
       for (let chr of this.characters) {
         chr.id = ++idSeed;

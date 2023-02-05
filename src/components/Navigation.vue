@@ -1,13 +1,13 @@
 ﻿<template>
-  <div class="navi">
-    <h1 class="title">れじぇくろDB</h1>
-    <div class="links">
-      <a class="navi-link" href="./main">メインキャラ</a>
-      <a class="navi-link" href="./support">サポートキャラ</a>
-      <a class="navi-link" href="./equipment">装備</a>
-      <a class="navi-link" href="./about">説明</a>
-    </div>
-  </div>
+  <b-navbar type="dark" variant="dark">
+    <b-navbar-brand>れじぇくろDB</b-navbar-brand>
+    <b-navbar-nav>
+      <b-nav-item to="main">メインキャラ</b-nav-item>
+      <b-nav-item to="support">サポートキャラ</b-nav-item>
+      <b-nav-item to="equipment">装備</b-nav-item>
+      <b-nav-item to="about">説明</b-nav-item>
+    </b-navbar-nav>
+  </b-navbar>
 </template>
 
 <script>
@@ -18,35 +18,21 @@ export default {
 };
 </script>
 
-<style scoped>
-div.navi {
-  color: whitesmoke;
-  display: flex;
-  background: rgb(64,64,64);
-  width: 100vw;
-  transform: translate3d(0, 0, 0);
-  transition: 0.1s all ease;
-  font-size: 1.2em;
-  color: whitesmoke;
-  line-height: 50px;
+<style>
+.navbar {
+  padding: 0.25rem 1rem;
 }
 
-.title {
-  font-size: 1.5em;
-  margin-right: 50px;
-  margin-left: 20px;
-  margin-right: 20px;
-  padding: 12px;
+.navbar-brand {
+  font-size: 1.75em;
+  margin-left: 1.0rem;
 }
 
-.navi-link {
-  color: whitesmoke;
-  font-size: 1.0em;
-  padding: 12px 15px 12px 15px;
+.nav-link {
+  font-size: 1.25em;
+  color: rgba(255, 255, 255, 0.8) !important;
 }
-.navi-link:hover, .navi-link:focus {
-  color: #16181b;
-  text-decoration: none;
-  background-color: #e9ecef;
+.nav-link:hover, .nav-link:focus {
+  color: rgba(255, 255, 255, 0.5) !important;
 }
 </style>

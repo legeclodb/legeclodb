@@ -62,6 +62,13 @@ export default {
     compareDate(a, b) {
       return a.date == b.date ? 0 : (a.date < b.date ? -1 : 1);
     },
+    sortSet(dst, compare = undefined) {
+      let sorted = Array.from(dst).sort(compare);
+      dst.clear();
+      for (let a of sorted) {
+        dst.add(a);
+      }
+    },
 
     isFilterEnabled(filter) {
       for (const v of filter)
