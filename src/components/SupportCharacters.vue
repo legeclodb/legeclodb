@@ -6,7 +6,7 @@
         <div class="menu-panel">
           <div class="menu-widgets flex">
             <div class="widget">
-              <h6>スキル検索</h6>
+              <h6>タグ検索</h6>
             </div>
           </div>
           <div class="menu-widgets flex">
@@ -17,8 +17,8 @@
                 </b-button>
               </b-button-group>
             </div>
-            <div class="widget" style="width:150px">
-              <b-form-input v-model="tagSearchPattern" type="text" debounce="500" size="sm" placeholder="タグ検索 (正規表現)" :update="onUpdateTagSearchPattern()" />
+            <div class="widget" style="width: 170px">
+              <b-form-input v-model="tagSearchPattern" type="text" debounce="500" size="sm" placeholder="検索ワード (正規表現)" :update="onUpdateTagSearchPattern()" />
             </div>
           </div>
           <div class="menu-widgets flex">
