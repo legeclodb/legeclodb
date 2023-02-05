@@ -122,7 +122,7 @@
 
 <script>
 import Navigation from './Navigation.vue'
-import jsonItems from '../assets/equipments.json'
+import jsonItems from '../assets/items.json'
 import jsonConstants from '../assets/constants.json'
 
 export default {

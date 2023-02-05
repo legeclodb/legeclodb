@@ -2,7 +2,7 @@
 import Router from 'vue-router'
 import MainCharacters from './components/MainCharacters.vue'
 import SupportCharacters from './components/SupportCharacters.vue'
-import Equipments from './components/Equipments.vue'
+import Items from './components/Items.vue'
 import About from './components/About.vue'
 
 Vue.use(Router)
@@ -27,9 +27,9 @@ export default new Router({
       component: SupportCharacters
     },
     {
-      path: '/equipment',
-      name: 'equipment',
-      component: Equipments
+      path: '/item',
+      name: 'item',
+      component: Items
     },
     {
       path: '/about',

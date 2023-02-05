@@ -4,7 +4,7 @@
     <b-navbar-nav>
       <b-nav-item to="main">メインキャラ</b-nav-item>
       <b-nav-item to="support">サポートキャラ</b-nav-item>
-      <b-nav-item to="equipment">装備</b-nav-item>
+      <b-nav-item to="item">アイテム</b-nav-item>
       <b-nav-item to="about">説明</b-nav-item>
     </b-navbar-nav>
   </b-navbar>
