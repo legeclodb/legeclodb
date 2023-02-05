@@ -283,10 +283,10 @@ export default {
       return false;
     },
     filterItem(chr) {
-      let ok = (!this.isFilterEnabled(this.symbolFilter) || this.symbolFilter[chr.symbolId].state) &&
-        (!this.isFilterEnabled(this.classFilter) || this.classFilter[chr.classId].state) &&
-        (!this.isFilterEnabled(this.rarityFilter) || this.rarityFilter[chr.rarityId].state) &&
-        (!this.isFilterEnabled(this.damageTypeFilter) || this.damageTypeFilter[chr.damageTypeId].state);
+      let ok = this.filterMatch(this.classFilter, chr.classId) &&
+        this.filterMatch(this.symbolFilter, chr.symbolId) &&
+        this.filterMatch(this.rarityFilter, chr.rarityId) &&
+        this.filterMatch(this.damageTypeFilter, chr.damageTypeId);
 
       if (ok && this.getTagRE()) {
         ok = this.applyTagSearchPattern(chr);

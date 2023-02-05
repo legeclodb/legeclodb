@@ -81,6 +81,24 @@ export default {
         dst.push({ state: false });
       }
     },
+    filterMatch(filter, index) {
+      if (this.isFilterEnabled(filter)) {
+        if (Array.isArray(index)) {
+          for (const i of index) {
+            if (i >= 0 && filter[i].state) {
+              return true;
+            }
+          }
+          return false;
+        }
+        else {
+          return index >= 0 && filter[index].state;
+        }
+      }
+      else {
+        return true;
+      }
+    },
 
     setTagSearchPattern(txt, wholeWord = false) {
       txt = txt.trim();
