@@ -16,6 +16,11 @@
   "支援": "https://legeclo.wikiru.jp/attach2/696D67_7370745F537570706F7274547970652E706E67.png",
   "妨害": "https://legeclo.wikiru.jp/attach2/696D67_7370745F4A616D6D696E67547970652E706E67.png",
 
+  "武器": "./weapon.png",
+  "鎧": "./armor.png",
+  "兜": "./helmet.png",
+  "アクセサリ": "./accessory.png",
+
   "R": "https://legeclo.wikiru.jp/attach2/696D67_522E706E67.png",
   "SR": "https://legeclo.wikiru.jp/attach2/696D67_53522E706E67.png",
   "SSR": "https://legeclo.wikiru.jp/attach2/696D67_5353522E706E67.png",

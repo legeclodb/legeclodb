@@ -47,6 +47,13 @@
           </div>
           <div class="menu-widgets flex">
             <div class="widget">
+              <b-button-group size="sm" id="item_type_selector">
+                <b-button v-for="(c, i) in itemTypeFilter" :key="i" :pressed.sync="c.state" @click="onChangeFilterState()" variant="outline-secondary">
+                  <b-img-lazy :src="getImageURL(itemTypes[i])" height="25" />
+                </b-button>
+              </b-button-group>
+            </div>
+            <div class="widget">
               <b-button-group size="sm" id="rareiry_selector">
                 <b-button v-for="(c, i) in rarityFilter" :key="i" :pressed.sync="c.state" @click="onChangeFilterState()" variant="outline-secondary">
                   <b-img-lazy :src="getImageURL(rarities[i])" height="20" />
@@ -80,12 +87,12 @@
         <div class="character" :id="'item_'+item.id" :key="item.id" v-show="filterItem(item)">
           <div class="flex">
             <div class="portrait">
-              <b-img-lazy :src="item.icon" :alt="item.name" width="100" height="100" />
+              <b-img-lazy :src="item.icon" :alt="item.name" width="80" height="80" />
             </div>
             <div class="detail" v-show="showDetail >= 1">
               <div class="info">
                 <h5 v-html="item.name"></h5>
-                <span>{{item.slot}}</span>
+                <b-img-lazy :src="getImageURL(item.slot)" :alt="item.slot" height="25" />
                 <b-img-lazy :src="getImageURL(item.rarity)" :alt="item.rarity" height="20" />
                 <b-link :href="'https://legeclo.wikiru.jp/?' + item.name" target="_blank">Wiki</b-link>
               </div>
@@ -129,6 +136,7 @@ export default {
       constants: jsonConstants,
 
       classes: jsonConstants.classes,
+      itemTypes: jsonConstants.itemTypes,
       rarities: jsonConstants.rarities,
 
       showDetailTypes: [
@@ -162,6 +170,7 @@ export default {
       subTagTable: {},
 
       classFilter: [],
+      itemTypeFilter: [],
       rarityFilter: [],
 
       enableUpdateURL: false,
@@ -179,6 +188,7 @@ export default {
     this.setupDB();
 
     this.fillFilter(this.classFilter, this.classes);
+    this.fillFilter(this.itemTypeFilter, this.itemTypes);
     this.fillFilter(this.rarityFilter, this.rarities);
   },
 
@@ -233,6 +243,8 @@ export default {
         if (item.classes) {
           item.classIds = item.classes.map(c1 => this.classes.findIndex(c2 => c1 == c2));
         }
+        item.slotId = this.itemTypes.findIndex(v => v == item.slot);
+        item.rarityId = this.rarities.findIndex(v => v == item.rarity);
         registerTags(item.tags);
       }
 
@@ -267,7 +279,9 @@ export default {
       return false;
     },
     filterItem(chr) {
-      let ok = !chr.classIds || this.filterMatch(this.classFilter, chr.classIds);
+      let ok = (!chr.classIds || this.filterMatch(this.classFilter, chr.classIds)) &&
+        this.filterMatch(this.itemTypeFilter, chr.slotId) &&
+        this.filterMatch(this.rarityFilter, chr.rarityId);
       if (ok && this.getTagRE()) {
         ok = this.applyTagSearchPattern(chr);
       }

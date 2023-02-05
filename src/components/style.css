@@ -124,9 +124,21 @@ div.character {
   max-width: 750px;
 }
 
+div.item {
+  padding: 3px;
+  margin: 5px;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 0.3rem;
+  background: rgb(245, 245, 245);
+  flex-grow: var(--character-flex-grow);
+  box-shadow: 0 3px 6px rgba(140,149,159,0.5);
+  width: var(--character-width);
+  min-width: var(--character-min-width);
+  max-width: 600px;
+}
+
 div.portrait {
   text-align: left;
-  width: 110px;
   padding: 3px;
   margin: 3px;
   border: 1px solid rgba(0, 0, 0, 0.2);
