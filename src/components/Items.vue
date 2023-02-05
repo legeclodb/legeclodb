@@ -105,6 +105,7 @@
                   </div>
                   <div class="icon">
                     <b-img-lazy v-for="(c, ci) in item.classes" :key="ci" :src="getImageURL(c)" :alt="c" height="25" />
+                    <b-img-lazy v-if="!item.classes" src="./allclasses.png" alt="all classes" height="25" />
                   </div>
                   <div class="tags" v-show="showDetail >= 2">
                     <b-badge class="tag" :key="i" v-for="(tag, i) in item.tags" variant="info" pill @click="setTagSearchPattern(tag)">{{ tag }}</b-badge>
@@ -247,6 +248,7 @@ export default {
         item.rarityId = this.rarities.findIndex(v => v == item.rarity);
         registerTags(item.tags);
       }
+      this.equipments.sort((a, b) => a.slotId < b.slotId ? -1 : 1);
 
       for (let k in this.subTagTable) {
         this.sortSet(this.subTagTable[k]);
