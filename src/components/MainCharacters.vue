@@ -40,14 +40,14 @@
         <div class="menu-panel">
           <div class="menu-widgets flex">
             <div class="widget">
-              <h6>クラス / シンボル フィルター</h6>
+              <h6>フィルター</h6>
             </div>
           </div>
           <div class="menu-widgets flex">
             <div class="widget">
               <b-button-group size="sm" id="class_selector">
                 <b-button v-for="(c, i) in classFilter" :key="i" :pressed.sync="c.state" @click="onChangeFilterState()" variant="outline-secondary">
-                  <b-img-lazy :src="getImageURL(classes[i])" height="25" />
+                  <b-img-lazy :src="getImageURL(classes[i])" width="25" height="25" />
                 </b-button>
               </b-button-group>
             </div>
@@ -63,14 +63,14 @@
             <div class="widget">
               <b-button-group size="sm" id="attack_type_selector">
                 <b-button v-for="(c, i) in damageTypeFilter" :key="i" :pressed.sync="c.state" @click="onChangeFilterState()" variant="outline-secondary">
-                  <b-img-lazy :src="getImageURL(damageTypes[i])" height="25" />
+                  <b-img-lazy :src="getImageURL(damageTypes[i])" width="25" height="25" />
                 </b-button>
               </b-button-group>
             </div>
             <div class="widget">
               <b-button-group size="sm" id="rareiry_selector">
                 <b-button v-for="(c, i) in rarityFilter" :key="i" :pressed.sync="c.state" @click="onChangeFilterState()" variant="outline-secondary">
-                  <b-img-lazy :src="getImageURL(rarities[i])" height="20" />
+                  <b-img-lazy :src="getImageURL(rarities[i])" width="36" height="20" />
                 </b-button>
               </b-button-group>
             </div>

@@ -33,14 +33,14 @@
         <div class="menu-panel">
           <div class="menu-widgets flex">
             <div class="widget">
-              <h6>クラスフィルター</h6>
+              <h6>フィルター</h6>
             </div>
           </div>
           <div class="menu-widgets flex">
             <div class="widget">
               <b-button-group size="sm" id="class_selector">
                 <b-button v-for="(c, i) in classFilter" :key="i" :pressed.sync="c.state" @click="onChangeFilterState()" variant="outline-secondary">
-                  <b-img-lazy :src="getImageURL(classes[i])" height="25" />
+                  <b-img-lazy :src="getImageURL(classes[i])" width="25" height="25" />
                 </b-button>
               </b-button-group>
             </div>
@@ -49,14 +49,14 @@
             <div class="widget">
               <b-button-group size="sm" id="item_type_selector">
                 <b-button v-for="(c, i) in itemTypeFilter" :key="i" :pressed.sync="c.state" @click="onChangeFilterState()" variant="outline-secondary">
-                  <b-img-lazy :src="getImageURL(itemTypes[i])" height="25" />
+                  <b-img-lazy :src="getImageURL(itemTypes[i])" width="25" height="25" />
                 </b-button>
               </b-button-group>
             </div>
             <div class="widget">
               <b-button-group size="sm" id="rareiry_selector">
                 <b-button v-for="(c, i) in rarityFilter" :key="i" :pressed.sync="c.state" @click="onChangeFilterState()" variant="outline-secondary">
-                  <b-img-lazy :src="getImageURL(rarities[i])" height="20" />
+                  <b-img-lazy :src="getImageURL(rarities[i])" width="36" height="20" />
                 </b-button>
               </b-button-group>
             </div>
@@ -194,13 +194,13 @@ export default {
   },
 
   mounted() {
-  //  this.decodeURL();
+    this.decodeURL();
 
-  //  window.onpopstate = function () {
-  //    this.decodeURL(true);
-  //  }.bind(this);
+    window.onpopstate = function () {
+      this.decodeURL(true);
+    }.bind(this);
 
-  //  this.enableUpdateURL = true;
+    this.enableUpdateURL = true;
   },
 
   methods: {
@@ -290,15 +290,55 @@ export default {
       return ok;
     },
 
+    updateURL() {
+      if (!this.enableUpdateURL) {
+        return;
+      }
+
+      let seri = new this.URLSerializer();
+      if (this.isFilterEnabled(this.classFilter))
+        seri.class = this.serializeFilter(this.classFilter);
+      if (this.isFilterEnabled(this.itemTypeFilter))
+        seri.itemType = this.serializeFilter(this.itemTypeFilter);
+      if (this.isFilterEnabled(this.rarityFilter))
+        seri.rarity = this.serializeFilter(this.rarityFilter);
+      if (this.tagSearchPattern.length > 0)
+        seri.tag = this.tagSearchPattern;
+
+      let url = seri.serialize();
+      if (url != this.prevURL) {
+        window.history.pushState(null, null, url);
+        this.prevURL = url;
+      }
+    },
+    decodeURL(initState = false) {
+      let data = new this.URLSerializer({
+        class: 0,
+        itemType: 0,
+        rarity: 0,
+        tag: "",
+      });
+
+      if (data.deserialize(window.location.href) || initState) {
+        this.enableUpdateURL = false;
+        this.deserializeFilter(this.classFilter, data.class);
+        this.deserializeFilter(this.itemTypeFilter, data.itemType);
+        this.deserializeFilter(this.rarityFilter, data.rarity);
+        this.tagSearchPattern = data.tag;
+        this.$forceUpdate();
+        this.enableUpdateURL = true;
+      }
+    },
+
     onChangeFilterState() {
-      //this.updateURL();
+      this.updateURL();
       this.preventShowHideHeaderOnScroll = 1;
     },
     onUpdateTagSearchPattern() {
       if (this.tagSearchPattern == this.tagSearchPatternPrev)
         return;
       this.tagSearchPatternPrev = this.tagSearchPattern;
-      //this.updateURL();
+      this.updateURL();
     },
 
     onTagDropdownShow(event, tagCategory) {
