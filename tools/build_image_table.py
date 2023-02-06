@@ -2,6 +2,8 @@
 import json, shutil, re, requests, hashlib
 
 srcPath = "../src/assets/image_table.json"
+shutil.copyfile(srcPath, "./image_table.json.bak")
+
 imgPath = "../public/img/"
 imageTable = json.load(open(srcPath))
 
@@ -22,5 +24,5 @@ for k in imageTable:
         print("copied: " + path + " -> " + filename)
         imageTable[k] = "img/" + filename;
 
-with open('image_table.json', 'w') as f:
+with open(srcPath, 'w') as f:
     json.dump(imageTable, f, indent=2, ensure_ascii=False)

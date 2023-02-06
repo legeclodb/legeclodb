@@ -96,18 +96,13 @@
                 <b-img-lazy :src="getImageURL(item.rarity)" :alt="item.rarity" height="20" />
                 <b-link :href="'https://legeclo.wikiru.jp/?' + item.name" target="_blank">Wiki</b-link>
               </div>
+              <div class="info" v-html="itemPatamsToHtml(item)"></div>
               <div class="skills">
-                <div class="skill" style="flex-grow: 1">
-                  <div class="flex">
-                    <div class="desc" v-show="showDetail >= 2">
-                      <p><span v-html="descToHtml(item)"></span><span v-if="item.note" class="note" v-html="item.note"></span></p>
-                    </div>
+                <div class="skill" style="flex-grow: 1" v-show="showDetail >= 2">
+                  <div class="desc">
+                    <p><span v-html="descToHtml(item)"></span><span v-if="item.note" class="note" v-html="item.note"></span></p>
                   </div>
-                  <div class="icons">
-                    <b-img-lazy v-for="(c, ci) in item.classes" :key="ci" :src="getImageURL(c)" :alt="c" height="25" />
-                    <b-img-lazy v-if="!item.classes" src="./allclasses.png" alt="all classes" height="25" />
-                  </div>
-                  <div class="tags" v-show="showDetail >= 2">
+                  <div class="tags">
                     <b-badge class="tag" :key="i" v-for="(tag, i) in item.tags" variant="info" pill @click="setTagSearchPattern(tag)">{{ tag }}</b-badge>
                   </div>
                 </div>
@@ -205,15 +200,15 @@ export default {
 
   methods: {
     setupDB() {
-      //let imageTable = {};
-      //for (const item of this.equipments) {
-      //  if (item.icon) {
-      //    imageTable[item.name] = item.icon;
-      //  }
-      //}
-      //if (Object.keys(imageTable).length) {
-      //  console.log(JSON.stringify(imageTable));
-      //}
+      let imageTable = {};
+      for (const item of this.equipments) {
+        if (item.icon) {
+          imageTable[item.name] = item.icon;
+        }
+      }
+      if (Object.keys(imageTable).length) {
+        console.log(JSON.stringify(imageTable));
+      }
 
       let allTags = new Set();
       let mainTags = new Set();
@@ -278,6 +273,34 @@ export default {
         else
           this.tagCategory.other.tags.add(t);
       }
+    },
+
+    itemPatamsToHtml(item) {
+      const nameTable = {
+        hp: "HP",
+        atk: "アタック",
+        def: "ディフェンス",
+        mag: "マジック",
+        res: "レジスト",
+        tec: "テクニック",
+      };
+
+      let params = [];
+      if (item.classes) {
+        let classes = [];
+        for (let c of item.classes) {
+          classes.push(`<img src="${this.getImageURL(c)}" alt="${c}" width="25" height="25" />`);
+        }
+        params.push(classes.join(""));
+      }
+      else {
+        params.push(`<img src="${this.getImageURL('全クラス')}" alt="全クラス" height="25" />`);
+      }
+
+      for (const k in item.params) {
+        params.push(`<p><img src="${this.getImageURL(nameTable[k])}" alt="${nameTable[k]}" width="20" height="20" /> +${item.params[k]}</p>`);
+      }
+      return params.join("");
     },
 
     applyTagSearchPattern(chr) {
@@ -349,34 +372,6 @@ export default {
         return;
       this.tagSearchPatternPrev = this.tagSearchPattern;
       this.updateURL();
-    },
-
-    onTagDropdownShow(event, tagCategory) {
-      tagCategory.keepDropdown = 0;
-      tagCategory.readyToHide = false;
-    },
-    onTagDropdownHide(event, tagCategory) {
-      if (tagCategory.keepDropdown > 0) {
-        event.preventDefault();
-      }
-    },
-    onSubtagPopoverShow(tagCategory, popoverTarget) {
-      this.$root.$emit('bv::hide::popover', this.prevPopover);
-      this.prevPopover = popoverTarget;
-      tagCategory.keepDropdown++;
-    },
-    onSubtagPopoverHide(tagCategory) {
-      tagCategory.keepDropdown--;
-      if (tagCategory.readyToHide) {
-        this.$refs[tagCategory.name][0].hide();
-        tagCategory.readyToHide = false;
-      }
-    },
-    hideTagDropdown(tagCategory, popoverTarget) {
-      if (popoverTarget) {
-        this.$root.$emit('bv::hide::popover', popoverTarget);
-      }
-      tagCategory.readyToHide = true;
     },
   }
 }

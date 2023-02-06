@@ -455,35 +455,6 @@ export default {
       this.tagSearchPatternPrev = this.tagSearchPattern;
       this.updateURL();
     },
-
-    onTagDropdownShow(event, tagCategory) {
-      tagCategory.keepDropdown = 0;
-      tagCategory.readyToHide = false;
-    },
-    onTagDropdownHide(event, tagCategory) {
-      if (tagCategory.keepDropdown > 0) {
-        event.preventDefault();
-      }
-    },
-    onSubtagPopoverShow(tagCategory, popoverTarget) {
-      this.$root.$emit('bv::hide::popover', this.prevPopover);
-      this.prevPopover = popoverTarget;
-      tagCategory.keepDropdown++;
-    },
-    onSubtagPopoverHide(tagCategory) {
-      tagCategory.keepDropdown--;
-      if (tagCategory.readyToHide) {
-        this.$refs[tagCategory.name][0].hide();
-        tagCategory.readyToHide = false;
-      }
-    },
-    hideTagDropdown(tagCategory, popoverTarget) {
-      if (popoverTarget) {
-        this.$root.$emit('bv::hide::popover', popoverTarget);
-      }
-      tagCategory.readyToHide = true;
-    },
-
   }
 }
 </script>

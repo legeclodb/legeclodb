@@ -153,6 +153,36 @@ export default {
       return item.desc.replaceAll("\n", "<br/>") + "<br/>";
     },
 
+
+    onTagDropdownShow(event, state) {
+      state.keepDropdown = 0;
+      state.readyToHide = false;
+    },
+    onTagDropdownHide(event, state) {
+      if (state.keepDropdown > 0) {
+        event.preventDefault();
+      }
+    },
+    onSubtagPopoverShow(state, popoverTarget) {
+      this.$root.$emit('bv::hide::popover', this.prevPopover);
+      this.prevPopover = popoverTarget;
+      state.keepDropdown++;
+    },
+    onSubtagPopoverHide(state) {
+      state.keepDropdown--;
+      if (state.readyToHide) {
+        this.$refs[state.name][0].hide();
+        state.readyToHide = false;
+      }
+    },
+    hideTagDropdown(state, popoverTarget) {
+      if (popoverTarget) {
+        this.$root.$emit('bv::hide::popover', popoverTarget);
+      }
+      state.readyToHide = true;
+    },
+
+
     serializeFilter(filter) {
       let r = 0;
       for (let i = 0; i < filter.length; ++i) {
