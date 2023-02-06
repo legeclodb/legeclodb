@@ -97,13 +97,13 @@
                 <b-link :href="'https://legeclo.wikiru.jp/?' + item.name" target="_blank">Wiki</b-link>
               </div>
               <div class="skills">
-                <div class="skill">
+                <div class="skill" style="flex-grow: 1">
                   <div class="flex">
                     <div class="desc" v-show="showDetail >= 2">
                       <p><span v-html="descToHtml(item)"></span><span v-if="item.note" class="note" v-html="item.note"></span></p>
                     </div>
                   </div>
-                  <div class="icon">
+                  <div class="icons">
                     <b-img-lazy v-for="(c, ci) in item.classes" :key="ci" :src="getImageURL(c)" :alt="c" height="25" />
                     <b-img-lazy v-if="!item.classes" src="./allclasses.png" alt="all classes" height="25" />
                   </div>

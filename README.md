@@ -1,6 +1,6 @@
-# legeclodb
+# れじぇくろDB
 
-[れじぇくろ！](https://www.legend-clover.net/) の攻略データベースです。https://i-saint.github.io/legeclodb/ のソースコードとなります。  
+[れじぇくろ！](https://www.legend-clover.net/) の攻略データベースです。https://legeclodb.github.io/ のソースコードになります。  
 [Vue.js](https://vuejs.org/) で実装されています。ローカルで実行する場合、以下のコマンドを実行します。
 ```
 npm install -g @vue/cli
