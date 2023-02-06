@@ -87,7 +87,7 @@
         <div class="item" :id="'item_'+item.id" :key="item.id" v-show="filterItem(item)">
           <div class="flex">
             <div class="portrait">
-              <b-img-lazy :src="item.icon" :alt="item.name" width="60" height="60" rounded />
+              <b-img-lazy :src="getImageURL(item.name)" :alt="item.name" width="60" height="60" rounded />
             </div>
             <div class="detail" v-show="showDetail >= 1">
               <div class="info">
@@ -205,6 +205,16 @@ export default {
 
   methods: {
     setupDB() {
+      //let imageTable = {};
+      //for (const item of this.equipments) {
+      //  if (item.icon) {
+      //    imageTable[item.name] = item.icon;
+      //  }
+      //}
+      //if (Object.keys(imageTable).length) {
+      //  console.log(JSON.stringify(imageTable));
+      //}
+
       let allTags = new Set();
       let mainTags = new Set();
 
