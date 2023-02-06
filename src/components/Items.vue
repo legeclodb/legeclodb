@@ -84,10 +84,10 @@
 
     <div class="content" style="margin-top: 210px;" :style="style">
       <template v-for="item in items">
-        <div class="character" :id="'item_'+item.id" :key="item.id" v-show="filterItem(item)">
+        <div class="item" :id="'item_'+item.id" :key="item.id" v-show="filterItem(item)">
           <div class="flex">
             <div class="portrait">
-              <b-img-lazy :src="item.icon" :alt="item.name" width="80" height="80" />
+              <b-img-lazy :src="item.icon" :alt="item.name" width="60" height="60" rounded />
             </div>
             <div class="detail" v-show="showDetail >= 1">
               <div class="info">

@@ -43,6 +43,7 @@ export default {
 .nav-link {
   font-size: 1.25em;
   color: rgba(255, 255, 255, 0.8) !important;
+  white-space: nowrap;
 }
 .nav-link:hover, .nav-link:focus {
   color: rgba(255, 255, 255, 0.5) !important;

@@ -101,7 +101,7 @@
         <div class="character" :id="'chr_'+chr.id" :key="chr.id" v-show="filterItem(chr)">
           <div class="flex">
             <div class="portrait">
-              <b-link :href="'#chr_'+chr.id"><b-img-lazy :src="getImageURL(chr.name)" :alt="chr.name" width="100" height="100" /></b-link>
+              <b-img-lazy :src="getImageURL(chr.name)" :alt="chr.name" width="100" height="100" rounded />
             </div>
             <div class="detail" v-show="showDetail >= 1">
               <div class="info">

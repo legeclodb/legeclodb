@@ -480,6 +480,360 @@
     "tags": [ "バフ:アタック(戦闘時)", "バフ:マジック(戦闘時)" ]
   },
   {
+    "name": "グラディウス",
+    "desc": "アタック+10%。",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_576561706F6E5F53525F312E706E67.png",
+    "slot": "武器",
+    "rarity": "SR",
+    "classes": [ "ソルジャー", "ライダー", "エアリアル" ],
+    "params": {
+      "hp": 328,
+      "atk": 77
+    },
+    "tags": [ "バフ:アタック" ]
+  },
+  {
+    "name": "レイピア",
+    "desc": "ディフェンス+10%。",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_576561706F6E5F53525F332E706E67.png",
+    "slot": "武器",
+    "rarity": "SR",
+    "classes": [ "ソルジャー", "ライダー", "エアリアル" ],
+    "params": {
+      "hp": 328,
+      "atk": 77
+    },
+    "tags": [ "バフ:ディフェンス" ]
+  },
+  {
+    "name": "バスターソード",
+    "desc": "味方ターンでの戦闘時、アタック+15%。",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_576561706F6E5F53525F352E706E67.png",
+    "slot": "武器",
+    "rarity": "SR",
+    "classes": [ "ソルジャー", "ライダー", "エアリアル" ],
+    "params": {
+      "hp": 328,
+      "atk": 77
+    },
+    "tags": [ "バフ:アタック(戦闘時)" ]
+  },
+  {
+    "name": "一文字",
+    "desc": "アタック+10%。",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_576561706F6E5F53525F322E706E67.png",
+    "slot": "武器",
+    "rarity": "SR",
+    "classes": [ "ソルジャー", "ライダー", "エアリアル" ],
+    "params": {
+      "atk": 71,
+      "tec": 35
+    },
+    "tags": [ "バフ:アタック" ]
+  },
+  {
+    "name": "脇差",
+    "desc": "クリティカル率+10%。",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_576561706F6E5F53525F32302E706E67.png",
+    "slot": "武器",
+    "rarity": "SR",
+    "classes": [ "ソルジャー", "ライダー", "エアリアル" ],
+    "params": {
+      "atk": 71,
+      "tec": 35
+    },
+    "tags": [ "バフ:クリティカル率" ]
+  },
+  {
+    "name": "長巻",
+    "desc": "味方ターンでの戦闘時、クリティカル率+15%。",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_576561706F6E5F53525F32312E706E67.png",
+    "slot": "武器",
+    "rarity": "SR",
+    "classes": [ "ソルジャー", "ライダー", "エアリアル" ],
+    "params": {
+      "atk": 71,
+      "tec": 35
+    },
+    "tags": [ "バフ:クリティカル率(戦闘時)" ]
+  },
+  {
+    "name": "パルチザン",
+    "desc": "アタック+10%。",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_576561706F6E5F53525F372E706E67.png",
+    "slot": "武器",
+    "rarity": "SR",
+    "classes": [ "ライダー", "ランサー", "エアリアル" ],
+    "params": {
+      "hp": 383,
+      "atk": 70
+    },
+    "tags": [ "バフ:アタック" ]
+  },
+  {
+    "name": "スピリットランス",
+    "desc": "ディフェンス+10%。",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_576561706F6E5F53525F31312E706E67.png",
+    "slot": "武器",
+    "rarity": "SR",
+    "classes": [ "ライダー", "ランサー", "エアリアル" ],
+    "params": {
+      "hp": 383,
+      "atk": 70
+    },
+    "tags": [ "バフ:ディフェンス" ]
+  },
+  {
+    "name": "メタルランス",
+    "desc": "最大HP+10%。",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_576561706F6E5F53525F382E706E67.png",
+    "slot": "武器",
+    "rarity": "SR",
+    "classes": [ "ライダー", "ランサー", "エアリアル" ],
+    "params": {
+      "hp": 383,
+      "atk": 70
+    },
+    "tags": [ "バフ:最大HP" ]
+  },
+  {
+    "name": "ハルバード",
+    "desc": "アタック+10%。",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_576561706F6E5F53525F342E706E67.png",
+    "slot": "武器",
+    "rarity": "SR",
+    "classes": [ "ソルジャー", "ランサー", "エアリアル", "セイント" ],
+    "params": {
+      "hp": 328,
+      "atk": 77
+    },
+    "tags": [ "バフ:アタック" ]
+  },
+  {
+    "name": "ヴァイオレットアックス",
+    "desc": "最大HP+10%。",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_576561706F6E5F53525F32322E706E67.png",
+    "slot": "武器",
+    "rarity": "SR",
+    "classes": [ "ソルジャー", "ランサー", "エアリアル", "セイント" ],
+    "params": {
+      "hp": 328,
+      "atk": 77
+    },
+    "tags": [ "バフ:最大HP" ]
+  },
+  {
+    "name": "バルディッシュ",
+    "desc": "味方ターンでの戦闘時、アタック+15%。",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_576561706F6E5F53525F32332E706E67.png",
+    "slot": "武器",
+    "rarity": "SR",
+    "classes": [ "ソルジャー", "ランサー", "エアリアル", "セイント" ],
+    "params": {
+      "hp": 328,
+      "atk": 77
+    },
+    "tags": [ "バフ:アタック(戦闘時)" ]
+  },
+  {
+    "name": "メガトンハンマー",
+    "desc": "最大HP+10%。",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_576561706F6E5F53525F362E706E67.png",
+    "slot": "武器",
+    "rarity": "SR",
+    "classes": [ "ソルジャー", "ランサー", "エアリアル", "セイント" ],
+    "params": {
+      "hp": 328,
+      "atk": 65
+    },
+    "tags": [ "バフ:最大HP" ]
+  },
+  {
+    "name": "スターフレイル",
+    "desc": "ディフェンス+10%。",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_576561706F6E5F53525F392E706E67.png",
+    "slot": "武器",
+    "rarity": "SR",
+    "classes": [ "ソルジャー", "ランサー", "エアリアル", "セイント" ],
+    "params": {
+      "hp": 328,
+      "atk": 65
+    },
+    "tags": [ "バフ:ディフェンス" ]
+  },
+  {
+    "name": "鋼鉄の棍棒",
+    "desc": "味方ターンでの戦闘時、ディフェンス+15%。",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_576561706F6E5F53525F32342E706E67.png",
+    "slot": "武器",
+    "rarity": "SR",
+    "classes": [ "ソルジャー", "ランサー", "エアリアル", "セイント" ],
+    "params": {
+      "hp": 328,
+      "atk": 65
+    },
+    "tags": [ "バフ:ディフェンス(戦闘時)" ]
+  },
+  {
+    "name": "ロングボウ",
+    "desc": "アタック+10%。",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_576561706F6E5F53525F31342E706E67.png",
+    "slot": "武器",
+    "rarity": "SR",
+    "classes": [ "シューター", "アサシン" ],
+    "params": {
+      "hp": 328,
+      "atk": 77
+    },
+    "tags": [ "バフ:アタック" ]
+  },
+  {
+    "name": "冷弓",
+    "desc": "ディフェンス+10%。",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_576561706F6E5F53525F31362E706E67.png",
+    "slot": "武器",
+    "rarity": "SR",
+    "classes": [ "シューター", "アサシン" ],
+    "params": {
+      "hp": 328,
+      "atk": 77
+    },
+    "tags": [ "バフ:ディフェンス" ]
+  },
+  {
+    "name": "バリスタ",
+    "desc": "味方ターンでの戦闘時、アタック+15%。",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_576561706F6E5F53525F31352E706E67.png",
+    "slot": "武器",
+    "rarity": "SR",
+    "classes": [ "シューター", "アサシン" ],
+    "params": {
+      "hp": 328,
+      "atk": 77
+    },
+    "tags": [ "バフ:アタック(戦闘時)" ]
+  },
+  {
+    "name": "パワーリボルバー",
+    "desc": "アタック+10%。",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_576561706F6E5F53525F31372E706E67.png",
+    "slot": "武器",
+    "rarity": "SR",
+    "classes": [ "シューター", "アサシン" ],
+    "params": {
+      "atk": 77,
+      "tec": 35
+    },
+    "tags": [ "バフ:アタック" ]
+  },
+  {
+    "name": "種子島",
+    "desc": "クリティカル率+10%。",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_576561706F6E5F53525F31392E706E67.png",
+    "slot": "武器",
+    "rarity": "SR",
+    "classes": [ "シューター", "アサシン" ],
+    "params": {
+      "atk": 77,
+      "tec": 35
+    },
+    "tags": [ "バフ:クリティカル率" ]
+  },
+  {
+    "name": "エネルギーマスケット",
+    "desc": "味方ターンでの戦闘時、クリティカル率+15%。",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_576561706F6E5F53525F31382E706E67.png",
+    "slot": "武器",
+    "rarity": "SR",
+    "classes": [ "シューター", "アサシン" ],
+    "params": {
+      "atk": 77,
+      "tec": 35
+    },
+    "tags": [ "バフ:クリティカル率(戦闘時)" ]
+  },
+  {
+    "name": "クロスロッド",
+    "desc": "マジック+10%。",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_576561706F6E5F53525F32352E706E67.png",
+    "slot": "武器",
+    "rarity": "SR",
+    "classes": [ "ソーサラー", "セイント" ],
+    "params": {
+      "hp": 328,
+      "mag": 77
+    },
+    "tags": [ "バフ:マジック" ]
+  },
+  {
+    "name": "マジカルステッキ",
+    "desc": "治療効果+15%。",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_576561706F6E5F53525F31302E706E67.png",
+    "slot": "武器",
+    "rarity": "SR",
+    "classes": [ "ソーサラー", "セイント" ],
+    "params": {
+      "hp": 328,
+      "mag": 77
+    },
+    "tags": [ "バフ:治療効果" ]
+  },
+  {
+    "name": "リングロッド",
+    "desc": "自ユニットのHP80%以上の時、マジック+15%。",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_576561706F6E5F53525F32362E706E67.png",
+    "slot": "武器",
+    "rarity": "SR",
+    "classes": [ "ソーサラー", "セイント" ],
+    "params": {
+      "hp": 328,
+      "mag": 77
+    },
+    "tags": [ "バフ:マジック" ]
+  },
+  {
+    "name": "呪詛の御札",
+    "desc": "単体攻撃スキル使用時、与ダメージ+15%。",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_576561706F6E5F53525F31322E706E67.png",
+    "slot": "武器",
+    "rarity": "SR",
+    "classes": [ "ソーサラー", "セイント" ],
+    "params": {
+      "mag": 77,
+      "tec": 35
+    },
+    "tags": [ "バフ:与ダメージ(単体スキル)" ]
+  },
+  {
+    "name": "ガラスの水晶玉",
+    "desc": "範囲攻撃スキル使用時、範囲スキル与ダメージ+15%。",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_576561706F6E5F53525F31332E706E67.png",
+    "slot": "武器",
+    "rarity": "SR",
+    "classes": [ "ソーサラー", "セイント" ],
+    "params": {
+      "mag": 77,
+      "tec": 35
+    },
+    "tags": [ "バフ:与ダメージ(範囲スキル)" ]
+  },
+  {
+    "name": "魔法使いの人形",
+    "desc": "自ユニットのHP80%以上の時、マジック+15%。",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_576561706F6E5F53525F32372E706E67.png",
+    "slot": "武器",
+    "rarity": "SR",
+    "classes": [ "ソーサラー", "セイント" ],
+    "params": {
+      "mag": 77,
+      "tec": 35
+    },
+    "tags": [ "バフ:マジック(戦闘時)" ]
+  },
+
+
+
+  {
     "name": "ジャッジメントハート",
     "desc": "クリティカルダメージ倍率+15%/クリティカル率+10%。\n戦闘中、クリティカルが発動した時、その戦闘後、自ユニットにランダムな強化効果を1個付与する。",
     "icon": "https://legeclo.wikiru.jp/attach2/696D67_576561706F6E5F5353525F34302E706E67.png",
@@ -1199,6 +1553,201 @@
     "tags": [ "バフ:ディフェンス", "バフ:マジック", "バフ:レジスト" ]
   },
   {
+    "name": "竜鱗の鎧",
+    "desc": "ディフェンス+10%。",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_426F64795F41726D6F725F53525F312E706E67.png",
+    "slot": "鎧",
+    "rarity": "SR",
+    "classes": [ "ソルジャー", "ランサー", "セイント" ],
+    "params": {
+      "hp": 328,
+      "def": 53
+    },
+    "tags": [ "バフ:ディフェンス" ]
+  },
+  {
+    "name": "シルバーメイル",
+    "desc": "レジスト+10%。",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_426F64795F41726D6F725F53525F322E706E67.png",
+    "slot": "鎧",
+    "rarity": "SR",
+    "classes": [ "ソルジャー", "ランサー", "セイント" ],
+    "params": {
+      "hp": 328,
+      "def": 53
+    },
+    "tags": [ "バフ:レジスト" ]
+  },
+  {
+    "name": "ゴーレムスキン",
+    "desc": "最大HP+10%。",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_426F64795F41726D6F725F53525F362E706E67.png",
+    "slot": "鎧",
+    "rarity": "SR",
+    "classes": [ "ソルジャー", "ランサー", "セイント" ],
+    "params": {
+      "hp": 328,
+      "def": 53
+    },
+    "tags": [ "バフ:最大HP" ]
+  },
+  {
+    "name": "ソルジャーアーマー",
+    "desc": "敵ターンでの戦闘時、アタック+15%。",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_426F64795F41726D6F725F53525F342E706E67.png",
+    "slot": "鎧",
+    "rarity": "SR",
+    "classes": [ "ソルジャー", "ランサー", "セイント" ],
+    "params": {
+      "hp": 328,
+      "def": 53
+    },
+    "tags": [ "バフ:アタック(戦闘時)" ]
+  },
+  {
+    "name": "武士の甲冑",
+    "desc": "敵ターンでの戦闘時、クリティカル率+15%。",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_426F64795F41726D6F725F53525F332E706E67.png",
+    "slot": "鎧",
+    "rarity": "SR",
+    "classes": [ "ソルジャー", "ランサー", "セイント" ],
+    "params": {
+      "hp": 328,
+      "def": 53
+    },
+    "tags": [ "バフ:クリティカル率(戦闘時)" ]
+  },
+  {
+    "name": "渇きの布巻き",
+    "desc": "ディフェンス+10%。",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_426F64795F41726D6F725F53525F392E706E67.png",
+    "slot": "鎧",
+    "rarity": "SR",
+    "classes": [ "ライダー", "エアリアル", "シューター", "アサシン" ],
+    "params": {
+      "hp": 383,
+      "def": 45
+    },
+    "tags": [ "バフ:ディフェンス" ]
+  },
+  {
+    "name": "鋼の胸当て",
+    "desc": "レジスト+10%。",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_426F64795F41726D6F725F53525F382E706E67.png",
+    "slot": "鎧",
+    "rarity": "SR",
+    "classes": [ "ライダー", "エアリアル", "シューター", "アサシン" ],
+    "params": {
+      "hp": 383,
+      "def": 45
+    },
+    "tags": [ "バフ:レジスト" ]
+  },
+  {
+    "name": "ミステリーボディ",
+    "desc": "最大HP+10%。",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_426F64795F41726D6F725F53525F352E706E67.png",
+    "slot": "鎧",
+    "rarity": "SR",
+    "classes": [ "ライダー", "エアリアル", "シューター", "アサシン" ],
+    "params": {
+      "hp": 383,
+      "def": 45
+    },
+    "tags": [ "バフ:最大HP" ]
+  },
+  {
+    "name": "アサシンベスト",
+    "desc": "自ユニットのHP80%以上の時、アタック+10%。",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_426F64795F41726D6F725F53525F31332E706E67.png",
+    "slot": "鎧",
+    "rarity": "SR",
+    "classes": [ "ライダー", "エアリアル", "シューター", "アサシン" ],
+    "params": {
+      "hp": 383,
+      "def": 45
+    },
+    "tags": [ "バフ:アタック" ]
+  },
+  {
+    "name": "獅子の衣",
+    "desc": "自ユニットのHP80%以下の時、アタック+10%。",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_426F64795F41726D6F725F53525F31342E706E67.png",
+    "slot": "鎧",
+    "rarity": "SR",
+    "classes": [ "ライダー", "エアリアル", "シューター", "アサシン" ],
+    "params": {
+      "hp": 383,
+      "def": 45
+    },
+    "tags": [ "バフ:アタック" ]
+  },
+  {
+    "name": "魔法のベスト",
+    "desc": "ディフェンス+10%。",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_426F64795F41726D6F725F53525F31352E706E67.png",
+    "slot": "鎧",
+    "rarity": "SR",
+    "classes": [ "ソーサラー", "セイント" ],
+    "params": {
+      "hp": 436,
+      "def": 38
+    },
+    "tags": [ "バフ:ディフェンス" ]
+  },
+  {
+    "name": "魔術師のローブ",
+    "desc": "レジスト+10%。",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_426F64795F41726D6F725F53525F372E706E67.png",
+    "slot": "鎧",
+    "rarity": "SR",
+    "classes": [ "ソーサラー", "セイント" ],
+    "params": {
+      "hp": 436,
+      "def": 38
+    },
+    "tags": [ "バフ:レジスト" ]
+  },
+  {
+    "name": "巫女の羽織",
+    "desc": "最大HP+10%。",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_426F64795F41726D6F725F53525F31312E706E67.png",
+    "slot": "鎧",
+    "rarity": "SR",
+    "classes": [ "ソーサラー", "セイント" ],
+    "params": {
+      "hp": 436,
+      "def": 38
+    },
+    "tags": [ "バフ:最大HP" ]
+  },
+  {
+    "name": "セイントコート",
+    "desc": "治療効果+5%。",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_426F64795F41726D6F725F53525F31302E706E67.png",
+    "slot": "鎧",
+    "rarity": "SR",
+    "classes": [ "ソーサラー", "セイント" ],
+    "params": {
+      "hp": 436,
+      "def": 38
+    },
+    "tags": [ "バフ:治療効果" ]
+  },
+  {
+    "name": "ダークローブ",
+    "desc": "自ユニットのHP80%以上の時、ディフェンス+15%。",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_426F64795F41726D6F725F53525F31322E706E67.png",
+    "slot": "鎧",
+    "rarity": "SR",
+    "classes": [ "ソーサラー", "セイント" ],
+    "params": {
+      "hp": 436,
+      "def": 38
+    },
+    "tags": [ "バフ:ディフェンス" ]
+  },
+  {
     "name": "テラの羽根",
     "desc": "最大HP+10%。",
     "icon": "https://legeclo.wikiru.jp/attach2/696D67_426F64795F41726D6F725F5353525F32312E706E67.png",
@@ -1613,6 +2162,201 @@
     "tags": [ "バフ:最大HP" ]
   },
   {
+    "name": "竜鱗の兜",
+    "desc": "ディフェンス+10%。",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_486561645F41726D6F725F53525F312E706E67.png",
+    "slot": "兜",
+    "rarity": "SR",
+    "classes": [ "ソルジャー", "ランサー", "セイント" ],
+    "params": {
+      "hp": 383,
+      "res": 40
+    },
+    "tags": [ "バフ:ディフェンス" ]
+  },
+  {
+    "name": "シルバーヘルム",
+    "desc": "レジスト+10%。",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_486561645F41726D6F725F53525F322E706E67.png",
+    "slot": "兜",
+    "rarity": "SR",
+    "classes": [ "ソルジャー", "ランサー", "セイント" ],
+    "params": {
+      "hp": 383,
+      "res": 40
+    },
+    "tags": [ "バフ:レジスト" ]
+  },
+  {
+    "name": "ゴーレムスカル",
+    "desc": "最大HP+10%。",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_486561645F41726D6F725F53525F362E706E67.png",
+    "slot": "兜",
+    "rarity": "SR",
+    "classes": [ "ソルジャー", "ランサー", "セイント" ],
+    "params": {
+      "hp": 383,
+      "res": 40
+    },
+    "tags": [ "バフ:最大HP" ]
+  },
+  {
+    "name": "ソルジャーヘッド",
+    "desc": "敵ターンでの戦闘時、ディフェンス+15%。",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_486561645F41726D6F725F53525F342E706E67.png",
+    "slot": "兜",
+    "rarity": "SR",
+    "classes": [ "ソルジャー", "ランサー", "セイント" ],
+    "params": {
+      "hp": 383,
+      "res": 40
+    },
+    "tags": [ "バフ:ディフェンス(戦闘時)" ]
+  },
+  {
+    "name": "武士の頭形兜",
+    "desc": "敵ターンでの戦闘時、レジスト+15%。",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_486561645F41726D6F725F53525F332E706E67.png",
+    "slot": "兜",
+    "rarity": "SR",
+    "classes": [ "ソルジャー", "ランサー", "セイント" ],
+    "params": {
+      "hp": 383,
+      "res": 40
+    },
+    "tags": [ "バフ:レジスト(戦闘時)" ]
+  },
+  {
+    "name": "渇きのターバン",
+    "desc": "ディフェンス+10%。",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_486561645F41726D6F725F53525F392E706E67.png",
+    "slot": "兜",
+    "rarity": "SR",
+    "classes": [ "ライダー", "エアリアル", "シューター", "アサシン" ],
+    "params": {
+      "hp": 328,
+      "res": 45
+    },
+    "tags": [ "バフ:ディフェンス" ]
+  },
+  {
+    "name": "鋼のサークレット",
+    "desc": "レジスト+10%。",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_486561645F41726D6F725F53525F382E706E67.png",
+    "slot": "兜",
+    "rarity": "SR",
+    "classes": [ "ライダー", "エアリアル", "シューター", "アサシン" ],
+    "params": {
+      "hp": 328,
+      "res": 45
+    },
+    "tags": [ "バフ:レジスト" ]
+  },
+  {
+    "name": "ミステリーヘルム",
+    "desc": "最大HP+10%。",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_486561645F41726D6F725F53525F352E706E67.png",
+    "slot": "兜",
+    "rarity": "SR",
+    "classes": [ "ライダー", "エアリアル", "シューター", "アサシン" ],
+    "params": {
+      "hp": 328,
+      "res": 45
+    },
+    "tags": [ "バフ:最大HP" ]
+  },
+  {
+    "name": "アサシンマスク",
+    "desc": "自ユニットのHP80%以上の時、レジスト+15%。",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_486561645F41726D6F725F53525F31332E706E67.png",
+    "slot": "兜",
+    "rarity": "SR",
+    "classes": [ "ライダー", "エアリアル", "シューター", "アサシン" ],
+    "params": {
+      "hp": 328,
+      "res": 45
+    },
+    "tags": [ "バフ:レジスト" ]
+  },
+  {
+    "name": "獅子の仮面",
+    "desc": "自ユニットのHP80%以下の時、ディフェンス+15%。",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_486561645F41726D6F725F53525F31342E706E67.png",
+    "slot": "兜",
+    "rarity": "SR",
+    "classes": [ "ライダー", "エアリアル", "シューター", "アサシン" ],
+    "params": {
+      "hp": 328,
+      "res": 45
+    },
+    "tags": [ "バフ:ディフェンス" ]
+  },
+  {
+    "name": "魔法のバンダナ",
+    "desc": "ディフェンス+10%。",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_486561645F41726D6F725F53525F31352E706E67.png",
+    "slot": "兜",
+    "rarity": "SR",
+    "classes": [ "ソーサラー", "セイント" ],
+    "params": {
+      "hp": 273,
+      "res": 53
+    },
+    "tags": [ "バフ:ディフェンス" ]
+  },
+  {
+    "name": "魔術師のフード",
+    "desc": "レジスト+10%。",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_486561645F41726D6F725F53525F372E706E67.png",
+    "slot": "兜",
+    "rarity": "SR",
+    "classes": [ "ソーサラー", "セイント" ],
+    "params": {
+      "hp": 273,
+      "res": 53
+    },
+    "tags": [ "バフ:レジスト" ]
+  },
+  {
+    "name": "巫女の冠",
+    "desc": "最大HP+10%。",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_486561645F41726D6F725F53525F31312E706E67.png",
+    "slot": "兜",
+    "rarity": "SR",
+    "classes": [ "ソーサラー", "セイント" ],
+    "params": {
+      "hp": 273,
+      "res": 53
+    },
+    "tags": [ "バフ:最大HP" ]
+  },
+  {
+    "name": "セイントベレー",
+    "desc": "自ユニットのHP80%以上の時、レジスト+15%。",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_486561645F41726D6F725F53525F31302E706E67.png",
+    "slot": "兜",
+    "rarity": "SR",
+    "classes": [ "ソーサラー", "セイント" ],
+    "params": {
+      "hp": 273,
+      "res": 53
+    },
+    "tags": [ "バフ:レジスト" ]
+  },
+  {
+    "name": "ダークホーン",
+    "desc": "自ユニットのHP80%以上の時、ディフェンス+15%。",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_486561645F41726D6F725F53525F31322E706E67.png",
+    "slot": "兜",
+    "rarity": "SR",
+    "classes": [ "ソーサラー", "セイント" ],
+    "params": {
+      "hp": 273,
+      "res": 53
+    },
+    "tags": [ "バフ:ディフェンス" ]
+  },
+  {
     "name": "ゼニスの髪飾り",
     "desc": "シンボルがゼニスのキャラに装備時、最大HP+15%。\n更に戦闘時、その戦闘後、自ユニットのメイン、サポートそれぞれのHPが最大HPの6%分回復する。",
     "icon": "https://legeclo.wikiru.jp/attach2/696D67_486561645F41726D6F725F5353525F32322E706E67.png",
@@ -1938,6 +2682,198 @@
       "def": 57
     },
     "tags": [ "バフ:ディフェンス", "再移動" ]
+  },
+  {
+    "name": "平和のお守り",
+    "desc": "最大HP+10%。\n自ユニットにアクティブによる「アタックダウン/マジックダウン」無効を付与する。",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_4163636573736F726965735F53525F31312E706E67.png",
+    "slot": "アクセサリ",
+    "rarity": "SR",
+    "params": {
+      "atk": 57,
+      "tec": 57
+    },
+    "tags": [ "無効化:アタックダウン", "無効化:マジックダウン" ]
+  },
+  {
+    "name": "おしゃれなリボン",
+    "desc": "治療効果+10%。\n自ユニットにアクティブによる「アクティブスキル使用不可」無効を付与する。",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_4163636573736F726965735F53525F322E706E67.png",
+    "slot": "アクセサリ",
+    "rarity": "SR",
+    "params": {
+      "hp": 383,
+      "mag": 57
+    },
+    "tags": [ "無効化:アクティブスキル使用不可" ]
+  },
+  {
+    "name": "魔法のペンダント",
+    "desc": "マジック5%。\n自ユニットにアクティブによる「固定ダメージ」無効を付与する。",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_4163636573736F726965735F53525F342E706E67.png",
+    "slot": "アクセサリ",
+    "rarity": "SR",
+    "params": {
+      "mag": 57,
+      "res": 30
+    },
+    "tags": [ "無効化:固定ダメージ" ]
+  },
+  {
+    "name": "紅蓮のチョーカー",
+    "desc": "レジスト/アタック+5%。",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_4163636573736F726965735F53525F31332E706E67.png",
+    "slot": "アクセサリ",
+    "rarity": "SR",
+    "params": {
+      "atk": 57,
+      "def": 30
+    },
+    "tags": [ "バフ:アタック", "バフ:レジスト" ]
+  },
+  {
+    "name": "兵士の紋章",
+    "desc": "レジスト+8%。",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_4163636573736F726965735F53525F392E706E67.png",
+    "slot": "アクセサリ",
+    "rarity": "SR",
+    "params": {
+      "atk": 57,
+      "def": 30
+    },
+    "tags": [ "バフ:レジスト" ]
+  },
+  {
+    "name": "フォートレスバッジ",
+    "desc": "最大HP+8%。",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_4163636573736F726965735F53525F31302E706E67.png",
+    "slot": "アクセサリ",
+    "rarity": "SR",
+    "params": {
+      "hp": 383,
+      "atk": 57
+    },
+    "tags": [ "バフ:最大HP" ]
+  },
+  {
+    "name": "竜鱗の盾",
+    "desc": "近距離による戦闘時、ダメージ耐性+10%。",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_4163636573736F726965735F53525F312E706E67.png",
+    "slot": "アクセサリ",
+    "rarity": "SR",
+    "params": {
+      "hp": 383,
+      "def": 30
+    },
+    "tags": [ "バフ:ダメージ耐性(戦闘時)" ]
+  },
+  {
+    "name": "ゴールドレガース",
+    "desc": "遠距離による戦闘時、ダメージ耐性+10%。",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_4163636573736F726965735F53525F382E706E67.png",
+    "slot": "アクセサリ",
+    "rarity": "SR",
+    "params": {
+      "hp": 383,
+      "def": 30
+    },
+    "tags": [ "バフ:ダメージ耐性(戦闘時)" ]
+  },
+  {
+    "name": "ルビーのブローチ",
+    "desc": "マジック/最大HP+5%。",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_4163636573736F726965735F53525F332E706E67.png",
+    "slot": "アクセサリ",
+    "rarity": "SR",
+    "params": {
+      "hp": 383,
+      "mag": 57
+    },
+    "tags": [ "バフ:最大HP", "バフ:マジック" ]
+  },
+  {
+    "name": "エルフのスカーフ",
+    "desc": "レジスト+8%。",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_4163636573736F726965735F53525F31322E706E67.png",
+    "slot": "アクセサリ",
+    "rarity": "SR",
+    "params": {
+      "mag": 38,
+      "def": 57
+    },
+    "tags": [ "バフ:レジスト" ]
+  },
+  {
+    "name": "魔物の尻尾",
+    "desc": "最大HP+8%。",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_4163636573736F726965735F53525F31352E706E67.png",
+    "slot": "アクセサリ",
+    "rarity": "SR",
+    "params": {
+      "mag": 57,
+      "res": 30
+    },
+    "tags": [ "バフ:最大HP" ]
+  },
+  {
+    "name": "天使の指輪",
+    "desc": "治療効果+8%/レジスト+5%。",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_4163636573736F726965735F53525F31342E706E67.png",
+    "slot": "アクセサリ",
+    "rarity": "SR",
+    "params": {
+      "mag": 57,
+      "res": 30
+    },
+    "tags": [ "バフ:レジスト", "バフ:治療効果" ]
+  },
+  {
+    "name": "サファイアリング",
+    "desc": "治療効果+8%。/最大HP+5%。",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_4163636573736F726965735F53525F372E706E67.png",
+    "slot": "アクセサリ",
+    "rarity": "SR",
+    "params": {
+      "hp": 383,
+      "mag": 57
+    },
+    "tags": [ "バフ:最大HP", "バフ:治療効果" ]
+  },
+  {
+    "name": "真珠のイヤリング",
+    "desc": "ディフェンス+5%。/被治療効果+10%。",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_4163636573736F726965735F53525F362E706E67.png",
+    "slot": "アクセサリ",
+    "rarity": "SR",
+    "params": {
+      "hp": 383,
+      "def": 30
+    },
+    "tags": [ "バフ:ディフェンス", "バフ:治療効果" ]
+  },
+  {
+    "name": "プリティチャーム",
+    "desc": "レジスト+8%。",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_4163636573736F726965735F53525F31362E706E67.png",
+    "slot": "アクセサリ",
+    "rarity": "SR",
+    "params": {
+      "def": 30,
+      "res": 30
+    },
+    "tags": [ "バフ:レジスト" ]
+  },
+  {
+    "name": "エメラルドネックレス",
+    "desc": "最大HP+8%。",
+    "icon": "https://legeclo.wikiru.jp/attach2/696D67_4163636573736F726965735F53525F352E706E67.png",
+    "slot": "アクセサリ",
+    "rarity": "SR",
+    "params": {
+      "hp": 383,
+      "def": 30
+    },
+    "tags": [ "バフ:最大HP" ]
   },
   {
     "name": "ゼニスのお守り",
