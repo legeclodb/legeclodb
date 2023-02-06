@@ -1,15 +1,14 @@
 ﻿<template>
   <b-navbar type="dark" variant="dark">
-    <b-navbar-brand>れじぇくろDB</b-navbar-brand>
+    <b-navbar-brand to="/">れじぇくろDB</b-navbar-brand>
     <b-navbar-nav>
-      <b-nav-item to="main">メインキャラ</b-nav-item>
-      <b-nav-item to="support">サポートキャラ</b-nav-item>
-      <b-nav-item to="item">アイテム</b-nav-item>
-      <b-nav-item to="about">説明</b-nav-item>
+      <b-nav-item to="/main">メインキャラ</b-nav-item>
+      <b-nav-item to="/support">サポートキャラ</b-nav-item>
+      <b-nav-item to="/item">アイテム</b-nav-item>
+      <b-nav-item to="/about">説明</b-nav-item>
     </b-navbar-nav>
     <b-navbar-nav class="ml-auto">
-      <!--
-      <b-nav-item href="https://github.com/i-saint/legeclodb">
+      <b-nav-item href="https://github.com/legeclodb/legeclodb">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="24" height="24" focusable="false" role="img" class="navbar-nav-svg">
           <title>GitHub</title>
           <g fill="currentColor">
@@ -17,7 +16,6 @@
           </g>
         </svg>
       </b-nav-item>
-      -->
     </b-navbar-nav>
   </b-navbar>
 </template>

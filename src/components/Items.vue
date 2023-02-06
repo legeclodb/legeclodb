@@ -86,8 +86,9 @@
       <template v-for="item in items">
         <div class="item" :id="'item_'+item.id" :key="item.id" v-show="filterItem(item)">
           <div class="flex">
-            <div class="portrait">
+            <div class="portrait" :id="'item_'+item.id+'_icon'">
               <b-img-lazy :src="getImageURL(item.name)" :alt="item.name" width="60" height="60" rounded />
+              <b-popover v-if="showDetail==1" :target="'item_'+item.id+'_icon'" triggers="hover focus" :title="item.name" :content="item.desc" placement="top"></b-popover>
             </div>
             <div class="detail" v-show="showDetail >= 1">
               <div class="info">
@@ -96,7 +97,10 @@
                 <b-img-lazy :src="getImageURL(item.rarity)" :alt="item.rarity" height="20" />
                 <b-link :href="'https://legeclo.wikiru.jp/?' + item.name" target="_blank">Wiki</b-link>
               </div>
-              <div class="info" v-html="itemPatamsToHtml(item)"></div>
+              <div class="info">
+                <div v-html="itemClassesToHtml(item)"></div>
+                <div v-html="itemParamsToHtml(item)" v-show="showDetail >= 2"></div>
+              </div>
               <div class="skills">
                 <div class="skill" style="flex-grow: 1" v-show="showDetail >= 2">
                   <div class="desc">
@@ -275,7 +279,15 @@ export default {
       }
     },
 
-    itemPatamsToHtml(item) {
+    itemClassesToHtml(item) {
+      if (item.classes) {
+        return item.classes.map(c => `<img src="${this.getImageURL(c)}" alt="${c}" width="25" height="25" />`).join("")
+      }
+      else {
+        return `<img src="${this.getImageURL('全クラス')}" alt="全クラス" height="25" />`;
+      }
+    },
+    itemParamsToHtml(item) {
       const nameTable = {
         hp: "HP",
         atk: "アタック",
@@ -284,19 +296,7 @@ export default {
         res: "レジスト",
         tec: "テクニック",
       };
-
       let params = [];
-      if (item.classes) {
-        let classes = [];
-        for (let c of item.classes) {
-          classes.push(`<img src="${this.getImageURL(c)}" alt="${c}" width="25" height="25" />`);
-        }
-        params.push(classes.join(""));
-      }
-      else {
-        params.push(`<img src="${this.getImageURL('全クラス')}" alt="全クラス" height="25" />`);
-      }
-
       for (const k in item.params) {
         params.push(`<p><img src="${this.getImageURL(nameTable[k])}" alt="${nameTable[k]}" width="20" height="20" /> +${item.params[k]}</p>`);
       }

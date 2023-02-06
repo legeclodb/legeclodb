@@ -114,8 +114,9 @@
               <div class="skills">
                 <div class="talent" :class="{ 'highlighted': isTalentHighlighted(chr) }">
                   <div class="flex">
-                    <div class="icon">
+                    <div class="icon" :id="'chr_'+chr.id+'_talent'">
                       <b-img-lazy :src="getImageURL(chr.talent.name)" with="50" height="50" />
+                      <b-popover v-if="showDetail==1" :target="'chr_'+chr.id+'_talent'" triggers="hover focus" :title="chr.talent.name" :content="chr.talent.desc" placement="top"></b-popover>
                     </div>
                     <div class="desc" v-show="showDetail >= 2">
                       <h5>{{ chr.talent.name }}</h5>
@@ -128,8 +129,9 @@
                 </div>
                 <div class="skill" v-for="(skill, si) in chr.skills" :class="{'active': skill.skillType == 'アクティブ', 'passive': skill.skillType == 'パッシブ', 'highlighted': isSkillHighlighted(skill) }" :key="si">
                   <div class="flex">
-                    <div class="icon">
+                    <div class="icon" :id="'chr_'+chr.id+'_skill'+si">
                       <b-img-lazy :src="getImageURL(skill.name)" with="50" height="50" />
+                      <b-popover v-if="showDetail==1" :target="'chr_'+chr.id+'_skill'+si" triggers="hover focus" :title="skill.name" :content="skill.desc" placement="top"></b-popover>
                     </div>
                     <div class="desc" v-show="showDetail >= 2">
                       <h6>{{ skill.name }}</h6>
