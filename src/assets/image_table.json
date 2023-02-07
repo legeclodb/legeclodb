@@ -27,7 +27,6 @@
   "マジック": "img/c2104f6b6beb1c6d6f76f465b3e19344.png",
   "レジスト": "img/d9073dcb3758ec32d3582967d575e256.png",
   "テクニック": "img/9f2ff568c656c46bb6ef8cdc52564f9c.png",
-
   "アーサー": "img/f18d2dfc1983ec4f42f533df3a34988e.png",
   "クー・フーリン": "img/d19ffd81834d67202bcaca4c4740cf6a.png",
   "クレオパトラ": "img/286a1cc5039e794a7e1d6eb279fbf1f5.png",
@@ -491,7 +490,6 @@
   "民の守護者": "img/2d2c52b81f04d7da4a2be09ab7b7b8f5.png",
   "法に従え": "img/e95219c1866f087c6e6e281f055523e6.png",
   "目には目を、歯には歯を": "img/0c194a9d65c2a330a02a28aa1149f5a6.png",
-
   "シヴァ": "img/3a2a9d3a611eef4e6759636847038211.png",
   "スサノオ": "img/4513435b3528a024d2ced09cf8dcedd1.png",
   "アポロン": "img/5d39f70de8482ada408fe922af261aa8.png",
@@ -719,7 +717,6 @@
   "小さな幸せ": "img/b50e838e4ab142a44c5d4480026c9636.png",
   "天命に従え": "img/a1f8f72c0534cfc489d433955477d73d.png",
   "王の守護者": "img/b097ccad443c863b1aa638f746fa8f55.png",
-
   "テンプルカットラス": "img/285d2e80c6aeafe72369cc952a464ff8.png",
   "オムニスシミター": "img/783eabde80c6d2099a56cf650ce82d77.png",
   "アブソリュートデス": "img/6adf52d0dfcf31cd9951926aad997d0d.png",
@@ -977,5 +974,13 @@
   "犬山たまきの制御装置": "img/6c131ce3fd3314a569b70d4d94f9e275.png",
   "天秤の天杖": "img/53fd0d2f0b4e674f4bcbd9aaea808755.png",
   "天秤の天鎧": "img/96fb6ec8044611a9ea2569870652dfd4.png",
-  "天秤の天帽": "img/d1b31e859cc267183324e55062b3ce46.png"
+  "天秤の天帽": "img/d1b31e859cc267183324e55062b3ce46.png",
+  "深き水面通ずる器": "img/9417d302a1c3cc9ceb26dc26f2ba3569.png",
+  "深海より射貫くもの": "img/9607d41c556c0f8faf3caed1d791c1ca.png",
+  "蠢く霧の狂杖": "img/a169ae8645dffc45f59ccfa3ffb15470.png",
+  "捩れ狂う歪槍": "img/6a33937aa9c554cea9637e367ea1dde3.png",
+  "星を堕とす邪弓": "img/ee623f140dfbdb2b1cd711701cb38fe4.png",
+  "名付けられざる斧槍": "img/cc7078774e9ad2a598e8e44c68d08b60.png",
+  "命を焼き払う剣": "img/91f81f8fbc6ceadb3c1a4491b90dea23.png",
+  "生ける炎の双槍": "img/9c407602819b0c5daca34f9e44f692c6.png"
 }
