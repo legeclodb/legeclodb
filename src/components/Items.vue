@@ -102,7 +102,7 @@
                 <div v-html="itemParamsToHtml(item)" v-show="showDetail >= 2"></div>
               </div>
               <div class="skills">
-                <div class="skill" style="flex-grow: 1" v-show="showDetail >= 2">
+                <div class="skill" :class="{ 'highlighted': isItemHighlighted(item) }" v-show="showDetail >= 2" style="flex-grow: 1">
                   <div class="desc">
                     <p><span v-html="descToHtml(item)"></span><span v-if="item.note" class="note" v-html="item.note"></span></p>
                   </div>
@@ -275,6 +275,9 @@ export default {
         return true;
       }
       return false;
+    },
+    isItemHighlighted(chr) {
+      return this.applyTagSearchPattern(chr);
     },
     filterItem(chr) {
       let ok = (!chr.classIds || this.filterMatch(this.classFilter, chr.classIds)) &&
