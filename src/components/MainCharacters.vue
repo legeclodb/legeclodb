@@ -207,7 +207,6 @@ export default {
           tags: new Set(),
         },
       },
-      subTagTable: {},
 
       classFilter: [],
       symbolFilter: [],
@@ -300,41 +299,7 @@ export default {
       let skillMap = new Map();
       for (let skill of this.skills) {
         skillMap.set(skill.name, skill);
-      }
-
-      let allTags = new Set();
-      let mainTags = new Set();
-
-      const addSubTag = function (main, sub) {
-        let subtags = this.subTagTable[main];
-        if (!subtags) {
-          subtags = new Set();
-          this.subTagTable[main] = subtags;
-        }
-        if (!subtags.has(main) && allTags.has(main)) {
-          subtags.add(main);
-        }
-        subtags.add(sub);
-      }.bind(this);
-
-      const registerTags = function (tags) {
-        for (let t of tags) {
-          allTags.add(t);
-          let p = t.indexOf('(');
-          if (p != -1) {
-            let sub = t;
-            t = t.slice(0, p);
-            addSubTag(t, sub);
-          }
-          else if (t in this.subTagTable) {
-            this.subTagTable[t].add(t);
-          }
-          mainTags.add(t);
-        }
-      }.bind(this);
-
-      for (let skill of this.skills) {
-        registerTags(skill.tags);
+        this.registerTags(skill.tags);
       }
 
       // 外部 json 由来のデータへの変更はセッションをまたいでしまうので、deep copy しておく
@@ -366,15 +331,14 @@ export default {
         if (aoeAttack > 0) {
           chr.talent.tags.push(`範囲攻撃所持(${aoeAttack})`);
         }
-        registerTags(chr.talent.tags);
-      }
 
-      for (let k in this.subTagTable) {
-        this.partitionSubtags(this.subTagTable[k]);
+        // ↑でタグを追加するのでこのタイミングである必要がある
+        this.registerTags(chr.talent.tags);
       }
 
       // リストの上の方に出すため特別処理
       let handledTags = new Set();
+      this.appendSet(handledTags, this.constants.tagsHidden);
       let handlePredefinedTags = function(dstTags, predefinedTags) {
         for (let t of predefinedTags) {
           dstTags.add(t);
@@ -383,7 +347,7 @@ export default {
       };
       handlePredefinedTags(this.tagCategory.buff.tags, ["シンボルスキル"]);
 
-      for (let t of Array.from(mainTags).sort()) {
+      for (let t of Array.from(this.mainTags).sort()) {
         if (handledTags.has(t))
           continue;
 
@@ -400,6 +364,7 @@ export default {
       this.reorderSet(this.tagCategory.debuff.tags, this.constants.tagsDebuff);
       this.reorderSet(this.tagCategory.resist.tags, this.constants.tagsResist);
       this.reorderSet(this.tagCategory.other.tags, this.constants.tagsOther);
+      this.reorderSubtag();
     },
     
     updateURL() {

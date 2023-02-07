@@ -10,6 +10,10 @@ export default {
       lastScrollPosition: 0,
       showDetail: 2,
 
+      allTags: new Set(),
+      mainTags: new Set(),
+      subTagTable: {},
+
       tagSearchPattern: "",
       tagSearchPatternPrev: "",
       prevTagRE: null,
@@ -100,6 +104,7 @@ export default {
         this.appendSet(dst, tmp);
       }
     },
+
     partitionSubtags(subtagSet) {
       this.sortSet(subtagSet);
       this.partitionSet(subtagSet, tag => tag.match(/\(物理\)/));
@@ -108,6 +113,39 @@ export default {
       this.partitionSet(subtagSet, tag => tag.match(/\(単体スキル\)/));
       this.partitionSet(subtagSet, tag => tag.match(/\(範囲スキル\)/));
     },
+    reorderSubtag() {
+      for (let k in this.subTagTable) {
+        this.partitionSubtags(this.subTagTable[k]);
+      }
+    },
+
+    addSubTag(main, sub) {
+      let subtags = this.subTagTable[main];
+      if (!subtags) {
+        subtags = new Set();
+        this.subTagTable[main] = subtags;
+      }
+      if (!subtags.has(main) && this.allTags.has(main)) {
+        subtags.add(main);
+      }
+      subtags.add(sub);
+    },
+    registerTags(tags) {
+      for (let t of tags) {
+        this.allTags.add(t);
+        let p = t.indexOf('(');
+        if (p != -1) {
+          let sub = t;
+          t = t.slice(0, p);
+          this.addSubTag(t, sub);
+        }
+        else if (t in this.subTagTable) {
+          this.subTagTable[t].add(t);
+        }
+        this.mainTags.add(t);
+      }
+    },
+
 
     isFilterEnabled(filter) {
       for (const v of filter)

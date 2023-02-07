@@ -239,44 +239,7 @@ export default {
       let skillMap = new Map();
       for (let skill of this.skills) {
         skillMap.set(skill.name, skill);
-      }
-
-      let allTags = new Set();
-      let mainTags = new Set();
-
-      const addSubTag = function (main, sub) {
-        let subtags = this.subTagTable[main];
-        if (!subtags) {
-          subtags = new Set();
-          this.subTagTable[main] = subtags;
-        }
-        if (!subtags.has(main) && allTags.has(main)) {
-          subtags.add(main);
-        }
-        subtags.add(sub);
-      }.bind(this);
-
-      const registerTags = function (tags) {
-        for (let t of tags) {
-          allTags.add(t);
-          let p = t.indexOf('(');
-          if (p != -1) {
-            let sub = t;
-            t = t.slice(0, p);
-            addSubTag(t, sub);
-          }
-          else if (t in this.subTagTable) {
-            this.subTagTable[t].add(t);
-          }
-          mainTags.add(t);
-        }
-      }.bind(this);
-
-      for (let skill of this.skills) {
-        registerTags(skill.tags);
-      }
-      for (let k in this.subTagTable) {
-        this.partitionSubtags(this.subTagTable[k]);
+        this.registerTags(skill.tags);
       }
 
       // 外部 json 由来のデータへの変更はセッションをまたいでしまうので、deep copy しておく
@@ -296,7 +259,9 @@ export default {
       }
 
       let handledTags = new Set();
-      for (let t of Array.from(mainTags).sort()) {
+      this.appendSet(handledTags, this.constants.tagsHidden);
+
+      for (let t of Array.from(this.mainTags).sort()) {
         if (handledTags.has(t))
           continue;
 
@@ -313,6 +278,7 @@ export default {
       this.reorderSet(this.tagCategory.debuff.tags, this.constants.tagsDebuff);
       this.reorderSet(this.tagCategory.resist.tags, this.constants.tagsResist);
       this.reorderSet(this.tagCategory.other.tags, this.constants.tagsOther);
+      this.reorderSubtag();
     },
 
     isSkillHighlighted(skill) {

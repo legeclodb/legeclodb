@@ -204,47 +204,6 @@ export default {
 
   methods: {
     setupDB() {
-      let imageTable = {};
-      for (const item of this.equipments) {
-        if (item.icon) {
-          imageTable[item.name] = item.icon;
-        }
-      }
-      if (Object.keys(imageTable).length) {
-        console.log(JSON.stringify(imageTable));
-      }
-
-      let allTags = new Set();
-      let mainTags = new Set();
-
-      const addSubTag = function (main, sub) {
-        let subtags = this.subTagTable[main];
-        if (!subtags) {
-          subtags = new Set();
-          this.subTagTable[main] = subtags;
-        }
-        if (!subtags.has(main) && allTags.has(main)) {
-          subtags.add(main);
-        }
-        subtags.add(sub);
-      }.bind(this);
-
-      const registerTags = function (tags) {
-        for (let t of tags) {
-          allTags.add(t);
-          let p = t.indexOf('(');
-          if (p != -1) {
-            let sub = t;
-            t = t.slice(0, p);
-            addSubTag(t, sub);
-          }
-          else if (t in this.subTagTable) {
-            this.subTagTable[t].add(t);
-          }
-          mainTags.add(t);
-        }
-      }.bind(this);
-
       // 外部 json 由来のデータへの変更はセッションをまたいでしまうので、deep copy しておく
       this.equipments = structuredClone(this.equipments);
       let idSeed = 0;
@@ -255,16 +214,15 @@ export default {
         }
         item.slotId = this.itemTypes.findIndex(v => v == item.slot);
         item.rarityId = this.rarities.findIndex(v => v == item.rarity);
-        registerTags(item.tags);
+
+        this.registerTags(item.tags);
       }
       this.equipments.sort((a, b) => a.slotId < b.slotId ? -1 : 1);
 
-      for (let k in this.subTagTable) {
-        this.partitionSubtags(this.subTagTable[k]);
-      }
-
       let handledTags = new Set();
-      for (let t of Array.from(mainTags).sort()) {
+      this.appendSet(handledTags, this.constants.tagsHidden);
+
+      for (let t of Array.from(this.mainTags).sort()) {
         if (handledTags.has(t))
           continue;
 
@@ -281,6 +239,7 @@ export default {
       this.reorderSet(this.tagCategory.debuff.tags, this.constants.tagsDebuff);
       this.reorderSet(this.tagCategory.resist.tags, this.constants.tagsResist);
       this.reorderSet(this.tagCategory.other.tags, this.constants.tagsOther);
+      this.reorderSubtag();
     },
 
     itemClassesToHtml(item) {
