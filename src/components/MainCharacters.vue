@@ -369,20 +369,19 @@ export default {
         registerTags(chr.talent.tags);
       }
 
+      for (let k in this.subTagTable) {
+        this.partitionSubtags(this.subTagTable[k]);
+      }
+
       // リストの上の方に出すため特別処理
       let handledTags = new Set();
       let handlePredefinedTags = function(dstTags, predefinedTags) {
-        if (Array.isArray(predefinedTags)) {
-          for (let t of predefinedTags) {
-            dstTags.add(t);
-            handledTags.add(t);
-          }
+        for (let t of predefinedTags) {
+          dstTags.add(t);
+          handledTags.add(t);
         }
       };
-      handlePredefinedTags(this.tagCategory.buff.tags, this.constants.tagsBuff);
-      handlePredefinedTags(this.tagCategory.debuff.tags, this.constants.tagsDebuff);
-      handlePredefinedTags(this.tagCategory.resist.tags, this.constants.tagsResist);
-      handlePredefinedTags(this.tagCategory.other.tags, this.constants.tagsOther);
+      handlePredefinedTags(this.tagCategory.buff.tags, ["シンボルスキル"]);
 
       for (let t of Array.from(mainTags).sort()) {
         if (handledTags.has(t))
@@ -397,6 +396,10 @@ export default {
         else 
           this.tagCategory.other.tags.add(t);
       }
+      this.reorderSet(this.tagCategory.buff.tags, this.constants.tagsBuff);
+      this.reorderSet(this.tagCategory.debuff.tags, this.constants.tagsDebuff);
+      this.reorderSet(this.tagCategory.resist.tags, this.constants.tagsResist);
+      this.reorderSet(this.tagCategory.other.tags, this.constants.tagsOther);
     },
     
     updateURL() {
@@ -445,17 +448,6 @@ export default {
         this.$forceUpdate();
         this.enableUpdateURL = true;
       }
-    },
-    onChangeFilterState() {
-      this.updateURL();
-      this.preventShowHideHeaderOnScroll = 1;
-    },
-    onUpdateTagSearchPattern() {
-      // なぜかボタン一個押すたびに呼ばれるので変更チェック…
-      if(this.tagSearchPattern == this.tagSearchPatternPrev)
-        return;
-      this.tagSearchPatternPrev = this.tagSearchPattern;
-      this.updateURL();
     },
   }
 }

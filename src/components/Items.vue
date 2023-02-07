@@ -260,7 +260,7 @@ export default {
       this.equipments.sort((a, b) => a.slotId < b.slotId ? -1 : 1);
 
       for (let k in this.subTagTable) {
-        this.sortSet(this.subTagTable[k]);
+        this.partitionSubtags(this.subTagTable[k]);
       }
 
       let handledTags = new Set();
@@ -277,6 +277,10 @@ export default {
         else
           this.tagCategory.other.tags.add(t);
       }
+      this.reorderSet(this.tagCategory.buff.tags, this.constants.tagsBuff);
+      this.reorderSet(this.tagCategory.debuff.tags, this.constants.tagsDebuff);
+      this.reorderSet(this.tagCategory.resist.tags, this.constants.tagsResist);
+      this.reorderSet(this.tagCategory.other.tags, this.constants.tagsOther);
     },
 
     itemClassesToHtml(item) {
@@ -361,17 +365,6 @@ export default {
         this.$forceUpdate();
         this.enableUpdateURL = true;
       }
-    },
-
-    onChangeFilterState() {
-      this.updateURL();
-      this.preventShowHideHeaderOnScroll = 1;
-    },
-    onUpdateTagSearchPattern() {
-      if (this.tagSearchPattern == this.tagSearchPatternPrev)
-        return;
-      this.tagSearchPatternPrev = this.tagSearchPattern;
-      this.updateURL();
     },
   }
 }

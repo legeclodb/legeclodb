@@ -62,12 +62,51 @@ export default {
     compareDate(a, b) {
       return a.date == b.date ? 0 : (a.date < b.date ? -1 : 1);
     },
+    appendSet(dst, iteratable) {
+      for (const v of iteratable) {
+        dst.add(v);
+      }
+    },
     sortSet(dst, compare = undefined) {
       let sorted = Array.from(dst).sort(compare);
       dst.clear();
-      for (let a of sorted) {
-        dst.add(a);
+      this.appendSet(dst, sorted);
+    },
+    partitionSet(dst, condition) {
+      let tmp = [];
+      for (const v of dst) {
+        if (condition(v)) {
+          tmp.push(v);
+        }
       }
+      for (const v of tmp) {
+        dst.delete(v);
+        dst.add(v);
+      }
+    },
+    reorderSet(dst, patterns) {
+      let tmp = [];
+      for (const v of patterns) {
+        if (dst.has(v)) {
+          dst.delete(v);
+          tmp.push(v);
+        }
+      }
+      if (tmp.length != 0) {
+        for (const v of dst) {
+          tmp.push(v);
+        }
+        dst.clear();
+        this.appendSet(dst, tmp);
+      }
+    },
+    partitionSubtags(subtagSet) {
+      this.sortSet(subtagSet);
+      this.partitionSet(subtagSet, tag => tag.match(/\(物理\)/));
+      this.partitionSet(subtagSet, tag => tag.match(/\(魔法\)/));
+      this.partitionSet(subtagSet, tag => tag.match(/\(スキル\)/));
+      this.partitionSet(subtagSet, tag => tag.match(/\(単体スキル\)/));
+      this.partitionSet(subtagSet, tag => tag.match(/\(範囲スキル\)/));
     },
 
     isFilterEnabled(filter) {
@@ -153,6 +192,17 @@ export default {
       return item.desc.replaceAll("\n", "<br/>") + "<br/>";
     },
 
+    onChangeFilterState() {
+      this.updateURL();
+      this.preventShowHideHeaderOnScroll = 1;
+    },
+    onUpdateTagSearchPattern() {
+      // なぜかボタン一個押すたびに呼ばれるので変更チェック…
+      if (this.tagSearchPattern == this.tagSearchPatternPrev)
+        return;
+      this.tagSearchPatternPrev = this.tagSearchPattern;
+      this.updateURL();
+    },
 
     onTagDropdownShow(event, state) {
       state.keepDropdown = 0;
