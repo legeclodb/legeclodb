@@ -127,7 +127,7 @@
                     <b-badge class="tag" :key="i" v-for="(tag, i) in chr.talent.tags" variant="info" pill @click="setTagSearchPattern(tag)">{{ tag }}</b-badge>
                   </div>
                 </div>
-                <div class="skill" v-for="(skill, si) in chr.skills" :class="{'active': skill.skillType == 'アクティブ', 'passive': skill.skillType == 'パッシブ', 'highlighted': isSkillHighlighted(skill) }" :key="si">
+                <div class="skill" v-for="(skill, si) in chr.skills" :class="getSkillClass(skill)" :key="si">
                   <div class="flex">
                     <div class="icon" :id="'chr_'+chr.id+'_skill'+si">
                       <b-img-lazy :src="getImageURL(skill.name)" with="50" height="50" />
@@ -294,6 +294,13 @@ export default {
       }
       return ok;
     },
+    getSkillClass(skill) {
+      return {
+        active: skill.skillType == 'アクティブ',
+        passive: skill.skillType == 'パッシブ',
+        highlighted: this.isSkillHighlighted(skill)
+      }
+    },
 
     setupDB() {
       let skillMap = new Map();
@@ -313,11 +320,9 @@ export default {
         chr.damageTypeId = this.damageTypes.findIndex(v => v == chr.damageType);
 
         for (let i = 0; i < chr.skills.length; ++i) {
-          let skill = skillMap.get(chr.skills[i]);
-          if (!skill) {
-            console.log("不明なスキル: " + chr.name + ":" + chr.skills[i]);
+          if (typeof chr.skills[i] === "string") {
+            chr.skills[i] = skillMap.get(chr.skills[i]);
           }
-          chr.skills[i] = skill;
         }
 
         let aoeAttack = 0;

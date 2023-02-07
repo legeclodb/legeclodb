@@ -181,6 +181,7 @@ export default {
       txt = txt.trim();
       txt = txt.replaceAll('(', '\\(');
       txt = txt.replaceAll(')', '\\)');
+      txt = txt.replaceAll('+', '\\+');
       txt = "^" + txt;
       if (wholeWord && !txt.endsWith(')')) {
         txt += "$";
