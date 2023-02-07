@@ -9,9 +9,13 @@
         <h2>このサイトについて</h2>
         <p>
           <b-link href="https://www.legend-clover.net/" target="_blank">れじぇくろ！</b-link>の攻略データベースです。主にバフ・デバフを検索するのを目的としています。<br />
-          間違いの指摘や要望などがありましたら Twitter で https://legeclodb.github.io/ を含めて発言していただけると助かります。<br />
-          開発者の方は <b-link href="https://github.com/legeclodb/legeclodb" target="_blank">github のリポジトリ</b-link> から自力でソースに手を加えることも可能です。
+          間違いの指摘や要望などありましたら以下の公開 Google Docs にコメントいただけると幸いです。<br />
+          <b-button variant="secondary" id="btn-docs">Google Docs</b-button><br />
+          あるいは、Twitter で https://legeclodb.github.io/ を含めて発言していただいても拾えると思われます。
         </p>
+        <b-popover target="btn-docs" placement="bottom">
+          <iframe width="1100" height="500" src="https://docs.google.com/document/d/1vldiHELiy0GFKhXO20SOsMdw4mczivU4SuxXO9Wv26I/edit?embedded=true"></iframe>
+        </b-popover>
 
         <h2>バフ・デバフの競合・重複</h2>
         <p>
@@ -45,17 +49,12 @@ export default {
   },
   data() {
     return {
-      showDetail: 2,
-      showHeader: true,
-      preventShowHideHeaderOnScroll: 0,
-      lastScrollPosition: 0,
     };
   }
 }
 </script>
 
 <style scoped>
-  
 div.about {
   padding: 20px;
   margin: 5px;
@@ -69,4 +68,7 @@ div.about {
   margin-bottom: 25px;
 }
 
+.popover {
+  max-width: 90% !important;
+}
 </style>
