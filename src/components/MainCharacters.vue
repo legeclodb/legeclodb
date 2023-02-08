@@ -134,7 +134,10 @@
                       <b-popover v-if="showDetail==1" :target="'chr_'+chr.id+'_skill'+si" triggers="hover focus" :title="skill.name" :content="skill.desc" placement="top"></b-popover>
                     </div>
                     <div class="desc" v-show="showDetail >= 2">
-                      <h6>{{ skill.name }}</h6>
+                      <div class="flex">
+                        <h6>{{ skill.name }}</h6>
+                        <div class="param-group" v-html="skillParamsToHtml(skill)"></div>
+                      </div>
                       <p><span v-html="descToHtml(skill)"></span><span v-if="skill.note" class="note" v-html="skill.note"></span></p>
                     </div>
                   </div>
@@ -300,7 +303,22 @@ export default {
       return {
         active: skill.skillType == 'アクティブ',
         passive: skill.skillType == 'パッシブ',
-        highlighted: this.isSkillHighlighted(skill)
+        highlighted: this.isSkillHighlighted(skill),
+      }
+    },
+    skillParamsToHtml(skill) {
+      if (skill.skillType == 'アクティブ') {
+        return `
+<div class="param-box"><span class="param-name">CT:</span><span class="param-value">${skill.ct}</span></div>
+<div class="param-box"><span class="param-name">範囲:</span><span class="param-value">${skill.area}</span></div>
+<div class="param-box"><span class="param-name">射程:</span><span class="param-value">${skill.range}</span></div>
+<div class="param-box"><span class="param-name">コスト:</span><span class="param-value">${skill.cost}</span></div>
+`;
+      }
+      else if (skill.skillType == 'パッシブ') {
+        return `
+<div class="param-box"><span class="param-name">コスト:</span><span class="param-value">${skill.cost}</span></div>
+`;
       }
     },
 
