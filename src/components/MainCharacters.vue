@@ -156,12 +156,14 @@ import Navigation from './Navigation.vue'
 import jsonSkills from '../assets/main_skills.json'
 import jsonCharacters from '../assets/main_characters.json'
 import jsonConstants from '../assets/constants.json'
+import common from "./common";
 
 export default {
   name: 'MainCharacters',
   components: {
     Navigation,
   },
+  mixins: [common],
 
   data() {
     return {

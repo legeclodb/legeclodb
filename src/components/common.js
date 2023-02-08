@@ -22,10 +22,21 @@ export default {
 
   mounted() {
     window.addEventListener('scroll', this.onScroll);
+
+    let tmp = localStorage.getItem(this.$route.name + ".showDetail");
+    if (tmp) {
+      this.showDetail = tmp;
+    }
   },
 
   beforeDestroy() {
     window.removeEventListener('scroll', this.onScroll);
+  },
+
+  watch: {
+    showDetail: function (v) {
+      localStorage.setItem(this.$route.name + ".showDetail", v);
+    }
   },
 
   computed: {

@@ -124,12 +124,15 @@
 import Navigation from './Navigation.vue'
 import jsonItems from '../assets/items.json'
 import jsonConstants from '../assets/constants.json'
+import common from "./common";
 
 export default {
   name: 'Equipments',
   components: {
     Navigation,
   },
+  mixins: [common],
+
   data() {
     return {
       equipments: jsonItems,

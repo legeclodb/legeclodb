@@ -41,12 +41,15 @@
 
 <script>
 import Navigation from './Navigation.vue'
+import common from "./common";
 
 export default {
   name: 'About',
   components: {
     Navigation,
   },
+  mixins: [common],
+
   data() {
     return {
     };
