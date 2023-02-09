@@ -32,6 +32,9 @@
                 <div class="widget" style="width: 300px">
                   <b-form-input v-model="freeSearchPattern" type="text" debounce="500" size="sm" placeholder="検索ワード (正規表現)" :update="onUpdateFreeSearchPattern()" />
                 </div>
+                <div class="widget">
+                  <b-button variant="secondary" size="sm" @click="freeSearchPattern=''">クリア</b-button>
+                </div>
               </div>
             </b-tab>
           </b-tabs>
@@ -276,20 +279,24 @@ export default {
     },
 
     isInfoHighlighted(chr) {
-      return this.freeSearchRE && chr.name.match(this.freeSearchRE);
+      return this.freeSearchRE && chr.name.match(this.freeSearchRE)
+        ? 2 : 0;
     },
     isDescHighlighted(chr) {
-      let ok = false;
-      if (!ok && this.tagSearchRE) {
-        ok = this.matchTags(chr.tags, this.tagSearchRE);
+      let r = 0;
+      if (this.tagSearchRE) {
+        r |= this.matchTags(chr.tags, this.tagSearchRE)
+          ? 1 : 0;
       }
-      if (!ok && this.freeSearchRE) {
-        ok = chr.desc.match(this.freeSearchRE);
+      if (this.freeSearchRE) {
+        r |= chr.desc.match(this.freeSearchRE)
+          ? 2 : 0;
       }
-      return ok;
+      return r;
     },
     applySearchPatterns(chr) {
-      return this.isInfoHighlighted(chr) || this.isDescHighlighted(chr);
+      let r = this.isInfoHighlighted(chr) | this.isDescHighlighted(chr);
+      return r == this.getSearchMask();
     },
     filterItem(chr) {
       let ok = (!chr.classIds || this.filterMatch(this.classFilter, chr.classIds)) &&

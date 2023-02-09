@@ -39,6 +39,9 @@
                 <div class="widget" style="width: 300px">
                   <b-form-input v-model="freeSearchPattern" type="text" debounce="500" size="sm" placeholder="検索ワード (正規表現)" :update="onUpdateFreeSearchPattern()" />
                 </div>
+                <div class="widget">
+                  <b-button variant="secondary" size="sm" @click="freeSearchPattern=''">クリア</b-button>
+                </div>
               </div>
             </b-tab>
           </b-tabs>
@@ -296,32 +299,31 @@ export default {
     },
 
     isInfoHighlighted(chr) {
-      return this.freeSearchRE && this.matchContent(chr, this.freeSearchRE);
+      return this.freeSearchRE && this.matchContent(chr, this.freeSearchRE)
+        ? 2 : 0;
     },
     isSkillHighlighted(skill) {
-      let ok = false;
-      if (!ok && this.tagSearchRE) {
-        ok = (!this.isFilterEnabled(this.skillTypeFilter) ||
+      let r = 0;
+      if (this.tagSearchRE) {
+        r |= (!this.isFilterEnabled(this.skillTypeFilter) ||
           (skill.skillIndex == 0 && this.skillTypeFilter[0].state) ||
           (skill.skillIndex == 1 && this.skillTypeFilter[1].state) ||
           (skill.skillIndex == 2 && this.skillTypeFilter[2].state)) &&
-          this.matchTags(skill.tags, this.tagSearchRE);
+          this.matchTags(skill.tags, this.tagSearchRE)
+          ? 1: 0;
       }
-      if (!ok && this.freeSearchRE) {
-        ok = this.matchContent(skill, this.freeSearchRE);
+      if (this.freeSearchRE) {
+        r |= this.matchContent(skill, this.freeSearchRE)
+          ? 2 : 0;
       }
-      return ok;
+      return r;
     },
     applySearchPatterns(chr) {
-      if (this.isInfoHighlighted(chr)) {
-        return true;
-      }
+      let r = this.isInfoHighlighted(chr);
       for (let skill of chr.skills) {
-        if (this.isSkillHighlighted(skill)) {
-          return true;
-        }
+        r |= this.isSkillHighlighted(skill);
       }
-      return false;
+      return r == this.getSearchMask();
     },
     filterItem(chr) {
       let ok = this.filterMatch(this.classFilter, chr.classId) &&

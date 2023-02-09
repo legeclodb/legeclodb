@@ -247,6 +247,9 @@ export default {
     matchContent(item, re) {
       return (item.name && item.name.match(re)) || (item.desc && item.desc.match(re));
     },
+    getSearchMask() {
+      return (this.tagSearchRE ? 1 : 0) | (this.freeSearchRE ? 2 : 0);
+    },
     isSearchPatternSet() {
       return this.tagSearchRE || this.freeSearchRE;
     },
@@ -273,14 +276,12 @@ export default {
       if (this.tagSearchPattern == this.tagSearchPatternPrev)
         return;
       this.tagSearchPatternPrev = this.tagSearchPattern;
-      this.freeSearchPatternPrev = this.freeSearchPattern = "";
       this.updateURL();
     },
     onUpdateFreeSearchPattern() {
       if (this.freeSearchPattern == this.freeSearchPatternPrev)
         return;
       this.freeSearchPatternPrev = this.freeSearchPattern;
-      this.tagSearchPatternPrev = this.tagSearchPattern = "";
       this.updateURL();
     },
 
