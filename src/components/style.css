@@ -27,12 +27,17 @@ li {
   display: inline-block;
   margin: 0 10px;
 }
-a {
-  color: #42b983;
-}
 
 .btn {
   font-size: small;
+}
+
+.nav-link {
+  padding: 0.3rem 0.75rem;
+}
+.nav-tabs .nav-link {
+  font-size: 1rem;
+  color: #495057 !important;
 }
 
 div.root {

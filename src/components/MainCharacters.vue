@@ -4,38 +4,44 @@
       <Navigation />
       <div class="menu-content">
         <div class="menu-panel">
-          <div class="menu-widgets flex">
-            <div class="widget">
-              <h6>タグ検索</h6>
-            </div>
-          </div>
-          <div class="menu-widgets flex">
-            <div class="widget">
-              <b-button-group size="sm" id="skill_type_selector">
-                <b-button v-for="(c, i) in skillTypeFilter" :key="i" :pressed.sync="c.state" @click="onChangeFilterState()" variant="outline-secondary">
-                  {{ skillTypes[i] }}
-                </b-button>
-              </b-button-group>
-            </div>
-            <div class="widget" style="width: 170px">
-              <b-form-input v-model="tagSearchPattern" type="text" debounce="500" size="sm" placeholder="検索ワード (正規表現)" :update="onUpdateTagSearchPattern()" />
-            </div>
-          </div>
-          <div class="menu-widgets flex">
-            <div class="widget" style="margin-right:0px" v-for="(tc, tci) in tagCategory" :key="tci">
-              <b-dropdown :text="tc.display" :ref="tc.name" size="sm" @show="onTagDropdownShow($event, tc)" @hide="onTagDropdownHide($event, tc)">
-                <b-dropdown-item class="d-flex flex-column" v-for="(t, i) in tc.tags" :key="i" :id="tc.name+'_item'+i" @click="setTagSearchPattern(t); hideTagDropdown(tc, tc.name+'_item'+i);">
-                  {{t}} <span v-if="constants.tagNotes[t]" class="note" v-html="constants.tagNotes[t]"></span>
-                  <b-popover v-if="subTagTable[t]" :target="tc.name+'_item'+i" triggers="hover focus" :delay="{show:0, hide:250}" no-fade @show="onSubtagPopoverShow(tc, tc.name+'_item'+i)" @hidden="onSubtagPopoverHide(tc, tc.name+'_item'+i)">
-                    <b-dropdown-item class="d-flex flex-column" v-for="(st, si) in subTagTable[t]" :key="si" @click="setTagSearchPattern(st, true); hideTagDropdown(tc, tc.name+'_item'+i);">{{st}}</b-dropdown-item>
-                  </b-popover>
-                </b-dropdown-item>
-              </b-dropdown>
-            </div>
-            <div class="widget">
-              <b-button variant="secondary" size="sm" @click="tagSearchPattern=''">クリア</b-button>
-            </div>
-          </div>
+          <b-tabs nav-class="tab-index">
+            <b-tab title="タグ検索" active>
+              <div class="menu-widgets flex">
+                <div class="widget">
+                  <b-button-group size="sm" id="skill_type_selector">
+                    <b-button v-for="(c, i) in skillTypeFilter" :key="i" :pressed.sync="c.state" @click="onChangeFilterState()" variant="outline-secondary">
+                      {{ skillTypes[i] }}
+                    </b-button>
+                  </b-button-group>
+                </div>
+                <div class="widget" style="width: 170px">
+                  <b-form-input v-model="tagSearchPattern" type="text" debounce="500" size="sm" placeholder="検索ワード (正規表現)" :update="onUpdateTagSearchPattern()" />
+                </div>
+              </div>
+              <div class="menu-widgets flex">
+                <div class="widget" style="margin-right:0px" v-for="(tc, tci) in tagCategory" :key="tci">
+                  <b-dropdown :text="tc.display" :ref="tc.name" size="sm" @show="onTagDropdownShow($event, tc)" @hide="onTagDropdownHide($event, tc)">
+                    <b-dropdown-item class="d-flex flex-column" v-for="(t, i) in tc.tags" :key="i" :id="tc.name+'_item'+i" @click="setTagSearchPattern(t); hideTagDropdown(tc, tc.name+'_item'+i);">
+                      {{t}} <span v-if="constants.tagNotes[t]" class="note" v-html="constants.tagNotes[t]"></span>
+                      <b-popover v-if="subTagTable[t]" :target="tc.name+'_item'+i" triggers="hover focus" :delay="{show:0, hide:250}" no-fade @show="onSubtagPopoverShow(tc, tc.name+'_item'+i)" @hidden="onSubtagPopoverHide(tc, tc.name+'_item'+i)">
+                        <b-dropdown-item class="d-flex flex-column" v-for="(st, si) in subTagTable[t]" :key="si" @click="setTagSearchPattern(st, true); hideTagDropdown(tc, tc.name+'_item'+i);">{{st}}</b-dropdown-item>
+                      </b-popover>
+                    </b-dropdown-item>
+                  </b-dropdown>
+                </div>
+                <div class="widget">
+                  <b-button variant="secondary" size="sm" @click="tagSearchPattern=''">クリア</b-button>
+                </div>
+              </div>
+            </b-tab>
+            <b-tab title="フリーワード検索">
+              <div class="menu-widgets flex">
+                <div class="widget" style="width: 300px">
+                  <b-form-input v-model="freeSearchPattern" type="text" debounce="500" size="sm" placeholder="検索ワード (正規表現)" :update="onUpdateFreeSearchPattern()" />
+                </div>
+              </div>
+            </b-tab>
+          </b-tabs>
         </div>
         <div class="menu-panel">
           <div class="menu-widgets flex">
@@ -61,16 +67,16 @@
               </b-button-group>
             </div>
             <div class="widget">
-              <b-button-group size="sm" id="attack_type_selector">
-                <b-button v-for="(c, i) in damageTypeFilter" :key="i" :pressed.sync="c.state" @click="onChangeFilterState()" variant="outline-secondary">
-                  <b-img-lazy :src="getImageURL(damageTypes[i])" width="25" height="25" />
+              <b-button-group size="sm" id="rareiry_selector">
+                <b-button v-for="(c, i) in rarityFilter" :key="i" :pressed.sync="c.state" @click="onChangeFilterState()" variant="outline-secondary">
+                  <b-img-lazy :src="getImageURL(rarities[i])" width="36" height="20" />
                 </b-button>
               </b-button-group>
             </div>
             <div class="widget">
-              <b-button-group size="sm" id="rareiry_selector">
-                <b-button v-for="(c, i) in rarityFilter" :key="i" :pressed.sync="c.state" @click="onChangeFilterState()" variant="outline-secondary">
-                  <b-img-lazy :src="getImageURL(rarities[i])" width="36" height="20" />
+              <b-button-group size="sm" id="attack_type_selector">
+                <b-button v-for="(c, i) in damageTypeFilter" :key="i" :pressed.sync="c.state" @click="onChangeFilterState()" variant="outline-secondary">
+                  <b-img-lazy :src="getImageURL(damageTypes[i])" width="25" height="25" />
                 </b-button>
               </b-button-group>
             </div>
@@ -95,7 +101,7 @@
         </div>
       </div>
     </div>
-    <div class="content" style="margin-top: 210px;" :style="style">
+    <div class="content" style="margin-top: 200px;" :style="style">
       <template v-for="chr in items">
         <div class="character" :id="'chr_'+chr.id" :key="chr.id" v-show="filterItem(chr)">
           <div class="flex">

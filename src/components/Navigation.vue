@@ -30,7 +30,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .navbar {
   padding: 0.25rem 1rem;
 }
@@ -38,6 +38,8 @@ export default {
 .navbar-brand {
   font-size: 1.75em;
   margin-left: 1.0rem;
+  padding-top: 2px;
+  padding-bottom: 2px;
 }
 
 .nav-link {
