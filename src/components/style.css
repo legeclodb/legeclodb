@@ -152,6 +152,10 @@ div.info {
   border-radius: 0.3rem;
   background: white;
 }
+.info .status {
+  display: flex;
+  align-items: center;
+}
 
 div.skills {
   display: var(--skills-display);
@@ -185,15 +189,18 @@ div.skill {
 .param-box {
   margin: 0px 2px;
   padding: 0px 2px;
-
   border: 1px solid rgba(0, 0, 0, 0.2);
   border-radius: 0.3rem;
   background: white;
+  display: flex;
+  align-items: center;
 }
 .param-name {
   color: rgb(175, 175, 175);
+  font-size: 85%;
 }
 .param-value {
+  font-size: 85%;
 }
 
 .tag {
