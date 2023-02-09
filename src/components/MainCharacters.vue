@@ -103,7 +103,7 @@
               <b-img-lazy :src="getImageURL(chr.name)" :alt="chr.name" width="100" height="100" rounded />
             </div>
             <div class="detail" v-show="showDetail >= 1">
-              <div class="info">
+              <div class="info" :class="{ 'highlighted': isInfoHighlighted(chr) }">
                 <h5 v-html="chrNameToHtml(chr.name)"></h5>
                 <div class="status">
                   <b-img-lazy :src="getImageURL(chr.class)" :alt="chr.class" height="25" />
@@ -255,34 +255,35 @@ export default {
   },
 
   methods: {
+    isInfoHighlighted(chr) {
+      return this.freeSearchRE && this.matchContent(chr, this.freeSearchRE);
+    },
     isTalentHighlighted(chr) {
-      let re = this.getTagRE();
-      if (!re) {
-        return false;
+      let ok = false;
+      if (!ok && this.tagSearchRE) {
+        ok = (!this.isFilterEnabled(this.skillTypeFilter) || this.skillTypeFilter[0].state) &&
+          this.matchTags(chr.talent.tags, this.tagSearchRE);
       }
-      if (!this.isFilterEnabled(this.skillTypeFilter) || this.skillTypeFilter[0].state) {
-        if (this.matchTags(chr.talent.tags, re)) {
-          return true;
-        }
+      if (!ok && this.freeSearchRE) {
+        ok = this.matchContent(chr.talent, this.freeSearchRE);
       }
-      return false;
+      return ok;
     },
     isSkillHighlighted(skill) {
-      let re = this.getTagRE();
-      if (!re) {
-        return false;
+      let ok = false;
+      if (!ok && this.tagSearchRE) {
+        ok = (!this.isFilterEnabled(this.skillTypeFilter) ||
+          (skill.skillType == "パッシブ" && this.skillTypeFilter[1].state) ||
+          (skill.skillType == "アクティブ" && this.skillTypeFilter[2].state)) &&
+          this.matchTags(skill.tags, this.tagSearchRE);
       }
-      if (!this.isFilterEnabled(this.skillTypeFilter) ||
-        (skill.skillType == "パッシブ" && this.skillTypeFilter[1].state) ||
-        (skill.skillType == "アクティブ" && this.skillTypeFilter[2].state)) {
-        if (this.matchTags(skill.tags, re)) {
-          return true;
-        }
+      if (!ok && this.freeSearchRE) {
+        ok = this.matchContent(skill, this.freeSearchRE);
       }
-      return false;
+      return ok;
     },
-    applyTagSearchPattern(chr) {
-      if (this.isTalentHighlighted(chr)) {
+    applySearchPatterns(chr) {
+      if (this.isInfoHighlighted(chr) || this.isTalentHighlighted(chr)) {
         return true;
       }
       for (let skill of chr.skills) {
@@ -297,9 +298,8 @@ export default {
         this.filterMatch(this.symbolFilter, chr.symbolId) &&
         this.filterMatch(this.rarityFilter, chr.rarityId) &&
         this.filterMatch(this.damageTypeFilter, chr.damageTypeId);
-
-      if (ok && this.getTagRE()) {
-        ok = this.applyTagSearchPattern(chr);
+      if (ok && this.isSearchPatternSet()) {
+        ok = this.applySearchPatterns(chr);
       }
       return ok;
     },
@@ -414,6 +414,8 @@ export default {
         seri.skillType = this.serializeFilter(this.skillTypeFilter);
       if (this.tagSearchPattern.length > 0)
         seri.tag = this.tagSearchPattern;
+      if (this.freeSearchPattern.length > 0)
+        seri.free = this.freeSearchPattern;
 
       let url = seri.serialize();
       if (url != this.prevURL) {
@@ -429,6 +431,7 @@ export default {
         rarity: 0,
         skillType: 0,
         tag: "",
+        free: "",
       });
 
       if (data.deserialize(window.location.href) || initState) {
@@ -439,6 +442,7 @@ export default {
         this.deserializeFilter(this.rarityFilter, data.rarity);
         this.deserializeFilter(this.skillTypeFilter, data.skillType);
         this.tagSearchPattern = data.tag;
+        this.freeSearchPattern = data.free;
         this.$forceUpdate();
         this.enableUpdateURL = true;
       }

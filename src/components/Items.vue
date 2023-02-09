@@ -91,7 +91,7 @@
               <b-popover v-if="showDetail==1" :target="'item_'+item.id+'_icon'" triggers="hover focus" :title="item.name" :content="item.desc" placement="top"></b-popover>
             </div>
             <div class="detail" v-show="showDetail >= 1">
-              <div class="info">
+              <div class="info" :class="{ 'highlighted': isInfoHighlighted(item) }">
                 <h5 v-html="item.name"></h5>
                 <b-img-lazy :src="getImageURL(item.slot)" :alt="item.slot" height="25" />
                 <b-img-lazy :src="getImageURL(item.rarity)" :alt="item.rarity" height="20" />
@@ -102,7 +102,7 @@
                 <div v-html="itemParamsToHtml(item)" v-show="showDetail >= 2"></div>
               </div>
               <div class="skills">
-                <div class="skill" :class="{ 'highlighted': isItemHighlighted(item) }" v-show="showDetail >= 2" style="flex-grow: 1">
+                <div class="skill" :class="{ 'highlighted': isDescHighlighted(item) }" v-show="showDetail >= 2" style="flex-grow: 1">
                   <div class="desc">
                     <p><span v-html="descToHtml(item)"></span><span v-if="item.note" class="note" v-html="item.note"></span></p>
                   </div>
@@ -269,25 +269,28 @@ export default {
       return params.join("");
     },
 
-    applyTagSearchPattern(chr) {
-      let re = this.getTagRE();
-      if (!re) {
-        return false;
-      }
-      if (this.matchTags(chr.tags, re)) {
-        return true;
-      }
-      return false;
+    isInfoHighlighted(chr) {
+      return this.freeSearchRE && chr.name.match(this.freeSearchRE);
     },
-    isItemHighlighted(chr) {
-      return this.applyTagSearchPattern(chr);
+    isDescHighlighted(chr) {
+      let ok = false;
+      if (!ok && this.tagSearchRE) {
+        ok = this.matchTags(chr.tags, this.tagSearchRE);
+      }
+      if (!ok && this.freeSearchRE) {
+        ok = chr.desc.match(this.freeSearchRE);
+      }
+      return ok;
+    },
+    applySearchPatterns(chr) {
+      return this.isInfoHighlighted(chr) || this.isDescHighlighted(chr);
     },
     filterItem(chr) {
       let ok = (!chr.classIds || this.filterMatch(this.classFilter, chr.classIds)) &&
         this.filterMatch(this.itemTypeFilter, chr.slotId) &&
         this.filterMatch(this.rarityFilter, chr.rarityId);
-      if (ok && this.getTagRE()) {
-        ok = this.applyTagSearchPattern(chr);
+      if (ok && this.isSearchPatternSet()) {
+        ok = this.applySearchPatterns(chr);
       }
       return ok;
     },
@@ -306,6 +309,8 @@ export default {
         seri.rarity = this.serializeFilter(this.rarityFilter);
       if (this.tagSearchPattern.length > 0)
         seri.tag = this.tagSearchPattern;
+      if (this.freeSearchPattern.length > 0)
+        seri.free = this.freeSearchPattern;
 
       let url = seri.serialize();
       if (url != this.prevURL) {
@@ -319,6 +324,7 @@ export default {
         itemType: 0,
         rarity: 0,
         tag: "",
+        free: "",
       });
 
       if (data.deserialize(window.location.href) || initState) {
@@ -327,6 +333,7 @@ export default {
         this.deserializeFilter(this.itemTypeFilter, data.itemType);
         this.deserializeFilter(this.rarityFilter, data.rarity);
         this.tagSearchPattern = data.tag;
+        this.freeSearchPattern = data.free;
         this.$forceUpdate();
         this.enableUpdateURL = true;
       }

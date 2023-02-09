@@ -16,7 +16,11 @@ export default {
 
       tagSearchPattern: "",
       tagSearchPatternPrev: "",
-      prevTagRE: null,
+      tagSearchRE: null,
+
+      freeSearchPattern: "",
+      freeSearchPatternPrev: "",
+      freeSearchRE: null,
     }
   },
 
@@ -36,6 +40,34 @@ export default {
   watch: {
     showDetail: function (v) {
       localStorage.setItem(this.$route.name + ".showDetail", v);
+    },
+
+    tagSearchPattern: function (v) {
+      if (this.tagSearchPattern.length == 0) {
+        this.tagSearchRE = null;
+      }
+      else {
+        try {
+          let re = new RegExp(this.tagSearchPattern);
+          this.tagSearchRE = re;
+        }
+        catch (e) {
+        }
+      }
+    },
+
+    freeSearchPattern: function (v) {
+      if (this.freeSearchPattern.length == 0) {
+        this.freeSearchRE = null;
+      }
+      else {
+        try {
+          let re = new RegExp(this.freeSearchPattern);
+          this.freeSearchRE = re;
+        }
+        catch (e) {
+        }
+      }
     }
   },
 
@@ -204,22 +236,6 @@ export default {
         this.showHeader = true;
       }.bind(this));
     },
-    getTagRE() {
-      if (this.tagSearchPattern.length == 0) {
-        this.prevTagRE = null;
-        return null;
-      }
-      else {
-        try {
-          let re = new RegExp(this.tagSearchPattern);
-          this.prevTagRE = re;
-          return re;
-        }
-        catch (e) {
-          return this.prevTagRE;
-        }
-      }
-    },
     matchTags(tags, re) {
       for (const tag of tags) {
         if (tag.match(re)) {
@@ -227,6 +243,12 @@ export default {
         }
       }
       return false;
+    },
+    matchContent(item, re) {
+      return (item.name && item.name.match(re)) || (item.desc && item.desc.match(re));
+    },
+    isSearchPatternSet() {
+      return this.tagSearchRE || this.freeSearchRE;
     },
 
     chrNameToHtml(name) {
