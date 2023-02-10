@@ -208,6 +208,7 @@ export default {
 
   mounted() {
     this.decodeURL();
+    this.updateTagCounts();
 
     window.onpopstate = function () {
       this.decodeURL(true);
@@ -301,14 +302,25 @@ export default {
       let r = this.isInfoHighlighted(chr) | this.isDescHighlighted(chr);
       return r == this.getSearchMask();
     },
-    filterItem(chr) {
-      let ok = (!chr.classIds || this.filterMatch(this.classFilter, chr.classIds)) &&
+    applyFilters(chr) {
+      return (!chr.classIds || this.filterMatch(this.classFilter, chr.classIds)) &&
         this.filterMatch(this.itemTypeFilter, chr.slotId) &&
         this.filterMatch(this.rarityFilter, chr.rarityId);
+    },
+    filterItem(chr) {
+      let ok = this.applyFilters(chr);
       if (ok && this.isSearchPatternSet()) {
         ok = this.applySearchPatterns(chr);
       }
       return ok;
+    },
+    updateTagCounts() {
+      this.resetTagCounts();
+      for (let item of this.equipments) {
+        if (this.applyFilters(item)) {
+          this.countTags(item.tags);
+        }
+      }
     },
 
     updateURL() {

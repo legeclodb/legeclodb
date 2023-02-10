@@ -245,6 +245,7 @@ export default {
 
   mounted() {
     this.decodeURL();
+    this.updateTagCounts();
 
     window.onpopstate = function () {
       this.decodeURL(true);
@@ -282,9 +283,7 @@ export default {
             }
           }
           chr.skills[si] = skill;
-
           this.registerTags(skill.tags);
-          this.countTags(skill.tags);
         }
       }
 
@@ -338,15 +337,28 @@ export default {
       }
       return r == this.getSearchMask();
     },
-    filterItem(chr) {
-      let ok = this.filterMatch(this.classFilter, chr.classId) &&
+    applyFilters(chr) {
+      return this.filterMatch(this.classFilter, chr.classId) &&
         this.filterMatch(this.supportTypeFilter, chr.supportTypeId) &&
         this.filterMatch(this.rarityFilter, chr.rarityId) &&
         this.filterMatch(this.damageTypeFilter, chr.damageTypeId);
+    },
+    filterItem(chr) {
+      let ok = this.applyFilters(chr);
       if (ok && this.isSearchPatternSet()) {
         ok = this.applySearchPatterns(chr);
       }
       return ok;
+    },
+    updateTagCounts() {
+      this.resetTagCounts();
+      for (let chr of this.characters) {
+        if (this.applyFilters(chr)) {
+          for (let skill of chr.skills) {
+            this.countTags(skill.tags);
+          }
+        }
+      }
     },
     skillParamsToHtml(skill) {
       if (skill.skillType == 'アクティブ') {

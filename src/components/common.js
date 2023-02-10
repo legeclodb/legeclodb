@@ -225,6 +225,14 @@ export default {
         }
       }
     },
+    resetTagCounts() {
+      for (let v of Object.values(this.tagTable)) {
+        v.count = 0;
+      }
+      for (let v of Object.values(this.mainTagTable)) {
+        v.count = 0;
+      }
+    },
     getMainTags() {
       return Object.keys(this.mainTagTable);
     },
@@ -307,6 +315,7 @@ export default {
     },
 
     onChangeFilterState() {
+      this.updateTagCounts();
       this.updateURL();
       this.preventShowHideHeaderOnScroll = 1;
     },

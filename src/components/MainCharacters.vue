@@ -257,6 +257,7 @@ export default {
 
   mounted() {
     this.decodeURL();
+    this.updateTagCounts();
 
     window.onpopstate = function() {
       this.decodeURL(true);
@@ -305,11 +306,14 @@ export default {
       }
       return r == this.getSearchMask();
     },
-    filterItem(chr) {
-      let ok = this.filterMatch(this.classFilter, chr.classId) &&
+    applyFilters(chr) {
+      return this.filterMatch(this.classFilter, chr.classId) &&
         this.filterMatch(this.symbolFilter, chr.symbolId) &&
         this.filterMatch(this.rarityFilter, chr.rarityId) &&
         this.filterMatch(this.damageTypeFilter, chr.damageTypeId);
+    },
+    filterItem(chr) {
+      let ok = this.applyFilters(chr);
       if (ok && this.isSearchPatternSet()) {
         ok = this.applySearchPatterns(chr);
       }
@@ -320,6 +324,17 @@ export default {
         active: skill.skillType == 'アクティブ',
         passive: skill.skillType == 'パッシブ',
         highlighted: this.isSkillHighlighted(skill),
+      }
+    },
+    updateTagCounts() {
+      this.resetTagCounts();
+      for (let chr of this.characters) {
+        if (this.applyFilters(chr)) {
+          this.countTags(chr.talent.tags);
+          for (let skill of chr.skills) {
+            this.countTags(skill.tags);
+          }
+        }
       }
     },
     skillParamsToHtml(skill) {
@@ -363,7 +378,6 @@ export default {
 
         let aoeAttack = 0;
         for (let skill of chr.skills) {
-          this.countTags(skill.tags);
           for (const t of skill.skillTags) {
             if (t == "攻撃(範囲)" && skill.skillType == "アクティブ") {
               ++aoeAttack;
@@ -380,7 +394,6 @@ export default {
 
         // ↑でタグを追加するのでこのタイミングである必要がある
         this.registerTags(chr.talent.tags);
-        this.countTags(chr.talent.tags);
       }
 
       // リストの上の方に出すため特別処理
