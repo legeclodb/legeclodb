@@ -127,7 +127,7 @@
                 </div>
               </div>
               <div class="skills">
-                <div class="talent" :class="{ 'highlighted': isTalentHighlighted(chr) }">
+                <div class="talent" :class="{ 'highlighted': isTalentHighlighted(chr.talent) }">
                   <div class="flex">
                     <div class="icon" :id="'chr_'+chr.id+'_talent'">
                       <b-img-lazy :src="getImageURL(chr.talent.name)" with="50" height="50" />
@@ -346,15 +346,14 @@ export default {
       return this.freeSearchRE && this.matchContent(chr, this.freeSearchRE)
         ? 2 : 0;
     },
-    isTalentHighlighted(chr) {
+    isTalentHighlighted(talent) {
       let r = 0;
       if (this.tagSearchRE) {
-        r |= (!this.isFilterEnabled(this.skillTypeFilter) || this.skillTypeFilter[0].state) &&
-          this.matchTags(chr.talent.tags, this.tagSearchRE)
+        r |= this.applyTalentFilter(talent) && this.matchTags(talent.tags, this.tagSearchRE)
           ? 1 : 0;
       }
       if (this.freeSearchRE) {
-        r |= this.matchContent(chr.talent, this.freeSearchRE)
+        r |= this.matchContent(talent, this.freeSearchRE)
           ? 2 : 0;
       }
       return r;
@@ -362,10 +361,7 @@ export default {
     isSkillHighlighted(skill) {
       let r = 0;
       if (this.tagSearchRE) {
-        r |= (!this.isFilterEnabled(this.skillTypeFilter) ||
-          (skill.skillType == "パッシブ" && this.skillTypeFilter[1].state) ||
-          (skill.skillType == "アクティブ" && this.skillTypeFilter[2].state)) &&
-          this.matchTags(skill.tags, this.tagSearchRE)
+        r |= this.applySkillFilter(skill) && this.matchTags(skill.tags, this.tagSearchRE)
           ? 1 : 0;
       }
       if (this.freeSearchRE) {
@@ -374,42 +370,55 @@ export default {
       }
       return r;
     },
-    applySearchPatterns(chr) {
-      let r = this.isInfoHighlighted(chr) | this.isTalentHighlighted(chr);
-      for (let skill of chr.skills) {
-        r |= this.isSkillHighlighted(skill);
-      }
-      return r == this.getSearchMask();
+    applyTalentFilter(talent) {
+      return !this.isFilterEnabled(this.skillTypeFilter) || this.skillTypeFilter[0].state;
     },
-    applyFilters(chr) {
+    applySkillFilter(skill) {
+      return !this.isFilterEnabled(this.skillTypeFilter) ||
+        (skill.skillType == "パッシブ" && this.skillTypeFilter[1].state) ||
+        (skill.skillType == "アクティブ" && this.skillTypeFilter[2].state);
+    },
+    applyChrFilter(chr) {
       return this.filterMatch(this.classFilter, chr.classId) &&
         this.filterMatch(this.symbolFilter, chr.symbolId) &&
         this.filterMatch(this.rarityFilter, chr.rarityId) &&
         this.filterMatch(this.damageTypeFilter, chr.damageTypeId);
     },
+    applySearchPatterns(chr) {
+      let r = this.isInfoHighlighted(chr) | this.isTalentHighlighted(chr.talent);
+      for (let skill of chr.skills) {
+        r |= this.isSkillHighlighted(skill);
+      }
+      return r == this.getSearchMask();
+    },
     filterItem(chr) {
-      let ok = this.applyFilters(chr);
+      let ok = this.applyChrFilter(chr);
       if (ok && this.isSearchPatternSet()) {
         ok = this.applySearchPatterns(chr);
       }
       return ok;
     },
+    updateTagCounts() {
+      this.resetTagCounts();
+      for (let chr of this.characters) {
+        if (this.applyChrFilter(chr)) {
+          if (this.applyTalentFilter(chr.talent)) {
+            this.countTags(chr.talent.tags);
+          }
+          for (let skill of chr.skills) {
+            if (this.applySkillFilter(skill)) {
+              this.countTags(skill.tags);
+            }
+          }
+        }
+      }
+    },
+
     getSkillClass(skill) {
       return {
         active: skill.skillType == 'アクティブ',
         passive: skill.skillType == 'パッシブ',
         highlighted: this.isSkillHighlighted(skill),
-      }
-    },
-    updateTagCounts() {
-      this.resetTagCounts();
-      for (let chr of this.characters) {
-        if (this.applyFilters(chr)) {
-          this.countTags(chr.talent.tags);
-          for (let skill of chr.skills) {
-            this.countTags(skill.tags);
-          }
-        }
       }
     },
     skillParamsToHtml(skill) {

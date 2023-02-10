@@ -299,13 +299,13 @@ export default {
       let r = this.isInfoHighlighted(chr) | this.isDescHighlighted(chr);
       return r == this.getSearchMask();
     },
-    applyFilters(chr) {
+    applyItemFilter(chr) {
       return (!chr.classIds || this.filterMatch(this.classFilter, chr.classIds)) &&
         this.filterMatch(this.itemTypeFilter, chr.slotId) &&
         this.filterMatch(this.rarityFilter, chr.rarityId);
     },
     filterItem(chr) {
-      let ok = this.applyFilters(chr);
+      let ok = this.applyItemFilter(chr);
       if (ok && this.isSearchPatternSet()) {
         ok = this.applySearchPatterns(chr);
       }
@@ -314,7 +314,7 @@ export default {
     updateTagCounts() {
       this.resetTagCounts();
       for (let item of this.equipments) {
-        if (this.applyFilters(item)) {
+        if (this.applyItemFilter(item)) {
           this.countTags(item.tags);
         }
       }
