@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <b-navbar type="dark" variant="dark">
     <b-navbar-brand to="/">れじぇくろDB</b-navbar-brand>
     <b-navbar-nav>

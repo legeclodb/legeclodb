@@ -10,8 +10,8 @@ export default {
       lastScrollPosition: 0,
       showDetail: 2,
 
-      allTags: new Set(),
-      mainTags: new Set(),
+      tagTable: {},
+      mainTagTable: {},
       subTagTable: {},
 
       tagSearchPattern: "",
@@ -162,33 +162,72 @@ export default {
       }
     },
 
+    getMainTagIfSubTag(tag) {
+      let p = tag.indexOf('(');
+      return p != -1 ? tag.slice(0, p) : null;
+    },
+    addMainTag(t) {
+      if (!this.mainTagTable[t]) {
+        this.mainTagTable[t] = {
+          count: 0,
+          note: this.constants.tagNotes[t]
+        };
+      }
+    },
     addSubTag(main, sub) {
       let subtags = this.subTagTable[main];
       if (!subtags) {
         subtags = new Set();
         this.subTagTable[main] = subtags;
       }
-      if (!subtags.has(main) && this.allTags.has(main)) {
+      if (!subtags.has(main) && this.tagTable[main]) {
         subtags.add(main);
       }
       subtags.add(sub);
     },
-    registerTags(tags) {
-      for (let t of tags) {
-        this.allTags.add(t);
-        let p = t.indexOf('(');
-        if (p != -1) {
-          let sub = t;
-          t = t.slice(0, p);
-          this.addSubTag(t, sub);
-        }
-        else if (t in this.subTagTable) {
+    registerTag(t) {
+      if (!this.tagTable[t]) {
+        this.tagTable[t] = {
+          count: 0,
+        };
+      }
+      else {
+        return;
+      }
+
+      const mainTag = this.getMainTagIfSubTag(t);
+      if (mainTag) {
+        this.addMainTag(mainTag);
+        this.addSubTag(mainTag, t);
+      }
+      else {
+        this.addMainTag(t);
+        if (t in this.subTagTable) {
           this.subTagTable[t].add(t);
         }
-        this.mainTags.add(t);
       }
     },
+    registerTags(tags) {
+      for (const t of tags) {
+        this.registerTag(t);
+      }
+    },
+    countTags(tags) {
+      for (let t of tags) {
+        ++this.tagTable[t].count;
 
+        const mainTag = this.getMainTagIfSubTag(t);
+        if (mainTag) {
+          ++this.mainTagTable[mainTag].count;
+        }
+        else {
+          ++this.mainTagTable[t].count;
+        }
+      }
+    },
+    getMainTags() {
+      return Object.keys(this.mainTagTable);
+    },
 
     isFilterEnabled(filter) {
       for (const v of filter)

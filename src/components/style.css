@@ -222,3 +222,7 @@ div.skill {
 .dropdown-item {
   padding: 0.2rem !important;
 }
+
+.popover {
+    max-width: 300px;
+}

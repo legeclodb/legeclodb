@@ -22,9 +22,11 @@
                 <div class="widget" style="margin-right:0px" v-for="(tc, tci) in tagCategory" :key="tci">
                   <b-dropdown :text="tc.display" :ref="tc.name" size="sm" @show="onTagDropdownShow($event, tc)" @hide="onTagDropdownHide($event, tc)">
                     <b-dropdown-item class="d-flex flex-column" v-for="(t, i) in tc.tags" :key="i" :id="tc.name+'_item'+i" @click="setTagSearchPattern(t); hideTagDropdown(tc, tc.name+'_item'+i);">
-                      {{t}} <span v-if="constants.tagNotes[t]" class="note" v-html="constants.tagNotes[t]"></span>
+                      {{t}} <span class="note" v-html="`(${mainTagTable[t].count})`"></span> <span class="note" v-if="mainTagTable[t].note" v-html="mainTagTable[t].note"></span>
                       <b-popover v-if="subTagTable[t]" :target="tc.name+'_item'+i" triggers="hover focus" :delay="{show:0, hide:250}" no-fade @show="onSubtagPopoverShow(tc, tc.name+'_item'+i)" @hidden="onSubtagPopoverHide(tc, tc.name+'_item'+i)">
-                        <b-dropdown-item class="d-flex flex-column" v-for="(st, si) in subTagTable[t]" :key="si" @click="setTagSearchPattern(st, true); hideTagDropdown(tc, tc.name+'_item'+i);">{{st}}</b-dropdown-item>
+                        <b-dropdown-item class="d-flex flex-column" v-for="(st, si) in subTagTable[t]" :key="si" @click="setTagSearchPattern(st, true); hideTagDropdown(tc, tc.name+'_item'+i);">
+                          {{st}} <span class="note" v-html="`(${tagTable[st].count})`"></span>
+                        </b-dropdown-item>
                       </b-popover>
                     </b-dropdown-item>
                   </b-dropdown>
@@ -256,7 +258,6 @@ export default {
       let skillMap = new Map();
       for (let skill of this.skills) {
         skillMap.set(skill.name, skill);
-        this.registerTags(skill.tags);
       }
 
       // 外部 json 由来のデータへの変更はセッションをまたいでしまうので、deep copy しておく
@@ -268,17 +269,29 @@ export default {
         chr.supportTypeId = this.supportTypes.findIndex(v => v == chr.supportType);
         chr.rarityId = this.rarities.findIndex(v => v == chr.rarity);
         chr.damageTypeId = this.damageTypes.findIndex(v => v == chr.damageType);
+
         for (let si = 0; si < chr.skills.length; ++si) {
           let skill = skillMap.get(chr.skills[si]);
           skill.skillIndex = si; // パッシブ1 のみが複数キャラで共有され、現状全て si==1 なので問題ない
+
+          if (si == 0) {
+            const m = chr.name.match(/\((.+?)\)/);
+            if (m) {
+              // 不格好だがアクティブスキルにキャラ特性タグを追加…
+              skill.tags.push(`季節限定(${m[1]})`);
+            }
+          }
           chr.skills[si] = skill;
+
+          this.registerTags(skill.tags);
+          this.countTags(skill.tags);
         }
       }
 
       let handledTags = new Set();
       this.appendSet(handledTags, this.constants.tagsHidden);
 
-      for (let t of Array.from(this.mainTags).sort()) {
+      for (let t of this.getMainTags()) {
         if (handledTags.has(t))
           continue;
 

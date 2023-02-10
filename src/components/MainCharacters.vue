@@ -22,9 +22,11 @@
                 <div class="widget" style="margin-right:0px" v-for="(tc, tci) in tagCategory" :key="tci">
                   <b-dropdown :text="tc.display" :ref="tc.name" size="sm" @show="onTagDropdownShow($event, tc)" @hide="onTagDropdownHide($event, tc)">
                     <b-dropdown-item class="d-flex flex-column" v-for="(t, i) in tc.tags" :key="i" :id="tc.name+'_item'+i" @click="setTagSearchPattern(t); hideTagDropdown(tc, tc.name+'_item'+i);">
-                      {{t}} <span v-if="constants.tagNotes[t]" class="note" v-html="constants.tagNotes[t]"></span>
+                      {{t}} <span class="note" v-html="`(${mainTagTable[t].count})`"></span> <span class="note" v-if="mainTagTable[t].note" v-html="mainTagTable[t].note"></span>
                       <b-popover v-if="subTagTable[t]" :target="tc.name+'_item'+i" triggers="hover focus" :delay="{show:0, hide:250}" no-fade @show="onSubtagPopoverShow(tc, tc.name+'_item'+i)" @hidden="onSubtagPopoverHide(tc, tc.name+'_item'+i)">
-                        <b-dropdown-item class="d-flex flex-column" v-for="(st, si) in subTagTable[t]" :key="si" @click="setTagSearchPattern(st, true); hideTagDropdown(tc, tc.name+'_item'+i);">{{st}}</b-dropdown-item>
+                        <b-dropdown-item class="d-flex flex-column" v-for="(st, si) in subTagTable[t]" :key="si" @click="setTagSearchPattern(st, true); hideTagDropdown(tc, tc.name+'_item'+i);">
+                          {{st}} <span class="note" v-html="`(${tagTable[st].count})`"></span>
+                        </b-dropdown-item>
                       </b-popover>
                     </b-dropdown-item>
                   </b-dropdown>
@@ -361,6 +363,7 @@ export default {
 
         let aoeAttack = 0;
         for (let skill of chr.skills) {
+          this.countTags(skill.tags);
           for (const t of skill.skillTags) {
             if (t == "攻撃(範囲)" && skill.skillType == "アクティブ") {
               ++aoeAttack;
@@ -370,9 +373,14 @@ export default {
         if (aoeAttack > 0) {
           chr.talent.tags.push(`範囲攻撃所持(${aoeAttack})`);
         }
+        const m = chr.name.match(/\((.+?)\)/);
+        if (m) {
+          chr.talent.tags.push(`季節限定(${m[1]})`);
+        }
 
         // ↑でタグを追加するのでこのタイミングである必要がある
         this.registerTags(chr.talent.tags);
+        this.countTags(chr.talent.tags);
       }
 
       // リストの上の方に出すため特別処理
@@ -386,7 +394,7 @@ export default {
       };
       handlePredefinedTags(this.tagCategory.buff.tags, ["シンボルスキル"]);
 
-      for (let t of Array.from(this.mainTags).sort()) {
+      for (let t of this.getMainTags()) {
         if (handledTags.has(t))
           continue;
 
