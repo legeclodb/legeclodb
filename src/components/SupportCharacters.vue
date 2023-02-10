@@ -256,16 +256,20 @@ export default {
 
   methods: {
     setupDB() {
+      // 外部 json 由来のデータへの変更はセッションをまたいでしまうので、deep copy しておく
+      this.characters = structuredClone(this.characters);
+      this.skills = structuredClone(this.skills);
+
       let skillMap = new Map();
+      let skillId = 0;
       for (let skill of this.skills) {
+        skill.id = ++skillId;
         skillMap.set(skill.name, skill);
       }
 
-      // 外部 json 由来のデータへの変更はセッションをまたいでしまうので、deep copy しておく
-      this.characters = structuredClone(this.characters);
-      let idSeed = 0;
+      let chrId = 0;
       for (let chr of this.characters) {
-        chr.id = ++idSeed;
+        chr.id = ++chrId;
         chr.classId = this.classes.findIndex(v => v == chr.class);
         chr.supportTypeId = this.supportTypes.findIndex(v => v == chr.supportType);
         chr.rarityId = this.rarities.findIndex(v => v == chr.rarity);

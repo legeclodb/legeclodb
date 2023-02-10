@@ -221,9 +221,10 @@ export default {
     setupDB() {
       // 外部 json 由来のデータへの変更はセッションをまたいでしまうので、deep copy しておく
       this.equipments = structuredClone(this.equipments);
-      let idSeed = 0;
+
+      let itemId = 0;
       for (let item of this.equipments) {
-        item.id = ++idSeed;
+        item.id = ++itemId;
         if (item.classes) {
           item.classIds = item.classes.map(c1 => this.classes.findIndex(c2 => c1 == c2));
         }
@@ -231,7 +232,6 @@ export default {
         item.rarityId = this.rarities.findIndex(v => v == item.rarity);
 
         this.registerTags(item.tags);
-        this.countTags(item.tags);
       }
       this.equipments.sort((a, b) => a.slotId < b.slotId ? -1 : 1);
 

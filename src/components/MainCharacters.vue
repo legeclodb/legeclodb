@@ -267,6 +267,84 @@ export default {
   },
 
   methods: {
+    setupDB() {
+      // 外部 json 由来のデータへの変更はセッションをまたいでしまうので、deep copy しておく
+      this.characters = structuredClone(this.characters);
+      this.skills = structuredClone(this.skills);
+
+      let skillMap = new Map();
+      let skillId = 0;
+      for (let skill of this.skills) {
+        skill.id = ++skillId;
+        skillMap.set(skill.name, skill);
+        this.registerTags(skill.tags);
+      }
+
+      let chrId = 0;
+      for (let chr of this.characters) {
+        chr.id = ++chrId;
+        chr.classId = this.classes.findIndex(v => v == chr.class);
+        chr.symbolId = this.symbols.findIndex(v => v == chr.symbol);
+        chr.rarityId = this.rarities.findIndex(v => v == chr.rarity);
+        chr.damageTypeId = this.damageTypes.findIndex(v => v == chr.damageType);
+
+        for (let i = 0; i < chr.skills.length; ++i) {
+          if (typeof chr.skills[i] === "string") {
+            chr.skills[i] = skillMap.get(chr.skills[i]);
+          }
+        }
+
+        let aoeAttack = 0;
+        for (let skill of chr.skills) {
+          for (const t of skill.skillTags) {
+            if (t == "攻撃(範囲)" && skill.skillType == "アクティブ") {
+              ++aoeAttack;
+            }
+          }
+        }
+        if (aoeAttack > 0) {
+          chr.talent.tags.push(`範囲攻撃所持(${aoeAttack})`);
+        }
+        const m = chr.name.match(/\((.+?)\)/);
+        if (m) {
+          chr.talent.tags.push(`季節限定(${m[1]})`);
+        }
+
+        // ↑でタグを追加するのでこのタイミングである必要がある
+        this.registerTags(chr.talent.tags);
+      }
+
+      // リストの上の方に出すため特別処理
+      let handledTags = new Set();
+      this.appendSet(handledTags, this.constants.tagsHidden);
+      let handlePredefinedTags = function (dstTags, predefinedTags) {
+        for (let t of predefinedTags) {
+          dstTags.add(t);
+          handledTags.add(t);
+        }
+      };
+      handlePredefinedTags(this.tagCategory.buff.tags, ["シンボルスキル"]);
+
+      for (let t of this.getMainTags()) {
+        if (handledTags.has(t))
+          continue;
+
+        if (t.match(/^バフ:/))
+          this.tagCategory.buff.tags.add(t);
+        else if (t.match(/^デバフ:/))
+          this.tagCategory.debuff.tags.add(t);
+        else if (t.match(/^無効化:/))
+          this.tagCategory.resist.tags.add(t);
+        else
+          this.tagCategory.other.tags.add(t);
+      }
+      this.reorderSet(this.tagCategory.buff.tags, this.constants.tagsBuff);
+      this.reorderSet(this.tagCategory.debuff.tags, this.constants.tagsDebuff);
+      this.reorderSet(this.tagCategory.resist.tags, this.constants.tagsResist);
+      this.reorderSet(this.tagCategory.other.tags, this.constants.tagsOther);
+      this.reorderSubtag();
+    },
+
     isInfoHighlighted(chr) {
       return this.freeSearchRE && this.matchContent(chr, this.freeSearchRE)
         ? 2 : 0;
@@ -353,80 +431,6 @@ export default {
       }
     },
 
-    setupDB() {
-      let skillMap = new Map();
-      for (let skill of this.skills) {
-        skillMap.set(skill.name, skill);
-        this.registerTags(skill.tags);
-      }
-
-      // 外部 json 由来のデータへの変更はセッションをまたいでしまうので、deep copy しておく
-      this.characters = structuredClone(this.characters);
-      let idSeed = 0;
-      for (let chr of this.characters) {
-        chr.id = ++idSeed;
-        chr.classId = this.classes.findIndex(v => v == chr.class);
-        chr.symbolId = this.symbols.findIndex(v => v == chr.symbol);
-        chr.rarityId = this.rarities.findIndex(v => v == chr.rarity);
-        chr.damageTypeId = this.damageTypes.findIndex(v => v == chr.damageType);
-
-        for (let i = 0; i < chr.skills.length; ++i) {
-          if (typeof chr.skills[i] === "string") {
-            chr.skills[i] = skillMap.get(chr.skills[i]);
-          }
-        }
-
-        let aoeAttack = 0;
-        for (let skill of chr.skills) {
-          for (const t of skill.skillTags) {
-            if (t == "攻撃(範囲)" && skill.skillType == "アクティブ") {
-              ++aoeAttack;
-            }
-          }
-        }
-        if (aoeAttack > 0) {
-          chr.talent.tags.push(`範囲攻撃所持(${aoeAttack})`);
-        }
-        const m = chr.name.match(/\((.+?)\)/);
-        if (m) {
-          chr.talent.tags.push(`季節限定(${m[1]})`);
-        }
-
-        // ↑でタグを追加するのでこのタイミングである必要がある
-        this.registerTags(chr.talent.tags);
-      }
-
-      // リストの上の方に出すため特別処理
-      let handledTags = new Set();
-      this.appendSet(handledTags, this.constants.tagsHidden);
-      let handlePredefinedTags = function(dstTags, predefinedTags) {
-        for (let t of predefinedTags) {
-          dstTags.add(t);
-          handledTags.add(t);
-        }
-      };
-      handlePredefinedTags(this.tagCategory.buff.tags, ["シンボルスキル"]);
-
-      for (let t of this.getMainTags()) {
-        if (handledTags.has(t))
-          continue;
-
-        if (t.match(/^バフ:/))
-          this.tagCategory.buff.tags.add(t);
-        else if (t.match(/^デバフ:/))
-          this.tagCategory.debuff.tags.add(t);
-        else if (t.match(/^無効化:/))
-          this.tagCategory.resist.tags.add(t);
-        else 
-          this.tagCategory.other.tags.add(t);
-      }
-      this.reorderSet(this.tagCategory.buff.tags, this.constants.tagsBuff);
-      this.reorderSet(this.tagCategory.debuff.tags, this.constants.tagsDebuff);
-      this.reorderSet(this.tagCategory.resist.tags, this.constants.tagsResist);
-      this.reorderSet(this.tagCategory.other.tags, this.constants.tagsOther);
-      this.reorderSubtag();
-    },
-    
     updateURL() {
       if (!this.enableUpdateURL) {
         return;
