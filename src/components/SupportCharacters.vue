@@ -241,17 +241,14 @@ export default {
     this.fillFilter(this.rarityFilter, this.rarities);
     this.fillFilter(this.damageTypeFilter, this.damageTypes);
     this.fillFilter(this.skillTypeFilter, this.skillTypes);
+
+    this.decodeURL();
+    this.updateTagCounts();
   },
 
   mounted() {
-    this.decodeURL();
-    this.updateTagCounts();
-
-    window.onpopstate = function () {
-      this.decodeURL(true);
-    }.bind(this);
-
     this.enableUpdateURL = true;
+    window.onpopstate = function () { this.decodeURL(true); }.bind(this);
   },
 
   methods: {
@@ -423,7 +420,6 @@ export default {
         this.deserializeFilter(this.skillTypeFilter, data.skillType);
         this.tagSearchPattern = data.tag;
         this.freeSearchPattern = data.free;
-        this.$forceUpdate();
         this.enableUpdateURL = true;
       }
     },

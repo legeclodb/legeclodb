@@ -26,13 +26,15 @@ export default {
     }
   },
 
-  mounted() {
-    window.addEventListener('scroll', this.onScroll);
-
+  created() {
     let tmp = localStorage.getItem(this.$route.name + ".showDetail");
     if (tmp) {
       this.showDetail = tmp;
     }
+  },
+
+  mounted() {
+    window.addEventListener('scroll', this.onScroll);
   },
 
   beforeDestroy() {
