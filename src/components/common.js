@@ -13,6 +13,8 @@ export default {
       tagTable: {},
       mainTagTable: {},
       subTagTable: {},
+      tagIDSeed: 0,
+      mainTagIDSeed: 0,
 
       tagSearchPattern: "",
       tagSearchPatternPrev: "",
@@ -169,6 +171,7 @@ export default {
     addMainTag(t) {
       if (!this.mainTagTable[t]) {
         this.mainTagTable[t] = {
+          id: ++this.mainTagIDSeed,
           count: 0,
           note: this.constants.tagNotes[t]
         };
@@ -188,6 +191,7 @@ export default {
     registerTag(t) {
       if (!this.tagTable[t]) {
         this.tagTable[t] = {
+          id: ++this.tagIDSeed,
           count: 0,
         };
       }
@@ -233,8 +237,36 @@ export default {
         v.count = 0;
       }
     },
+
+    genTagID(t) {
+      return `tag${this.mainTagTable[t].id}`;
+    },
     getMainTags() {
       return Object.keys(this.mainTagTable);
+    },
+    getFilteredMainTags(tags) {
+      let r = [];
+      for (const t of tags) {
+        if (this.mainTagTable[t].count > 0) {
+          r.push(t);
+        }
+      }
+      return r;
+    },
+    getFilteredSubTags(mainTag) {
+      let r = null;
+      const subTags = this.subTagTable[mainTag];
+      if (subTags) {
+        for (const t of subTags) {
+          if (this.tagTable[t].count > 0) {
+            if (r == null) {
+              r = [];
+            }
+            r.push(t);
+          }
+        }
+      }
+      return r;
     },
 
     isFilterEnabled(filter) {
@@ -344,19 +376,18 @@ export default {
     },
     onSubtagPopoverShow(state, popoverTarget) {
       this.$root.$emit('bv::hide::popover', this.prevPopover);
-      this.prevPopover = popoverTarget;
+      this.prevPopover = this.genTagID(popoverTarget);
       state.keepDropdown++;
     },
     onSubtagPopoverHide(state) {
       state.keepDropdown--;
       if (state.readyToHide) {
         this.$refs[state.name][0].hide();
-        state.readyToHide = false;
       }
     },
     hideTagDropdown(state, popoverTarget) {
       if (popoverTarget) {
-        this.$root.$emit('bv::hide::popover', popoverTarget);
+        this.$root.$emit('bv::hide::popover', this.genTagID(popoverTarget));
       }
       state.readyToHide = true;
     },
