@@ -4,11 +4,11 @@
       <Navigation />
       <div class="menu-content">
         <div class="menu-panel">
-          <b-tabs nav-class="tab-index">
-            <b-tab title="タグ検索" active>
+          <b-tabs nav-class="tab-index" v-model="searchTabIndex">
+            <b-tab title="タグ検索">
               <div class="menu-widgets flex">
                 <div class="widget" style="width: 300px ">
-                  <b-form-input v-model="tagSearchPattern" type="text" debounce="500" size="sm" placeholder="検索ワード (正規表現)" :update="onUpdateTagSearchPattern()" />
+                  <b-form-input v-model="tagSearchPattern" type="text" debounce="500" size="sm" placeholder="検索ワード (正規表現)" :update="updateQuery('tag')" />
                 </div>
               </div>
               <div class="menu-widgets flex">
@@ -32,7 +32,7 @@
             <b-tab title="フリーワード検索">
               <div class="menu-widgets flex">
                 <div class="widget" style="width: 300px">
-                  <b-form-input v-model="freeSearchPattern" type="text" debounce="500" size="sm" placeholder="検索ワード (正規表現)" :update="onUpdateFreeSearchPattern()" />
+                  <b-form-input v-model="freeSearchPattern" type="text" debounce="500" size="sm" placeholder="検索ワード (正規表現)" :update="updateQuery('free')" />
                 </div>
                 <div class="widget">
                   <b-button variant="secondary" size="sm" @click="freeSearchPattern=''">クリア</b-button>
@@ -50,7 +50,7 @@
           <div class="menu-widgets flex">
             <div class="widget">
               <b-button-group size="sm" id="class_selector">
-                <b-button v-for="(c, i) in classFilter" :key="i" :pressed.sync="c.state" @click="onChangeFilterState()" variant="outline-secondary">
+                <b-button v-for="(c, i) in classFilter" :key="i" :pressed.sync="c.state" @click="updateQuery('class')" variant="outline-secondary">
                   <b-img-lazy :src="getImageURL(classes[i])" width="25" height="25" />
                 </b-button>
               </b-button-group>
@@ -59,14 +59,14 @@
           <div class="menu-widgets flex">
             <div class="widget">
               <b-button-group size="sm" id="item_type_selector">
-                <b-button v-for="(c, i) in itemTypeFilter" :key="i" :pressed.sync="c.state" @click="onChangeFilterState()" variant="outline-secondary">
+                <b-button v-for="(c, i) in itemTypeFilter" :key="i" :pressed.sync="c.state" @click="updateQuery('itemType')" variant="outline-secondary">
                   <b-img-lazy :src="getImageURL(itemTypes[i])" width="25" height="25" />
                 </b-button>
               </b-button-group>
             </div>
             <div class="widget">
               <b-button-group size="sm" id="rareiry_selector">
-                <b-button v-for="(c, i) in rarityFilter" :key="i" :pressed.sync="c.state" @click="onChangeFilterState()" variant="outline-secondary">
+                <b-button v-for="(c, i) in rarityFilter" :key="i" :pressed.sync="c.state" @click="updateQuery('rarity')" variant="outline-secondary">
                   <b-img-lazy :src="getImageURL(rarities[i])" width="36" height="20" />
                 </b-button>
               </b-button-group>
@@ -221,6 +221,7 @@ export default {
 
       let itemId = 0;
       for (let item of this.equipments) {
+        item.recordType = 'item';
         item.id = ++itemId;
         if (item.classes) {
           item.classIds = item.classes.map(c1 => this.classes.findIndex(c2 => c1 == c2));
@@ -280,17 +281,17 @@ export default {
     },
 
     isInfoHighlighted(chr) {
-      return this.freeSearchRE && chr.name.match(this.freeSearchRE)
+      return this.freeSearchFn && this.freeSearchFn(chr.name)
         ? 2 : 0;
     },
     isDescHighlighted(chr) {
       let r = 0;
-      if (this.tagSearchRE) {
-        r |= this.matchTags(chr.tags, this.tagSearchRE)
+      if (this.tagSearchFn) {
+        r |= this.tagSearchFn(chr)
           ? 1 : 0;
       }
-      if (this.freeSearchRE) {
-        r |= chr.desc.match(this.freeSearchRE)
+      if (this.freeSearchFn) {
+        r |= this.freeSearchFn(chr.desc)
           ? 2 : 0;
       }
       return r;
@@ -299,13 +300,13 @@ export default {
       let r = this.isInfoHighlighted(chr) | this.isDescHighlighted(chr);
       return r == this.getSearchMask();
     },
-    applyItemFilter(chr) {
+    applyClassFilter(chr) {
       return (!chr.classIds || this.filterMatch(this.classFilter, chr.classIds)) &&
         this.filterMatch(this.itemTypeFilter, chr.slotId) &&
         this.filterMatch(this.rarityFilter, chr.rarityId);
     },
     filterItem(chr) {
-      let ok = this.applyItemFilter(chr);
+      let ok = this.applyClassFilter(chr);
       if (ok && this.isSearchPatternSet()) {
         ok = this.applySearchPatterns(chr);
       }
@@ -314,7 +315,7 @@ export default {
     updateTagCounts() {
       this.resetTagCounts();
       for (let item of this.equipments) {
-        if (this.applyItemFilter(item)) {
+        if (this.applyClassFilter(item)) {
           this.countTags(item.tags);
         }
       }
@@ -322,7 +323,7 @@ export default {
 
     updateURL() {
       if (!this.enableUpdateURL) {
-        return;
+        return false;
       }
 
       let seri = new this.URLSerializer();
@@ -341,7 +342,9 @@ export default {
       if (url != this.prevURL) {
         window.history.pushState(null, null, url);
         this.prevURL = url;
+        return true;
       }
+      return false;
     },
     decodeURL(initState = false) {
       let data = new this.URLSerializer({
@@ -359,6 +362,9 @@ export default {
         this.deserializeFilter(this.rarityFilter, data.rarity);
         this.tagSearchPattern = data.tag;
         this.freeSearchPattern = data.free;
+        if (this.freeSearchPattern.length != 0) {
+          this.searchTabIndex = 1;
+        }
         this.enableUpdateURL = true;
       }
     },

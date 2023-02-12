@@ -18,11 +18,13 @@ export default {
 
       tagSearchPattern: "",
       tagSearchPatternPrev: "",
-      tagSearchRE: null,
+      tagSearchFn: null,
 
       freeSearchPattern: "",
       freeSearchPatternPrev: "",
-      freeSearchRE: null,
+      freeSearchFn: null,
+
+      searchTabIndex: 0,
     }
   },
 
@@ -45,34 +47,6 @@ export default {
     showDetail: function (v) {
       localStorage.setItem(this.$route.name + ".showDetail", v);
     },
-
-    tagSearchPattern: function (v) {
-      if (this.tagSearchPattern.length == 0) {
-        this.tagSearchRE = null;
-      }
-      else {
-        try {
-          let re = new RegExp(this.tagSearchPattern);
-          this.tagSearchRE = re;
-        }
-        catch (e) {
-        }
-      }
-    },
-
-    freeSearchPattern: function (v) {
-      if (this.freeSearchPattern.length == 0) {
-        this.freeSearchRE = null;
-      }
-      else {
-        try {
-          let re = new RegExp(this.freeSearchPattern);
-          this.freeSearchRE = re;
-        }
-        catch (e) {
-        }
-      }
-    }
   },
 
   computed: {
@@ -101,6 +75,10 @@ export default {
         this.showHeader = pos < this.lastScrollPosition;
       }
       this.lastScrollPosition = pos;
+    },
+
+    escapeRE(str) {
+      return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     },
 
     getImageURL(name) {
@@ -301,22 +279,44 @@ export default {
       }
     },
 
-    setTagSearchPattern(txt, wholeWord = false) {
+    setTagSearchPattern(txt, wholeWord = false, escape = true) {
       txt = txt.trim();
-      txt = txt.replaceAll('(', '\\(');
-      txt = txt.replaceAll(')', '\\)');
-      txt = txt.replaceAll('+', '\\+');
+      if (escape) {
+        txt = this.escapeRE(txt);
+      }
       txt = "^" + txt;
       if (wholeWord && !txt.endsWith(')')) {
         txt += "$";
       }
       this.tagSearchPattern = txt;
+      this.freeSearchPattern = "";
+      this.searchTabIndex = 0;
 
       this.preventShowHideHeaderOnScroll = 1;
+      this.$root.$emit('bv::hide::popover');
       this.$nextTick(function () {
         this.showHeader = true;
       }.bind(this));
     },
+    setFreeSearchPattern(txt, wholeWord = false, escape = true) {
+      txt = txt.trim();
+      if (escape) {
+        txt = this.escapeRE(txt);
+      }
+      if (wholeWord) {
+        txt = `^${txt}$`;
+      }
+      this.freeSearchPattern = txt;
+      this.tagSearchPattern = "";
+      this.searchTabIndex = 1;
+
+      this.preventShowHideHeaderOnScroll = 1;
+      this.$root.$emit('bv::hide::popover');
+      this.$nextTick(function () {
+        this.showHeader = true;
+      }.bind(this));
+    },
+
     matchTags(tags, re) {
       for (const tag of tags) {
         if (tag.match(re)) {
@@ -329,10 +329,10 @@ export default {
       return (item.name && item.name.match(re)) || (item.desc && item.desc.match(re));
     },
     getSearchMask() {
-      return (this.tagSearchRE ? 1 : 0) | (this.freeSearchRE ? 2 : 0);
+      return (this.tagSearchFn ? 1 : 0) | (this.freeSearchFn ? 2 : 0);
     },
     isSearchPatternSet() {
-      return this.tagSearchRE || this.freeSearchRE;
+      return this.tagSearchFn || this.freeSearchFn;
     },
 
     chrNameToHtml(name) {
@@ -348,23 +348,60 @@ export default {
       return item.desc.replaceAll("\n", "<br/>") + "<br/>";
     },
 
-    onChangeFilterState() {
-      this.updateTagCounts();
+    updateQuery(name, value) {
+      //console.log(`updateQuery: ${name} before`);
+      try {
+        if (name == 'tag') {
+          // なぜかボタン一個押すたびに呼ばれるので変更チェック
+          if (this.tagSearchPattern == this.tagSearchPatternPrev)
+            return;
+          this.tagSearchPatternPrev = this.tagSearchPattern;
+
+          if (this.tagSearchPattern.length != 0) {
+            const re = new RegExp(this.tagSearchPattern);
+            this.tagSearchFn = function (item) {
+              return item.tags && this.matchTags(item.tags, re);
+            }.bind(this);
+          }
+          else {
+            this.tagSearchFn = null;
+          }
+        }
+        else if (name == 'free') {
+          // 同上
+          if (this.freeSearchPattern == this.freeSearchPatternPrev)
+            return;
+          this.freeSearchPatternPrev = this.freeSearchPattern;
+
+          if (this.freeSearchPattern.length != 0) {
+            const re = new RegExp(this.freeSearchPattern);
+            this.freeSearchFn = function (item) {
+              if (typeof item === 'string') {
+                return item.match(re);
+              }
+              else if (['chr', 'skill', 'talent'].includes(item.recordType)) {
+                return this.matchContent(item, re);
+              }
+              else {
+                throw new Error("freeSearchFn: something wrong");
+              }
+            }.bind(this);
+          }
+          else {
+            this.freeSearchFn = null;
+          }
+        }
+      }
+      catch (e) {
+        return;
+      }
+
+      if (['class', 'rarity', 'symbol', 'supportType', 'damageType', 'skillType'].includes(name)) {
+        this.updateTagCounts();
+      }
       this.updateURL();
       this.preventShowHideHeaderOnScroll = 1;
-    },
-    onUpdateTagSearchPattern() {
-      // なぜかボタン一個押すたびに呼ばれるので変更チェック…
-      if (this.tagSearchPattern == this.tagSearchPatternPrev)
-        return;
-      this.tagSearchPatternPrev = this.tagSearchPattern;
-      this.updateURL();
-    },
-    onUpdateFreeSearchPattern() {
-      if (this.freeSearchPattern == this.freeSearchPatternPrev)
-        return;
-      this.freeSearchPatternPrev = this.freeSearchPattern;
-      this.updateURL();
+      //console.log(`updateQuery: ${name} after`);
     },
 
     onTagDropdownShow(event, state) {

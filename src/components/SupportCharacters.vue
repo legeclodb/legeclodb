@@ -4,18 +4,18 @@
       <Navigation />
       <div class="menu-content">
         <div class="menu-panel">
-          <b-tabs nav-class="tab-index">
-            <b-tab title="タグ検索" active>
+          <b-tabs nav-class="tab-index" v-model="searchTabIndex">
+            <b-tab title="タグ検索">
               <div class="menu-widgets flex">
                 <div class="widget">
                   <b-button-group size="sm" id="skill_type_selector">
-                    <b-button v-for="(c, i) in skillTypeFilter" :key="i" :pressed.sync="c.state" @click="onChangeFilterState()" variant="outline-secondary">
+                    <b-button v-for="(c, i) in skillTypeFilter" :key="i" :pressed.sync="c.state" @click="updateQuery('skillType')" variant="outline-secondary">
                       {{ skillTypes[i] }}
                     </b-button>
                   </b-button-group>
                 </div>
                 <div class="widget" style="width: 170px">
-                  <b-form-input v-model="tagSearchPattern" type="text" debounce="500" size="sm" placeholder="検索ワード (正規表現)" :update="onUpdateTagSearchPattern()" />
+                  <b-form-input v-model="tagSearchPattern" type="text" debounce="500" size="sm" placeholder="検索ワード (正規表現)" :update="updateQuery('tag')" />
                 </div>
               </div>
               <div class="menu-widgets flex">
@@ -39,7 +39,7 @@
             <b-tab title="フリーワード検索">
               <div class="menu-widgets flex">
                 <div class="widget" style="width: 300px">
-                  <b-form-input v-model="freeSearchPattern" type="text" debounce="500" size="sm" placeholder="検索ワード (正規表現)" :update="onUpdateFreeSearchPattern()" />
+                  <b-form-input v-model="freeSearchPattern" type="text" debounce="500" size="sm" placeholder="検索ワード (正規表現)" :update="updateQuery('free')" />
                 </div>
                 <div class="widget">
                   <b-button variant="secondary" size="sm" @click="freeSearchPattern=''">クリア</b-button>
@@ -57,7 +57,7 @@
           <div class="menu-widgets flex">
             <div class="widget">
               <b-button-group size="sm" id="class_selector">
-                <b-button v-for="(c, i) in classFilter" :key="i" :pressed.sync="c.state" @click="onChangeFilterState()" variant="outline-secondary">
+                <b-button v-for="(c, i) in classFilter" :key="i" :pressed.sync="c.state" @click="updateQuery('class')" variant="outline-secondary">
                   <b-img-lazy :src="getImageURL(classes[i])" width="25" height="25" />
                 </b-button>
               </b-button-group>
@@ -66,21 +66,21 @@
           <div class="menu-widgets flex">
             <div class="widget">
               <b-button-group size="sm" id="support_type_selector">
-                <b-button v-for="(c, i) in supportTypeFilter" :key="i" :pressed.sync="c.state" @click="onChangeFilterState()" variant="outline-secondary">
+                <b-button v-for="(c, i) in supportTypeFilter" :key="i" :pressed.sync="c.state" @click="updateQuery('supportType')" variant="outline-secondary">
                   <b-img-lazy :src="getImageURL(supportTypes[i])" height="25" />
                 </b-button>
               </b-button-group>
             </div>
             <div class="widget">
               <b-button-group size="sm" id="rareiry_selector">
-                <b-button v-for="(c, i) in rarityFilter" :key="i" :pressed.sync="c.state" @click="onChangeFilterState()" variant="outline-secondary">
+                <b-button v-for="(c, i) in rarityFilter" :key="i" :pressed.sync="c.state" @click="updateQuery('rarity')" variant="outline-secondary">
                   <b-img-lazy :src="getImageURL(rarities[i])" width="36" height="20" />
                 </b-button>
               </b-button-group>
             </div>
             <div class="widget">
               <b-button-group size="sm" id="attack_type_selector">
-                <b-button v-for="(c, i) in damageTypeFilter" :key="i" :pressed.sync="c.state" @click="onChangeFilterState()" variant="outline-secondary">
+                <b-button v-for="(c, i) in damageTypeFilter" :key="i" :pressed.sync="c.state" @click="updateQuery('damageType')" variant="outline-secondary">
                   <b-img-lazy :src="getImageURL(damageTypes[i])" width="25" height="25" />
                 </b-button>
               </b-button-group>
@@ -260,12 +260,14 @@ export default {
       let skillMap = new Map();
       let skillId = 0;
       for (let skill of this.skills) {
+        skill.recordType = 'skill';
         skill.id = ++skillId;
         skillMap.set(skill.name, skill);
       }
 
       let chrId = 0;
       for (let chr of this.characters) {
+        chr.recordType = 'chr';
         chr.id = ++chrId;
         chr.classId = this.classes.findIndex(v => v == chr.class);
         chr.supportTypeId = this.supportTypes.findIndex(v => v == chr.supportType);
@@ -312,28 +314,28 @@ export default {
     },
 
     isInfoHighlighted(chr) {
-      return this.freeSearchRE && this.matchContent(chr, this.freeSearchRE)
+      return this.freeSearchFn && this.freeSearchFn(chr)
         ? 2 : 0;
     },
     isSkillHighlighted(skill) {
       let r = 0;
-      if (this.tagSearchRE) {
-        r |= this.applySkillFilter(skill) && this.matchTags(skill.tags, this.tagSearchRE)
+      if (this.tagSearchFn) {
+        r |= this.applySkillTypeFilter(skill) && this.tagSearchFn(skill)
           ? 1: 0;
       }
-      if (this.freeSearchRE) {
-        r |= this.matchContent(skill, this.freeSearchRE)
+      if (this.freeSearchFn) {
+        r |= this.freeSearchFn(skill)
           ? 2 : 0;
       }
       return r;
     },
-    applySkillFilter(skill) {
+    applySkillTypeFilter(skill) {
       return !this.isFilterEnabled(this.skillTypeFilter) ||
         (skill.skillIndex == 0 && this.skillTypeFilter[0].state) ||
         (skill.skillIndex == 1 && this.skillTypeFilter[1].state) ||
         (skill.skillIndex == 2 && this.skillTypeFilter[2].state);
     },
-    applyChrFilter(chr) {
+    applyClassFilter(chr) {
       return this.filterMatch(this.classFilter, chr.classId) &&
         this.filterMatch(this.supportTypeFilter, chr.supportTypeId) &&
         this.filterMatch(this.rarityFilter, chr.rarityId) &&
@@ -347,7 +349,7 @@ export default {
       return r == this.getSearchMask();
     },
     filterItem(chr) {
-      let ok = this.applyChrFilter(chr);
+      let ok = this.applyClassFilter(chr);
       if (ok && this.isSearchPatternSet()) {
         ok = this.applySearchPatterns(chr);
       }
@@ -356,9 +358,9 @@ export default {
     updateTagCounts() {
       this.resetTagCounts();
       for (let chr of this.characters) {
-        if (this.applyChrFilter(chr)) {
+        if (this.applyClassFilter(chr)) {
           for (let skill of chr.skills) {
-            if (this.applySkillFilter(skill)) {
+            if (this.applySkillTypeFilter(skill)) {
               this.countTags(skill.tags);
             }
           }
@@ -380,7 +382,7 @@ export default {
 
     updateURL() {
       if (!this.enableUpdateURL) {
-        return;
+        return false;
       }
 
       let seri = new this.URLSerializer();
@@ -403,7 +405,9 @@ export default {
       if (url != this.prevURL) {
         window.history.pushState(null, null, url);
         this.prevURL = url;
+        return true;
       }
+      return false;
     },
     decodeURL(initState = false) {
       let data = new this.URLSerializer({
@@ -425,6 +429,9 @@ export default {
         this.deserializeFilter(this.skillTypeFilter, data.skillType);
         this.tagSearchPattern = data.tag;
         this.freeSearchPattern = data.free;
+        if (this.freeSearchPattern.length != 0) {
+          this.searchTabIndex = 1;
+        }
         this.enableUpdateURL = true;
       }
     },
