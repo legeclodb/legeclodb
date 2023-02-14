@@ -17,22 +17,22 @@ export default new Router({
       component: MainCharacters
     },
     {
-      path: '/main',
+      path: '/main.html',
       name: 'main',
       component: MainCharacters
     },
     {
-      path: '/support',
+      path: '/support.html',
       name: 'support',
       component: SupportCharacters
     },
     {
-      path: '/item',
+      path: '/item.html',
       name: 'item',
       component: Items
     },
     {
-      path: '/about',
+      path: '/about.html',
       name: 'about',
       component: About
     }
