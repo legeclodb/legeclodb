@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+﻿#!/usr/bin/env python
 import json, shutil, re, requests, hashlib
 
 srcPath = "../src/assets/image_table.json"
