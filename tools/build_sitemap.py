@@ -3,6 +3,13 @@ import os
 import xml.etree.ElementTree as ET
 from datetime import datetime
 
+os.chdir(os.path.dirname(os.path.abspath(__file__)))
+
+baseURL = 'https://legeclodb.github.io/'
+assets = '../src/assets/'
+components = '../src/components/'
+docs = '../docs/'
+
 
 # sitemap.xml
 
@@ -12,27 +19,47 @@ def addURL(url, date):
     e_loc = ET.SubElement(e_url, 'loc')
     e_loc.text = url
     e_lastmod = ET.SubElement(e_url, 'lastmod')
-    e_lastmod.text = date
+    e_lastmod.text = date.strftime("%Y-%m-%d")
 
 def getLastCommitTime(path):
-    cd = os.popen(f'git log -1 --format=%cd {path}').read().strip()
-    date = datetime.strptime(cd, "%a %b %d %H:%M:%S %Y %z")
-    return date.strftime("%Y-%m-%d")
+    if (type(path) is list):
+        return max(map(getLastCommitTime, path))
+    else:
+        cd = os.popen(f'git log -1 --format=%cd {path}').read().strip()
+        return datetime.strptime(cd, "%a %b %d %H:%M:%S %Y %z")
 
-addURL('https://legeclodb.github.io/', getLastCommitTime('../src/assets/main_characters.json'))
-addURL('https://legeclodb.github.io/support.html', getLastCommitTime('../src/assets/support_characters.json'))
-addURL('https://legeclodb.github.io/item.html', getLastCommitTime('../src/assets/items.json'))
-addURL('https://legeclodb.github.io/about.html', getLastCommitTime('../src/components/About.vue'))
+mainChrFiles = [
+    assets + 'main_characters.json',
+    assets + 'main_skills.json',
+    components + 'MainCharacters.vue'
+]
+supportChrFiles = [
+    assets + 'support_characters.json',
+    assets + 'support_skills.json',
+    components + 'SupportCharacters.vue'
+]
+itemFiles = [
+    assets + 'items.json',
+    components + 'Items.vue'
+]
+aboutFiles = [
+    components + 'About.vue'
+]
+
+addURL(baseURL, getLastCommitTime(mainChrFiles))
+addURL(baseURL + 'support.html', getLastCommitTime(supportChrFiles))
+addURL(baseURL + 'item.html', getLastCommitTime(itemFiles))
+addURL(baseURL + 'about.html', getLastCommitTime(aboutFiles))
 
 tree = ET.ElementTree(e_urlset)
-tree.write('../docs/sitemap.xml', encoding='UTF-8', xml_declaration=True)
+tree.write(docs + 'sitemap.xml', encoding='UTF-8', xml_declaration=True)
 
 
 # robots.txt
 
-with open('../docs/robots.txt', 'w') as f:
-    content = """User-agent: *
+with open(docs + 'robots.txt', 'w') as f:
+    content = f"""User-agent: *
 Allow: /
-Sitemap: https://legeclodb.github.io/sitemap.xml
+Sitemap: {baseURL}sitemap.xml
 """
     f.write(content)

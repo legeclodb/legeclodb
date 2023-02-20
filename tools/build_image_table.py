@@ -1,5 +1,7 @@
 ﻿#!/usr/bin/env python
-import json, shutil, re, requests, hashlib
+import os, json, shutil, re, requests, hashlib
+
+os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 srcPath = "../src/assets/image_table.json"
 shutil.copyfile(srcPath, "./image_table.json.bak")
