@@ -7,7 +7,7 @@ srcPath = "../src/assets/image_table.json"
 shutil.copyfile(srcPath, "./image_table.json.bak")
 
 imgPath = "../public/img/"
-imageTable = json.load(open(srcPath))
+imageTable = json.load(open(srcPath, encoding="utf-8"))
 
 def makeHash(str):
     return hashlib.md5(k.encode('utf-8')).hexdigest()
@@ -26,5 +26,5 @@ for k in imageTable:
         print("copied: " + path + " -> " + filename)
         imageTable[k] = "img/" + filename;
 
-with open(srcPath, 'w') as f:
+with open(srcPath, 'w', encoding="utf-8") as f:
     json.dump(imageTable, f, indent=2, ensure_ascii=False)

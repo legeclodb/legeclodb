@@ -738,5 +738,15 @@
     "damageType": "アタック",
     "range": 1,
     "skills": [ "舌上でとろける愛", "迅速", "甘々おでかけモード" ]
+  },
+  {
+    "name": "モリガン",
+    "date": "2023/02/14",
+    "rarity": "SSR",
+    "supportType": "支援",
+    "class": "ランサー",
+    "damageType": "アタック",
+    "range": 1,
+    "skills": [ "夢魔の女王", "集中", "とっておきの一杯" ]
   }
 ]
