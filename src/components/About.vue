@@ -30,20 +30,19 @@
           <b>一番効果の高いメインのアクティブ＋一番効果の高いサポートのアクティブ＋全タレント・パッシブ・装備効果</b><br />
           と覚えておいてよいと思われます。これを念頭にバフ・デバフの組み合わせを模索するとよいでしょう。<br />
           <br />
-          ただし、与ダメージバフやダメージ耐性デバフはちょっと事情が複雑です。
+          ただし、与ダメージバフやダメージ耐性デバフはちょっと事情が複雑です。<br />
           これらは無印、物理、魔法、スキルなどのバリエーションがありますが、<br />
           異なるバリエーションであればアクティブ同士でも効果が加算になることが確認されています。<br />
-          さらに、一部のスキルは独自のバリエーションになっており、一見競合しそうでも加算になります。<br />
-          <span class="note">例: マリー・アントワネットの<b-link id="id_ロサ・センティフォリア">ロサ・センティフォリア</b-link>など。</span><br />
-          従って、<b-link id="id_総員、突撃用意">総員、突撃用意</b-link>＋<b-link id="id_お届け物です！">お届け物です！</b-link>＋<b-link id="id_リトルマロース">リトルマロース</b-link>＋ロサ・センティフォリア で物理スキル与ダメージ +100% といった事が可能です。<br />
+          さらに、一部のスキルは独自のバリエーションになっており、一見競合しそうでも加算になります。<span class="note">マリー・アントワネットの<b-link :ref="po">ロサ・センティフォリア</b-link>など。</span><br />
+          従って、<b-link :ref="po">総員、突撃用意</b-link>＋<b-link :ref="po">お届け物です！</b-link>＋<b-link :ref="po">リトルマロース</b-link>＋<b-link :ref="po">ロサ・センティフォリア</b-link> で物理スキル与ダメージ +100% といった事が可能です。<br />
           <br />
-          一部のバフ・デバフには上限があることが確認されています。<br />
-          該当するのはステータス値へのデバフ (アタック・ディフェンス・マジック・レジスト)、およびダメージ耐性バフと与ダメージデバフで、<br />
+          また、一部のバフ・デバフには上限があることが確認されています。<br />
+          該当するのは基礎ステータス値へのデバフ (アタック・ディフェンス・マジック・レジスト)、およびダメージ耐性バフと与ダメージデバフで、<br />
           これらは 70% 以上盛っても実際に効果を発揮するのは 70% までとなります。<br />
           <br />
           装備の効果は特に記載がない場合メインのみが対象である点に注意が必要です。<br />
           サポートも対象の効果は「自ユニットの～」という記載があり、区別されています。<br />
-          <span class="note">例: <b-link id="id_天蠍の天鎧">天蠍の天鎧</b-link>のダメージ耐性はメインのみが対象。<b-link id="id_羅刹のかんざし">羅刹のかんざし</b-link>の物理ダメージ耐性はサポートも対象。</span><br />
+          例えば、<b-link :ref="po">天蠍の天鎧</b-link>のダメージ耐性はメインのみが対象、<b-link :ref="po">羅刹のかんざし</b-link>の物理ダメージ耐性はサポートも対象となります。<br />
         </p>
 
         <h2>ダメージ計算</h2>
@@ -67,11 +66,11 @@
       </div>
     </div>
 
-    <template v-for="(item, idx) in popoverItems">
-      <b-popover :target="'id_'+item.name" triggers="hover focus" custom-class="item_po" :title="item.name" placement="top">
+    <template v-for="e in popoverElements">
+      <b-popover :target="e.element" triggers="hover focus" custom-class="item_po" :title="e.name" placement="top">
         <div class="flex">
-          <div><b-img-lazy :src="getImageURL(item.name)" width="50" height="50" /></div>
-          <div v-html="descToHtml(item)"></div>
+          <div><b-img-lazy :src="getImageURL(e.name)" width="50" height="50" /></div>
+          <div v-html="descToHtml(e.item)"></div>
         </div>
       </b-popover>
     </template>
@@ -94,32 +93,30 @@ export default {
 
   data() {
     return {
+      popoverElements: [],
     };
   },
 
   mounted() {
   },
 
-  computed: {
-    popoverItems() {
-      return [
-        this.findMainSkill('総員、突撃用意'),
-        this.findMainSkill('お届け物です！'),
-        this.findMainSkill('リトルマロース'),
-        this.findMainSkill('ロサ・センティフォリア'),
-        this.findItem('天蠍の天鎧'),
-        this.findItem('羅刹のかんざし'),
-      ];
-    },
-  },
-
   methods: {
-    findMainSkill(name) {
-      return jsonMainSkills.find(a => a.name == name);
-    },
     findItem(name) {
-      return jsonItems.find(a => a.name == name);
-    }
+      return jsonMainSkills.find(a => a.name == name) || jsonItems.find(a => a.name == name);
+    },
+
+    po(e) {
+      if (e) {
+        let el = e.$el;
+        if (!this.popoverElements.find(e => e === el)) {
+          this.popoverElements.push({
+            name: el.innerText,
+            item: this.findItem(el.innerText),
+            element: el,
+          });
+        }
+      }
+    },
   }
 }
 </script>
