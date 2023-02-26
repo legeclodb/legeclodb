@@ -33,14 +33,14 @@
           ただし、アクティブ同士でも加算になる例外的なバフも少数存在します。<br />
           シンボルスキルに付随する加護、<b-link :ref="po">ロサ・センティフォリア</b-link>、<b-link :ref="po">オーヴァーリザーブ</b-link>のダメージ耐性などがこれに該当します。<br />
           加えて、与ダメージとダメージ耐性のバフ・デバフにはまた別のルールがあります。<br />
-          これらは無印、物理、魔法、スキルなどのバリエーションがありますが、<br />
+          これらには物理与ダメージ、魔法与ダメージ、スキル与ダメージといったバリエーションがありますが、<br />
           異なるバリエーションであればアクティブ同士でも効果が加算になることが確認されています。<br />
           従って、<b-link :ref="po">お届け物です！</b-link>＋<b-link :ref="po">総員、突撃用意</b-link>＋<b-link :ref="po">リトルマロース</b-link>＋<b-link :ref="po">ロサ・センティフォリア</b-link> で物理スキル与ダメージ +100% といった事が可能です。<br />
           <br />
           また、一部のバフ・デバフには上限があることが確認されています。<br />
           該当するのは基礎ステータス値へのデバフ (アタック・ディフェンス・マジック・レジスト)、およびダメージ耐性バフと与ダメージデバフで、<br />
           これらは 70% 以上盛っても実際に効果を発揮するのは 70% までとなります。<br />
-          なお、基礎ステータス値へのバフ、与ダメージバフ、ダメージ耐性デバフに関しては上限は確認されていません。<br />
+          なお、基礎ステータス値へのバフ、与ダメージバフ、ダメージ耐性デバフに関しては上限はないものとみられます。<br />
           <br />
           装備の効果は特に記載がない場合メインのみが対象である点に注意が必要です。<br />
           サポートも対象の効果は「自ユニットの～」という記載があり、区別されています。<br />
@@ -54,16 +54,29 @@
           <br />
           <ul>
             <li>メイン・サポート個別にこの計算が行われる。</li>
-            <li>攻撃力と防御力は、物理攻撃の場合アタック&ディフェンス、魔法攻撃の場合マジック&レジスト。</li>
-            <li>×10 は 1 戦闘に 10 回攻撃が行われるということで、戦闘アニメーションONだと 1 攻撃あたりのダメージが表示される。</li>
+            <li>最後の ×10 は 1 戦闘に 10 回攻撃が行われるということで、戦闘アニメーションONだと 1 攻撃あたりのダメージが表示される。</li>
+            <li>
+              攻撃力と防御力は、物理攻撃の場合アタック&ディフェンス、魔法攻撃の場合マジック&レジスト。
+              <ul>
+                <li>
+                  「敵ユニットのディフェンスのn%分を無視して攻撃できる」の能力を持つ場合、効果量分相手のディフェンスを差し引く。<br />
+                  ただし、この効果はディフェンスデバフへ加算する形で処理されるようで、他のディフェンスデバフと合わせて 70% が効果の上限となる。
+                </li>
+              </ul>
+            </li>
             <li>
               ダメージ耐性バフ・デバフと与ダメージバフ・デバフは掛け算の関係。
               <ul>
-                <li>ダメージ耐性バフと与ダメージデバフは 70% が上限。<span class="note">両方最大まで盛ると 0.3×0.3=9% まで被ダメージを抑え込める。</span></li>
+                <li>ダメージ耐性バフと与ダメージデバフはどちらも 70% が効果の上限。<span class="note">両方最大まで盛ると 0.3×0.3=9% まで被ダメージを抑え込める。</span></li>
               </ul>
             </li>
-            <li>クリティカルダメージ倍率は 30% + バフ効果量で、クリティカル発生時 10 回の攻撃全てに適用。</li>
-            <li>乱数による振れ幅はわずかで、±2% 程度とみられる。</li>
+            <li>
+              クリティカルダメージ倍率は 30% + バフ効果量で、クリティカル発生時 10 回の攻撃全てに適用。
+              <ul>
+                <li>クリティカル発動率は テクニック÷10 + クリティカル率バフ - 相手のクリティカル率耐性 とみられる。</li>
+              </ul>
+            </li>
+            <li>乱数による振れ幅はわずかで、±2% 程度。</li>
             <li>遠距離攻撃キャラが近接攻撃した場合、最終ダメージに 0.6 倍される。</li>
             <li>
               2回攻撃を持つ場合、最初の一斉攻撃の後、相手が生き残っていたら再度攻撃を行う。
@@ -83,6 +96,9 @@
           <div><b-img-lazy :src="getImageURL(e.name)" width="50" height="50" /></div>
           <div v-html="descToHtml(e.item)"></div>
         </div>
+        <div v-if="e.item.owners" style="margin-top: 5px">
+          保持者: {{ e.item.owners.map(chr => chr.name).join(", ") }}
+        </div>
       </b-popover>
     </template>
 
@@ -92,6 +108,7 @@
 <script>
 import Navigation from './Navigation.vue'
 import jsonMainSkills from '../assets/main_skills.json'
+import jsonMainChrs from '../assets/main_characters.json'
 import jsonItems from '../assets/items.json'
 import common from "./common";
 
@@ -108,12 +125,29 @@ export default {
     };
   },
 
-  mounted() {
+  created() {
+    this.mainSkills = structuredClone(jsonMainSkills);
+    this.mainChrs = structuredClone(jsonMainChrs);
+    this.items = structuredClone(jsonItems);
+
+    let mainSkillMap = new Map();
+    for (let skill of this.mainSkills)
+      mainSkillMap.set(skill.name, skill);
+
+    for (let chr of this.mainChrs) {
+      for (let i = 0; i < chr.skills.length; ++i) {
+        let skill = mainSkillMap.get(chr.skills[i]);
+        if (!skill.owners)
+          skill.owners = [];
+        skill.owners.push(chr);
+        chr.skills[i] = skill;
+      }
+    }
   },
 
   methods: {
     findItem(name) {
-      return jsonMainSkills.find(a => a.name == name) || jsonItems.find(a => a.name == name);
+      return this.mainSkills.find(a => a.name == name) || this.items.find(a => a.name == name);
     },
 
     po(e) {
