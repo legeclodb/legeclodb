@@ -26,30 +26,36 @@
             <li>デバフも同じルール。バフとデバフが同時にかかった場合、% を足し合わせて相殺となる。</li>
           </ul>
           <br />
-          つまり、だいたい<br />
+          つまり、大雑把には<br />
           <b>一番効果の高いメインのアクティブ＋一番効果の高いサポートのアクティブ＋全タレント・パッシブ・装備効果</b><br />
-          と覚えておいてよいと思われます。これを念頭にバフ・デバフの組み合わせを模索するとよいでしょう。<br />
+          と覚えておいてよいでしょう。<br />
           <br />
-          ただし、アクティブ同士でも加算になる例外的なバフも少数存在します。<br />
-          シンボルスキルに付随する加護、<b-link :ref="po">ロサ・センティフォリア</b-link>、<b-link :ref="po">オーヴァーリザーブ</b-link>のダメージ耐性などがこれに該当します。<br />
+          しかし、アクティブ同士の競合は実際にはもっと複雑です。<br />
+          バフ・デバフには効果ターン中常時発動しているものと、戦闘中のみ発動するものがありますが、<br />
+          この 2 種は別枠であるらしく、アクティブ同士でも加算になることが確認されています。<br />
+          <span class="note">例: ダメージ耐性デバフの <b-link :ref="po">綺麗な花には毒がある</b-link> と <b-link :ref="po">精一杯の誘惑</b-link> は加算。<b-link :ref="po">精一杯の誘惑</b-link> と <b-link :ref="po">聖なる夜の啓示</b-link> は戦闘前デバフ同士で競合。<br /></span>
+          また、一部のスキルは特別枠であるらしく、無条件で他のアクティブと加算になることが確認されています。<br />
+          <span class="note">シンボルスキルに付随する加護、<b-link :ref="po">ロサ・センティフォリア</b-link>、<b-link :ref="po">オーヴァーリザーブ</b-link>のダメージ耐性などが該当。</span><br />
+          <br />
           加えて、与ダメージとダメージ耐性のバフ・デバフにはまた別のルールがあります。<br />
           これらには物理与ダメージ、魔法与ダメージ、スキル与ダメージといったバリエーションがありますが、<br />
           異なるバリエーションであればアクティブ同士でも効果が加算になることが確認されています。<br />
-          従って、<b-link :ref="po">お届け物です！</b-link>＋<b-link :ref="po">総員、突撃用意</b-link>＋<b-link :ref="po">リトルマロース</b-link>＋<b-link :ref="po">ロサ・センティフォリア</b-link> で物理スキル与ダメージ +100% といった事が可能です。<br />
+          <span class="note">従って、<b-link :ref="po">お届け物です！</b-link>＋<b-link :ref="po">総員、突撃用意</b-link>＋<b-link :ref="po">リトルマロース</b-link>＋<b-link :ref="po">ロサ・センティフォリア</b-link> で物理スキル与ダメージ +100% といった事が可能。</span><br />
           <br />
-          また、一部のバフ・デバフには上限があることが確認されています。<br />
+          一部のバフ・デバフには上限があることが確認されています。<br />
           該当するのは基礎ステータス値へのデバフ (アタック・ディフェンス・マジック・レジスト)、およびダメージ耐性バフと与ダメージデバフで、<br />
           これらは 70% 以上盛っても実際に効果を発揮するのは 70% までとなります。<br />
           なお、基礎ステータス値へのバフ、与ダメージバフ、ダメージ耐性デバフに関しては上限はないものとみられます。<br />
           <br />
           装備の効果は特に記載がない場合メインのみが対象である点に注意が必要です。<br />
           サポートも対象の効果は「自ユニットの～」という記載があり、区別されています。<br />
-          例えば、<b-link :ref="po">天蠍の天鎧</b-link>のダメージ耐性はメインのみが対象、<b-link :ref="po">羅刹のかんざし</b-link>の物理ダメージ耐性はサポートも対象となります。<br />
+          <span class="note">例: <b-link :ref="po">天蠍の天鎧</b-link> のダメージ耐性はメインのみが対象、<b-link :ref="po">羅刹のかんざし</b-link> の物理ダメージ耐性はサポートも対象。</span><br />
+          同様にアミュレットの効果はサポートのみが対象となっています。シールドはサポートが倒れている場合発動しません。<br />
         </p>
 
         <h2>ダメージ計算</h2>
         <p>
-          ダメージ計算式は以下のようになっています。<br />
+          れじぇくろのダメージ計算式は以下のようになっています。<br />
           <b>(攻撃側の攻撃力－受ける側の防御力)×(スキルのダメージ倍率)×(与ダメージバフ・デバフ)×(ダメージ耐性バフ・デバフ)×(クリティカルダメージ倍率)×乱数×10</b><br />
           <br />
           <ul>
@@ -109,6 +115,8 @@
 import Navigation from './Navigation.vue'
 import jsonMainSkills from '../assets/main_skills.json'
 import jsonMainChrs from '../assets/main_characters.json'
+import jsonSupportSkills from '../assets/support_skills.json'
+import jsonSupportChrs from '../assets/support_characters.json'
 import jsonItems from '../assets/items.json'
 import common from "./common";
 
@@ -128,15 +136,31 @@ export default {
   created() {
     this.mainSkills = structuredClone(jsonMainSkills);
     this.mainChrs = structuredClone(jsonMainChrs);
+    this.supSkills = structuredClone(jsonSupportSkills);
+    this.supChrs = structuredClone(jsonSupportChrs);
     this.items = structuredClone(jsonItems);
 
     let mainSkillMap = new Map();
-    for (let skill of this.mainSkills)
+    for (let skill of this.mainSkills) {
       mainSkillMap.set(skill.name, skill);
-
+    }
     for (let chr of this.mainChrs) {
       for (let i = 0; i < chr.skills.length; ++i) {
         let skill = mainSkillMap.get(chr.skills[i]);
+        if (!skill.owners)
+          skill.owners = [];
+        skill.owners.push(chr);
+        chr.skills[i] = skill;
+      }
+    }
+
+    let supSkillMap = new Map();
+    for (let skill of this.supSkills) {
+      supSkillMap.set(skill.name, skill);
+    }
+    for (let chr of this.supChrs) {
+      for (let i = 0; i < chr.skills.length; ++i) {
+        let skill = supSkillMap.get(chr.skills[i]);
         if (!skill.owners)
           skill.owners = [];
         skill.owners.push(chr);
@@ -147,7 +171,9 @@ export default {
 
   methods: {
     findItem(name) {
-      return this.mainSkills.find(a => a.name == name) || this.items.find(a => a.name == name);
+      return this.mainSkills.find(a => a.name == name) ||
+        this.supSkills.find(a => a.name == name) ||
+        this.items.find(a => a.name == name);
     },
 
     po(e) {
