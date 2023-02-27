@@ -285,7 +285,7 @@ export default {
         txt = this.escapeRE(txt);
       }
       txt = "^" + txt;
-      if (wholeWord && !txt.endsWith(')')) {
+      if (wholeWord) {
         txt += "$";
       }
       this.tagSearchPattern = txt;
@@ -349,7 +349,6 @@ export default {
     },
 
     updateQuery(name, value) {
-      //console.log(`updateQuery: ${name} before`);
       try {
         if (name == 'tag') {
           // なぜかボタン一個押すたびに呼ばれるので変更チェック
@@ -396,12 +395,11 @@ export default {
         return;
       }
 
-      if (['class', 'rarity', 'symbol', 'supportType', 'damageType', 'skillType'].includes(name)) {
+      if (['class', 'rarity', 'symbol', 'supportType', 'damageType', 'skillType', 'itemType'].includes(name)) {
         this.updateTagCounts();
       }
       this.updateURL();
       this.preventShowHideHeaderOnScroll = 1;
-      //console.log(`updateQuery: ${name} after`);
     },
 
     onTagDropdownShow(event, state) {
