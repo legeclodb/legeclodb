@@ -30,17 +30,17 @@
           <b>一番効果の高いメインのアクティブ＋一番効果の高いサポートのアクティブ＋全タレント・パッシブ・装備効果</b><br />
           と覚えておいてよいでしょう。<br />
           <br />
-          しかし、アクティブ同士の競合は実際にはもっと複雑です。<br />
-          バフ・デバフには効果ターン中常時発動しているものと、戦闘中のみ発動するものがありますが、<br />
+          しかし、アクティブ同士の関係は厳密にはもっと複雑です。<br />
+          バフ・デバフには効果ターン中常時発動しているものと、戦闘時のみ発動するものがありますが、<br />
           この 2 種は別枠であるらしく、アクティブ同士でも加算になることが確認されています。<br />
           <span class="note">例: ダメージ耐性デバフの <b-link :ref="po">綺麗な花には毒がある</b-link> と <b-link :ref="po">精一杯の誘惑</b-link> は加算。<b-link :ref="po">精一杯の誘惑</b-link> と <b-link :ref="po">聖なる夜の啓示</b-link> は戦闘前デバフ同士で競合。<br /></span>
-          また、一部のスキルは特別枠であるらしく、無条件で他のアクティブと加算になることが確認されています。<br />
+          また、一部のスキルは固有枠であるらしく、無条件で他のアクティブと加算になるとみられます。<br />
           <span class="note">シンボルスキルに付随する加護、<b-link :ref="po">ロサ・センティフォリア</b-link>、<b-link :ref="po">オーヴァーリザーブ</b-link>のダメージ耐性などが該当。</span><br />
           <br />
-          加えて、与ダメージとダメージ耐性のバフ・デバフにはまた別のルールがあります。<br />
+          加えて、与ダメージとダメージ耐性にはまた別のルールがあります。<br />
           これらには物理与ダメージ、魔法与ダメージ、スキル与ダメージといったバリエーションがありますが、<br />
           異なるバリエーションであればアクティブ同士でも効果が加算になることが確認されています。<br />
-          <span class="note">従って、<b-link :ref="po">お届け物です！</b-link>＋<b-link :ref="po">総員、突撃用意</b-link>＋<b-link :ref="po">リトルマロース</b-link>＋<b-link :ref="po">ロサ・センティフォリア</b-link> で物理スキル与ダメージ +100% といった事が可能。</span><br />
+          <span class="note">従って、<b-link :ref="po">お届け物です！</b-link>＋<b-link :ref="po">総員、突撃用意</b-link>＋<b-link :ref="po">リトルマロース</b-link>＋<b-link :ref="po">ロサ・センティフォリア</b-link> で戦闘時物理スキル与ダメージ +100% といった事が可能。</span><br />
           <br />
           一部のバフ・デバフには上限があることが確認されています。<br />
           該当するのは基礎ステータス値へのデバフ (アタック・ディフェンス・マジック・レジスト)、およびダメージ耐性バフと与ダメージデバフで、<br />
@@ -48,9 +48,9 @@
           なお、基礎ステータス値へのバフ、与ダメージバフ、ダメージ耐性デバフに関しては上限はないものとみられます。<br />
           <br />
           装備の効果は特に記載がない場合メインのみが対象である点に注意が必要です。<br />
-          サポートも対象の効果は「自ユニットの～」という記載があり、区別されています。<br />
-          <span class="note">例: <b-link :ref="po">天蠍の天鎧</b-link> のダメージ耐性はメインのみが対象、<b-link :ref="po">羅刹のかんざし</b-link> の物理ダメージ耐性はサポートも対象。</span><br />
-          同様にアミュレットの効果はサポートのみが対象となっています。シールドはサポートが倒れている場合発動しません。<br />
+          サポートも対象の効果は「自ユニットの～」という記述があり、区別されています。<br />
+          <span class="note">例: <b-link :ref="po">天蠍の天鎧</b-link> のダメージ耐性はメインのみが対象、<b-link :ref="po">乙女の天衣</b-link> のダメージ耐性はサポートも対象。</span><br />
+          同様に、アミュレットの効果はサポートのみが対象となります。シールドはサポートが倒れている場合発動しません。<br />
         </p>
 
         <h2>ダメージ計算</h2>
@@ -65,8 +65,8 @@
               攻撃力と防御力は、物理攻撃の場合アタック&ディフェンス、魔法攻撃の場合マジック&レジスト。
               <ul>
                 <li>
-                  「敵ユニットのディフェンスのn%分を無視して攻撃できる」の能力を持つ場合、効果量分相手のディフェンスを差し引く。<br />
-                  ただし、この効果はディフェンスデバフへ加算する形で処理されるようで、他のディフェンスデバフと合わせて 70% が効果の上限となる。
+                  「敵ユニットのディフェンス/レジストのn%分を無視して攻撃できる」の能力を持つ場合、効果量分相手の防御力を差し引く。<br />
+                  ただし、この効果はディフェンス/レジストデバフへ加算する形で処理されるようで、他のデバフと合わせて 70% が効果の上限となる。
                 </li>
               </ul>
             </li>
@@ -79,18 +79,46 @@
             <li>
               クリティカルダメージ倍率は 30% + バフ効果量で、クリティカル発生時 10 回の攻撃全てに適用。
               <ul>
-                <li>クリティカル発動率は テクニック÷10 + クリティカル率バフ - 相手のクリティカル率耐性 とみられる。</li>
+                <li>クリティカル発生率は テクニック÷10 + クリティカル率バフ - 相手のクリティカル率耐性 とみられる。</li>
               </ul>
             </li>
             <li>乱数による振れ幅はわずかで、±2% 程度。</li>
-            <li>遠距離攻撃キャラが近接攻撃した場合、最終ダメージに 0.6 倍される。</li>
+            <li>
+              遠距離攻撃キャラが近接攻撃した場合、最終ダメージに 0.6 倍される。
+              <ul>
+                <li>メイン・サポート両方に個別に適用。</li>
+              </ul>
+            </li>
             <li>
               2回攻撃を持つ場合、最初の一斉攻撃の後、相手が生き残っていたら再度攻撃を行う。
               <ul>
                 <li class="note">ギルクエ EX で高スコアを狙う場合、最初の一斉攻撃で倒れない相手を狙う。</li>
               </ul>
             </li>
-            <li>範囲攻撃の場合、計算式は同じだが、戦闘の前後に発動するバフ・デバフが発動しないことや、サポートが攻撃に参加しないことが異なる。</li>
+            <li>
+              反射を持つ場合、戦闘後、生き残っていたら受けたダメージの効果量 % 分を固定ダメージとして相手に返す。
+              <ul>
+                <li><b-link :ref="po">ラストスタンド</b-link>などで復活しても撃破された扱いであるらしく、発動しない。</li>
+                <li>戦闘後に発動するデバフなどについても同様で、戦闘後生き残っていないと発動しない。</li>
+              </ul>
+            </li>
+            <li>戦闘の前後に発生する固定ダメージは、防御力やシールドの影響を受けず、バフ・デバフも乗らない、文字通り固定値のダメージを与える。</li>
+            <li>
+              サポートは常に先に攻撃の対象になり、生きている限りダメージを受けるのはサポートになる。(後述の範囲攻撃を除く)
+              <ul>
+                <li>サポートが倒れた時、超過分のダメージがメインに流れることはない。<span class="note">= HP1 でも 1 発は攻撃を反らせる。</span></li>
+                <li>サポートは倒れると攻撃にも参加しなくなる。アミュレットのシールドも発動しなくなる。</li>
+              </ul>
+            </li>
+            <li>
+              範囲攻撃の場合、計算式は同じだが、戦闘の前後に発動するバフ・デバフなどが発動しないこと、メインとサポート両方に攻撃が行くこと、<br />サポートが攻撃に参加しないことなどが異なる。
+              <ul>
+                <li>
+                  範囲攻撃によりメインがサポートより先に倒れた場合、ユニット自体撃破された扱いになる。<br />
+                  <span class="note">つまり、範囲攻撃の連打でやられるようなケースでは、サポートをいくら固くしても意味を成さない。</span>
+                </li>
+              </ul>
+            </li>
           </ul>
         </p>
       </div>
@@ -103,7 +131,7 @@
           <div v-html="descToHtml(e.item)"></div>
         </div>
         <div v-if="e.item.owners" style="margin-top: 5px">
-          保持者: {{ e.item.owners.map(chr => chr.name).join(", ") }}
+          所持者: {{ e.item.owners.map(chr => chr.name).join("、") }}
         </div>
       </b-popover>
     </template>
@@ -140,33 +168,23 @@ export default {
     this.supChrs = structuredClone(jsonSupportChrs);
     this.items = structuredClone(jsonItems);
 
-    let mainSkillMap = new Map();
-    for (let skill of this.mainSkills) {
-      mainSkillMap.set(skill.name, skill);
-    }
-    for (let chr of this.mainChrs) {
-      for (let i = 0; i < chr.skills.length; ++i) {
-        let skill = mainSkillMap.get(chr.skills[i]);
-        if (!skill.owners)
-          skill.owners = [];
-        skill.owners.push(chr);
-        chr.skills[i] = skill;
+    const setupSkills = function (skills, chrs) {
+      let skillMap = new Map();
+      for (let skill of skills) {
+        skillMap.set(skill.name, skill);
       }
-    }
-
-    let supSkillMap = new Map();
-    for (let skill of this.supSkills) {
-      supSkillMap.set(skill.name, skill);
-    }
-    for (let chr of this.supChrs) {
-      for (let i = 0; i < chr.skills.length; ++i) {
-        let skill = supSkillMap.get(chr.skills[i]);
-        if (!skill.owners)
-          skill.owners = [];
-        skill.owners.push(chr);
-        chr.skills[i] = skill;
+      for (let chr of chrs) {
+        for (let i = 0; i < chr.skills.length; ++i) {
+          let skill = skillMap.get(chr.skills[i]);
+          if (!skill.owners)
+            skill.owners = [];
+          skill.owners.push(chr);
+          chr.skills[i] = skill;
+        }
       }
-    }
+    };
+    setupSkills(this.mainSkills, this.mainChrs);
+    setupSkills(this.supSkills, this.supChrs);
   },
 
   methods: {
