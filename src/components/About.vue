@@ -1,5 +1,5 @@
 ﻿<template>
-  <div class="root">
+  <div class="root" @mousemove="onMouseMove">
     <div class="header" :class="{ 'hidden': !showHeader }">
       <Navigation />
     </div>
@@ -180,6 +180,7 @@
             <li>
               範囲攻撃の場合、計算式は同じだが、戦闘の前後に発動するバフ・デバフなどが発動しないこと、メインとサポート両方に攻撃が行くこと、<br />サポートが攻撃に参加しないことなどが異なる。
               <ul>
+                <li>ダメージを与えたときに発動する効果などは発動する。</li>
                 <li>クリティカル判定はメイン・サポート個別に行われる。</li>
                 <li>
                   範囲攻撃によりメインがサポートより先に倒れた場合、ユニット自体撃破された扱いになる。<br />

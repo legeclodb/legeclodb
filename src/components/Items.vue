@@ -1,5 +1,5 @@
 ﻿<template>
-  <div class="root">
+  <div class="root" @mousemove="onMouseMove">
     <div class="header" :class="{ 'hidden': !showHeader }">
       <Navigation />
       <div class="menu-content">

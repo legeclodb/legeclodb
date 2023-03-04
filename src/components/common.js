@@ -77,6 +77,12 @@ export default {
       this.lastScrollPosition = pos;
     },
 
+    onMouseMove(event) {
+      if (event.clientY < 100) {
+        this.showHeader = true;
+      }
+    },
+
     escapeRE(str) {
       return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     },
