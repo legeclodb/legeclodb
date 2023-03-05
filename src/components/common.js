@@ -78,7 +78,7 @@ export default {
     },
 
     onMouseMove(event) {
-      if (event.clientY < 100) {
+      if (event.clientY < 80) {
         this.showHeader = true;
       }
     },
