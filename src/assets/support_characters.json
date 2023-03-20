@@ -768,5 +768,25 @@
     "damageType": "アタック",
     "range": 2,
     "skills": [ "乾杯！ほろ酔い！厄払い！", "剛気", "乙女の祝い酒" ]
+  },
+  {
+    "name": "ハデス(学園)",
+    "date": "2023/03/20",
+    "rarity": "SSR",
+    "supportType": "妨害",
+    "class": "アサシン",
+    "damageType": "アタック",
+    "range": 2,
+    "skills": [ "友達作りの第一歩", "集中", "失われた青春を求めて" ]
+  },
+  {
+    "name": "朝倉音姫",
+    "date": "2023/03/20",
+    "rarity": "SSR",
+    "supportType": "攻撃",
+    "class": "ソーサラー",
+    "damageType": "マジック",
+    "range": 2,
+    "skills": [ "えっちなのはいけません！", "迅速", "正義の魔法使い" ]
   }
 ]
