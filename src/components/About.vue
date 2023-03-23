@@ -197,8 +197,8 @@
       </div>
     </div>
 
-    <template v-for="e in popoverElements">
-      <b-popover :target="e.element" triggers="hover focus" custom-class="item_po" :title="e.name" placement="top">
+    <template v-for="(e, i) in popoverElements">
+      <b-popover :target="e.element" :key="i" triggers="hover focus" custom-class="item_po" :title="e.name" placement="top">
         <div class="flex">
           <div><b-img-lazy :src="getImageURL(e.name)" width="50" height="50" /></div>
           <div v-html="descToHtml(e.item)"></div>
