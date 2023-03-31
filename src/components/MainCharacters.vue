@@ -294,17 +294,6 @@ export default {
           }
         }
 
-        let aoeAttack = 0;
-        for (let skill of chr.skills) {
-          for (const t of skill.skillTags) {
-            if (t == "攻撃(範囲)" && skill.skillType == "アクティブ") {
-              ++aoeAttack;
-            }
-          }
-        }
-        if (aoeAttack > 0) {
-          chr.talent.tags.push(`範囲攻撃所持(${aoeAttack})`);
-        }
         const m = chr.name.match(/\((.+?)\)/);
         if (m) {
           chr.talent.tags.push(`季節限定(${m[1]})`);
