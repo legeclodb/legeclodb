@@ -146,7 +146,18 @@
                   <div class="flex">
                     <div class="icon" :id="'chr_'+chr.id+'_skill'+si">
                       <b-link @click="setSkillFilter(skill)"><b-img-lazy :src="getImageURL(skill.name)" with="50" height="50" /></b-link>
-                      <b-popover v-if="showDetail==1" :target="'chr_'+chr.id+'_skill'+si" triggers="hover focus" :title="skill.name" :content="skill.desc" placement="top"></b-popover>
+                      <b-popover v-if="showDetail>=1" :target="'chr_'+chr.id+'_skill'+si" triggers="hover focus" :delay="{show:0, hide:250}" :title="skill.name" placement="top">
+                        <div class="flex" v-if="showDetail==1">
+                          <div><b-img-lazy :src="getImageURL(skill.name)" width="50" height="50" /></div>
+                          <div v-html="descToHtml(skill)"></div>
+                        </div>
+                        <div v-if="skill.owners" class="owners">
+                          所持者:<br/>
+                          <b-link v-for="(owner, oi) in skill.owners" :key="oi" @click="moveToChr(owner)">
+                            <b-img-lazy :src="getImageURL(owner.name)" :title="owner.name" width="50" height="50" />
+                          </b-link>
+                        </div>
+                      </b-popover>
                     </div>
                     <div class="desc" v-show="showDetail >= 2">
                       <div class="flex">
@@ -290,7 +301,11 @@ export default {
 
         for (let i = 0; i < chr.skills.length; ++i) {
           if (typeof chr.skills[i] === "string") {
-            chr.skills[i] = skillMap.get(chr.skills[i]);
+            let skill = skillMap.get(chr.skills[i]);
+            chr.skills[i] = skill;
+            if (!skill.owners)
+              skill.owners = [];
+            skill.owners.push(chr);
           }
         }
 
@@ -332,6 +347,16 @@ export default {
       this.reorderSet(this.tagCategory.resist.tags, this.constants.tagsResist);
       this.reorderSet(this.tagCategory.other.tags, this.constants.tagsOther);
       this.reorderSubtag();
+    },
+
+    moveToChr(chr) {
+      let e = document.getElementById(`chr_${chr.id}`);
+      if (e != null) {
+        this.preventShowHideHeaderOnScroll = 1;
+        this.hideHeader();
+        this.hidePopover();
+        e.scrollIntoView();
+      }
     },
 
     setSkillFilter(skill) {

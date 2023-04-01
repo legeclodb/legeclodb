@@ -77,6 +77,10 @@ export default {
       this.lastScrollPosition = pos;
     },
 
+    hideHeader() {
+      this.showHeader = false;
+    },
+
     onMouseMove(event) {
       if (event.clientY < 50) {
         this.showHeader = true;
@@ -299,7 +303,7 @@ export default {
       this.searchTabIndex = 0;
 
       this.preventShowHideHeaderOnScroll = 1;
-      this.$root.$emit('bv::hide::popover');
+      this.hidePopover();
       this.$nextTick(function () {
         this.showHeader = true;
       }.bind(this));
@@ -317,7 +321,7 @@ export default {
       this.searchTabIndex = 1;
 
       this.preventShowHideHeaderOnScroll = 1;
-      this.$root.$emit('bv::hide::popover');
+      this.hidePopover();
       this.$nextTick(function () {
         this.showHeader = true;
       }.bind(this));
@@ -418,7 +422,7 @@ export default {
       }
     },
     onSubtagPopoverShow(state, popoverTarget) {
-      this.$root.$emit('bv::hide::popover', this.prevPopover);
+      this.hidePopover(this.prevPopover);
       this.prevPopover = this.genTagID(popoverTarget);
       state.keepDropdown++;
     },
@@ -430,9 +434,12 @@ export default {
     },
     hideTagDropdown(state, popoverTarget) {
       if (popoverTarget) {
-        this.$root.$emit('bv::hide::popover', this.genTagID(popoverTarget));
+        this.hidePopover(this.genTagID(popoverTarget));
       }
       state.readyToHide = true;
+    },
+    hidePopover(id = null) {
+      this.$root.$emit('bv::hide::popover', id);
     },
 
 

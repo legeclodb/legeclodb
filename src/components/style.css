@@ -218,11 +218,14 @@ div.skill {
   font-size: 75%;
   color: rgb(175, 175, 175);
 }
+.owners {
+  margin-top: 5px;
+}
 
 .dropdown-item {
   padding: 0.2rem !important;
 }
 
 .popover {
-    max-width: 300px;
+  max-width: 400px;
 }
