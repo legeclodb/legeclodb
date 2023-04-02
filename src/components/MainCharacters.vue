@@ -146,7 +146,7 @@
                   <div class="flex">
                     <div class="icon" :id="'chr_'+chr.id+'_skill'+si">
                       <b-link @click="setSkillFilter(skill)"><b-img-lazy :src="getImageURL(skill.name)" with="50" height="50" /></b-link>
-                      <b-popover v-if="showDetail>=1" :target="'chr_'+chr.id+'_skill'+si" triggers="hover focus" :delay="{show:0, hide:250}" :title="skill.name" placement="top">
+                      <b-popover v-if="showDetail>=1" :target="'chr_'+chr.id+'_skill'+si" triggers="hover focus" :delay="{show:0, hide:250}" no-fade :title="skill.name" placement="top">
                         <div class="flex" v-if="showDetail==1">
                           <div><b-img-lazy :src="getImageURL(skill.name)" width="50" height="50" /></div>
                           <div v-html="descToHtml(skill)"></div>

@@ -203,8 +203,9 @@
           <div><b-img-lazy :src="getImageURL(e.name)" width="50" height="50" /></div>
           <div v-html="descToHtml(e.item)"></div>
         </div>
-        <div v-if="e.item.owners" style="margin-top: 5px">
-          所持者: {{ e.item.owners.map(chr => chr.name).join("、") }}
+        <div v-if="e.item.owners" class="owners">
+          所持者:<br />
+          <b-img-lazy v-for="(owner, oi) in e.item.owners" :key="oi" :src="getImageURL(owner.name)" :title="owner.name" width="50" height="50" />
         </div>
       </b-popover>
     </template>
@@ -317,7 +318,7 @@ div.about {
 }
 
 .item_po {
-  max-width: 400px !important;
+  max-width: 430px !important;
 }
 
 .note {
