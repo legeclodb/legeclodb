@@ -9,6 +9,7 @@ export default {
       preventShowHideHeaderOnScroll: 0,
       lastScrollPosition: 0,
       showDetail: 2,
+      sortType: 0,
 
       tagTable: {},
       mainTagTable: {},
@@ -29,10 +30,14 @@ export default {
   },
 
   created() {
-    let tmp = localStorage.getItem(this.$route.name + ".showDetail");
-    if (tmp) {
+    let route = this.getRouteName();
+    let tmp = null;
+    tmp = localStorage.getItem(`${route}.showDetail`);
+    if (tmp)
       this.showDetail = tmp;
-    }
+    tmp = localStorage.getItem(`${route}.sortType`);
+    if (tmp)
+      this.sortType = tmp;
   },
 
   mounted() {
@@ -45,7 +50,10 @@ export default {
 
   watch: {
     showDetail: function (v) {
-      localStorage.setItem(this.$route.name + ".showDetail", v);
+      localStorage.setItem(`${this.getRouteName()}.showDetail`, v);
+    },
+    sortType: function (v) {
+      localStorage.setItem(`${this.getRouteName()}.sortType`, v);
     },
   },
 
@@ -75,6 +83,13 @@ export default {
         this.showHeader = pos < this.lastScrollPosition;
       }
       this.lastScrollPosition = pos;
+    },
+
+    getRouteName() {
+      let ret = this.$route.name;
+      if (ret == 'index')
+        ret = 'main';
+      return ret;
     },
 
     hideHeader() {

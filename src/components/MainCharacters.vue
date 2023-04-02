@@ -103,6 +103,16 @@
               </b-dropdown>
             </div>
           </div>
+          <div class="menu-widgets flex">
+            <div class="widget">
+              <span>ソート：</span>
+              <b-dropdown :text="sortTypes[sortType]" size="sm" id="sort_selector" style="width:90px">
+                <b-dropdown-item class="d-flex flex-column" v-for="(c, i) in sortTypes" :key="i" @click="sortType=i">
+                  {{ sortTypes[i] }}
+                </b-dropdown-item>
+              </b-dropdown>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -215,6 +225,10 @@ export default {
         "シンプル",
         "詳細",
       ],
+      sortTypes: [
+        "新→旧",
+        "旧→新",
+      ],
 
       tagCategory: {
         buff: {
@@ -252,7 +266,12 @@ export default {
 
   computed: {
     items() {
-      return this.characters;
+      let characters = this.characters.concat(); // shallow copy
+      if (this.sortType == 0) // 新→旧
+        characters.sort((a, b) => b.date.localeCompare(a.date));
+      else // 旧→新
+        characters.sort((a, b) => a.date.localeCompare(b.date));
+      return characters;
     },
   },
 
