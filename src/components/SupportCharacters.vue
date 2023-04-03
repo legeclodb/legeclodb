@@ -320,7 +320,7 @@ export default {
           this.tagCategory.buff.tags.add(t);
         else if (t.match(/^デバフ:/))
           this.tagCategory.debuff.tags.add(t);
-        else if (t.match(/^無効化/))
+        else if (t.match(/^無効化:/))
           this.tagCategory.resist.tags.add(t);
         else
           this.tagCategory.other.tags.add(t);
