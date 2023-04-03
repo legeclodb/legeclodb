@@ -10,6 +10,7 @@ export default {
       lastScrollPosition: 0,
       showDetail: 2,
       sortType: 0,
+      sortBySlot: false,
 
       tagTable: {},
       mainTagTable: {},
@@ -32,12 +33,18 @@ export default {
   created() {
     let route = this.getRouteName();
     let tmp = null;
+
     tmp = localStorage.getItem(`${route}.showDetail`);
     if (tmp)
-      this.showDetail = tmp;
+      this.showDetail = parseInt(tmp);
+
     tmp = localStorage.getItem(`${route}.sortType`);
     if (tmp)
-      this.sortType = tmp;
+      this.sortType = parseInt(tmp);
+
+    tmp = localStorage.getItem(`${route}.sortBySlot`);
+    if (tmp)
+      this.sortBySlot = (tmp == "true");
   },
 
   mounted() {
@@ -54,6 +61,9 @@ export default {
     },
     sortType: function (v) {
       localStorage.setItem(`${this.getRouteName()}.sortType`, v);
+    },
+    sortBySlot: function (v) {
+      localStorage.setItem(`${this.getRouteName()}.sortBySlot`, v);
     },
   },
 
