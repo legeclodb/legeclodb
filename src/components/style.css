@@ -218,6 +218,9 @@ div.skill {
   font-size: 75%;
   color: rgb(175, 175, 175);
 }
+.caution {
+  color: rgb(255, 64, 80);
+}
 .owners {
   margin-top: 5px;
 }

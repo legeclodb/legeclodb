@@ -380,7 +380,7 @@ export default {
       }
     },
     descToHtml(item) {
-      return item.desc.replaceAll("\n", "<br/>") + "<br/>";
+      return item.desc.replaceAll("\n", "<br/>").replaceAll(/\[([^\]]+?)\](.+?)\[\/[^\]]+?\]/g, "<span class='$1'>$2</span>") + "<br/>";
     },
 
     updateQuery(name, value) {
