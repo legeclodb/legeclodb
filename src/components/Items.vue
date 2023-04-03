@@ -82,7 +82,7 @@
           <div class="menu-widgets flex">
             <div class="widget">
               <span>表示：</span>
-              <b-dropdown :text="showDetailTypes[showDetail]" size="sm" id="detail_selector" style="width:90px">
+              <b-dropdown :text="showDetailTypes[showDetail]" size="sm" id="detail_selector">
                 <b-dropdown-item class="d-flex flex-column" v-for="(c, i) in showDetailTypes" :key="i" @click="showDetail=i">
                   {{ showDetailTypes[i] }}
                 </b-dropdown-item>
@@ -92,13 +92,13 @@
           <div class="menu-widgets flex">
             <div class="widget">
               <span>ソート：</span>
-              <b-dropdown :text="sortTypes[sortType]" size="sm" id="sort_selector" style="width:90px">
+              <b-dropdown :text="sortTypes[sortType]" size="sm" id="sort_selector">
                 <b-dropdown-item class="d-flex flex-column" v-for="(c, i) in sortTypes" :key="i" @click="sortType=i">
                   {{ sortTypes[i] }}
                 </b-dropdown-item>
               </b-dropdown>
-              <span>&ensp;</span>
-              <b-button :pressed.sync="sortBySlot" variant="outline-secondary">
+              <span style="width:5px"></span>
+              <b-button :pressed.sync="sortBySlot" variant="outline-secondary" size="sm">
                 種類別
               </b-button>
             </div>
