@@ -221,6 +221,11 @@ export default {
           name: "tags_resist",
           tags: new Set(),
         },
+        action: {
+          display: "攻撃/回復",
+          name: "tags_action",
+          tags: new Set(),
+        },
         other: {
           display: "その他",
           name: "tags_other",
@@ -312,6 +317,14 @@ export default {
       let handledTags = new Set();
       this.appendSet(handledTags, this.constants.tagsHidden);
 
+      const isAction = function (t) {
+        for (const n of this.constants.tagsAction) {
+          if (t.startsWith(n))
+            return true;
+        }
+        return false;
+      }.bind(this);
+
       for (let t of this.getMainTags()) {
         if (handledTags.has(t))
           continue;
@@ -322,12 +335,15 @@ export default {
           this.tagCategory.debuff.tags.add(t);
         else if (t.match(/^無効化:/))
           this.tagCategory.resist.tags.add(t);
+        else if (isAction(t))
+          this.tagCategory.action.tags.add(t);
         else
           this.tagCategory.other.tags.add(t);
       }
       this.reorderSet(this.tagCategory.buff.tags, this.constants.tagsBuff);
       this.reorderSet(this.tagCategory.debuff.tags, this.constants.tagsDebuff);
       this.reorderSet(this.tagCategory.resist.tags, this.constants.tagsResist);
+      this.reorderSet(this.tagCategory.action.tags, this.constants.tagsAction);
       this.reorderSet(this.tagCategory.other.tags, this.constants.tagsOther);
       this.reorderSubtag();
     },
