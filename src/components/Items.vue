@@ -249,6 +249,9 @@ export default {
       // 外部 json 由来のデータへの変更はセッションをまたいでしまうので、deep copy しておく
       this.equipments = structuredClone(this.equipments);
 
+      this.predefinedMainTags.push("分類");
+      this.predefinedMainTags.push("デメリット");
+
       let itemId = 0;
       for (let item of this.equipments) {
         item.recordType = 'item';
@@ -294,6 +297,8 @@ export default {
       this.reorderSet(this.tagCategory.action.tags, this.constants.tagsAction);
       this.reorderSet(this.tagCategory.other.tags, this.constants.tagsOther);
       this.reorderSubtag();
+
+      this.reorderSet(this.subTagTable["デメリット"], this.constants.tagsDemerit);
     },
 
     itemClassesToHtml(item) {

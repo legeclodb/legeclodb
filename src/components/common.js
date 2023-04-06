@@ -17,6 +17,7 @@ export default {
       subTagTable: {},
       tagIDSeed: 0,
       mainTagIDSeed: 0,
+      predefinedMainTags: [],
 
       tagSearchPattern: "",
       tagSearchPatternPrev: "",
@@ -180,6 +181,10 @@ export default {
     },
 
     getMainTagIfSubTag(tag) {
+      for (const m of this.predefinedMainTags) {
+        if (tag.startsWith(m))
+          return m;
+      }
       let p = tag.indexOf('(');
       return p != -1 ? tag.slice(0, p) : null;
     },
