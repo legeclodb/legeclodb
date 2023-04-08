@@ -40,7 +40,11 @@
           加えて、与ダメージとダメージ耐性にはまた別のルールがあります。<br />
           これらには物理与ダメージ、魔法与ダメージ、スキル与ダメージといったバリエーションがありますが、<br />
           異なるバリエーションであればアクティブ同士でも効果が加算になることが確認されています。<br />
-          <span class="note">従って、<b-link :ref="po">お届け物です！</b-link>＋<b-link :ref="po">総員、突撃用意</b-link>＋<b-link :ref="po">リトルマロース</b-link>＋<b-link :ref="po">ロサ・センティフォリア</b-link> で戦闘時物理スキル与ダメージ +100% といった事が可能。</span><br />
+          <ul>
+            <li>例1: <b-link :ref="po">お届け物です！</b-link>＋<b-link :ref="po">総員、突撃用意</b-link>＋<b-link :ref="po">テスト勉強のお手伝い</b-link>＋<b-link :ref="po">ロサ・センティフォリア</b-link>＝戦闘時物理通常攻撃与ダメージ +100%</li>
+            <li>例2: <b-link :ref="po">お届け物です！</b-link>＋<b-link :ref="po">総員、突撃用意</b-link>＋<b-link :ref="po">リトルマロース</b-link>＋<b-link :ref="po">発明官女</b-link>＝物理範囲スキル与ダメージ +100% & 魔法範囲スキル与ダメージ +110%</li>
+          </ul>
+          なお、<b>通常攻撃与ダメージバフは反撃には乗らない</b>ことが確認されています。(2023/04 現在。バグか仕様かは不明)<br />
           <br />
           一部のバフ・デバフには上限があることが確認されています。<br />
           該当するのは基礎ステータス値へのデバフ (アタック・ディフェンス・マジック・レジスト)、およびダメージ耐性バフと与ダメージデバフで、<br />
@@ -113,6 +117,9 @@
           サポートも対象の効果は「自ユニットの」という記述があり、区別されています。<br />
           <span class="note">例: <b-link :ref="po">天蠍の天鎧</b-link> のダメージ耐性はメインのみが対象、<b-link :ref="po">乙女の天衣</b-link> のダメージ耐性はサポートも対象。</span><br />
           同様に、アミュレットの効果はサポートのみが対象となります。シールドはサポートが倒れている場合発動しません。<br />
+          <br />
+          アンドロメダの<b-link :ref="po">神に勝る美</b-link>やオリオンの<b-link :ref="po">俺の女に手は出させない</b-link>は、HP が 75% ちょうどの場合、以上以下両方の効果が発動します。<br />
+          <span class="note">(<b-link :ref="po">天秤の天帽</b-link>などの自傷効果で 25% 減らすことができるが、最大 HP が 4 で割り切れる数でないと 76% になってしまう模様)</span><br />
         </p>
 
         <h2>ダメージ計算<a name="damage" href="#damage">.</a></h2>
@@ -259,11 +266,19 @@ export default {
     };
     setupSkills(this.mainSkills, this.mainChrs);
     setupSkills(this.supSkills, this.supChrs);
+
+    this.mainTalents = [];
+    for (let chr of this.mainChrs) {
+      let talent = chr.talent;
+      talent.owners = [chr];
+      this.mainTalents.push(talent);
+    }
   },
 
   methods: {
     findItem(name) {
       return this.mainSkills.find(a => a.name == name) ||
+        this.mainTalents.find(a => a.name == name) ||
         this.supSkills.find(a => a.name == name) ||
         this.items.find(a => a.name == name);
     },
