@@ -144,7 +144,11 @@
                       <b-popover v-if="showDetail==1" :target="'chr_'+chr.id+'_talent'" triggers="hover focus" :title="chr.talent.name" :content="chr.talent.desc" placement="top"></b-popover>
                     </div>
                     <div class="desc" v-show="showDetail >= 2">
-                      <h5>{{ chr.talent.name }}</h5>
+                      <h5>{{ chr.talent.name }}
+                        <b-dropdown class="level-selector" :text="chr.talent.active" v-if="chr.talent.descs" variant="outline-secondary">
+                          <b-dropdown-item class="d-flex flex-column" v-for="(ds, di) in chr.talent.descs" :key="di" @click="chr.talent.active=di; chr.talent.desc=ds;">{{di}}</b-dropdown-item>
+                        </b-dropdown>
+                      </h5>
                       <p><span v-html="descToHtml(chr.talent)"></span><span v-if="chr.talent.note" class="note" v-html="chr.talent.note"></span></p>
                     </div>
                   </div>
@@ -322,6 +326,11 @@ export default {
         chr.symbolId = this.symbols.findIndex(v => v == chr.symbol);
         chr.rarityId = this.rarities.findIndex(v => v == chr.rarity);
         chr.damageTypeId = this.damageTypes.findIndex(v => v == chr.damageType);
+
+        if(chr.talent.descs){
+          chr.talent.active = "Lv 6";
+          chr.talent.desc = chr.talent.descs[chr.talent.active];
+        }
 
         for (let i = 0; i < chr.skills.length; ++i) {
           if (typeof chr.skills[i] === "string") {
