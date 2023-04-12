@@ -287,6 +287,8 @@ export default {
     this.mainTalents = [];
     for (let chr of this.mainChrs) {
       let talent = chr.talent;
+      if (talent.descs)
+        talent.desc = chr.talent.descs["Lv 6"];
       talent.owners = [chr];
       this.mainTalents.push(talent);
     }
