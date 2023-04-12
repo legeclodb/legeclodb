@@ -386,7 +386,15 @@ export default {
     },
     descToHtml(item) {
       let desc = item.desc;
-      return desc.replaceAll("\n", "<br/>").replaceAll(/\[([^\]]+?)\](.+?)\[\/[^\]]+?\]/g, "<span class='$1'>$2</span>") + "<br/>";
+      while (true) {
+        // [caution]hoge[/caution] -> <span class='caution'>hoge</span>
+        // 入れ子のケースに対応するためループする必要がある
+        let tmp = desc.replaceAll(/\[([^\]]+?)\](.+?)\[\/\1\]/g, "<span class='$1'>$2</span>");
+        if (tmp == desc)
+          break;
+        desc = tmp;
+      }
+      return desc.replaceAll("\n", "<br/>") + "<br/>";
     },
 
     updateQuery(name, value) {
