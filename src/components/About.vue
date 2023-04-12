@@ -276,6 +276,8 @@ export default {
           let skill = skillMap.get(chr.skills[i]);
           if (!skill.owners)
             skill.owners = [];
+          if (skill.descs)
+            skill.desc = skill.descs["Lv 6"];
           skill.owners.push(chr);
           chr.skills[i] = skill;
         }

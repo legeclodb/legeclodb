@@ -145,7 +145,12 @@
                     </div>
                     <div class="desc" v-show="showDetail >= 2">
                       <div class="flex">
-                        <h6>{{ skill.name }}</h6>
+                        <h6>
+                          {{ skill.name }}
+                          <b-dropdown class="level-selector" :text="skill.current" v-if="skill.descs" variant="outline-secondary">
+                            <b-dropdown-item class="d-flex flex-column" v-for="(ds, di) in skill.descs" :key="di" @click="skill.current=di; skill.desc=ds;">{{di}}</b-dropdown-item>
+                          </b-dropdown>
+                        </h6>
                         <div class="param-group" v-html="skillParamsToHtml(skill)"></div>
                       </div>
                       <p><span v-html="descToHtml(skill)"></span><span v-if="skill.note" class="note" v-html="skill.note"></span></p>
@@ -311,6 +316,12 @@ export default {
           }
           chr.skills[si] = skill;
           this.registerTags(skill.tags);
+        }
+
+        let skillActive = chr.skills[0];
+        if (skillActive.descs) {
+          skillActive.current = "Lv 6";
+          skillActive.desc = skillActive.descs[skillActive.current];
         }
       }
 

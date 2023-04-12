@@ -145,8 +145,8 @@
                     </div>
                     <div class="desc" v-show="showDetail >= 2">
                       <h5>{{ chr.talent.name }}
-                        <b-dropdown class="level-selector" :text="chr.talent.active" v-if="chr.talent.descs" variant="outline-secondary">
-                          <b-dropdown-item class="d-flex flex-column" v-for="(ds, di) in chr.talent.descs" :key="di" @click="chr.talent.active=di; chr.talent.desc=ds;">{{di}}</b-dropdown-item>
+                        <b-dropdown class="level-selector" :text="chr.talent.current" v-if="chr.talent.descs" variant="outline-secondary">
+                          <b-dropdown-item class="d-flex flex-column" v-for="(ds, di) in chr.talent.descs" :key="di" @click="chr.talent.current=di; chr.talent.desc=ds;">{{di}}</b-dropdown-item>
                         </b-dropdown>
                       </h5>
                       <p><span v-html="descToHtml(chr.talent)"></span><span v-if="chr.talent.note" class="note" v-html="chr.talent.note"></span></p>
@@ -327,9 +327,9 @@ export default {
         chr.rarityId = this.rarities.findIndex(v => v == chr.rarity);
         chr.damageTypeId = this.damageTypes.findIndex(v => v == chr.damageType);
 
-        if(chr.talent.descs){
-          chr.talent.active = "Lv 6";
-          chr.talent.desc = chr.talent.descs[chr.talent.active];
+        if (chr.talent.descs) {
+          chr.talent.current = "Lv 6";
+          chr.talent.desc = chr.talent.descs[chr.talent.current];
         }
 
         for (let i = 0; i < chr.skills.length; ++i) {
