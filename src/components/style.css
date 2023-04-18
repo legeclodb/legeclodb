@@ -195,6 +195,9 @@ div.skill {
 .desc {
   width:100%;
 }
+.date {
+  color: rgb(175, 175, 175);
+}
 
 .param-group {
   display: flex;

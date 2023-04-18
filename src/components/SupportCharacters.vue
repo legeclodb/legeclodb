@@ -133,7 +133,7 @@
                   <b-img-lazy :src="getImageURL(chr.rarity)" :alt="chr.rarity" height="20" />
                   <div class="param-box"><b-img-lazy :src="getImageURL(chr.damageType)" :alt="chr.damageType" width="20" height="20" /></div>
                   <div class="param-box"><b-img-lazy :src="getImageURL('射程')" alt="射程" width="18" height="18" /><span>{{chr.range}}</span></div>
-                  <div><b-link :href="'https://legeclo.wikiru.jp/?' + chr.name" target="_blank">Wiki</b-link></div>
+                  <span class="date">{{chr.date}}</span>
                 </div>
               </div>
               <div class="skills">

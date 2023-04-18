@@ -120,7 +120,7 @@
                 <h5 v-html="item.name"></h5>
                 <b-img-lazy :src="getImageURL(item.slot)" :alt="item.slot" height="25" />
                 <b-img-lazy :src="getImageURL(item.rarity)" :alt="item.rarity" height="20" />
-                <b-link :href="'https://legeclo.wikiru.jp/?' + item.name" target="_blank">Wiki</b-link>
+                <span class="date">{{item.date}}</span>
               </div>
               <div class="info">
                 <div v-html="itemClassesToHtml(item)"></div>
