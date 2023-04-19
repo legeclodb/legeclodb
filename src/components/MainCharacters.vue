@@ -141,7 +141,11 @@
                   <div class="flex">
                     <div class="icon" :id="'chr_'+chr.id+'_talent'">
                       <b-img-lazy :src="getImageURL(chr.talent.name)" with="50" height="50" />
-                      <b-popover v-if="showDetail==1" :target="'chr_'+chr.id+'_talent'" triggers="hover focus" :title="chr.talent.name" :content="chr.talent.desc" placement="top"></b-popover>
+                      <b-popover v-if="showDetail==1" :target="'chr_'+chr.id+'_talent'" triggers="hover focus" :title="chr.talent.name" placement="top">
+                        <div class="flex">
+                          <div v-html="descToHtml(chr.talent)"></div>
+                        </div>
+                      </b-popover>
                     </div>
                     <div class="desc" v-show="showDetail >= 2">
                       <h5>{{ chr.talent.name }}
@@ -162,7 +166,6 @@
                       <b-link @click="setSkillFilter(skill)"><b-img-lazy :src="getImageURL(skill.name)" with="50" height="50" /></b-link>
                       <b-popover v-if="showDetail>=1" :target="'chr_'+chr.id+'_skill'+si" triggers="hover focus" :delay="{show:0, hide:250}" no-fade :title="skill.name" placement="top">
                         <div class="flex" v-if="showDetail==1">
-                          <div><b-img-lazy :src="getImageURL(skill.name)" width="50" height="50" /></div>
                           <div v-html="descToHtml(skill)"></div>
                         </div>
                         <div v-if="skill.owners" class="owners">

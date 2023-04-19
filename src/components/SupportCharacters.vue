@@ -141,7 +141,11 @@
                   <div class="flex">
                     <div class="icon" :id="'chr_'+chr.id+'_skill'+si">
                       <b-img-lazy :src="getImageURL(skill.name)" with="50" height="50" />
-                      <b-popover v-if="showDetail==1" :target="'chr_'+chr.id+'_skill'+si" triggers="hover focus" :title="skill.name" :content="skill.desc" placement="top"></b-popover>
+                      <b-popover v-if="showDetail==1" :target="'chr_'+chr.id+'_skill'+si" triggers="hover focus" :title="skill.name" placement="top">
+                        <div class="flex">
+                          <div v-html="descToHtml(skill)"></div>
+                        </div>
+                      </b-popover>
                     </div>
                     <div class="desc" v-show="showDetail >= 2">
                       <div class="flex">

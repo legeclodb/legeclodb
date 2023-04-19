@@ -113,7 +113,11 @@
           <div class="flex">
             <div class="portrait" :id="'item_'+item.id+'_icon'">
               <b-img-lazy :src="getImageURL(item.name)" :alt="item.name" width="60" height="60" rounded />
-              <b-popover v-if="showDetail==1" :target="'item_'+item.id+'_icon'" triggers="hover focus" :title="item.name" :content="item.desc" placement="top"></b-popover>
+              <b-popover v-if="showDetail==1" :target="'item_'+item.id+'_icon'" triggers="hover focus" :title="item.name" placement="top">
+                <div class="flex">
+                  <div v-html="descToHtml(item)"></div>
+                </div>
+              </b-popover>
             </div>
             <div class="detail" v-show="showDetail >= 1">
               <div class="info" :class="{ 'highlighted': isInfoHighlighted(item) }">
