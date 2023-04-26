@@ -148,7 +148,8 @@
                       </b-popover>
                     </div>
                     <div class="desc" v-show="showDetail >= 2">
-                      <h5>{{ chr.talent.name }}
+                      <h5>
+                        {{ chr.talent.name }}
                         <b-dropdown class="level-selector" :text="chr.talent.current" v-if="chr.talent.descs" variant="outline-secondary">
                           <b-dropdown-item class="d-flex flex-column" v-for="(ds, di) in chr.talent.descs" :key="di" @click="chr.talent.current=di; chr.talent.desc=ds;">{{di}}</b-dropdown-item>
                         </b-dropdown>
@@ -169,7 +170,7 @@
                           <div v-html="descToHtml(skill)"></div>
                         </div>
                         <div v-if="skill.owners" class="owners">
-                          所持者:<br/>
+                          所持者:<br />
                           <b-link v-for="(owner, oi) in skill.owners" :key="oi" @click="moveToChr(owner)">
                             <b-img-lazy :src="getImageURL(owner.name)" :title="owner.name" width="50" height="50" />
                           </b-link>
@@ -191,6 +192,77 @@
               </div>
             </div>
           </div>
+
+          <div class="summon" v-if="chr.summon" v-show="showDetail >= 1">
+            <div class="flex" v-for="(summon, smi) in chr.summon" :key="smi">
+              <div class="portrait">
+                <b-img-lazy :src="getImageURL(summon.name)" :alt="summon.name" width="100" height="100" rounded />
+              </div>
+              <div class="detail" v-show="showDetail >= 1">
+                <div class="info" :class="{ 'highlighted': isInfoHighlighted(summon) }">
+                  <h5><span v-html="chrNameToHtml(summon.name)"></span> <span class="note">(召喚ユニット)</span></h5>
+                  <div class="status">
+                    <b-img-lazy :src="getImageURL(summon.class)" :alt="summon.class" height="25" />
+                    <div class="param-box"><b-img-lazy :src="getImageURL(summon.damageType)" :alt="summon.damageType" width="20" height="20" /></div>
+                    <div class="param-box"><b-img-lazy :src="getImageURL('射程')" alt="射程" width="18" height="18" /><span>{{summon.range}}</span></div>
+                    <div class="param-box"><b-img-lazy :src="getImageURL('移動')" alt="移動" width="18" height="18" /><span>{{summon.move}}</span></div>
+                  </div>
+                </div>
+                <div class="skills">
+                  <div class="talent" :class="{ 'highlighted': isTalentHighlighted(summon.talent) }">
+                    <div class="flex">
+                      <div class="icon" :id="'summon_'+chr.id+'_'+smi+'_talent'">
+                        <b-img-lazy :src="getImageURL(summon.talent.name)" with="50" height="50" />
+                        <b-popover v-if="showDetail==1" :target="'summon_'+chr.id+'_'+smi+'_talent'" triggers="hover focus" :title="summon.talent.name" placement="top">
+                          <div class="flex">
+                            <div v-html="descToHtml(summon.talent)"></div>
+                          </div>
+                        </b-popover>
+                      </div>
+                      <div class="desc" v-show="showDetail >= 2">
+                        <h5>
+                          {{ summon.talent.name }}
+                        </h5>
+                        <p><span v-html="descToHtml(summon.talent)"></span><span v-if="summon.talent.note" class="note" v-html="summon.talent.note"></span></p>
+                      </div>
+                    </div>
+                    <div class="tags" v-show="showDetail >= 2">
+                      <b-badge class="tag" :key="i" v-for="(tag, i) in summon.talent.tags" variant="info" pill @click="setTagSearchPattern(tag)">{{ tag }}</b-badge>
+                    </div>
+                  </div>
+                  <div class="skill" v-for="(skill, si) in summon.skills" :class="getSkillClass(skill)" :key="si">
+                    <div class="flex">
+                      <div class="icon" :id="'summon_'+chr.id+'_'+smi+'_skill'+si">
+                        <b-link @click="setSkillFilter(skill)"><b-img-lazy :src="getImageURL(skill.name)" with="50" height="50" /></b-link>
+                        <b-popover v-if="showDetail>=1" :target="'summon_'+chr.id+'_'+smi+'_skill'+si" triggers="hover focus" :delay="{show:0, hide:250}" no-fade :title="skill.name" placement="top">
+                          <div class="flex" v-if="showDetail==1">
+                            <div v-html="descToHtml(skill)"></div>
+                          </div>
+                          <div v-if="skill.owners" class="owners">
+                            所持者:<br />
+                            <b-link v-for="(owner, oi) in skill.owners" :key="oi" @click="moveToChr(owner)">
+                              <b-img-lazy :src="getImageURL(owner.name)" :title="owner.name" width="50" height="50" />
+                            </b-link>
+                          </div>
+                        </b-popover>
+                      </div>
+                      <div class="desc" v-show="showDetail >= 2">
+                        <div class="flex">
+                          <h6>{{ skill.name }}</h6>
+                          <div class="param-group" v-html="skillParamsToHtml(skill)"></div>
+                        </div>
+                        <p><span v-html="descToHtml(skill)"></span><span v-if="skill.note" class="note" v-html="skill.note"></span></p>
+                      </div>
+                    </div>
+                    <div class="tags" v-show="showDetail >= 2">
+                      <b-badge class="tag" :key="i" v-for="(tag, i) in skill.tags" variant="info" pill @click="setTagSearchPattern(tag)">{{ tag }}</b-badge>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
         </div>
       </template>
     </div>
@@ -329,20 +401,35 @@ export default {
         chr.symbolId = this.symbols.findIndex(v => v == chr.symbol);
         chr.rarityId = this.rarities.findIndex(v => v == chr.rarity);
         chr.damageTypeId = this.damageTypes.findIndex(v => v == chr.damageType);
+        if (chr.summon) {
+          for (let s of chr.summon) {
+            s.recordType = 'chr';
+            s.talent.recordType = 'talent';
+          }
+        }
 
         if (chr.talent.descs) {
           chr.talent.current = "Lv 6";
           chr.talent.desc = chr.talent.descs[chr.talent.current];
         }
 
-        for (let i = 0; i < chr.skills.length; ++i) {
-          if (typeof chr.skills[i] === "string") {
-            let skill = skillMap.get(chr.skills[i]);
-            chr.skills[i] = skill;
-            if (!skill.owners)
-              skill.owners = [];
-            skill.owners.push(chr);
+        const setupSkills = function (chr, skills) {
+          for (let i = 0; i < skills.length; ++i) {
+            if (typeof skills[i] === "string") {
+              let skill = skillMap.get(skills[i]);
+              skills[i] = skill;
+              if (!skill.owners)
+                skill.owners = [];
+              if (skill.owners.length == 0 || skill.owners[skill.owners.length - 1] != chr)
+                skill.owners.push(chr);
+            }
           }
+        }.bind(this);
+
+        setupSkills(chr, chr.skills);
+        if (chr.summon) {
+          for (let s of chr.summon)
+            setupSkills(chr, s.skills);
         }
 
         const m = chr.name.match(/\((.+?)\)/);
@@ -453,9 +540,17 @@ export default {
         this.filterMatch(this.damageTypeFilter, chr.damageTypeId);
     },
     applySearchPatterns(chr) {
-      let r = this.isInfoHighlighted(chr) | this.isTalentHighlighted(chr.talent);
-      for (let skill of chr.skills) {
-        r |= this.isSkillHighlighted(skill);
+      const doApply = function (obj) {
+        let r = this.isInfoHighlighted(obj) | this.isTalentHighlighted(obj.talent);
+        for (let skill of obj.skills)
+          r |= this.isSkillHighlighted(skill);
+        return r;
+      }.bind(this);
+
+      let r = doApply(chr);
+      if (chr.summon) {
+        for (let summon of chr.summon)
+          r |= doApply(summon);
       }
       return r == this.getSearchMask();
     },
@@ -468,15 +563,24 @@ export default {
     },
     updateTagCounts() {
       this.resetTagCounts();
+
+      const doCount = function (obj) {
+        if (this.applyTalentFilter(obj.talent)) {
+          this.countTags(obj.talent.tags);
+        }
+        for (let skill of obj.skills) {
+          if (this.applySkillTypeFilter(skill)) {
+            this.countTags(skill.tags);
+          }
+        }
+      }.bind(this);
+
       for (let chr of this.characters) {
         if (this.applyClassFilter(chr)) {
-          if (this.applyTalentFilter(chr.talent)) {
-            this.countTags(chr.talent.tags);
-          }
-          for (let skill of chr.skills) {
-            if (this.applySkillTypeFilter(skill)) {
-              this.countTags(skill.tags);
-            }
+          doCount(chr);
+          if (chr.summon) {
+            for (let summon of chr.summon)
+              doCount(summon);
           }
         }
       }
