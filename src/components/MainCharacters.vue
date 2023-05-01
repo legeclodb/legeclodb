@@ -95,10 +95,18 @@
           </div>
           <div class="menu-widgets flex">
             <div class="widget">
-              <span>表示：</span>
-              <b-dropdown :text="showDetailTypes[showDetail]" size="sm" id="detail_selector">
-                <b-dropdown-item class="d-flex flex-column" v-for="(c, i) in showDetailTypes" :key="i" @click="showDetail=i">
-                  {{ showDetailTypes[i] }}
+              <span>表示 件数：</span>
+              <b-dropdown :text="displayCounts[displayCount]" size="sm" id="detail_selector">
+                <b-dropdown-item class="d-flex flex-column" v-for="(c, i) in displayCounts" :key="i" @click="displayCount=i">
+                  {{ displayCounts[i] }}
+                </b-dropdown-item>
+              </b-dropdown>
+            </div>
+            <div class="widget">
+              <span>形式：</span>
+              <b-dropdown :text="displayTypes[displayType]" size="sm" id="detail_selector">
+                <b-dropdown-item class="d-flex flex-column" v-for="(c, i) in displayTypes" :key="i" @click="displayType=i">
+                  {{ displayTypes[i] }}
                 </b-dropdown-item>
               </b-dropdown>
             </div>
@@ -117,13 +125,13 @@
       </div>
     </div>
     <div class="content" style="margin-top: 200px;" :style="style">
-      <template v-for="chr in items">
-        <div class="character" :id="'chr_'+chr.id" :key="chr.id" v-show="filterItem(chr)">
+      <template v-for="chr in pagedItems">
+        <div class="character" :id="'chr_'+chr.id" :key="chr.id">
           <div class="flex">
             <div class="portrait">
               <b-img-lazy :src="getImageURL(chr.name)" :alt="chr.name" width="100" height="100" rounded />
             </div>
-            <div class="detail" v-show="showDetail >= 1">
+            <div class="detail" v-show="displayType >= 1">
               <div class="info" :class="{ 'highlighted': isInfoHighlighted(chr) }">
                 <h5 v-html="chrNameToHtml(chr.name)"></h5>
                 <div class="status">
@@ -141,13 +149,13 @@
                   <div class="flex">
                     <div class="icon" :id="'chr_'+chr.id+'_talent'">
                       <b-img-lazy :src="getImageURL(chr.talent.name)" with="50" height="50" />
-                      <b-popover v-if="showDetail==1" :target="'chr_'+chr.id+'_talent'" triggers="hover focus" :title="chr.talent.name" placement="top">
+                      <b-popover v-if="displayType==1" :target="'chr_'+chr.id+'_talent'" triggers="hover focus" :title="chr.talent.name" placement="top">
                         <div class="flex">
                           <div v-html="descToHtml(chr.talent)"></div>
                         </div>
                       </b-popover>
                     </div>
-                    <div class="desc" v-show="showDetail >= 2">
+                    <div class="desc" v-show="displayType >= 2">
                       <h5>
                         {{ chr.talent.name }}
                         <b-dropdown class="level-selector" :text="chr.talent.current" v-if="chr.talent.descs" variant="outline-secondary">
@@ -157,7 +165,7 @@
                       <p><span v-html="descToHtml(chr.talent)"></span><span v-if="chr.talent.note" class="note" v-html="chr.talent.note"></span></p>
                     </div>
                   </div>
-                  <div class="tags" v-show="showDetail >= 2">
+                  <div class="tags" v-show="displayType >= 2">
                     <b-badge class="tag" :key="i" v-for="(tag, i) in chr.talent.tags" variant="info" pill @click="setTagSearchPattern(tag)">{{ tag }}</b-badge>
                   </div>
                 </div>
@@ -165,8 +173,8 @@
                   <div class="flex">
                     <div class="icon" :id="'chr_'+chr.id+'_skill'+si">
                       <b-link @click="setSkillFilter(skill)"><b-img-lazy :src="getImageURL(skill.name)" with="50" height="50" /></b-link>
-                      <b-popover v-if="showDetail>=1" :target="'chr_'+chr.id+'_skill'+si" triggers="hover focus" :delay="{show:0, hide:250}" no-fade :title="skill.name" placement="top">
-                        <div class="flex" v-if="showDetail==1">
+                      <b-popover v-if="displayType>=1" :target="'chr_'+chr.id+'_skill'+si" triggers="hover focus" :delay="{show:0, hide:250}" no-fade :title="skill.name" placement="top">
+                        <div class="flex" v-if="displayType==1">
                           <div v-html="descToHtml(skill)"></div>
                         </div>
                         <div v-if="skill.owners" class="owners">
@@ -177,7 +185,7 @@
                         </div>
                       </b-popover>
                     </div>
-                    <div class="desc" v-show="showDetail >= 2">
+                    <div class="desc" v-show="displayType >= 2">
                       <div class="flex">
                         <h6>{{ skill.name }}</h6>
                         <div class="param-group" v-html="skillParamsToHtml(skill)"></div>
@@ -185,7 +193,7 @@
                       <p><span v-html="descToHtml(skill)"></span><span v-if="skill.note" class="note" v-html="skill.note"></span></p>
                     </div>
                   </div>
-                  <div class="tags" v-show="showDetail >= 2">
+                  <div class="tags" v-show="displayType >= 2">
                     <b-badge class="tag" :key="i" v-for="(tag, i) in skill.tags" variant="info" pill @click="setTagSearchPattern(tag)">{{ tag }}</b-badge>
                   </div>
                 </div>
@@ -193,12 +201,12 @@
             </div>
           </div>
 
-          <div class="summon" v-if="chr.summon" v-show="showDetail >= 1">
+          <div class="summon" v-if="chr.summon" v-show="displayType >= 1">
             <div class="flex" v-for="(summon, smi) in chr.summon" :key="smi">
               <div class="portrait">
                 <b-img-lazy :src="getImageURL(summon.name)" :alt="summon.name" width="100" height="100" rounded />
               </div>
-              <div class="detail" v-show="showDetail >= 1">
+              <div class="detail" v-show="displayType >= 1">
                 <div class="info" :class="{ 'highlighted': isInfoHighlighted(summon) }">
                   <h5><span v-html="chrNameToHtml(summon.name)"></span> <span class="note">(召喚ユニット)</span></h5>
                   <div class="status">
@@ -213,20 +221,20 @@
                     <div class="flex">
                       <div class="icon" :id="'summon_'+chr.id+'_'+smi+'_talent'">
                         <b-img-lazy :src="getImageURL(summon.talent.name)" with="50" height="50" />
-                        <b-popover v-if="showDetail==1" :target="'summon_'+chr.id+'_'+smi+'_talent'" triggers="hover focus" :title="summon.talent.name" placement="top">
+                        <b-popover v-if="displayType==1" :target="'summon_'+chr.id+'_'+smi+'_talent'" triggers="hover focus" :title="summon.talent.name" placement="top">
                           <div class="flex">
                             <div v-html="descToHtml(summon.talent)"></div>
                           </div>
                         </b-popover>
                       </div>
-                      <div class="desc" v-show="showDetail >= 2">
+                      <div class="desc" v-show="displayType >= 2">
                         <h5>
                           {{ summon.talent.name }}
                         </h5>
                         <p><span v-html="descToHtml(summon.talent)"></span><span v-if="summon.talent.note" class="note" v-html="summon.talent.note"></span></p>
                       </div>
                     </div>
-                    <div class="tags" v-show="showDetail >= 2">
+                    <div class="tags" v-show="displayType >= 2">
                       <b-badge class="tag" :key="i" v-for="(tag, i) in summon.talent.tags" variant="info" pill @click="setTagSearchPattern(tag)">{{ tag }}</b-badge>
                     </div>
                   </div>
@@ -234,8 +242,8 @@
                     <div class="flex">
                       <div class="icon" :id="'summon_'+chr.id+'_'+smi+'_skill'+si">
                         <b-link @click="setSkillFilter(skill)"><b-img-lazy :src="getImageURL(skill.name)" with="50" height="50" /></b-link>
-                        <b-popover v-if="showDetail>=1" :target="'summon_'+chr.id+'_'+smi+'_skill'+si" triggers="hover focus" :delay="{show:0, hide:250}" no-fade :title="skill.name" placement="top">
-                          <div class="flex" v-if="showDetail==1">
+                        <b-popover v-if="displayType>=1" :target="'summon_'+chr.id+'_'+smi+'_skill'+si" triggers="hover focus" :delay="{show:0, hide:250}" no-fade :title="skill.name" placement="top">
+                          <div class="flex" v-if="displayType==1">
                             <div v-html="descToHtml(skill)"></div>
                           </div>
                           <div v-if="skill.owners" class="owners">
@@ -246,7 +254,7 @@
                           </div>
                         </b-popover>
                       </div>
-                      <div class="desc" v-show="showDetail >= 2">
+                      <div class="desc" v-show="displayType >= 2">
                         <div class="flex">
                           <h6>{{ skill.name }}</h6>
                           <div class="param-group" v-html="skillParamsToHtml(skill)"></div>
@@ -254,7 +262,7 @@
                         <p><span v-html="descToHtml(skill)"></span><span v-if="skill.note" class="note" v-html="skill.note"></span></p>
                       </div>
                     </div>
-                    <div class="tags" v-show="showDetail >= 2">
+                    <div class="tags" v-show="displayType >= 2">
                       <b-badge class="tag" :key="i" v-for="(tag, i) in skill.tags" variant="info" pill @click="setTagSearchPattern(tag)">{{ tag }}</b-badge>
                     </div>
                   </div>
@@ -265,6 +273,15 @@
 
         </div>
       </template>
+
+      <div class="pages">
+        <b-pagination v-model="page"
+                      :total-rows="items.length"
+                      :per-page="displayCountNum"
+                      size="lg"
+                      limit="10"
+                      hide-goto-end-buttons></b-pagination>
+      </div>
     </div>
   </div>
 </template>
@@ -299,7 +316,7 @@ export default {
         "アクティブ",
       ],
 
-      showDetailTypes: [
+      displayTypes: [
         "アイコン",
         "シンプル",
         "詳細",
@@ -349,13 +366,19 @@ export default {
   },
 
   computed: {
+    rawItems() {
+      return this.characters;
+    },
     items() {
-      let characters = this.characters.concat(); // shallow copy
+      let characters = this.characters.filter(a => this.filterItem(a)); // filter & shallow copy
       if (this.sortType == 0) // 新→旧
         characters.sort((a, b) => b.date.localeCompare(a.date));
       else // 旧→新
         characters.sort((a, b) => a.date.localeCompare(b.date));
       return characters;
+    },
+    pagedItems() {
+      return this.applyPage(this.items);
     },
   },
 

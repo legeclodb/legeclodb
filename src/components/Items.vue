@@ -81,10 +81,18 @@
           </div>
           <div class="menu-widgets flex">
             <div class="widget">
-              <span>表示：</span>
-              <b-dropdown :text="showDetailTypes[showDetail]" size="sm" id="detail_selector">
-                <b-dropdown-item class="d-flex flex-column" v-for="(c, i) in showDetailTypes" :key="i" @click="showDetail=i">
-                  {{ showDetailTypes[i] }}
+              <span>表示 件数：</span>
+              <b-dropdown :text="displayCounts[displayCount]" size="sm" id="detail_selector">
+                <b-dropdown-item class="d-flex flex-column" v-for="(c, i) in displayCounts" :key="i" @click="displayCount=i">
+                  {{ displayCounts[i] }}
+                </b-dropdown-item>
+              </b-dropdown>
+            </div>
+            <div class="widget">
+              <span>形式：</span>
+              <b-dropdown :text="displayTypes[displayType]" size="sm" id="detail_selector">
+                <b-dropdown-item class="d-flex flex-column" v-for="(c, i) in displayTypes" :key="i" @click="displayType=i">
+                  {{ displayTypes[i] }}
                 </b-dropdown-item>
               </b-dropdown>
             </div>
@@ -108,18 +116,18 @@
     </div>
 
     <div class="content" style="margin-top: 200px;" :style="style">
-      <template v-for="item in items">
-        <div class="item" :id="'item_'+item.id" :key="item.id" v-show="filterItem(item)">
+      <template v-for="item in pagedItems">
+        <div class="item" :id="'item_'+item.id" :key="item.id">
           <div class="flex">
             <div class="portrait" :id="'item_'+item.id+'_icon'">
               <b-img-lazy :src="getImageURL(item.name)" :alt="item.name" width="60" height="60" rounded />
-              <b-popover v-if="showDetail==1" :target="'item_'+item.id+'_icon'" triggers="hover focus" :title="item.name" placement="top">
+              <b-popover v-if="displayType==1" :target="'item_'+item.id+'_icon'" triggers="hover focus" :title="item.name" placement="top">
                 <div class="flex">
                   <div v-html="descToHtml(item)"></div>
                 </div>
               </b-popover>
             </div>
-            <div class="detail" v-show="showDetail >= 1">
+            <div class="detail" v-show="displayType >= 1">
               <div class="info" :class="{ 'highlighted': isInfoHighlighted(item) }">
                 <h5 v-html="item.name"></h5>
                 <b-img-lazy :src="getImageURL(item.slot)" :alt="item.slot" height="25" />
@@ -128,10 +136,10 @@
               </div>
               <div class="info">
                 <div v-html="itemClassesToHtml(item)"></div>
-                <div v-html="itemParamsToHtml(item)" v-show="showDetail >= 2"></div>
+                <div v-html="itemParamsToHtml(item)" v-show="displayType >= 2"></div>
               </div>
               <div class="skills">
-                <div class="skill" :class="{ 'highlighted': isDescHighlighted(item) }" v-show="showDetail >= 2" style="flex-grow: 1">
+                <div class="skill" :class="{ 'highlighted': isDescHighlighted(item) }" v-show="displayType >= 2" style="flex-grow: 1">
                   <div class="desc">
                     <p><span v-html="descToHtml(item)"></span><span v-if="item.note" class="note" v-html="item.note"></span></p>
                   </div>
@@ -144,6 +152,16 @@
           </div>
         </div>
       </template>
+
+      <div class="pages">
+        <b-pagination v-model="page"
+                      :total-rows="items.length"
+                      :per-page="displayCountNum"
+                      size="lg"
+                      limit="10"
+                      hide-goto-end-buttons></b-pagination>
+      </div>
+
     </div>
 
   </div>
@@ -171,7 +189,7 @@ export default {
       itemTypes: jsonConstants.itemTypes,
       rarities: jsonConstants.rarities,
 
-      showDetailTypes: [
+      displayTypes: [
         "アイコン",
         "シンプル",
         "詳細",
@@ -220,8 +238,11 @@ export default {
   },
 
   computed: {
+    rawItems() {
+      return this.characters;
+    },
     items() {
-      let equipments = this.equipments.concat(); // shallow copy
+      let equipments = this.equipments.filter(a => this.filterItem(a)); // filter & shallow copy
       if (this.sortType == 0) // 新→旧
         equipments.sort((a, b) => b.date.localeCompare(a.date));
       else // 旧→新
@@ -229,6 +250,9 @@ export default {
       if (this.sortBySlot) // 種類別
         equipments.sort((a, b) => a.slotId < b.slotId ? -1 : 1);
       return equipments;
+    },
+    pagedItems() {
+      return this.applyPage(this.items);
     },
   },
 

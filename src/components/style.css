@@ -239,6 +239,17 @@ div.skill {
 .owners {
   margin-top: 5px;
 }
+.pages {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+.pagination {
+  margin: 13px;
+}
+.page-item {
+  margin: 0px;
+}
 
 .dropdown-item {
   padding: 0.2rem !important;

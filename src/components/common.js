@@ -8,9 +8,11 @@ export default {
       showHeader: true,
       preventShowHideHeaderOnScroll: 0,
       lastScrollPosition: 0,
-      showDetail: 2,
+      displayType: 2,
+      displayCount: 1,
       sortType: 0,
       sortBySlot: false,
+      page: 1,
 
       tagTable: {},
       mainTagTable: {},
@@ -28,6 +30,14 @@ export default {
       freeSearchFn: null,
 
       searchTabIndex: 0,
+
+      displayCounts: [
+        "10",
+        "20",
+        "50",
+        "100",
+        "全て",
+      ],
     }
   },
 
@@ -35,9 +45,13 @@ export default {
     let route = this.getRouteName();
     let tmp = null;
 
-    tmp = localStorage.getItem(`${route}.showDetail`);
+    tmp = localStorage.getItem(`${route}.displayCount`);
     if (tmp)
-      this.showDetail = parseInt(tmp);
+      this.displayCount = parseInt(tmp);
+
+    tmp = localStorage.getItem(`${route}.displayType`);
+    if (tmp)
+      this.displayType = parseInt(tmp);
 
     tmp = localStorage.getItem(`${route}.sortType`);
     if (tmp)
@@ -57,8 +71,11 @@ export default {
   },
 
   watch: {
-    showDetail: function (v) {
-      localStorage.setItem(`${this.getRouteName()}.showDetail`, v);
+    displayCount: function (v) {
+      localStorage.setItem(`${this.getRouteName()}.displayCount`, v);
+    },
+    displayType: function (v) {
+      localStorage.setItem(`${this.getRouteName()}.displayType`, v);
     },
     sortType: function (v) {
       localStorage.setItem(`${this.getRouteName()}.sortType`, v);
@@ -71,13 +88,20 @@ export default {
   computed: {
     style() {
       return {
-        "--character-width": `${this.showDetail >= 2 ? '750px' : ''}`,
-        "--character-min-width": `${this.showDetail == 1 ? '400px' : ''}`,
-        "--character-flex-grow": `${this.showDetail < 2 ? 0 : 1}`,
-        "--skills-display": `${this.showDetail < 2 ? 'flex' : 'display'}`,
-        "--skill-flex-grow": `${this.showDetail == 2 ? 1 : 0}`,
+        "--character-width": `${this.displayType >= 2 ? '750px' : ''}`,
+        "--character-min-width": `${this.displayType == 1 ? '400px' : ''}`,
+        "--character-flex-grow": `${this.displayType < 2 ? 0 : 1}`,
+        "--skills-display": `${this.displayType < 2 ? 'flex' : 'display'}`,
+        "--skill-flex-grow": `${this.displayType == 2 ? 1 : 0}`,
       };
     },
+
+    displayCountNum() {
+      let v = NaN;
+      if (this.displayCount < this.displayCounts.length)
+        v = parseInt(this.displayCounts[this.displayCount]);
+      return isNaN(v) ? 1000 : v;
+    }
   },
 
   methods: {
@@ -164,6 +188,15 @@ export default {
         dst.clear();
         this.appendSet(dst, tmp);
       }
+    },
+
+    applyPage(array) {
+      const n = this.displayCountNum;
+      if (array.length < n)
+        return array;
+      const start = n * (this.page - 1);
+      const end = Math.min(n * this.page, array.length);
+      return array.slice(start, end);
     },
 
     partitionSubtags(subtagSet) {
