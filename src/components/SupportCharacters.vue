@@ -178,7 +178,7 @@
         </div>
       </template>
 
-      <div class="pages">
+      <div class="pages" v-if="getPageCount(items) > 1">
         <b-pagination v-model="page"
                       :total-rows="items.length"
                       :per-page="displayCountNum"

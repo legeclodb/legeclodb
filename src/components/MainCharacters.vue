@@ -274,7 +274,7 @@
         </div>
       </template>
 
-      <div class="pages">
+      <div class="pages" v-if="getPageCount(items) > 1">
         <b-pagination v-model="page"
                       :total-rows="items.length"
                       :per-page="displayCountNum"
@@ -506,16 +506,42 @@ export default {
       this.reorderSubtag();
     },
 
-    moveToChr(chr) {
-      let e = document.getElementById(`chr_${chr.id}`);
-      if (e != null) {
-        this.preventShowHideHeaderOnScroll = 1;
-        this.hideHeader();
-        this.hidePopover();
-        e.scrollIntoView();
+    moveToChr(chr, revealHidden = true) {
+      let p = this.getPageOf(this.items, a => a.id == chr.id);
+      if (p == 0 && revealHidden) {
+        this.resetAllFilters();
+        p = this.getPageOf(this.items, a => a.id == chr.id);
+      }
+      if (p > 0) {
+        this.page = p;
+        this.$nextTick(function () {
+          let e = document.getElementById(`chr_${chr.id}`);
+          if (e != null) {
+            this.preventShowHideHeaderOnScroll = 1;
+            this.hideHeader();
+            this.hidePopover();
+            e.scrollIntoView();
+          }
+        });
       }
     },
 
+    resetAllFilters() {
+      this.tagSearchPattern = "";
+      this.freeSearchPattern = "";
+
+      const resetFilter = function (filter) {
+        for (let e of filter)
+          e.state = false;
+      };
+      resetFilter(this.classFilter);
+      resetFilter(this.symbolFilter);
+      resetFilter(this.rarityFilter);
+      resetFilter(this.damageTypeFilter);
+      resetFilter(this.skillTypeFilter);
+
+      this.updateQuery();
+    },
     setSkillFilter(skill) {
       this.setFreeSearchPattern(skill.name, true);
     },

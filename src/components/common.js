@@ -198,6 +198,15 @@ export default {
       const end = Math.min(n * this.page, array.length);
       return array.slice(start, end);
     },
+    getPageCount(array) {
+      const n = this.displayCountNum;
+      return Math.ceil(array.length / n);
+    },
+    getPageOf(array, finder) {
+      const n = this.displayCountNum;
+      const i = array.findIndex(finder);
+      return Math.floor((i / n)) + 1;
+    },
 
     partitionSubtags(subtagSet) {
       this.sortSet(subtagSet);
@@ -354,13 +363,13 @@ export default {
 
     setTagSearchPattern(txt, wholeWord = false, escape = true) {
       txt = txt.trim();
-      if (escape) {
+      if (escape)
         txt = this.escapeRE(txt);
-      }
       txt = "^" + txt;
-      if (wholeWord) {
+      if (wholeWord)
         txt += "$";
-      }
+      else
+        txt += "($|[(:])";
       this.tagSearchPattern = txt;
       this.freeSearchPattern = "";
       this.searchTabIndex = 0;
@@ -373,12 +382,10 @@ export default {
     },
     setFreeSearchPattern(txt, wholeWord = false, escape = true) {
       txt = txt.trim();
-      if (escape) {
+      if (escape)
         txt = this.escapeRE(txt);
-      }
-      if (wholeWord) {
+      if (wholeWord)
         txt = `^${txt}$`;
-      }
       this.freeSearchPattern = txt;
       this.tagSearchPattern = "";
       this.searchTabIndex = 1;
@@ -432,9 +439,9 @@ export default {
 
     updateQuery(name, value) {
       try {
-        if (name == 'tag') {
+        if (name == 'tag' || !name) {
           // なぜかボタン一個押すたびに呼ばれるので変更チェック
-          if (this.tagSearchPattern == this.tagSearchPatternPrev)
+          if (this.tagSearchPattern == this.tagSearchPatternPrev && name)
             return;
           this.tagSearchPatternPrev = this.tagSearchPattern;
 
@@ -448,9 +455,9 @@ export default {
             this.tagSearchFn = null;
           }
         }
-        else if (name == 'free') {
+        if (name == 'free' || !name) {
           // 同上
-          if (this.freeSearchPattern == this.freeSearchPatternPrev)
+          if (this.freeSearchPattern == this.freeSearchPatternPrev && name)
             return;
           this.freeSearchPatternPrev = this.freeSearchPattern;
 
@@ -477,7 +484,7 @@ export default {
         return;
       }
 
-      if (['class', 'rarity', 'symbol', 'supportType', 'damageType', 'skillType', 'itemType'].includes(name)) {
+      if (['class', 'rarity', 'symbol', 'supportType', 'damageType', 'skillType', 'itemType', undefined].includes(name)) {
         this.updateTagCounts();
       }
       this.updateURL();
