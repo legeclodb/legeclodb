@@ -278,6 +278,7 @@
         <b-pagination v-model="page"
                       :total-rows="items.length"
                       :per-page="displayCountNum"
+                      @change="onPage"
                       size="lg"
                       limit="10"
                       hide-goto-end-buttons></b-pagination>
@@ -397,7 +398,13 @@ export default {
 
   mounted() {
     this.enableUpdateURL = true;
-    window.onpopstate = function () { this.decodeURL(true); }.bind(this);
+    window.onpopstate = function () {
+      this.enableUpdateURL = false;
+      this.decodeURL(true);
+      this.$nextTick(function () {
+        this.enableUpdateURL = true;
+      });
+    }.bind(this);
   },
 
   methods: {
@@ -507,15 +514,18 @@ export default {
     },
 
     moveToChr(chr, revealHidden = true) {
-      let p = this.getPageOf(this.items, a => a.id == chr.id);
+      const cid = typeof chr === 'number' ? chr : chr.id;
+      let p = this.getPageOf(this.items, a => a.id == cid);
       if (p == 0 && revealHidden) {
         this.resetAllFilters();
-        p = this.getPageOf(this.items, a => a.id == chr.id);
+        p = this.getPageOf(this.items, a => a.id == cid);
       }
+      this.updateURL({ id: cid });
+
       if (p > 0) {
         this.page = p;
         this.$nextTick(function () {
-          let e = document.getElementById(`chr_${chr.id}`);
+          let e = document.getElementById(`chr_${cid}`);
           if (e != null) {
             this.preventShowHideHeaderOnScroll = 1;
             this.hideHeader();
@@ -527,8 +537,8 @@ export default {
     },
 
     resetAllFilters() {
-      this.tagSearchPattern = "";
-      this.freeSearchPattern = "";
+      this.tagSearchPattern = '';
+      this.freeSearchPattern = '';
 
       const resetFilter = function (filter) {
         for (let e of filter)
@@ -540,7 +550,7 @@ export default {
       resetFilter(this.damageTypeFilter);
       resetFilter(this.skillTypeFilter);
 
-      this.updateQuery();
+      this.updateQuery('any', false);
     },
     setSkillFilter(skill) {
       this.setFreeSearchPattern(skill.name, true);
@@ -658,10 +668,9 @@ export default {
       }
     },
 
-    updateURL() {
-      if (!this.enableUpdateURL) {
+    updateURL(kvp) {
+      if (!this.enableUpdateURL)
         return false;
-      }
 
       let seri = new this.URLSerializer();
       if (this.isFilterEnabled(this.classFilter))
@@ -678,6 +687,11 @@ export default {
         seri.tag = this.tagSearchPattern;
       if (this.freeSearchPattern.length > 0)
         seri.free = this.freeSearchPattern;
+
+      if (kvp) {
+        for (const k in kvp)
+          seri[k] = kvp[k];
+      }
 
       let url = seri.serialize();
       if (url != this.prevURL) {
@@ -696,10 +710,11 @@ export default {
         skillType: 0,
         tag: "",
         free: "",
+        p: 1,
+        id: 0,
       });
 
       if (data.deserialize(window.location.href) || initState) {
-        this.enableUpdateURL = false;
         this.deserializeFilter(this.classFilter, data.class);
         this.deserializeFilter(this.symbolFilter, data.symbol);
         this.deserializeFilter(this.damageTypeFilter, data.damageType);
@@ -707,10 +722,13 @@ export default {
         this.deserializeFilter(this.skillTypeFilter, data.skillType);
         this.tagSearchPattern = data.tag;
         this.freeSearchPattern = data.free;
-        if (this.freeSearchPattern.length != 0) {
+        if (this.freeSearchPattern.length != 0)
           this.searchTabIndex = 1;
-        }
-        this.enableUpdateURL = true;
+
+        if (data.p > 0)
+          this.page = data.p;
+        if (data.id > 0)
+          this.moveToChr(data.id);
       }
     },
   }

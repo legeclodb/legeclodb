@@ -120,6 +120,11 @@ export default {
       this.lastScrollPosition = pos;
     },
 
+    onPage(page) {
+      if (page)
+        this.updateURL({ p: page });
+    },
+
     getRouteName() {
       let ret = this.$route.name;
       if (ret == 'index')
@@ -406,7 +411,7 @@ export default {
       return false;
     },
     matchContent(item, re) {
-      return (item.name && item.name.match(re)) || (item.desc && item.desc.match(re));
+      return (item.name && item.name.match(re)) || (item.desc && item.desc.match(re)) || (item.date && item.date.match(re));
     },
     getSearchMask() {
       return (this.tagSearchFn ? 1 : 0) | (this.freeSearchFn ? 2 : 0);
@@ -437,13 +442,13 @@ export default {
       return desc.replaceAll("\n", "<br/>") + "<br/>";
     },
 
-    updateQuery(name, value) {
+    updateQuery(name, updateURL = true) {
+      let modified = false;
       try {
-        if (name == 'tag' || !name) {
-          // なぜかボタン一個押すたびに呼ばれるので変更チェック
-          if (this.tagSearchPattern == this.tagSearchPatternPrev && name)
-            return;
+        // なぜかボタン一個押すたびに呼ばれるので変更チェック
+        if (this.tagSearchPattern != this.tagSearchPatternPrev) {
           this.tagSearchPatternPrev = this.tagSearchPattern;
+          modified = true;
 
           if (this.tagSearchPattern.length != 0) {
             const re = new RegExp(this.tagSearchPattern);
@@ -455,11 +460,11 @@ export default {
             this.tagSearchFn = null;
           }
         }
-        if (name == 'free' || !name) {
-          // 同上
-          if (this.freeSearchPattern == this.freeSearchPatternPrev && name)
-            return;
+
+        // 同上
+        if (this.freeSearchPattern != this.freeSearchPatternPrev) {
           this.freeSearchPatternPrev = this.freeSearchPattern;
+          modified = true;
 
           if (this.freeSearchPattern.length != 0) {
             const re = new RegExp(this.freeSearchPattern);
@@ -484,11 +489,13 @@ export default {
         return;
       }
 
-      if (['class', 'rarity', 'symbol', 'supportType', 'damageType', 'skillType', 'itemType', undefined].includes(name)) {
-        this.updateTagCounts();
+      if (modified || !['tag', 'free'].includes(name)) {
+        if (['class', 'rarity', 'symbol', 'supportType', 'damageType', 'skillType', 'itemType', 'any'].includes(name))
+          this.updateTagCounts();
+        if (updateURL)
+          this.updateURL();
+        this.preventShowHideHeaderOnScroll = 1;
       }
-      this.updateURL();
-      this.preventShowHideHeaderOnScroll = 1;
     },
 
     onTagDropdownShow(event, state) {

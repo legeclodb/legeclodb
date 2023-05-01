@@ -157,6 +157,7 @@
         <b-pagination v-model="page"
                       :total-rows="items.length"
                       :per-page="displayCountNum"
+                      @change="onPage"
                       size="lg"
                       limit="10"
                       hide-goto-end-buttons></b-pagination>
@@ -269,7 +270,13 @@ export default {
 
   mounted() {
     this.enableUpdateURL = true;
-    window.onpopstate = function () { this.decodeURL(true); }.bind(this);
+    window.onpopstate = function () {
+      this.enableUpdateURL = false;
+      this.decodeURL(true);
+      this.$nextTick(function () {
+        this.enableUpdateURL = true;
+      });
+    }.bind(this);
   },
 
   methods: {
@@ -394,10 +401,9 @@ export default {
       }
     },
 
-    updateURL() {
-      if (!this.enableUpdateURL) {
+    updateURL(kvp) {
+      if (!this.enableUpdateURL)
         return false;
-      }
 
       let seri = new this.URLSerializer();
       if (this.isFilterEnabled(this.classFilter))
@@ -410,6 +416,11 @@ export default {
         seri.tag = this.tagSearchPattern;
       if (this.freeSearchPattern.length > 0)
         seri.free = this.freeSearchPattern;
+
+      if (kvp) {
+        for (const k in kvp)
+          seri[k] = kvp[k];
+      }
 
       let url = seri.serialize();
       if (url != this.prevURL) {
@@ -426,19 +437,20 @@ export default {
         rarity: 0,
         tag: "",
         free: "",
+        p: 1,
       });
 
       if (data.deserialize(window.location.href) || initState) {
-        this.enableUpdateURL = false;
         this.deserializeFilter(this.classFilter, data.class);
         this.deserializeFilter(this.itemTypeFilter, data.itemType);
         this.deserializeFilter(this.rarityFilter, data.rarity);
         this.tagSearchPattern = data.tag;
         this.freeSearchPattern = data.free;
-        if (this.freeSearchPattern.length != 0) {
+        if (this.freeSearchPattern.length != 0)
           this.searchTabIndex = 1;
-        }
-        this.enableUpdateURL = true;
+
+        if (data.p > 0)
+          this.page = data.p;
       }
     },
   }
