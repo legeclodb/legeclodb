@@ -340,6 +340,10 @@ export default {
 
         for (let si = 0; si < chr.skills.length; ++si) {
           let skill = skillMap.get(chr.skills[si]);
+          if (!skill) {
+            // 開発中とりあえず表示させるための措置
+            skill = skillMap.get(this.skills[0].name);
+          }
           skill.skillIndex = si; // パッシブ1 のみが複数キャラで共有され、現状全て si==1 なので問題ない
 
           if (si == 0) {

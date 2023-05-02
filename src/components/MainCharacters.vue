@@ -447,6 +447,11 @@ export default {
           for (let i = 0; i < skills.length; ++i) {
             if (typeof skills[i] === "string") {
               let skill = skillMap.get(skills[i]);
+              if (!skill) {
+                // 開発中とりあえず表示させるための措置
+                skill = skillMap.get(this.skills[0].name);
+              }
+
               skills[i] = skill;
               if (!skill.owners)
                 skill.owners = [];
@@ -711,7 +716,7 @@ export default {
         tag: "",
         free: "",
         p: 1,
-        id: 0,
+        id: -1,
       });
 
       if (data.deserialize(window.location.href) || initState) {
@@ -727,7 +732,7 @@ export default {
 
         if (data.p > 0)
           this.page = data.p;
-        if (data.id > 0)
+        if (data.id > -1)
           this.moveToChr(data.id);
       }
     },
