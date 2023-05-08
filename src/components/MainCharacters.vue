@@ -124,7 +124,24 @@
         </div>
       </div>
     </div>
-    <div class="content" style="margin-top: 200px;" :style="style">
+    <div id="content" class="content" style="margin-top: 200px;" :style="style">
+
+      <div class="pages" v-if="getPageCount(items) > 1">
+        <b-pagination v-model="page"
+                      :total-rows="items.length"
+                      :per-page="displayCountNum"
+                      @change="onPage"
+                      limit="10"
+                      hide-goto-end-buttons></b-pagination>
+        <ul class="pagination b-pagination" style="margin-left: 0px;">
+          <li class="page-item">
+            <b-button @click="scrollToBottom()" variant="outline-secondary" class="page-link">
+              ↓
+            </b-button>
+          </li>
+        </ul>
+      </div>
+
       <template v-for="chr in pagedItems">
         <div class="character" :id="'chr_'+chr.id" :key="chr.id">
           <div class="flex">
@@ -135,12 +152,12 @@
               <div class="info" :class="{ 'highlighted': isInfoHighlighted(chr) }">
                 <h5 v-html="chrNameToHtml(chr.name)"></h5>
                 <div class="status">
-                  <b-img-lazy :src="getImageURL(chr.class)" :alt="chr.class" height="25" />
-                  <b-img-lazy :src="getImageURL(chr.symbol)" :alt="chr.symbol" height="25" />
-                  <b-img-lazy :src="getImageURL(chr.rarity)" :alt="chr.rarity" height="20" />
-                  <div class="param-box"><b-img-lazy :src="getImageURL(chr.damageType)" :alt="chr.damageType" width="20" height="20" /></div>
-                  <div class="param-box"><b-img-lazy :src="getImageURL('射程')" alt="射程" width="18" height="18" /><span>{{chr.range}}</span></div>
-                  <div class="param-box"><b-img-lazy :src="getImageURL('移動')" alt="移動" width="18" height="18" /><span>{{chr.move}}</span></div>
+                  <b-img-lazy :src="getImageURL(chr.class)" :title="'クラス:'+chr.class" height="25" />
+                  <b-img-lazy :src="getImageURL(chr.symbol)" :title="'シンボル:'+chr.symbol" height="25" />
+                  <b-img-lazy :src="getImageURL(chr.rarity)" :title="'レアリティ:'+chr.rarity" height="20" />
+                  <div class="param-box"><b-img-lazy :src="getImageURL(chr.damageType)" :title="'攻撃タイプ:'+chr.damageType" width="20" height="20" /></div>
+                  <div class="param-box"><b-img-lazy :src="getImageURL('射程')" title="射程" width="18" height="18" /><span>{{chr.range}}</span></div>
+                  <div class="param-box"><b-img-lazy :src="getImageURL('移動')" title="移動" width="18" height="18" /><span>{{chr.move}}</span></div>
                   <span class="date">{{chr.date}}</span>
                 </div>
               </div>
@@ -162,7 +179,7 @@
                           <b-dropdown-item class="d-flex flex-column" v-for="(ds, di) in chr.talent.descs" :key="di" @click="chr.talent.current=di; chr.talent.desc=ds;">{{di}}</b-dropdown-item>
                         </b-dropdown>
                       </h5>
-                      <p><span v-html="descToHtml(chr.talent)"></span><span v-if="chr.talent.note" class="note" v-html="chr.talent.note"></span></p>
+                      <p><span v-html="descToHtml(chr.talent)"></span><span v-if="chr.talent.note" class="note" v-html="noteToHtml(chr.talent)"></span></p>
                     </div>
                   </div>
                   <div class="tags" v-show="displayType >= 2">
@@ -190,7 +207,7 @@
                         <h6>{{ skill.name }}</h6>
                         <div class="param-group" v-html="skillParamsToHtml(skill)"></div>
                       </div>
-                      <p><span v-html="descToHtml(skill)"></span><span v-if="skill.note" class="note" v-html="skill.note"></span></p>
+                      <p><span v-html="descToHtml(skill)"></span><span v-if="skill.note" class="note" v-html="noteToHtml(skill)"></span></p>
                     </div>
                   </div>
                   <div class="tags" v-show="displayType >= 2">
@@ -231,7 +248,7 @@
                         <h5>
                           {{ summon.talent.name }}
                         </h5>
-                        <p><span v-html="descToHtml(summon.talent)"></span><span v-if="summon.talent.note" class="note" v-html="summon.talent.note"></span></p>
+                        <p><span v-html="descToHtml(summon.talent)"></span><span v-if="summon.talent.note" class="note" v-html="noteToHtml(summon.talent)"></span></p>
                       </div>
                     </div>
                     <div class="tags" v-show="displayType >= 2">
@@ -259,7 +276,7 @@
                           <h6>{{ skill.name }}</h6>
                           <div class="param-group" v-html="skillParamsToHtml(skill)"></div>
                         </div>
-                        <p><span v-html="descToHtml(skill)"></span><span v-if="skill.note" class="note" v-html="skill.note"></span></p>
+                        <p><span v-html="descToHtml(skill)"></span><span v-if="skill.note" class="note" v-html="noteToHtml(skill)"></span></p>
                       </div>
                     </div>
                     <div class="tags" v-show="displayType >= 2">
@@ -279,10 +296,17 @@
                       :total-rows="items.length"
                       :per-page="displayCountNum"
                       @change="onPage"
-                      size="lg"
                       limit="10"
                       hide-goto-end-buttons></b-pagination>
+        <ul class="pagination b-pagination" style="margin-left: 0px;">
+          <li class="page-item">
+            <b-button @click="scrollToTop()" variant="outline-secondary" class="page-link">
+              ↑
+            </b-button>
+          </li>
+        </ul>
       </div>
+
     </div>
   </div>
 </template>

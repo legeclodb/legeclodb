@@ -115,7 +115,24 @@
       </div>
     </div>
 
-    <div class="content" style="margin-top: 200px;" :style="style">
+    <div id="content" class="content" style="margin-top: 200px;" :style="style">
+
+      <div class="pages" v-if="getPageCount(items) > 1">
+        <b-pagination v-model="page"
+                      :total-rows="items.length"
+                      :per-page="displayCountNum"
+                      @change="onPage"
+                      limit="10"
+                      hide-goto-end-buttons></b-pagination>
+        <ul class="pagination b-pagination" style="margin-left: 0px;">
+          <li class="page-item">
+            <b-button @click="scrollToBottom()" variant="outline-secondary" class="page-link">
+              ↓
+            </b-button>
+          </li>
+        </ul>
+      </div>
+
       <template v-for="item in pagedItems">
         <div class="item" :id="'item_'+item.id" :key="item.id">
           <div class="flex">
@@ -130,8 +147,8 @@
             <div class="detail" v-show="displayType >= 1">
               <div class="info" :class="{ 'highlighted': isInfoHighlighted(item) }">
                 <h5 v-html="item.name"></h5>
-                <b-img-lazy :src="getImageURL(item.slot)" :alt="item.slot" height="25" />
-                <b-img-lazy :src="getImageURL(item.rarity)" :alt="item.rarity" height="20" />
+                <b-img-lazy :src="getImageURL(item.slot)" :title="'部位:'+item.slot" height="25" />
+                <b-img-lazy :src="getImageURL(item.rarity)" :title="'レアリティ:'+item.rarity" height="20" />
                 <span class="date">{{item.date}}</span>
               </div>
               <div class="info">
@@ -141,7 +158,7 @@
               <div class="skills">
                 <div class="skill" :class="{ 'highlighted': isDescHighlighted(item) }" v-show="displayType >= 2" style="flex-grow: 1">
                   <div class="desc">
-                    <p><span v-html="descToHtml(item)"></span><span v-if="item.note" class="note" v-html="item.note"></span></p>
+                    <p><span v-html="descToHtml(item)"></span><span v-if="item.note" class="note" v-html="noteToHtml(item)"></span></p>
                   </div>
                   <div class="tags">
                     <b-badge class="tag" :key="i" v-for="(tag, i) in item.tags" variant="info" pill @click="setTagSearchPattern(tag)">{{ tag }}</b-badge>
@@ -158,13 +175,18 @@
                       :total-rows="items.length"
                       :per-page="displayCountNum"
                       @change="onPage"
-                      size="lg"
                       limit="10"
                       hide-goto-end-buttons></b-pagination>
+        <ul class="pagination b-pagination" style="margin-left: 0px;">
+          <li class="page-item">
+            <b-button @click="scrollToTop()" variant="outline-secondary" class="page-link">
+              ↑
+            </b-button>
+          </li>
+        </ul>
       </div>
 
     </div>
-
   </div>
 </template>
 
@@ -338,10 +360,10 @@ export default {
 
     itemClassesToHtml(item) {
       if (item.classes) {
-        return item.classes.map(c => `<img src="${this.getImageURL(c)}" alt="${c}" width="25" height="25" />`).join("")
+        return item.classes.map(c => `<img src="${this.getImageURL(c)}" title="${c}" width="25" height="25" />`).join("")
       }
       else {
-        return `<img src="${this.getImageURL('全クラス')}" alt="全クラス" height="25" />`;
+        return `<img src="${this.getImageURL('全クラス')}" title="全クラス" height="25" />`;
       }
     },
     itemParamsToHtml(item) {
@@ -355,7 +377,7 @@ export default {
       };
       let params = [];
       for (const k in item.params) {
-        params.push(`<p><img src="${this.getImageURL(nameTable[k])}" alt="${nameTable[k]}" width="20" height="20" /> +${item.params[k]}</p>`);
+        params.push(`<p><img src="${this.getImageURL(nameTable[k])}" title="${nameTable[k]}" width="20" height="20" /> +${item.params[k]}</p>`);
       }
       return params.join("");
     },

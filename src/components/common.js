@@ -136,6 +136,13 @@ export default {
       this.showHeader = false;
     },
 
+    scrollToTop() {
+      window.scroll(0, 0);
+    },
+    scrollToBottom() {
+      window.scrollTo(0, document.body.scrollHeight);
+    },
+
     onMouseMove(event) {
       if (event.clientY < 50) {
         this.showHeader = true;
@@ -169,9 +176,8 @@ export default {
     partitionSet(dst, condition) {
       let tmp = [];
       for (const v of dst) {
-        if (condition(v)) {
+        if (condition(v))
           tmp.push(v);
-        }
       }
       for (const v of tmp) {
         dst.delete(v);
@@ -430,16 +436,26 @@ export default {
       }
     },
     descToHtml(item) {
-      let desc = item.desc;
+      let text = item.desc;
       while (true) {
         // [caution]hoge[/caution] -> <span class='caution'>hoge</span>
         // 入れ子のケースに対応するためループする必要がある
-        let tmp = desc.replaceAll(/\[([^\]]+?)\](.+?)\[\/\1\]/g, "<span class='$1'>$2</span>");
-        if (tmp == desc)
+        let tmp = text.replaceAll(/\[([^\]]+?)\](.+?)\[\/\1\]/g, "<span class='$1'>$2</span>");
+        if (tmp == text)
           break;
-        desc = tmp;
+        text = tmp;
       }
-      return desc.replaceAll("\n", "<br/>") + "<br/>";
+      return text.replaceAll("\n", "<br/>") + "<br/>";
+    },
+    noteToHtml(item) {
+      let text = item.note;
+      while (true) {
+        let tmp = text.replaceAll(/\[([^\]]+?)\](.+?)\[\/\1\]/g, "<span class='$1'>$2</span>");
+        if (tmp == text)
+          break;
+        text = tmp;
+      }
+      return text.replaceAll("\n", "<br/>") + "<br/>";
     },
 
     updateQuery(name, updateURL = true) {
