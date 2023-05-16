@@ -437,6 +437,8 @@ export default {
       this.characters = structuredClone(this.characters);
       this.skills = structuredClone(this.skills);
 
+      this.predefinedMainTags.push("分類");
+
       let skillMap = new Map();
       let skillId = 0;
       for (let skill of this.skills) {
@@ -493,7 +495,7 @@ export default {
 
         const m = chr.name.match(/\((.+?)\)/);
         if (m) {
-          chr.talent.tags.push(`季節限定(${m[1]})`);
+          chr.talent.tags.push(`分類:${m[1]}`);
         }
 
         // ↑でタグを追加するのでこのタイミングである必要がある
