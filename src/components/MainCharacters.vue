@@ -67,7 +67,7 @@
             <div class="widget">
               <b-button-group size="sm" id="symbol_selector">
                 <b-button v-for="(c, i) in symbolFilter" :key="i" :pressed.sync="c.state" @click="updateQuery('symbol')" variant="outline-secondary">
-                  <b-img-lazy :src="getImageURL(symbols[i])" height="25" />
+                  <b-img-lazy :src="getImageURL('シンボル:'+symbols[i])" height="25" />
                 </b-button>
               </b-button-group>
             </div>
@@ -153,7 +153,7 @@
                 <h5 v-html="chrNameToHtml(chr.name)"></h5>
                 <div class="status">
                   <b-img-lazy :src="getImageURL(chr.class)" :title="'クラス:'+chr.class" height="25" />
-                  <b-img-lazy :src="getImageURL(chr.symbol)" :title="'シンボル:'+chr.symbol" height="25" />
+                  <b-img-lazy :src="getImageURL('シンボル:'+chr.symbol)" :title="'シンボル:'+chr.symbol" height="25" />
                   <b-img-lazy :src="getImageURL(chr.rarity)" :title="'レアリティ:'+chr.rarity" height="20" />
                   <div class="param-box"><b-img-lazy :src="getImageURL(chr.damageType)" :title="'攻撃タイプ:'+chr.damageType" width="20" height="20" /></div>
                   <div class="param-box"><b-img-lazy :src="getImageURL('射程')" title="射程" width="18" height="18" /><span>{{chr.range}}</span></div>
@@ -645,7 +645,7 @@ export default {
       return r == this.getSearchMask();
     },
     filterItem(chr) {
-      let ok = this.applyClassFilter(chr);
+      let ok = !chr.hidden && this.applyClassFilter(chr);
       if (ok && this.isSearchPatternSet()) {
         ok = this.applySearchPatterns(chr);
       }

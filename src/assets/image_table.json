@@ -9,9 +9,9 @@
   "アサシン": "img/eff2bdd4a87850ed0beae50cb6bb87f3.png",
   "ヴォイド": "img/fa87edf4a03665ee55a8df89bbe1663f.png",
   "全クラス": "img/10ad5f328a1f6d76affe731e8d542c76.png",
-  "ゼニス": "img/ca0f08c98077bea4cf84c61b399a3bf5.png",
-  "オリジン": "img/2a1859023f6bed05147ad67b739763fb.png",
-  "ナディア": "img/6e8fc30ea317b3e22357d76990c74b77.png",
+  "シンボル:ゼニス": "img/e7be590a5441310130fe4fa8ae397b14.png",
+  "シンボル:オリジン": "img/d46bd576a0ce8d283ba793a0f67fcc99.png",
+  "シンボル:ナディア": "img/8d7964d2df99a08884ed293c5a6ff231.png",
   "攻撃": "img/ef2e7cf38c8526f44d6a3c1df02431ca.png",
   "支援": "img/8ee4dcb7513c5453514d288897cf094b.png",
   "妨害": "img/998d9b600898e6ff7e2ff95641c98e09.png",
@@ -1112,5 +1112,11 @@
   "われの覇道をじゃまするな！": "img/2ecbaec2360eadc9c92d581ee744d3fb.png",
   "磨羯の天槍": "img/2b60bad56586ec333ca0e7f32a8fdb3d.png",
   "磨羯の天装": "img/bc816bfb439bfab9b60976c3990ee8fc.png",
-  "磨羯の天冠": "img/052754f4e0dde3f436a35c670700ee69.png"
+  "磨羯の天冠": "img/052754f4e0dde3f436a35c670700ee69.png",
+  "ナディア": "img/6e8fc30ea317b3e22357d76990c74b77.png",
+  "慈愛の守護者": "img/16473b2768ddf9d6020237d4bfae800e.png",
+  "顕現せし守護の波浪": "img/ad4e109734a1977c2467fcb07809901b.png",
+  "波に乗ってこ♪": "img/94aee733cc7c59334606c44e40141768.png",
+  "みんなを丸ごと守っちゃう！": "img/e1c2dece1ce5452388a39e009228db8e.png",
+  "砂塊に宿りし王の首飾り": "img/328a22dd44fa41859872ee50f105febc.png"
 }

@@ -408,7 +408,7 @@ export default {
         this.filterMatch(this.rarityFilter, chr.rarityId);
     },
     filterItem(chr) {
-      let ok = this.applyClassFilter(chr);
+      let ok = !chr.hidden && this.applyClassFilter(chr);
       if (ok && this.isSearchPatternSet()) {
         ok = this.applySearchPatterns(chr);
       }
