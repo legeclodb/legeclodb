@@ -138,7 +138,7 @@
         <h2><a name="damage" href="#damage"></a>ダメージ計算</h2>
         <p>
           れじぇくろのダメージ計算式は以下のようになっています。<br />
-          <b>(攻撃側の攻撃力－受ける側の防御力)×(スキルのダメージ倍率)×(与ダメージバフ・デバフ)×(ダメージ耐性バフ・デバフ)×(クリティカルダメージ倍率)×乱数×10</b><br />
+          <code>(攻撃側の攻撃力－受ける側の防御力)×(スキルのダメージ倍率)×(与ダメージバフ・デバフ)×(ダメージ耐性バフ・デバフ)×(クリティカルダメージ倍率)×乱数×10</code><br />
           <br />
           <ul>
             <li>メイン・サポート個別にこの計算が行われる。</li>
@@ -216,10 +216,55 @@
         </p>
 
         <h2><a name="battle_power" href="#battle_power"></a>戦闘力について</h2>
+        <p>
+          戦闘力は以下の計算式で算出されるとみられます。<br />
+          <br />
+          <code>A(ステータスにレートをかけた基礎値) × B(☆やマスターランクによる倍率)</code><br />
+          A の内訳：<br />
+          <code>(HP×0.05＋攻撃力×2×(1.0＋メインのテクニック×0.0003)＋ディフェンス×2＋レジスト×2)</code><br />
+          B の内訳：<br />
+          <code>(1.0＋☆の数×0.1＋マスターレベル×0.1＋メインの使用スキルコスト×0.03＋メインの装備の☆合計×0.02＋エンチャントが4セット揃っている場合0.1＋サポートの開放スキルの数×0.05)</code><br />
+          <br />
+          <ul>
+            <li>
+              攻撃力はそのキャラの攻撃タイプがアタックであればアタック、マジックであればマジック
+              <ul>
+                <li>アタックキャラのマジック、マジックキャラのアタックは戦闘力に計上されない</li>
+              </ul>
+            </li>
+            <li>
+              ステータス値はメインとサポートの合計
+              <ul>
+                <li>つまり、サポートの攻撃力にもメインのテクニックによる割合が乗る</li>
+                <li>メインがアタック、サポートがマジック (またはその逆) の場合でも攻撃力として合算され、それにテクニックによる割合が乗る</li>
+              </ul>
+            </li>
+            <li>
+              ☆の数やマスターレベルもメインとサポートの合計
+              <ul>
+                <li>倍率の加算になるため、サポートとリンクすると戦闘力は単純に合計するよりもずっと大きくなる</li>
+              </ul>
+            </li>
+            <li>エンチャントは 4 種類揃えたときのみ 0.1 の倍率がかかる</li>
+            <li>
+              装備の効果は基礎ステータス値が上がるもののみ戦闘力に計上される
+              <ul>
+                <li>装備・タレント・スキルいずれも割合バフ (戦闘開始後のみ発揮される効果) は計上されない</li>
+                <li>アクセサリのエンチャントのクリティカル率も計上されない</li>
+              </ul>
+            </li>
+          </ul>
+        </p>
+
+        <div>
+          <b-container fluid>
+            <h6>戦闘力シミュレーター</h6>
+          </b-container>
+        </div>
         <div class="flex">
           <div style="width: 380px">
             <b-container fluid>
-              <h5>メインキャラ <b-form-checkbox inline class="checkbox" id="bp-main-enabled" v-model="bpMainEnabled"></b-form-checkbox></h5>
+              <h6>メインキャラ <b-form-checkbox inline plain class="checkbox" id="bp-main-enabled" v-model="bpMainEnabled"></b-form-checkbox></h6>
 
               <b-row v-for="(param, name, index) in bpParamsMain" :key="index">
                 <b-col sm="6">
@@ -227,14 +272,14 @@
                 </b-col>
                 <b-col sm="4">
                   <b-form-input :id="`bp-main-${name}`" v-model="param.value" size="sm" type="number" :disabled="!bpMainEnabled" v-if="typeof param.value != 'boolean'"></b-form-input>
-                  <b-form-checkbox :id="`bp-main-${name}`" v-model="param.value" size="sm" :disabled="!bpMainEnabled" v-if="typeof param.value == 'boolean'"></b-form-checkbox>
+                  <b-form-checkbox :id="`bp-main-${name}`" v-model="param.value" size="sm" plain :disabled="!bpMainEnabled" v-if="typeof param.value == 'boolean'"></b-form-checkbox>
                 </b-col>
               </b-row>
             </b-container>
           </div>
           <div style="width: 380px">
             <b-container fluid>
-              <h5>サポートキャラ <b-form-checkbox inline class="checkbox" id="bp-support-enabled" v-model="bpSupportEnabled"></b-form-checkbox></h5>
+              <h6>サポートキャラ <b-form-checkbox inline plain class="checkbox" id="bp-support-enabled" v-model="bpSupportEnabled"></b-form-checkbox></h6>
 
               <b-row v-for="(param, name, index) in bpParamsSupport" :key="index">
                 <b-col sm="5">
@@ -525,7 +570,6 @@ div.about {
 .checkbox .btn {
   margin: 0px 0px;
   padding: 0px 5px;
-  background-color: white;
 }
 
 </style>
