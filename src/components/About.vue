@@ -13,6 +13,7 @@
             <li><a href="#buff">バフ・デバフの競合・重複</a></li>
             <li><a href="#notes">その他のバフと補足事項</a></li>
             <li><a href="#damage">ダメージ計算</a></li>
+            <li><a href="#battle_power">戦闘力について</a></li>
             <li><a href="#thanks">謝辞</a></li>
           </ul>
         </p>
@@ -214,6 +215,46 @@
           </ul>
         </p>
 
+        <h2><a name="battle_power" href="#battle_power"></a>戦闘力について</h2>
+        <div class="flex">
+          <div style="width: 380px">
+            <b-container fluid>
+              <h5>メインキャラ <b-form-checkbox inline class="checkbox" id="bp-main-enabled" v-model="bpMainEnabled"></b-form-checkbox></h5>
+
+              <b-row v-for="(param, name, index) in bpParamsMain" :key="index">
+                <b-col sm="6">
+                  <label :for="`bp-main-${name}`">{{param.label}}</label>
+                </b-col>
+                <b-col sm="4">
+                  <b-form-input :id="`bp-main-${name}`" v-model="param.value" size="sm" type="number" :disabled="!bpMainEnabled" v-if="typeof param.value != 'boolean'"></b-form-input>
+                  <b-form-checkbox :id="`bp-main-${name}`" v-model="param.value" size="sm" :disabled="!bpMainEnabled" v-if="typeof param.value == 'boolean'"></b-form-checkbox>
+                </b-col>
+              </b-row>
+            </b-container>
+          </div>
+          <div style="width: 380px">
+            <b-container fluid>
+              <h5>サポートキャラ <b-form-checkbox inline class="checkbox" id="bp-support-enabled" v-model="bpSupportEnabled"></b-form-checkbox></h5>
+
+              <b-row v-for="(param, name, index) in bpParamsSupport" :key="index">
+                <b-col sm="5">
+                  <label :for="`bp-support-${name}`">{{param.label}}</label>
+                </b-col>
+                <b-col sm="4">
+                  <b-form-input :id="`bp-support-${name}`" v-model="param.value" size="sm" type="number" :disabled="!bpSupportEnabled"></b-form-input>
+                </b-col>
+              </b-row>
+            </b-container>
+          </div>
+        </div>
+        <div>
+          <b-container fluid>
+            <h5>戦闘力: {{bpResult}}</h5>
+          </b-container>
+        </div>
+        <p>
+        </p>
+
         <h2><a name="thanks" href="#thanks"></a>謝辞</h2>
         <p>
           <a href="https://discord.gg/7KnBSnRNRx" target="_blank">ニルフガード帝国</a>の皆さん (データ提供、フィードバックなど)
@@ -256,6 +297,81 @@ export default {
   data() {
     return {
       popoverElements: [],
+
+      bpMainEnabled: true,
+      bpSupportEnabled: true,
+      bpParamsMain: {
+        stars: {
+          label: "☆",
+          value: 6
+        },
+        masterLv: {
+          label: "マスターレベル",
+          value: 3
+        },
+        hp: {
+          label: "HP",
+          value: 10000
+        },
+        atk: {
+          label: "アタック / マジック",
+          value: 1500
+        },
+        def: {
+          label: "ディフェンス",
+          value: 500
+        },
+        res: {
+          label: "レジスト",
+          value: 500
+        },
+        tec: {
+          label: "テクニック",
+          value: 100
+        },
+        skillCost: {
+          label: "スキルコスト",
+          value: 6
+        },
+        eqStars: {
+          label: "装備の☆合計",
+          value: 20
+        },
+        enchant: {
+          label: "エンチャントが揃っている",
+          value: true
+        },
+      },
+      bpParamsSupport: {
+        stars: {
+          label: "☆",
+          value: 6
+        },
+        masterLv: {
+          label: "マスターレベル",
+          value: 3
+        },
+        hp: {
+          label: "HP",
+          value: 10000
+        },
+        atk: {
+          label: "アタック / マジック",
+          value: 1500
+        },
+        def: {
+          label: "ディフェンス",
+          value: 500
+        },
+        res: {
+          label: "レジスト",
+          value: 500
+        },
+        skills: {
+          label: "解放済みスキル",
+          value: 3
+        },
+      },
     };
   },
 
@@ -274,6 +390,11 @@ export default {
       for (let chr of chrs) {
         for (let i = 0; i < chr.skills.length; ++i) {
           let skill = skillMap.get(chr.skills[i]);
+          if (!skill) {
+            console.log("!" + chr.skills[i]);
+            continue;
+          }
+
           if (!skill.owners)
             skill.owners = [];
           if (skill.descs)
@@ -316,7 +437,46 @@ export default {
         }
       }
     },
+
+    calcBP() {
+      let hp = 0;
+      let atk = 0;
+      let def = 0;
+      let res = 0;
+      let tec = 0;
+      let rate = 1.0;
+      if (this.bpMainEnabled) {
+        hp += parseInt(this.bpParamsMain.hp.value);
+        atk += parseInt(this.bpParamsMain.atk.value);
+        def += parseInt(this.bpParamsMain.def.value);
+        res += parseInt(this.bpParamsMain.res.value);
+        tec += parseInt(this.bpParamsMain.tec.value);
+        rate += parseInt(this.bpParamsMain.stars.value) * 0.1;
+        rate += parseInt(this.bpParamsMain.masterLv.value) * 0.1;
+        rate += parseInt(this.bpParamsMain.skillCost.value) * 0.03;
+        rate += parseInt(this.bpParamsMain.eqStars.value) * 0.02;
+        if (this.bpParamsMain.enchant.value)
+          rate += 0.1;
+      }
+      if (this.bpSupportEnabled) {
+        hp += parseInt(this.bpParamsSupport.hp.value);
+        atk += parseInt(this.bpParamsSupport.atk.value);
+        def += parseInt(this.bpParamsSupport.def.value);
+        res += parseInt(this.bpParamsSupport.res.value);
+        rate += parseInt(this.bpParamsSupport.stars.value) * 0.1;
+        rate += parseInt(this.bpParamsSupport.masterLv.value) * 0.1;
+        rate += parseInt(this.bpParamsSupport.skills.value) * 0.05;
+      }
+      return Math.round(((hp * 0.05) + (atk * 2 * (1.0 + tec * 0.0003)) + (def * 2) + (res * 2)) * rate);
+    }
+  },
+
+  computed: {
+    bpResult() {
+      return this.calcBP();
+    }
   }
+
 }
 </script>
 
@@ -361,4 +521,11 @@ div.about {
   font-size: 75%;
   color: rgb(150, 150, 150);
 }
+
+.checkbox .btn {
+  margin: 0px 0px;
+  padding: 0px 5px;
+  background-color: white;
+}
+
 </style>
