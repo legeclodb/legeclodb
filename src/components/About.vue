@@ -221,9 +221,9 @@
           <br />
           <code>A(ステータスにレートをかけた基礎値) × B(☆やマスターランクによる倍率)</code><br />
           A の内訳：<br />
-          <code>(HP×0.05＋攻撃力×2×(1.0＋メインのテクニック×0.0003)＋ディフェンス×2＋レジスト×2)</code><br />
+          <code>HP×0.05＋攻撃力×2×(1.0＋メインのテクニック×0.0003)＋ディフェンス×2＋レジスト×2</code><br />
           B の内訳：<br />
-          <code>(1.0＋☆の数×0.1＋マスターレベル×0.1＋メインの使用スキルコスト×0.03＋メインの装備の☆合計×0.02＋エンチャントが4セット揃っている場合0.1＋サポートの開放スキルの数×0.05)</code><br />
+          <code>1.0＋☆の数×0.1＋マスターレベル×0.1＋メインの使用スキルコスト×0.03＋メインの装備の☆合計×0.02＋エンチャントが4セット揃っている場合0.1＋サポートのスキルの数×0.05</code><br />
           <br />
           <ul>
             <li>
@@ -235,7 +235,7 @@
             <li>
               ステータス値はメインとサポートの合計
               <ul>
-                <li>つまり、サポートの攻撃力にもメインのテクニックによる割合が乗る</li>
+                <li>サポートの攻撃力にもメインのテクニックによる割合が乗る</li>
                 <li>メインがアタック、サポートがマジック (またはその逆) の場合でも攻撃力として合算され、それにテクニックによる割合が乗る</li>
               </ul>
             </li>
@@ -249,7 +249,7 @@
             <li>
               装備の効果は基礎ステータス値が上がるもののみ戦闘力に計上される
               <ul>
-                <li>装備・タレント・スキルいずれも割合バフ (戦闘開始後のみ発揮される効果) は計上されない</li>
+                <li>戦闘開始後のみ効果がある割合バフなどは計上されない</li>
                 <li>アクセサリのエンチャントのクリティカル率も計上されない</li>
               </ul>
             </li>
@@ -271,8 +271,8 @@
                   <label :for="`bp-main-${name}`">{{param.label}}</label>
                 </b-col>
                 <b-col sm="4">
-                  <b-form-input :id="`bp-main-${name}`" v-model="param.value" size="sm" type="number" :disabled="!bpMainEnabled" v-if="typeof param.value != 'boolean'"></b-form-input>
-                  <b-form-checkbox :id="`bp-main-${name}`" v-model="param.value" size="sm" plain :disabled="!bpMainEnabled" v-if="typeof param.value == 'boolean'"></b-form-checkbox>
+                  <b-form-input :id="`bp-main-${name}`" v-model="param.value" size="sm" type="number" :min="param.min" :max="param.max" :disabled="!bpMainEnabled" v-if="param.type == 'int'"></b-form-input>
+                  <b-form-checkbox :id="`bp-main-${name}`" v-model="param.value" size="sm" plain :disabled="!bpMainEnabled" v-if="param.type == 'bool'"></b-form-checkbox>
                 </b-col>
               </b-row>
             </b-container>
@@ -286,7 +286,7 @@
                   <label :for="`bp-support-${name}`">{{param.label}}</label>
                 </b-col>
                 <b-col sm="4">
-                  <b-form-input :id="`bp-support-${name}`" v-model="param.value" size="sm" type="number" :disabled="!bpSupportEnabled"></b-form-input>
+                  <b-form-input :id="`bp-support-${name}`" v-model="param.value" size="sm" type="number" :min="param.min" :max="param.max" :disabled="!bpSupportEnabled" v-if="param.type == 'int'"></b-form-input>
                 </b-col>
               </b-row>
             </b-container>
@@ -294,7 +294,8 @@
         </div>
         <div>
           <b-container fluid>
-            <h5>戦闘力: {{bpResult}}</h5>
+            <h5 style="margin-bottom: 10px">戦闘力: {{bpResult}}</h5>
+            <b-button @click="copyBPUrl()">パラメータを URL に保存</b-button>
           </b-container>
         </div>
         <p>
@@ -348,73 +349,113 @@ export default {
       bpParamsMain: {
         stars: {
           label: "☆",
-          value: 6
+          type: "int",
+          min: 1,
+          max: 6,
+          value: 6,
         },
         masterLv: {
           label: "マスターレベル",
-          value: 3
+          type: "int",
+          min: 0,
+          max: 3,
+          value: 3,
         },
         hp: {
           label: "HP",
-          value: 10000
+          type: "int",
+          min: 0,
+          value: 15000,
         },
         atk: {
           label: "アタック / マジック",
-          value: 1500
+          type: "int",
+          min: 0,
+          value: 1500,
         },
         def: {
           label: "ディフェンス",
-          value: 500
+          type: "int",
+          min: 0,
+          value: 500,
         },
         res: {
           label: "レジスト",
-          value: 500
+          type: "int",
+          min: 0,
+          value: 500,
         },
         tec: {
           label: "テクニック",
-          value: 100
+          type: "int",
+          min: 0,
+          value: 100,
         },
         skillCost: {
           label: "スキルコスト",
-          value: 6
+          value: 6,
+          min: 0,
+          max: 6,
+          type: "int",
         },
         eqStars: {
           label: "装備の☆合計",
-          value: 20
+          type: "int",
+          min: 0,
+          max: 20,
+          value: 20,
         },
         enchant: {
-          label: "エンチャントが揃っている",
+          label: "エンチャント4セット",
+          type: "bool",
           value: true
         },
       },
       bpParamsSupport: {
         stars: {
           label: "☆",
-          value: 6
+          type: "int",
+          min: 1,
+          max: 6,
+          value: 6,
         },
         masterLv: {
           label: "マスターレベル",
-          value: 3
+          type: "int",
+          min: 0,
+          max: 3,
+          value: 3,
         },
         hp: {
           label: "HP",
-          value: 10000
+          type: "int",
+          min: 0,
+          value: 15000,
         },
         atk: {
           label: "アタック / マジック",
-          value: 1500
+          type: "int",
+          min: 0,
+          value: 1500,
         },
         def: {
           label: "ディフェンス",
-          value: 500
+          type: "int",
+          min: 0,
+          value: 500,
         },
         res: {
           label: "レジスト",
-          value: 500
+          type: "int",
+          min: 0,
+          value: 500,
         },
         skills: {
           label: "解放済みスキル",
-          value: 3
+          type: "int",
+          min: 1,
+          max: 3,
+          value: 3,
         },
       },
     };
@@ -460,6 +501,14 @@ export default {
       talent.owners = [chr];
       this.mainTalents.push(talent);
     }
+
+    this.parseBPUrl(window.location.href);
+  },
+
+  mounted() {
+    window.onpopstate = function () {
+      this.parseBPUrl(window.location.href);
+    }.bind(this);
   },
 
   methods: {
@@ -513,6 +562,51 @@ export default {
         rate += parseInt(this.bpParamsSupport.skills.value) * 0.05;
       }
       return Math.round(((hp * 0.05) + (atk * 2 * (1.0 + tec * 0.0003)) + (def * 2) + (res * 2)) * rate);
+    },
+
+    copyBPUrl() {
+      let params = [];
+
+      params.push(this.bpMainEnabled);
+      if (this.bpMainEnabled) {
+        for (const v of Object.values(this.bpParamsMain))
+          params.push(v.value);
+      }
+      params.push(this.bpSupportEnabled);
+      if (this.bpSupportEnabled) {
+        for (const v of Object.values(this.bpParamsSupport))
+          params.push(v.value);
+      }
+
+      let url = window.location.href.replace(/#.+/, '').replace(/\?.+/, '');
+      url += "#battle_power?bp=" + params.join(',');
+      window.history.pushState(null, null, url);
+    },
+
+    parseBPUrl(url) {
+      url = decodeURIComponent(url);
+      let q = url.match(/\?bp=(.+)$/);
+      if (q) {
+        let params = q[1].split(',').map(function (s) {
+          if (s == 'true')
+            return true;
+          else if (s == 'false')
+            return false;
+          else
+            return parseInt(s);
+        });
+
+        this.bpMainEnabled = params.shift();
+        for (const v of Object.values(this.bpParamsMain))
+          v.value = params.shift();
+        this.bpSupportEnabled = params.shift();
+        for (const v of Object.values(this.bpParamsSupport))
+          v.value = params.shift();
+      }
+    },
+
+    decodeURL() {
+
     }
   },
 
