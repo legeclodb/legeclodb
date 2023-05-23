@@ -138,7 +138,7 @@
         <h2><a name="damage" href="#damage"></a>ダメージ計算</h2>
         <p>
           れじぇくろのダメージ計算式は以下のようになっています。<br />
-          <code>(攻撃側の攻撃力－受ける側の防御力)×(スキルのダメージ倍率)×(与ダメージバフ・デバフ)×(ダメージ耐性バフ・デバフ)×(クリティカルダメージ倍率)×乱数×10</code><br />
+          <code>ダメージ＝(攻撃側の攻撃力－受ける側の防御力)×(スキルのダメージ倍率)×(与ダメージバフ・デバフ)×(ダメージ耐性バフ・デバフ)×(クリティカルダメージ倍率)×乱数×10</code><br />
           <br />
           <ul>
             <li>メイン・サポート個別にこの計算が行われる。</li>
@@ -219,9 +219,9 @@
         <p>
           戦闘力は以下の計算式で算出されるとみられます。<br />
           <br />
-          <code>A(ステータスにレートをかけた基礎値) × B(☆やマスターランクによる倍率)</code><br />
+          <code>戦闘力＝A(ステータス値に基づく基礎値) × B(☆やマスターレベルなどによる倍率)</code><br />
           A の内訳：<br />
-          <code>HP×0.05＋攻撃力×2×(1.0＋メインのテクニック×0.0003)＋ディフェンス×2＋レジスト×2</code><br />
+          <code>HP×0.05＋攻撃力×2×(1.0＋テクニック×0.0003)＋ディフェンス×2＋レジスト×2</code><br />
           B の内訳：<br />
           <code>1.0＋☆の数×0.1＋マスターレベル×0.1＋メインの使用スキルコスト×0.03＋メインの装備の☆合計×0.02＋エンチャントが4セット揃っている場合0.1＋サポートのスキルの数×0.05</code><br />
           <br />
@@ -245,11 +245,11 @@
                 <li>倍率の加算になるため、サポートとリンクすると戦闘力は単純に合計するよりもずっと大きくなる</li>
               </ul>
             </li>
-            <li>エンチャントは 4 種類揃えたときのみ 0.1 の倍率がかかる</li>
+            <li>エンチャントは 4 セット揃えたとき倍率に 0.1 が加算される</li>
             <li>
               装備の効果は基礎ステータス値が上がるもののみ戦闘力に計上される
               <ul>
-                <li>戦闘開始後のみ効果がある割合バフなどは計上されない</li>
+                <li>サポートのアミュレットも同様で、戦闘開始後に効果を発揮するもの (割合バフやステータス値の n% を加算系など) は計上されない</li>
                 <li>アクセサリのエンチャントのクリティカル率も計上されない</li>
               </ul>
             </li>
@@ -257,43 +257,49 @@
         </p>
 
         <div>
-          <b-container fluid>
-            <h6>戦闘力シミュレーター</h6>
+          <b-container>
+            <h5 style="margin-bottom: 10px">戦闘力シミュレーター</h5>
           </b-container>
         </div>
         <div class="flex">
-          <div style="width: 380px">
-            <b-container fluid>
-              <h6>メインキャラ <b-form-checkbox inline plain class="checkbox" id="bp-main-enabled" v-model="bpMainEnabled"></b-form-checkbox></h6>
-
-              <b-row v-for="(param, name, index) in bpParamsMain" :key="index">
-                <b-col sm="6">
+          <div style="width: 280px">
+            <b-container>
+              <b-form-row>
+                <b-col style="text-align:center">
+                  <h6>メインキャラ <b-form-checkbox inline plain class="checkbox" id="bp-main-enabled" v-model="bpMainEnabled"></b-form-checkbox></h6>
+                </b-col>
+              </b-form-row>
+              <b-form-row v-for="(param, name, index) in bpParamsMain" :key="index">
+                <b-col style="text-align:right" align-self="end" cols="7">
                   <label :for="`bp-main-${name}`">{{param.label}}</label>
                 </b-col>
-                <b-col sm="4">
+                <b-col>
                   <b-form-input :id="`bp-main-${name}`" v-model="param.value" size="sm" type="number" :min="param.min" :max="param.max" :disabled="!bpMainEnabled" v-if="param.type == 'int'"></b-form-input>
                   <b-form-checkbox :id="`bp-main-${name}`" v-model="param.value" size="sm" plain :disabled="!bpMainEnabled" v-if="param.type == 'bool'"></b-form-checkbox>
                 </b-col>
-              </b-row>
+              </b-form-row>
             </b-container>
           </div>
-          <div style="width: 380px">
-            <b-container fluid>
-              <h6>サポートキャラ <b-form-checkbox inline plain class="checkbox" id="bp-support-enabled" v-model="bpSupportEnabled"></b-form-checkbox></h6>
-
-              <b-row v-for="(param, name, index) in bpParamsSupport" :key="index">
-                <b-col sm="5">
+          <div style="width: 250px">
+            <b-container>
+              <b-form-row>
+                <b-col style="text-align: center">
+                  <h6>サポートキャラ <b-form-checkbox inline plain class="checkbox" id="bp-support-enabled" v-model="bpSupportEnabled"></b-form-checkbox></h6>
+                </b-col>
+              </b-form-row>
+              <b-form-row v-for="(param, name, index) in bpParamsSupport" :key="index">
+                <b-col style="text-align:right" align-self="end" cols="7">
                   <label :for="`bp-support-${name}`">{{param.label}}</label>
                 </b-col>
-                <b-col sm="4">
+                <b-col>
                   <b-form-input :id="`bp-support-${name}`" v-model="param.value" size="sm" type="number" :min="param.min" :max="param.max" :disabled="!bpSupportEnabled" v-if="param.type == 'int'"></b-form-input>
                 </b-col>
-              </b-row>
+              </b-form-row>
             </b-container>
           </div>
         </div>
         <div>
-          <b-container fluid>
+          <b-container>
             <h5 style="margin-bottom: 10px">戦闘力: {{bpResult}}</h5>
             <b-button @click="copyBPUrl()">パラメータを URL に保存</b-button>
           </b-container>
@@ -348,7 +354,7 @@ export default {
       bpSupportEnabled: true,
       bpParamsMain: {
         stars: {
-          label: "☆",
+          label: "⭐",
           type: "int",
           min: 1,
           max: 6,
@@ -399,7 +405,7 @@ export default {
           type: "int",
         },
         eqStars: {
-          label: "装備の☆合計",
+          label: "装備の⭐合計",
           type: "int",
           min: 0,
           max: 20,
@@ -413,7 +419,7 @@ export default {
       },
       bpParamsSupport: {
         stars: {
-          label: "☆",
+          label: "⭐",
           type: "int",
           min: 1,
           max: 6,
@@ -579,7 +585,7 @@ export default {
       }
 
       let url = window.location.href.replace(/#.+/, '').replace(/\?.+/, '');
-      url += "#battle_power?bp=" + params.join(',');
+      url += "?bp=" + params.join(',') + "#battle_power";
       window.history.pushState(null, null, url);
     },
 
