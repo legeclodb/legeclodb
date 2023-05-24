@@ -136,6 +136,84 @@
         </p>
 
         <h2><a name="damage" href="#damage"></a>ダメージ計算</h2>
+        <div class="panel">
+          <b-container>
+            <b-row>
+              <b-col style="text-align:center">
+                <h5 style="margin-bottom: 10px">ダメージシミュレータ</h5>
+              </b-col>
+            </b-row>
+          </b-container>
+          <div class="flex">
+            <div>
+              <b-container>
+                <b-form-row>
+                  <b-col style="text-align:center">
+                    <h6>攻撃側：メイン</h6>
+                  </b-col>
+                </b-form-row>
+                <b-form-row v-for="(param, name, index) in dmg.main" :key="index">
+                  <b-col style="text-align: right" align-self="end">
+                    <label style="width: 14em" :class="getParamClass(param)" :for="`dmg-main-${name}`">{{param.label}}</label>
+                  </b-col>
+                  <b-col>
+                    <b-form-input style="width: 5em" :id="`dmg-main-${name}`" v-model="param.value" size="sm" type="number" class="input-param"
+                                  :min="param.min" :max="param.max" :disabled="param.disabled()" v-if="param.type == 'number'"></b-form-input>
+                    <b-form-checkbox style="width: 5em" :id="`dmg-main-${name}`" v-model="param.value" size="sm"
+                                     :disabled="param.disabled()" plain v-if="param.type == 'bool'"></b-form-checkbox>
+                  </b-col>
+                </b-form-row>
+              </b-container>
+            </div>
+            <div>
+              <b-container>
+                <b-form-row>
+                  <b-col style="text-align:center">
+                    <h6>攻撃側：サポート <b-form-checkbox inline plain id="bp-support-enabled" v-model="dmg.supportEnabled" /></h6>
+                  </b-col>
+                </b-form-row>
+                <b-form-row v-for="(param, name, index) in dmg.support" :key="index">
+                  <b-col style="text-align: right" align-self="end">
+                    <label style="width: 14em" :class="getParamClass(param)" :for="`dmg-support-${name}`">{{param.label}}</label>
+                  </b-col>
+                  <b-col>
+                    <b-form-input style="width: 5em" :id="`dmg-support-${name}`" v-model="param.value" size="sm" type="number" class="input-param"
+                                  :min="param.min" :max="param.max" :disabled="param.disabled()" v-if="param.type == 'number'"></b-form-input>
+                    <b-form-checkbox style="width: 5em" :id="`dmg-support-${name}`" v-model="param.value" size="sm" plain
+                                     :disabled="param.disabled()" v-if="param.type == 'bool'"></b-form-checkbox>
+                  </b-col>
+                </b-form-row>
+              </b-container>
+            </div>
+            <div>
+              <b-container>
+                <b-form-row>
+                  <b-col style="text-align: center">
+                    <h6>受け側</h6>
+                  </b-col>
+                </b-form-row>
+                <b-form-row v-for="(param, name, index) in dmg.attacked" :key="index">
+                  <b-col style="text-align:right" align-self="end">
+                    <label style="width: 11em" :class="getParamClass(param)" :for="`dmg-attacked-${name}`">{{param.label}}</label>
+                  </b-col>
+                  <b-col>
+                    <b-form-input style="width: 5em" :id="`dmg-attacked-${name}`" v-model="param.value" size="sm" type="number" class="input-param"
+                                  :min="param.min" :max="param.max" v-if="param.type == 'number'"></b-form-input>
+                  </b-col>
+                </b-form-row>
+              </b-container>
+            </div>
+          </div>
+          <div>
+            <b-container>
+              <h5 style="margin-bottom: 10px">ダメージ: {{dmgResult}}</h5>
+              <b-button id="dmg-copy-url" @click="copyToClipboard(getDmgUrl())">パラメータを URL としてコピー</b-button>
+              <b-popover target="dmg-copy-url" triggers="click blur" placement="top" custom-class="url-popover">
+                コピーしました：<br />{{ getDmgUrl() }}
+              </b-popover>
+            </b-container>
+          </div>
+        </div>
         <p>
           れじぇくろのダメージ計算式は以下のようになっています。<br />
           <code>ダメージ＝(攻撃側の攻撃力－受ける側の防御力)×(スキルのダメージ倍率)×(与ダメージバフ・デバフ)×(ダメージ耐性バフ・デバフ)×(クリティカルダメージ倍率)×乱数×10</code><br />
@@ -216,8 +294,66 @@
         </p>
 
         <h2><a name="battle_power" href="#battle_power"></a>戦闘力について</h2>
+        <div class="panel">
+          <b-container>
+            <b-row>
+              <b-col style="text-align:center">
+                <h5 style="margin-bottom: 10px">戦闘力シミュレータ</h5>
+              </b-col>
+            </b-row>
+          </b-container>
+          <div class="flex">
+            <div>
+              <b-container>
+                <b-form-row>
+                  <b-col style="text-align:center">
+                    <h6>メインキャラ <b-form-checkbox inline plain id="bp-support-enabled" v-model="bp.mainEnabled" /></h6>
+                  </b-col>
+                </b-form-row>
+                <b-form-row v-for="(param, name, index) in bp.main" :key="index">
+                  <b-col style="text-align: right" align-self="end">
+                    <label style="width: 10em" :class="getParamClass(param)" :for="`bp-main-${name}`">{{param.label}}</label>
+                  </b-col>
+                  <b-col>
+                    <b-form-input style="width: 5em" :id="`bp-main-${name}`" v-model="param.value" size="sm" type="number" class="input-param"
+                                  :min="param.min" :max="param.max" :disabled="param.disabled()" v-if="param.type == 'number'"></b-form-input>
+                    <b-form-checkbox style="width: 5em" :id="`bp-main-${name}`" v-model="param.value" size="sm" plain
+                                     :disabled="param.disabled()" v-if="param.type == 'bool'"></b-form-checkbox>
+                  </b-col>
+                </b-form-row>
+              </b-container>
+            </div>
+            <div>
+              <b-container>
+                <b-form-row>
+                  <b-col style="text-align: center">
+                    <h6>サポートキャラ <b-form-checkbox inline plain id="bp-support-enabled" v-model="bp.supportEnabled" /></h6>
+                  </b-col>
+                </b-form-row>
+                <b-form-row v-for="(param, name, index) in bp.support" :key="index">
+                  <b-col style="text-align:right" align-self="end">
+                    <label style="width: 10em" :class="getParamClass(param)" :for="`bp-support-${name}`">{{param.label}}</label>
+                  </b-col>
+                  <b-col>
+                    <b-form-input style="width: 5em" :id="`bp-support-${name}`" v-model="param.value" size="sm" type="number" class="input-param"
+                                  :min="param.min" :max="param.max" :disabled="param.disabled()" v-if="param.type == 'number'"></b-form-input>
+                  </b-col>
+                </b-form-row>
+              </b-container>
+            </div>
+          </div>
+          <div>
+            <b-container>
+              <h5 style="margin-bottom: 10px">戦闘力: {{bpResult}}</h5>
+              <b-button id="bp-copy-url" @click="copyToClipboard(getBPUrl())">パラメータを URL としてコピー</b-button>
+              <b-popover target="bp-copy-url" triggers="click blur" placement="top" custom-class="url-popover">
+                コピーしました：<br />{{ getBPUrl() }}
+              </b-popover>
+            </b-container>
+          </div>
+        </div>
         <p>
-          戦闘力は以下の計算式で算出されるとみられます。<br />
+          戦闘力は以下のように算出されます。<br />
           <br />
           <code>戦闘力＝A(ステータス値に基づく基礎値) × B(☆やマスターレベルなどによる倍率)</code><br />
           A の内訳：<br />
@@ -230,6 +366,12 @@
               攻撃力はそのキャラの攻撃タイプがアタックであればアタック、マジックであればマジック
               <ul>
                 <li>アタックキャラのマジック、マジックキャラのアタックは戦闘力に計上されない</li>
+              </ul>
+            </li>
+            <li>
+              テクニックはクリティカルを模していると見られ、1000 で攻撃力 1.3 倍相当の効果となる
+              <ul>
+                <li>1000 が計上される上限となっているかもしれないが、現状そこまで伸ばす方法がなく検証不能</li>
               </ul>
             </li>
             <li>
@@ -254,57 +396,6 @@
               </ul>
             </li>
           </ul>
-        </p>
-
-        <div>
-          <b-container>
-            <h5 style="margin-bottom: 10px">戦闘力シミュレーター</h5>
-          </b-container>
-        </div>
-        <div class="flex">
-          <div style="width: 280px">
-            <b-container>
-              <b-form-row>
-                <b-col style="text-align:center">
-                  <h6>メインキャラ <b-form-checkbox inline plain class="checkbox" id="bp-main-enabled" v-model="bpMainEnabled"></b-form-checkbox></h6>
-                </b-col>
-              </b-form-row>
-              <b-form-row v-for="(param, name, index) in bpParamsMain" :key="index">
-                <b-col style="text-align:right" align-self="end" cols="7">
-                  <label :for="`bp-main-${name}`">{{param.label}}</label>
-                </b-col>
-                <b-col>
-                  <b-form-input :id="`bp-main-${name}`" v-model="param.value" size="sm" type="number" :min="param.min" :max="param.max" :disabled="!bpMainEnabled" v-if="param.type == 'int'"></b-form-input>
-                  <b-form-checkbox :id="`bp-main-${name}`" v-model="param.value" size="sm" plain :disabled="!bpMainEnabled" v-if="param.type == 'bool'"></b-form-checkbox>
-                </b-col>
-              </b-form-row>
-            </b-container>
-          </div>
-          <div style="width: 250px">
-            <b-container>
-              <b-form-row>
-                <b-col style="text-align: center">
-                  <h6>サポートキャラ <b-form-checkbox inline plain class="checkbox" id="bp-support-enabled" v-model="bpSupportEnabled"></b-form-checkbox></h6>
-                </b-col>
-              </b-form-row>
-              <b-form-row v-for="(param, name, index) in bpParamsSupport" :key="index">
-                <b-col style="text-align:right" align-self="end" cols="7">
-                  <label :for="`bp-support-${name}`">{{param.label}}</label>
-                </b-col>
-                <b-col>
-                  <b-form-input :id="`bp-support-${name}`" v-model="param.value" size="sm" type="number" :min="param.min" :max="param.max" :disabled="!bpSupportEnabled" v-if="param.type == 'int'"></b-form-input>
-                </b-col>
-              </b-form-row>
-            </b-container>
-          </div>
-        </div>
-        <div>
-          <b-container>
-            <h5 style="margin-bottom: 10px">戦闘力: {{bpResult}}</h5>
-            <b-button @click="copyBPUrl()">パラメータを URL に保存</b-button>
-          </b-container>
-        </div>
-        <p>
         </p>
 
         <h2><a name="thanks" href="#thanks"></a>謝辞</h2>
@@ -350,120 +441,233 @@ export default {
     return {
       popoverElements: [],
 
-      bpMainEnabled: true,
-      bpSupportEnabled: true,
-      bpParamsMain: {
-        stars: {
-          label: "⭐",
-          type: "int",
-          min: 1,
-          max: 6,
-          value: 6,
+      dmg: {
+        mainEnabled: true,
+        supportEnabled: true,
+        main: {
+          atk: {
+            label: "アタック / マジック",
+            type: "number",
+            min: 0,
+            value: 1000,
+            disabled: () => !this.dmg.mainEnabled,
+          },
+          skillDamageRate: {
+            label: "スキルダメージ倍率",
+            type: "number",
+            value: 1.0,
+            disabled: () => !this.dmg.mainEnabled,
+          },
+          damageBuff: {
+            label: "与ダメージバフ (%)",
+            type: "number",
+            min: -70,
+            value: 0,
+            disabled: () => !this.dmg.mainEnabled,
+          },
+          critical: {
+            label: "クリティカル",
+            type: "bool",
+            value: true,
+            disabled: () => !this.dmg.mainEnabled,
+          },
+          criticalDamageRate: {
+            label: "クリティカルダメージ倍率 (%)",
+            type: "number",
+            value: 30,
+            disabled: () => !this.dmg.mainEnabled || !this.dmg.main.critical.value,
+          },
+          doubleAttack: {
+            label: "2回攻撃",
+            type: "bool",
+            value: false,
+            disabled: () => !this.dmg.mainEnabled,
+          },
+          rangedPenalty: {
+            label: "遠距離キャラの近接ペナルティ",
+            type: "bool",
+            value: false,
+            disabled: () => !this.dmg.mainEnabled,
+          },
         },
-        masterLv: {
-          label: "マスターレベル",
-          type: "int",
-          min: 0,
-          max: 3,
-          value: 3,
+        support: {
+          atk: {
+            label: "アタック / マジック",
+            type: "number",
+            min: 0,
+            value: 1000,
+            disabled: () => !this.dmg.supportEnabled,
+          },
+          damageBuff: {
+            label: "与ダメージバフ (%)",
+            type: "number",
+            min: -70,
+            value: 0,
+            disabled: () => !this.dmg.supportEnabled,
+          },
+          rangedPenalty: {
+            label: "遠距離キャラの近接ペナルティ",
+            type: "bool",
+            value: false,
+            disabled: () => !this.dmg.supportEnabled,
+          },
         },
-        hp: {
-          label: "HP",
-          type: "int",
-          min: 0,
-          value: 15000,
-        },
-        atk: {
-          label: "アタック / マジック",
-          type: "int",
-          min: 0,
-          value: 1500,
-        },
-        def: {
-          label: "ディフェンス",
-          type: "int",
-          min: 0,
-          value: 500,
-        },
-        res: {
-          label: "レジスト",
-          type: "int",
-          min: 0,
-          value: 500,
-        },
-        tec: {
-          label: "テクニック",
-          type: "int",
-          min: 0,
-          value: 100,
-        },
-        skillCost: {
-          label: "スキルコスト",
-          value: 6,
-          min: 0,
-          max: 6,
-          type: "int",
-        },
-        eqStars: {
-          label: "装備の⭐合計",
-          type: "int",
-          min: 0,
-          max: 20,
-          value: 20,
-        },
-        enchant: {
-          label: "エンチャント4セット",
-          type: "bool",
-          value: true
-        },
+        attacked: {
+          def: {
+            label: "ディフェンス / レジスト",
+            type: "number",
+            value: 100,
+            disabled: () => false,
+          },
+          damageRate: {
+            label: "ダメージ耐性 (%)",
+            type: "number",
+            max: 70,
+            value: 0,
+            disabled: () => false,
+          },
+          shield: {
+            label: "シールド",
+            type: "number",
+            value: 0,
+            disabled: () => false,
+          },
+        }
       },
-      bpParamsSupport: {
-        stars: {
-          label: "⭐",
-          type: "int",
-          min: 1,
-          max: 6,
-          value: 6,
+
+      bp: {
+        mainEnabled: true,
+        supportEnabled: true,
+        main: {
+          stars: {
+            label: "⭐",
+            type: "number",
+            min: 1,
+            max: 6,
+            value: 6,
+            disabled: () => !this.bp.mainEnabled,
+          },
+          masterLv: {
+            label: "マスターレベル",
+            type: "number",
+            min: 0,
+            max: 3,
+            value: 3,
+            disabled: () => !this.bp.mainEnabled,
+          },
+          hp: {
+            label: "HP",
+            type: "number",
+            min: 0,
+            value: 15000,
+            disabled: () => !this.bp.mainEnabled,
+          },
+          atk: {
+            label: "アタック / マジック",
+            type: "number",
+            min: 0,
+            value: 1500,
+            disabled: () => !this.bp.mainEnabled,
+          },
+          def: {
+            label: "ディフェンス",
+            type: "number",
+            min: 0,
+            value: 500,
+            disabled: () => !this.bp.mainEnabled,
+          },
+          res: {
+            label: "レジスト",
+            type: "number",
+            min: 0,
+            value: 500,
+            disabled: () => !this.bp.mainEnabled,
+          },
+          tec: {
+            label: "テクニック",
+            type: "number",
+            min: 0,
+            value: 100,
+            disabled: () => !this.bp.mainEnabled,
+          },
+          skillCost: {
+            label: "スキルコスト",
+            type: "number",
+            value: 6,
+            min: 0,
+            max: 6,
+            disabled: () => !this.bp.mainEnabled,
+          },
+          eqStars: {
+            label: "装備の⭐合計",
+            type: "number",
+            min: 0,
+            max: 20,
+            value: 20,
+            disabled: () => !this.bp.mainEnabled,
+          },
+          enchant: {
+            label: "エンチャント4セット",
+            type: "bool",
+            value: true,
+            disabled: () => !this.bp.mainEnabled,
+          },
         },
-        masterLv: {
-          label: "マスターレベル",
-          type: "int",
-          min: 0,
-          max: 3,
-          value: 3,
-        },
-        hp: {
-          label: "HP",
-          type: "int",
-          min: 0,
-          value: 15000,
-        },
-        atk: {
-          label: "アタック / マジック",
-          type: "int",
-          min: 0,
-          value: 1500,
-        },
-        def: {
-          label: "ディフェンス",
-          type: "int",
-          min: 0,
-          value: 500,
-        },
-        res: {
-          label: "レジスト",
-          type: "int",
-          min: 0,
-          value: 500,
-        },
-        skills: {
-          label: "解放済みスキル",
-          type: "int",
-          min: 1,
-          max: 3,
-          value: 3,
-        },
-      },
+        support: {
+          stars: {
+            label: "⭐",
+            type: "number",
+            min: 1,
+            max: 6,
+            value: 6,
+            disabled: () => !this.bp.supportEnabled,
+          },
+          masterLv: {
+            label: "マスターレベル",
+            type: "number",
+            min: 0,
+            max: 3,
+            value: 3,
+            disabled: () => !this.bp.supportEnabled,
+          },
+          hp: {
+            label: "HP",
+            type: "number",
+            min: 0,
+            value: 15000,
+            disabled: () => !this.bp.supportEnabled,
+          },
+          atk: {
+            label: "アタック / マジック",
+            type: "number",
+            min: 0,
+            value: 1500,
+            disabled: () => !this.bp.supportEnabled,
+          },
+          def: {
+            label: "ディフェンス",
+            type: "number",
+            min: 0,
+            value: 500,
+            disabled: () => !this.bp.supportEnabled,
+          },
+          res: {
+            label: "レジスト",
+            type: "number",
+            min: 0,
+            value: 500,
+            disabled: () => !this.bp.supportEnabled,
+          },
+          skills: {
+            label: "解放済みスキル",
+            type: "number",
+            min: 1,
+            max: 3,
+            value: 3,
+            disabled: () => !this.bp.supportEnabled,
+          },
+        }
+      }
     };
   },
 
@@ -508,6 +712,7 @@ export default {
       this.mainTalents.push(talent);
     }
 
+    this.parseDmgUrl(window.location.href);
     this.parseBPUrl(window.location.href);
   },
 
@@ -538,57 +743,142 @@ export default {
       }
     },
 
-    calcBP() {
+    getParamClass(param) {
+      return param.disabled() ? "disabled" : "";
+    },
+
+    calcdmg() {
+      const attacked = this.dmg.attacked;
+      const main = this.dmg.main;
+      const support = this.dmg.support;
+
+      const def = parseInt(attacked.def.value);
+      const damageResist = 1.0 - parseFloat(attacked.damageRate.value) * 0.01;
+      const shield = parseInt(attacked.shield.value);
+
+      let result = 0;
+      if (this.dmg.mainEnabled) {
+        const atk = parseInt(main.atk.value);
+        const skillDamageRate = parseFloat(main.skillDamageRate.value);
+        const damageBuff = 1.0 + parseFloat(main.damageBuff.value) * 0.01;
+        const criticalDamageRate = 1.0 + parseFloat(main.criticalDamageRate.value) * 0.01;
+
+        let damage = (atk - def) * skillDamageRate * damageBuff * damageResist;
+        if (main.critical.value)
+          damage *= criticalDamageRate;
+        if (main.rangedPenalty.value)
+          damage *= 0.6;
+
+        result += Math.max(Math.round(damage), 1) * (main.doubleAttack.value ? 20 : 10);
+      }
+      if (this.dmg.supportEnabled) {
+        const atk = parseInt(support.atk.value);
+        const damageBuff = 1.0 + parseFloat(support.damageBuff.value) * 0.01;
+
+        let damage = (atk - def) * damageBuff * damageResist;
+        if (support.rangedPenalty.value)
+          damage *= 0.6;
+
+        result += Math.max(Math.round(damage), 1) * 10;
+      }
+
+      return Math.max(result - shield, 0);
+    },
+
+    calcbp() {
       let hp = 0;
       let atk = 0;
       let def = 0;
       let res = 0;
       let tec = 0;
       let rate = 1.0;
-      if (this.bpMainEnabled) {
-        hp += parseInt(this.bpParamsMain.hp.value);
-        atk += parseInt(this.bpParamsMain.atk.value);
-        def += parseInt(this.bpParamsMain.def.value);
-        res += parseInt(this.bpParamsMain.res.value);
-        tec += parseInt(this.bpParamsMain.tec.value);
-        rate += parseInt(this.bpParamsMain.stars.value) * 0.1;
-        rate += parseInt(this.bpParamsMain.masterLv.value) * 0.1;
-        rate += parseInt(this.bpParamsMain.skillCost.value) * 0.03;
-        rate += parseInt(this.bpParamsMain.eqStars.value) * 0.02;
-        if (this.bpParamsMain.enchant.value)
+      if (this.bp.mainEnabled) {
+        const params = this.bp.main;
+        hp += parseInt(params.hp.value);
+        atk += parseInt(params.atk.value);
+        def += parseInt(params.def.value);
+        res += parseInt(params.res.value);
+        tec += parseInt(params.tec.value);
+        rate += parseInt(params.stars.value) * 0.1;
+        rate += parseInt(params.masterLv.value) * 0.1;
+        rate += parseInt(params.skillCost.value) * 0.03;
+        rate += parseInt(params.eqStars.value) * 0.02;
+        if (params.enchant.value)
           rate += 0.1;
       }
-      if (this.bpSupportEnabled) {
-        hp += parseInt(this.bpParamsSupport.hp.value);
-        atk += parseInt(this.bpParamsSupport.atk.value);
-        def += parseInt(this.bpParamsSupport.def.value);
-        res += parseInt(this.bpParamsSupport.res.value);
-        rate += parseInt(this.bpParamsSupport.stars.value) * 0.1;
-        rate += parseInt(this.bpParamsSupport.masterLv.value) * 0.1;
-        rate += parseInt(this.bpParamsSupport.skills.value) * 0.05;
+      if (this.bp.supportEnabled) {
+        const params = this.bp.support;
+        hp += parseInt(params.hp.value);
+        atk += parseInt(params.atk.value);
+        def += parseInt(params.def.value);
+        res += parseInt(params.res.value);
+        rate += parseInt(params.stars.value) * 0.1;
+        rate += parseInt(params.masterLv.value) * 0.1;
+        rate += parseInt(params.skills.value) * 0.05;
       }
       return Math.round(((hp * 0.05) + (atk * 2 * (1.0 + tec * 0.0003)) + (def * 2) + (res * 2)) * rate);
     },
 
-    copyBPUrl() {
+    getDmgUrl() {
       let params = [];
 
-      params.push(this.bpMainEnabled);
-      if (this.bpMainEnabled) {
-        for (const v of Object.values(this.bpParamsMain))
-          params.push(v.value);
-      }
-      params.push(this.bpSupportEnabled);
-      if (this.bpSupportEnabled) {
-        for (const v of Object.values(this.bpParamsSupport))
-          params.push(v.value);
-      }
+      for (const v of Object.values(this.dmg.main))
+        params.push(v.value);
 
-      let url = window.location.href.replace(/#.+/, '').replace(/\?.+/, '');
-      url += "?bp=" + params.join(',') + "#battle_power";
-      window.history.pushState(null, null, url);
+      params.push(this.dmg.supportEnabled);
+      for (const v of Object.values(this.dmg.support))
+        params.push(v.value);
+
+      for (const v of Object.values(this.dmg.attacked))
+        params.push(v.value);
+
+      let url = window.location.href.replace(/\?.+/, '').replace(/#.+/, '');
+      url += "?dmg=" + params.join(',') + "#damage";
+      return url;
+    },
+    parseDmgUrl(url) {
+      url = decodeURIComponent(url);
+      let q = url.match(/\?dmg=(.+)$/);
+      if (q) {
+        let params = q[1].split(',').map(function (s) {
+          if (s == 'true')
+            return true;
+          else if (s == 'false')
+            return false;
+          else
+            return parseInt(s);
+        });
+
+        for (const v of Object.values(this.dmg.main))
+          v.value = params.shift();
+
+        this.dmg.supportEnabled = params.shift();
+        for (const v of Object.values(this.dmg.support))
+          v.value = params.shift();
+
+        for (const v of Object.values(this.dmg.attacked))
+          v.value = params.shift();
+
+        return true;
+      }
+      return false;
     },
 
+    getBPUrl() {
+      let params = [];
+
+      params.push(this.bp.mainEnabled);
+      for (const v of Object.values(this.bp.main))
+        params.push(v.value);
+
+      params.push(this.bp.supportEnabled);
+      for (const v of Object.values(this.bp.support))
+        params.push(v.value);
+
+      let url = window.location.href.replace(/\?.+/, '').replace(/#.+/, '');
+      url += "?bp=" + params.join(',') + "#battle_power";
+      return url;
+    },
     parseBPUrl(url) {
       url = decodeURIComponent(url);
       let q = url.match(/\?bp=(.+)$/);
@@ -602,23 +892,26 @@ export default {
             return parseInt(s);
         });
 
-        this.bpMainEnabled = params.shift();
-        for (const v of Object.values(this.bpParamsMain))
+        this.bp.mainEnabled = params.shift();
+        for (const v of Object.values(this.bp.main))
           v.value = params.shift();
-        this.bpSupportEnabled = params.shift();
-        for (const v of Object.values(this.bpParamsSupport))
+
+        this.bp.supportEnabled = params.shift();
+        for (const v of Object.values(this.bp.support))
           v.value = params.shift();
+
+        return true;
       }
+      return false;
     },
-
-    decodeURL() {
-
-    }
   },
 
   computed: {
+    dmgResult() {
+      return this.calcdmg();
+    },
     bpResult() {
-      return this.calcBP();
+      return this.calcbp();
     }
   }
 
@@ -640,7 +933,7 @@ div.about {
 }
 
 .about p {
-  margin-bottom: 25px;
+  margin-bottom: 20px;
 }
 
 .about ul {
@@ -657,6 +950,9 @@ div.about {
   max-width: 1125px !important;
   width: 1125px !important;
 }
+.url-popover {
+  max-width: 65em !important;
+}
 
 .item_po {
   max-width: 430px !important;
@@ -667,9 +963,28 @@ div.about {
   color: rgb(150, 150, 150);
 }
 
-.checkbox .btn {
-  margin: 0px 0px;
-  padding: 0px 5px;
+label.disabled {
+  color: rgb(180, 180, 180);
+}
+
+.input-param {
+  height: 1.75em;
+  padding: 0.25em;
+  width: 5.5em;
+}
+
+.panel {
+  padding: 10px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 0.3rem;
+  display: inline-block;
+  background: white;
+}
+
+.panel h6 {
+  margin-bottom: 5px;
 }
 
 </style>
