@@ -162,6 +162,11 @@ div.info {
   display: flex;
   align-items: center;
 }
+.info .status2 {
+  display: flex;
+  align-items: center;
+  margin-top: 3px;
+}
 .level-selector .btn {
   margin-left: 5px;
   padding: 0px 5px;
@@ -212,9 +217,13 @@ div.skill {
   display: flex;
   align-items: center;
 }
+.param-box span {
+  margin-left: 1px;
+}
 .param-name {
   color: rgb(175, 175, 175);
   font-size: 85%;
+  margin-left: 0 !important;
 }
 .param-value {
   font-size: 85%;

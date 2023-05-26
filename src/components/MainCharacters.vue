@@ -160,6 +160,15 @@
                   <div class="param-box"><b-img-lazy :src="getImageURL('移動')" title="移動" width="18" height="18" /><span>{{chr.move}}</span></div>
                   <span class="date">{{chr.date}}</span>
                 </div>
+                <div class="status2">
+                  <div class="param-box"><b-img-lazy :src="getImageURL('HP')" title="HP" width="18" height="18" /><span>{{chr.hp}}</span></div>
+                  <div class="param-box"><b-img-lazy :src="getImageURL('アタック')" title="アタック" width="18" height="18" /><span>{{chr.atk}}</span></div>
+                  <div class="param-box"><b-img-lazy :src="getImageURL('ディフェンス')" title="ディフェンス" width="18" height="18" /><span>{{chr.def}}</span></div>
+                  <div class="param-box"><b-img-lazy :src="getImageURL('マジック')" title="マジック" width="18" height="18" /><span>{{chr.mag}}</span></div>
+                  <div class="param-box"><b-img-lazy :src="getImageURL('レジスト')" title="レジスト" width="18" height="18" /><span>{{chr.res}}</span></div>
+                  <div class="param-box"><b-img-lazy :src="getImageURL('テクニック')" title="テクニック" width="18" height="18" /><span>{{chr.tec}}</span></div>
+                  <div class="param-box"><span class="param-name">戦闘力:</span><span class="param-value">{{chr.power}}</span></div>
+                </div>
               </div>
               <div class="skills">
                 <div class="talent" :class="{ 'highlighted': isTalentHighlighted(chr.talent) }">
@@ -347,8 +356,10 @@ export default {
         "詳細",
       ],
       sortTypes: [
-        "新→旧",
-        "旧→新",
+        "実装時期(降順)",
+        "実装時期(昇順)",
+        "戦闘力(降順)",
+        "戦闘力(昇順)",
       ],
 
       tagCategory: {
@@ -396,10 +407,20 @@ export default {
     },
     items() {
       let characters = this.characters.filter(a => this.filterItem(a)); // filter & shallow copy
-      if (this.sortType == 0) // 新→旧
-        characters.sort((a, b) => b.date.localeCompare(a.date));
-      else // 旧→新
-        characters.sort((a, b) => a.date.localeCompare(b.date));
+      switch (this.sortType) {
+        case 0: // 新→旧
+          characters.sort((a, b) => b.date.localeCompare(a.date));
+          break;
+        case 1: // 新→旧
+          characters.sort((a, b) => a.date.localeCompare(b.date));
+          break;
+        case 2:
+          characters.sort((a, b) => a.power < b.power ? 1 : -1);
+          break;
+        case 3:
+          characters.sort((a, b) => a.power < b.power ? -1 : 1);
+          break;
+      }
       return characters;
     },
     pagedItems() {
@@ -457,6 +478,17 @@ export default {
         chr.symbolId = this.symbols.findIndex(v => v == chr.symbol);
         chr.rarityId = this.rarities.findIndex(v => v == chr.rarity);
         chr.damageTypeId = this.damageTypes.findIndex(v => v == chr.damageType);
+
+        const status = this.getMainChrStatus(chr);
+        chr.hp = status[0];
+        chr.atk = status[1];
+        chr.def = status[2];
+        chr.mag = status[3];
+        chr.res = status[4];
+        chr.tec = status[5];
+        chr.power = this.getMainBattlePower(status);
+        console.log(`${chr.name}: ${chr.power}`);
+
         if (chr.summon) {
           for (let s of chr.summon) {
             s.recordType = 'chr';

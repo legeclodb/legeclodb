@@ -1,4 +1,4 @@
-﻿import jsonImageTable from '../assets/image_table.json'
+import jsonImageTable from '../assets/image_table.json'
 
 export default {
   data() {
@@ -601,5 +601,71 @@ export default {
         return numHandled;
       }
     },
+
+    getMainChrStatus(chr, level = 110, star = 6, bonus = true)
+    {
+      if (!chr.statusInit || !chr.statusLv || !chr.statusStar)
+        return null;
+
+      let r = [0, 0, 0, 0, 0, 0];
+      for (let i = 0; i < r.length; ++i) {
+        r[i] += chr.statusInit[i];
+        r[i] += Math.round(chr.statusLv[i] * (level - 1));
+        r[i] += Math.round(chr.statusStar[i] * star);
+      }
+      if (bonus) {
+        const fixed = [100 + 800, 25, 15, 25, 15, 0]; // 好感度 + マスターレベル3
+        const rate = [80 + 70, 90 + 50, 80 + 50, 90 + 50, 80 + 50, 50]; // 記憶の書 + 強化ボード (%)
+        for (let i = 0; i < r.length; ++i) {
+          r[i] += fixed[i];
+          r[i] *= 1.0 + rate[i] * 0.01;
+          r[i] = Math.round(r[i]);
+        }
+      }
+      return r;
+    },
+
+    getSupportChrStatus(chr, level = 110, star = 6, bonus = true) {
+      if (!chr.statusInit || !chr.statusLv || !chr.statusStar)
+        return null;
+
+      let r = [0, 0, 0, 0, 0, 0];
+      for (let i = 0; i < r.length; ++i) {
+        r[i] += chr.statusInit[i];
+        r[i] += Math.round(chr.statusLv[i] * (level - 1));
+        r[i] += Math.round(chr.statusStar[i] * star);
+      }
+      if (bonus) {
+        const fixed = [100 + 1200, 25 + 55, 15 + 28, 25 + 55, 15 + 28, 0]; // 好感度 + マスターレベル3
+        const rate = [80 + 30, 90 + 30, 80 + 30, 90 + 30, 80 + 30, 0]; // 記憶の書 + 強化ボード (%)
+        for (let i = 0; i < r.length; ++i) {
+          r[i] += fixed[i];
+          r[i] *= 1.0 + rate[i] * 0.01;
+          r[i] = Math.round(r[i]);
+        }
+      }
+      return r;
+    },
+
+    getBattlePower(status)
+    {
+      if (!status)
+        return 0;
+
+      let r = 0;
+      r += status[0] * 0.05;
+      r += Math.max(status[1], status[3]) * 2 * (1.0 + status[5] * 0.0003);
+      r += status[2] * 2;
+      r += status[4] * 2;
+      return r;
+    },
+    getMainBattlePower(status) {
+      let r = this.getBattlePower(status);
+      return Math.round(r * (1.0 + 0.6 + 0.3 + 0.03 * 6));
+    },
+    getSupportBattlePower(status) {
+      let r = this.getBattlePower(status);
+      return Math.round(r * (1.0 + 0.6 + 0.15));
+    }
   }
 }
