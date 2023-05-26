@@ -84,7 +84,7 @@
               <span>表示 件数：</span>
               <b-dropdown :text="displayCounts[displayCount]" size="sm" id="detail_selector">
                 <b-dropdown-item class="d-flex flex-column" v-for="(c, i) in displayCounts" :key="i" @click="displayCount=i">
-                  {{ displayCounts[i] }}
+                  {{ c }}
                 </b-dropdown-item>
               </b-dropdown>
             </div>
@@ -92,7 +92,7 @@
               <span>形式：</span>
               <b-dropdown :text="displayTypes[displayType]" size="sm" id="detail_selector">
                 <b-dropdown-item class="d-flex flex-column" v-for="(c, i) in displayTypes" :key="i" @click="displayType=i">
-                  {{ displayTypes[i] }}
+                  {{ c }}
                 </b-dropdown-item>
               </b-dropdown>
             </div>
@@ -102,7 +102,7 @@
               <span>ソート：</span>
               <b-dropdown :text="sortTypes[sortType]" size="sm" id="sort_selector">
                 <b-dropdown-item class="d-flex flex-column" v-for="(c, i) in sortTypes" :key="i" @click="sortType=i">
-                  {{ sortTypes[i] }}
+                  {{ c }}
                 </b-dropdown-item>
               </b-dropdown>
               <span style="width:5px"></span>
@@ -147,13 +147,15 @@
             <div class="detail" v-show="displayType >= 1">
               <div class="info" :class="{ 'highlighted': isInfoHighlighted(item) }">
                 <h5 v-html="item.name"></h5>
-                <b-img-lazy :src="getImageURL(item.slot)" :title="'部位:'+item.slot" height="25" />
-                <b-img-lazy :src="getImageURL(item.rarity)" :title="'レアリティ:'+item.rarity" height="20" />
-                <span class="date">{{item.date}}</span>
+                <div class="status">
+                  <b-img-lazy :src="getImageURL(item.slot)" :title="'部位:'+item.slot" height="25" />
+                  <b-img-lazy :src="getImageURL(item.rarity)" :title="'レアリティ:'+item.rarity" height="20" />
+                  <div class="param-box"><span class="param-name">実装日:</span><span class="param-value">{{item.date}}</span></div>
+                </div>
               </div>
               <div class="info">
-                <div v-html="itemClassesToHtml(item)"></div>
-                <div v-html="itemParamsToHtml(item)" v-show="displayType >= 2"></div>
+                <div class="status" v-html="itemClassesToHtml(item)"></div>
+                <div class="status2" v-html="itemParamsToHtml(item)"></div>
               </div>
               <div class="skills">
                 <div class="skill" :class="{ 'highlighted': isDescHighlighted(item) }" v-show="displayType >= 2" style="flex-grow: 1">
@@ -359,12 +361,12 @@ export default {
     },
 
     itemClassesToHtml(item) {
-      if (item.classes) {
-        return item.classes.map(c => `<img src="${this.getImageURL(c)}" title="${c}" width="25" height="25" />`).join("")
-      }
-      else {
-        return `<img src="${this.getImageURL('全クラス')}" title="全クラス" height="25" />`;
-      }
+      let r = "";
+      if (item.classes)
+        r += item.classes.map(c => `<img src="${this.getImageURL(c)}" title="${c}" width="24" height="24" />`).join("")
+      else
+        r += `<img src="${this.getImageURL('全クラス')}" title="全クラス" height="24" />`;
+      return r;
     },
     itemParamsToHtml(item) {
       const nameTable = {
@@ -377,7 +379,7 @@ export default {
       };
       let params = [];
       for (const k in item.params) {
-        params.push(`<p><img src="${this.getImageURL(nameTable[k])}" title="${nameTable[k]}" width="20" height="20" /> +${item.params[k]}</p>`);
+        params.push(`<div class="param-box"><img src="${this.getImageURL(nameTable[k])}" title="${nameTable[k]}" width="18" height="18" /><span>+${item.params[k]}</span></div>`);
       }
       return params.join("");
     },

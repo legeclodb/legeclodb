@@ -98,7 +98,7 @@
               <span>表示 件数：</span>
               <b-dropdown :text="displayCounts[displayCount]" size="sm" id="detail_selector">
                 <b-dropdown-item class="d-flex flex-column" v-for="(c, i) in displayCounts" :key="i" @click="displayCount=i">
-                  {{ displayCounts[i] }}
+                  {{ c }}
                 </b-dropdown-item>
               </b-dropdown>
             </div>
@@ -106,7 +106,7 @@
               <span>形式：</span>
               <b-dropdown :text="displayTypes[displayType]" size="sm" id="detail_selector">
                 <b-dropdown-item class="d-flex flex-column" v-for="(c, i) in displayTypes" :key="i" @click="displayType=i">
-                  {{ displayTypes[i] }}
+                  {{ c }}
                 </b-dropdown-item>
               </b-dropdown>
             </div>
@@ -116,13 +116,13 @@
               <span>ソート：</span>
               <b-dropdown :text="sortTypes[sortType]" size="sm" id="sort_selector">
                 <b-dropdown-item class="d-flex flex-column" v-for="(c, i) in sortTypes" :key="i" @click="sortType=i">
-                  {{ sortTypes[i] }}
+                  {{ c }}
                 </b-dropdown-item>
               </b-dropdown>
               <span style="width:5px"></span>
               <b-dropdown :text="sortOrders[sortOrder]" size="sm" id="sort_order_selector">
                 <b-dropdown-item class="d-flex flex-column" v-for="(c, i) in sortOrders" :key="i" @click="sortOrder=i">
-                  {{ sortOrders[i] }}
+                  {{ c }}
                 </b-dropdown-item>
               </b-dropdown>
             </div>
@@ -164,9 +164,9 @@
                   <b-img-lazy :src="getImageURL(chr.rarity)" :title="'レアリティ:'+chr.rarity" height="20" />
                   <div class="param-box"><b-img-lazy :src="getImageURL(chr.damageType)" :title="'攻撃タイプ:'+chr.damageType" width="20" height="20" /></div>
                   <div class="param-box"><b-img-lazy :src="getImageURL('射程')" title="射程" width="18" height="18" /><span>{{chr.range}}</span></div>
-                  <span class="date">{{chr.date}}</span>
+                  <div class="param-box"><span class="param-name">実装日:</span><span class="param-value">{{chr.date}}</span></div>
                 </div>
-                <div class="status2">
+                <div class="status2" title="☆6 Lv110 で記憶の書、強化ボード、好感度ボーナス、マスターレベル全開放時の能力値" v-if="chr.power">
                   <div class="param-box"><b-img-lazy :src="getImageURL('HP')" title="HP" width="18" height="18" /><span>{{chr.hp}}</span></div>
                   <div class="param-box" v-if="chr.damageType=='アタック'"><b-img-lazy :src="getImageURL('アタック')" title="アタック" width="18" height="18" /><span>{{chr.atk}}</span></div>
                   <div class="param-box" v-if="chr.damageType=='マジック'"><b-img-lazy :src="getImageURL('マジック')" title="マジック" width="18" height="18" /><span>{{chr.mag}}</span></div>
@@ -419,14 +419,15 @@ export default {
         chr.damageTypeId = this.damageTypes.findIndex(v => v == chr.damageType);
 
         const status = this.getSupportChrStatus(chr);
-        status[5] = 0; // テクニックを戦闘力に計上しないように
-
-        chr.hp = status[0];
-        chr.atk = status[1];
-        chr.def = status[2];
-        chr.mag = status[3];
-        chr.res = status[4];
-        chr.power = this.getSupportBattlePower(status);
+        if (status) {
+          status[5] = 0; // テクニックを戦闘力に計上しないように
+          chr.hp = status[0];
+          chr.atk = status[1];
+          chr.def = status[2];
+          chr.mag = status[3];
+          chr.res = status[4];
+          chr.power = this.getSupportBattlePower(status);
+        }
 
         for (let si = 0; si < chr.skills.length; ++si) {
           let skill = skillMap.get(chr.skills[si]);

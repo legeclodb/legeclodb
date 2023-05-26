@@ -211,6 +211,7 @@ div.skill {
 .param-box {
   margin: 0px 2px;
   padding: 0px 2px;
+  min-height: 21px;
   border: 1px solid rgba(0, 0, 0, 0.2);
   border-radius: 0.3rem;
   background: white;
