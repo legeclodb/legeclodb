@@ -11,6 +11,7 @@ export default {
       displayType: 2,
       displayCount: 1,
       sortType: 0,
+      sortOrder: 0,
       sortBySlot: false,
       page: 1,
 
@@ -57,6 +58,10 @@ export default {
     if (tmp)
       this.sortType = parseInt(tmp);
 
+    tmp = localStorage.getItem(`${route}.sortOrder`);
+    if (tmp)
+      this.sortOrder = parseInt(tmp);
+
     tmp = localStorage.getItem(`${route}.sortBySlot`);
     if (tmp)
       this.sortBySlot = (tmp == "true");
@@ -80,6 +85,9 @@ export default {
     sortType: function (v) {
       localStorage.setItem(`${this.getRouteName()}.sortType`, v);
     },
+    sortOrder: function (v) {
+      localStorage.setItem(`${this.getRouteName()}.sortOrder`, v);
+    },
     sortBySlot: function (v) {
       localStorage.setItem(`${this.getRouteName()}.sortBySlot`, v);
     },
@@ -89,7 +97,7 @@ export default {
     style() {
       return {
         "--character-width": `${this.displayType >= 2 ? '750px' : ''}`,
-        "--character-min-width": `${this.displayType == 1 ? '400px' : ''}`,
+        "--character-min-width": `${this.displayType == 1 ? '500px' : ''}`,
         "--character-flex-grow": `${this.displayType < 2 ? 0 : 1}`,
         "--skills-display": `${this.displayType < 2 ? 'flex' : 'display'}`,
         "--skill-flex-grow": `${this.displayType == 2 ? 1 : 0}`,

@@ -218,8 +218,8 @@ export default {
         "詳細",
       ],
       sortTypes: [
-        "新→旧",
-        "旧→新",
+        "実装日 (降順)",
+        "実装日 (昇順)",
       ],
 
       tagCategory: {

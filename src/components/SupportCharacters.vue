@@ -119,6 +119,12 @@
                   {{ sortTypes[i] }}
                 </b-dropdown-item>
               </b-dropdown>
+              <span style="width:5px"></span>
+              <b-dropdown :text="sortOrders[sortOrder]" size="sm" id="sort_order_selector">
+                <b-dropdown-item class="d-flex flex-column" v-for="(c, i) in sortOrders" :key="i" @click="sortOrder=i">
+                  {{ sortOrders[i] }}
+                </b-dropdown-item>
+              </b-dropdown>
             </div>
           </div>
         </div>
@@ -259,10 +265,17 @@ export default {
         "詳細",
       ],
       sortTypes: [
-        "実装時期(降順)",
-        "実装時期(昇順)",
-        "戦闘力(降順)",
-        "戦闘力(昇順)",
+        "実装日",
+        "戦闘力",
+        "HP",
+        "アタック",
+        "ディフェンス",
+        "マジック",
+        "レジスト",
+      ],
+      sortOrders: [
+        "降順",
+        "昇順"
       ],
 
       tagCategory: {
@@ -312,20 +325,43 @@ export default {
     },
     items() {
       let characters = this.characters.filter(a => this.filterItem(a)); // filter & shallow copy
-      switch (this.sortType) {
-        case 0: // 新→旧
+
+      if (this.sortType == 0) // 実装時期
+        if (this.sortOrder == 0)
           characters.sort((a, b) => b.date.localeCompare(a.date));
-          break;
-        case 1: // 新→旧
-          characters.sort((a, b) => a.date.localeCompare(b.date));
-          break;
-        case 2:
+        else
+          characters.sort((b, a) => b.date.localeCompare(a.date));
+      else if (this.sortType == 1) // 戦闘力
+        if (this.sortOrder == 0)
           characters.sort((a, b) => a.power < b.power ? 1 : -1);
-          break;
-        case 3:
-          characters.sort((a, b) => a.power < b.power ? -1 : 1);
-          break;
-      }
+        else
+          characters.sort((b, a) => a.power < b.power ? 1 : -1);
+      else if (this.sortType == 2) // HP
+        if (this.sortOrder == 0)
+          characters.sort((a, b) => a.hp < b.hp ? 1 : -1);
+        else
+          characters.sort((b, a) => a.hp < b.hp ? 1 : -1);
+      else if (this.sortType == 3) // アタック
+        if (this.sortOrder == 0)
+          characters.sort((a, b) => a.atk < b.atk ? 1 : -1);
+        else
+          characters.sort((b, a) => a.atk < b.atk ? 1 : -1);
+      else if (this.sortType == 4) // ディフェンス
+        if (this.sortOrder == 0)
+          characters.sort((a, b) => a.def < b.def ? 1 : -1);
+        else
+          characters.sort((b, a) => a.def < b.def ? 1 : -1);
+      else if (this.sortType == 5) // マジック
+        if (this.sortOrder == 0)
+          characters.sort((a, b) => a.mag < b.mag ? 1 : -1);
+        else
+          characters.sort((b, a) => a.mag < b.mag ? 1 : -1);
+      else if (this.sortType == 6) // レジスト
+        if (this.sortOrder == 0)
+          characters.sort((a, b) => a.res < b.res ? 1 : -1);
+        else
+          characters.sort((b, a) => a.res < b.res ? 1 : -1);
+
       return characters;
     },
     pagedItems() {
@@ -383,7 +419,8 @@ export default {
         chr.damageTypeId = this.damageTypes.findIndex(v => v == chr.damageType);
 
         const status = this.getSupportChrStatus(chr);
-        status[5] = 0; // tec
+        status[5] = 0; // テクニックを戦闘力に計上しないように
+
         chr.hp = status[0];
         chr.atk = status[1];
         chr.def = status[2];
