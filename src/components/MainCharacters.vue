@@ -115,7 +115,7 @@
             <div class="widget">
               <span>ソート：</span>
               <b-dropdown :text="sortTypes[sortType]" size="sm" id="sort_selector">
-                <b-dropdown-item class="d-flex flex-column" v-for="(c, i) in sortTypes" title="hoge" :key="i" @click="sortType=i">
+                <b-dropdown-item class="d-flex flex-column" v-for="(c, i) in sortTypes" :key="i" @click="sortType=i">
                   {{ c }}
                 </b-dropdown-item>
               </b-dropdown>

@@ -106,6 +106,12 @@
                 </b-dropdown-item>
               </b-dropdown>
               <span style="width:5px"></span>
+              <b-dropdown :text="sortOrders[sortOrder]" size="sm" id="sort_order_selector">
+                <b-dropdown-item class="d-flex flex-column" v-for="(c, i) in sortOrders" :key="i" @click="sortOrder=i">
+                  {{ c }}
+                </b-dropdown-item>
+              </b-dropdown>
+              <span style="width:5px"></span>
               <b-button :pressed.sync="sortBySlot" variant="outline-secondary" size="sm">
                 種類別
               </b-button>
@@ -220,8 +226,12 @@ export default {
         "詳細",
       ],
       sortTypes: [
-        "実装日 (降順)",
-        "実装日 (昇順)",
+        "実装日",
+        "戦闘力",
+      ],
+      sortOrders: [
+        "降順",
+        "昇順"
       ],
 
       tagCategory: {
@@ -268,12 +278,21 @@ export default {
     },
     items() {
       let equipments = this.equipments.filter(a => this.filterItem(a)); // filter & shallow copy
-      if (this.sortType == 0) // 新→旧
-        equipments.sort((a, b) => b.date.localeCompare(a.date));
-      else // 旧→新
-        equipments.sort((a, b) => a.date.localeCompare(b.date));
+
+      if (this.sortType == 0) // 実装時期
+        if (this.sortOrder == 0)
+          equipments.sort((a, b) => b.date.localeCompare(a.date));
+        else
+          equipments.sort((b, a) => b.date.localeCompare(a.date));
+      else if (this.sortType == 1) // 戦闘力
+        if (this.sortOrder == 0)
+          equipments.sort((a, b) => a.power < b.power ? 1 : -1);
+        else
+          equipments.sort((b, a) => a.power < b.power ? 1 : -1);
+
       if (this.sortBySlot) // 種類別
         equipments.sort((a, b) => a.slotId < b.slotId ? -1 : 1);
+
       return equipments;
     },
     pagedItems() {
@@ -320,6 +339,7 @@ export default {
         }
         item.slotId = this.itemTypes.findIndex(v => v == item.slot);
         item.rarityId = this.rarities.findIndex(v => v == item.rarity);
+        item.power = this.getEstimatedItemBattlePower(item);
 
         this.registerTags(item.tags);
       }
@@ -381,6 +401,7 @@ export default {
       for (const k in item.params) {
         params.push(`<div class="param-box"><img src="${this.getImageURL(nameTable[k])}" title="${nameTable[k]}" width="18" height="18" /><span>+${item.params[k]}</span></div>`);
       }
+      params.push(`<div class="param-box" title="テクニックはメイン+サポートの攻撃力が 3000 の前提で計上"><span class="param-name">戦闘力:</span><span>${item.power}</span></div>`);
       return params.join("");
     },
 

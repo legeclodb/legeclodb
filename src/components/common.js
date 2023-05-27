@@ -674,6 +674,26 @@ export default {
     getSupportBattlePower(status) {
       let r = this.getBattlePower(status);
       return Math.round(r * (1.0 + 0.6 + 0.15));
+    },
+    getEstimatedItemBattlePower(item, baseAtk = 3000) {
+      const params = item.params;
+      let r = 0;
+      if (params.hp)
+        r += params.hp * 0.05;
+      if (params.def)
+        r += params.def * 2;
+      if (params.res)
+        r += params.res * 2;
+
+      if (params.atk)
+        r += params.atk * 2;
+      else if (params.mag)
+        r += params.mag * 2;
+
+      if (params.tec)
+        r += baseAtk * 2 * (params.tec * 0.0003)
+
+      return Math.round(r);
     }
   }
 }

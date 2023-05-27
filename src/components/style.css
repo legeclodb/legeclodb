@@ -264,6 +264,10 @@ div.skill {
 .dropdown-item {
   padding: 0.2rem !important;
 }
+.long-dropdown {
+    overflow: auto !important;
+    height: 400px !important;
+}
 
 .popover {
   max-width: 430px;

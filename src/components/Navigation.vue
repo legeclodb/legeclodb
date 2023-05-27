@@ -5,7 +5,7 @@
       <b-nav-item to="/main.html">メインキャラ</b-nav-item>
       <b-nav-item to="/support.html">サポートキャラ</b-nav-item>
       <b-nav-item to="/item.html">アイテム</b-nav-item>
-      <b-nav-item to="/about.html">説明</b-nav-item>
+      <b-nav-item to="/about.html">解説</b-nav-item>
     </b-navbar-nav>
     <b-navbar-nav class="ml-auto">
       <b-nav-item href="https://github.com/legeclodb/legeclodb">
