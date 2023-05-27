@@ -3589,6 +3589,114 @@
 
   {
     "hidden": true,
+    "name": "煌めく満月のアミュレット",
+    "date": "2022/4/22",
+    "desc": "",
+    "slot": "アミュレット",
+    "amuletType": "月",
+    "rarity": "SSR",
+    "params": {
+      "hp": 681,
+      "atk": 107
+    }
+  },
+  {
+    "hidden": true,
+    "name": "煌めく新月のアミュレット",
+    "date": "2022/4/22",
+    "desc": "",
+    "slot": "アミュレット",
+    "amuletType": "月",
+    "rarity": "SSR",
+    "params": {
+      "hp": 681,
+      "mag": 107
+    }
+  },
+  {
+    "hidden": true,
+    "name": "輝く満月のアミュレット",
+    "date": "2022/4/22",
+    "slot": "アミュレット",
+    "amuletType": "月",
+    "rarity": "SR",
+    "params": {
+      "hp": 480,
+      "atk": 85
+    }
+  },
+  {
+    "hidden": true,
+    "name": "輝く新月のアミュレット",
+    "date": "2022/4/22",
+    "desc": "",
+    "slot": "アミュレット",
+    "amuletType": "月",
+    "rarity": "SR",
+    "params": {
+      "hp": 480,
+      "mag": 85
+    }
+  },
+  {
+    "hidden": true,
+    "name": "煌めく陽光のアミュレット",
+    "date": "2022/5/24",
+    "desc": "",
+    "slot": "アミュレット",
+    "amuletType": "太陽",
+    "rarity": "SSR",
+    "params": {
+      "hp": 1228,
+      "def": 32
+    },
+    "tags": []
+  },
+  {
+    "hidden": true,
+    "name": "煌めく日蝕のアミュレット",
+    "date": "2022/5/24",
+    "desc": "",
+    "slot": "アミュレット",
+    "amuletType": "太陽",
+    "rarity": "SSR",
+    "params": {
+      "hp": 1228,
+      "res": 32
+    },
+    "tags": []
+  },
+  {
+    "hidden": true,
+    "name": "輝く陽光のアミュレット",
+    "date": "2022/5/24",
+    "desc": "",
+    "slot": "アミュレット",
+    "amuletType": "太陽",
+    "rarity": "SR",
+    "params": {
+      "hp": 968,
+      "def": 26
+    },
+    "tags": []
+  },
+  {
+    "hidden": true,
+    "name": "輝く日蝕のアミュレット",
+    "date": "2022/5/24",
+    "desc": "",
+    "slot": "アミュレット",
+    "amuletType": "太陽",
+    "rarity": "SR",
+    "params": {
+      "hp": 968,
+      "res": 26
+    },
+    "tags": []
+  },
+
+  {
+    "hidden": true,
     "name": "砂塊に宿りし王の首飾り",
     "date": "2023/05/30",
     "desc": "アタック/マジック+10%。\n自ユニットのHPが50%以上の時、クリティカル率/クリティカルダメージ倍率+15%。",

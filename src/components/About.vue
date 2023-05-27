@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <div class="root" @mousemove="onMouseMove">
     <div class="header" :class="{ 'hidden': !showHeader }">
       <Navigation />
@@ -293,6 +293,211 @@
           </ul>
         </p>
 
+        <h2><a name="status" href="#status"></a>基礎ステータスについて</h2>
+        <div class="panel" style="padding: 10px 0px 0px 0px;">
+          <b-container>
+            <b-row>
+              <b-col style="text-align:center">
+                <h5 style="margin-bottom: 5px">ステータスシミュレータ</h5>
+              </b-col>
+            </b-row>
+          </b-container>
+
+          <b-tabs nav-class="tab-index" v-model="searchTabIndex">
+            <b-tab title="メインキャラ" style="padding: 10px;">
+              <div class="flex">
+                <div>
+                  <b-container>
+                    <div style="text-align:center">
+                      <h6 style="margin: 5px 0px">基本情報</h6>
+                    </div>
+                    <b-form-row v-for="(param, name, index) in stat.main" :key="index">
+                      <b-col style="text-align: right" align-self="end">
+                        <label :for="`stat-main-${name}`">{{param.label}}</label>
+                      </b-col>
+                      <b-col>
+                        <b-form-input v-if="param.type == 'number'" style="width: 5em" :id="`stat-main-${name}`" v-model="param.value" size="sm" type="number" class="input-param" :min="param.min" :max="param.max"></b-form-input>
+                        <b-form-checkbox v-if="param.type == 'bool'" style="width: 5em" :id="`stat-main-${name}`" v-model="param.value" size="sm" plain></b-form-checkbox>
+                        <b-dropdown v-if="param.type == 'character'" style="width: 15em" :text="param.value ? param.value.name : '(なし)'" size="sm" class="input-dropdown" id="stat-main-${name}" menu-class="long-dropdown">
+                          <b-dropdown-item v-for="(c, i) in mainChrs" :key="i" @click="param.value=c; stat.validateItems();">
+                            {{ c.name }}
+                          </b-dropdown-item>
+                        </b-dropdown>
+                      </b-col>
+                    </b-form-row>
+                  </b-container>
+                </div>
+                <div>
+                  <b-container>
+                    <div style="text-align:center">
+                      <h6 style="margin: 5px 0px">記憶の書＋強化ボード</h6>
+                    </div>
+                    <b-form-row v-for="(param, name, index) in stat.mainBoosts" :key="index">
+                      <b-col style="text-align: right" align-self="end">
+                        <label style="width: 9em" :for="`stat-main-${name}`">{{param.label}}</label>
+                      </b-col>
+                      <b-col>
+                        <b-form-input v-if="param.type == 'number'" style="width: 4em" :id="`stat-main-${name}`" v-model="param.value" size="sm" type="number" class="input-param" :min="param.min" :max="param.max"></b-form-input>
+                      </b-col>
+                    </b-form-row>
+                  </b-container>
+                </div>
+                <div>
+                  <b-container>
+                    <div style="text-align:center">
+                      <h6 style="margin: 5px 0px">装備</h6>
+                    </div>
+                    <b-form-row v-for="(param, name, index) in stat.mainItems" :key="index">
+                      <b-col cols="4" style="text-align: right">
+                        <label style="width: 5em" :for="`stat-main-item-${name}`">{{param.label}}</label>
+                      </b-col>
+                      <b-col>
+                        <b-dropdown v-if="param.type == 'weapon'" style="width: 12em" :text="param.value ? param.value.name : '(なし)'" size="sm" class="input-dropdown" id="stat-main-item-${name}" menu-class="long-dropdown">
+                          <b-dropdown-item @click="param.value=null">(なし)</b-dropdown-item>
+                          <b-dropdown-item v-for="(c, i) in stat.validWeapons()" :key="i" @click="param.value=c">{{ c.name }}</b-dropdown-item>
+                        </b-dropdown>
+                        <b-dropdown v-if="param.type == 'armor'" style="width: 12em" :text="param.value ? param.value.name : '(なし)'" size="sm" class="input-dropdown" id="stat-main-item-${name}" menu-class="long-dropdown">
+                          <b-dropdown-item @click="param.value=null">(なし)</b-dropdown-item>
+                          <b-dropdown-item v-for="(c, i) in stat.validArmors()" :key="i" @click="param.value=c">{{ c.name }}</b-dropdown-item>
+                        </b-dropdown>
+                        <b-dropdown v-if="param.type == 'helmet'" style="width: 12em" :text="param.value ? param.value.name : '(なし)'" size="sm" class="input-dropdown" id="stat-main-item-${name}" menu-class="long-dropdown">
+                          <b-dropdown-item @click="param.value=null">(なし)</b-dropdown-item>
+                          <b-dropdown-item v-for="(c, i) in stat.validHelmets()" :key="i" @click="param.value=c">{{ c.name }}</b-dropdown-item>
+                        </b-dropdown>
+                        <b-dropdown v-if="param.type == 'accessory'" style="width: 12em" :text="param.value ? param.value.name : '(なし)'" size="sm" class="input-dropdown" id="stat-main-item-${name}" menu-class="long-dropdown">
+                          <b-dropdown-item @click="param.value=null">(なし)</b-dropdown-item>
+                          <b-dropdown-item v-for="(c, i) in stat.validAccessories()" :key="i" @click="param.value=c">{{ c.name }}</b-dropdown-item>
+                        </b-dropdown>
+                      </b-col>
+                    </b-form-row>
+
+                    <div style="text-align:center">
+                      <h6 style="margin: 5px 0px">エンチャント</h6>
+                    </div>
+                    <b-form-row v-for="(param, name, index) in stat.mainEnchants" :key="'enchant' + index">
+                      <b-col style="text-align: right" align-self="end">
+                        <label style="width: 10em" :for="`stat-main-enchant-${name}P`">{{param.label}} (%)</label>
+                      </b-col>
+                      <b-col>
+                        <b-form-input style="width: 4em" :id="`stat-main-enchant-${name}P`" v-model="param.valueP" size="sm" type="number" class="input-param" :min="0"></b-form-input>
+                      </b-col>
+                      <b-col style="text-align: right" align-self="end">
+                        <label style="width: 4em" :for="`stat-main-enchant-${name}F`"> (固定値)</label>
+                      </b-col>
+                      <b-col>
+                        <b-form-input style="width: 4em" :id="`stat-main-enchant-${name}F`" v-model="param.valueF" size="sm" type="number" class="input-param" :min="0"></b-form-input>
+                      </b-col>
+                    </b-form-row>
+                  </b-container>
+                </div>
+              </div>
+              <div>
+                <b-container>
+                  <div class="status flex" style="margin-bottom: 10px">
+                    <h5>基礎ステータス:</h5>
+                    <div class="param-box"><b-img-lazy :src="getImageURL('HP')" title="HP" width="18" height="18" /><span>{{statMainResult[0]}}</span></div>
+                    <div class="param-box"><b-img-lazy :src="getImageURL('アタック')" title="アタック" width="18" height="18" /><span>{{statMainResult[1]}}</span></div>
+                    <div class="param-box"><b-img-lazy :src="getImageURL('ディフェンス')" title="ディフェンス" width="18" height="18" /><span>{{statMainResult[2]}}</span></div>
+                    <div class="param-box"><b-img-lazy :src="getImageURL('マジック')" title="マジック" width="18" height="18" /><span>{{statMainResult[3]}}</span></div>
+                    <div class="param-box"><b-img-lazy :src="getImageURL('レジスト')" title="レジスト" width="18" height="18" /><span>{{statMainResult[4]}}</span></div>
+                    <div class="param-box"><b-img-lazy :src="getImageURL('テクニック')" title="テクニック" width="18" height="18" /><span>{{statMainResult[5]}}</span></div>
+                  </div>
+                  <b-button id="stat-main-copy-url" @click="copyToClipboard(getStatUrl())">パラメータを URL としてコピー</b-button>
+                  <b-popover target="stat-main-copy-url" triggers="click blur" placement="top" custom-class="url-popover">
+                    コピーしました：<br />{{ getStatUrl() }}
+                  </b-popover>
+                </b-container>
+              </div>
+            </b-tab>
+            <b-tab title="サポートキャラ" style="padding: 10px;">
+              <div class="flex">
+                <div>
+                  <b-container>
+                    <div style="text-align:center">
+                      <h6 style="margin: 5px 0px">基本情報</h6>
+                    </div>
+                    <b-form-row v-for="(param, name, index) in stat.support" :key="index">
+                      <b-col style="text-align: right" align-self="end">
+                        <label :for="`stat-sup-${name}`">{{param.label}}</label>
+                      </b-col>
+                      <b-col>
+                        <b-form-input v-if="param.type == 'number'" style="width: 5em" :id="`stat-sup-${name}`" v-model="param.value" size="sm" type="number" class="input-param" :min="param.min" :max="param.max"></b-form-input>
+                        <b-form-checkbox v-if="param.type == 'bool'" style="width: 5em" :id="`stat-sup-${name}`" v-model="param.value" size="sm" plain></b-form-checkbox>
+                        <b-dropdown v-if="param.type == 'character'" style="width: 15em" :text="param.value ? param.value.name : '(なし)'" size="sm" class="input-dropdown" id="stat-sup-${name}" menu-class="long-dropdown">
+                          <b-dropdown-item v-for="(c, i) in supChrs" :key="i" @click="param.value=c">
+                            {{ c.name }}
+                          </b-dropdown-item>
+                        </b-dropdown>
+                      </b-col>
+                    </b-form-row>
+                  </b-container>
+                </div>
+                <div>
+                  <b-container>
+                    <div style="text-align:center">
+                      <h6 style="margin: 5px 0px">記憶の書＋強化ボード</h6>
+                    </div>
+                    <b-form-row v-for="(param, name, index) in stat.supportBoosts" :key="index">
+                      <b-col style="text-align: right" align-self="end">
+                        <label style="width: 9em" :for="`stat-sup-${name}`">{{param.label}}</label>
+                      </b-col>
+                      <b-col>
+                        <b-form-input v-if="param.type == 'number'" style="width: 4em" :id="`stat-sup-${name}`" v-model="param.value" size="sm" type="number" class="input-param" :min="param.min" :max="param.max"></b-form-input>
+                      </b-col>
+                    </b-form-row>
+                  </b-container>
+                </div>
+                <div>
+                  <b-container>
+                    <div style="text-align:center">
+                      <h6 style="margin: 5px 0px">装備</h6>
+                    </div>
+                    <b-form-row v-for="(param, name, index) in stat.supportItems" :key="index">
+                      <b-col style="text-align: right">
+                        <label style="width: 10em" :for="`stat-sup-item-${name}`">{{param.label}}</label>
+                      </b-col>
+                      <b-col>
+                        <b-dropdown v-if="param.type == 'amulet1'" style="width: 14em" :text="param.value ? param.value.name : '(なし)'" size="sm" class="input-dropdown" id="stat-sup-item-${name}" menu-class="long-dropdown">
+                          <b-dropdown-item @click="param.value=null">(なし)</b-dropdown-item>
+                          <b-dropdown-item v-for="(c, i) in amulets1" :key="i" @click="param.value=c">{{ c.name }}</b-dropdown-item>
+                        </b-dropdown>
+                        <b-dropdown v-if="param.type == 'amulet2'" style="width: 14em" :text="param.value ? param.value.name : '(なし)'" size="sm" class="input-dropdown" id="stat-sup-item-${name}" menu-class="long-dropdown">
+                          <b-dropdown-item @click="param.value=null">(なし)</b-dropdown-item>
+                          <b-dropdown-item v-for="(c, i) in amulets2" :key="i" @click="param.value=c">{{ c.name }}</b-dropdown-item>
+                        </b-dropdown>
+                      </b-col>
+                    </b-form-row>
+
+                    <div style="text-align:center">
+                      <h6 style="margin: 5px 0px">エンチャント</h6>
+                    </div>
+                    <b-form-row v-for="(param, name, index) in stat.supportEnchants" :key="'enchant' + index">
+                      <b-col style="text-align: right" align-self="end">
+                        <label style="width: 10em" :for="`stat-sup-enchant-${name}P`">{{param.label}} (%)</label>
+                      </b-col>
+                      <b-col>
+                        <b-form-input style="width: 4em" :id="`stat-sup-enchant-${name}P`" v-model="param.valueP" size="sm" type="number" class="input-param" :min="0"></b-form-input>
+                      </b-col>
+                    </b-form-row>
+                  </b-container>
+                </div>
+              </div>
+              <div>
+                <b-container>
+                  <div v-if="stat.support.chr.value" class="status flex" style="margin-bottom: 10px">
+                    <h5>基礎ステータス:</h5>
+                    <div class="param-box"><b-img-lazy :src="getImageURL('HP')" title="HP" width="18" height="18" /><span>{{statSupportResult[0]}}</span></div>
+                    <div class="param-box" v-if="stat.support.chr.value.damageType=='アタック'"><b-img-lazy :src="getImageURL('アタック')" title="アタック" width="18" height="18" /><span>{{statSupportResult[1]}}</span></div>
+                    <div class="param-box" v-if="stat.support.chr.value.damageType=='マジック'"><b-img-lazy :src="getImageURL('マジック')" title="マジック" width="18" height="18" /><span>{{statSupportResult[3]}}</span></div>
+                    <div class="param-box"><b-img-lazy :src="getImageURL('ディフェンス')" title="ディフェンス" width="18" height="18" /><span>{{statSupportResult[2]}}</span></div>
+                    <div class="param-box"><b-img-lazy :src="getImageURL('レジスト')" title="レジスト" width="18" height="18" /><span>{{statSupportResult[4]}}</span></div>
+                  </div>
+                </b-container>
+              </div>
+            </b-tab>
+          </b-tabs>
+        </div>
+
         <h2><a name="battle_power" href="#battle_power"></a>戦闘力について</h2>
         <div class="panel">
           <b-container>
@@ -535,6 +740,232 @@ export default {
         }
       },
 
+      stat: {
+        main: {
+          chr: {
+            label: "キャラ",
+            type: "character",
+            value: 0,
+          },
+          star: {
+            label: "⭐",
+            type: "number",
+            min: 1,
+            max: 6,
+            value: 6,
+          },
+          level: {
+            label: "レベル",
+            type: "number",
+            min: 1,
+            value: 110,
+          },
+          masterLv: {
+            label: "マスターレベル",
+            type: "number",
+            min: 0,
+            max: 3,
+            value: 3,
+          },
+          bonus: {
+            label: "好感度ボーナス",
+            type: "bool",
+            value: true,
+          },
+        },
+        mainBoosts: {
+          hp: {
+            label: "HP (%)",
+            type: "number",
+            min: 0,
+            value: 150,
+          },
+          atk: {
+            label: "アタック (%)",
+            type: "number",
+            min: 0,
+            value: 140,
+          },
+          def: {
+            label: "ディフェンス (%)",
+            type: "number",
+            min: 0,
+            value: 130,
+          },
+          mag: {
+            label: "マジック (%)",
+            type: "number",
+            min: 0,
+            value: 140,
+          },
+          res: {
+            label: "レジスト (%)",
+            type: "number",
+            min: 0,
+            value: 130,
+          },
+          tec: {
+            label: "テクニック (%)",
+            type: "number",
+            min: 0,
+            value: 50,
+          },
+        },
+        mainItems: {
+          weapon: {
+            label: "武器",
+            type: "weapon",
+            value: null,
+          },
+          armor: {
+            label: "鎧",
+            type: "armor",
+            value: null,
+          },
+          helmet: {
+            label: "兜",
+            type: "helmet",
+            value: null,
+          },
+          accessory: {
+            label: "アクセサリ",
+            type: "accessory",
+            value: null,
+          },
+        },
+        mainEnchants: {
+          hp: {
+            label: "HP",
+            valueP: 0,
+            valueF: 0,
+          },
+          atk: {
+            label: "アタック",
+            valueP: 0,
+            valueF: 0,
+          },
+          def: {
+            label: "ディフェンス",
+            valueP: 0,
+            valueF: 0,
+          },
+          mag: {
+            label: "マジック",
+            valueP: 0,
+            valueF: 0,
+          },
+          res: {
+            label: "レジスト",
+            valueP: 0,
+            valueF: 0,
+          },
+        },
+
+        support: {
+          chr: {
+            label: "キャラ",
+            type: "character",
+            value: 0,
+          },
+          star: {
+            label: "⭐",
+            type: "number",
+            min: 1,
+            max: 6,
+            value: 6,
+          },
+          level: {
+            label: "レベル",
+            type: "number",
+            min: 1,
+            value: 110,
+          },
+          masterLv: {
+            label: "マスターレベル",
+            type: "number",
+            min: 0,
+            max: 3,
+            value: 3,
+          },
+          bonus: {
+            label: "好感度ボーナス",
+            type: "bool",
+            value: true,
+          },
+        },
+        supportBoosts: {
+          hp: {
+            label: "HP (%)",
+            type: "number",
+            min: 0,
+            value: 110,
+          },
+          atk: {
+            label: "アタック (%)",
+            type: "number",
+            min: 0,
+            value: 120,
+          },
+          def: {
+            label: "ディフェンス (%)",
+            type: "number",
+            min: 0,
+            value: 110,
+          },
+          mag: {
+            label: "マジック (%)",
+            type: "number",
+            min: 0,
+            value: 120,
+          },
+          res: {
+            label: "レジスト (%)",
+            type: "number",
+            min: 0,
+            value: 110,
+          },
+        },
+        supportItems: {
+          amulet1: {
+            label: "月のアミュレット",
+            type: "amulet1",
+            value: null,
+          },
+          amulet2: {
+            label: "太陽のアミュレット",
+            type: "amulet2",
+            value: null,
+          },
+        },
+        supportEnchants: {
+          hp: {
+            label: "HP",
+            valueP: 0,
+            valueF: 0,
+          },
+          atk: {
+            label: "アタック",
+            valueP: 0,
+            valueF: 0,
+          },
+          def: {
+            label: "ディフェンス",
+            valueP: 0,
+            valueF: 0,
+          },
+          mag: {
+            label: "マジック",
+            valueP: 0,
+            valueF: 0,
+          },
+          res: {
+            label: "レジスト",
+            valueP: 0,
+            valueF: 0,
+          },
+        },
+      },
+
       bp: {
         mainEnabled: true,
         supportEnabled: true,
@@ -673,10 +1104,40 @@ export default {
 
   created() {
     this.mainSkills = structuredClone(jsonMainSkills);
-    this.mainChrs = structuredClone(jsonMainChrs);
     this.supSkills = structuredClone(jsonSupportSkills);
-    this.supChrs = structuredClone(jsonSupportChrs);
-    this.items = structuredClone(jsonItems);
+    this.mainChrs = structuredClone(jsonMainChrs).filter(a => !a.hidden).sort((a, b) => b.date.localeCompare(a.date));
+    this.supChrs = structuredClone(jsonSupportChrs).filter(a => !a.hidden).sort((a, b) => b.date.localeCompare(a.date));
+    this.items = structuredClone(jsonItems).filter(a => !a.hidden || a.slot == "アミュレット").sort((a, b) => b.date.localeCompare(a.date));
+
+    this.weapons = this.items.filter(a => a.slot == "武器");
+    this.armors = this.items.filter(a => a.slot == "鎧");
+    this.helmets = this.items.filter(a => a.slot == "兜");
+    this.accessories = this.items.filter(a => a.slot == "アクセサリ");
+    this.amulets1 = this.items.filter(a => a.slot == "アミュレット" && a.amuletType == "月");
+    this.amulets2 = this.items.filter(a => a.slot == "アミュレット" && a.amuletType == "太陽");
+
+    this.stat.main.chr.value = this.mainChrs[0];
+
+    const canEquip = function (item) {
+      return item && (!item.classes || item.classes.includes(this.stat.main.chr.value.class));
+    }.bind(this);
+
+    this.stat.validWeapons = (() => this.weapons.filter(a => canEquip(a))).bind(this);
+    this.stat.validArmors = (() => this.armors.filter(a => canEquip(a))).bind(this);
+    this.stat.validHelmets = (() => this.helmets.filter(a => canEquip(a))).bind(this);
+    this.stat.validAccessories = (() => this.accessories.filter(a => canEquip(a))).bind(this);
+
+    this.stat.validateItems = function () {
+      var mainItems = this.stat.mainItems;
+      if (!canEquip(mainItems.weapon.value))
+        mainItems.weapon.value = null;
+      if (!canEquip(mainItems.armor.value))
+        mainItems.armor.value = null;
+      if (!canEquip(mainItems.helmet.value))
+        mainItems.helmet.value = null;
+      if (!canEquip(mainItems.accessory.value))
+        mainItems.accessory.value = null;
+    }.bind(this);
 
     const setupSkills = function (skills, chrs) {
       let skillMap = new Map();
@@ -747,7 +1208,7 @@ export default {
       return param.disabled() ? "disabled" : "";
     },
 
-    calcdmg() {
+    calcDamage() {
       const attacked = this.dmg.attacked;
       const main = this.dmg.main;
       const support = this.dmg.support;
@@ -785,7 +1246,7 @@ export default {
       return Math.max(result - shield, 0);
     },
 
-    calcbp() {
+    calcBattlePower() {
       let hp = 0;
       let atk = 0;
       let def = 0;
@@ -817,6 +1278,184 @@ export default {
         rate += parseInt(params.skills.value) * 0.05;
       }
       return Math.round(((hp * 0.05) + (atk * 2 * (1.0 + tec * 0.0003)) + (def * 2) + (res * 2)) * rate);
+    },
+
+    calcStatMain() {
+      const empty = [0, 0, 0, 0, 0, 0];
+      const chr = this.stat.main.chr.value;
+      if (!chr || !chr.statusInit || !chr.statusLv || !chr.statusStar)
+        return empty;
+
+      const star = parseInt(this.stat.main.star.value);
+      const level = parseInt(this.stat.main.level.value);
+      const master = parseInt(this.stat.main.masterLv.value);
+      const bonus = this.stat.main.bonus.value;
+      const boosts = [
+        parseInt(this.stat.mainBoosts.hp.value),
+        parseInt(this.stat.mainBoosts.atk.value),
+        parseInt(this.stat.mainBoosts.def.value),
+        parseInt(this.stat.mainBoosts.mag.value),
+        parseInt(this.stat.mainBoosts.res.value),
+        parseInt(this.stat.mainBoosts.tec.value),
+      ];
+      const enchantP = [
+        parseInt(this.stat.mainEnchants.hp.valueP),
+        parseInt(this.stat.mainEnchants.atk.valueP),
+        parseInt(this.stat.mainEnchants.def.valueP),
+        parseInt(this.stat.mainEnchants.mag.valueP),
+        parseInt(this.stat.mainEnchants.res.valueP),
+        0,
+      ];
+      const enchantF = [
+        parseInt(this.stat.mainEnchants.hp.valueF),
+        parseInt(this.stat.mainEnchants.atk.valueF),
+        parseInt(this.stat.mainEnchants.def.valueF),
+        parseInt(this.stat.mainEnchants.mag.valueF),
+        parseInt(this.stat.mainEnchants.res.valueF),
+        0,
+      ];
+
+      let r = [0, 0, 0, 0, 0, 0];
+      for (let i = 0; i < r.length; ++i) {
+        r[i] += chr.statusInit[i];
+        r[i] += Math.round(chr.statusLv[i] * (level - 1));
+        r[i] += Math.round(chr.statusStar[i] * star);
+      }
+      if (master > 0 && master <= 3) {
+        const values = [
+          empty,
+          [200, 0, 0, 0, 0, 0],
+          [400, 0, 0, 0, 0, 0],
+          [800, 0, 0, 0, 0, 0],
+        ];
+        for (let i = 0; i < r.length; ++i)
+          r[i] += values[master][i];
+      }
+      if (bonus) {
+        const values = [100, 25, 15, 25, 15, 0];
+        for (let i = 0; i < r.length; ++i)
+          r[i] += values[i];
+      }
+      for (let i = 0; i < r.length; ++i) {
+        r[i] = Math.round(r[i] * (1.0 + boosts[i] * 0.01));
+      }
+
+      for (let i = 0; i < r.length; ++i) {
+        r[i] = Math.round(r[i] * (1.0 + enchantP[i] * 0.01));
+      }
+
+      let ir = [0, 0, 0, 0, 0, 0];
+      const addItemStat = function (item) {
+        if (item && item.params) {
+          if (item.params.hp)
+            ir[0] += item.params.hp;
+          if (item.params.atk)
+            ir[1] += item.params.atk;
+          if (item.params.def)
+            ir[2] += item.params.def;
+          if (item.params.mag)
+            ir[3] += item.params.mag;
+          if (item.params.res)
+            ir[4] += item.params.res;
+          if (item.params.tec)
+            ir[5] += item.params.tec;
+        }
+      }
+      addItemStat(this.stat.mainItems.weapon.value);
+      addItemStat(this.stat.mainItems.armor.value);
+      addItemStat(this.stat.mainItems.helmet.value);
+      addItemStat(this.stat.mainItems.accessory.value);
+      for (let i = 0; i < r.length; ++i)
+        r[i] += ir[i] + enchantF[i];
+
+      return r;
+    },
+    calcStatSupport() {
+      const empty = [0, 0, 0, 0, 0, 0];
+      const chr = this.stat.support.chr.value;
+      if (!chr || !chr.statusInit || !chr.statusLv || !chr.statusStar)
+        return empty;
+
+      const star = parseInt(this.stat.support.star.value);
+      const level = parseInt(this.stat.support.level.value);
+      const master = parseInt(this.stat.support.masterLv.value);
+      const bonus = this.stat.support.bonus.value;
+      const boosts = [
+        parseInt(this.stat.supportBoosts.hp.value),
+        parseInt(this.stat.supportBoosts.atk.value),
+        parseInt(this.stat.supportBoosts.def.value),
+        parseInt(this.stat.supportBoosts.mag.value),
+        parseInt(this.stat.supportBoosts.res.value),
+        0,
+      ];
+      const enchantP = [
+        parseInt(this.stat.supportEnchants.hp.valueP),
+        parseInt(this.stat.supportEnchants.atk.valueP),
+        parseInt(this.stat.supportEnchants.def.valueP),
+        parseInt(this.stat.supportEnchants.mag.valueP),
+        parseInt(this.stat.supportEnchants.res.valueP),
+        0,
+      ];
+
+      let r = [0, 0, 0, 0, 0, 0];
+      for (let i = 0; i < r.length; ++i) {
+        r[i] += chr.statusInit[i];
+        r[i] += Math.round(chr.statusLv[i] * (level - 1));
+        r[i] += Math.round(chr.statusStar[i] * star);
+      }
+      if (master > 0 && master <= 3) {
+        const values = [
+          empty,
+          [300, 15, 8, 15, 8, 0],
+          [600, 30, 16, 30, 16, 0],
+          [1200, 55, 28, 55, 28, 0],
+        ];
+        for (let i = 0; i < r.length; ++i)
+          r[i] += values[master][i];
+      }
+      if (bonus) {
+        const values = [100, 25, 15, 25, 15, 0];
+        for (let i = 0; i < r.length; ++i)
+          r[i] += values[i];
+      }
+      for (let i = 0; i < r.length; ++i) {
+        r[i] = Math.round(r[i] * (1.0 + boosts[i] * 0.01));
+      }
+
+      for (let i = 0; i < r.length; ++i) {
+        r[i] = Math.round(r[i] * (1.0 + enchantP[i] * 0.01));
+      }
+
+      let ir = [0, 0, 0, 0, 0, 0];
+      const addItemStat = function (item) {
+        if (item && item.params) {
+          if (item.params.hp)
+            ir[0] += item.params.hp;
+          if (item.params.atk)
+            ir[1] += item.params.atk;
+          if (item.params.def)
+            ir[2] += item.params.def;
+          if (item.params.mag)
+            ir[3] += item.params.mag;
+          if (item.params.res)
+            ir[4] += item.params.res;
+          if (item.params.tec)
+            ir[5] += item.params.tec;
+        }
+      }
+      addItemStat(this.stat.supportItems.amulet1.value);
+      addItemStat(this.stat.supportItems.amulet2.value);
+      for (let i = 0; i < r.length; ++i)
+        r[i] += ir[i];
+
+      return r;
+    },
+    getStatUrl() {
+      let params = [];
+
+      let url = window.location.href.replace(/\?.+/, '').replace(/#.+/, '');
+      url += "?stat=" + params.join(',') + "#status";
+      return url;
     },
 
     getDmgUrl() {
@@ -908,10 +1547,16 @@ export default {
 
   computed: {
     dmgResult() {
-      return this.calcdmg();
+      return this.calcDamage();
     },
     bpResult() {
-      return this.calcbp();
+      return this.calcBattlePower();
+    },
+    statMainResult() {
+      return this.calcStatMain();
+    },
+    statSupportResult() {
+      return this.calcStatSupport();
     }
   }
 
@@ -986,5 +1631,9 @@ label.disabled {
 .panel h6 {
   margin-bottom: 5px;
 }
-
+</style>
+<style>
+.input-dropdown button {
+  padding: 0.1em;
+}
 </style>
