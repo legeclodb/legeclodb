@@ -3598,8 +3598,7 @@
     "params": {
       "hp": 681,
       "atk": 107
-    },
-    "tags": []
+    }
   },
   {
     "hidden": true,
@@ -3612,8 +3611,7 @@
     "params": {
       "hp": 681,
       "mag": 107
-    },
-    "tags": []
+    }
   },
   {
     "hidden": true,
@@ -3625,8 +3623,7 @@
     "params": {
       "hp": 480,
       "atk": 85
-    },
-    "tags": []
+    }
   },
   {
     "hidden": true,
@@ -3639,8 +3636,7 @@
     "params": {
       "hp": 480,
       "mag": 85
-    },
-    "tags": []
+    }
   },
   {
     "hidden": true,
@@ -3653,8 +3649,7 @@
     "params": {
       "hp": 1228,
       "def": 32
-    },
-    "tags": []
+    }
   },
   {
     "hidden": true,
@@ -3667,8 +3662,7 @@
     "params": {
       "hp": 1228,
       "res": 32
-    },
-    "tags": []
+    }
   },
   {
     "hidden": true,
@@ -3681,8 +3675,7 @@
     "params": {
       "hp": 968,
       "def": 26
-    },
-    "tags": []
+    }
   },
   {
     "hidden": true,
@@ -3695,8 +3688,7 @@
     "params": {
       "hp": 968,
       "res": 26
-    },
-    "tags": []
+    }
   },
 
   {

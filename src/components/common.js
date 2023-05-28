@@ -293,11 +293,14 @@ export default {
       }
     },
     registerTags(tags) {
-      for (const t of tags) {
-        this.registerTag(t);
+      if (tags) {
+        for (const t of tags)
+          this.registerTag(t);
       }
     },
     countTags(tags) {
+      if (!tags)
+        return;
       for (let t of tags) {
         ++this.tagTable[t].count;
 

@@ -430,7 +430,7 @@ export default {
     items() {
       let characters = this.characters.filter(a => this.filterItem(a)); // filter & shallow copy
 
-      if (this.sortType == 0) // 実装時期
+      if (this.sortType == 0) // 実装日
         if (this.sortOrder == 0)
           characters.sort((a, b) => b.date.localeCompare(a.date));
         else
@@ -442,34 +442,34 @@ export default {
           characters.sort((b, a) => a.power < b.power ? 1 : -1);
       else if (this.sortType == 2) // HP
         if (this.sortOrder == 0)
-          characters.sort((a, b) => a.hp < b.hp ? 1 : -1);
+          characters.sort((a, b) => a.status[0] < b.status[0] ? 1 : -1);
         else
-          characters.sort((b, a) => a.hp < b.hp ? 1 : -1);
+          characters.sort((b, a) => a.status[0] < b.status[0] ? 1 : -1);
       else if (this.sortType == 3) // アタック
         if (this.sortOrder == 0)
-          characters.sort((a, b) => a.atk < b.atk ? 1 : -1);
+          characters.sort((a, b) => a.status[1] < b.status[1] ? 1 : -1);
         else
-          characters.sort((b, a) => a.atk < b.atk ? 1 : -1);
+          characters.sort((b, a) => a.status[1] < b.status[1] ? 1 : -1);
       else if (this.sortType == 4) // ディフェンス
         if (this.sortOrder == 0)
-          characters.sort((a, b) => a.def < b.def ? 1 : -1);
+          characters.sort((a, b) => a.status[2] < b.status[2] ? 1 : -1);
         else
-          characters.sort((b, a) => a.def < b.def ? 1 : -1);
+          characters.sort((b, a) => a.status[2] < b.status[2] ? 1 : -1);
       else if (this.sortType == 5) // マジック
         if (this.sortOrder == 0)
-          characters.sort((a, b) => a.mag < b.mag ? 1 : -1);
+          characters.sort((a, b) => a.status[3] < b.status[3] ? 1 : -1);
         else
-          characters.sort((b, a) => a.mag < b.mag ? 1 : -1);
+          characters.sort((b, a) => a.status[3] < b.status[3] ? 1 : -1);
       else if (this.sortType == 6) // レジスト
         if (this.sortOrder == 0)
-          characters.sort((a, b) => a.res < b.res ? 1 : -1);
+          characters.sort((a, b) => a.status[4] < b.status[4] ? 1 : -1);
         else
-          characters.sort((b, a) => a.res < b.res ? 1 : -1);
+          characters.sort((b, a) => a.status[4] < b.status[4] ? 1 : -1);
       else if (this.sortType == 7) // テクニック
         if (this.sortOrder == 0)
-          characters.sort((a, b) => a.tec < b.tec ? 1 : -1);
+          characters.sort((a, b) => a.status[5] < b.status[5] ? 1 : -1);
         else
-          characters.sort((b, a) => a.tec < b.tec ? 1 : -1);
+          characters.sort((b, a) => a.status[5] < b.status[5] ? 1 : -1);
 
       return characters;
     },
@@ -505,7 +505,7 @@ export default {
   methods: {
     setupDB() {
       // 外部 json 由来のデータへの変更はセッションをまたいでしまうので、deep copy しておく
-      this.characters = structuredClone(this.characters);
+      this.characters = structuredClone(this.characters).filter(a => !a.hidden);
       this.skills = structuredClone(this.skills);
 
       this.predefinedMainTags.push("分類");
@@ -723,7 +723,7 @@ export default {
       return r == this.getSearchMask();
     },
     filterItem(chr) {
-      let ok = !chr.hidden && this.applyClassFilter(chr);
+      let ok = this.applyClassFilter(chr);
       if (ok && this.isSearchPatternSet()) {
         ok = this.applySearchPatterns(chr);
       }

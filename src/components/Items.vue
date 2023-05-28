@@ -228,6 +228,12 @@ export default {
       sortTypes: [
         "実装日",
         "戦闘力",
+        "HP",
+        "アタック",
+        "ディフェンス",
+        "マジック",
+        "レジスト",
+        "テクニック",
       ],
       sortOrders: [
         "降順",
@@ -279,16 +285,48 @@ export default {
     items() {
       let equipments = this.equipments.filter(a => this.filterItem(a)); // filter & shallow copy
 
-      if (this.sortType == 0) // 実装時期
+      const val = function (v) { return v ? v : 0; }
+
+      if (this.sortType == 0) // 実装日
         if (this.sortOrder == 0)
           equipments.sort((a, b) => b.date.localeCompare(a.date));
         else
           equipments.sort((b, a) => b.date.localeCompare(a.date));
       else if (this.sortType == 1) // 戦闘力
         if (this.sortOrder == 0)
-          equipments.sort((a, b) => a.power < b.power ? 1 : -1);
+          equipments.sort((a, b) => val(a.power) < val(b.power) ? 1 : -1);
         else
-          equipments.sort((b, a) => a.power < b.power ? 1 : -1);
+          equipments.sort((b, a) => val(a.power) < val(b.power) ? 1 : -1);
+      else if (this.sortType == 2) // HP
+        if (this.sortOrder == 0)
+          equipments.sort((a, b) => val(a.params.hp) < val(b.params.hp) ? 1 : -1);
+        else
+          equipments.sort((b, a) => val(a.params.hp) < val(b.params.hp) ? 1 : -1);
+      else if (this.sortType == 3) // アタック
+        if (this.sortOrder == 0)
+          equipments.sort((a, b) => val(a.params.atk) < val(b.params.atk) ? 1 : -1);
+        else
+          equipments.sort((b, a) => val(a.params.atk) < val(b.params.atk) ? 1 : -1);
+      else if (this.sortType == 4) // ディフェンス
+        if (this.sortOrder == 0)
+          equipments.sort((a, b) => val(a.params.def) < val(b.params.def) ? 1 : -1);
+        else
+          equipments.sort((b, a) => val(a.params.def) < val(b.params.def) ? 1 : -1);
+      else if (this.sortType == 5) // マジック
+        if (this.sortOrder == 0)
+          equipments.sort((a, b) => val(a.params.mag) < val(b.params.mag) ? 1 : -1);
+        else
+          equipments.sort((b, a) => val(a.params.mag) < val(b.params.mag) ? 1 : -1);
+      else if (this.sortType == 6) // レジスト
+        if (this.sortOrder == 0)
+          equipments.sort((a, b) => val(a.params.res) < val(b.params.res) ? 1 : -1);
+        else
+          equipments.sort((b, a) => val(a.params.res) < val(b.params.res) ? 1 : -1);
+      else if (this.sortType == 7) // テクニック
+        if (this.sortOrder == 0)
+          equipments.sort((a, b) => val(a.params.tec) < val(b.params.tec) ? 1 : -1);
+        else
+          equipments.sort((b, a) => val(a.params.tec) < val(b.params.tec) ? 1 : -1);
 
       if (this.sortBySlot) // 種類別
         equipments.sort((a, b) => a.slotId < b.slotId ? -1 : 1);
@@ -325,7 +363,7 @@ export default {
   methods: {
     setupDB() {
       // 外部 json 由来のデータへの変更はセッションをまたいでしまうので、deep copy しておく
-      this.equipments = structuredClone(this.equipments);
+      this.equipments = structuredClone(this.equipments).filter(a => !a.hidden);
 
       this.predefinedMainTags.push("分類");
       this.predefinedMainTags.push("デメリット");
@@ -431,7 +469,7 @@ export default {
         this.filterMatch(this.rarityFilter, chr.rarityId);
     },
     filterItem(chr) {
-      let ok = !chr.hidden && this.applyClassFilter(chr);
+      let ok = this.applyClassFilter(chr);
       if (ok && this.isSearchPatternSet()) {
         ok = this.applySearchPatterns(chr);
       }
