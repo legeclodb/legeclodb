@@ -166,12 +166,12 @@
                   <div class="param-box"><b-img-lazy :src="getImageURL('射程')" title="射程" width="18" height="18" /><span>{{chr.range}}</span></div>
                   <div class="param-box"><span class="param-name">実装日:</span><span class="param-value">{{chr.date}}</span></div>
                 </div>
-                <div class="status2" title="☆6 Lv110 で記憶の書、強化ボード、好感度ボーナス、マスターレベル全開放時の能力値" v-if="chr.power">
-                  <div class="param-box"><b-img-lazy :src="getImageURL('HP')" title="HP" width="18" height="18" /><span>{{chr.hp}}</span></div>
-                  <div class="param-box" v-if="chr.damageType=='アタック'"><b-img-lazy :src="getImageURL('アタック')" title="アタック" width="18" height="18" /><span>{{chr.atk}}</span></div>
-                  <div class="param-box" v-if="chr.damageType=='マジック'"><b-img-lazy :src="getImageURL('マジック')" title="マジック" width="18" height="18" /><span>{{chr.mag}}</span></div>
-                  <div class="param-box"><b-img-lazy :src="getImageURL('ディフェンス')" title="ディフェンス" width="18" height="18" /><span>{{chr.def}}</span></div>
-                  <div class="param-box"><b-img-lazy :src="getImageURL('レジスト')" title="レジスト" width="18" height="18" /><span>{{chr.res}}</span></div>
+                <div v-if="chr.status" class="status2" title="☆6 Lv110 で記憶の書、強化ボード、好感度ボーナス、マスターレベル全開放時の能力値">
+                  <div class="param-box"><b-img-lazy :src="getImageURL('HP')" title="HP" width="18" height="18" /><span>{{chr.status[0]}}</span></div>
+                  <div class="param-box" v-if="chr.damageType=='アタック'"><b-img-lazy :src="getImageURL('アタック')" title="アタック" width="18" height="18" /><span>{{chr.status[1]}}</span></div>
+                  <div class="param-box" v-if="chr.damageType=='マジック'"><b-img-lazy :src="getImageURL('マジック')" title="マジック" width="18" height="18" /><span>{{chr.status[3]}}</span></div>
+                  <div class="param-box"><b-img-lazy :src="getImageURL('ディフェンス')" title="ディフェンス" width="18" height="18" /><span>{{chr.status[2]}}</span></div>
+                  <div class="param-box"><b-img-lazy :src="getImageURL('レジスト')" title="レジスト" width="18" height="18" /><span>{{chr.status[4]}}</span></div>
                   <div class="param-box"><span class="param-name">戦闘力:</span><span class="param-value">{{chr.power}}</span></div>
                 </div>
               </div>
@@ -421,11 +421,7 @@ export default {
         const status = this.getSupportChrStatus(chr);
         if (status) {
           status[5] = 0; // テクニックを戦闘力に計上しないように
-          chr.hp = status[0];
-          chr.atk = status[1];
-          chr.def = status[2];
-          chr.mag = status[3];
-          chr.res = status[4];
+          chr.status = status;
           chr.power = this.getSupportBattlePower(status);
         }
 

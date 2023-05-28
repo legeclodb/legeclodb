@@ -655,6 +655,28 @@ export default {
       return r;
     },
 
+    toNumber(v)
+    {
+      if (typeof v === "number")
+        return v;
+      const r = parseFloat(v);
+      return isNaN(r) ? 0 : r;
+    },
+    toInt(v) {
+      if (typeof v === "number")
+        return v;
+      const r = parseInt(v);
+      return isNaN(r) ? 0 : r;
+    },
+    parseValue(s) {
+      if (s == 'true')
+        return true;
+      else if (s == 'false')
+        return false;
+      else
+        return this.toNumber(s);
+    },
+
     getBattlePower(status)
     {
       if (!status)

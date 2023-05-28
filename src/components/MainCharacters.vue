@@ -166,13 +166,13 @@
                   <div class="param-box"><b-img-lazy :src="getImageURL('移動')" title="移動" width="18" height="18" /><span>{{chr.move}}</span></div>
                   <div class="param-box"><span class="param-name">実装日:</span><span class="param-value">{{chr.date}}</span></div>
                 </div>
-                <div class="status2" title="☆6 Lv110 で記憶の書、強化ボード、好感度ボーナス、マスターレベル全開放時の能力値" v-if="chr.power">
-                  <div class="param-box"><b-img-lazy :src="getImageURL('HP')" title="HP" width="18" height="18" /><span>{{chr.hp}}</span></div>
-                  <div class="param-box"><b-img-lazy :src="getImageURL('アタック')" title="アタック" width="18" height="18" /><span>{{chr.atk}}</span></div>
-                  <div class="param-box"><b-img-lazy :src="getImageURL('ディフェンス')" title="ディフェンス" width="18" height="18" /><span>{{chr.def}}</span></div>
-                  <div class="param-box"><b-img-lazy :src="getImageURL('マジック')" title="マジック" width="18" height="18" /><span>{{chr.mag}}</span></div>
-                  <div class="param-box"><b-img-lazy :src="getImageURL('レジスト')" title="レジスト" width="18" height="18" /><span>{{chr.res}}</span></div>
-                  <div class="param-box"><b-img-lazy :src="getImageURL('テクニック')" title="テクニック" width="18" height="18" /><span>{{chr.tec}}</span></div>
+                <div v-if="chr.status" class="status2" title="☆6 Lv110 で記憶の書、強化ボード、好感度ボーナス、マスターレベル全開放時の能力値">
+                  <div class="param-box"><b-img-lazy :src="getImageURL('HP')" title="HP" width="18" height="18" /><span>{{chr.status[0]}}</span></div>
+                  <div class="param-box"><b-img-lazy :src="getImageURL('アタック')" title="アタック" width="18" height="18" /><span>{{chr.status[1]}}</span></div>
+                  <div class="param-box"><b-img-lazy :src="getImageURL('ディフェンス')" title="ディフェンス" width="18" height="18" /><span>{{chr.status[2]}}</span></div>
+                  <div class="param-box"><b-img-lazy :src="getImageURL('マジック')" title="マジック" width="18" height="18" /><span>{{chr.status[3]}}</span></div>
+                  <div class="param-box"><b-img-lazy :src="getImageURL('レジスト')" title="レジスト" width="18" height="18" /><span>{{chr.status[4]}}</span></div>
+                  <div class="param-box"><b-img-lazy :src="getImageURL('テクニック')" title="テクニック" width="18" height="18" /><span>{{chr.status[5]}}</span></div>
                   <div class="param-box"><span class="param-name">戦闘力:</span><span class="param-value">{{chr.power}}</span></div>
                 </div>
               </div>
@@ -242,10 +242,18 @@
                 <div class="info" :class="{ 'highlighted': isInfoHighlighted(summon) }">
                   <h5><span v-html="chrNameToHtml(summon.name)"></span> <span class="note">(召喚ユニット)</span></h5>
                   <div class="status">
-                    <b-img-lazy :src="getImageURL(summon.class)" :alt="summon.class" height="25" />
-                    <div class="param-box"><b-img-lazy :src="getImageURL(summon.damageType)" :alt="summon.damageType" width="20" height="20" /></div>
-                    <div class="param-box"><b-img-lazy :src="getImageURL('射程')" alt="射程" width="18" height="18" /><span>{{summon.range}}</span></div>
-                    <div class="param-box"><b-img-lazy :src="getImageURL('移動')" alt="移動" width="18" height="18" /><span>{{summon.move}}</span></div>
+                    <b-img-lazy :src="getImageURL(summon.class)" :title="'クラス:'+summon.class" height="25" />
+                    <div class="param-box"><b-img-lazy :src="getImageURL(summon.damageType)" :title="'攻撃タイプ:'+summon.damageType" width="20" height="20" /></div>
+                    <div class="param-box"><b-img-lazy :src="getImageURL('射程')" title="射程" width="18" height="18" /><span>{{summon.range}}</span></div>
+                    <div class="param-box"><b-img-lazy :src="getImageURL('移動')" title="移動" width="18" height="18" /><span>{{summon.move}}</span></div>
+                  </div>
+                  <div v-if="summon.status" class="status2" title="Lv110 時の能力値">
+                    <div class="param-box"><b-img-lazy :src="getImageURL('HP')" title="HP" width="18" height="18" /><span>{{summon.status[0]}}</span></div>
+                    <div class="param-box"><b-img-lazy :src="getImageURL('アタック')" title="アタック" width="18" height="18" /><span>{{summon.status[1]}}</span></div>
+                    <div class="param-box"><b-img-lazy :src="getImageURL('ディフェンス')" title="ディフェンス" width="18" height="18" /><span>{{summon.status[2]}}</span></div>
+                    <div class="param-box"><b-img-lazy :src="getImageURL('マジック')" title="マジック" width="18" height="18" /><span>{{summon.status[3]}}</span></div>
+                    <div class="param-box"><b-img-lazy :src="getImageURL('レジスト')" title="レジスト" width="18" height="18" /><span>{{summon.status[4]}}</span></div>
+                    <div class="param-box"><b-img-lazy :src="getImageURL('テクニック')" title="テクニック" width="18" height="18" /><span>{{summon.status[5]}}</span></div>
                   </div>
                 </div>
                 <div class="skills">
@@ -523,12 +531,7 @@ export default {
 
         const status = this.getMainChrStatus(chr);
         if (status) {
-          chr.hp = status[0];
-          chr.atk = status[1];
-          chr.def = status[2];
-          chr.mag = status[3];
-          chr.res = status[4];
-          chr.tec = status[5];
+          chr.status = status;
           chr.power = this.getMainBattlePower(status);
         }
 

@@ -304,7 +304,7 @@
           </b-container>
 
           <b-tabs nav-class="tab-index" v-model="searchTabIndex">
-            <b-tab title="メインキャラ" style="padding: 10px;">
+            <b-tab title="メインキャラ" style="padding: 10px 10px 0px 10px">
               <div class="flex">
                 <div>
                   <b-container>
@@ -402,14 +402,10 @@
                     <div class="param-box"><b-img-lazy :src="getImageURL('レジスト')" title="レジスト" width="18" height="18" /><span>{{statMainResult[4]}}</span></div>
                     <div class="param-box"><b-img-lazy :src="getImageURL('テクニック')" title="テクニック" width="18" height="18" /><span>{{statMainResult[5]}}</span></div>
                   </div>
-                  <b-button id="stat-main-copy-url" @click="copyToClipboard(getStatUrl())">パラメータを URL としてコピー</b-button>
-                  <b-popover target="stat-main-copy-url" triggers="click blur" placement="top" custom-class="url-popover">
-                    コピーしました：<br />{{ getStatUrl() }}
-                  </b-popover>
                 </b-container>
               </div>
             </b-tab>
-            <b-tab title="サポートキャラ" style="padding: 10px;">
+            <b-tab title="サポートキャラ" style="padding: 10px 10px 0px 10px ">
               <div class="flex">
                 <div>
                   <b-container>
@@ -496,6 +492,14 @@
               </div>
             </b-tab>
           </b-tabs>
+          <div style="padding: 0px 10px 10px 10px">
+            <b-container>
+              <b-button id="stat-main-copy-url" @click="copyToClipboard(getStatUrl())">パラメータを URL としてコピー</b-button>
+              <b-popover target="stat-main-copy-url" triggers="click blur" placement="top" custom-class="url-popover">
+                コピーしました：<br />{{ getStatUrl() }}
+              </b-popover>
+            </b-container>
+          </div>
         </div>
 
         <h2><a name="battle_power" href="#battle_power"></a>戦闘力について</h2>
@@ -1105,9 +1109,20 @@ export default {
   created() {
     this.mainSkills = structuredClone(jsonMainSkills);
     this.supSkills = structuredClone(jsonSupportSkills);
-    this.mainChrs = structuredClone(jsonMainChrs).filter(a => !a.hidden).sort((a, b) => b.date.localeCompare(a.date));
-    this.supChrs = structuredClone(jsonSupportChrs).filter(a => !a.hidden).sort((a, b) => b.date.localeCompare(a.date));
-    this.items = structuredClone(jsonItems).filter(a => !a.hidden || a.slot == "アミュレット").sort((a, b) => b.date.localeCompare(a.date));
+    this.mainChrs = structuredClone(jsonMainChrs).filter(a => !a.hidden);
+    this.supChrs = structuredClone(jsonSupportChrs).filter(a => !a.hidden);
+    this.items = structuredClone(jsonItems).filter(a => !a.hidden || a.slot == "アミュレット");
+
+    for (let i = 0; i < this.mainChrs.length; ++i)
+      this.mainChrs[i].index = i + 1;
+    for (let i = 0; i < this.supChrs.length; ++i)
+      this.supChrs[i].index = i + 1;
+    for (let i = 0; i < this.items.length; ++i)
+      this.items[i].index = i + 1;
+
+    this.mainChrs.sort((a, b) => b.date.localeCompare(a.date));
+    this.supChrs.sort((a, b) => b.date.localeCompare(a.date));
+    this.items.sort((a, b) => b.date.localeCompare(a.date));
 
     this.weapons = this.items.filter(a => a.slot == "武器");
     this.armors = this.items.filter(a => a.slot == "鎧");
@@ -1175,6 +1190,7 @@ export default {
 
     this.parseDmgUrl(window.location.href);
     this.parseBPUrl(window.location.href);
+    this.parseStatUrl(window.location.href);
   },
 
   mounted() {
@@ -1213,16 +1229,16 @@ export default {
       const main = this.dmg.main;
       const support = this.dmg.support;
 
-      const def = parseInt(attacked.def.value);
-      const damageResist = 1.0 - parseFloat(attacked.damageRate.value) * 0.01;
-      const shield = parseInt(attacked.shield.value);
+      const def = this.toInt(attacked.def.value);
+      const damageResist = 1.0 - this.toNumber(attacked.damageRate.value) * 0.01;
+      const shield = this.toInt(attacked.shield.value);
 
       let result = 0;
       if (this.dmg.mainEnabled) {
-        const atk = parseInt(main.atk.value);
-        const skillDamageRate = parseFloat(main.skillDamageRate.value);
-        const damageBuff = 1.0 + parseFloat(main.damageBuff.value) * 0.01;
-        const criticalDamageRate = 1.0 + parseFloat(main.criticalDamageRate.value) * 0.01;
+        const atk = this.toInt(main.atk.value);
+        const skillDamageRate = this.toNumber(main.skillDamageRate.value);
+        const damageBuff = 1.0 + this.toNumber(main.damageBuff.value) * 0.01;
+        const criticalDamageRate = 1.0 + this.toNumber(main.criticalDamageRate.value) * 0.01;
 
         let damage = (atk - def) * skillDamageRate * damageBuff * damageResist;
         if (main.critical.value)
@@ -1233,8 +1249,8 @@ export default {
         result += Math.max(Math.round(damage), 1) * (main.doubleAttack.value ? 20 : 10);
       }
       if (this.dmg.supportEnabled) {
-        const atk = parseInt(support.atk.value);
-        const damageBuff = 1.0 + parseFloat(support.damageBuff.value) * 0.01;
+        const atk = this.toInt(support.atk.value);
+        const damageBuff = 1.0 + this.toNumber(support.damageBuff.value) * 0.01;
 
         let damage = (atk - def) * damageBuff * damageResist;
         if (support.rangedPenalty.value)
@@ -1255,27 +1271,27 @@ export default {
       let rate = 1.0;
       if (this.bp.mainEnabled) {
         const params = this.bp.main;
-        hp += parseInt(params.hp.value);
-        atk += parseInt(params.atk.value);
-        def += parseInt(params.def.value);
-        res += parseInt(params.res.value);
-        tec += parseInt(params.tec.value);
-        rate += parseInt(params.stars.value) * 0.1;
-        rate += parseInt(params.masterLv.value) * 0.1;
-        rate += parseInt(params.skillCost.value) * 0.03;
-        rate += parseInt(params.eqStars.value) * 0.02;
+        hp += this.toInt(params.hp.value);
+        atk += this.toInt(params.atk.value);
+        def += this.toInt(params.def.value);
+        res += this.toInt(params.res.value);
+        tec += this.toInt(params.tec.value);
+        rate += this.toInt(params.stars.value) * 0.1;
+        rate += this.toInt(params.masterLv.value) * 0.1;
+        rate += this.toInt(params.skillCost.value) * 0.03;
+        rate += this.toInt(params.eqStars.value) * 0.02;
         if (params.enchant.value)
           rate += 0.1;
       }
       if (this.bp.supportEnabled) {
         const params = this.bp.support;
-        hp += parseInt(params.hp.value);
-        atk += parseInt(params.atk.value);
-        def += parseInt(params.def.value);
-        res += parseInt(params.res.value);
-        rate += parseInt(params.stars.value) * 0.1;
-        rate += parseInt(params.masterLv.value) * 0.1;
-        rate += parseInt(params.skills.value) * 0.05;
+        hp += this.toInt(params.hp.value);
+        atk += this.toInt(params.atk.value);
+        def += this.toInt(params.def.value);
+        res += this.toInt(params.res.value);
+        rate += this.toInt(params.stars.value) * 0.1;
+        rate += this.toInt(params.masterLv.value) * 0.1;
+        rate += this.toInt(params.skills.value) * 0.05;
       }
       return Math.round(((hp * 0.05) + (atk * 2 * (1.0 + tec * 0.0003)) + (def * 2) + (res * 2)) * rate);
     },
@@ -1286,32 +1302,32 @@ export default {
       if (!chr || !chr.statusInit || !chr.statusLv || !chr.statusStar)
         return empty;
 
-      const star = parseInt(this.stat.main.star.value);
-      const level = parseInt(this.stat.main.level.value);
-      const master = parseInt(this.stat.main.masterLv.value);
+      const star = this.toInt(this.stat.main.star.value);
+      const level = this.toInt(this.stat.main.level.value);
+      const master = this.toInt(this.stat.main.masterLv.value);
       const bonus = this.stat.main.bonus.value;
       const boosts = [
-        parseInt(this.stat.mainBoosts.hp.value),
-        parseInt(this.stat.mainBoosts.atk.value),
-        parseInt(this.stat.mainBoosts.def.value),
-        parseInt(this.stat.mainBoosts.mag.value),
-        parseInt(this.stat.mainBoosts.res.value),
-        parseInt(this.stat.mainBoosts.tec.value),
+        this.toInt(this.stat.mainBoosts.hp.value),
+        this.toInt(this.stat.mainBoosts.atk.value),
+        this.toInt(this.stat.mainBoosts.def.value),
+        this.toInt(this.stat.mainBoosts.mag.value),
+        this.toInt(this.stat.mainBoosts.res.value),
+        this.toInt(this.stat.mainBoosts.tec.value),
       ];
       const enchantP = [
-        parseInt(this.stat.mainEnchants.hp.valueP),
-        parseInt(this.stat.mainEnchants.atk.valueP),
-        parseInt(this.stat.mainEnchants.def.valueP),
-        parseInt(this.stat.mainEnchants.mag.valueP),
-        parseInt(this.stat.mainEnchants.res.valueP),
+        this.toInt(this.stat.mainEnchants.hp.valueP),
+        this.toInt(this.stat.mainEnchants.atk.valueP),
+        this.toInt(this.stat.mainEnchants.def.valueP),
+        this.toInt(this.stat.mainEnchants.mag.valueP),
+        this.toInt(this.stat.mainEnchants.res.valueP),
         0,
       ];
       const enchantF = [
-        parseInt(this.stat.mainEnchants.hp.valueF),
-        parseInt(this.stat.mainEnchants.atk.valueF),
-        parseInt(this.stat.mainEnchants.def.valueF),
-        parseInt(this.stat.mainEnchants.mag.valueF),
-        parseInt(this.stat.mainEnchants.res.valueF),
+        this.toInt(this.stat.mainEnchants.hp.valueF),
+        this.toInt(this.stat.mainEnchants.atk.valueF),
+        this.toInt(this.stat.mainEnchants.def.valueF),
+        this.toInt(this.stat.mainEnchants.mag.valueF),
+        this.toInt(this.stat.mainEnchants.res.valueF),
         0,
       ];
 
@@ -1376,24 +1392,24 @@ export default {
       if (!chr || !chr.statusInit || !chr.statusLv || !chr.statusStar)
         return empty;
 
-      const star = parseInt(this.stat.support.star.value);
-      const level = parseInt(this.stat.support.level.value);
-      const master = parseInt(this.stat.support.masterLv.value);
+      const star = this.toInt(this.stat.support.star.value);
+      const level = this.toInt(this.stat.support.level.value);
+      const master = this.toInt(this.stat.support.masterLv.value);
       const bonus = this.stat.support.bonus.value;
       const boosts = [
-        parseInt(this.stat.supportBoosts.hp.value),
-        parseInt(this.stat.supportBoosts.atk.value),
-        parseInt(this.stat.supportBoosts.def.value),
-        parseInt(this.stat.supportBoosts.mag.value),
-        parseInt(this.stat.supportBoosts.res.value),
+        this.toInt(this.stat.supportBoosts.hp.value),
+        this.toInt(this.stat.supportBoosts.atk.value),
+        this.toInt(this.stat.supportBoosts.def.value),
+        this.toInt(this.stat.supportBoosts.mag.value),
+        this.toInt(this.stat.supportBoosts.res.value),
         0,
       ];
       const enchantP = [
-        parseInt(this.stat.supportEnchants.hp.valueP),
-        parseInt(this.stat.supportEnchants.atk.valueP),
-        parseInt(this.stat.supportEnchants.def.valueP),
-        parseInt(this.stat.supportEnchants.mag.valueP),
-        parseInt(this.stat.supportEnchants.res.valueP),
+        this.toInt(this.stat.supportEnchants.hp.valueP),
+        this.toInt(this.stat.supportEnchants.atk.valueP),
+        this.toInt(this.stat.supportEnchants.def.valueP),
+        this.toInt(this.stat.supportEnchants.mag.valueP),
+        this.toInt(this.stat.supportEnchants.res.valueP),
         0,
       ];
 
@@ -1453,9 +1469,85 @@ export default {
     getStatUrl() {
       let params = [];
 
+      for (const v of Object.values(this.stat.main)) {
+        if (v.type == "character")
+          params.push(v.value ? v.value.index : 0);
+        else
+          params.push(v.value);
+      }
+      for (const v of Object.values(this.stat.mainBoosts))
+        params.push(v.value);
+      for (const v of Object.values(this.stat.mainItems))
+        params.push(v.value ? v.value.index : 0);
+      for (const v of Object.values(this.stat.mainEnchants)) {
+        params.push(v.valueP);
+        params.push(v.valueF);
+      }
+
+      for (const v of Object.values(this.stat.support)) {
+        if (v.type == "character")
+          params.push(v.value ? v.value.index : 0);
+        else
+          params.push(v.value);
+      }
+      for (const v of Object.values(this.stat.supportBoosts))
+        params.push(v.value);
+      for (const v of Object.values(this.stat.supportItems))
+        params.push(v.value ? v.value.index : 0);
+      for (const v of Object.values(this.stat.supportEnchants))
+        params.push(v.valueP);
+
       let url = window.location.href.replace(/\?.+/, '').replace(/#.+/, '');
       url += "?stat=" + params.join(',') + "#status";
       return url;
+    },
+    parseStatUrl(url) {
+      url = decodeURIComponent(url);
+      let q = url.match(/\?stat=(.+)$/);
+      if (q) {
+        let params = q[1].split(',').map(this.parseValue);
+
+        for (const v of Object.values(this.stat.main)) {
+          if (v.type == "character") {
+            const idx = params.shift();
+            v.value = this.mainChrs.find(a => a.index == idx);
+          }
+          else {
+            v.value = params.shift();
+          }
+        }
+        for (const v of Object.values(this.stat.mainBoosts))
+          v.value = params.shift();
+        for (const v of Object.values(this.stat.mainItems)) {
+          const idx = params.shift();
+          v.value = this.items.find(a => a.index == idx);
+        }
+        for (const v of Object.values(this.stat.mainEnchants)) {
+          v.valueP = params.shift();
+          v.valueF = params.shift();
+        }
+
+        for (const v of Object.values(this.stat.support)) {
+          if (v.type == "character") {
+            const idx = params.shift();
+            v.value = this.supChrs.find(a => a.index == idx);
+          }
+          else {
+            v.value = params.shift();
+          }
+        }
+        for (const v of Object.values(this.stat.supportBoosts))
+          v.value = params.shift();
+        for (const v of Object.values(this.stat.supportItems)) {
+          const idx = params.shift();
+          v.value = this.items.find(a => a.index == idx);
+        }
+        for (const v of Object.values(this.stat.supportEnchants))
+          v.valueP = params.shift();
+
+        return true;
+      }
+      return false;
     },
 
     getDmgUrl() {
@@ -1479,14 +1571,7 @@ export default {
       url = decodeURIComponent(url);
       let q = url.match(/\?dmg=(.+)$/);
       if (q) {
-        let params = q[1].split(',').map(function (s) {
-          if (s == 'true')
-            return true;
-          else if (s == 'false')
-            return false;
-          else
-            return parseInt(s);
-        });
+        let params = q[1].split(',').map(this.parseValue);
 
         for (const v of Object.values(this.dmg.main))
           v.value = params.shift();
@@ -1522,14 +1607,7 @@ export default {
       url = decodeURIComponent(url);
       let q = url.match(/\?bp=(.+)$/);
       if (q) {
-        let params = q[1].split(',').map(function (s) {
-          if (s == 'true')
-            return true;
-          else if (s == 'false')
-            return false;
-          else
-            return parseInt(s);
-        });
+        let params = q[1].split(',').map(this.parseValue);
 
         this.bp.mainEnabled = params.shift();
         for (const v of Object.values(this.bp.main))
