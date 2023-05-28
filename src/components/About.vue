@@ -1325,54 +1325,60 @@ export default {
         0, 0, 0, 0, 0
       ];
 
-      const enchantAttackPower = function () {
-        if (atkOrMag == 1)
-          enchants[2] = 35;
-        else
-          enchants[6] = 35;
-      };
-      const enchantDefensePower = function () {
-        if (chr.status[2] > chr.status[4])
-          enchants[4] = 45;
-        else
-          enchants[8] = 45;
-      };
-      const enchantOptimalForBP = function () {
+      const enchantOptimalForBP = function (numExec = 3, filterFunc = null) {
+        const s = chr.status;
+        const tr = 1.0 + s[5] * 0.0003;
+
+        let cmdlists = [[], [], [], []];
+        const hpP  = (i, v) => cmdlists[i].push([ "hpP", s[0] * (v / 100) * 0.05,   () => enchants[0] += v]);
+        const hpF  = (i, v) => cmdlists[i].push([ "hpF",                v * 0.05,   () => enchants[1] += v]);
+        const defP = (i, v) => cmdlists[i].push(["defP", s[2] * (v / 100) * 2,      () => enchants[4] += v]);
+        const defF = (i, v) => cmdlists[i].push(["defF",                v * 2,      () => enchants[5] += v]);
+        const resP = (i, v) => cmdlists[i].push(["resP", s[4] * (v / 100) * 2,      () => enchants[8] += v]);
+        const resF = (i, v) => cmdlists[i].push(["resF",                v * 2,      () => enchants[9] += v]);
+        const atkP = (i, v) => cmdlists[i].push(["atkP", s[1] * (v / 100) * 2 * tr, () => enchants[2] += v]);
+        const atkF = (i, v) => cmdlists[i].push(["atkF",                v * 2 * tr, () => enchants[3] += v]);
+        const magP = (i, v) => cmdlists[i].push(["magP", s[3] * (v / 100) * 2 * tr, () => enchants[6] += v]);
+        const magF = (i, v) => cmdlists[i].push(["magF",                v * 2 * tr, () => enchants[7] += v]);
+
+        hpP(0, 10); hpF(0, 131);
+        hpP(1, 15); hpF(1, 200);
+        hpP(2, 15); hpF(2, 200);
+        hpP(3, 10); hpF(3, 131);
+
+        defP(0,  5); defF(0,  7);
+        defP(1, 15); defF(1, 19);
+        defP(2, 15); defF(2, 19);
+        defP(3, 10); defF(3, 13);
+
+        resP(0,  5); resF(0,  7);
+        resP(1, 15); resF(1, 19);
+        resP(2, 15); resF(2, 19);
+        resP(3, 10); resF(3, 13);
+
         if (atkOrMag == 1) {
-          enchants[2] = 35;
-          if (chr.status[2] * 0.05 > 31 || chr.status[4] * 0.05 > 31) {
-            enchants[4] = 45;
-            enchants[8] = 45;
-          }
-          else {
-            enchants[3] += 31;
-            if (chr.status[2] > chr.status[4]) {
-              enchants[4] = 45;
-              enchants[8] = 40;
-            }
-            else {
-              enchants[4] = 40;
-              enchants[8] = 45;
-            }
-          }
+          atkP(0, 15); atkF(0, 31);
+          atkP(1,  5); atkF(1, 11);
+          atkP(2,  5); atkF(2, 11);
+          atkP(3, 10); atkF(3, 21);
         }
         else {
-          enchants[6] = 35;
-          if (chr.status[2] * 0.05 > 31 || chr.status[4] * 0.05 > 31) {
-            enchants[4] = 45;
-            enchants[8] = 45;
-          }
-          else {
-            enchants[7] += 31;
-            if (chr.status[2] > chr.status[4]) {
-              enchants[4] = 45;
-              enchants[8] = 40;
-            }
-            else {
-              enchants[4] = 40;
-              enchants[8] = 45;
-            }
-          }
+          magP(0, 15); magF(0, 31);
+          magP(1,  5); magF(1, 11);
+          magP(2,  5); magF(2, 11);
+          magP(3, 10); magF(3, 21);
+        }
+
+        if (filterFunc) {
+          for (let i = 0; i < cmdlists.length; ++i)
+            cmdlists[i] = cmdlists[i].filter(filterFunc);
+        }
+        for (let cl of cmdlists) {
+          cl.sort((a, b) => cmp(a[1], b[1]));
+        }
+        for (let i = 0; i < numExec; ++i) {
+          for (let cl of cmdlists)
+            cl[i][2]();
         }
       };
 
@@ -1406,7 +1412,7 @@ export default {
         pickItems(0);
         enchants[0] = 50;
         enchants[1] = 662;
-        enchantAttackPower();
+        enchantOptimalForBP(1, (c) => !c[0].startsWith("hp"));
 
         si.amulet1.value = pickOptimalAmulet1();
         si.amulet2.value = pickOptimalAmulet2();
@@ -1416,7 +1422,7 @@ export default {
         pickItems(1, /^バフ:アタック/);
         enchants[2] = 35;
         enchants[3] = 74;
-        enchantDefensePower();
+        enchantOptimalForBP(1, (c) => !c[0].startsWith("atk"));
 
         si.amulet1.value = this.findItem("煌めく満月のアミュレット");
         si.amulet2.value = pickOptimalAmulet2();
@@ -1426,7 +1432,7 @@ export default {
         pickItems(2, /^バフ:ディフェンス/);
         enchants[4] = 45;
         enchants[5] = 58;
-        enchantAttackPower();
+        enchantOptimalForBP(1, (c) => !c[0].startsWith("def"));
 
         si.amulet1.value = pickOptimalAmulet1();
         si.amulet2.value = this.findItem("煌めく陽光のアミュレット");
@@ -1436,7 +1442,7 @@ export default {
         pickItems(3, /^バフ:マジック/);
         enchants[6] = 35;
         enchants[7] = 74;
-        enchantDefensePower();
+        enchantOptimalForBP(1, (c) => !c[0].startsWith("mag"));
 
         si.amulet1.value = this.findItem("煌めく新月のアミュレット");
         si.amulet2.value = pickOptimalAmulet2();
@@ -1446,7 +1452,7 @@ export default {
         pickItems(4, /^バフ:レジスト/);
         enchants[8] = 45;
         enchants[9] = 58;
-        enchantAttackPower();
+        enchantOptimalForBP(1, (c) => !c[0].startsWith("res"));
 
         si.amulet1.value = pickOptimalAmulet1();
         si.amulet2.value = this.findItem("煌めく日蝕のアミュレット");
@@ -1454,9 +1460,7 @@ export default {
       }
       else if (type == 6) { // テクニック優先
         pickItems(5, /^バフ:テクニック/);
-        enchantAttackPower();
-        enchants[4] = 45;
-        enchants[8] = 45;
+        enchantOptimalForBP();
 
         si.amulet1.value = pickOptimalAmulet1(true);
         si.amulet2.value = pickOptimalAmulet2();
