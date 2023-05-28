@@ -1413,29 +1413,19 @@ export default {
         r[i] = Math.round(r[i] * (1.0 + enchantP[i] * 0.01));
       }
 
-      let ir = [0, 0, 0, 0, 0, 0];
       const addItemStat = function (item) {
-        if (item && item.params) {
-          if (item.params.hp)
-            ir[0] += item.params.hp;
-          if (item.params.atk)
-            ir[1] += item.params.atk;
-          if (item.params.def)
-            ir[2] += item.params.def;
-          if (item.params.mag)
-            ir[3] += item.params.mag;
-          if (item.params.res)
-            ir[4] += item.params.res;
-          if (item.params.tec)
-            ir[5] += item.params.tec;
+        if (item) {
+          for (let i = 0; i < r.length; ++i)
+            r[i] += item.status[i];
         }
       }
       addItemStat(this.stat.mainItems.weapon.value);
       addItemStat(this.stat.mainItems.armor.value);
       addItemStat(this.stat.mainItems.helmet.value);
       addItemStat(this.stat.mainItems.accessory.value);
+
       for (let i = 0; i < r.length; ++i)
-        r[i] += ir[i] + enchantF[i];
+        r[i] += enchantF[i];
 
       return r;
     },
@@ -1495,27 +1485,14 @@ export default {
         r[i] = Math.round(r[i] * (1.0 + enchantP[i] * 0.01));
       }
 
-      let ir = [0, 0, 0, 0, 0, 0];
       const addItemStat = function (item) {
-        if (item && item.params) {
-          if (item.params.hp)
-            ir[0] += item.params.hp;
-          if (item.params.atk)
-            ir[1] += item.params.atk;
-          if (item.params.def)
-            ir[2] += item.params.def;
-          if (item.params.mag)
-            ir[3] += item.params.mag;
-          if (item.params.res)
-            ir[4] += item.params.res;
-          if (item.params.tec)
-            ir[5] += item.params.tec;
+        if (item) {
+          for (let i = 0; i < r.length; ++i)
+            r[i] += item.status[i];
         }
       }
       addItemStat(this.stat.supportItems.amulet1.value);
       addItemStat(this.stat.supportItems.amulet2.value);
-      for (let i = 0; i < r.length; ++i)
-        r[i] += ir[i];
 
       return r;
     },

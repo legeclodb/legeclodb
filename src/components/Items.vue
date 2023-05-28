@@ -285,8 +285,6 @@ export default {
     items() {
       let equipments = this.equipments.filter(a => this.filterItem(a)); // filter & shallow copy
 
-      const val = function (v) { return v ? v : 0; }
-
       if (this.sortType == 0) // 実装日
         if (this.sortOrder == 0)
           equipments.sort((a, b) => b.date.localeCompare(a.date));
@@ -294,39 +292,39 @@ export default {
           equipments.sort((b, a) => b.date.localeCompare(a.date));
       else if (this.sortType == 1) // 戦闘力
         if (this.sortOrder == 0)
-          equipments.sort((a, b) => val(a.power) < val(b.power) ? 1 : -1);
+          equipments.sort((a, b) => a.power < b.power ? 1 : -1);
         else
-          equipments.sort((b, a) => val(a.power) < val(b.power) ? 1 : -1);
+          equipments.sort((b, a) => a.power < b.power ? 1 : -1);
       else if (this.sortType == 2) // HP
         if (this.sortOrder == 0)
-          equipments.sort((a, b) => val(a.params.hp) < val(b.params.hp) ? 1 : -1);
+          equipments.sort((a, b) => a.status[0] < b.status[0] ? 1 : -1);
         else
-          equipments.sort((b, a) => val(a.params.hp) < val(b.params.hp) ? 1 : -1);
+          equipments.sort((b, a) => a.status[0] < b.status[0] ? 1 : -1);
       else if (this.sortType == 3) // アタック
         if (this.sortOrder == 0)
-          equipments.sort((a, b) => val(a.params.atk) < val(b.params.atk) ? 1 : -1);
+          equipments.sort((a, b) => a.status[1] < b.status[1] ? 1 : -1);
         else
-          equipments.sort((b, a) => val(a.params.atk) < val(b.params.atk) ? 1 : -1);
+          equipments.sort((b, a) => a.status[1] < b.status[1] ? 1 : -1);
       else if (this.sortType == 4) // ディフェンス
         if (this.sortOrder == 0)
-          equipments.sort((a, b) => val(a.params.def) < val(b.params.def) ? 1 : -1);
+          equipments.sort((a, b) => a.status[2] < b.status[2] ? 1 : -1);
         else
-          equipments.sort((b, a) => val(a.params.def) < val(b.params.def) ? 1 : -1);
+          equipments.sort((b, a) => a.status[2] < b.status[2] ? 1 : -1);
       else if (this.sortType == 5) // マジック
         if (this.sortOrder == 0)
-          equipments.sort((a, b) => val(a.params.mag) < val(b.params.mag) ? 1 : -1);
+          equipments.sort((a, b) => a.status[3] < b.status[3] ? 1 : -1);
         else
-          equipments.sort((b, a) => val(a.params.mag) < val(b.params.mag) ? 1 : -1);
+          equipments.sort((b, a) => a.status[3] < b.status[3] ? 1 : -1);
       else if (this.sortType == 6) // レジスト
         if (this.sortOrder == 0)
-          equipments.sort((a, b) => val(a.params.res) < val(b.params.res) ? 1 : -1);
+          equipments.sort((a, b) => a.status[4] < b.status[4] ? 1 : -1);
         else
-          equipments.sort((b, a) => val(a.params.res) < val(b.params.res) ? 1 : -1);
+          equipments.sort((b, a) => a.status[4] < b.status[4] ? 1 : -1);
       else if (this.sortType == 7) // テクニック
         if (this.sortOrder == 0)
-          equipments.sort((a, b) => val(a.params.tec) < val(b.params.tec) ? 1 : -1);
+          equipments.sort((a, b) => a.status[5] < b.status[5] ? 1 : -1);
         else
-          equipments.sort((b, a) => val(a.params.tec) < val(b.params.tec) ? 1 : -1);
+          equipments.sort((b, a) => a.status[5] < b.status[5] ? 1 : -1);
 
       if (this.sortBySlot) // 種類別
         equipments.sort((a, b) => a.slotId < b.slotId ? -1 : 1);
@@ -363,7 +361,7 @@ export default {
   methods: {
     setupDB() {
       // 外部 json 由来のデータへの変更はセッションをまたいでしまうので、deep copy しておく
-      this.equipments = structuredClone(this.equipments).filter(a => !a.hidden);
+      this.equipments = structuredClone(this.equipments).filter(a => !a.hidden && a.slot != "アミュレット");
 
       this.predefinedMainTags.push("分類");
       this.predefinedMainTags.push("デメリット");
@@ -427,17 +425,14 @@ export default {
       return r;
     },
     itemParamsToHtml(item) {
-      const nameTable = {
-        hp: "HP",
-        atk: "アタック",
-        def: "ディフェンス",
-        mag: "マジック",
-        res: "レジスト",
-        tec: "テクニック",
-      };
+      const nameTable = [ "HP", "アタック", "ディフェンス", "マジック", "レジスト", "テクニック" ];
       let params = [];
-      for (const k in item.params) {
-        params.push(`<div class="param-box"><img src="${this.getImageURL(nameTable[k])}" title="${nameTable[k]}" width="18" height="18" /><span>+${item.params[k]}</span></div>`);
+      for (let i = 0; i < item.status.length; ++i) {
+        const v = item.status[i];
+        if (v) {
+          const n = nameTable[i];
+          params.push(`<div class="param-box"><img src="${this.getImageURL(n)}" title="${n}" width="18" height="18" /><span>+${v}</span></div>`);
+        }
       }
       params.push(`<div class="param-box" title="テクニックはメイン+サポートの攻撃力が 3000 の前提で計上"><span class="param-name">戦闘力:</span><span>${item.power}</span></div>`);
       return params.join("");

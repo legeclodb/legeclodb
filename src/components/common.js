@@ -448,6 +448,9 @@ export default {
     },
     descToHtml(item) {
       let text = item.desc;
+      if (!text)
+        return "";
+
       while (true) {
         // [caution]hoge[/caution] -> <span class='caution'>hoge</span>
         // 入れ子のケースに対応するためループする必要がある
@@ -700,23 +703,19 @@ export default {
       let r = this.getBattlePower(status);
       return Math.round(r * (1.0 + 0.6 + 0.15));
     },
-    getEstimatedItemBattlePower(item, baseAtk = 3000) {
-      const params = item.params;
+    getEstimatedItemBattlePower(item, baseAP = 3000) {
+      const status = item.status;
       let r = 0;
-      if (params.hp)
-        r += params.hp * 0.05;
-      if (params.def)
-        r += params.def * 2;
-      if (params.res)
-        r += params.res * 2;
+      r += status[0] * 0.05;
+      r += status[2] * 2;
+      r += status[4] * 2;
 
-      if (params.atk)
-        r += params.atk * 2;
-      else if (params.mag)
-        r += params.mag * 2;
+      if (status[1])
+        r += status[1] * 2;
+      else if (status[3])
+        r += status[3] * 2;
 
-      if (params.tec)
-        r += baseAtk * 2 * (params.tec * 0.0003)
+      r += baseAP * 2 * (status[5] * 0.0003);
 
       return Math.round(r);
     }
