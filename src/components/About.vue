@@ -13,6 +13,7 @@
             <li><a href="#buff">バフ・デバフの競合・重複</a></li>
             <li><a href="#notes">その他のバフと補足事項</a></li>
             <li><a href="#damage">ダメージ計算</a></li>
+            <li><a href="#status">基礎ステータスについて</a></li>
             <li><a href="#battle_power">戦闘力について</a></li>
             <li><a href="#thanks">謝辞</a></li>
           </ul>
@@ -207,9 +208,9 @@
           <div>
             <b-container>
               <h5 style="margin-bottom: 10px">ダメージ: {{dmgResult}}</h5>
-              <b-button id="dmg-copy-url" @click="copyToClipboard(getDmgUrl())">パラメータを URL としてコピー</b-button>
+              <b-button id="dmg-copy-url" @click="copyToClipboard(dmgUrl)">パラメータを URL としてコピー</b-button>
               <b-popover target="dmg-copy-url" triggers="click blur" placement="top" custom-class="url-popover">
-                コピーしました：<br />{{ getDmgUrl() }}
+                コピーしました：<br />{{ dmgUrl }}
               </b-popover>
             </b-container>
           </div>
@@ -494,14 +495,42 @@
           </b-tabs>
           <div style="padding: 0px 10px 10px 10px">
             <b-container>
-              <b-button id="stat-main-copy-url" @click="copyToClipboard(getStatUrl())">パラメータを URL としてコピー</b-button>
+              <b-button id="stat-main-copy-url" @click="copyToClipboard(statUrl)">パラメータを URL としてコピー</b-button>
               <b-popover target="stat-main-copy-url" triggers="click blur" placement="top" custom-class="url-popover">
-                コピーしました：<br />{{ getStatUrl() }}
+                コピーしました：<br />{{ statUrl }}
               </b-popover>
             </b-container>
           </div>
         </div>
-
+        <p>
+          基礎ステータスとは、戦闘前に決定する各種ステータス値で、キャラ画面の情報で表示されるものになります。<br />
+          割合バフや能力値の n %を加算系の効果は基礎ステータスに対してかかります。<br />
+          基礎ステータスは以下のように算出されます (HP、アタック、ディフェンス、マジック、レジスト、テクニック いずれも共通)。<br />
+          <br />
+          <code>基礎ステータス＝(初期値＋レベル上昇値＋☆上昇値＋好感度ボーナス＋マスターレベルボーナス)×(記憶の書＋強化ボード)×割合エンチャント ＋ 装備＋固定値エンチャント</code><br />
+          <br />
+          <ul>
+            <li>初期値、レベル上昇値、☆による上昇値 はキャラ固有</li>
+            <li>好感度ボーナスは全開放時 [100, 25, 15, 25, 15, 0] ([HP, アタック, ディフェンス, マジック, レジスト, テクニック] の順、以後共通)</li>
+            <li>
+              マスターレベルボーナスはメインとサポートで上昇値が異なる
+              <ul>
+                <li>メイン: Lv1=[200, 0, 0, 0, 0, 0] Lv2=[400, 0, 0, 0, 0, 0] Lv3=[800, 0, 0, 0, 0, 0]</li>
+                <li>サポート: Lv1=[300, 15, 8, 15, 8, 0] Lv2=[600, 30, 16, 30, 16, 0] Lv3=[1200, 55, 28, 55, 28, 0]</li>
+              </ul>
+            </li>
+            <li>
+              記憶の書と強化ボードの合計はカンスト時以下になる (%)
+              <ul>
+                <li>メイン: [150, 140, 130, 140, 130, 50]</li>
+                <li>サポート: [110, 120, 110, 120, 110, 0]</li>
+              </ul>
+            </li>
+            <li>
+              エンチャントによる割合上昇は記憶の書＆強化ボードとは掛け算の関係であり、影響度合いが強い
+            </li>
+          </ul>
+        </p>
         <h2><a name="battle_power" href="#battle_power"></a>戦闘力について</h2>
         <div class="panel">
           <b-container>
@@ -554,9 +583,9 @@
           <div>
             <b-container>
               <h5 style="margin-bottom: 10px">戦闘力: {{bpResult}}</h5>
-              <b-button id="bp-copy-url" @click="copyToClipboard(getBPUrl())">パラメータを URL としてコピー</b-button>
+              <b-button id="bp-copy-url" @click="copyToClipboard(bpUrl)">パラメータを URL としてコピー</b-button>
               <b-popover target="bp-copy-url" triggers="click blur" placement="top" custom-class="url-popover">
-                コピーしました：<br />{{ getBPUrl() }}
+                コピーしました：<br />{{ bpUrl }}
               </b-popover>
             </b-container>
           </div>
@@ -1133,25 +1162,49 @@ export default {
 
     this.stat.main.chr.value = this.mainChrs[0];
 
-    const canEquip = function (item) {
-      return item && (!item.classes || item.classes.includes(this.stat.main.chr.value.class));
+    const mainCanEquip = function (item, slot = null) {
+      if (item) {
+        if (!item.classes || item.classes.includes(this.stat.main.chr.value.class)) {
+          if (!slot || item.slot == slot) {
+            return true;
+          }
+        }
+      }
+      return false;
+    }.bind(this);
+    const supportCanEquip = function (item, slot, aux) {
+      if (item) {
+        if (!slot || item.slot == slot) {
+          if (slot == "アミュレット")
+            return !aux || item.amuletType == aux;
+          else
+            return true;
+        }
+      }
+      return false;
     }.bind(this);
 
-    this.stat.validWeapons = (() => this.weapons.filter(a => canEquip(a))).bind(this);
-    this.stat.validArmors = (() => this.armors.filter(a => canEquip(a))).bind(this);
-    this.stat.validHelmets = (() => this.helmets.filter(a => canEquip(a))).bind(this);
-    this.stat.validAccessories = (() => this.accessories.filter(a => canEquip(a))).bind(this);
+    this.stat.validWeapons = (() => this.weapons.filter(a => mainCanEquip(a))).bind(this);
+    this.stat.validArmors = (() => this.armors.filter(a => mainCanEquip(a))).bind(this);
+    this.stat.validHelmets = (() => this.helmets.filter(a => mainCanEquip(a))).bind(this);
+    this.stat.validAccessories = (() => this.accessories.filter(a => mainCanEquip(a))).bind(this);
 
     this.stat.validateItems = function () {
       var mainItems = this.stat.mainItems;
-      if (!canEquip(mainItems.weapon.value))
+      var supItems = this.stat.supportItems;
+      if (!mainCanEquip(mainItems.weapon.value, '武器'))
         mainItems.weapon.value = null;
-      if (!canEquip(mainItems.armor.value))
+      if (!mainCanEquip(mainItems.armor.value, '鎧'))
         mainItems.armor.value = null;
-      if (!canEquip(mainItems.helmet.value))
+      if (!mainCanEquip(mainItems.helmet.value, '兜'))
         mainItems.helmet.value = null;
-      if (!canEquip(mainItems.accessory.value))
+      if (!mainCanEquip(mainItems.accessory.value, 'アクセサリ'))
         mainItems.accessory.value = null;
+
+      if (!supportCanEquip(supItems.amulet1.value, 'アミュレット', '月'))
+        supItems.amulet1.value = null;
+      if (!supportCanEquip(supItems.amulet2.value, 'アミュレット', '太陽'))
+        supItems.amulet2.value = null;
     }.bind(this);
 
     const setupSkills = function (skills, chrs) {
@@ -1499,6 +1552,7 @@ export default {
 
       let url = window.location.href.replace(/\?.+/, '').replace(/#.+/, '');
       url += "?stat=" + params.join(',') + "#status";
+      this.parseStatUrl(url); // debug
       return url;
     },
     parseStatUrl(url) {
@@ -1627,14 +1681,23 @@ export default {
     dmgResult() {
       return this.calcDamage();
     },
+    dmgUrl() {
+      return this.getDmgUrl();
+    },
     bpResult() {
       return this.calcBattlePower();
+    },
+    bpUrl() {
+      return this.getBPUrl();
     },
     statMainResult() {
       return this.calcStatMain();
     },
     statSupportResult() {
       return this.calcStatSupport();
+    },
+    statUrl() {
+      return this.getStatUrl();
     }
   }
 
