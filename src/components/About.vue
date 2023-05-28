@@ -353,19 +353,19 @@
                         <label style="width: 5em" :for="`stat-main-item-${name}`">{{param.label}}</label>
                       </b-col>
                       <b-col>
-                        <b-dropdown v-if="param.type == 'weapon'" style="width: 12em" :text="param.value ? param.value.name : '(なし)'" size="sm" class="input-dropdown" id="stat-main-item-${name}" menu-class="long-dropdown">
+                        <b-dropdown v-if="param.type == 'weapon'" style="width: 14em" :text="param.value ? param.value.name : '(なし)'" size="sm" class="input-dropdown" id="stat-main-item-${name}" menu-class="long-dropdown">
                           <b-dropdown-item @click="param.value=null">(なし)</b-dropdown-item>
                           <b-dropdown-item v-for="(c, i) in stat.validWeapons()" :key="i" @click="param.value=c">{{ c.name }}</b-dropdown-item>
                         </b-dropdown>
-                        <b-dropdown v-if="param.type == 'armor'" style="width: 12em" :text="param.value ? param.value.name : '(なし)'" size="sm" class="input-dropdown" id="stat-main-item-${name}" menu-class="long-dropdown">
+                        <b-dropdown v-if="param.type == 'armor'" style="width: 14em" :text="param.value ? param.value.name : '(なし)'" size="sm" class="input-dropdown" id="stat-main-item-${name}" menu-class="long-dropdown">
                           <b-dropdown-item @click="param.value=null">(なし)</b-dropdown-item>
                           <b-dropdown-item v-for="(c, i) in stat.validArmors()" :key="i" @click="param.value=c">{{ c.name }}</b-dropdown-item>
                         </b-dropdown>
-                        <b-dropdown v-if="param.type == 'helmet'" style="width: 12em" :text="param.value ? param.value.name : '(なし)'" size="sm" class="input-dropdown" id="stat-main-item-${name}" menu-class="long-dropdown">
+                        <b-dropdown v-if="param.type == 'helmet'" style="width: 14em" :text="param.value ? param.value.name : '(なし)'" size="sm" class="input-dropdown" id="stat-main-item-${name}" menu-class="long-dropdown">
                           <b-dropdown-item @click="param.value=null">(なし)</b-dropdown-item>
                           <b-dropdown-item v-for="(c, i) in stat.validHelmets()" :key="i" @click="param.value=c">{{ c.name }}</b-dropdown-item>
                         </b-dropdown>
-                        <b-dropdown v-if="param.type == 'accessory'" style="width: 12em" :text="param.value ? param.value.name : '(なし)'" size="sm" class="input-dropdown" id="stat-main-item-${name}" menu-class="long-dropdown">
+                        <b-dropdown v-if="param.type == 'accessory'" style="width: 14em" :text="param.value ? param.value.name : '(なし)'" size="sm" class="input-dropdown" id="stat-main-item-${name}" menu-class="long-dropdown">
                           <b-dropdown-item @click="param.value=null">(なし)</b-dropdown-item>
                           <b-dropdown-item v-for="(c, i) in stat.validAccessories()" :key="i" @click="param.value=c">{{ c.name }}</b-dropdown-item>
                         </b-dropdown>
@@ -402,6 +402,7 @@
                     <div class="param-box"><b-img-lazy :src="getImageURL('マジック')" title="マジック" width="18" height="18" /><span>{{statMainResult[3]}}</span></div>
                     <div class="param-box"><b-img-lazy :src="getImageURL('レジスト')" title="レジスト" width="18" height="18" /><span>{{statMainResult[4]}}</span></div>
                     <div class="param-box"><b-img-lazy :src="getImageURL('テクニック')" title="テクニック" width="18" height="18" /><span>{{statMainResult[5]}}</span></div>
+                    <div class="param-box"><span class="param-name">戦闘力:</span><span class="param-value">{{statMainResult[6]}}</span></div>
                   </div>
                 </b-container>
               </div>
@@ -466,7 +467,7 @@
                     </b-form-row>
 
                     <div style="text-align:center">
-                      <h6 style="margin: 5px 0px">エンチャント</h6>
+                      <h6 style="margin: 5px 0px">アミュレットスキル</h6>
                     </div>
                     <b-form-row v-for="(param, name, index) in stat.supportEnchants" :key="'enchant' + index">
                       <b-col style="text-align: right" align-self="end">
@@ -495,39 +496,53 @@
           </b-tabs>
           <div style="padding: 0px 10px 10px 10px">
             <b-container>
-              <b-button id="stat-main-copy-url" @click="copyToClipboard(statUrl)">パラメータを URL としてコピー</b-button>
-              <b-popover target="stat-main-copy-url" triggers="click blur" placement="top" custom-class="url-popover">
-                コピーしました：<br />{{ statUrl }}
-              </b-popover>
+              <div style="margin-bottom: 10px">
+                <b-dropdown text="自動装備＆エンチャント" size="sm" id="sort_selector">
+                  <b-dropdown-item class="d-flex flex-column" v-for="(c, i) in stat.autoEquipTypes" :key="i" @click="stat.autoEquip(i)">
+                    {{ c }}
+                  </b-dropdown-item>
+                </b-dropdown>
+              </div>
+              <div>
+                <b-button id="stat-main-copy-url" @click="copyToClipboard(statUrl)">パラメータを URL としてコピー</b-button>
+                <b-popover target="stat-main-copy-url" triggers="click blur" placement="top" custom-class="url-popover">
+                  コピーしました：<br />{{ statUrl }}
+                </b-popover>
+              </div>
             </b-container>
           </div>
         </div>
         <p>
           基礎ステータスとは、戦闘前に決定する各種ステータス値で、キャラ画面の情報で表示されるものになります。<br />
-          割合バフや能力値の n %を加算系の効果は基礎ステータスに対してかかります。<br />
+          割合バフや能力値の n %を加算系の効果は基礎ステータスに対してかかります。戦闘力も基礎ステータスから算出されます。<br />
           基礎ステータスは以下のように算出されます (HP、アタック、ディフェンス、マジック、レジスト、テクニック いずれも共通)。<br />
           <br />
-          <code>基礎ステータス＝(初期値＋レベル上昇値＋☆上昇値＋好感度ボーナス＋マスターレベルボーナス)×(記憶の書＋強化ボード)×割合エンチャント ＋ 装備＋固定値エンチャント</code><br />
+          <code>基礎ステータス＝(初期値＋レベル上昇値＋☆上昇値＋好感度ボーナス＋マスターボーナス)×(記憶の書＋強化ボード)×(割合エンチャントorアミュレットスキル)＋装備＋固定値エンチャント</code><br />
           <br />
           <ul>
             <li>初期値、レベル上昇値、☆による上昇値 はキャラ固有</li>
-            <li>好感度ボーナスは全開放時 [100, 25, 15, 25, 15, 0] ([HP, アタック, ディフェンス, マジック, レジスト, テクニック] の順、以後共通)</li>
+            <li>好感度ボーナスは全開放時 <span style="background: white">[100, 25, 15, 25, 15, 0]</span> ([HP, アタック, ディフェンス, マジック, レジスト, テクニック] の順、以後共通)</li>
             <li>
-              マスターレベルボーナスはメインとサポートで上昇値が異なる
+              マスターボーナスはクラスレベルに応じて得られる上昇値で、メインとサポートで内容が異なる
+              <b-table small outlined :items="stat.masterBonus"></b-table>
+            </li>
+            <li>
+              記憶の書と強化ボードの合計はカンスト時以下になる
+              <b-table small outlined :items="stat.bookBonus"></b-table>
+            </li>
+            <li>
+              エンチャントの上限は割合と固定値でそれぞれ以下になる (SSR の場合。テクニックには影響しないので除外)
+              <b-table small outlined :items="stat.enchantBonus"></b-table>
               <ul>
-                <li>メイン: Lv1=[200, 0, 0, 0, 0, 0] Lv2=[400, 0, 0, 0, 0, 0] Lv3=[800, 0, 0, 0, 0, 0]</li>
-                <li>サポート: Lv1=[300, 15, 8, 15, 8, 0] Lv2=[600, 30, 16, 30, 16, 0] Lv3=[1200, 55, 28, 55, 28, 0]</li>
+                <li>アクセサリの場合他にクリティカル率があり、こちらは 15% が上限。テクニックとは別物で基礎ステータスには影響しない</li>
               </ul>
             </li>
             <li>
-              記憶の書と強化ボードの合計はカンスト時以下になる (%)
+              アミュレットスキルは割合上昇のみで、上限は以下になる (こちらも SSR の場合。テクニックには影響しないので除外)
+              <b-table small outlined :items="stat.amuletBonus"></b-table>
               <ul>
-                <li>メイン: [150, 140, 130, 140, 130, 50]</li>
-                <li>サポート: [110, 120, 110, 120, 110, 0]</li>
+                <li>スキル1は戦闘時に効果を発揮するタイプで、基礎ステータスには影響しない</li>
               </ul>
-            </li>
-            <li>
-              エンチャントによる割合上昇は記憶の書＆強化ボードとは掛け算の関係であり、影響度合いが強い
             </li>
           </ul>
         </p>
@@ -997,6 +1012,37 @@ export default {
             valueF: 0,
           },
         },
+
+        masterBonus: [
+          { "種類": "メイン", "レベル1": [200, 0, 0, 0, 0, 0], "レベル2": [400, 0, 0, 0, 0, 0], "レベル3": [800, 0, 0, 0, 0, 0] },
+          { "種類": "サポート", "レベル1": [300, 15, 8, 15, 8, 0], "レベル2": [600, 30, 16, 30, 16, 0], "レベル3": [1200, 55, 28, 55, 28, 0] },
+        ],
+        bookBonus: [
+          { "種類": "メイン", "上昇率 (%)": [150, 140, 130, 140, 130, 50] },
+          { "種類": "サポート", "上昇率 (%)": [110, 120, 110, 120, 110, 0] },
+        ],
+        enchantBonus: [
+          { "種類": "武器", "割合 (%)": [10, 15, 5, 15, 5], "固定値": [131, 31, 7, 31, 7] },
+          { "種類": "鎧", "割合 (%)": [15, 5, 15, 5, 15], "固定値": [200, 11, 19, 11, 19] },
+          { "種類": "兜", "割合 (%)": [15, 5, 15, 5, 15], "固定値": [200, 11, 19, 11, 19] },
+          { "種類": "アクセサリ", "割合 (%)": [10, 10, 10, 10, 10], "固定値": [131, 21, 13, 21, 13] },
+          { "種類": "合計", "割合 (%)": [50, 35, 45, 35, 45], "固定値": [662, 74, 58, 74, 58] },
+        ],
+        amuletBonus: [
+          { "種類": "月アミュレットスキル2", "割合 (%)": [7.5, 7.5, 7.5, 7.5, 7.5] },
+          { "種類": "太陽アミュレットスキル2", "割合 (%)": [7.5, 7.5, 7.5, 7.5, 7.5] },
+          { "種類": "合計", "割合 (%)": [15, 15, 15, 15, 15] },
+        ],
+
+        autoEquipTypes: [
+          "戦闘力優先",
+          "HP 優先",
+          "アタック優先",
+          "ディフェンス優先",
+          "マジック優先",
+          "レジスト優先",
+          "テクニック優先",
+        ],
       },
 
       bp: {
@@ -1142,12 +1188,32 @@ export default {
     this.supChrs = structuredClone(jsonSupportChrs).filter(a => !a.hidden);
     this.items = structuredClone(jsonItems).filter(a => !a.hidden || a.slot == "アミュレット");
 
-    for (let i = 0; i < this.mainChrs.length; ++i)
-      this.mainChrs[i].index = i + 1;
-    for (let i = 0; i < this.supChrs.length; ++i)
-      this.supChrs[i].index = i + 1;
-    for (let i = 0; i < this.items.length; ++i)
-      this.items[i].index = i + 1;
+    for (let i = 0; i < this.mainChrs.length; ++i) {
+      let chr = this.mainChrs[i];
+      chr.index = i + 1;
+      const status = this.getMainChrStatus(chr);
+      if (status) {
+        chr.status = status;
+        chr.power = this.getMainBattlePower(status);
+      }
+    }
+
+    for (let i = 0; i < this.supChrs.length; ++i) {
+      let chr = this.supChrs[i];
+      chr.index = i + 1;
+      const status = this.getSupportChrStatus(chr);
+      if (status) {
+        status[5] = 0; // テクニックを戦闘力に計上しないように
+        chr.status = status;
+        chr.power = this.getSupportBattlePower(status);
+      }
+    }
+
+    for (let i = 0; i < this.items.length; ++i) {
+      let item = this.items[i];
+      item.index = i + 1;
+      item.power = this.getEstimatedItemBattlePower(item);
+    }
 
     this.mainChrs.sort((a, b) => b.date.localeCompare(a.date));
     this.supChrs.sort((a, b) => b.date.localeCompare(a.date));
@@ -1205,6 +1271,167 @@ export default {
         supItems.amulet1.value = null;
       if (!supportCanEquip(supItems.amulet2.value, 'アミュレット', '太陽'))
         supItems.amulet2.value = null;
+    }.bind(this);
+
+    this.stat.autoEquip = function (type) {
+      let chr = this.stat.main.chr.value;
+      let mi = this.stat.mainItems;
+      let si = this.stat.supportItems;
+
+      const symbol = chr.symbol;
+      const atkOrMag = chr.damageType == "アタック" ? 1 : 2;
+      const getItemBattlePower = (item)  => this.getEstimatedItemBattlePower(item, atkOrMag);
+
+      const cmp = (a, b) => a == b ? 0 : a < b ? 1 : -1;
+      const cmpPow = (a, b) => cmp(getItemBattlePower(a), getItemBattlePower(b));
+      const cmpStatOrPow = function (a, b, idx) {
+        if (a.status[idx] == b.status[idx])
+          return cmpPow(a, b);
+        else
+          return cmp(a.status[idx], b.status[idx]);
+      }
+
+      const pickItem = function (items, idx, tag) {
+        if (items.find(a => a.status[idx]) != null) {
+          return items.sort((a, b) => cmpStatOrPow(a, b, idx))[0];
+        }
+        else {
+          items.sort((a, b) => cmp(a.power, b.power));
+          if (tag) {
+            const i = items.find((a) => this.matchTags(a.tags, tag));
+            return i ? i : items[0];
+          }
+          else {
+            items[0];
+          }
+        }
+      }.bind(this);
+
+      const pickItems = function (idx, tag) {
+        mi.weapon.value = pickItem(this.stat.validWeapons(), idx, tag);
+        mi.armor.value = pickItem(this.stat.validArmors(), idx, tag);
+        mi.helmet.value = pickItem(this.stat.validHelmets(), idx, tag);
+        mi.accessory.value = pickItem(this.stat.validAccessories(), idx, tag);
+      }.bind(this);
+
+      let enchants = [
+        0,0, 0,0 ,0,0, 0,0, 0,0
+      ];
+      const enchantAttackPower = function () {
+        if (atkOrMag == 1)
+          enchants[2] = 35;
+        else
+          enchants[6] = 35;
+      };
+      const enchantDefensePower = function () {
+        if (chr.status[2] > chr.status[4])
+          enchants[4] = 45;
+        else
+          enchants[8] = 45;
+      };
+      const enchantOptimalForBP = function () {
+        if (atkOrMag == 1) {
+          enchants[2] = 35;
+          if (chr.status[2] * 0.05 > 31 || chr.status[4] * 0.05 > 31) {
+            enchants[4] = 45;
+            enchants[8] = 45;
+          }
+          else {
+            enchants[3] += 31;
+            if (chr.status[2] > chr.status[4]) {
+              enchants[4] = 45;
+              enchants[8] = 40;
+            }
+            else {
+              enchants[4] = 40;
+              enchants[8] = 45;
+            }
+          }
+        }
+        else {
+          enchants[6] = 35;
+          if (chr.status[2] * 0.05 > 31 || chr.status[4] * 0.05 > 31) {
+            enchants[4] = 45;
+            enchants[8] = 45;
+          }
+          else {
+            enchants[7] += 31;
+            if (chr.status[2] > chr.status[4]) {
+              enchants[4] = 45;
+              enchants[8] = 40;
+            }
+            else {
+              enchants[4] = 40;
+              enchants[8] = 45;
+            }
+          }
+        }
+      };
+
+      if (type == 0) { // 戦闘力優先
+        mi.weapon.value = this.stat.validWeapons().sort(cmpPow)[0];
+        mi.armor.value = this.stat.validArmors().sort(cmpPow)[0];
+        mi.helmet.value = this.stat.validHelmets().sort(cmpPow)[0];
+        mi.accessory.value = this.stat.validAccessories().sort(cmpPow)[0];
+        enchantOptimalForBP();
+      }
+      else if (type == 1) { // HP 優先
+        pickItems(0);
+        enchants[0] = 50;
+        enchants[1] = 662;
+        enchantAttackPower();
+      }
+      else if (type == 2) { // アタック優先
+        pickItems(1, /^バフ:アタック/);
+        enchants[2] = 35;
+        enchants[3] = 74;
+        enchantDefensePower();
+      }
+      else if (type == 3) { // ディフェンス優先
+        pickItems(2, /^バフ:ディフェンス/);
+        enchants[4] = 45;
+        enchants[5] = 58;
+        enchantAttackPower();
+      }
+      else if (type == 4) { // マジック優先
+        pickItems(3, /^バフ:マジック/);
+        enchants[6] = 35;
+        enchants[7] = 74;
+        enchantDefensePower();
+      }
+      else if (type == 5) { // レジスト優先
+        pickItems(4, /^バフ:レジスト/);
+        enchants[8] = 45;
+        enchants[9] = 58;
+        enchantAttackPower();
+      }
+      else if (type == 6) { // テクニック優先
+        pickItems(5, /^バフ:テクニック/);
+        enchantAttackPower();
+        enchants[4] = 45;
+        enchants[8] = 45;
+      }
+      else {
+        console.warn(`stat.autoEquip(): unknown type (${type})`);
+      }
+
+      const adjustSymbol = function (item) {
+        const pattern = /^(ゼニス|オリジン|ナディア)/;
+        if (item.name.match(pattern)) {
+          let r = item.name.replace(pattern, symbol);
+          return this.findItem(r);
+        }
+        return item;
+      }.bind(this);
+      mi.armor.value = adjustSymbol(mi.armor.value);
+      mi.helmet.value = adjustSymbol(mi.helmet.value);
+      mi.accessory.value = adjustSymbol(mi.accessory.value);
+
+      for (const v of Object.values(this.stat.mainEnchants)) {
+        v.valueP = enchants.shift();
+        v.valueF = enchants.shift();
+      }
+
     }.bind(this);
 
     const setupSkills = function (skills, chrs) {
@@ -1419,15 +1646,29 @@ export default {
             r[i] += item.status[i];
         }
       }
-      addItemStat(this.stat.mainItems.weapon.value);
-      addItemStat(this.stat.mainItems.armor.value);
-      addItemStat(this.stat.mainItems.helmet.value);
-      addItemStat(this.stat.mainItems.accessory.value);
+      const items = [
+        this.stat.mainItems.weapon.value,
+        this.stat.mainItems.armor.value,
+        this.stat.mainItems.helmet.value,
+        this.stat.mainItems.accessory.value,
+      ].filter(a => a != null);
+      for (const i of items)
+        addItemStat(i);
 
       for (let i = 0; i < r.length; ++i)
         r[i] += enchantF[i];
 
-      return r;
+      // 以下戦闘力
+      let bpRate = 1.0;
+      bpRate += 0.1 * star;
+      bpRate += 0.1 * master;
+      bpRate += 0.03 * 6; // スキルコスト
+      bpRate += 0.02 * (5 * items.length);
+      if (items.length == 4)
+        bpRate += 0.1;
+      let bp = Math.round(this.getBattlePower(r) * bpRate);
+
+      return [...r, bp];
     },
     calcStatSupport() {
       const empty = [0, 0, 0, 0, 0, 0];
@@ -1751,6 +1992,10 @@ label.disabled {
 }
 </style>
 <style>
+  .table {
+    width: auto;
+    margin: 3px;
+}
 .input-dropdown button {
   padding: 0.1em;
 }

@@ -420,9 +420,11 @@ export default {
     },
 
     matchTags(tags, re) {
-      for (const tag of tags) {
-        if (tag.match(re)) {
-          return true;
+      if (tags) {
+        for (const tag of tags) {
+          if (tag.match(re)) {
+            return true;
+          }
         }
       }
       return false;
@@ -483,7 +485,7 @@ export default {
           if (this.tagSearchPattern.length != 0) {
             const re = new RegExp(this.tagSearchPattern);
             this.tagSearchFn = function (item) {
-              return item.tags && this.matchTags(item.tags, re);
+              return this.matchTags(item.tags, re);
             }.bind(this);
           }
           else {
@@ -703,16 +705,18 @@ export default {
       let r = this.getBattlePower(status);
       return Math.round(r * (1.0 + 0.6 + 0.15));
     },
-    getEstimatedItemBattlePower(item, baseAP = 3000) {
+    getEstimatedItemBattlePower(item, atkOrMag = 0, baseAP = 3000) {
       const status = item.status;
       let r = 0;
       r += status[0] * 0.05;
       r += status[2] * 2;
       r += status[4] * 2;
 
-      if (status[1])
+      if (atkOrMag == 0)
+        r += Math.max(status[1], status[3]) * 2;
+      else if (atkOrMag == 1)
         r += status[1] * 2;
-      else if (status[3])
+      else if (atkOrMag == 2)
         r += status[3] * 2;
 
       r += baseAP * 2 * (status[5] * 0.0003);
