@@ -403,6 +403,7 @@
                     <div class="param-box"><b-img-lazy :src="getImageURL('レジスト')" title="レジスト" width="18" height="18" /><span>{{statMainResult[4]}}</span></div>
                     <div class="param-box"><b-img-lazy :src="getImageURL('テクニック')" title="テクニック" width="18" height="18" /><span>{{statMainResult[5]}}</span></div>
                     <div class="param-box"><span class="param-name">戦闘力:</span><span class="param-value">{{statMainResult[6]}}</span></div>
+                    <div class="param-box" v-if="statMainResult[7]"><span class="param-name">サポート込み戦闘力:</span><span class="param-value">{{statMainResult[7]}}</span></div>
                   </div>
                 </b-container>
               </div>
@@ -489,6 +490,7 @@
                     <div class="param-box" v-if="stat.support.chr.value.damageType=='マジック'"><b-img-lazy :src="getImageURL('マジック')" title="マジック" width="18" height="18" /><span>{{statSupportResult[3]}}</span></div>
                     <div class="param-box"><b-img-lazy :src="getImageURL('ディフェンス')" title="ディフェンス" width="18" height="18" /><span>{{statSupportResult[2]}}</span></div>
                     <div class="param-box"><b-img-lazy :src="getImageURL('レジスト')" title="レジスト" width="18" height="18" /><span>{{statSupportResult[4]}}</span></div>
+                    <div class="param-box"><span class="param-name">戦闘力:</span><span class="param-value">{{statSupportResult[6]}}</span></div>
                   </div>
                 </b-container>
               </div>
@@ -1227,6 +1229,7 @@ export default {
     this.amulets2 = this.items.filter(a => a.slot == "アミュレット" && a.amuletType == "太陽");
 
     this.stat.main.chr.value = this.mainChrs[0];
+    this.stat.support.chr.value = this.supChrs[0];
 
     const mainCanEquip = function (item, slot = null) {
       if (item) {
@@ -1275,6 +1278,7 @@ export default {
 
     this.stat.autoEquip = function (type) {
       let chr = this.stat.main.chr.value;
+      let sup = this.stat.support.chr.value;
       let mi = this.stat.mainItems;
       let si = this.stat.supportItems;
 
@@ -1317,6 +1321,10 @@ export default {
       let enchants = [
         0,0, 0,0 ,0,0, 0,0, 0,0
       ];
+      let amuskill = [
+        0, 0, 0, 0, 0
+      ];
+
       const enchantAttackPower = function () {
         if (atkOrMag == 1)
           enchants[2] = 35;
@@ -1368,48 +1376,90 @@ export default {
         }
       };
 
+      const pickOptimalAmulet1 = function (setSkill = false) {
+        if (sup.damageType == "アタック") {
+          if (setSkill)
+            amuskill[1] = 15;
+          return this.findItem("煌めく満月のアミュレット");
+        }
+        else {
+          if (setSkill)
+            amuskill[3] = 15;
+          return this.findItem("煌めく新月のアミュレット");
+        }
+      }.bind(this);
+      const pickOptimalAmulet2 = function () {
+        return this.findItem("煌めく陽光のアミュレット");
+      }.bind(this);
+
       if (type == 0) { // 戦闘力優先
         mi.weapon.value = this.stat.validWeapons().sort(cmpPow)[0];
         mi.armor.value = this.stat.validArmors().sort(cmpPow)[0];
         mi.helmet.value = this.stat.validHelmets().sort(cmpPow)[0];
         mi.accessory.value = this.stat.validAccessories().sort(cmpPow)[0];
         enchantOptimalForBP();
+
+        si.amulet1.value = pickOptimalAmulet1(true);
+        si.amulet2.value = pickOptimalAmulet2();
       }
       else if (type == 1) { // HP 優先
         pickItems(0);
         enchants[0] = 50;
         enchants[1] = 662;
         enchantAttackPower();
+
+        si.amulet1.value = pickOptimalAmulet1();
+        si.amulet2.value = pickOptimalAmulet2();
+        amuskill[0] = 15;
       }
       else if (type == 2) { // アタック優先
         pickItems(1, /^バフ:アタック/);
         enchants[2] = 35;
         enchants[3] = 74;
         enchantDefensePower();
+
+        si.amulet1.value = this.findItem("煌めく満月のアミュレット");
+        si.amulet2.value = pickOptimalAmulet2();
+        amuskill[1] = 15;
       }
       else if (type == 3) { // ディフェンス優先
         pickItems(2, /^バフ:ディフェンス/);
         enchants[4] = 45;
         enchants[5] = 58;
         enchantAttackPower();
+
+        si.amulet1.value = pickOptimalAmulet1();
+        si.amulet2.value = this.findItem("煌めく陽光のアミュレット");
+        amuskill[2] = 15;
       }
       else if (type == 4) { // マジック優先
         pickItems(3, /^バフ:マジック/);
         enchants[6] = 35;
         enchants[7] = 74;
         enchantDefensePower();
+
+        si.amulet1.value = this.findItem("煌めく新月のアミュレット");
+        si.amulet2.value = pickOptimalAmulet2();
+        amuskill[3] = 15;
       }
       else if (type == 5) { // レジスト優先
         pickItems(4, /^バフ:レジスト/);
         enchants[8] = 45;
         enchants[9] = 58;
         enchantAttackPower();
+
+        si.amulet1.value = pickOptimalAmulet1();
+        si.amulet2.value = this.findItem("煌めく日蝕のアミュレット");
+        amuskill[4] = 15;
       }
       else if (type == 6) { // テクニック優先
         pickItems(5, /^バフ:テクニック/);
         enchantAttackPower();
         enchants[4] = 45;
         enchants[8] = 45;
+
+        si.amulet1.value = pickOptimalAmulet1(true);
+        si.amulet2.value = pickOptimalAmulet2();
       }
       else {
         console.warn(`stat.autoEquip(): unknown type (${type})`);
@@ -1431,7 +1481,9 @@ export default {
         v.valueP = enchants.shift();
         v.valueF = enchants.shift();
       }
-
+      for (const v of Object.values(this.stat.supportEnchants)) {
+        v.valueP = amuskill.shift();
+      }
     }.bind(this);
 
     const setupSkills = function (skills, chrs) {
@@ -1640,35 +1692,51 @@ export default {
         r[i] = Math.round(r[i] * (1.0 + enchantP[i] * 0.01));
       }
 
-      const addItemStat = function (item) {
-        if (item) {
-          for (let i = 0; i < r.length; ++i)
-            r[i] += item.status[i];
-        }
-      }
       const items = [
         this.stat.mainItems.weapon.value,
         this.stat.mainItems.armor.value,
         this.stat.mainItems.helmet.value,
         this.stat.mainItems.accessory.value,
       ].filter(a => a != null);
-      for (const i of items)
-        addItemStat(i);
+      for (const item of items) {
+        for (let i = 0; i < r.length; ++i)
+          r[i] += item.status[i];
+      }
 
       for (let i = 0; i < r.length; ++i)
         r[i] += enchantF[i];
 
       // 以下戦闘力
-      let bpRate = 1.0;
-      bpRate += 0.1 * star;
-      bpRate += 0.1 * master;
-      bpRate += 0.03 * 6; // スキルコスト
-      bpRate += 0.02 * (5 * items.length);
+      let bpr = 1.0;
+      bpr += 0.1 * star;
+      bpr += 0.1 * master;
+      bpr += 0.03 * 6; // スキルコスト
+      bpr += 0.02 * (5 * items.length);
       if (items.length == 4)
-        bpRate += 0.1;
-      let bp = Math.round(this.getBattlePower(r) * bpRate);
+        bpr += 0.1;
+      let rMain = [...r];
+      let bpMain = Math.round(this.getBattlePower(r) * bpr);
+      let bpTotal = 0;
 
-      return [...r, bp];
+      const sup = this.stat.support.chr.value;
+      if (sup) {
+        const sstar = this.toInt(this.stat.support.star.value);
+        const smaster = this.toInt(this.stat.support.masterLv.value);
+        bpr += 0.1 * sstar;
+        bpr += 0.1 * smaster;
+        bpr += 0.05 * 3; // スキル開放
+
+        const sr = this.calcStatSupport();
+        for (let i of [0, 2, 4])
+          r[i] += sr[i];
+
+        const mi = chr.damageType == "アタック" ? 1 : 3;
+        const si = sup.damageType == "アタック" ? 1 : 3;
+        r[mi] += sr[si];
+        bpTotal = Math.round(this.getBattlePower(r) * bpr);
+      }
+
+      return [...rMain, bpMain, bpTotal];
     },
     calcStatSupport() {
       const empty = [0, 0, 0, 0, 0, 0];
@@ -1726,16 +1794,26 @@ export default {
         r[i] = Math.round(r[i] * (1.0 + enchantP[i] * 0.01));
       }
 
-      const addItemStat = function (item) {
-        if (item) {
-          for (let i = 0; i < r.length; ++i)
-            r[i] += item.status[i];
-        }
+      const items = [
+        this.stat.supportItems.amulet1.value,
+        this.stat.supportItems.amulet2.value,
+      ].filter(a => a != null);
+      for (const item of items) {
+        for (let i = 0; i < r.length; ++i)
+          r[i] += item.status[i];
       }
-      addItemStat(this.stat.supportItems.amulet1.value);
-      addItemStat(this.stat.supportItems.amulet2.value);
 
-      return r;
+      // テクニック除去
+      r[5] = 0;
+
+      // 以下戦闘力
+      let bpr = 1.0;
+      bpr += 0.1 * star;
+      bpr += 0.1 * master;
+      bpr += 0.05 * 3; // スキル開放
+      let bp = Math.round(this.getBattlePower(r) * bpr);
+
+      return [...r, bp];
     },
     getStatUrl() {
       let params = [];
