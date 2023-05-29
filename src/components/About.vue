@@ -158,8 +158,8 @@
                     <label style="width: 14em" :class="getParamClass(param)" :for="`dmg-main-${name}`">{{param.label}}</label>
                   </b-col>
                   <b-col>
-                    <b-form-input style="width: 5em" :id="`dmg-main-${name}`" v-model="param.value" size="sm" type="number" class="input-param"
-                                  :min="param.min" :max="param.max" :disabled="param.disabled()" v-if="param.type == 'number'"></b-form-input>
+                    <b-form-input v-if="param.type == 'number'" style="width: 5em" :id="`dmg-main-${name}`" v-model.number="param.value"
+                                  size="sm" type="number" class="input-param" :min="param.min" :max="param.max" :disabled="param.disabled()"></b-form-input>
                     <b-form-checkbox style="width: 5em" :id="`dmg-main-${name}`" v-model="param.value" size="sm"
                                      :disabled="param.disabled()" plain v-if="param.type == 'bool'"></b-form-checkbox>
                   </b-col>
@@ -178,8 +178,8 @@
                     <label style="width: 14em" :class="getParamClass(param)" :for="`dmg-support-${name}`">{{param.label}}</label>
                   </b-col>
                   <b-col>
-                    <b-form-input style="width: 5em" :id="`dmg-support-${name}`" v-model="param.value" size="sm" type="number" class="input-param"
-                                  :min="param.min" :max="param.max" :disabled="param.disabled()" v-if="param.type == 'number'"></b-form-input>
+                    <b-form-input v-if="param.type == 'number'" style="width: 5em" :id="`dmg-support-${name}`" v-model.number="param.value"
+                                  size="sm" type="number" class="input-param" :min="param.min" :max="param.max" :disabled="param.disabled()"></b-form-input>
                     <b-form-checkbox style="width: 5em" :id="`dmg-support-${name}`" v-model="param.value" size="sm" plain
                                      :disabled="param.disabled()" v-if="param.type == 'bool'"></b-form-checkbox>
                   </b-col>
@@ -198,8 +198,8 @@
                     <label style="width: 11em" :class="getParamClass(param)" :for="`dmg-attacked-${name}`">{{param.label}}</label>
                   </b-col>
                   <b-col>
-                    <b-form-input style="width: 5em" :id="`dmg-attacked-${name}`" v-model="param.value" size="sm" type="number" class="input-param"
-                                  :min="param.min" :max="param.max" v-if="param.type == 'number'"></b-form-input>
+                    <b-form-input v-if="param.type == 'number'" style="width: 5em" :id="`dmg-attacked-${name}`" v-model.number="param.value"
+                                  size="sm" type="number" class="input-param" :min="param.min" :max="param.max"></b-form-input>
                   </b-col>
                 </b-form-row>
               </b-container>
@@ -317,7 +317,7 @@
                         <label :for="`stat-main-${name}`">{{param.label}}</label>
                       </b-col>
                       <b-col>
-                        <b-form-input v-if="param.type == 'number'" style="width: 5em" :id="`stat-main-${name}`" v-model="param.value" size="sm" type="number" class="input-param" :min="param.min" :max="param.max"></b-form-input>
+                        <b-form-input v-if="param.type == 'number'" style="width: 5em" :id="`stat-main-${name}`" v-model.number="param.value" size="sm" type="number" class="input-param" :min="param.min" :max="param.max"></b-form-input>
                         <b-form-checkbox v-if="param.type == 'bool'" style="width: 5em" :id="`stat-main-${name}`" v-model="param.value" size="sm" plain></b-form-checkbox>
                         <b-dropdown v-if="param.type == 'character'" style="width: 15em" :text="param.value ? param.value.name : '(なし)'" size="sm" class="input-dropdown" id="stat-main-${name}" menu-class="long-dropdown">
                           <b-dropdown-item v-for="(c, i) in mainChrs" :key="i" @click="param.value=c; stat.validateItems();">
@@ -338,7 +338,7 @@
                         <label style="width: 9em" :for="`stat-main-${name}`">{{param.label}}</label>
                       </b-col>
                       <b-col>
-                        <b-form-input v-if="param.type == 'number'" style="width: 4em" :id="`stat-main-${name}`" v-model="param.value" size="sm" type="number" class="input-param" :min="param.min" :max="param.max"></b-form-input>
+                        <b-form-input v-if="param.type == 'number'" style="width: 4em" :id="`stat-main-${name}`" v-model.number="param.value" size="sm" type="number" class="input-param" :min="param.min" :max="param.max"></b-form-input>
                       </b-col>
                     </b-form-row>
                   </b-container>
@@ -380,13 +380,13 @@
                         <label style="width: 10em" :for="`stat-main-enchant-${name}P`">{{param.label}} (%)</label>
                       </b-col>
                       <b-col>
-                        <b-form-input style="width: 4em" :id="`stat-main-enchant-${name}P`" v-model="param.valueP" size="sm" type="number" class="input-param" :min="0"></b-form-input>
+                        <b-form-input style="width: 4em" :id="`stat-main-enchant-${name}P`" v-model.number="param.valueP" size="sm" type="number" class="input-param" :min="0"></b-form-input>
                       </b-col>
                       <b-col style="text-align: right" align-self="end">
                         <label style="width: 4em" :for="`stat-main-enchant-${name}F`"> (固定値)</label>
                       </b-col>
                       <b-col>
-                        <b-form-input style="width: 4em" :id="`stat-main-enchant-${name}F`" v-model="param.valueF" size="sm" type="number" class="input-param" :min="0"></b-form-input>
+                        <b-form-input style="width: 4em" :id="`stat-main-enchant-${name}F`" v-model.number="param.valueF" size="sm" type="number" class="input-param" :min="0"></b-form-input>
                       </b-col>
                     </b-form-row>
                   </b-container>
@@ -420,7 +420,7 @@
                         <label :for="`stat-sup-${name}`">{{param.label}}</label>
                       </b-col>
                       <b-col>
-                        <b-form-input v-if="param.type == 'number'" style="width: 5em" :id="`stat-sup-${name}`" v-model="param.value" size="sm" type="number" class="input-param" :min="param.min" :max="param.max"></b-form-input>
+                        <b-form-input v-if="param.type == 'number'" style="width: 5em" :id="`stat-sup-${name}`" v-model.number="param.value" size="sm" type="number" class="input-param" :min="param.min" :max="param.max"></b-form-input>
                         <b-form-checkbox v-if="param.type == 'bool'" style="width: 5em" :id="`stat-sup-${name}`" v-model="param.value" size="sm" plain></b-form-checkbox>
                         <b-dropdown v-if="param.type == 'character'" style="width: 15em" :text="param.value ? param.value.name : '(なし)'" size="sm" class="input-dropdown" id="stat-sup-${name}" menu-class="long-dropdown">
                           <b-dropdown-item @click="param.value=null">(なし)</b-dropdown-item>
@@ -442,7 +442,7 @@
                         <label style="width: 9em" :for="`stat-sup-${name}`">{{param.label}}</label>
                       </b-col>
                       <b-col>
-                        <b-form-input v-if="param.type == 'number'" style="width: 4em" :id="`stat-sup-${name}`" v-model="param.value" size="sm" type="number" class="input-param" :min="param.min" :max="param.max"></b-form-input>
+                        <b-form-input v-if="param.type == 'number'" style="width: 4em" :id="`stat-sup-${name}`" v-model.number="param.value" size="sm" type="number" class="input-param" :min="param.min" :max="param.max"></b-form-input>
                       </b-col>
                     </b-form-row>
                   </b-container>
@@ -476,7 +476,7 @@
                         <label style="width: 10em" :for="`stat-sup-enchant-${name}P`">{{param.label}} (%)</label>
                       </b-col>
                       <b-col>
-                        <b-form-input style="width: 4em" :id="`stat-sup-enchant-${name}P`" v-model="param.valueP" size="sm" type="number" class="input-param" :min="0"></b-form-input>
+                        <b-form-input style="width: 4em" :id="`stat-sup-enchant-${name}P`" v-model.number="param.valueP" size="sm" type="number" class="input-param" :min="0"></b-form-input>
                       </b-col>
                     </b-form-row>
                   </b-container>
@@ -579,8 +579,8 @@
                     <label style="width: 10em" :class="getParamClass(param)" :for="`bp-main-${name}`">{{param.label}}</label>
                   </b-col>
                   <b-col>
-                    <b-form-input style="width: 5em" :id="`bp-main-${name}`" v-model="param.value" size="sm" type="number" class="input-param"
-                                  :min="param.min" :max="param.max" :disabled="param.disabled()" v-if="param.type == 'number'"></b-form-input>
+                    <b-form-input v-if="param.type == 'number'" style="width: 5em" :id="`bp-main-${name}`" v-model.number="param.value"
+                                  size="sm" type="number" class="input-param" :min="param.min" :max="param.max" :disabled="param.disabled()"></b-form-input>
                     <b-form-checkbox style="width: 5em" :id="`bp-main-${name}`" v-model="param.value" size="sm" plain
                                      :disabled="param.disabled()" v-if="param.type == 'bool'"></b-form-checkbox>
                   </b-col>
@@ -599,8 +599,8 @@
                     <label style="width: 10em" :class="getParamClass(param)" :for="`bp-support-${name}`">{{param.label}}</label>
                   </b-col>
                   <b-col>
-                    <b-form-input style="width: 5em" :id="`bp-support-${name}`" v-model="param.value" size="sm" type="number" class="input-param"
-                                  :min="param.min" :max="param.max" :disabled="param.disabled()" v-if="param.type == 'number'"></b-form-input>
+                    <b-form-input v-if="param.type == 'number'" style="width: 5em" :id="`bp-support-${name}`" v-model.number="param.value"
+                                  size="sm" type="number" class="input-param" :min="param.min" :max="param.max" :disabled="param.disabled()"></b-form-input>
                   </b-col>
                 </b-form-row>
               </b-container>
@@ -1060,6 +1060,10 @@ export default {
         highscoreData: [],
         highscoreFields: [
           {
+            key: "index",
+            label: "順位",
+          },
+          {
             key: "bp",
             label: "戦闘力",
           },
@@ -1224,28 +1228,16 @@ export default {
     for (let i = 0; i < this.mainChrs.length; ++i) {
       let chr = this.mainChrs[i];
       chr.index = i + 1;
-      const status = this.getMainChrStatus(chr);
-      if (status) {
-        chr.status = status;
-        chr.power = this.getMainBattlePower(status);
-      }
     }
 
     for (let i = 0; i < this.supChrs.length; ++i) {
       let chr = this.supChrs[i];
       chr.index = i + 1;
-      const status = this.getSupportChrStatus(chr);
-      if (status) {
-        status[5] = 0; // テクニックを戦闘力に計上しないように
-        chr.status = status;
-        chr.power = this.getSupportBattlePower(status);
-      }
     }
 
     for (let i = 0; i < this.items.length; ++i) {
       let item = this.items[i];
       item.index = i + 1;
-      item.power = this.getEstimatedItemBattlePower(item);
     }
 
     this.mainChrs.sort((a, b) => b.date.localeCompare(a.date));
@@ -1335,7 +1327,20 @@ export default {
 
       const cmp = this.compare;
       const getItemBattlePower = (item, api) => this.getEstimatedItemBattlePower(item, api, ap, tec);
-      const cmpPow = (a, b, api) => cmp(getItemBattlePower(a, api), getItemBattlePower(b, api));
+      const cmpPow = function (a, b, api) {
+        const bpa = getItemBattlePower(a, api);
+        const bpb = getItemBattlePower(b, api);
+        if (bpa != bpb) {
+          return cmp(bpa, bpb);
+        }
+        else {
+          // 戦闘力が同じなら デメリットなしを優先
+          const re1 = /^デメリット:/;
+          const ac1 = !this.matchTags(a.tags, re1) ? 1 : 0;
+          const bc1 = !this.matchTags(b.tags, re1) ? 1 : 0;
+          return cmp(ac1, bc1);
+        }
+      }.bind(this);
 
       const pickItem = function (items, idx, api, tag) {
         if (idx >= 0) {
@@ -1577,12 +1582,15 @@ export default {
       }
     }.bind(this);
 
-    this.stat.highscoreSearch = function() {
-      const mainChrs = [...this.mainChrs].sort((a, b) => this.compare(a.power, b.power)).slice(0, 20);
-      const supChrs = [...this.supChrs].sort((a, b) => this.compare(a.power, b.power)).slice(0, 20);
-
+    this.stat.highscoreSearch = function () {
       let msa = this.getStatMainArgs();
       let ssa = this.getStatSupportArgs();
+      const powMain = (a) => this.getBattlePower(this.getMainChrStatus(a, msa.level, msa.star, msa.master, msa.loveBonus, msa.boosts));
+      const powSup = (a) => this.getBattlePower(this.getSupportChrStatus(a, ssa.level, ssa.star, ssa.master, ssa.loveBonus, ssa.boosts));
+
+      const mainChrs = [...this.mainChrs].sort((a, b) => this.compare(powMain(a), powMain(b))).slice(0, 50);
+      const supChrs = [...this.supChrs].sort((a, b) => this.compare(powSup(a), powSup(b))).slice(0, 50);
+
       let results = [];
 
       const getPEnchants = function (a) {
@@ -1641,6 +1649,21 @@ export default {
       }
 
       results = results.sort((a, b) => this.compare(a.bp, b.bp)).slice(0, 200);
+      let mains = [];
+      let supports = [];
+      for (let i = 0; i < results.length; ++i) {
+        let r = results[i];
+        r.index = i + 1;
+        r._cellVariants = {};
+        if (!mains.includes(r.main)) {
+          mains.push(r.main);
+          r._cellVariants.main = "primary";
+        }
+        if (!supports.includes(r.support)) {
+          supports.push(r.support);
+          r._cellVariants.support = "warning";
+        }
+      }
       this.stat.highscoreData = results;
     }.bind(this);
 
@@ -1767,13 +1790,13 @@ export default {
       const main = this.dmg.main;
       const support = this.dmg.support;
 
-      const def = this.toInt(attacked.def.value);
+      const def = attacked.def.value;
       const damageResist = 1.0 - this.toNumber(attacked.damageRate.value) * 0.01;
-      const shield = this.toInt(attacked.shield.value);
+      const shield = attacked.shield.value;
 
       let result = 0;
       if (this.dmg.mainEnabled) {
-        const atk = this.toInt(main.atk.value);
+        const atk = main.atk.value;
         const skillDamageRate = this.toNumber(main.skillDamageRate.value);
         const damageBuff = 1.0 + this.toNumber(main.damageBuff.value) * 0.01;
         const criticalDamageRate = 1.0 + this.toNumber(main.criticalDamageRate.value) * 0.01;
@@ -1787,7 +1810,7 @@ export default {
         result += Math.max(Math.round(damage), 1) * (main.doubleAttack.value ? 20 : 10);
       }
       if (this.dmg.supportEnabled) {
-        const atk = this.toInt(support.atk.value);
+        const atk = support.atk.value;
         const damageBuff = 1.0 + this.toNumber(support.damageBuff.value) * 0.01;
 
         let damage = (atk - def) * damageBuff * damageResist;
@@ -1809,59 +1832,57 @@ export default {
       let rate = 1.0;
       if (this.bp.mainEnabled) {
         const params = this.bp.main;
-        hp += this.toInt(params.hp.value);
-        atk += this.toInt(params.atk.value);
-        def += this.toInt(params.def.value);
-        res += this.toInt(params.res.value);
-        tec += this.toInt(params.tec.value);
-        rate += this.toInt(params.stars.value) * 0.1;
-        rate += this.toInt(params.master.value) * 0.1;
-        rate += this.toInt(params.skillCost.value) * 0.03;
-        rate += this.toInt(params.eqStars.value) * 0.02;
+        hp  += params.hp.value;
+        atk += params.atk.value;
+        def += params.def.value;
+        res += params.res.value;
+        tec += params.tec.value;
+        rate += params.stars.value * 0.1;
+        rate += params.master.value * 0.1;
+        rate += params.skillCost.value * 0.03;
+        rate += params.eqStars.value * 0.02;
         if (params.enchant.value)
           rate += 0.1;
       }
       if (this.bp.supportEnabled) {
         const params = this.bp.support;
-        hp += this.toInt(params.hp.value);
-        atk += this.toInt(params.atk.value);
-        def += this.toInt(params.def.value);
-        res += this.toInt(params.res.value);
-        rate += this.toInt(params.stars.value) * 0.1;
-        rate += this.toInt(params.master.value) * 0.1;
-        rate += this.toInt(params.skills.value) * 0.05;
+        hp += params.hp.value;
+        atk += params.atk.value;
+        def += params.def.value;
+        res += params.res.value;
+        rate += params.stars.value * 0.1;
+        rate += params.master.value * 0.1;
+        rate += params.skills.value * 0.05;
       }
       return Math.round(((hp * 0.05) + (atk * 2 * (1.0 + tec * 0.0003)) + (def * 2) + (res * 2)) * rate);
     },
 
     getStatMainArgs() {
-      const toI = this.toInt;
       const s = this.stat;
       let r = {
         character: s.main.character.value,
-        star: toI(s.main.star.value),
-        level: toI(s.main.level.value),
-        master: toI(s.main.master.value),
+        star: s.main.star.value,
+        level: s.main.level.value,
+        master: s.main.master.value,
         loveBonus: s.main.loveBonus.value,
-        boosts: Object.values(s.mainBoosts).map(a => toI(a.value)),
+        boosts: Object.values(s.mainBoosts).map(a => a.value),
         items: Object.values(s.mainItems).map(a => a.value),
-        enchantsP: Object.values(s.mainEnchants).map(a => toI(a.valueP)),
-        enchantsF: Object.values(s.mainEnchants).map(a => toI(a.valueF)),
+        enchantsP: Object.values(s.mainEnchants).map(a => a.valueP),
+        enchantsF: Object.values(s.mainEnchants).map(a => a.valueF),
       };
       return r;
     },
     getStatSupportArgs() {
-      const toI = this.toInt;
       const s = this.stat;
       let r = {
         character: s.support.character.value,
-        star: toI(s.support.star.value),
-        level: toI(s.support.level.value),
-        master: toI(s.support.master.value),
+        star: s.support.star.value,
+        level: s.support.level.value,
+        master: s.support.master.value,
         loveBonus: s.support.loveBonus.value,
-        boosts: Object.values(s.supportBoosts).map(a => toI(a.value)),
+        boosts: Object.values(s.supportBoosts).map(a => a.value),
         items: Object.values(s.supportItems).map(a => a.value),
-        enchantsP: Object.values(s.supportEnchants).map(a => toI(a.valueP)),
+        enchantsP: Object.values(s.supportEnchants).map(a => a.valueP),
       };
       return r;
     },
@@ -1871,29 +1892,7 @@ export default {
       if (!chr)
         return empty;
 
-      let r = [0, 0, 0, 0, 0, 0];
-      for (let i = 0; i < r.length; ++i) {
-        r[i] += chr.statusInit[i];
-        r[i] += Math.round(chr.statusLv[i] * (ma.level - 1));
-        r[i] += Math.round(chr.statusStar[i] * ma.star);
-      }
-      if (ma.master > 0 && ma.master <= 3) {
-        const values = [
-          empty,
-          [200, 0, 0, 0, 0, 0],
-          [400, 0, 0, 0, 0, 0],
-          [800, 0, 0, 0, 0, 0],
-        ];
-        for (let i = 0; i < r.length; ++i)
-          r[i] += values[ma.master][i];
-      }
-      if (ma.loveBonus) {
-        const values = [100, 25, 15, 25, 15];
-        for (let i = 0; i < values.length; ++i)
-          r[i] += values[i];
-      }
-      for (let i = 0; i < ma.boosts.length; ++i)
-        r[i] = Math.round(r[i] * (1.0 + ma.boosts[i] * 0.01));
+      let r = this.getMainChrStatus(chr, ma.level, ma.star, ma.master, ma.loveBonus, ma.boosts);
       for (let i = 0; i < ma.enchantsP.length; ++i)
         r[i] = Math.round(r[i] * (1.0 + ma.enchantsP[i] * 0.01));
 
@@ -1913,9 +1912,9 @@ export default {
       bpr += 0.1 * ma.star;
       bpr += 0.1 * ma.master;
       bpr += 0.03 * 6; // スキルコスト
-      bpr += 0.02 * (5 * items.length);
+      bpr += 0.02 * (5 * items.length); // アイテムの☆合計
       if (items.length == 4)
-        bpr += 0.1;
+        bpr += 0.1; // エンチャント4セット
       const bpMain = Math.round(this.getBattlePower(r) * bpr);
       const rMain = [...r, bpMain];
       if (!sa || !sa.character)
@@ -1947,29 +1946,7 @@ export default {
       if (!chr)
         return empty;
 
-      let r = [0, 0, 0, 0, 0, 0];
-      for (let i = 0; i < r.length; ++i) {
-        r[i] += chr.statusInit[i];
-        r[i] += Math.round(chr.statusLv[i] * (sa.level - 1));
-        r[i] += Math.round(chr.statusStar[i] * sa.star);
-      }
-      if (sa.master > 0 && sa.master <= 3) {
-        const values = [
-          empty,
-          [300, 15, 8, 15, 8, 0],
-          [600, 30, 16, 30, 16, 0],
-          [1200, 55, 28, 55, 28, 0],
-        ];
-        for (let i = 0; i < r.length; ++i)
-          r[i] += values[sa.master][i];
-      }
-      if (sa.loveBonus) {
-        const values = [100, 25, 15, 25, 15];
-        for (let i = 0; i < values.length; ++i)
-          r[i] += values[i];
-      }
-      for (let i = 0; i < sa.boosts.length; ++i)
-        r[i] = Math.round(r[i] * (1.0 + sa.boosts[i] * 0.01));
+      let r = this.getSupportChrStatus(chr, sa.level, sa.star, sa.master, sa.loveBonus, sa.boosts);
       for (let i = 0; i < sa.enchantsP.length; ++i)
         r[i] = Math.round(r[i] * (1.0 + sa.enchantsP[i] * 0.01));
 

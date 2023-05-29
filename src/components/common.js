@@ -618,9 +618,9 @@ export default {
       }
     },
 
-    getMainChrStatus(chr, level = 110, star = 6, bonus = true)
+    getMainChrStatus(chr, level = 110, star = 6, master = 3, loveBonus = true, boost = [150, 140, 130, 140, 130, 50])
     {
-      if (!chr.statusInit || !chr.statusLv || !chr.statusStar)
+      if (!chr || !chr.statusInit || !chr.statusLv || !chr.statusStar)
         return null;
 
       let r = [0, 0, 0, 0, 0, 0];
@@ -629,20 +629,30 @@ export default {
         r[i] += Math.round(chr.statusLv[i] * (level - 1));
         r[i] += Math.round(chr.statusStar[i] * star);
       }
-      if (bonus) {
-        const fixed = [100 + 800, 25, 15, 25, 15, 0]; // 好感度 + マスターレベル3
-        const rate = [80 + 70, 90 + 50, 80 + 50, 90 + 50, 80 + 50, 50]; // 記憶の書 + 強化ボード (%)
-        for (let i = 0; i < r.length; ++i) {
-          r[i] += fixed[i];
-          r[i] *= 1.0 + rate[i] * 0.01;
-          r[i] = Math.round(r[i]);
-        }
+      if(master > 0 && master <= 3){
+        const values = [
+          [  0, 0, 0, 0, 0, 0],
+          [200, 0, 0, 0, 0, 0],
+          [400, 0, 0, 0, 0, 0],
+          [800, 0, 0, 0, 0, 0],
+        ];
+        for (let i = 0; i < r.length; ++i)
+          r[i] += values[master][i];
+      }
+      if (loveBonus) {
+        const values = [100, 25, 15, 25, 15, 0];
+        for (let i = 0; i < values.length; ++i)
+          r[i] += values[i];
+      }
+      if (boost) {
+        for (let i = 0; i < boost.length; ++i)
+          r[i] = Math.round(r[i] * (1.0 + boost[i] * 0.01));
       }
       return r;
     },
 
-    getSupportChrStatus(chr, level = 110, star = 6, bonus = true) {
-      if (!chr.statusInit || !chr.statusLv || !chr.statusStar)
+    getSupportChrStatus(chr, level = 110, star = 6, master = 3, loveBonus = true, boost = [110, 120, 110, 120, 110, 0]) {
+      if (!chr || !chr.statusInit || !chr.statusLv || !chr.statusStar)
         return null;
 
       let r = [0, 0, 0, 0, 0, 0];
@@ -651,14 +661,24 @@ export default {
         r[i] += Math.round(chr.statusLv[i] * (level - 1));
         r[i] += Math.round(chr.statusStar[i] * star);
       }
-      if (bonus) {
-        const fixed = [100 + 1200, 25 + 55, 15 + 28, 25 + 55, 15 + 28, 0]; // 好感度 + マスターレベル3
-        const rate = [80 + 30, 90 + 30, 80 + 30, 90 + 30, 80 + 30, 0]; // 記憶の書 + 強化ボード (%)
-        for (let i = 0; i < r.length; ++i) {
-          r[i] += fixed[i];
-          r[i] *= 1.0 + rate[i] * 0.01;
-          r[i] = Math.round(r[i]);
-        }
+      if (master > 0 && master <= 3) {
+        const values = [
+          [   0,  0,  0,  0,  0, 0],
+          [ 300, 15,  8, 15,  8, 0],
+          [ 600, 30, 16, 30, 16, 0],
+          [1200, 55, 28, 55, 28, 0],
+        ];
+        for (let i = 0; i < r.length; ++i)
+          r[i] += values[master][i];
+      }
+      if (loveBonus) {
+        const values = [100, 25, 15, 25, 15, 0];
+        for (let i = 0; i < values.length; ++i)
+          r[i] += values[i];
+      }
+      if (boost) {
+        for (let i = 0; i < boost.length; ++i)
+          r[i] = Math.round(r[i] * (1.0 + boost[i] * 0.01));
       }
       return r;
     },
@@ -700,13 +720,15 @@ export default {
       r += status[4] * 2;
       return r;
     },
-    getMainBattlePower(status) {
+    getMainBattlePower(status, star = 6, master = 3, skillCost = 6, itemStar = 20, enchantComplete = true) {
       let r = this.getBattlePower(status);
-      return Math.round(r * (1.0 + 0.6 + 0.3 + 0.03 * 6));
+      return Math.round(r * (1.0 + 0.1 * star + 0.1 * master + 0.03 * skillCost + 0.02 * itemStar + (enchantComplete ? 0.1 : 0)));
     },
-    getSupportBattlePower(status) {
+    getSupportBattlePower(status, star = 6, master = 3, skillCount = 3) {
+      status = [...status];
+      status[5] = 0;
       let r = this.getBattlePower(status);
-      return Math.round(r * (1.0 + 0.6 + 0.15));
+      return Math.round(r * (1.0 + 0.1 * star + 0.1 * master + 0.05 * skillCount));
     },
     getEstimatedItemBattlePower(item, api = 0, baseAP = 3000, baseTec = 0) {
       const status = item.status;
