@@ -304,7 +304,7 @@
             </b-row>
           </b-container>
 
-          <b-tabs nav-class="tab-index" v-model="searchTabIndex">
+          <b-tabs nav-class="tab-index" v-model="stat.tabIndex">
             <b-tab title="メインキャラ" style="padding: 10px 10px 0px 10px">
               <div class="flex">
                 <div>
@@ -423,6 +423,7 @@
                         <b-form-input v-if="param.type == 'number'" style="width: 5em" :id="`stat-sup-${name}`" v-model="param.value" size="sm" type="number" class="input-param" :min="param.min" :max="param.max"></b-form-input>
                         <b-form-checkbox v-if="param.type == 'bool'" style="width: 5em" :id="`stat-sup-${name}`" v-model="param.value" size="sm" plain></b-form-checkbox>
                         <b-dropdown v-if="param.type == 'character'" style="width: 15em" :text="param.value ? param.value.name : '(なし)'" size="sm" class="input-dropdown" id="stat-sup-${name}" menu-class="long-dropdown">
+                          <b-dropdown-item @click="param.value=null">(なし)</b-dropdown-item>
                           <b-dropdown-item v-for="(c, i) in supChrs" :key="i" @click="param.value=c">
                             {{ c.name }}
                           </b-dropdown-item>
@@ -483,11 +484,11 @@
               </div>
               <div>
                 <b-container>
-                  <div v-if="stat.support.chr.value" class="status flex" style="margin-bottom: 10px">
+                  <div v-if="stat.support.character.value" class="status flex" style="margin-bottom: 10px">
                     <h5>基礎ステータス:</h5>
                     <div class="param-box"><b-img-lazy :src="getImageURL('HP')" title="HP" width="18" height="18" /><span>{{statSupportResult[0]}}</span></div>
-                    <div class="param-box" v-if="stat.support.chr.value.damageType=='アタック'"><b-img-lazy :src="getImageURL('アタック')" title="アタック" width="18" height="18" /><span>{{statSupportResult[1]}}</span></div>
-                    <div class="param-box" v-if="stat.support.chr.value.damageType=='マジック'"><b-img-lazy :src="getImageURL('マジック')" title="マジック" width="18" height="18" /><span>{{statSupportResult[3]}}</span></div>
+                    <div class="param-box" v-if="stat.support.character.value.damageType=='アタック'"><b-img-lazy :src="getImageURL('アタック')" title="アタック" width="18" height="18" /><span>{{statSupportResult[1]}}</span></div>
+                    <div class="param-box" v-if="stat.support.character.value.damageType=='マジック'"><b-img-lazy :src="getImageURL('マジック')" title="マジック" width="18" height="18" /><span>{{statSupportResult[3]}}</span></div>
                     <div class="param-box"><b-img-lazy :src="getImageURL('ディフェンス')" title="ディフェンス" width="18" height="18" /><span>{{statSupportResult[2]}}</span></div>
                     <div class="param-box"><b-img-lazy :src="getImageURL('レジスト')" title="レジスト" width="18" height="18" /><span>{{statSupportResult[4]}}</span></div>
                     <div class="param-box"><span class="param-name">戦闘力:</span><span class="param-value">{{statSupportResult[6]}}</span></div>
@@ -499,25 +500,33 @@
           <div style="padding: 0px 10px 10px 10px">
             <b-container>
               <div style="margin-bottom: 10px">
-                <b-dropdown text="自動装備＆エンチャント" size="sm" id="sort_selector">
+                <b-dropdown text="自動装備＆エンチャント" size="sm" id="stat-auto-equip">
                   <b-dropdown-item class="d-flex flex-column" v-for="(c, i) in stat.autoEquipTypes" :key="i" @click="stat.autoEquip(i)">
                     {{ c }}
                   </b-dropdown-item>
                 </b-dropdown>
+                <b-button id="stat-highscore" @click="stat.highscoreSearch()" style="margin-left: 5px">このレベルで戦闘力が高い組み合わせを探す</b-button>
+                <b-table v-if="stat.highscoreData.length" small outlined sticky-header :items="stat.highscoreData" :fields="stat.highscoreFields">
+                  <template #cell(actions)="row">
+                    <b-button size="sm" @click="stat.highscoreReplay(row.item)" style="padding: 1px 10px">
+                      再現
+                    </b-button>
+                  </template>
+                </b-table>
               </div>
               <div>
-                <b-button id="stat-main-copy-url" @click="copyToClipboard(statUrl)">パラメータを URL としてコピー</b-button>
-                <b-popover target="stat-main-copy-url" triggers="click blur" placement="top" custom-class="url-popover">
+                <b-button id="stat-copy-url" @click="copyToClipboard(statUrl)">パラメータを URL としてコピー</b-button>
+                <b-popover target="stat-copy-url" triggers="click blur" placement="top" custom-class="url-popover">
                   コピーしました：<br />{{ statUrl }}
                 </b-popover>
               </div>
             </b-container>
           </div>
         </div>
-        <p>
-          基礎ステータスとは、戦闘前に決定する各種ステータス値で、キャラ画面の情報で表示されるものになります。<br />
-          割合バフや能力値の n %を加算系の効果は基礎ステータスに対してかかります。戦闘力も基礎ステータスから算出されます。<br />
-          基礎ステータスは以下のように算出されます (HP、アタック、ディフェンス、マジック、レジスト、テクニック いずれも共通)。<br />
+        <p class="desc">
+          基礎ステータスとは、戦闘前に決定するステータス値で、キャラ画面の情報で表示されるものがそれになります。<br />
+          割合バフや「能力値の n %を加算」系の効果は基礎ステータスに対してかかります。戦闘力も基礎ステータスから算出されます。<br />
+          基礎ステータスは以下のように算出されます。<br />
           <br />
           <code>基礎ステータス＝(初期値＋レベル上昇値＋☆上昇値＋好感度ボーナス＋マスターボーナス)×(記憶の書＋強化ボード)×(割合エンチャントorアミュレットスキル)＋装備＋固定値エンチャント</code><br />
           <br />
@@ -792,7 +801,7 @@ export default {
 
       stat: {
         main: {
-          chr: {
+          character: {
             label: "キャラ",
             type: "character",
             value: 0,
@@ -810,14 +819,14 @@ export default {
             min: 1,
             value: 110,
           },
-          masterLv: {
+          master: {
             label: "マスターレベル",
             type: "number",
             min: 0,
             max: 3,
             value: 3,
           },
-          bonus: {
+          loveBonus: {
             label: "好感度ボーナス",
             type: "bool",
             value: true,
@@ -912,7 +921,7 @@ export default {
         },
 
         support: {
-          chr: {
+          character: {
             label: "キャラ",
             type: "character",
             value: 0,
@@ -930,14 +939,14 @@ export default {
             min: 1,
             value: 110,
           },
-          masterLv: {
+          master: {
             label: "マスターレベル",
             type: "number",
             min: 0,
             max: 3,
             value: 3,
           },
-          bonus: {
+          loveBonus: {
             label: "好感度ボーナス",
             type: "bool",
             value: true,
@@ -1046,6 +1055,27 @@ export default {
           "テクニック優先",
           "リセット",
         ],
+
+        tabIndex: 0,
+        highscoreData: [],
+        highscoreFields: [
+          {
+            key: "bp",
+            label: "戦闘力",
+          },
+          {
+            key: "main",
+            label: "メイン",
+          },
+          {
+            key: "support",
+            label: "サポート",
+          },
+          {
+            key: "actions",
+            label: "アクション",
+          }
+        ],
       },
 
       bp: {
@@ -1060,7 +1090,7 @@ export default {
             value: 6,
             disabled: () => !this.bp.mainEnabled,
           },
-          masterLv: {
+          master: {
             label: "マスターレベル",
             type: "number",
             min: 0,
@@ -1135,7 +1165,7 @@ export default {
             value: 6,
             disabled: () => !this.bp.supportEnabled,
           },
-          masterLv: {
+          master: {
             label: "マスターレベル",
             type: "number",
             min: 0,
@@ -1229,16 +1259,20 @@ export default {
     this.amulets1 = this.items.filter(a => a.slot == "アミュレット" && a.amuletType == "月");
     this.amulets2 = this.items.filter(a => a.slot == "アミュレット" && a.amuletType == "太陽");
 
-    this.stat.main.chr.value = this.mainChrs[0];
-    this.stat.support.chr.value = this.supChrs[0];
+    this.stat.main.character.value = this.mainChrs[0];
+    //this.stat.support.character.value = this.supChrs[0];
 
-    const mainCanEquip = function (item, slot = null) {
+    const matchClass = function (item, chr) {
       if (item) {
-        if (!item.classes || item.classes.includes(this.stat.main.chr.value.class)) {
-          if (!slot || item.slot == slot) {
-            return true;
-          }
-        }
+        if (!item.classes || item.classes.includes(chr.class))
+          return true;
+      }
+      return false;
+    };
+    const mainCanEquip = function (item, slot = null) {
+      if (matchClass(item, this.stat.main.character.value)) {
+        if (!slot || item.slot == slot)
+          return true;
       }
       return false;
     }.bind(this);
@@ -1277,199 +1311,47 @@ export default {
         supItems.amulet2.value = null;
     }.bind(this);
 
-    this.stat.autoEquip = function (type) {
-      let chr = this.stat.main.chr.value;
-      let sup = this.stat.support.chr.value;
-      let mi = this.stat.mainItems;
-      let si = this.stat.supportItems;
-
-      const symbol = chr.symbol;
-      const atkOrMag = chr.damageType == "アタック" ? 1 : 2;
-      const getItemBattlePower = (item)  => this.getEstimatedItemBattlePower(item, atkOrMag);
-
-      const cmp = (a, b) => a == b ? 0 : a < b ? 1 : -1;
-      const cmpPow = (a, b) => cmp(getItemBattlePower(a), getItemBattlePower(b));
-      const cmpStatOrPow = function (a, b, idx) {
-        if (a.status[idx] == b.status[idx])
-          return cmpPow(a, b);
-        else
-          return cmp(a.status[idx], b.status[idx]);
-      }
-
-      const pickItem = function (items, idx, tag) {
-        if (items.find(a => a.status[idx]) != null) {
-          return items.sort((a, b) => cmpStatOrPow(a, b, idx))[0];
-        }
-        else {
-          items.sort((a, b) => cmp(a.power, b.power));
-          if (tag) {
-            const i = items.find((a) => this.matchTags(a.tags, tag));
-            return i ? i : items[0];
-          }
-          else {
-            items[0];
-          }
-        }
-      }.bind(this);
-
-      const pickItems = function (idx, tag) {
-        mi.weapon.value = pickItem(this.stat.validWeapons(), idx, tag);
-        mi.armor.value = pickItem(this.stat.validArmors(), idx, tag);
-        mi.helmet.value = pickItem(this.stat.validHelmets(), idx, tag);
-        mi.accessory.value = pickItem(this.stat.validAccessories(), idx, tag);
-      }.bind(this);
-
-      let enchants = [
-        0,0, 0,0 ,0,0, 0,0, 0,0
-      ];
-      let amuskill = [
-        0, 0, 0, 0, 0
-      ];
-
-      const enchantOptimalForBP = function (filterFunc = null) {
-        const s = chr.status;
-        let tr = 1.0 + s[5] * 0.0003;
-        let ac = (atkOrMag == 1 ? 2 : 0) * tr;
-        let mc = (atkOrMag == 2 ? 2 : 0) * tr;
-
-        let cmdlists = [[], [], [], []];
-        const hpP  = (i, v) => cmdlists[i].push([ "hpP", s[0] * (v / 100) * 0.05, () => enchants[0] += v]);
-        const hpF  = (i, v) => cmdlists[i].push([ "hpF",                v * 0.05, () => enchants[1] += v]);
-        const atkP = (i, v) => cmdlists[i].push(["atkP", s[1] * (v / 100) * ac,   () => enchants[2] += v]);
-        const atkF = (i, v) => cmdlists[i].push(["atkF",                v * ac,   () => enchants[3] += v]);
-        const defP = (i, v) => cmdlists[i].push(["defP", s[2] * (v / 100) * 2,    () => enchants[4] += v]);
-        const defF = (i, v) => cmdlists[i].push(["defF",                v * 2,    () => enchants[5] += v]);
-        const magP = (i, v) => cmdlists[i].push(["magP", s[3] * (v / 100) * mc,   () => enchants[6] += v]);
-        const magF = (i, v) => cmdlists[i].push(["magF",                v * mc,   () => enchants[7] += v]);
-        const resP = (i, v) => cmdlists[i].push(["resP", s[4] * (v / 100) * 2,    () => enchants[8] += v]);
-        const resF = (i, v) => cmdlists[i].push(["resF",                v * 2,    () => enchants[9] += v]);
-
-        hpP(0, 10); hpF(0, 131);
-        hpP(1, 15); hpF(1, 200);
-        hpP(2, 15); hpF(2, 200);
-        hpP(3, 10); hpF(3, 131);
-
-        atkP(0, 15); atkF(0, 31);
-        atkP(1,  5); atkF(1, 11);
-        atkP(2,  5); atkF(2, 11);
-        atkP(3, 10); atkF(3, 21);
-
-        defP(0,  5); defF(0,  7);
-        defP(1, 15); defF(1, 19);
-        defP(2, 15); defF(2, 19);
-        defP(3, 10); defF(3, 13);
-
-        magP(0, 15); magF(0, 31);
-        magP(1,  5); magF(1, 11);
-        magP(2,  5); magF(2, 11);
-        magP(3, 10); magF(3, 21);
-
-        resP(0,  5); resF(0,  7);
-        resP(1, 15); resF(1, 19);
-        resP(2, 15); resF(2, 19);
-        resP(3, 10); resF(3, 13);
-
-        const len = cmdlists[0].length;
-        if (filterFunc) {
-          for (let i = 0; i < cmdlists.length; ++i) {
-            const filtered = cmdlists[i].filter(filterFunc).slice(0, 3);
-            for (let c of filtered)
-              c[2]();
-            cmdlists[i] = cmdlists[i].filter(a => !filtered.includes(a));
-          }
-        }
-        for (let cl of cmdlists) {
-          cl.sort((a, b) => cmp(a[1], b[1]));
-        }
-        for (let cl of cmdlists) {
-          let n = 3 - (len - cl.length);
-          for (let i = 0; i < n; ++i)
-            cl[i][2]();
-        }
+    //
+    this.stat.autoEquipImpl = function (ma, sa, type) {
+      let result = {
+        main: {
+          items: [null, null, null, null],
+          enchants: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        },
+        support: {
+          items: [null, null],
+          enchants: [0, 0, 0, 0, 0],
+        },
       };
 
-      const pickOptimalAmulet1 = function (setSkill = false) {
-        if (sup.damageType == "アタック") {
-          if (setSkill)
-            amuskill[1] = 15;
-          return this.findItem("煌めく満月のアミュレット");
+      const mapi = ma.character ? ma.character.damageType == "アタック" ? 1 : 3 : 0;
+      const sapi = sa.character ? sa.character.damageType == "アタック" ? 1 : 3 : 0;
+      const symbol = ma.character.symbol;
+      const tec = ma.status[5];
+      let ap = Math.round(ma.status[mapi] * 1.35);
+      if (sa.character)
+        ap += sa.status[sapi];
+      //console.log(`ap: ${ap}`);
+
+      const cmp = this.compare;
+      const getItemBattlePower = (item, api) => this.getEstimatedItemBattlePower(item, api, ap, tec);
+      const cmpPow = (a, b, api) => cmp(getItemBattlePower(a, api), getItemBattlePower(b, api));
+
+      const pickItem = function (items, idx, api, tag) {
+        if (idx >= 0) {
+          let filtered = items.filter(a => a.status[idx]);
+          if (filtered.length)
+            items = filtered;
         }
-        else {
-          if (setSkill)
-            amuskill[3] = 15;
-          return this.findItem("煌めく新月のアミュレット");
+        items.sort((a, b) => cmpPow(a, b, api));
+
+        if (tag) {
+          const found = items.find((a) => this.matchTags(a.tags, tag));
+          if (found)
+            return found;
         }
+        return items[0];
       }.bind(this);
-      const pickOptimalAmulet2 = function () {
-        return this.findItem("煌めく陽光のアミュレット");
-      }.bind(this);
-
-      if (type == 0) { // 戦闘力優先
-        mi.weapon.value = this.stat.validWeapons().sort(cmpPow)[0];
-        mi.armor.value = this.stat.validArmors().sort(cmpPow)[0];
-        mi.helmet.value = this.stat.validHelmets().sort(cmpPow)[0];
-        mi.accessory.value = this.stat.validAccessories().sort(cmpPow)[0];
-        enchantOptimalForBP();
-
-        si.amulet1.value = pickOptimalAmulet1(true);
-        si.amulet2.value = pickOptimalAmulet2();
-      }
-      else if (type == 1) { // HP 優先
-        pickItems(0);
-        enchantOptimalForBP((c) => c[0].startsWith("hp"));
-
-        si.amulet1.value = pickOptimalAmulet1();
-        si.amulet2.value = pickOptimalAmulet2();
-        amuskill[0] = 15;
-      }
-      else if (type == 2) { // アタック優先
-        pickItems(1, /^バフ:アタック/);
-        enchantOptimalForBP((c) => c[0].startsWith("atk"));
-
-        si.amulet1.value = this.findItem("煌めく満月のアミュレット");
-        si.amulet2.value = pickOptimalAmulet2();
-        amuskill[1] = 15;
-      }
-      else if (type == 3) { // ディフェンス優先
-        pickItems(2, /^バフ:ディフェンス/);
-        enchantOptimalForBP((c) => c[0].startsWith("def"));
-
-        si.amulet1.value = pickOptimalAmulet1();
-        si.amulet2.value = this.findItem("煌めく陽光のアミュレット");
-        amuskill[2] = 15;
-      }
-      else if (type == 4) { // マジック優先
-        pickItems(3, /^バフ:マジック/);
-        enchantOptimalForBP((c) => c[0].startsWith("mag"));
-
-        si.amulet1.value = this.findItem("煌めく新月のアミュレット");
-        si.amulet2.value = pickOptimalAmulet2();
-        amuskill[3] = 15;
-      }
-      else if (type == 5) { // レジスト優先
-        pickItems(4, /^バフ:レジスト/);
-        enchantOptimalForBP((c) => c[0].startsWith("res"));
-
-        si.amulet1.value = pickOptimalAmulet1();
-        si.amulet2.value = this.findItem("煌めく日蝕のアミュレット");
-        amuskill[4] = 15;
-      }
-      else if (type == 6) { // テクニック優先
-        pickItems(5, /^バフ:テクニック/);
-        enchantOptimalForBP();
-
-        si.amulet1.value = pickOptimalAmulet1(true);
-        si.amulet2.value = pickOptimalAmulet2();
-      }
-      else { // 全解除
-        mi.weapon.value = null;
-        mi.armor.value = null;
-        mi.helmet.value = null;
-        mi.accessory.value = null;
-
-        si.amulet1.value = null;
-        si.amulet2.value = null;
-      }
 
       const adjustSymbol = function (item) {
         const pattern = /^(ゼニス|オリジン|ナディア)/;
@@ -1479,16 +1361,334 @@ export default {
         }
         return item;
       }.bind(this);
-      mi.armor.value = adjustSymbol(mi.armor.value);
-      mi.helmet.value = adjustSymbol(mi.helmet.value);
-      mi.accessory.value = adjustSymbol(mi.accessory.value);
 
-      for (const v of Object.values(this.stat.mainEnchants)) {
-        v.valueP = enchants.shift();
-        v.valueF = enchants.shift();
+      const pickItemsMain = function (idx = -1, tag = null) {
+        const cond = a => matchClass(a, ma.character);
+        let weapon = pickItem(this.weapons.filter(cond), idx, mapi, tag);
+        let armor = pickItem(this.armors.filter(cond), idx, mapi, tag);
+        let helmet = pickItem(this.helmets.filter(cond), idx, mapi, tag);
+        let accessory = pickItem(this.accessories.filter(cond), idx, mapi, tag);
+        armor = adjustSymbol(armor);
+        helmet = adjustSymbol(helmet);
+        accessory = adjustSymbol(accessory);
+        result.main.items = [weapon, armor, helmet, accessory];
+      }.bind(this);
+
+      const pickItemsSupport = function (idx = -1, tag = null) {
+        let amulet1 = pickItem(this.amulets1, idx, sapi, tag);
+        let amulet2 = pickItem(this.amulets2, idx, sapi, tag);
+        result.support.items = [amulet1, amulet2];
+      }.bind(this);
+
+      const pickOptimalEnchants = function (filterFunc = null, scoreBooster = null) {
+        const s = ma.status;
+        let r = [0.05, 0, 2, 0, 2]; // score rate
+        r[mapi] = 2 * (1.0 + tec * 0.0003);
+        if (scoreBooster) {
+          for (let i = 0; i < r.length; ++i)
+            r[i] *= scoreBooster[i];
+        }
+
+        let dst = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+
+        let cmdlists = [[], [], [], []];
+        const cmd = function (i, name, score, exec) {
+          cmdlists[i].push({ name: name, score: score, exec: exec });
+        };
+        const hpP  = (i, v) => cmd(i,  "hpP", s[0] * (v / 100) * r[0], () => dst[0] += v);
+        const hpF  = (i, v) => cmd(i,  "hpF",                v * r[0], () => dst[1] += v);
+        const atkP = (i, v) => cmd(i, "atkP", s[1] * (v / 100) * r[1], () => dst[2] += v);
+        const atkF = (i, v) => cmd(i, "atkF",                v * r[1], () => dst[3] += v);
+        const defP = (i, v) => cmd(i, "defP", s[2] * (v / 100) * r[2], () => dst[4] += v);
+        const defF = (i, v) => cmd(i, "defF",                v * r[2], () => dst[5] += v);
+        const magP = (i, v) => cmd(i, "magP", s[3] * (v / 100) * r[3], () => dst[6] += v);
+        const magF = (i, v) => cmd(i, "magF",                v * r[3], () => dst[7] += v);
+        const resP = (i, v) => cmd(i, "resP", s[4] * (v / 100) * r[4], () => dst[8] += v);
+        const resF = (i, v) => cmd(i, "resF",                v * r[4], () => dst[9] += v);
+
+        const paramsP = [
+          [10, 15,  5, 15,  5],
+          [15,  5, 15,  5, 15],
+          [15,  5, 15,  5, 15],
+          [10, 10, 10, 10, 10],
+        ];
+        const paramsF = [
+          [131, 31,  7, 31,  7],
+          [200, 11, 19, 11, 19],
+          [200, 11, 19, 11, 19],
+          [131, 21, 13, 21, 13],
+        ];
+        for (let i = 0; i < paramsP.length; ++i) {
+           hpP(i, paramsP[i][0]);  hpF(i, paramsF[i][0]);
+          atkP(i, paramsP[i][1]); atkF(i, paramsF[i][1]);
+          defP(i, paramsP[i][2]); defF(i, paramsF[i][2]);
+          magP(i, paramsP[i][3]); magF(i, paramsF[i][3]);
+          resP(i, paramsP[i][4]); resF(i, paramsF[i][4]);
+        }
+
+        const len = cmdlists[0].length;
+        if (filterFunc) {
+          for (let i = 0; i < cmdlists.length; ++i) {
+            const filtered = cmdlists[i].filter(filterFunc).slice(0, 3);
+            for (let c of filtered)
+              c.exec();
+            cmdlists[i] = cmdlists[i].filter(a => !filtered.includes(a));
+          }
+        }
+        for (let cl of cmdlists) {
+          cl.sort((a, b) => cmp(a.score, b.score));
+        }
+        for (let cl of cmdlists) {
+          let n = 3 - (len - cl.length);
+          for (let i = 0; i < n; ++i)
+            cl[i].exec();
+        }
+        result.main.enchants = dst;
+      }.bind(this);
+
+      const pickOptialAmuletSkills = function (filterFunc = null, scoreBooster = null) {
+        const s = sa.status;
+        let r = [0.05, 0, 2, 0, 2]; // score rate
+        r[sapi] = 2 * (1.0 + tec * 0.0003); // リンク前提でテクニックも考慮
+        if (scoreBooster) {
+          for (let i = 0; i < r.length; ++i)
+            r[i] *= scoreBooster[i];
+        }
+
+        let dst = [0, 0, 0, 0, 0];
+
+        let cmdlists = [[], [], [], []];
+        const cmd = function (i, name, score, exec) {
+          cmdlists[i].push({ name: name, score: score, exec: exec });
+        };
+        const  hpP = (i, v) => cmd(i,  "hpP", s[0] * (v / 100) * r[0], () => dst[0] += v);
+        const atkP = (i, v) => cmd(i, "atkP", s[1] * (v / 100) * r[1], () => dst[1] += v);
+        const defP = (i, v) => cmd(i, "defP", s[2] * (v / 100) * r[2], () => dst[2] += v);
+        const magP = (i, v) => cmd(i, "magP", s[3] * (v / 100) * r[3], () => dst[3] += v);
+        const resP = (i, v) => cmd(i, "resP", s[4] * (v / 100) * r[4], () => dst[4] += v);
+
+        const paramsP = [
+          [7.5, 7.5, 7.5, 7.5, 7.5],
+          [7.5, 7.5, 7.5, 7.5, 7.5],
+        ];
+        for (let i = 0; i < paramsP.length; ++i) {
+           hpP(i, paramsP[i][0]);
+          atkP(i, paramsP[i][1]);
+          defP(i, paramsP[i][2]);
+          magP(i, paramsP[i][3]);
+          resP(i, paramsP[i][4]);
+        }
+
+        const len = cmdlists[0].length;
+        if (filterFunc) {
+          for (let i = 0; i < cmdlists.length; ++i) {
+            const filtered = cmdlists[i].filter(filterFunc).slice(0, 3);
+            for (let c of filtered)
+              c.exec();
+            cmdlists[i] = cmdlists[i].filter(a => !filtered.includes(a));
+          }
+        }
+        for (let cl of cmdlists) {
+          cl.sort((a, b) => cmp(a.score, b.score));
+        }
+        for (let cl of cmdlists) {
+          let n = 1 - (len - cl.length);
+          for (let i = 0; i < n; ++i)
+            cl[i].exec();
+        }
+        result.support.enchants = dst;
+      }.bind(this);
+
+      if (type == 0) { // 戦闘力優先
+        pickItemsMain();
+        pickOptimalEnchants();
+        pickItemsSupport();
+        pickOptialAmuletSkills();
       }
-      for (const v of Object.values(this.stat.supportEnchants)) {
-        v.valueP = amuskill.shift();
+      else if (type == 1) { // HP 優先
+        pickItemsMain(0);
+        pickOptimalEnchants(c => c.name.match(/^hp/));
+        pickItemsSupport(0);
+        pickOptialAmuletSkills(c => c.name.match(/^hp/));
+      }
+      else if (type == 2) { // アタック優先
+        pickItemsMain(1, /^バフ:アタック/);
+        pickOptimalEnchants(c => c.name.match(/^atk/));
+        pickItemsSupport(1, /^バフ:アタック/);
+        pickOptialAmuletSkills(c => c.name.match(/^atk/));
+      }
+      else if (type == 3) { // ディフェンス優先
+        pickItemsMain(2, /^バフ:ディフェンス/);
+        pickOptimalEnchants(c => c.name.match(/^def/));
+        pickItemsSupport(2, /^バフ:ディフェンス/);
+        pickOptialAmuletSkills(c => c.name.match(/^def/));
+      }
+      else if (type == 4) { // マジック優先
+        pickItemsMain(3, /^バフ:マジック/);
+        pickOptimalEnchants(c => c.name.match(/^mag/));
+        pickItemsSupport(3, /^バフ:マジック/);
+        pickOptialAmuletSkills(c => c.name.match(/^mag/));
+      }
+      else if (type == 5) { // レジスト優先
+        pickItemsMain(4, /^バフ:レジスト/);
+        pickOptimalEnchants(c => c.name.match(/^res/));
+        pickItemsSupport(4, /^バフ:レジスト/);
+        pickOptialAmuletSkills(c => c.name.match(/^res/));
+      }
+      else if (type == 6) { // テクニック優先
+        pickItemsMain(5, /^バフ:テクニック/);
+        pickOptimalEnchants();
+        pickItemsSupport(5, /^バフ:テクニック/);
+        pickOptialAmuletSkills();
+      }
+      return result;
+    }.bind(this);
+
+    this.stat.autoEquip = function (type) {
+      let msa = this.getStatMainArgs();
+      msa.items = [];
+      msa.enchantsP = [];
+      msa.enchantsF = [];
+      let ssa = this.getStatSupportArgs();
+
+      const ma = {
+        character: msa.character,
+        status: this.calcStatMainImpl(msa, null, true),
+      };
+      const sa = {
+        character: ssa.character,
+        status: this.calcStatSupportImpl(ssa),
+      };
+      const r = this.stat.autoEquipImpl(ma, sa, type);
+
+      if (this.stat.tabIndex == 0) {
+        for (const v of Object.values(this.stat.mainItems))
+          v.value = r.main.items.shift();
+        for (const v of Object.values(this.stat.mainEnchants)) {
+          v.valueP = r.main.enchants.shift();
+          v.valueF = r.main.enchants.shift();
+        }
+      }
+      if (this.stat.tabIndex == 1 && sa.character) {
+        for (const v of Object.values(this.stat.supportItems))
+          v.value = r.support.items.shift();
+        for (const v of Object.values(this.stat.supportEnchants))
+          v.valueP = r.support.enchants.shift();
+      }
+    }.bind(this);
+
+    this.stat.highscoreSearch = function() {
+      const mainChrs = [...this.mainChrs].sort((a, b) => this.compare(a.power, b.power)).slice(0, 20);
+      const supChrs = [...this.supChrs].sort((a, b) => this.compare(a.power, b.power)).slice(0, 20);
+
+      let msa = this.getStatMainArgs();
+      let ssa = this.getStatSupportArgs();
+      let results = [];
+
+      const getPEnchants = function (a) {
+        let r = [];
+        for (let i = 0; i < a.length; ++i)
+          if (i % 2 == 0)
+            r.push(a[i]);
+        return r;
+      };
+      const getFEnchants = function (a) {
+        let r = [];
+        for (let i = 0; i < a.length; ++i)
+          if (i % 2 == 1)
+            r.push(a[i]);
+        return r;
+      };
+
+      for (const mchr of mainChrs) {
+        for (const schr of supChrs) {
+          msa.items = [];
+          msa.enchantsP = [];
+          msa.enchantsF = [];
+          ssa.items = [];
+          ssa.enchantsP = [];
+
+          msa.character = mchr;
+          ssa.character = schr;
+          const r = this.stat.autoEquipImpl({
+            character: mchr,
+            status: this.calcStatMainImpl(msa, null, true),
+          }, {
+            character: schr,
+            status: this.calcStatSupportImpl(ssa),
+          }, 0);
+
+          msa.items = r.main.items;
+          msa.enchantsP = getPEnchants(r.main.enchants);
+          msa.enchantsF = getFEnchants(r.main.enchants);
+          ssa.items = r.support.items;
+          ssa.enchantsP = r.support.enchants;
+          const bp = this.calcStatMainImpl(msa, ssa)[7]
+
+          results.push({
+            bp: bp,
+            main: mchr.name,
+            support: schr.name,
+            data: {
+              main: mchr,
+              support: schr,
+              msa: msa,
+              ssa: ssa,
+              result: r,
+            }
+          });
+        }
+      }
+
+      results = results.sort((a, b) => this.compare(a.bp, b.bp)).slice(0, 200);
+      this.stat.highscoreData = results;
+    }.bind(this);
+
+    this.stat.highscoreReplay = function (rec) {
+      let s = this.stat;
+      const msa = rec.data.msa;
+      const ssa = rec.data.ssa;
+      const r = rec.data.result;
+      {
+        s.main.character.value = rec.data.main;
+        s.main.star.value = msa.star;
+        s.main.level.value = msa.level;
+        s.main.master.value = msa.master;
+        s.main.loveBonus.value = msa.loveBonus;
+
+        let boosts = [...msa.boosts];
+        for (const v of Object.values(s.mainBoosts))
+          v.value = boosts.shift();
+
+        let items = [...r.main.items];
+        for (const v of Object.values(s.mainItems))
+          v.value = items.shift();
+
+        let enchants = [...r.main.enchants];
+        for (const v of Object.values(s.mainEnchants)) {
+          v.valueP = enchants.shift();
+          v.valueF = enchants.shift();
+        }
+      }
+      {
+        s.support.character.value = rec.data.support;
+        s.support.star.value = ssa.star;
+        s.support.level.value = ssa.level;
+        s.support.master.value = ssa.master;
+        s.support.loveBonus.value = ssa.loveBonus;
+
+        let boosts = [...ssa.boosts];
+        for (const v of Object.values(s.supportBoosts))
+          v.value = boosts.shift();
+
+        let items = [...r.support.items];
+        for (const v of Object.values(s.supportItems))
+          v.value = items.shift();
+
+        let enchants = [...r.support.enchants];
+        for (const v of Object.values(s.supportEnchants)) {
+          v.valueP = enchants.shift();
+        }
       }
     }.bind(this);
 
@@ -1615,7 +1815,7 @@ export default {
         res += this.toInt(params.res.value);
         tec += this.toInt(params.tec.value);
         rate += this.toInt(params.stars.value) * 0.1;
-        rate += this.toInt(params.masterLv.value) * 0.1;
+        rate += this.toInt(params.master.value) * 0.1;
         rate += this.toInt(params.skillCost.value) * 0.03;
         rate += this.toInt(params.eqStars.value) * 0.02;
         if (params.enchant.value)
@@ -1628,54 +1828,56 @@ export default {
         def += this.toInt(params.def.value);
         res += this.toInt(params.res.value);
         rate += this.toInt(params.stars.value) * 0.1;
-        rate += this.toInt(params.masterLv.value) * 0.1;
+        rate += this.toInt(params.master.value) * 0.1;
         rate += this.toInt(params.skills.value) * 0.05;
       }
       return Math.round(((hp * 0.05) + (atk * 2 * (1.0 + tec * 0.0003)) + (def * 2) + (res * 2)) * rate);
     },
 
-    calcStatMain() {
+    getStatMainArgs() {
+      const toI = this.toInt;
+      const s = this.stat;
+      let r = {
+        character: s.main.character.value,
+        star: toI(s.main.star.value),
+        level: toI(s.main.level.value),
+        master: toI(s.main.master.value),
+        loveBonus: s.main.loveBonus.value,
+        boosts: Object.values(s.mainBoosts).map(a => toI(a.value)),
+        items: Object.values(s.mainItems).map(a => a.value),
+        enchantsP: Object.values(s.mainEnchants).map(a => toI(a.valueP)),
+        enchantsF: Object.values(s.mainEnchants).map(a => toI(a.valueF)),
+      };
+      return r;
+    },
+    getStatSupportArgs() {
+      const toI = this.toInt;
+      const s = this.stat;
+      let r = {
+        character: s.support.character.value,
+        star: toI(s.support.star.value),
+        level: toI(s.support.level.value),
+        master: toI(s.support.master.value),
+        loveBonus: s.support.loveBonus.value,
+        boosts: Object.values(s.supportBoosts).map(a => toI(a.value)),
+        items: Object.values(s.supportItems).map(a => a.value),
+        enchantsP: Object.values(s.supportEnchants).map(a => toI(a.valueP)),
+      };
+      return r;
+    },
+    calcStatMainImpl(ma, sa, skipBP = false) {
       const empty = [0, 0, 0, 0, 0, 0];
-      const chr = this.stat.main.chr.value;
-      if (!chr || !chr.statusInit || !chr.statusLv || !chr.statusStar)
+      const chr = ma.character;
+      if (!chr)
         return empty;
-
-      const star = this.toInt(this.stat.main.star.value);
-      const level = this.toInt(this.stat.main.level.value);
-      const master = this.toInt(this.stat.main.masterLv.value);
-      const bonus = this.stat.main.bonus.value;
-      const boosts = [
-        this.toInt(this.stat.mainBoosts.hp.value),
-        this.toInt(this.stat.mainBoosts.atk.value),
-        this.toInt(this.stat.mainBoosts.def.value),
-        this.toInt(this.stat.mainBoosts.mag.value),
-        this.toInt(this.stat.mainBoosts.res.value),
-        this.toInt(this.stat.mainBoosts.tec.value),
-      ];
-      const enchantP = [
-        this.toInt(this.stat.mainEnchants.hp.valueP),
-        this.toInt(this.stat.mainEnchants.atk.valueP),
-        this.toInt(this.stat.mainEnchants.def.valueP),
-        this.toInt(this.stat.mainEnchants.mag.valueP),
-        this.toInt(this.stat.mainEnchants.res.valueP),
-        0,
-      ];
-      const enchantF = [
-        this.toInt(this.stat.mainEnchants.hp.valueF),
-        this.toInt(this.stat.mainEnchants.atk.valueF),
-        this.toInt(this.stat.mainEnchants.def.valueF),
-        this.toInt(this.stat.mainEnchants.mag.valueF),
-        this.toInt(this.stat.mainEnchants.res.valueF),
-        0,
-      ];
 
       let r = [0, 0, 0, 0, 0, 0];
       for (let i = 0; i < r.length; ++i) {
         r[i] += chr.statusInit[i];
-        r[i] += Math.round(chr.statusLv[i] * (level - 1));
-        r[i] += Math.round(chr.statusStar[i] * star);
+        r[i] += Math.round(chr.statusLv[i] * (ma.level - 1));
+        r[i] += Math.round(chr.statusStar[i] * ma.star);
       }
-      if (master > 0 && master <= 3) {
+      if (ma.master > 0 && ma.master <= 3) {
         const values = [
           empty,
           [200, 0, 0, 0, 0, 0],
@@ -1683,101 +1885,75 @@ export default {
           [800, 0, 0, 0, 0, 0],
         ];
         for (let i = 0; i < r.length; ++i)
-          r[i] += values[master][i];
+          r[i] += values[ma.master][i];
       }
-      if (bonus) {
-        const values = [100, 25, 15, 25, 15, 0];
-        for (let i = 0; i < r.length; ++i)
+      if (ma.loveBonus) {
+        const values = [100, 25, 15, 25, 15];
+        for (let i = 0; i < values.length; ++i)
           r[i] += values[i];
       }
-      for (let i = 0; i < r.length; ++i) {
-        r[i] = Math.round(r[i] * (1.0 + boosts[i] * 0.01));
-      }
+      for (let i = 0; i < ma.boosts.length; ++i)
+        r[i] = Math.round(r[i] * (1.0 + ma.boosts[i] * 0.01));
+      for (let i = 0; i < ma.enchantsP.length; ++i)
+        r[i] = Math.round(r[i] * (1.0 + ma.enchantsP[i] * 0.01));
 
-      for (let i = 0; i < r.length; ++i) {
-        r[i] = Math.round(r[i] * (1.0 + enchantP[i] * 0.01));
-      }
-
-      const items = [
-        this.stat.mainItems.weapon.value,
-        this.stat.mainItems.armor.value,
-        this.stat.mainItems.helmet.value,
-        this.stat.mainItems.accessory.value,
-      ].filter(a => a != null);
+      const items = ma.items.filter(a => a != null);
       for (const item of items) {
         for (let i = 0; i < r.length; ++i)
           r[i] += item.status[i];
       }
+      for (let i = 0; i < ma.enchantsF.length; ++i)
+        r[i] += ma.enchantsF[i];
 
-      for (let i = 0; i < r.length; ++i)
-        r[i] += enchantF[i];
+      if (skipBP)
+        return r;
 
       // 以下戦闘力
       let bpr = 1.0;
-      bpr += 0.1 * star;
-      bpr += 0.1 * master;
+      bpr += 0.1 * ma.star;
+      bpr += 0.1 * ma.master;
       bpr += 0.03 * 6; // スキルコスト
       bpr += 0.02 * (5 * items.length);
       if (items.length == 4)
         bpr += 0.1;
-      let rMain = [...r];
-      let bpMain = Math.round(this.getBattlePower(r) * bpr);
-      let bpTotal = 0;
+      const bpMain = Math.round(this.getBattlePower(r) * bpr);
+      const rMain = [...r, bpMain];
+      if (!sa || !sa.character)
+        return rMain;
 
-      const sup = this.stat.support.chr.value;
-      if (sup) {
-        const sstar = this.toInt(this.stat.support.star.value);
-        const smaster = this.toInt(this.stat.support.masterLv.value);
-        bpr += 0.1 * sstar;
-        bpr += 0.1 * smaster;
-        bpr += 0.05 * 3; // スキル開放
+      const sup = sa.character;
+      bpr += 0.1 * sa.star;
+      bpr += 0.1 * sa.master;
+      bpr += 0.05 * 3; // スキル開放
 
-        const sr = this.calcStatSupport();
-        for (let i of [0, 2, 4])
-          r[i] += sr[i];
+      const sr = this.calcStatSupportImpl(sa);
+      for (let i of [0, 2, 4])
+        r[i] += sr[i];
 
-        const mi = chr.damageType == "アタック" ? 1 : 3;
-        const si = sup.damageType == "アタック" ? 1 : 3;
-        r[mi] += sr[si];
-        bpTotal = Math.round(this.getBattlePower(r) * bpr);
-      }
-
-      return [...rMain, bpMain, bpTotal];
+      const mapi = chr.damageType == "アタック" ? 1 : 3;
+      const sapi = sup.damageType == "アタック" ? 1 : 3;
+      r[mapi] += sr[sapi];
+      const bpTotal = Math.round(this.getBattlePower(r) * bpr);
+      return [...rMain, bpTotal];
     },
-    calcStatSupport() {
-      const empty = [0, 0, 0, 0, 0, 0];
-      const chr = this.stat.support.chr.value;
-      if (!chr || !chr.statusInit || !chr.statusLv || !chr.statusStar)
-        return empty;
+    calcStatMain()
+    {
+      return this.calcStatMainImpl(this.getStatMainArgs(), this.getStatSupportArgs());
+    },
 
-      const star = this.toInt(this.stat.support.star.value);
-      const level = this.toInt(this.stat.support.level.value);
-      const master = this.toInt(this.stat.support.masterLv.value);
-      const bonus = this.stat.support.bonus.value;
-      const boosts = [
-        this.toInt(this.stat.supportBoosts.hp.value),
-        this.toInt(this.stat.supportBoosts.atk.value),
-        this.toInt(this.stat.supportBoosts.def.value),
-        this.toInt(this.stat.supportBoosts.mag.value),
-        this.toInt(this.stat.supportBoosts.res.value),
-        0,
-      ];
-      const enchantP = [
-        this.toInt(this.stat.supportEnchants.hp.valueP),
-        this.toInt(this.stat.supportEnchants.atk.valueP),
-        this.toInt(this.stat.supportEnchants.def.valueP),
-        this.toInt(this.stat.supportEnchants.mag.valueP),
-        this.toInt(this.stat.supportEnchants.res.valueP),
-        0,
-      ];
+    calcStatSupportImpl(sa) {
+      const empty = [0, 0, 0, 0, 0, 0];
+      const chr = sa.character;
+      if (!chr)
+        return empty;
 
       let r = [0, 0, 0, 0, 0, 0];
       for (let i = 0; i < r.length; ++i) {
         r[i] += chr.statusInit[i];
-        r[i] += Math.round(chr.statusLv[i] * (level - 1));
-        r[i] += Math.round(chr.statusStar[i] * star);
+        r[i] += Math.round(chr.statusLv[i] * (sa.level - 1));
+        r[i] += Math.round(chr.statusStar[i] * sa.star);
       }
-      if (master > 0 && master <= 3) {
+      if (sa.master > 0 && sa.master <= 3) {
         const values = [
           empty,
           [300, 15, 8, 15, 8, 0],
@@ -1785,25 +1961,19 @@ export default {
           [1200, 55, 28, 55, 28, 0],
         ];
         for (let i = 0; i < r.length; ++i)
-          r[i] += values[master][i];
+          r[i] += values[sa.master][i];
       }
-      if (bonus) {
-        const values = [100, 25, 15, 25, 15, 0];
-        for (let i = 0; i < r.length; ++i)
+      if (sa.loveBonus) {
+        const values = [100, 25, 15, 25, 15];
+        for (let i = 0; i < values.length; ++i)
           r[i] += values[i];
       }
-      for (let i = 0; i < r.length; ++i) {
-        r[i] = Math.round(r[i] * (1.0 + boosts[i] * 0.01));
-      }
+      for (let i = 0; i < sa.boosts.length; ++i)
+        r[i] = Math.round(r[i] * (1.0 + sa.boosts[i] * 0.01));
+      for (let i = 0; i < sa.enchantsP.length; ++i)
+        r[i] = Math.round(r[i] * (1.0 + sa.enchantsP[i] * 0.01));
 
-      for (let i = 0; i < r.length; ++i) {
-        r[i] = Math.round(r[i] * (1.0 + enchantP[i] * 0.01));
-      }
-
-      const items = [
-        this.stat.supportItems.amulet1.value,
-        this.stat.supportItems.amulet2.value,
-      ].filter(a => a != null);
+      const items = sa.items.filter(a => a != null);
       for (const item of items) {
         for (let i = 0; i < r.length; ++i)
           r[i] += item.status[i];
@@ -1814,13 +1984,17 @@ export default {
 
       // 以下戦闘力
       let bpr = 1.0;
-      bpr += 0.1 * star;
-      bpr += 0.1 * master;
+      bpr += 0.1 * sa.star;
+      bpr += 0.1 * sa.master;
       bpr += 0.05 * 3; // スキル開放
       let bp = Math.round(this.getBattlePower(r) * bpr);
 
       return [...r, bp];
     },
+    calcStatSupport() {
+      return this.calcStatSupportImpl(this.getStatSupportArgs());
+    },
+
     getStatUrl() {
       let params = [];
 
@@ -2076,9 +2250,9 @@ label.disabled {
 }
 </style>
 <style>
-  .table {
-    width: auto;
-    margin: 3px;
+.desc .table {
+  width: auto;
+  margin: 3px;
 }
 .input-dropdown button {
   padding: 0.1em;

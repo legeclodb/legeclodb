@@ -663,6 +663,9 @@ export default {
       return r;
     },
 
+    compare(a, b) {
+      return a == b ? 0 : a < b ? 1 : -1;
+    },
     toNumber(v)
     {
       if (typeof v === "number")
@@ -705,19 +708,19 @@ export default {
       let r = this.getBattlePower(status);
       return Math.round(r * (1.0 + 0.6 + 0.15));
     },
-    getEstimatedItemBattlePower(item, atkOrMag = 0, baseAP = 3000) {
+    getEstimatedItemBattlePower(item, api = 0, baseAP = 3000, baseTec = 0) {
       const status = item.status;
       let r = 0;
       r += status[0] * 0.05;
       r += status[2] * 2;
       r += status[4] * 2;
 
-      if (atkOrMag == 0)
-        r += Math.max(status[1], status[3]) * 2;
-      else if (atkOrMag == 1)
-        r += status[1] * 2;
-      else if (atkOrMag == 2)
-        r += status[3] * 2;
+      let ap = 0;
+      if (api == 0)
+        ap = Math.max(status[1], status[3]);
+      else
+        ap = status[api];
+      r += ap * 2 * (1.0 + (baseTec + status[5]) * 0.0003);
 
       r += baseAP * 2 * (status[5] * 0.0003);
 
