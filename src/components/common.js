@@ -31,6 +31,7 @@ export default {
       freeSearchFn: null,
 
       searchTabIndex: 0,
+      settingsTabIndex: 0,
 
       displayCounts: [
         "10",
@@ -472,6 +473,18 @@ export default {
         text = tmp;
       }
       return text.replaceAll("\n", "<br/>") + "<br/>";
+    },
+    statusToDivs(status) {
+      const nameTable = ["HP", "アタック", "ディフェンス", "マジック", "レジスト", "テクニック"];
+      let divs = [];
+      for (let i = 0; i < status.length; ++i) {
+        const v = status[i];
+        if (v) {
+          const n = nameTable[i];
+          divs.push(`<div class="param-box"><img src="${this.getImageURL(n)}" title="${n}" width="18" height="18" /><span>+${v}</span></div>`);
+        }
+      }
+      return divs;
     },
 
     updateQuery(name, updateURL = true) {

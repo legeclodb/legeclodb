@@ -2206,12 +2206,6 @@ label.disabled {
   color: rgb(180, 180, 180);
 }
 
-.input-param {
-  height: 1.75em;
-  padding: 0.25em;
-  width: 5.5em;
-}
-
 .panel {
   padding: 10px;
   margin-top: 10px;

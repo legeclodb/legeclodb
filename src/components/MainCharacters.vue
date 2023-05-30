@@ -88,45 +88,103 @@
           </div>
         </div>
         <div class="menu-panel">
-          <div class="menu-widgets flex">
-            <div class="widget">
-              <h6>設定</h6>
-            </div>
-          </div>
-          <div class="menu-widgets flex">
-            <div class="widget">
-              <span>表示 件数：</span>
-              <b-dropdown :text="displayCounts[displayCount]" size="sm" id="detail_selector">
-                <b-dropdown-item class="d-flex flex-column" v-for="(c, i) in displayCounts" :key="i" @click="displayCount=i">
-                  {{ c }}
-                </b-dropdown-item>
-              </b-dropdown>
-            </div>
-            <div class="widget">
-              <span>形式：</span>
-              <b-dropdown :text="displayTypes[displayType]" size="sm" id="detail_selector">
-                <b-dropdown-item class="d-flex flex-column" v-for="(c, i) in displayTypes" :key="i" @click="displayType=i">
-                  {{ c }}
-                </b-dropdown-item>
-              </b-dropdown>
-            </div>
-          </div>
-          <div class="menu-widgets flex">
-            <div class="widget">
-              <span>ソート：</span>
-              <b-dropdown :text="sortTypes[sortType]" size="sm" id="sort_selector">
-                <b-dropdown-item class="d-flex flex-column" v-for="(c, i) in sortTypes" :key="i" @click="sortType=i">
-                  {{ c }}
-                </b-dropdown-item>
-              </b-dropdown>
-              <span style="width:5px"></span>
-              <b-dropdown :text="sortOrders[sortOrder]" size="sm" id="sort_order_selector">
-                <b-dropdown-item class="d-flex flex-column" v-for="(c, i) in sortOrders" :key="i" @click="sortOrder=i">
-                  {{ c }}
-                </b-dropdown-item>
-              </b-dropdown>
-            </div>
-          </div>
+          <b-tabs nav-class="tab-index" v-model="settingsTabIndex">
+            <b-tab title="表示">
+              <div class="menu-widgets flex">
+                <div class="widget">
+                  <span>件数：</span>
+                  <b-dropdown :text="displayCounts[displayCount]" size="sm" id="detail_selector">
+                    <b-dropdown-item class="d-flex flex-column" v-for="(c, i) in displayCounts" :key="i" @click="displayCount=i">
+                      {{ c }}
+                    </b-dropdown-item>
+                  </b-dropdown>
+                </div>
+                <div class="widget">
+                  <span>形式：</span>
+                  <b-dropdown :text="displayTypes[displayType]" size="sm" id="detail_selector">
+                    <b-dropdown-item class="d-flex flex-column" v-for="(c, i) in displayTypes" :key="i" @click="displayType=i">
+                      {{ c }}
+                    </b-dropdown-item>
+                  </b-dropdown>
+                </div>
+              </div>
+              <div class="menu-widgets flex">
+                <div class="widget">
+                  <span>ソート：</span>
+                  <b-dropdown :text="sortTypes[sortType]" size="sm" id="sort_selector">
+                    <b-dropdown-item class="d-flex flex-column" v-for="(c, i) in sortTypes" :key="i" @click="sortType=i">
+                      {{ c }}
+                    </b-dropdown-item>
+                  </b-dropdown>
+                  <span style="width:5px"></span>
+                  <b-dropdown :text="sortOrders[sortOrder]" size="sm" id="sort_order_selector">
+                    <b-dropdown-item class="d-flex flex-column" v-for="(c, i) in sortOrders" :key="i" @click="sortOrder=i">
+                      {{ c }}
+                    </b-dropdown-item>
+                  </b-dropdown>
+                </div>
+              </div>
+            </b-tab>
+            <b-tab title="ステータス">
+              <div class="flex">
+                <div class="menu-widgets">
+                  <b-container>
+                    <b-form-row v-for="(param, name, index) in [stat.base.level, stat.base.star]" :key="index">
+                      <b-col style="text-align: right" align-self="end">
+                        <label :for="`stat-${name}`">{{param.label}}</label>
+                      </b-col>
+                      <b-col>
+                        <b-form-input style="width: 4em" :id="`stat-${name}`" v-model.number="param.value" size="sm" type="number" class="input-param" :min="param.min" :max="param.max"></b-form-input>
+                      </b-col>
+                    </b-form-row>
+                  </b-container>
+                </div>
+                <div class="menu-widgets">
+                  <div style="margin: 3px">
+                    <b-button variant="secondary" size="sm" style="width: 7em" @click="updateStatus()" id="stat-detail">詳細設定</b-button>
+                    <b-popover target="stat-detail" triggers="click blur" placement="bottom" custom-class="stat-popover">
+                      <div class="flex" style="font-size: small">
+                        <b-container>
+                          <div style="text-align:center">
+                            <h6 style="margin: 5px 0px">基本情報</h6>
+                          </div>
+                          <b-form-row v-for="(param, name, index) in stat.base" :key="index">
+                            <b-col style="text-align: right" align-self="end">
+                              <label style="width: 7em" :for="`stat-${name}`">{{param.label}}</label>
+                            </b-col>
+                            <b-col>
+                              <b-form-input v-if="param.type == 'number'" style="width: 4em" :id="`stat-${name}`" v-model.number="param.value" size="sm" type="number" class="input-param" :min="param.min" :max="param.max"></b-form-input>
+                              <b-form-checkbox v-if="param.type == 'bool'" style="width: 5em" :id="`stat-sup-${name}`" v-model="param.value" size="sm" plain></b-form-checkbox>
+                            </b-col>
+                          </b-form-row>
+                        </b-container>
+                        <b-container>
+                          <div style="text-align:center">
+                            <h6 style="margin: 5px 0px">記憶の書＋強化ボード</h6>
+                          </div>
+                          <b-form-row v-for="(param, name, index) in stat.boosts" :key="index">
+                            <b-col style="text-align: right" align-self="end">
+                              <label style="width: 8em" :for="`stat-${name}`">{{param.label}}</label>
+                            </b-col>
+                            <b-col>
+                              <b-form-input v-if="param.type == 'number'" style="width: 4em" :id="`stat-${name}`" v-model.number="param.value" size="sm" type="number" class="input-param" :min="param.min" :max="param.max"></b-form-input>
+                            </b-col>
+                          </b-form-row>
+                        </b-container>
+                      </div>
+                      <div style="text-align: center">
+                        <b-button variant="secondary" size="sm" style="margin: 3px" @click="resetStatus()">リセット(カンスト化)</b-button>
+                        <b-button variant="secondary" size="sm" style="width: 7em; margin: 3px" @click="updateStatus()">適用</b-button>
+                      </div>
+                    </b-popover>
+                  </div>
+                  <div style="margin: 3px">
+                    <b-button variant="secondary" size="sm" style="width: 7em" @click="updateStatus()">適用</b-button>
+                  </div>
+                </div>
+              </div>
+            </b-tab>
+          </b-tabs>
         </div>
       </div>
     </div>
@@ -166,14 +224,14 @@
                   <div class="param-box"><b-img-lazy :src="getImageURL('移動')" title="移動" width="18" height="18" /><span>{{chr.move}}</span></div>
                   <div class="param-box"><span class="param-name">実装日:</span><span class="param-value">{{chr.date}}</span></div>
                 </div>
-                <div v-if="chr.status" class="status2" title="☆6 Lv110 で記憶の書、強化ボード、好感度ボーナス、マスターレベル全開放時の能力値">
+                <div v-if="chr.status" class="status2" :title="`☆${stat.base.star.value} Lv${stat.base.level.value} 時のステータス`">
                   <div class="param-box"><b-img-lazy :src="getImageURL('HP')" title="HP" width="18" height="18" /><span>{{chr.status[0]}}</span></div>
                   <div class="param-box"><b-img-lazy :src="getImageURL('アタック')" title="アタック" width="18" height="18" /><span>{{chr.status[1]}}</span></div>
                   <div class="param-box"><b-img-lazy :src="getImageURL('ディフェンス')" title="ディフェンス" width="18" height="18" /><span>{{chr.status[2]}}</span></div>
                   <div class="param-box"><b-img-lazy :src="getImageURL('マジック')" title="マジック" width="18" height="18" /><span>{{chr.status[3]}}</span></div>
                   <div class="param-box"><b-img-lazy :src="getImageURL('レジスト')" title="レジスト" width="18" height="18" /><span>{{chr.status[4]}}</span></div>
                   <div class="param-box"><b-img-lazy :src="getImageURL('テクニック')" title="テクニック" width="18" height="18" /><span>{{chr.status[5]}}</span></div>
-                  <div class="param-box"><span class="param-name">戦闘力:</span><span class="param-value">{{chr.power}}</span></div>
+                  <div class="param-box"><span class="param-name">戦闘力:</span><span class="param-value">{{chr.status[6]}}</span></div>
                 </div>
               </div>
               <div class="skills">
@@ -418,6 +476,74 @@ export default {
       damageTypeFilter: [],
       skillTypeFilter: [],
 
+      stat: {
+        base: {
+          level: {
+            label: "レベル",
+            type: "number",
+            min: 1,
+            value: 110,
+          },
+          star: {
+            label: "⭐",
+            type: "number",
+            min: 1,
+            max: 6,
+            value: 6,
+          },
+          master: {
+            label: "マスターレベル",
+            type: "number",
+            min: 0,
+            max: 3,
+            value: 3,
+          },
+          loveBonus: {
+            label: "好感度ボーナス",
+            type: "bool",
+            value: true,
+          },
+        },
+        boosts: {
+          hp: {
+            label: "HP (%)",
+            type: "number",
+            min: 0,
+            value: 150,
+          },
+          atk: {
+            label: "アタック (%)",
+            type: "number",
+            min: 0,
+            value: 140,
+          },
+          def: {
+            label: "ディフェンス (%)",
+            type: "number",
+            min: 0,
+            value: 130,
+          },
+          mag: {
+            label: "マジック (%)",
+            type: "number",
+            min: 0,
+            value: 140,
+          },
+          res: {
+            label: "レジスト (%)",
+            type: "number",
+            min: 0,
+            value: 130,
+          },
+          tec: {
+            label: "テクニック (%)",
+            type: "number",
+            min: 0,
+            value: 50,
+          },
+        },
+      },
+
       enableUpdateURL: false,
       prevURL: "",
     };
@@ -428,6 +554,7 @@ export default {
       return this.characters;
     },
     items() {
+      const cmp = this.compare;
       let characters = this.characters.filter(a => this.filterItem(a)); // filter & shallow copy
 
       if (this.sortType == 0) // 実装日
@@ -437,39 +564,39 @@ export default {
           characters.sort((b, a) => b.date.localeCompare(a.date));
       else if (this.sortType == 1) // 戦闘力
         if (this.sortOrder == 0)
-          characters.sort((a, b) => a.power < b.power ? 1 : -1);
+          characters.sort((a, b) => cmp(a.status[6], b.status[6]));
         else
-          characters.sort((b, a) => a.power < b.power ? 1 : -1);
+          characters.sort((b, a) => cmp(a.status[6], b.status[6]));
       else if (this.sortType == 2) // HP
         if (this.sortOrder == 0)
-          characters.sort((a, b) => a.status[0] < b.status[0] ? 1 : -1);
+          characters.sort((a, b) => cmp(a.status[0], b.status[0]));
         else
-          characters.sort((b, a) => a.status[0] < b.status[0] ? 1 : -1);
+          characters.sort((b, a) => cmp(a.status[0], b.status[0]));
       else if (this.sortType == 3) // アタック
         if (this.sortOrder == 0)
-          characters.sort((a, b) => a.status[1] < b.status[1] ? 1 : -1);
+          characters.sort((a, b) => cmp(a.status[1], b.status[1]));
         else
-          characters.sort((b, a) => a.status[1] < b.status[1] ? 1 : -1);
+          characters.sort((b, a) => cmp(a.status[1], b.status[1]));
       else if (this.sortType == 4) // ディフェンス
         if (this.sortOrder == 0)
-          characters.sort((a, b) => a.status[2] < b.status[2] ? 1 : -1);
+          characters.sort((a, b) => cmp(a.status[2], b.status[2]));
         else
-          characters.sort((b, a) => a.status[2] < b.status[2] ? 1 : -1);
+          characters.sort((b, a) => cmp(a.status[2], b.status[2]));
       else if (this.sortType == 5) // マジック
         if (this.sortOrder == 0)
-          characters.sort((a, b) => a.status[3] < b.status[3] ? 1 : -1);
+          characters.sort((a, b) => cmp(a.status[3], b.status[3]));
         else
-          characters.sort((b, a) => a.status[3] < b.status[3] ? 1 : -1);
+          characters.sort((b, a) => cmp(a.status[3], b.status[3]));
       else if (this.sortType == 6) // レジスト
         if (this.sortOrder == 0)
-          characters.sort((a, b) => a.status[4] < b.status[4] ? 1 : -1);
+          characters.sort((a, b) => cmp(a.status[4], b.status[4]));
         else
-          characters.sort((b, a) => a.status[4] < b.status[4] ? 1 : -1);
+          characters.sort((b, a) => cmp(a.status[4], b.status[4]));
       else if (this.sortType == 7) // テクニック
         if (this.sortOrder == 0)
-          characters.sort((a, b) => a.status[5] < b.status[5] ? 1 : -1);
+          characters.sort((a, b) => cmp(a.status[5], b.status[5]));
         else
-          characters.sort((b, a) => a.status[5] < b.status[5] ? 1 : -1);
+          characters.sort((b, a) => cmp(a.status[5], b.status[5]));
 
       return characters;
     },
@@ -528,12 +655,7 @@ export default {
         chr.symbolId = this.symbols.findIndex(v => v == chr.symbol);
         chr.rarityId = this.rarities.findIndex(v => v == chr.rarity);
         chr.damageTypeId = this.damageTypes.findIndex(v => v == chr.damageType);
-
-        const status = this.getMainChrStatus(chr);
-        if (status) {
-          chr.status = status;
-          chr.power = this.getMainBattlePower(status);
-        }
+        this.$set(chr, 'status', [])
 
         if (chr.summon) {
           for (let s of chr.summon) {
@@ -564,6 +686,11 @@ export default {
             }
           }
         }.bind(this);
+        this.stat.defaults = [
+          ...Object.values(this.stat.base).map(a => a.value),
+          ...Object.values(this.stat.boosts).map(a => a.value),
+        ];
+        this.updateStatus();
 
         setupSkills(chr, chr.skills);
         if (chr.summon) {
@@ -620,6 +747,26 @@ export default {
       this.reorderSet(this.tagCategory.action.tags, this.constants.tagsAction);
       this.reorderSet(this.tagCategory.other.tags, this.constants.tagsOther);
       this.reorderSubtag();
+    },
+
+    updateStatus() {
+      const s = this.stat;
+      const base = Object.values(s.base).map(a => a.value);
+      const boosts = Object.values(s.boosts).map(a => a.value);
+      for (let chr of this.characters) {
+        const status = this.getMainChrStatus(chr, ...base, boosts);
+        if (status) {
+          chr.status = [...status, this.getMainBattlePower(status)];
+        }
+      }
+      this.$forceUpdate();
+    },
+    resetStatus() {
+      const s = this.stat;
+      let vals = [...s.defaults];
+      for (let v of [...Object.values(s.base), ...Object.values(s.boosts)])
+        v.value = vals.shift();
+      this.updateStatus();
     },
 
     moveToChr(chr, revealHidden = true) {

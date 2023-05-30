@@ -76,12 +76,12 @@
         <div class="menu-panel">
           <div class="menu-widgets flex">
             <div class="widget">
-              <h6>設定</h6>
+              <h6>表示</h6>
             </div>
           </div>
           <div class="menu-widgets flex">
             <div class="widget">
-              <span>表示 件数：</span>
+              <span>件数：</span>
               <b-dropdown :text="displayCounts[displayCount]" size="sm" id="detail_selector">
                 <b-dropdown-item class="d-flex flex-column" v-for="(c, i) in displayCounts" :key="i" @click="displayCount=i">
                   {{ c }}
@@ -425,15 +425,7 @@ export default {
       return r;
     },
     itemParamsToHtml(item) {
-      const nameTable = [ "HP", "アタック", "ディフェンス", "マジック", "レジスト", "テクニック" ];
-      let params = [];
-      for (let i = 0; i < item.status.length; ++i) {
-        const v = item.status[i];
-        if (v) {
-          const n = nameTable[i];
-          params.push(`<div class="param-box"><img src="${this.getImageURL(n)}" title="${n}" width="18" height="18" /><span>+${v}</span></div>`);
-        }
-      }
+      let params = this.statusToDivs(item.status);
       params.push(`<div class="param-box" title="テクニックはメイン+サポートの攻撃力が 3000 の前提で計上"><span class="param-name">戦闘力:</span><span>${item.power}</span></div>`);
       return params.join("");
     },

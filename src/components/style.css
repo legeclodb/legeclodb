@@ -265,10 +265,24 @@ div.skill {
   padding: 0.2rem !important;
 }
 .long-dropdown {
-    overflow: auto !important;
-    height: 400px !important;
+  overflow: auto !important;
+  height: 400px !important;
+}
+
+.container {
+  padding-left: 8px;
+  padding-right: 8px;
+}
+.input-param {
+  height: 1.75em;
+  padding: 0.25em;
+  width: 5.5em;
 }
 
 .popover {
   max-width: 430px;
+}
+.stat-popover {
+  max-width: 410px !important;
+  width: 410px !important;
 }
