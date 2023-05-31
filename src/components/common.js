@@ -474,17 +474,32 @@ export default {
       }
       return text.replaceAll("\n", "<br/>") + "<br/>";
     },
-    statusToDivs(status) {
-      const nameTable = ["HP", "アタック", "ディフェンス", "マジック", "レジスト", "テクニック"];
-      let divs = [];
-      for (let i = 0; i < status.length; ++i) {
-        const v = status[i];
-        if (v) {
-          const n = nameTable[i];
-          divs.push(`<div class="param-box"><img src="${this.getImageURL(n)}" title="${n}" width="18" height="18" /><span>+${v}</span></div>`);
-        }
-      }
-      return divs;
+    skillParamsToHtml(skill) {
+      return [
+        ["CT", skill.ct],
+        ["範囲", skill.area],
+        ["射程", skill.range],
+        ["コスト", skill.cost],
+      ].filter(a => a[1])
+        .map((a) => `<div class="param-box"><span class="param-name">${a[0]}:</span><span class="param-value">${a[1]}</span></div>`)
+        .join("");
+    },
+    statusToHtml(status, prefix = "", damageType = null) {
+      const conv = function (n, v, i) {
+        if (!v)
+          return [];
+        if (i < 6)
+          return `<div class="param-box"><img src="${this.getImageURL(n)}" title="${n}" width="18" height="18" /><span>${prefix}${v}</span></div>`;
+        else
+          return `<div class="param-box"><span class="param-name">${n}:</span><span class="param-value">${v}</span></div>`;
+      }.bind(this);
+
+      let list = ["HP", "アタック", "ディフェンス", "マジック", "レジスト", "テクニック", "戦闘力"].flatMap((n, i) => conv(n, status[i], i));
+      if (damageType == "アタック")
+        list.splice(3, 1);
+      else if (damageType == "マジック")
+        list.splice(1, 1, ...list.splice(3, 1));
+      return list.join("");
     },
 
     updateQuery(name, updateURL = true) {
@@ -739,7 +754,7 @@ export default {
     },
     getSupportBattlePower(status, star = 6, master = 3, skillCount = 3) {
       status = [...status];
-      status[5] = 0;
+      status[5] = 0; // テクニックを計上しない
       let r = this.getBattlePower(status);
       return Math.round(r * (1.0 + 0.1 * star + 0.1 * master + 0.05 * skillCount));
     },

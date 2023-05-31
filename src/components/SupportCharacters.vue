@@ -224,13 +224,7 @@
                   <div class="param-box"><b-img-lazy :src="getImageURL('射程')" title="射程" width="18" height="18" /><span>{{chr.range}}</span></div>
                   <div class="param-box"><span class="param-name">実装日:</span><span class="param-value">{{chr.date}}</span></div>
                 </div>
-                <div v-if="chr.status" class="status2" :title="`☆${stat.base.star.value} Lv${stat.base.level.value} 時のステータス`">
-                  <div class="param-box"><b-img-lazy :src="getImageURL('HP')" title="HP" width="18" height="18" /><span>{{chr.status[0]}}</span></div>
-                  <div class="param-box" v-if="chr.damageType=='アタック'"><b-img-lazy :src="getImageURL('アタック')" title="アタック" width="18" height="18" /><span>{{chr.status[1]}}</span></div>
-                  <div class="param-box" v-if="chr.damageType=='マジック'"><b-img-lazy :src="getImageURL('マジック')" title="マジック" width="18" height="18" /><span>{{chr.status[3]}}</span></div>
-                  <div class="param-box"><b-img-lazy :src="getImageURL('ディフェンス')" title="ディフェンス" width="18" height="18" /><span>{{chr.status[2]}}</span></div>
-                  <div class="param-box"><b-img-lazy :src="getImageURL('レジスト')" title="レジスト" width="18" height="18" /><span>{{chr.status[4]}}</span></div>
-                  <div class="param-box"><span class="param-name">戦闘力:</span><span class="param-value">{{chr.status[6]}}</span></div>
+                <div v-if="chr.status" v-html="statusToHtml(chr.status, '', chr.damageType)" class="status2" :title="`☆${stat.base.star.value} Lv${stat.base.level.value} 時のステータス`">
                 </div>
               </div>
               <div class="skills">
@@ -444,46 +438,27 @@ export default {
       return this.characters;
     },
     items() {
-      const cmp = this.compare;
-      let characters = this.characters.filter(a => this.filterItem(a)); // filter & shallow copy
+      let ret = this.characters.filter(a => this.filterItem(a)); // filter & shallow copy
 
-      if (this.sortType == 0) // 実装日
+      const c = this.compare;
+      const comparer = [
+        (a, b) => b.date.localeCompare(a.date), // 実装日
+        (a, b) => c(a.status[6], b.status[6]), // 戦闘力
+        (a, b) => c(a.status[0], b.status[0]), // HP
+        (a, b) => c(a.status[1], b.status[1]), // アタック
+        (a, b) => c(a.status[2], b.status[2]), // ディフェンス
+        (a, b) => c(a.status[3], b.status[3]), // マジック
+        (a, b) => c(a.status[4], b.status[4]), // レジスト
+      ];
+      if (this.sortType >= 0 && this.sortType < comparer.length) {
+        const fn = comparer[this.sortType]
         if (this.sortOrder == 0)
-          characters.sort((a, b) => b.date.localeCompare(a.date));
+          ret.sort((a, b) => fn(a, b));
         else
-          characters.sort((b, a) => b.date.localeCompare(a.date));
-      else if (this.sortType == 1) // 戦闘力
-        if (this.sortOrder == 0)
-          characters.sort((a, b) => cmp(a.status[6], b.status[6]));
-        else
-          characters.sort((b, a) => cmp(a.status[6], b.status[6]));
-      else if (this.sortType == 2) // HP
-        if (this.sortOrder == 0)
-          characters.sort((a, b) => cmp(a.status[0], b.status[0]));
-        else
-          characters.sort((b, a) => cmp(a.status[0], b.status[0]));
-      else if (this.sortType == 3) // アタック
-        if (this.sortOrder == 0)
-          characters.sort((a, b) => cmp(a.status[1], b.status[1]));
-        else
-          characters.sort((b, a) => cmp(a.status[1], b.status[1]));
-      else if (this.sortType == 4) // ディフェンス
-        if (this.sortOrder == 0)
-          characters.sort((a, b) => cmp(a.status[2], b.status[2]));
-        else
-          characters.sort((b, a) => cmp(a.status[2], b.status[2]));
-      else if (this.sortType == 5) // マジック
-        if (this.sortOrder == 0)
-          characters.sort((a, b) => cmp(a.status[3], b.status[3]));
-        else
-          characters.sort((b, a) => cmp(a.status[3], b.status[3]));
-      else if (this.sortType == 6) // レジスト
-        if (this.sortOrder == 0)
-          characters.sort((a, b) => cmp(a.status[4], b.status[4]));
-        else
-          characters.sort((b, a) => cmp(a.status[4], b.status[4]));
+          ret.sort((a, b) => fn(b, a));
+      }
 
-      return characters;
+      return ret;
     },
     pagedItems() {
       return this.applyPage(this.items);
@@ -562,7 +537,7 @@ export default {
         let skillActive = chr.skills[0];
         if (skillActive.descs) {
           skillActive.current = "Lv 6";
-          skillActive.desc = skillActive.descs[skillActive.current];
+          this.$set(skillActive, 'desc', skillActive.descs[skillActive.current]);
         }
       }
       this.stat.defaults = [
@@ -612,8 +587,7 @@ export default {
       for (let chr of this.characters) {
         const status = this.getSupportChrStatus(chr, ...base, boosts);
         if (status) {
-          status[5] = 0; // テクニックを戦闘力に計上しないように
-          chr.status = [...status, this.getSupportBattlePower(status)];
+          chr.status = [...status, this.getSupportBattlePower(status, s.base.star.value, s.base.master.value)];
         }
       }
       this.$forceUpdate();
@@ -678,18 +652,6 @@ export default {
             }
           }
         }
-      }
-    },
-
-    skillParamsToHtml(skill) {
-      if (skill.skillType == 'アクティブ') {
-        return `
-<div class="param-box"><span class="param-name">範囲:</span><span class="param-value">${skill.area}</span></div>
-<div class="param-box"><span class="param-name">射程:</span><span class="param-value">${skill.range}</span></div>
-`;
-      }
-      else if (skill.skillType == 'パッシブ') {
-        return "";
       }
     },
 

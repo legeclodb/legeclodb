@@ -161,7 +161,7 @@
               </div>
               <div class="info">
                 <div class="status" v-html="itemClassesToHtml(item)"></div>
-                <div class="status2" v-html="itemParamsToHtml(item)"></div>
+                <div class="status2" v-html="statusToHtml(item.status, '+')" title="テクニックはメイン+サポートの攻撃力が 3000 の前提で戦闘力に計上"></div>
               </div>
               <div class="skills">
                 <div class="skill" :class="{ 'highlighted': isDescHighlighted(item) }" v-show="displayType >= 2" style="flex-grow: 1">
@@ -283,53 +283,31 @@ export default {
       return this.characters;
     },
     items() {
-      let equipments = this.equipments.filter(a => this.filterItem(a)); // filter & shallow copy
+      let ret = this.equipments.filter(a => this.filterItem(a)); // filter & shallow copy
 
-      if (this.sortType == 0) // 実装日
+      const c = this.compare;
+      const comparer = [
+        (a, b) => b.date.localeCompare(a.date), // 実装日
+        (a, b) => c(a.status[6], b.status[6]), // 戦闘力
+        (a, b) => c(a.status[0], b.status[0]), // HP
+        (a, b) => c(a.status[1], b.status[1]), // アタック
+        (a, b) => c(a.status[2], b.status[2]), // ディフェンス
+        (a, b) => c(a.status[3], b.status[3]), // マジック
+        (a, b) => c(a.status[4], b.status[4]), // レジスト
+        (a, b) => c(a.status[5], b.status[5]), // テクニック
+      ];
+      if (this.sortType >= 0 && this.sortType < comparer.length) {
+        const fn = comparer[this.sortType]
         if (this.sortOrder == 0)
-          equipments.sort((a, b) => b.date.localeCompare(a.date));
+          ret.sort((a, b) => fn(a, b));
         else
-          equipments.sort((b, a) => b.date.localeCompare(a.date));
-      else if (this.sortType == 1) // 戦闘力
-        if (this.sortOrder == 0)
-          equipments.sort((a, b) => a.power < b.power ? 1 : -1);
-        else
-          equipments.sort((b, a) => a.power < b.power ? 1 : -1);
-      else if (this.sortType == 2) // HP
-        if (this.sortOrder == 0)
-          equipments.sort((a, b) => a.status[0] < b.status[0] ? 1 : -1);
-        else
-          equipments.sort((b, a) => a.status[0] < b.status[0] ? 1 : -1);
-      else if (this.sortType == 3) // アタック
-        if (this.sortOrder == 0)
-          equipments.sort((a, b) => a.status[1] < b.status[1] ? 1 : -1);
-        else
-          equipments.sort((b, a) => a.status[1] < b.status[1] ? 1 : -1);
-      else if (this.sortType == 4) // ディフェンス
-        if (this.sortOrder == 0)
-          equipments.sort((a, b) => a.status[2] < b.status[2] ? 1 : -1);
-        else
-          equipments.sort((b, a) => a.status[2] < b.status[2] ? 1 : -1);
-      else if (this.sortType == 5) // マジック
-        if (this.sortOrder == 0)
-          equipments.sort((a, b) => a.status[3] < b.status[3] ? 1 : -1);
-        else
-          equipments.sort((b, a) => a.status[3] < b.status[3] ? 1 : -1);
-      else if (this.sortType == 6) // レジスト
-        if (this.sortOrder == 0)
-          equipments.sort((a, b) => a.status[4] < b.status[4] ? 1 : -1);
-        else
-          equipments.sort((b, a) => a.status[4] < b.status[4] ? 1 : -1);
-      else if (this.sortType == 7) // テクニック
-        if (this.sortOrder == 0)
-          equipments.sort((a, b) => a.status[5] < b.status[5] ? 1 : -1);
-        else
-          equipments.sort((b, a) => a.status[5] < b.status[5] ? 1 : -1);
+          ret.sort((a, b) => fn(b, a));
+      }
 
       if (this.sortBySlot) // 種類別
-        equipments.sort((a, b) => a.slotId < b.slotId ? -1 : 1);
+        ret.sort((a, b) => a.slotId < b.slotId ? -1 : 1);
 
-      return equipments;
+      return ret;
     },
     pagedItems() {
       return this.applyPage(this.items);
@@ -375,7 +353,7 @@ export default {
         }
         item.slotId = this.itemTypes.findIndex(v => v == item.slot);
         item.rarityId = this.rarities.findIndex(v => v == item.rarity);
-        item.power = this.getEstimatedItemBattlePower(item);
+        item.status = [...item.status, this.getEstimatedItemBattlePower(item)];
 
         this.registerTags(item.tags);
       }
@@ -423,11 +401,6 @@ export default {
       else
         r += `<img src="${this.getImageURL('全クラス')}" title="全クラス" height="24" />`;
       return r;
-    },
-    itemParamsToHtml(item) {
-      let params = this.statusToDivs(item.status);
-      params.push(`<div class="param-box" title="テクニックはメイン+サポートの攻撃力が 3000 の前提で計上"><span class="param-name">戦闘力:</span><span>${item.power}</span></div>`);
-      return params.join("");
     },
 
     isInfoHighlighted(chr) {
