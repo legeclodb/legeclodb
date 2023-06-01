@@ -129,7 +129,7 @@
           <br />
           装備の効果は特に記載がない場合メインのみが対象である点に注意が必要です。<br />
           サポートも対象の効果は「自ユニットの」という記述があり、区別されています。<br />
-          <span class="note">例: <b-link :ref="po">天蠍の天鎧</b-link> のダメージ耐性はメインのみが対象、<b-link :ref="po">乙女の天衣</b-link> のダメージ耐性はサポートも対象。</span><br />
+          <span class="note">例: <b-link :ref="po">天蝎の天鎧</b-link> のダメージ耐性はメインのみが対象、<b-link :ref="po">乙女の天衣</b-link> のダメージ耐性はサポートも対象。</span><br />
           同様に、アミュレットの効果はサポートのみが対象となります。シールドはサポートが倒れている場合発動しません。<br />
           <br />
           アンドロメダの<b-link :ref="po">神に勝る美</b-link>やオリオンの<b-link :ref="po">俺の女に手は出させない</b-link>は、HP が 75% ちょうどの場合、以上以下両方の効果が発動します。<br />
@@ -1251,6 +1251,7 @@ export default {
     for (let i = 0; i < this.items.length; ++i) {
       let item = this.items[i];
       item.index = i + 1;
+      item.status = this.getItemStatus(item);
     }
 
     this.mainChrs.sort((a, b) => b.date.localeCompare(a.date));
@@ -1339,7 +1340,7 @@ export default {
       //console.log(`ap: ${ap}`);
 
       const cmp = this.compare;
-      const getItemBattlePower = (item, api) => this.getEstimatedItemBattlePower(item, api, ap, tec);
+      const getItemBattlePower = (item, api) => this.getEstimatedItemBattlePower(item.status, api, ap, tec);
       const cmpPow = function (a, b, api) {
         const bpa = getItemBattlePower(a, api);
         const bpb = getItemBattlePower(b, api);
@@ -1775,10 +1776,13 @@ export default {
 
   methods: {
     findItem(name) {
-      return this.mainSkills.find(a => a.name == name) ||
+      const r = this.mainSkills.find(a => a.name == name) ||
         this.mainTalents.find(a => a.name == name) ||
         this.supSkills.find(a => a.name == name) ||
         this.items.find(a => a.name == name);
+      if (!r)
+        console.log(`${name} not found`);
+      return r;
     },
 
     po(e) {

@@ -493,12 +493,15 @@ export default {
         else
           return `<div class="param-box"><span class="param-name">${n}:</span><span class="param-value">${v}</span></div>`;
       }.bind(this);
-
       let list = ["HP", "アタック", "ディフェンス", "マジック", "レジスト", "テクニック", "戦闘力"].flatMap((n, i) => conv(n, status[i], i));
-      if (damageType == "アタック")
-        list.splice(3, 1);
-      else if (damageType == "マジック")
-        list.splice(1, 1, ...list.splice(3, 1));
+
+      if (damageType) {
+        list.splice(5, 1);
+        if (damageType == "アタック")
+          list.splice(3, 1);
+        else if (damageType == "マジック")
+          list.splice(1, 1, ...list.splice(3, 1));
+      }
       return list.join("");
     },
 
@@ -711,6 +714,17 @@ export default {
       return r;
     },
 
+    getItemStatus(item, level = 50) {
+      if (!item || !item.statusInit || !item.statusLv)
+        return null;
+
+      let r = [0, 0, 0, 0, 0, 0];
+      for (let i = 0; i < r.length; ++i) {
+        r[i] += Math.round(item.statusInit[i] + item.statusLv[i] * (level - 1));
+      }
+      return r;
+    },
+
     compare(a, b) {
       return a == b ? 0 : a < b ? 1 : -1;
     },
@@ -758,8 +772,7 @@ export default {
       let r = this.getBattlePower(status);
       return Math.round(r * (1.0 + 0.1 * star + 0.1 * master + 0.05 * skillCount));
     },
-    getEstimatedItemBattlePower(item, api = 0, baseAP = 3000, baseTec = 0) {
-      const status = item.status;
+    getEstimatedItemBattlePower(status, api = 0, baseAP = 3000, baseTec = 0) {
       let r = 0;
       r += status[0] * 0.05;
       r += status[2] * 2;

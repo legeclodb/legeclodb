@@ -74,49 +74,71 @@
           </div>
         </div>
         <div class="menu-panel">
-          <div class="menu-widgets flex">
-            <div class="widget">
-              <h6>表示</h6>
-            </div>
-          </div>
-          <div class="menu-widgets flex">
-            <div class="widget">
-              <span>件数：</span>
-              <b-dropdown :text="displayCounts[displayCount]" size="sm" id="detail_selector">
-                <b-dropdown-item class="d-flex flex-column" v-for="(c, i) in displayCounts" :key="i" @click="displayCount=i">
-                  {{ c }}
-                </b-dropdown-item>
-              </b-dropdown>
-            </div>
-            <div class="widget">
-              <span>形式：</span>
-              <b-dropdown :text="displayTypes[displayType]" size="sm" id="detail_selector">
-                <b-dropdown-item class="d-flex flex-column" v-for="(c, i) in displayTypes" :key="i" @click="displayType=i">
-                  {{ c }}
-                </b-dropdown-item>
-              </b-dropdown>
-            </div>
-          </div>
-          <div class="menu-widgets flex">
-            <div class="widget">
-              <span>ソート：</span>
-              <b-dropdown :text="sortTypes[sortType]" size="sm" id="sort_selector">
-                <b-dropdown-item class="d-flex flex-column" v-for="(c, i) in sortTypes" :key="i" @click="sortType=i">
-                  {{ c }}
-                </b-dropdown-item>
-              </b-dropdown>
-              <span style="width:5px"></span>
-              <b-dropdown :text="sortOrders[sortOrder]" size="sm" id="sort_order_selector">
-                <b-dropdown-item class="d-flex flex-column" v-for="(c, i) in sortOrders" :key="i" @click="sortOrder=i">
-                  {{ c }}
-                </b-dropdown-item>
-              </b-dropdown>
-              <span style="width:5px"></span>
-              <b-button :pressed.sync="sortBySlot" variant="outline-secondary" size="sm">
-                種類別
-              </b-button>
-            </div>
-          </div>
+          <b-tabs nav-class="tab-index" v-model="settingsTabIndex">
+            <b-tab title="表示">
+              <div class="menu-widgets flex">
+                <div class="widget">
+                  <span>件数：</span>
+                  <b-dropdown :text="displayCounts[displayCount]" size="sm" id="detail_selector">
+                    <b-dropdown-item class="d-flex flex-column" v-for="(c, i) in displayCounts" :key="i" @click="displayCount=i">
+                      {{ c }}
+                    </b-dropdown-item>
+                  </b-dropdown>
+                </div>
+                <div class="widget">
+                  <span>形式：</span>
+                  <b-dropdown :text="displayTypes[displayType]" size="sm" id="detail_selector">
+                    <b-dropdown-item class="d-flex flex-column" v-for="(c, i) in displayTypes" :key="i" @click="displayType=i">
+                      {{ c }}
+                    </b-dropdown-item>
+                  </b-dropdown>
+                </div>
+              </div>
+              <div class="menu-widgets flex">
+                <div class="widget">
+                  <span>ソート：</span>
+                  <b-dropdown :text="sortTypes[sortType]" size="sm" id="sort_selector">
+                    <b-dropdown-item class="d-flex flex-column" v-for="(c, i) in sortTypes" :key="i" @click="sortType=i">
+                      {{ c }}
+                    </b-dropdown-item>
+                  </b-dropdown>
+                  <span style="width:5px"></span>
+                  <b-dropdown :text="sortOrders[sortOrder]" size="sm" id="sort_order_selector">
+                    <b-dropdown-item class="d-flex flex-column" v-for="(c, i) in sortOrders" :key="i" @click="sortOrder=i">
+                      {{ c }}
+                    </b-dropdown-item>
+                  </b-dropdown>
+                  <span style="width:5px"></span>
+                  <b-button :pressed.sync="sortBySlot" variant="outline-secondary" size="sm">
+                    種類別
+                  </b-button>
+                </div>
+              </div>
+            </b-tab>
+            <b-tab title="ステータス">
+              <div class="flex">
+                <div class="menu-widgets">
+                  <b-container>
+                    <b-form-row v-for="(param, name, index) in [stat.base.level]" :key="index">
+                      <b-col style="text-align: right" align-self="end">
+                        <label :for="`stat-${name}`">{{param.label}}</label>
+                      </b-col>
+                      <b-col>
+                        <b-form-input style="width: 4em" :id="`stat-${name}`" v-model.number="param.value" size="sm" type="number" class="input-param" :min="param.min" :max="param.max"></b-form-input>
+                      </b-col>
+                    </b-form-row>
+                  </b-container>
+                </div>
+                <div class="menu-widgets">
+                  <div style="margin: 3px">
+                  </div>
+                  <div style="margin: 3px">
+                    <b-button variant="secondary" size="sm" style="width: 7em" @click="updateStatus()">適用</b-button>
+                  </div>
+                </div>
+              </div>
+            </b-tab>
+          </b-tabs>
         </div>
       </div>
     </div>
@@ -273,6 +295,17 @@ export default {
       itemTypeFilter: [],
       rarityFilter: [],
 
+      stat: {
+        base: {
+          level: {
+            label: "レベル",
+            type: "number",
+            min: 1,
+            value: 50,
+          },
+        },
+      },
+
       enableUpdateURL: false,
       prevURL: "",
     };
@@ -353,7 +386,7 @@ export default {
         }
         item.slotId = this.itemTypes.findIndex(v => v == item.slot);
         item.rarityId = this.rarities.findIndex(v => v == item.rarity);
-        item.status = [...item.status, this.getEstimatedItemBattlePower(item)];
+        this.$set(item, 'status', [])
 
         this.registerTags(item.tags);
       }
@@ -368,6 +401,10 @@ export default {
         }
         return false;
       }.bind(this);
+      this.stat.defaults = [
+        ...Object.values(this.stat.base).map(a => a.value),
+      ];
+      this.updateStatus();
 
       for (let t of this.getMainTags()) {
         if (handledTags.has(t))
@@ -392,6 +429,23 @@ export default {
       this.reorderSubtag();
 
       this.reorderSet(this.subTagTable["デメリット"], this.constants.tagsDemerit);
+    },
+
+    updateStatus() {
+      const base = Object.values(this.stat.base).map(a => a.value);
+      for (let item of this.equipments) {
+        const status = this.getItemStatus(item, ...base);
+        if (status) {
+          item.status = [...status, this.getEstimatedItemBattlePower(status)];
+        }
+      }
+      this.$forceUpdate();
+    },
+    resetStatus() {
+      let vals = [...this.stat.defaults];
+      for (let v of [...Object.values(this.stat.base)])
+        v.value = vals.shift();
+      this.updateStatus();
     },
 
     itemClassesToHtml(item) {
