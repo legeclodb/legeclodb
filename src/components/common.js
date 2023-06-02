@@ -431,7 +431,12 @@ export default {
       return false;
     },
     matchContent(item, re) {
-      return (item.name && item.name.match(re)) || (item.desc && item.desc.match(re)) || (item.date && item.date.match(re));
+      if (typeof item === 'string') {
+        return item.match(re);
+      }
+      else {
+        return (item.name && item.name.match(re)) || (item.desc && item.desc.match(re)) || (item.date && item.date.match(re));
+      }
     },
     getSearchMask() {
       return (this.tagSearchFn ? 1 : 0) | (this.freeSearchFn ? 2 : 0);
@@ -531,17 +536,7 @@ export default {
 
           if (this.freeSearchPattern.length != 0) {
             const re = new RegExp(this.freeSearchPattern);
-            this.freeSearchFn = function (item) {
-              if (typeof item === 'string') {
-                return item.match(re);
-              }
-              else if (['chr', 'skill', 'talent'].includes(item.recordType)) {
-                return this.matchContent(item, re);
-              }
-              else {
-                throw new Error("freeSearchFn: something wrong");
-              }
-            }.bind(this);
+            this.freeSearchFn = (item) => this.matchContent(item, re);
           }
           else {
             this.freeSearchFn = null;
@@ -788,6 +783,33 @@ export default {
       r += baseAP * 2 * (status[5] * 0.0003);
 
       return Math.round(r);
-    }
+    },
+
+    buffParamsToTags(skill) {
+      const toS = function (name, p) {
+        let t = name + ":" + p.type;
+        if (p.damageType)
+          t += `(${p.damageType})`;
+        if (p.onBattle)
+          t += "(戦闘時)";
+        if (p.type == "ランダム")
+          t += `(${p.value})`;
+        if (["クラス", "シンボル"].includes(p.type))
+          t += `(${p.target})`;
+        return t;
+      };
+      const map = (a, f) => a ? a.map(f) : [];
+      return [
+        ...map(skill.buff, a => toS("バフ", a)),
+        ...map(skill.debuff, a => toS("デバフ", a))
+      ];
+    },
+    appendBuffTags(skill) {
+      const additional = this.buffParamsToTags(skill);
+      if (!skill.tags)
+        skill.tags = [];
+      for (const t of additional)
+        skill.tags.push(t);
+    },
   }
 }

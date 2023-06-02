@@ -154,7 +154,7 @@
                             </b-col>
                             <b-col>
                               <b-form-input v-if="param.type == 'number'" style="width: 4em" :id="`stat-${name}`" v-model.number="param.value" size="sm" type="number" class="input-param" :min="param.min" :max="param.max"></b-form-input>
-                              <b-form-checkbox v-if="param.type == 'bool'" style="width: 5em" :id="`stat-sup-${name}`" v-model="param.value" size="sm" plain></b-form-checkbox>
+                              <b-form-checkbox v-if="param.type == 'bool'" style="width: 5em" :id="`stat-${name}`" v-model="param.value" size="sm" plain></b-form-checkbox>
                             </b-col>
                           </b-form-row>
                         </b-container>
@@ -172,9 +172,14 @@
                           </b-form-row>
                         </b-container>
                       </div>
-                      <div style="text-align: center">
-                        <b-button variant="secondary" size="sm" style="margin: 3px" @click="resetStatus()">リセット(カンスト化)</b-button>
-                        <b-button variant="secondary" size="sm" style="width: 7em; margin: 3px" @click="updateStatus()">適用</b-button>
+                      <div class="flex" style="margin: 5px 5px 0px 5px">
+                        <div style="text-align: left">
+                          <b-button variant="secondary" size="sm" style="margin: 3px" @click="resetStatus()">カンスト化</b-button>
+                          <b-button variant="secondary" size="sm" style="margin: 3px" @click="resetStatus(1)">キャラ紹介を再現</b-button>
+                        </div>
+                        <div style="text-align: right; flex-grow: 1">
+                          <b-button variant="secondary" size="sm" style="width: 7em; margin: 3px" @click="updateStatus()">適用</b-button>
+                        </div>
                       </div>
                     </b-popover>
                   </div>
@@ -592,9 +597,13 @@ export default {
       }
       this.$forceUpdate();
     },
-    resetStatus() {
+    resetStatus(type = 0) {
       const s = this.stat;
-      let vals = [...s.defaults];
+      const presets = [
+        s.defaults,
+        [100, 6, 0, true, 30, 30, 30, 30, 30]
+      ];
+      let vals = [...presets[type]];
       for (let v of [...Object.values(s.base), ...Object.values(s.boosts)])
         v.value = vals.shift();
       this.updateStatus();

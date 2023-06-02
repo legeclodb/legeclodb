@@ -154,7 +154,7 @@
                             </b-col>
                             <b-col>
                               <b-form-input v-if="param.type == 'number'" style="width: 4em" :id="`stat-${name}`" v-model.number="param.value" size="sm" type="number" class="input-param" :min="param.min" :max="param.max"></b-form-input>
-                              <b-form-checkbox v-if="param.type == 'bool'" style="width: 5em" :id="`stat-sup-${name}`" v-model="param.value" size="sm" plain></b-form-checkbox>
+                              <b-form-checkbox v-if="param.type == 'bool'" style="width: 5em" :id="`stat-${name}`" v-model="param.value" size="sm" plain></b-form-checkbox>
                             </b-col>
                           </b-form-row>
                         </b-container>
@@ -172,9 +172,14 @@
                           </b-form-row>
                         </b-container>
                       </div>
-                      <div style="text-align: center">
-                        <b-button variant="secondary" size="sm" style="margin: 3px" @click="resetStatus()">リセット(カンスト化)</b-button>
-                        <b-button variant="secondary" size="sm" style="width: 7em; margin: 3px" @click="updateStatus()">適用</b-button>
+                      <div class="flex" style="margin: 5px 5px 0px 5px">
+                        <div style="text-align: left">
+                          <b-button variant="secondary" size="sm" style="margin: 3px" @click="resetStatus()">カンスト化</b-button>
+                          <b-button variant="secondary" size="sm" style="margin: 3px" @click="resetStatus(1)">キャラ紹介を再現</b-button>
+                        </div>
+                        <div style="text-align: right; flex-grow: 1">
+                          <b-button variant="secondary" size="sm" style="width: 7em; margin: 3px" @click="updateStatus()">適用</b-button>
+                        </div>
                       </div>
                     </b-popover>
                   </div>
@@ -388,7 +393,9 @@
 
 <script>
 import Navigation from './Navigation.vue'
-import jsonSkills from '../assets/main_skills.json'
+import jsonActive from '../assets/main_active.json'
+import jsonPassive from '../assets/main_passive.json'
+import jsonTalents from '../assets/main_talents.json'
 import jsonCharacters from '../assets/main_characters.json'
 import jsonConstants from '../assets/constants.json'
 import common from "./common";
@@ -402,7 +409,9 @@ export default {
 
   data() {
     return {
-      skills: jsonSkills,
+      active: jsonActive,
+      passive: jsonPassive,
+      talents: jsonTalents,
       characters: jsonCharacters,
       constants: jsonConstants,
 
@@ -603,24 +612,41 @@ export default {
   methods: {
     setupDB() {
       // 外部 json 由来のデータへの変更はセッションをまたいでしまうので、deep copy しておく
+      this.active = structuredClone(this.active);
+      this.passive = structuredClone(this.passive);
+      this.talents = structuredClone(this.talents);
       this.characters = structuredClone(this.characters).filter(a => !a.hidden);
-      this.skills = structuredClone(this.skills);
 
       this.predefinedMainTags.push("分類");
 
       let skillMap = new Map();
-      let skillId = 0;
-      for (let skill of this.skills) {
-        skill.recordType = 'skill';
-        skill.id = ++skillId;
-        skillMap.set(skill.name, skill);
-        this.registerTags(skill.tags);
+      for (let s of this.active)
+        s.skillType = "アクティブ";
+      for (let s of this.passive)
+        s.skillType = "パッシブ";
+      for (let s of this.talents)
+        s.skillType = "タレント";
+      for (let s of [...this.active, ...this.passive, ...this.talents]) {
+        skillMap.set(s.name, s);
+        this.appendBuffTags(s);
+        this.registerTags(s.tags);
       }
 
       let chrId = 0;
       for (let chr of this.characters) {
-        chr.recordType = 'chr';
-        chr.talent.recordType = 'talent';
+        const grabSkill = function (name) {
+          let skill = skillMap.get(name);
+          if (!skill) {
+            console.error(`skill not found: ${name}`);
+            return null;
+          }
+          if (!skill.owners)
+            skill.owners = [];
+          if (skill.owners.length == 0 || skill.owners[skill.owners.length - 1] != chr)
+            skill.owners.push(chr);
+          return skill;
+        };
+
         chr.id = ++chrId;
         chr.classId = this.classes.findIndex(v => v == chr.class);
         chr.symbolId = this.symbols.findIndex(v => v == chr.symbol);
@@ -628,45 +654,17 @@ export default {
         chr.damageTypeId = this.damageTypes.findIndex(v => v == chr.damageType);
         this.$set(chr, 'status', [])
 
-        if (chr.summon) {
-          for (let s of chr.summon) {
-            s.recordType = 'chr';
-            s.talent.recordType = 'talent';
-          }
-        }
-
+        chr.talent = grabSkill(chr.talent);
         if (chr.talent.descs) {
           chr.talent.current = "Lv 6";
           this.$set(chr.talent, 'desc', chr.talent.descs[chr.talent.current]);
         }
-
-        const setupSkills = function (chr, skills) {
-          for (let i = 0; i < skills.length; ++i) {
-            if (typeof skills[i] === "string") {
-              let skill = skillMap.get(skills[i]);
-              if (!skill) {
-                // 開発中とりあえず表示させるための措置
-                skill = skillMap.get(this.skills[0].name);
-              }
-
-              skills[i] = skill;
-              if (!skill.owners)
-                skill.owners = [];
-              if (skill.owners.length == 0 || skill.owners[skill.owners.length - 1] != chr)
-                skill.owners.push(chr);
-            }
-          }
-        }.bind(this);
-        this.stat.defaults = [
-          ...Object.values(this.stat.base).map(a => a.value),
-          ...Object.values(this.stat.boosts).map(a => a.value),
-        ];
-        this.updateStatus();
-
-        setupSkills(chr, chr.skills);
+        chr.skills = chr.skills.flatMap(name => grabSkill(name));
         if (chr.summon) {
-          for (let s of chr.summon)
-            setupSkills(chr, s.skills);
+          for (let s of chr.summon) {
+            s.talent = grabSkill(s.talent);
+            s.skills = s.skills.flatMap(name => grabSkill(name));
+          }
         }
 
         const m = chr.name.match(/\((.+?)\)/);
@@ -677,6 +675,11 @@ export default {
         // ↑でタグを追加するのでこのタイミングである必要がある
         this.registerTags(chr.talent.tags);
       }
+      this.stat.defaults = [
+        ...Object.values(this.stat.base).map(a => a.value),
+        ...Object.values(this.stat.boosts).map(a => a.value),
+      ];
+      this.updateStatus();
 
       // リストの上の方に出すため特別処理
       let handledTags = new Set();
@@ -727,14 +730,18 @@ export default {
       for (let chr of this.characters) {
         const status = this.getMainChrStatus(chr, ...base, boosts);
         if (status) {
-          chr.status = [...status, this.getMainBattlePower(status, s.base.star.value, s.base.master.value, 6, 0, false)];
+          chr.status = [...status, this.getMainBattlePower(status, s.base.star.value, s.base.master.value, 5, 0, false)];
         }
       }
       this.$forceUpdate();
     },
-    resetStatus() {
+    resetStatus(type = 0) {
       const s = this.stat;
-      let vals = [...s.defaults];
+      const presets = [
+        s.defaults,
+        [100, 6, 0, true, 70, 50, 50, 50, 50, 50]
+      ];
+      let vals = [...presets[type]];
       for (let v of [...Object.values(s.base), ...Object.values(s.boosts)])
         v.value = vals.shift();
       this.updateStatus();

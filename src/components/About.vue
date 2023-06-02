@@ -326,7 +326,7 @@
                       <b-col>
                         <b-form-input v-if="param.type == 'number'" style="width: 5em" :id="`stat-main-${name}`" v-model.number="param.value" size="sm" type="number" class="input-param" :min="param.min" :max="param.max"></b-form-input>
                         <b-form-checkbox v-if="param.type == 'bool'" style="width: 5em" :id="`stat-main-${name}`" v-model="param.value" size="sm" plain></b-form-checkbox>
-                        <b-dropdown v-if="param.type == 'character'" style="width: 15em" :text="param.value ? param.value.name : '(なし)'" size="sm" class="input-dropdown" id="stat-main-${name}" menu-class="long-dropdown">
+                        <b-dropdown v-if="param.type == 'character'" style="width: 15em" :text="param.value ? param.value.name : '(なし)'" size="sm" class="input-dropdown" :id="`stat-main-${name}`" menu-class="long-dropdown">
                           <b-dropdown-item v-for="(c, i) in mainChrs" :key="i" @click="param.value=c; stat.validateItems();">
                             {{ c.name }}
                           </b-dropdown-item>
@@ -360,19 +360,19 @@
                         <label style="width: 5em" :for="`stat-main-item-${name}`">{{param.label}}</label>
                       </b-col>
                       <b-col>
-                        <b-dropdown v-if="param.type == 'weapon'" style="width: 14em" :text="param.value ? param.value.name : '(なし)'" size="sm" class="input-dropdown" id="stat-main-item-${name}" menu-class="long-dropdown">
+                        <b-dropdown v-if="param.type == 'weapon'" style="width: 14em" :text="param.value ? param.value.name : '(なし)'" size="sm" class="input-dropdown" :id="`stat-main-item-${name}`" menu-class="long-dropdown">
                           <b-dropdown-item @click="param.value=null">(なし)</b-dropdown-item>
                           <b-dropdown-item v-for="(c, i) in stat.validWeapons()" :key="i" @click="param.value=c">{{ c.name }}</b-dropdown-item>
                         </b-dropdown>
-                        <b-dropdown v-if="param.type == 'armor'" style="width: 14em" :text="param.value ? param.value.name : '(なし)'" size="sm" class="input-dropdown" id="stat-main-item-${name}" menu-class="long-dropdown">
+                        <b-dropdown v-if="param.type == 'armor'" style="width: 14em" :text="param.value ? param.value.name : '(なし)'" size="sm" class="input-dropdown" :id="`stat-main-item-${name}`" menu-class="long-dropdown">
                           <b-dropdown-item @click="param.value=null">(なし)</b-dropdown-item>
                           <b-dropdown-item v-for="(c, i) in stat.validArmors()" :key="i" @click="param.value=c">{{ c.name }}</b-dropdown-item>
                         </b-dropdown>
-                        <b-dropdown v-if="param.type == 'helmet'" style="width: 14em" :text="param.value ? param.value.name : '(なし)'" size="sm" class="input-dropdown" id="stat-main-item-${name}" menu-class="long-dropdown">
+                        <b-dropdown v-if="param.type == 'helmet'" style="width: 14em" :text="param.value ? param.value.name : '(なし)'" size="sm" class="input-dropdown" :id="`stat-main-item-${name}`" menu-class="long-dropdown">
                           <b-dropdown-item @click="param.value=null">(なし)</b-dropdown-item>
                           <b-dropdown-item v-for="(c, i) in stat.validHelmets()" :key="i" @click="param.value=c">{{ c.name }}</b-dropdown-item>
                         </b-dropdown>
-                        <b-dropdown v-if="param.type == 'accessory'" style="width: 14em" :text="param.value ? param.value.name : '(なし)'" size="sm" class="input-dropdown" id="stat-main-item-${name}" menu-class="long-dropdown">
+                        <b-dropdown v-if="param.type == 'accessory'" style="width: 14em" :text="param.value ? param.value.name : '(なし)'" size="sm" class="input-dropdown" :id="`stat-main-item-${name}`" menu-class="long-dropdown">
                           <b-dropdown-item @click="param.value=null">(なし)</b-dropdown-item>
                           <b-dropdown-item v-for="(c, i) in stat.validAccessories()" :key="i" @click="param.value=c">{{ c.name }}</b-dropdown-item>
                         </b-dropdown>
@@ -464,11 +464,11 @@
                         <label style="width: 10em" :for="`stat-sup-item-${name}`">{{param.label}}</label>
                       </b-col>
                       <b-col>
-                        <b-dropdown v-if="param.type == 'amulet1'" style="width: 14em" :text="param.value ? param.value.name : '(なし)'" size="sm" class="input-dropdown" id="stat-sup-item-${name}" menu-class="long-dropdown">
+                        <b-dropdown v-if="param.type == 'amulet1'" style="width: 14em" :text="param.value ? param.value.name : '(なし)'" size="sm" class="input-dropdown" :id="`stat-sup-item-${name}`" menu-class="long-dropdown">
                           <b-dropdown-item @click="param.value=null">(なし)</b-dropdown-item>
                           <b-dropdown-item v-for="(c, i) in amulets1" :key="i" @click="param.value=c">{{ c.name }}</b-dropdown-item>
                         </b-dropdown>
-                        <b-dropdown v-if="param.type == 'amulet2'" style="width: 14em" :text="param.value ? param.value.name : '(なし)'" size="sm" class="input-dropdown" id="stat-sup-item-${name}" menu-class="long-dropdown">
+                        <b-dropdown v-if="param.type == 'amulet2'" style="width: 14em" :text="param.value ? param.value.name : '(なし)'" size="sm" class="input-dropdown" :id="`stat-sup-item-${name}`" menu-class="long-dropdown">
                           <b-dropdown-item @click="param.value=null">(なし)</b-dropdown-item>
                           <b-dropdown-item v-for="(c, i) in amulets2" :key="i" @click="param.value=c">{{ c.name }}</b-dropdown-item>
                         </b-dropdown>
@@ -700,7 +700,9 @@
 
 <script>
 import Navigation from './Navigation.vue'
-import jsonMainSkills from '../assets/main_skills.json'
+import jsonMainActive from '../assets/main_active.json'
+import jsonMainPassive from '../assets/main_passive.json'
+import jsonMainTalents from '../assets/main_talents.json'
 import jsonMainChrs from '../assets/main_characters.json'
 import jsonSupportSkills from '../assets/support_skills.json'
 import jsonSupportChrs from '../assets/support_characters.json'
@@ -1232,9 +1234,11 @@ export default {
   },
 
   created() {
-    this.mainSkills = structuredClone(jsonMainSkills);
-    this.supSkills = structuredClone(jsonSupportSkills);
+    this.mainActive = structuredClone(jsonMainActive);
+    this.mainPassive = structuredClone(jsonMainPassive);
+    this.mainTalents = structuredClone(jsonMainTalents);
     this.mainChrs = structuredClone(jsonMainChrs).filter(a => !a.hidden);
+    this.supSkills = structuredClone(jsonSupportSkills);
     this.supChrs = structuredClone(jsonSupportChrs).filter(a => !a.hidden);
     this.items = structuredClone(jsonItems).filter(a => !a.hidden || a.slot == "アミュレット");
 
@@ -1242,16 +1246,47 @@ export default {
       let chr = this.mainChrs[i];
       chr.index = i + 1;
     }
-
     for (let i = 0; i < this.supChrs.length; ++i) {
       let chr = this.supChrs[i];
       chr.index = i + 1;
     }
-
     for (let i = 0; i < this.items.length; ++i) {
       let item = this.items[i];
       item.index = i + 1;
       item.status = this.getItemStatus(item);
+    }
+
+    this.searchTable = new Map();
+    for (let s of [...this.mainActive, ...this.mainPassive, ...this.mainTalents, ...this.supSkills, ...this.items])
+      this.searchTable.set(s.name, s);
+
+    const grabSkill = function (name, chr) {
+      let skill = this.findItem(name);
+      if (!skill) {
+        console.error(`skill not found: ${name}`);
+        return null;
+      }
+      if (!skill.owners)
+        skill.owners = [];
+      if (skill.owners.length == 0 || skill.owners[skill.owners.length - 1] != chr)
+        skill.owners.push(chr);
+      if (!skill.desc && skill.descs)
+        skill.desc = skill.descs["Lv 6"];
+      return skill;
+    }.bind(this);
+
+    for (let chr of this.mainChrs) {
+      chr.talent = grabSkill(chr.talent, chr);
+      chr.skills = chr.skills.flatMap(name => grabSkill(name, chr));
+      if (chr.summon) {
+        for (let s of chr.summon) {
+          s.talent = grabSkill(s.talent, chr);
+          s.skills = s.skills.flatMap(name => grabSkill(name, chr));
+        }
+      }
+    }
+    for (let chr of this.supChrs) {
+      chr.skills = chr.skills.flatMap(name => grabSkill(name, chr));
     }
 
     this.mainChrs.sort((a, b) => b.date.localeCompare(a.date));
@@ -1729,40 +1764,6 @@ export default {
       }
     }.bind(this);
 
-    const setupSkills = function (skills, chrs) {
-      let skillMap = new Map();
-      for (let skill of skills) {
-        skillMap.set(skill.name, skill);
-      }
-      for (let chr of chrs) {
-        for (let i = 0; i < chr.skills.length; ++i) {
-          let skill = skillMap.get(chr.skills[i]);
-          if (!skill) {
-            console.log("!" + chr.skills[i]);
-            continue;
-          }
-
-          if (!skill.owners)
-            skill.owners = [];
-          if (skill.descs)
-            skill.desc = skill.descs["Lv 6"];
-          skill.owners.push(chr);
-          chr.skills[i] = skill;
-        }
-      }
-    };
-    setupSkills(this.mainSkills, this.mainChrs);
-    setupSkills(this.supSkills, this.supChrs);
-
-    this.mainTalents = [];
-    for (let chr of this.mainChrs) {
-      let talent = chr.talent;
-      if (talent.descs)
-        talent.desc = chr.talent.descs["Lv 6"];
-      talent.owners = [chr];
-      this.mainTalents.push(talent);
-    }
-
     this.parseDmgUrl(window.location.href);
     this.parseBPUrl(window.location.href);
     this.parseStatUrl(window.location.href);
@@ -1776,10 +1777,7 @@ export default {
 
   methods: {
     findItem(name) {
-      const r = this.mainSkills.find(a => a.name == name) ||
-        this.mainTalents.find(a => a.name == name) ||
-        this.supSkills.find(a => a.name == name) ||
-        this.items.find(a => a.name == name);
+      const r = this.searchTable.get(name);
       if (!r)
         console.log(`${name} not found`);
       return r;
