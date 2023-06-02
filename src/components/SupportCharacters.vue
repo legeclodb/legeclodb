@@ -288,7 +288,8 @@
 
 <script>
 import Navigation from './Navigation.vue'
-import jsonSkills from '../assets/support_skills.json'
+import jsonActive from '../assets/support_active.json'
+import jsonPassive from '../assets/support_passive.json'
 import jsonCharacters from '../assets/support_characters.json'
 import jsonConstants from '../assets/constants.json'
 import common from "./common";
@@ -302,7 +303,8 @@ export default {
 
   data() {
     return {
-      skills: jsonSkills,
+      active: jsonActive,
+      passive: jsonPassive,
       characters: jsonCharacters,
       constants: jsonConstants,
 
@@ -497,22 +499,24 @@ export default {
   methods: {
     setupDB() {
       // 外部 json 由来のデータへの変更はセッションをまたいでしまうので、deep copy しておく
+      this.active = structuredClone(this.active);
+      this.passive = structuredClone(this.passive);
       this.characters = structuredClone(this.characters).filter(a => !a.hidden);
-      this.skills = structuredClone(this.skills);
 
       this.predefinedMainTags.push("分類");
 
       let skillMap = new Map();
-      let skillId = 0;
-      for (let skill of this.skills) {
-        skill.recordType = 'skill';
-        skill.id = ++skillId;
-        skillMap.set(skill.name, skill);
+      for (let s of this.active)
+        s.skillType = "アクティブ";
+      for (let s of this.passive)
+        s.skillType = "パッシブ";
+      for (let s of [...this.active, ...this.passive]) {
+        skillMap.set(s.name, s);
+        this.appendBuffTags(s);
       }
 
       let chrId = 0;
       for (let chr of this.characters) {
-        chr.recordType = 'chr';
         chr.id = ++chrId;
         chr.classId = this.classes.findIndex(v => v == chr.class);
         chr.supportTypeId = this.supportTypes.findIndex(v => v == chr.supportType);
@@ -523,26 +527,23 @@ export default {
         for (let si = 0; si < chr.skills.length; ++si) {
           let skill = skillMap.get(chr.skills[si]);
           if (!skill) {
+            console.error(`skill not found: ${skill}`);
             // 開発中とりあえず表示させるための措置
-            skill = skillMap.get(this.skills[0].name);
+            skill = skillMap.get("大蛇薙");
           }
           skill.skillIndex = si; // パッシブ1 のみが複数キャラで共有され、現状全て si==1 なので問題ない
-
-          if (si == 0) {
-            const m = chr.name.match(/\((.+?)\)/);
-            if (m) {
-              // 不格好だがアクティブスキルにキャラ特性タグを追加…
-              skill.tags.push(`分類:${m[1]}`);
-            }
-          }
           chr.skills[si] = skill;
-          this.registerTags(skill.tags);
         }
 
-        let skillActive = chr.skills[0];
-        if (skillActive.descs) {
-          skillActive.current = "Lv 6";
-          this.$set(skillActive, 'desc', skillActive.descs[skillActive.current]);
+        let active = chr.skills[0];
+        const m = chr.name.match(/\((.+?)\)/);
+        if (m) {
+          // 不格好だがアクティブスキルにキャラ分類タグを追加
+          active.tags.push(`分類:${m[1]}`);
+        }
+        if (active.descs) {
+          active.current = "Lv 6";
+          this.$set(active, 'desc', active.descs[active.current]);
         }
       }
       this.stat.defaults = [
@@ -550,6 +551,11 @@ export default {
         ...Object.values(this.stat.boosts).map(a => a.value),
       ];
       this.updateStatus();
+
+      // 分類タグ追加があるので、このタイミングである必要がある
+      for (let [k, v] of skillMap) {
+        this.registerTags(v.tags);
+      }
 
       let handledTags = new Set();
       this.appendSet(handledTags, this.constants.tagsHidden);

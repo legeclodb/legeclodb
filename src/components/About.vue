@@ -170,7 +170,7 @@
               <b-container>
                 <b-form-row>
                   <b-col style="text-align:center">
-                    <h6>攻撃側：サポート <b-form-checkbox inline plain id="bp-support-enabled" v-model="dmg.supportEnabled" /></h6>
+                    <h6>攻撃側：サポート <b-form-checkbox inline plain v-model="dmg.supportEnabled" /></h6>
                   </b-col>
                 </b-form-row>
                 <b-form-row v-for="(param, name, index) in dmg.support" :key="index">
@@ -357,22 +357,22 @@
                     </div>
                     <b-form-row v-for="(param, name, index) in stat.mainItems" :key="index">
                       <b-col cols="4" style="text-align: right">
-                        <label style="width: 5em" :for="`stat-main-item-${name}`">{{param.label}}</label>
+                        <label style="width: 5em">{{param.label}}</label>
                       </b-col>
                       <b-col>
-                        <b-dropdown v-if="param.type == 'weapon'" style="width: 14em" :text="param.value ? param.value.name : '(なし)'" size="sm" class="input-dropdown" :id="`stat-main-item-${name}`" menu-class="long-dropdown">
+                        <b-dropdown v-if="param.type == 'weapon'" style="width: 14em" :text="param.value ? param.value.name : '(なし)'" size="sm" class="input-dropdown" menu-class="long-dropdown">
                           <b-dropdown-item @click="param.value=null">(なし)</b-dropdown-item>
                           <b-dropdown-item v-for="(c, i) in stat.validWeapons()" :key="i" @click="param.value=c">{{ c.name }}</b-dropdown-item>
                         </b-dropdown>
-                        <b-dropdown v-if="param.type == 'armor'" style="width: 14em" :text="param.value ? param.value.name : '(なし)'" size="sm" class="input-dropdown" :id="`stat-main-item-${name}`" menu-class="long-dropdown">
+                        <b-dropdown v-if="param.type == 'armor'" style="width: 14em" :text="param.value ? param.value.name : '(なし)'" size="sm" class="input-dropdown" menu-class="long-dropdown">
                           <b-dropdown-item @click="param.value=null">(なし)</b-dropdown-item>
                           <b-dropdown-item v-for="(c, i) in stat.validArmors()" :key="i" @click="param.value=c">{{ c.name }}</b-dropdown-item>
                         </b-dropdown>
-                        <b-dropdown v-if="param.type == 'helmet'" style="width: 14em" :text="param.value ? param.value.name : '(なし)'" size="sm" class="input-dropdown" :id="`stat-main-item-${name}`" menu-class="long-dropdown">
+                        <b-dropdown v-if="param.type == 'helmet'" style="width: 14em" :text="param.value ? param.value.name : '(なし)'" size="sm" class="input-dropdown" menu-class="long-dropdown">
                           <b-dropdown-item @click="param.value=null">(なし)</b-dropdown-item>
                           <b-dropdown-item v-for="(c, i) in stat.validHelmets()" :key="i" @click="param.value=c">{{ c.name }}</b-dropdown-item>
                         </b-dropdown>
-                        <b-dropdown v-if="param.type == 'accessory'" style="width: 14em" :text="param.value ? param.value.name : '(なし)'" size="sm" class="input-dropdown" :id="`stat-main-item-${name}`" menu-class="long-dropdown">
+                        <b-dropdown v-if="param.type == 'accessory'" style="width: 14em" :text="param.value ? param.value.name : '(なし)'" size="sm" class="input-dropdown" menu-class="long-dropdown">
                           <b-dropdown-item @click="param.value=null">(なし)</b-dropdown-item>
                           <b-dropdown-item v-for="(c, i) in stat.validAccessories()" :key="i" @click="param.value=c">{{ c.name }}</b-dropdown-item>
                         </b-dropdown>
@@ -461,14 +461,14 @@
                     </div>
                     <b-form-row v-for="(param, name, index) in stat.supportItems" :key="index">
                       <b-col style="text-align: right">
-                        <label style="width: 10em" :for="`stat-sup-item-${name}`">{{param.label}}</label>
+                        <label style="width: 10em">{{param.label}}</label>
                       </b-col>
                       <b-col>
-                        <b-dropdown v-if="param.type == 'amulet1'" style="width: 14em" :text="param.value ? param.value.name : '(なし)'" size="sm" class="input-dropdown" :id="`stat-sup-item-${name}`" menu-class="long-dropdown">
+                        <b-dropdown v-if="param.type == 'amulet1'" style="width: 14em" :text="param.value ? param.value.name : '(なし)'" size="sm" class="input-dropdown" menu-class="long-dropdown">
                           <b-dropdown-item @click="param.value=null">(なし)</b-dropdown-item>
                           <b-dropdown-item v-for="(c, i) in amulets1" :key="i" @click="param.value=c">{{ c.name }}</b-dropdown-item>
                         </b-dropdown>
-                        <b-dropdown v-if="param.type == 'amulet2'" style="width: 14em" :text="param.value ? param.value.name : '(なし)'" size="sm" class="input-dropdown" :id="`stat-sup-item-${name}`" menu-class="long-dropdown">
+                        <b-dropdown v-if="param.type == 'amulet2'" style="width: 14em" :text="param.value ? param.value.name : '(なし)'" size="sm" class="input-dropdown" menu-class="long-dropdown">
                           <b-dropdown-item @click="param.value=null">(なし)</b-dropdown-item>
                           <b-dropdown-item v-for="(c, i) in amulets2" :key="i" @click="param.value=c">{{ c.name }}</b-dropdown-item>
                         </b-dropdown>
@@ -584,7 +584,7 @@
               <b-container>
                 <b-form-row>
                   <b-col style="text-align:center">
-                    <h6>メインキャラ <b-form-checkbox inline plain id="bp-support-enabled" v-model="bp.mainEnabled" /></h6>
+                    <h6>メインキャラ <b-form-checkbox inline plain id="bp-main-enabled" v-model="bp.mainEnabled" /></h6>
                   </b-col>
                 </b-form-row>
                 <b-form-row v-for="(param, name, index) in bp.main" :key="index">
@@ -704,7 +704,8 @@ import jsonMainActive from '../assets/main_active.json'
 import jsonMainPassive from '../assets/main_passive.json'
 import jsonMainTalents from '../assets/main_talents.json'
 import jsonMainChrs from '../assets/main_characters.json'
-import jsonSupportSkills from '../assets/support_skills.json'
+import jsonSupportActive from '../assets/support_active.json'
+import jsonSupportPassive from '../assets/support_passive.json'
 import jsonSupportChrs from '../assets/support_characters.json'
 import jsonItems from '../assets/items.json'
 import common from "./common";
@@ -1238,7 +1239,8 @@ export default {
     this.mainPassive = structuredClone(jsonMainPassive);
     this.mainTalents = structuredClone(jsonMainTalents);
     this.mainChrs = structuredClone(jsonMainChrs).filter(a => !a.hidden);
-    this.supSkills = structuredClone(jsonSupportSkills);
+    this.supActive = structuredClone(jsonSupportActive);
+    this.supPassive = structuredClone(jsonSupportPassive);
     this.supChrs = structuredClone(jsonSupportChrs).filter(a => !a.hidden);
     this.items = structuredClone(jsonItems).filter(a => !a.hidden || a.slot == "アミュレット");
 
@@ -1257,7 +1259,7 @@ export default {
     }
 
     this.searchTable = new Map();
-    for (let s of [...this.mainActive, ...this.mainPassive, ...this.mainTalents, ...this.supSkills, ...this.items])
+    for (let s of [...this.mainActive, ...this.mainPassive, ...this.mainTalents, ...this.supActive, ...this.supPassive, ...this.items])
       this.searchTable.set(s.name, s);
 
     const grabSkill = function (name, chr) {

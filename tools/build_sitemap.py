@@ -29,13 +29,16 @@ def getLastCommitTime(path):
         return datetime.strptime(cd, "%a %b %d %H:%M:%S %Y %z")
 
 mainChrFiles = [
+    assets + 'main_active.json',
+    assets + 'main_passive.json',
+    assets + 'main_talents.json',
     assets + 'main_characters.json',
-    assets + 'main_skills.json',
     components + 'MainCharacters.vue'
 ]
 supportChrFiles = [
+    assets + 'support_active.json',
+    assets + 'support_passive.json',
     assets + 'support_characters.json',
-    assets + 'support_skills.json',
     components + 'SupportCharacters.vue'
 ]
 itemFiles = [

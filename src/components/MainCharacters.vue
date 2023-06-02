@@ -629,7 +629,6 @@ export default {
       for (let s of [...this.active, ...this.passive, ...this.talents]) {
         skillMap.set(s.name, s);
         this.appendBuffTags(s);
-        this.registerTags(s.tags);
       }
 
       let chrId = 0;
@@ -668,18 +667,19 @@ export default {
         }
 
         const m = chr.name.match(/\((.+?)\)/);
-        if (m) {
+        if (m)
           chr.talent.tags.push(`分類:${m[1]}`);
-        }
-
-        // ↑でタグを追加するのでこのタイミングである必要がある
-        this.registerTags(chr.talent.tags);
       }
       this.stat.defaults = [
         ...Object.values(this.stat.base).map(a => a.value),
         ...Object.values(this.stat.boosts).map(a => a.value),
       ];
       this.updateStatus();
+
+      // 分類タグ追加があるので、このタイミングである必要がある
+      for (let [k, v] of skillMap) {
+        this.registerTags(v.tags);
+      }
 
       // リストの上の方に出すため特別処理
       let handledTags = new Set();
