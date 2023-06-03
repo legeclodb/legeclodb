@@ -433,6 +433,7 @@ export default {
       sortTypes: [
         "実装日",
         "戦闘力",
+        "攻撃力",
         "HP",
         "アタック",
         "ディフェンス",
@@ -563,6 +564,7 @@ export default {
       const comparer = [
         (a, b) => b.date.localeCompare(a.date), // 実装日
         (a, b) => c(a.status[6], b.status[6]), // 戦闘力
+        (a, b) => c(a.attackPower, b.attackPower), // 攻撃力
         (a, b) => c(a.status[0], b.status[0]), // HP
         (a, b) => c(a.status[1], b.status[1]), // アタック
         (a, b) => c(a.status[2], b.status[2]), // ディフェンス
@@ -651,7 +653,10 @@ export default {
         chr.symbolId = this.symbols.findIndex(v => v == chr.symbol);
         chr.rarityId = this.rarities.findIndex(v => v == chr.rarity);
         chr.damageTypeId = this.damageTypes.findIndex(v => v == chr.damageType);
-        this.$set(chr, 'status', [])
+        this.$set(chr, 'status', [0, 0, 0, 0, 0, 0, 0]);
+        Object.defineProperty(chr, 'attackPower', {
+          get: chr.damageTypeId == 0 ? function () { return this.status[1]; } : function () { return this.status[3]; },
+        });
 
         chr.talent = grabSkill(chr.talent);
         if (chr.talent.descs) {

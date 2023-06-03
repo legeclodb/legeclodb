@@ -677,7 +677,7 @@ export default {
       return r;
     },
 
-    getSupportChrStatus(chr, level = 110, star = 6, master = 3, loveBonus = true, boost = [110, 120, 110, 120, 110, 0]) {
+    getSupportChrStatus(chr, level = 110, star = 6, master = 3, loveBonus = true, boost = [110, 120, 110, 120, 110, 0], amulet = null) {
       if (!chr || !chr.statusInit || !chr.statusLv || !chr.statusStar)
         return null;
 
@@ -702,10 +702,20 @@ export default {
         for (let i = 0; i < values.length; ++i)
           r[i] += values[i];
       }
+
+      // 端数の丸め方で誤差が出てしまうため、r *= 1.0 + boost + amulet ではダメ
+      let additional = [0, 0, 0, 0, 0, 0];
       if (boost) {
         for (let i = 0; i < boost.length; ++i)
-          r[i] = Math.round(r[i] * (1.0 + boost[i] * 0.01));
+          additional[i] += Math.round(r[i] * (boost[i] * 0.01));
       }
+      if (amulet) {
+        for (let i = 0; i < amulet.length; ++i)
+          additional[i] += Math.round(r[i] * (amulet[i] * 0.01));
+      }
+      for (let i = 0; i < additional.length; ++i)
+        r[i] += additional[i];
+
       return r;
     },
 

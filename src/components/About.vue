@@ -483,7 +483,7 @@
                         <label style="width: 10em" :for="`stat-sup-enchant-${name}P`">{{param.label}} (%)</label>
                       </b-col>
                       <b-col>
-                        <b-form-input style="width: 4em" :id="`stat-sup-enchant-${name}P`" v-model.number="param.valueP" size="sm" type="number" class="input-param" :min="0"></b-form-input>
+                        <b-form-input style="width: 4em" :id="`stat-sup-enchant-${name}P`" v-model.number="param.valueP" size="sm" type="number" class="input-param" :min="0" step="0.5"></b-form-input>
                       </b-col>
                     </b-form-row>
                   </b-container>
@@ -535,7 +535,11 @@
           割合バフや「能力値の n %を加算」系の効果は基礎ステータスに対する割合として機能します。戦闘力も基礎ステータスから算出されます。<br />
           基礎ステータスは以下のように算出されます。<br />
           <br />
-          <code>基礎ステータス＝(初期値＋レベル上昇値＋☆上昇値＋好感度ボーナス＋マスターボーナス)×(記憶の書＋強化ボード)×(割合エンチャントorアミュレットスキル)＋装備＋固定値エンチャント</code><br />
+          メインの場合：<br />
+          <code>基礎ステータス＝(初期値＋レベル上昇値＋☆上昇値＋好感度ボーナス＋マスターボーナス)×(記憶の書＋強化ボード)×(割合エンチャント)＋装備＋固定値エンチャント</code><br />
+          <br />
+          サポートの場合：<br />
+          <code>基礎ステータス＝(初期値＋レベル上昇値＋☆上昇値＋好感度ボーナス＋マスターボーナス)×(記憶の書＋強化ボード＋基礎ステータス系アミュレットスキル)＋装備</code><br />
           <br />
           <ul>
             <li>
@@ -1963,9 +1967,7 @@ export default {
       if (!chr)
         return empty;
 
-      let r = this.getSupportChrStatus(chr, sa.level, sa.star, sa.master, sa.loveBonus, sa.boosts);
-      for (let i = 0; i < sa.enchantsP.length; ++i)
-        r[i] = Math.round(r[i] * (1.0 + sa.enchantsP[i] * 0.01));
+      let r = this.getSupportChrStatus(chr, sa.level, sa.star, sa.master, sa.loveBonus, sa.boosts, sa.enchantsP);
 
       const items = sa.items.filter(a => a != null);
       for (const item of items) {
