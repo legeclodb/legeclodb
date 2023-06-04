@@ -1,6 +1,10 @@
+.vs
 .DS_Store
 node_modules
 /docs
+/obj
+/tmp
+/masterdata
 
 
 # local env files
@@ -19,5 +23,5 @@ pnpm-debug.log*
 *.suo
 *.ntvs*
 *.njsproj
-*.sln
 *.sw?
+*.esproj.user
