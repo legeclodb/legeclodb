@@ -532,7 +532,7 @@ export default {
         for (let si = 0; si < chr.skills.length; ++si) {
           let skill = skillMap.get(chr.skills[si]);
           if (!skill) {
-            console.error(`skill not found: ${skill}`);
+            console.error(`skill not found: ${chr.skills[si]}`);
             // 開発中とりあえず表示させるための措置
             skill = skillMap.get("大蛇薙");
           }
