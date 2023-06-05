@@ -1,0 +1,453 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+import os, json, jsbeautifier, csv, requests, datetime
+
+csvDir = "./masterdata/"
+projDir = "./"
+outDir = "./tmp/"
+
+updateDescs = False
+
+
+def download(url, dir="tmp"):
+    outpath = dir + os.path.basename(url)
+    if os.path.exists(outpath):
+        #print(f"skipped: {url}")
+        return False
+    with open(outpath, mode='wb') as f:
+        f.write(requests.get(url).content)
+        print("downloaded: " + url)
+        return True
+
+def downloadSkillIcon(name):
+    baseURL = "https://asset.legend-clover.net/pcr/ui/icon/skillicon/"
+    return download(f"{baseURL}{name}.png", "tmp/icon/")
+
+def downloadEquipIcon(name):
+    baseURL = "https://asset.legend-clover.net/pcr/ui/thumbnail/baggage/equip/"
+    return download(f"{baseURL}{name}.png", "tmp/icon/")
+
+
+
+def fileToCsvLines(path):
+    with open(path, 'r', encoding="utf-8") as file:
+        content = file.read()
+    line = ''
+    i = 0
+    quoted = False
+    while i < len(content):
+        if content[i] == '"':
+            quoted = not quoted
+        if quoted:
+            line += content[i]
+        else:
+            if content[i] == '\n':
+                yield line
+                line = ''
+            else:
+                line += content[i]
+        i += 1
+    if line:
+        yield line
+
+def csvToTable(csv):
+    header = None
+    ret = []
+    for i, line in enumerate(csv):
+        if i==1:
+           header = line
+        elif i>=2:
+            tmp = {}
+            for j, field in enumerate(line):
+                tmp[header[j]] = field
+            ret.append(tmp)
+    return ret
+
+def readCsv(path):
+    return csv.reader(fileToCsvLines(path))
+
+def readCsvTable(path):
+    return csvToTable(csv.reader(fileToCsvLines(path)))
+
+
+def find(ls, cond):
+    for a in ls:
+        if cond(a):
+            return a;
+    return None;
+
+def findByUid(ls, uid):
+    for a in ls:
+        if a["uid"] == uid:
+            return a
+    return None
+
+def findByName(ls, name):
+    for a in ls:
+        if a["name"] == name:
+            return a
+    return None
+
+def findByCid(csv, cid):
+    for a in csv:
+        if a["CharacterID"] == cid:
+            return a
+    return None
+
+def parseSkillCsv(csv, skillType = None):
+    ret = {}
+    for l in csv:
+        sid = l["SkillGroupId"]
+        idx = int(l["SkillSettingType"])
+        value = l["MainSettingValue"]
+        value2 = l["FirstSettingValue"]
+        if not sid in ret:
+            ret[sid] = {"id": sid}
+        r = ret[sid]
+        if idx == 2:
+            if skillType:
+                r["skillType"] = skillType
+            r["name"] = value
+        elif idx == 3:
+            r["icon"] = value.lower()
+        elif idx == 4:
+            if l["SecondSettingValue"]:
+                descs = [value2, l["SecondSettingValue"], l["ThirdSettingValue"], l["FourthSettingValue"], l["FifthSettingValue"], l["SixthSettingValue"]]
+                r["descs"] = list(map(lambda a: a.rstrip(), descs))
+            else:
+                r["desc"] = value2.rstrip()
+        elif idx == 7 and (value or value2):
+            r["rangeType"] = value
+            r["range"] = value2
+        elif idx == 8 and (value or value2):
+            r["areaType"] = value
+            r["area"] = value2
+        elif idx == 9 and value2:
+            r["ct"] = value2
+        elif idx == 10 and value2:
+            r["cost"] = value2
+    return ret
+
+
+
+chrCsv             = readCsvTable(f"{csvDir}/Character/Character.csv")
+initStatusCsv      = readCsvTable(f"{csvDir}/Character/CharacterInitStatus.csv")
+mainLvStatusCsv    = readCsvTable(f"{csvDir}/Character/MainCharacterLevelStatus.csv")
+mainStarStatusCsv  = readCsvTable(f"{csvDir}/Character/MainCharacterBreakLimitStatus.csv")
+supLvStatusCsv     = readCsvTable(f"{csvDir}/Character/SupportCharacterLevelStatus.csv")
+supStarStatusCsv   = readCsvTable(f"{csvDir}/Character/SupportCharacterBreakLimitStatus.csv")
+talentSkillCsv     = readCsvTable(f"{csvDir}/Character/CharacterTalentSkill.csv")
+supSkillCsv        = readCsvTable(f"{csvDir}/Character/SupportCharacterAbilitySkill.csv")
+skillSettingCsv    = readCsvTable(f"{csvDir}/TrainingBoard/SkillSetting.csv")
+itemListCsv        = readCsvTable(f"{csvDir}/Item/ItemList.csv")
+equipmentsCsv      = readCsvTable(f"{csvDir}/Item/EquipmentList.csv")
+amuletsCsv         = readCsvTable(f"{csvDir}/Item/AmuletList.csv")
+
+mainActiveCsv      = parseSkillCsv(readCsvTable(f"{csvDir}/Skill/SkillListActive.csv"), "アクティブ")
+mainPassiveCsv     = parseSkillCsv(readCsvTable(f"{csvDir}/Skill/SkillListPassive.csv"), "パッシブ")
+mainTalentCsv      = parseSkillCsv(readCsvTable(f"{csvDir}/Skill/SkillListTalent.csv" ), "タレント")
+supActiveCsv       = parseSkillCsv(readCsvTable(f"{csvDir}/Skill/SkillListSupportAbility.csv"), "アクティブ")
+supPassiveCsv      = parseSkillCsv(readCsvTable(f"{csvDir}/Skill/SkillListSupportPassive.csv"), "パッシブ")
+itemEffectCsv      = parseSkillCsv(readCsvTable(f"{csvDir}/Skill/SkillListEquipment.csv"))
+
+skillTable = {**mainActiveCsv, **mainPassiveCsv, **mainTalentCsv, **supActiveCsv, **supPassiveCsv, **itemEffectCsv}
+itemTable = equipmentsCsv + amuletsCsv
+
+imageTable = {}
+
+
+classTable = [None, "ソルジャー", "ランサー", "ライダー", "セイント", "ソーサラー", "シューター", "エアリアル", "アサシン"]
+symbolTable = [None, "ゼニス", "オリジン", "ナディア"]
+supportTypeTable = [None, "支援", "攻撃", "妨害"]
+rarityTable = [None, "N", "R", "SR", "SSR"]
+attackTypeTable = [None, "アタック", "マジック"]
+
+rangeTypeTable = [None, "自身", "射程", "全体"]
+areaTypeTable = [None, "単体", "全体", "範囲", "直線"]
+
+equipTypeTable = [None, "武器", "鎧", "兜", "アクセサリ"]
+amuletTypeTable = [None, "月", "太陽"]
+
+
+def processCharacters(chrJson, activeJson, passiveJson, talentJson = None):
+    mainOrSupport = 0
+    chrSkills = {}
+
+    for ch in chrJson:
+        cid = ch["uid"]
+
+        l = findByCid(chrCsv, cid)
+        ch["class"] = classTable[int(l["SoldierType"])]
+        if l["ForceType"]:
+            ch["symbol"] = symbolTable[int(l["ForceType"])]
+            mainOrSupport = 1
+        if l["SupportType"] != "0":
+            ch["supportType"] = supportTypeTable[int(l["SupportType"])]
+            mainOrSupport = 2
+        ch["rarity"] = rarityTable[min(int(l["Rarity"]), 4)]
+        ch["damageType"] = attackTypeTable[int(l["CharacterAttackType"])]
+        ch["range"] = int(l["AttackRange"])
+        chrSkills[cid] = []
+        if mainOrSupport == 1:
+            ch["move"] = int(l["MovingValue"])
+            talent = skillTable[ findByCid(talentSkillCsv, cid)["TalentSkillGroupId"] ]
+            talent["cid"] = cid
+            chrSkills[cid].append(talent)
+            chrSkills[cid].append(skillTable[l["InitialSkillId"]])
+        elif mainOrSupport == 2:
+            active = skillTable[ findByCid(supSkillCsv, cid)["AbilitySkillGroupId"] ]
+            active["cid"] = cid
+            chrSkills[cid].append(active)
+
+        l = findByCid(initStatusCsv, cid)
+        ch["statusInit"] = list(map(lambda s: int(s), [l["HP"], l["ATK"], l["DEF"], l["MATK"], l["MDEF"], l["DEX"]]))
+
+    lvCsv = None
+    starCsv = None
+    if mainOrSupport == 1:
+        lvCsv = mainLvStatusCsv
+        starCsv = mainStarStatusCsv
+    elif mainOrSupport == 2:
+        lvCsv = supLvStatusCsv
+        starCsv = supStarStatusCsv
+
+    for ch in chrJson:
+        cid = ch["uid"]
+        l = findByCid(lvCsv, cid)
+        ch["statusLv"] = list(map(lambda s: float(s), [l["UpHP"], l["UpATK"], l["UpDEF"], l["UpMATK"], l["UpMDEF"], l["UpDEX"]]))
+        l = findByCid(starCsv, cid)
+        ch["statusStar"] = list(map(lambda s: float(s), [l["UpHP"], l["UpATK"], l["UpDEF"], l["UpMATK"], l["UpMDEF"], l["UpDEX"]]))
+
+    for cid in chrSkills:
+        for l in skillSettingCsv:
+            if l["CharacterID"] == cid:
+                sid = l["SkillGroupID"]
+                skill = skillTable.get(sid)
+                if skill:
+                    chrSkills[cid].append(skill)
+
+    if mainOrSupport == 1:
+        for ch in chrJson:
+            cid = ch["uid"]
+            skills = list(map(lambda a: a["name"], chrSkills[cid]))
+            ch["talent"] = skills[0]
+            ch["skills"] = skills[1:7]
+    elif mainOrSupport == 2:
+        for ch in chrJson:
+            cid = ch["uid"]
+            skills = list(map(lambda a: a["name"], chrSkills[cid]))
+            ch["skills"] = skills
+
+
+    def getBaseSkillLevel(cid):
+        l = findByCid(chrCsv, cid)
+        return int(l["Rarity"]) - 2
+
+    skillIds = set()
+    for cid in chrSkills:
+        for skill in chrSkills[cid]:
+            skillIds.add(skill["id"])
+    for sid in skillIds:
+        skill = skillTable[sid]
+        skillType = skill["skillType"]
+        name = skill["name"]
+
+        downloadSkillIcon(skill["icon"])
+        if not name in imageTable:
+            imageTable[name] = f"{skill['icon']}.png"
+
+        if skillType == "アクティブ":
+            js = findByName(activeJson, name);
+            if not js:
+                js = {"name": name}
+                activeJson.append(js);
+
+            if mainOrSupport == 1:
+                if updateDescs or not "desc" in js:
+                    js["desc"] = skill["desc"]
+            elif mainOrSupport == 2:
+                descs = None
+                if updateDescs or not "descs" in js:
+                    if "descs" in js:
+                        descs = js["descs"]
+                        descs.clear()
+                    else:
+                        descs = {}
+                        js["descs"] = descs
+                    baseSkillLevel = getBaseSkillLevel(skill["cid"])
+                    for (lv, desc) in enumerate(skill["descs"]):
+                        if lv >= baseSkillLevel:
+                            descs[f"Lv {lv + 1}"] = desc
+
+            if "ct" in skill:
+                ct = int(skill["ct"])
+                js["ct"] = ct if ct != 0 else "-"
+            if True:
+                areaType = int(skill["areaType"])
+                if areaType == 1:
+                    js["area"] = "単体"
+                elif areaType == 2:
+                    js["area"] = "全体"
+                elif areaType == 3:
+                    js["area"] = int(skill["area"])
+                elif areaType == 4:
+                    js["area"] = f"直線{skill['area']}マス"
+            if True:
+                rangeType = int(skill["rangeType"])
+                if rangeType == 1:
+                    js["range"] = "自ユニット"
+                elif rangeType == 2:
+                    js["range"] = int(skill["range"])
+                elif rangeType == 3:
+                    js["range"] = "全体"
+            if "cost" in skill and mainOrSupport == 1:
+                js["cost"] = int(skill["cost"])
+            if not "tags" in js:
+                js["tags"] = []
+        elif skillType == "パッシブ":
+            js = findByName(passiveJson, name);
+            if not js:
+                js = {"name": name}
+                passiveJson.append(js);
+            if updateDescs or not "desc" in js:
+                js["desc"] = skill["desc"]
+            if "cost" in skill and mainOrSupport == 1:
+                js["cost"] = int(skill["cost"])
+            if not "tags" in js:
+                js["tags"] = []
+        elif skillType == "タレント":
+            js = findByName(talentJson, name);
+            if not js:
+                js = {"name": name}
+                talentJson.append(js);
+            if updateDescs or not "descs" in js:
+                descs = None
+                if "descs" in js:
+                    descs = js["descs"]
+                    descs.clear()
+                else:
+                    descs = {}
+                    js["descs"] = descs
+                for (lv, desc) in enumerate(skill["descs"]):
+                    if desc=="未使用" or desc=="使用しない":
+                        continue
+                    descs[f"Lv {lv + 1}"] = desc
+            if not "tags" in js:
+                js["tags"] = []
+
+
+def processItems(itemJson):
+    for item in itemJson:
+        iid = item["uid"]
+
+        il = find(itemListCsv, lambda a: a["ItemId"] == iid)
+        el = find(itemTable, lambda a: a["ItemId"] == iid)
+        if not il or not el:
+            print(f"item not found : {iid}")
+            continue
+
+        name = il["Name"]
+        if not "name" in item:
+            item["name"] = name
+            item["date"] = datetime.datetime.now().strftime("%Y/%m/%d")
+
+        resourceId = il["ResourceId"].lower()
+        downloadEquipIcon(resourceId)
+        if not name in imageTable:
+            imageTable[name] = f"{resourceId}.png"
+
+        if "PartsType" in el:
+            item["slot"] = equipTypeTable[int(el["PartsType"])]
+        if "AmuletType" in el:
+            item["amuletType"] = amuletTypeTable[int(el["AmuletType"])]
+        item["rarity"] = rarityTable[int(il["Rarity"])]
+
+        if "SoldierTypeCondition" in el:
+            classes = el["SoldierTypeCondition"]
+            if classes:
+                item["classes"] = list(map(lambda i: classTable[int(i)] , classes.split("\n")))
+
+        if "SkillGroupId" in el:
+            sid = el["SkillGroupId"]
+            skill = skillTable.get(sid)
+            if updateDescs or not "desc" in item:
+                item["desc"] = skill["descs"][4]
+
+        item["statusInit"] = [0, 0, 0, 0, 0, 0]
+        item["statusLv"] = [0, 0, 0, 0, 0, 0]
+        for sv in [
+            [int(el["StatusType1"]) - 1, float(el["InitStatus1"]), float(el["UpStatus1"])],
+            [int(el["StatusType2"]) - 1, float(el["InitStatus2"]), float(el["UpStatus2"])] ]:
+            item["statusInit"][sv[0]] = sv[1]
+            item["statusLv"][sv[0]] = sv[2]
+
+        if not "tags" in item:
+            item["tags"] = []
+
+        #for f in ["EquipmentType", "SoldierTypeCondition", "CharacterCondition", "AmuletType", "AbilityGroupId1", "AbilityGroupId2"]:
+        #    if f in el:
+        #        item[f] = el[f]
+
+
+def readJson(path):
+    return json.load(open(path, encoding="utf-8"))
+
+def writeJson(path, obj):
+    with open(path, 'w', encoding="utf-8") as f:
+        options = jsbeautifier.default_options()
+        options.indent_size = 2
+        f.write(jsbeautifier.beautify(json.dumps(obj, ensure_ascii=False), options))
+
+def dumpSkillData():
+    with open(f"{outDir}/main_active_raw.json", 'w', encoding="utf-8") as f:
+        json.dump(mainActiveCsv, f, indent=2, ensure_ascii=False)
+    with open(f"{outDir}/main_passive_raw.json", 'w', encoding="utf-8") as f:
+        json.dump(mainPassiveCsv, f, indent=2, ensure_ascii=False)
+    with open(f"{outDir}/main_talent_raw.json", 'w', encoding="utf-8") as f:
+        json.dump(mainTalentCsv, f, indent=2, ensure_ascii=False)
+    with open(f"{outDir}/support_active_raw.json", 'w', encoding="utf-8") as f:
+        json.dump(supActiveCsv, f, indent=2, ensure_ascii=False)
+    with open(f"{outDir}/support_passive_raw.json", 'w', encoding="utf-8") as f:
+        json.dump(supPassiveCsv, f, indent=2, ensure_ascii=False)
+    with open(f"{outDir}/item_skills.json", 'w', encoding="utf-8") as f:
+        json.dump(itemEffectCsv, f, indent=2, ensure_ascii=False)
+
+
+def proceccMainChr():
+    chr = readJson(f"{projDir}/src/assets/main_characters.json")
+    active = readJson(f"{projDir}/src/assets/main_active.json")
+    passive = readJson(f"{projDir}/src/assets/main_passive.json")
+    talent = readJson(f"{projDir}/src/assets/main_talents.json")
+    processCharacters(chr, active, passive, talent)
+    writeJson(f"{outDir}/main_characters.json", chr)
+    writeJson(f"{outDir}/main_active.json", active)
+    writeJson(f"{outDir}/main_passive.json", passive)
+    writeJson(f"{outDir}/main_talents.json", talent)
+
+
+def processSupChr():
+    chr = readJson(f"{projDir}/src/assets/support_characters.json")
+    active = readJson(f"{projDir}/src/assets/support_active.json")
+    passive = readJson(f"{projDir}/src/assets/support_passive.json")
+    processCharacters(chr, active, passive)
+    writeJson(f"{outDir}/support_characters.json", chr)
+    writeJson(f"{outDir}/support_active.json", active)
+    writeJson(f"{outDir}/support_passive.json", passive)
+
+
+def processEquipments():
+    items = readJson(f"{projDir}/src/assets/items.json")
+    processItems(items)
+    writeJson(f"{outDir}/items.json", items)
+
+        
+
+os.makedirs("tmp/icon", exist_ok = True)
+imageTable = readJson(f"{projDir}/src/assets/image_table.json")
+
+dumpSkillData()
+proceccMainChr()
+processSupChr()
+processEquipments()
+
+writeJson(f"{outDir}/image_table.json", imageTable)
