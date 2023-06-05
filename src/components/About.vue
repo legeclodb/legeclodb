@@ -132,7 +132,7 @@
           <span class="note">例: <b-link :ref="po">天蝎の天鎧</b-link> のダメージ耐性はメインのみが対象、<b-link :ref="po">乙女の天衣</b-link> のダメージ耐性はサポートも対象。</span><br />
           同様に、アミュレットの効果はサポートのみが対象となります。シールドはサポートが倒れている場合発動しません。<br />
           <br />
-          アンドロメダの<b-link :ref="po">神に勝る美</b-link>やオリオンの<b-link :ref="po">俺の女に手は出させない</b-link>は、HP が 75% ちょうどの場合、以上以下両方の効果が発動します。<br />
+          アンドロメダの<b-link :ref="po">神に勝る美</b-link>やオリオンの<b-link :ref="po">オレの女に手は出させない</b-link>は、HP が 75% ちょうどの場合、以上以下両方の効果が発動します。<br />
           <span class="note"><b-link :ref="po">天秤の天帽</b-link>などの自傷効果で 25% 減らすことができるが、最大 HP が 4 で割り切れる数でないと 76% になってしまう模様。</span><br />
         </p>
 
@@ -824,7 +824,7 @@ export default {
           character: {
             label: "キャラ",
             type: "character",
-            value: 0,
+            value: null,
           },
           star: {
             label: "⭐",
@@ -944,7 +944,7 @@ export default {
           character: {
             label: "キャラ",
             type: "character",
-            value: 0,
+            value: null,
           },
           star: {
             label: "⭐",
