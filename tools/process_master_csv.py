@@ -94,6 +94,7 @@ def findByCid(csv, cid):
 
 
 def cleanupDesc(desc):
+    # マスターデータの説明文の誤字や表記揺れを矯正
     desc = desc.rstrip()
     for pattern in [
         ['％', '%'],
@@ -102,18 +103,15 @@ def cleanupDesc(desc):
         ['\(/', '('],
         ['クームタイム', 'クールタイム'],
         ['%\n行動終了時', '%。\n行動終了時'],
+        ['\)敵ユニット', ')。敵ユニット'],
         [r'。 +', '。'],
     ]:
         desc = re.sub(pattern[0], pattern[1], desc)
     return desc
 
-def removeMarkup(desc):
-    if not desc:
-        return ""
-    return re.sub(r'\[[^]]+\]', r'', desc)
-
 def compareDesc(desc1, desc2):
-    return removeMarkup(desc1) == desc2
+    # [b] などのマークアップを除去した内容と比較
+    return re.sub(r'\[[^]]+\]', r'', desc1) == desc2
 
 def updateDesc(dst, desc):
     if "desc" in dst:
@@ -124,11 +122,23 @@ def updateDesc(dst, desc):
 def updateDescs(dst, descs):
     if "descs" in dst:
         eq = True
+        prev = ""
+        vals = []
         for k in descs:
             if not compareDesc(dst["descs"][k], descs[k]):
-                #print(f"{removeMarkup(dst['descs'][k])} : {descs[k]}")
+                #print(f"{dst['descs'][k]} : {descs[k]}")
                 eq = False
                 break
+
+            # マークアップされていない変数を探して通知
+            def cb(mo):
+                vals.append(mo.group(2))
+                return "[variable]"
+            desc = re.sub(r'\[([^]]+)\](.+?)\[/\1\]', cb, dst['descs'][k])
+            if prev and desc != prev:
+                if vals[-2] != "100%":
+                    print(f"!! {desc} {vals[-2]} : {vals[-1]}")
+            prev = desc
         if eq:
             return
     dst["descs"] = descs
