@@ -1867,7 +1867,7 @@
     "uid": "Item_Equipment_SSR_0093",
     "name": "フェアリーチョーカー",
     "date": "2021/10/26",
-    "desc": "最大HP+15%。 自ユニットにアクティブによる「回復不可/アクティブ強化不可」無効を付与する。",
+    "desc": "最大HP+15%。自ユニットにアクティブによる「回復不可/アクティブ強化不可」無効を付与する。",
     "slot": "アクセサリ",
     "rarity": "SSR",
     "statusInit": [ 55.0, 0, 8.0, 0, 0, 0 ],
@@ -3293,8 +3293,9 @@
     "slot": "アミュレット",
     "amuletType": "月",
     "rarity": "SSR",
-    "statusInit": [ 68.75, 15, 0, 0, 0, 0 ],
-    "statusLv": [ 12.5, 1.88, 0, 0, 0, 0 ]
+    "statusInit": [ 68.75, 15.0, 0, 0, 0, 0 ],
+    "statusLv": [ 12.5, 1.88, 0, 0, 0, 0 ],
+    "tags": []
   },
   {
     "uid": "Item_Amulet_SSR_0002",
@@ -3304,8 +3305,9 @@
     "slot": "アミュレット",
     "amuletType": "月",
     "rarity": "SSR",
-    "statusInit": [ 68.75, 0, 0, 15, 0, 0 ],
-    "statusLv": [ 12.5, 0, 0, 1.88, 0, 0 ]
+    "statusInit": [ 68.75, 0, 0, 15.0, 0, 0 ],
+    "statusLv": [ 12.5, 0, 0, 1.88, 0, 0 ],
+    "tags": []
   },
   {
     "uid": "Item_Amulet_SR_0001",
@@ -3314,8 +3316,9 @@
     "slot": "アミュレット",
     "amuletType": "月",
     "rarity": "SR",
-    "statusInit": [ 50, 10, 0, 0, 0, 0 ],
-    "statusLv": [ 8.75, 1.56, 0, 0, 0, 0 ]
+    "statusInit": [ 50.0, 10.0, 0, 0, 0, 0 ],
+    "statusLv": [ 8.75, 1.56, 0, 0, 0, 0 ],
+    "tags": []
   },
   {
     "uid": "Item_Amulet_SR_0002",
@@ -3325,8 +3328,9 @@
     "slot": "アミュレット",
     "amuletType": "月",
     "rarity": "SR",
-    "statusInit": [ 50, 0, 0, 10, 0, 0 ],
-    "statusLv": [ 8.75, 0, 0, 1.56, 0, 0 ]
+    "statusInit": [ 50.0, 0, 0, 10.0, 0, 0 ],
+    "statusLv": [ 8.75, 0, 0, 1.56, 0, 0 ],
+    "tags": []
   },
   {
     "uid": "Item_Amulet_SSR_0003",
@@ -3336,8 +3340,9 @@
     "slot": "アミュレット",
     "amuletType": "太陽",
     "rarity": "SSR",
-    "statusInit": [ 135, 0, 6, 0, 0, 0 ],
-    "statusLv": [ 22.3, 0, 0.54, 0, 0, 0 ]
+    "statusInit": [ 135.0, 0, 6.0, 0, 0, 0 ],
+    "statusLv": [ 22.3, 0, 0.54, 0, 0, 0 ],
+    "tags": []
   },
   {
     "uid": "Item_Amulet_SSR_0004",
@@ -3347,8 +3352,9 @@
     "slot": "アミュレット",
     "amuletType": "太陽",
     "rarity": "SSR",
-    "statusInit": [ 135, 0, 0, 0, 6, 0 ],
-    "statusLv": [ 22.3, 0, 0, 0, 0.54, 0 ]
+    "statusInit": [ 135.0, 0, 0, 0, 6.0, 0 ],
+    "statusLv": [ 22.3, 0, 0, 0, 0.54, 0 ],
+    "tags": []
   },
   {
     "uid": "Item_Amulet_SR_0003",
@@ -3358,8 +3364,9 @@
     "slot": "アミュレット",
     "amuletType": "太陽",
     "rarity": "SR",
-    "statusInit": [ 98, 0, 4, 0, 0, 0 ],
-    "statusLv": [ 17.75, 0, 0.45, 0, 0, 0 ]
+    "statusInit": [ 98.0, 0, 4.0, 0, 0, 0 ],
+    "statusLv": [ 17.75, 0, 0.45, 0, 0, 0 ],
+    "tags": []
   },
   {
     "uid": "Item_Amulet_SR_0004",
@@ -3369,8 +3376,9 @@
     "slot": "アミュレット",
     "amuletType": "太陽",
     "rarity": "SR",
-    "statusInit": [ 98, 0, 0, 0, 4, 0 ],
-    "statusLv": [ 17.75, 0, 0, 0, 0.45, 0 ]
+    "statusInit": [ 98.0, 0, 0, 0, 4.0, 0 ],
+    "statusLv": [ 17.75, 0, 0, 0, 0.45, 0 ],
+    "tags": []
   },
   {
     "uid": "Item_Equipment_SSR_0174",

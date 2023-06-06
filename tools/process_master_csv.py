@@ -1,12 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import os, json, jsbeautifier, csv, requests, datetime
+import os, json, jsbeautifier, csv, requests, datetime, re
 
 csvDir = "./masterdata/"
 projDir = "./"
 outDir = "./tmp/"
-
-updateDescs = False
 
 
 def download(url, dir="tmp"):
@@ -94,6 +92,48 @@ def findByCid(csv, cid):
             return a
     return None
 
+
+def cleanupDesc(desc):
+    desc = desc.rstrip()
+    for pattern in [
+        ['％', '%'],
+        ['ｰ', '-'],
+        ['\)\)', ')'],
+        ['\(/', '('],
+        ['クームタイム', 'クールタイム'],
+        ['%\n行動終了時', '%。\n行動終了時'],
+        [r'。 +', '。'],
+    ]:
+        desc = re.sub(pattern[0], pattern[1], desc)
+    return desc
+
+def removeMarkup(desc):
+    if not desc:
+        return ""
+    return re.sub(r'\[[^]]+\]', r'', desc)
+
+def compareDesc(desc1, desc2):
+    return removeMarkup(desc1) == desc2
+
+def updateDesc(dst, desc):
+    if "desc" in dst:
+        if compareDesc(dst["desc"], desc):
+            return
+    dst["desc"] = desc
+
+def updateDescs(dst, descs):
+    if "descs" in dst:
+        eq = True
+        for k in descs:
+            if not compareDesc(dst["descs"][k], descs[k]):
+                #print(f"{removeMarkup(dst['descs'][k])} : {descs[k]}")
+                eq = False
+                break
+        if eq:
+            return
+    dst["descs"] = descs
+
+
 def parseSkillCsv(csv, skillType = None):
     ret = {}
     for l in csv:
@@ -113,9 +153,9 @@ def parseSkillCsv(csv, skillType = None):
         elif idx == 4:
             if l["SecondSettingValue"]:
                 descs = [value2, l["SecondSettingValue"], l["ThirdSettingValue"], l["FourthSettingValue"], l["FifthSettingValue"], l["SixthSettingValue"]]
-                r["descs"] = list(map(lambda a: a.rstrip(), descs))
+                r["descs"] = list(map(lambda a: cleanupDesc(a), descs))
             else:
-                r["desc"] = value2.rstrip()
+                r["desc"] = cleanupDesc(value2)
         elif idx == 7 and (value or value2):
             r["rangeType"] = value
             r["range"] = value2
@@ -263,21 +303,14 @@ def processCharacters(chrJson, activeJson, passiveJson, talentJson = None):
                 activeJson.append(js);
 
             if mainOrSupport == 1:
-                if updateDescs or not "desc" in js:
-                    js["desc"] = skill["desc"]
+                updateDesc(js, skill["desc"])
             elif mainOrSupport == 2:
-                descs = None
-                if updateDescs or not "descs" in js:
-                    if "descs" in js:
-                        descs = js["descs"]
-                        descs.clear()
-                    else:
-                        descs = {}
-                        js["descs"] = descs
-                    baseSkillLevel = getBaseSkillLevel(skill["cid"])
-                    for (lv, desc) in enumerate(skill["descs"]):
-                        if lv >= baseSkillLevel:
-                            descs[f"Lv {lv + 1}"] = desc
+                descs = {}
+                baseSkillLevel = getBaseSkillLevel(skill["cid"])
+                for (lv, desc) in enumerate(skill["descs"]):
+                    if lv >= baseSkillLevel:
+                        descs[f"Lv {lv + 1}"] = desc
+                updateDescs(js, descs)
 
             if "ct" in skill:
                 ct = int(skill["ct"])
@@ -309,8 +342,7 @@ def processCharacters(chrJson, activeJson, passiveJson, talentJson = None):
             if not js:
                 js = {"name": name}
                 passiveJson.append(js);
-            if updateDescs or not "desc" in js:
-                js["desc"] = skill["desc"]
+            updateDesc(js, skill["desc"])
             if "cost" in skill and mainOrSupport == 1:
                 js["cost"] = int(skill["cost"])
             if not "tags" in js:
@@ -320,18 +352,14 @@ def processCharacters(chrJson, activeJson, passiveJson, talentJson = None):
             if not js:
                 js = {"name": name}
                 talentJson.append(js);
-            if updateDescs or not "descs" in js:
-                descs = None
-                if "descs" in js:
-                    descs = js["descs"]
-                    descs.clear()
-                else:
-                    descs = {}
-                    js["descs"] = descs
-                for (lv, desc) in enumerate(skill["descs"]):
-                    if desc=="未使用" or desc=="使用しない":
-                        continue
-                    descs[f"Lv {lv + 1}"] = desc
+
+            descs = {}
+            for (lv, desc) in enumerate(skill["descs"]):
+                if desc=="未使用" or desc=="使用しない":
+                    continue
+                descs[f"Lv {lv + 1}"] = desc
+            updateDescs(js, descs)
+
             if not "tags" in js:
                 js["tags"] = []
 
@@ -370,8 +398,7 @@ def processItems(itemJson):
         if "SkillGroupId" in el:
             sid = el["SkillGroupId"]
             skill = skillTable.get(sid)
-            if updateDescs or not "desc" in item:
-                item["desc"] = skill["descs"][4]
+            updateDesc(item, skill["descs"][4])
 
         item["statusInit"] = [0, 0, 0, 0, 0, 0]
         item["statusLv"] = [0, 0, 0, 0, 0, 0]
