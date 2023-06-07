@@ -7,6 +7,54 @@ projDir = "./"
 outDir = "./tmp/"
 
 
+classTable = [None, "ソルジャー", "ランサー", "ライダー", "セイント", "ソーサラー", "シューター", "エアリアル", "アサシン"]
+symbolTable = [None, "ゼニス", "オリジン", "ナディア"]
+supportTypeTable = [None, "支援", "攻撃", "妨害"]
+rarityTable = [None, "N", "R", "SR", "SSR"]
+attackTypeTable = [None, "アタック", "マジック"]
+
+rangeTypeTable = [None, "自身", "射程", "全体"]
+areaTypeTable = [None, "単体", "全体", "範囲", "直線"]
+
+equipTypeTable = [None, "武器", "鎧", "兜", "アクセサリ"]
+amuletTypeTable = [None, "月", "太陽"]
+
+statusTypeTable = {
+    0: None,
+    1: "HP",
+    2: "アタック",
+    3: "ディフェンス",
+    4: "マジック",
+    5: "レジスト",
+    6: "テクニック",
+    7: "クリティカル率",
+    8: "クリティカル率耐性",
+    9: "与ダメージ",
+    10: "与ダメージ(物理)",
+    11: "与ダメージ(魔法)",
+    12: "クリティカルダメージ倍率",
+    13: "ダメージ耐性",
+    14: "ダメージ耐性(物理)",
+    15: "ダメージ耐性(魔法)",
+    16: "治療効果",
+    17: "射程(通常攻撃)",
+    18: "移動",
+    19: "与ダメージ(範囲スキル)",
+    20: "ランダムデバフ？",
+    21: "ダメージ耐性(範囲)",
+    22: "射程(スキル)",
+    23: "与ダメージ(スキル)",
+    24: "被治療効果",
+    25: "ディフェンス無視",
+    26: "レジスト無視",
+    27: "???",
+    28: "範囲",
+    29: "???",
+    30: "???",
+    31: "与ダメージ(通常攻撃)",
+}
+
+
 def download(url, dir="tmp"):
     outpath = dir + os.path.basename(url)
     if os.path.exists(outpath):
@@ -26,6 +74,22 @@ def downloadEquipIcon(name):
     return download(f"{baseURL}{name}.png", "tmp/icon/")
 
 
+def insertAfter(dic, posKey, additional):
+    keysToDel = {}
+    partitioning = False
+    for k in dic:
+        if partitioning:
+            keysToDel.append(k)
+        elif k == posKey:
+            partitioning = True
+    partitioned = {}
+    for k in keysToDel:
+        partitioned[k] = dic.pop(k)
+    for k in additional:
+        dic[k] = additional[k]
+    for k in partitioned:
+        dic[k] = partitioned[k]
+    return dic
 
 def fileToCsvLines(path):
     with open(path, 'r', encoding="utf-8") as file:
@@ -143,14 +207,28 @@ def updateDescs(dst, descs):
             return
     dst["descs"] = descs
 
+def getOrAdd(dic, key, val):
+    ret = dic.get(key)
+    if not ret:
+        ret = dic[key] = val
+    return ret
 
 def parseSkillCsv(csv, skillType = None):
     ret = {}
     for l in csv:
         sid = l["SkillGroupId"]
         idx = int(l["SkillSettingType"])
+
         value = l["MainSettingValue"]
-        value2 = l["FirstSettingValue"]
+        values = list(map(lambda a: l[a],  ["FirstSettingValue", "SecondSettingValue", "ThirdSettingValue", "FourthSettingValue", "FifthSettingValue", "SixthSettingValue"]))
+        value1 = values[0]
+
+        def getEffectRecord():
+            efgid = int(l["SkillEffectGroupingId"])
+            effects = getOrAdd(r, "effects", {})
+            ret = getOrAdd(effects, efgid, {})
+            return ret;
+
         if not sid in ret:
             ret[sid] = {"id": sid}
         r = ret[sid]
@@ -162,20 +240,40 @@ def parseSkillCsv(csv, skillType = None):
             r["icon"] = value.lower()
         elif idx == 4:
             if l["SecondSettingValue"]:
-                descs = [value2, l["SecondSettingValue"], l["ThirdSettingValue"], l["FourthSettingValue"], l["FifthSettingValue"], l["SixthSettingValue"]]
-                r["descs"] = list(map(lambda a: cleanupDesc(a), descs))
+                r["descs"] = list(map(lambda a: cleanupDesc(a), values))
             else:
-                r["desc"] = cleanupDesc(value2)
-        elif idx == 7 and (value or value2):
+                r["desc"] = cleanupDesc(value1)
+        elif idx == 7 and (value or value1):
             r["rangeType"] = value
-            r["range"] = value2
-        elif idx == 8 and (value or value2):
+            r["range"] = value1
+        elif idx == 8 and (value or value1):
             r["areaType"] = value
-            r["area"] = value2
-        elif idx == 9 and value2:
-            r["ct"] = value2
-        elif idx == 10 and value2:
-            r["cost"] = value2
+            r["area"] = value1
+        elif idx == 9 and value1:
+            r["ct"] = value1
+        elif idx == 10 and value1:
+            r["cost"] = value1
+        elif idx >= 20:
+            er = getEffectRecord()
+
+            efi = l["SkillEffectIndex"]
+            efi = int(efi) if efi else 0
+
+            data = getOrAdd(er, "data", {})
+            rr = getOrAdd(data, efi, {})
+            rr[idx] = [value, value1]
+
+            if idx == 20:
+                er["desc"] = value1
+            elif idx == 28:
+                er["valueType"] =  value
+                er["value"] =  value1
+            elif idx == 29:
+                if value:
+                    c = int(value)
+                    if c < len(classTable):
+                        er["antiClass"] =  classTable[c]
+                        er["antiValue"] =  value1
     return ret
 
 
@@ -204,19 +302,6 @@ skillTable = {**mainActiveCsv, **mainPassiveCsv, **mainTalentCsv, **supActiveCsv
 itemTable = equipmentsCsv + amuletsCsv
 
 imageTable = {}
-
-
-classTable = [None, "ソルジャー", "ランサー", "ライダー", "セイント", "ソーサラー", "シューター", "エアリアル", "アサシン"]
-symbolTable = [None, "ゼニス", "オリジン", "ナディア"]
-supportTypeTable = [None, "支援", "攻撃", "妨害"]
-rarityTable = [None, "N", "R", "SR", "SSR"]
-attackTypeTable = [None, "アタック", "マジック"]
-
-rangeTypeTable = [None, "自身", "射程", "全体"]
-areaTypeTable = [None, "単体", "全体", "範囲", "直線"]
-
-equipTypeTable = [None, "武器", "鎧", "兜", "アクセサリ"]
-amuletTypeTable = [None, "月", "太陽"]
 
 
 def processCharacters(chrJson, activeJson, passiveJson, talentJson = None):
@@ -436,18 +521,12 @@ def writeJson(path, obj):
         f.write(jsbeautifier.beautify(json.dumps(obj, ensure_ascii=False), options))
 
 def dumpSkillData():
-    with open(f"{outDir}/main_active_raw.json", 'w', encoding="utf-8") as f:
-        json.dump(mainActiveCsv, f, indent=2, ensure_ascii=False)
-    with open(f"{outDir}/main_passive_raw.json", 'w', encoding="utf-8") as f:
-        json.dump(mainPassiveCsv, f, indent=2, ensure_ascii=False)
-    with open(f"{outDir}/main_talent_raw.json", 'w', encoding="utf-8") as f:
-        json.dump(mainTalentCsv, f, indent=2, ensure_ascii=False)
-    with open(f"{outDir}/support_active_raw.json", 'w', encoding="utf-8") as f:
-        json.dump(supActiveCsv, f, indent=2, ensure_ascii=False)
-    with open(f"{outDir}/support_passive_raw.json", 'w', encoding="utf-8") as f:
-        json.dump(supPassiveCsv, f, indent=2, ensure_ascii=False)
-    with open(f"{outDir}/item_skills.json", 'w', encoding="utf-8") as f:
-        json.dump(itemEffectCsv, f, indent=2, ensure_ascii=False)
+    writeJson(f"{outDir}/main_active_raw.json", mainActiveCsv)
+    writeJson(f"{outDir}/main_passive_raw.json", mainPassiveCsv)
+    writeJson(f"{outDir}/main_talent_raw.json", mainTalentCsv)
+    writeJson(f"{outDir}/support_active_raw.json", supActiveCsv)
+    writeJson(f"{outDir}/support_passive_raw.json", supPassiveCsv)
+    writeJson(f"{outDir}/item_skills_raw.json", itemEffectCsv)
 
 
 def proceccMainChr():
