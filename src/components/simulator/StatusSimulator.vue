@@ -1,0 +1,1276 @@
+<template>
+  <div class="panel" style="padding: 10px 0px 0px 0px;">
+    <b-container>
+      <b-row>
+        <b-col style="text-align:center">
+          <h5 style="margin-bottom: 5px">ステータスシミュレータ</h5>
+        </b-col>
+      </b-row>
+    </b-container>
+
+    <b-tabs nav-class="tab-index" v-model="tabIndex">
+      <b-tab title="メインキャラ" style="padding: 10px 10px 0px 10px">
+        <div class="flex">
+          <div>
+            <b-container>
+              <div style="text-align:center">
+                <h6 style="margin: 5px 0px">基本情報</h6>
+              </div>
+              <b-form-row v-for="(param, name, index) in main" :key="index">
+                <b-col style="text-align: right" align-self="end">
+                  <label :for="`stat-main-${name}`">{{param.label}}</label>
+                </b-col>
+                <b-col>
+                  <b-form-input v-if="param.type == 'number'" style="width: 5em" :id="`stat-main-${name}`" v-model.number="param.value" size="sm" type="number" class="input-param" :min="param.min" :max="param.max"></b-form-input>
+                  <b-form-checkbox v-if="param.type == 'bool'" style="width: 5em" :id="`stat-main-${name}`" v-model="param.value" size="sm" plain></b-form-checkbox>
+                  <b-dropdown v-if="param.type == 'character'" style="width: 15em" :text="param.value ? param.value.name : '(なし)'" size="sm" class="input-dropdown" :id="`stat-main-${name}`" menu-class="long-dropdown">
+                    <b-dropdown-item class="d-flex" v-for="(c, i) in mainChrs" :key="i" @click="param.value=c; validateItems();">
+                      {{ c.name }}
+                    </b-dropdown-item>
+                  </b-dropdown>
+                </b-col>
+              </b-form-row>
+            </b-container>
+          </div>
+          <div>
+            <b-container>
+              <div style="text-align:center">
+                <h6 style="margin: 5px 0px">記憶の書＋強化ボード</h6>
+              </div>
+              <b-form-row v-for="(param, name, index) in mainBoosts" :key="index">
+                <b-col style="text-align: right" align-self="end">
+                  <label style="width: 9em" :for="`stat-main-${name}`">{{param.label}}</label>
+                </b-col>
+                <b-col>
+                  <b-form-input v-if="param.type == 'number'" style="width: 4em" :id="`stat-main-${name}`" v-model.number="param.value" size="sm" type="number" class="input-param" :min="param.min" :max="param.max"></b-form-input>
+                </b-col>
+              </b-form-row>
+            </b-container>
+          </div>
+          <div>
+            <b-container>
+              <div style="text-align:center">
+                <h6 style="margin: 5px 0px">装備</h6>
+              </div>
+              <b-form-row v-for="(param, name, index) in mainItems" :key="index">
+                <b-col cols="4" style="text-align: right">
+                  <label style="width: 5em">{{param.label}}</label>
+                </b-col>
+                <b-col>
+                  <b-dropdown v-if="param.type == 'weapon'" style="width: 14em" :text="param.value ? param.value.name : '(なし)'" size="sm" class="input-dropdown" menu-class="long-dropdown">
+                    <b-dropdown-item class="d-flex" @click="param.value=null">(なし)</b-dropdown-item>
+                    <b-dropdown-item class="d-flex" v-for="(c, i) in validWeapons()" :key="i" @click="param.value=c">{{ c.name }}</b-dropdown-item>
+                  </b-dropdown>
+                  <b-dropdown v-if="param.type == 'armor'" style="width: 14em" :text="param.value ? param.value.name : '(なし)'" size="sm" class="input-dropdown" menu-class="long-dropdown">
+                    <b-dropdown-item class="d-flex" @click="param.value=null">(なし)</b-dropdown-item>
+                    <b-dropdown-item class="d-flex" v-for="(c, i) in validArmors()" :key="i" @click="param.value=c">{{ c.name }}</b-dropdown-item>
+                  </b-dropdown>
+                  <b-dropdown v-if="param.type == 'helmet'" style="width: 14em" :text="param.value ? param.value.name : '(なし)'" size="sm" class="input-dropdown" menu-class="long-dropdown">
+                    <b-dropdown-item class="d-flex" @click="param.value=null">(なし)</b-dropdown-item>
+                    <b-dropdown-item class="d-flex" v-for="(c, i) in validHelmets()" :key="i" @click="param.value=c">{{ c.name }}</b-dropdown-item>
+                  </b-dropdown>
+                  <b-dropdown v-if="param.type == 'accessory'" style="width: 14em" :text="param.value ? param.value.name : '(なし)'" size="sm" class="input-dropdown" menu-class="long-dropdown">
+                    <b-dropdown-item class="d-flex" @click="param.value=null">(なし)</b-dropdown-item>
+                    <b-dropdown-item class="d-flex" v-for="(c, i) in validAccessories()" :key="i" @click="param.value=c">{{ c.name }}</b-dropdown-item>
+                  </b-dropdown>
+                </b-col>
+              </b-form-row>
+
+              <div style="text-align:center">
+                <h6 style="margin: 5px 0px">エンチャント</h6>
+              </div>
+              <b-form-row v-for="(param, name, index) in mainEnchants" :key="'enchant' + index">
+                <b-col style="text-align: right" align-self="end">
+                  <label style="width: 10em" :for="`stat-main-enchant-${name}P`">{{param.label}} (%)</label>
+                </b-col>
+                <b-col>
+                  <b-form-input style="width: 4em" :id="`stat-main-enchant-${name}P`" v-model.number="param.valueP" size="sm" type="number" class="input-param" :min="0"></b-form-input>
+                </b-col>
+                <b-col style="text-align: right" align-self="end">
+                  <label style="width: 4em" :for="`stat-main-enchant-${name}F`"> (固定値)</label>
+                </b-col>
+                <b-col>
+                  <b-form-input style="width: 4em" :id="`stat-main-enchant-${name}F`" v-model.number="param.valueF" size="sm" type="number" class="input-param" :min="0"></b-form-input>
+                </b-col>
+              </b-form-row>
+            </b-container>
+          </div>
+        </div>
+        <div>
+          <b-container>
+            <div class="status flex" style="margin-bottom: 10px">
+              <h5>基礎ステータス:</h5>
+              <div class="param-box"><b-img-lazy :src="getImageURL('HP')" title="HP" width="18" height="18" /><span>{{statMainResult[0]}}</span></div>
+              <div class="param-box"><b-img-lazy :src="getImageURL('アタック')" title="アタック" width="18" height="18" /><span>{{statMainResult[1]}}</span></div>
+              <div class="param-box"><b-img-lazy :src="getImageURL('ディフェンス')" title="ディフェンス" width="18" height="18" /><span>{{statMainResult[2]}}</span></div>
+              <div class="param-box"><b-img-lazy :src="getImageURL('マジック')" title="マジック" width="18" height="18" /><span>{{statMainResult[3]}}</span></div>
+              <div class="param-box"><b-img-lazy :src="getImageURL('レジスト')" title="レジスト" width="18" height="18" /><span>{{statMainResult[4]}}</span></div>
+              <div class="param-box"><b-img-lazy :src="getImageURL('テクニック')" title="テクニック" width="18" height="18" /><span>{{statMainResult[5]}}</span></div>
+              <div class="param-box"><span class="param-name">戦闘力:</span><span class="param-value">{{statMainResult[6]}}</span></div>
+              <div class="param-box" v-if="statMainResult[7]"><span class="param-name">サポート込み戦闘力:</span><span class="param-value">{{statMainResult[7]}}</span></div>
+            </div>
+          </b-container>
+        </div>
+      </b-tab>
+      <b-tab title="サポートキャラ" style="padding: 10px 10px 0px 10px ">
+        <div class="flex">
+          <div>
+            <b-container>
+              <div style="text-align:center">
+                <h6 style="margin: 5px 0px">基本情報</h6>
+              </div>
+              <b-form-row v-for="(param, name, index) in support" :key="index">
+                <b-col style="text-align: right" align-self="end">
+                  <label :for="`stat-sup-${name}`">{{param.label}}</label>
+                </b-col>
+                <b-col>
+                  <b-form-input v-if="param.type == 'number'" style="width: 5em" :id="`stat-sup-${name}`" v-model.number="param.value" size="sm" type="number" class="input-param" :min="param.min" :max="param.max"></b-form-input>
+                  <b-form-checkbox v-if="param.type == 'bool'" style="width: 5em" :id="`stat-sup-${name}`" v-model="param.value" size="sm" plain></b-form-checkbox>
+                  <b-dropdown v-if="param.type == 'character'" style="width: 15em" :text="param.value ? param.value.name : '(なし)'" size="sm" class="input-dropdown" id="stat-sup-${name}" menu-class="long-dropdown">
+                    <b-dropdown-item class="d-flex" @click="param.value=null">(なし)</b-dropdown-item>
+                    <b-dropdown-item class="d-flex" v-for="(c, i) in supChrs" :key="i" @click="param.value=c">
+                      {{ c.name }}
+                    </b-dropdown-item>
+                  </b-dropdown>
+                </b-col>
+              </b-form-row>
+            </b-container>
+          </div>
+          <div>
+            <b-container>
+              <div style="text-align:center">
+                <h6 style="margin: 5px 0px">記憶の書＋強化ボード</h6>
+              </div>
+              <b-form-row v-for="(param, name, index) in supportBoosts" :key="index">
+                <b-col style="text-align: right" align-self="end">
+                  <label style="width: 9em" :for="`stat-sup-${name}`">{{param.label}}</label>
+                </b-col>
+                <b-col>
+                  <b-form-input v-if="param.type == 'number'" style="width: 4em" :id="`stat-sup-${name}`" v-model.number="param.value" size="sm" type="number" class="input-param" :min="param.min" :max="param.max"></b-form-input>
+                </b-col>
+              </b-form-row>
+            </b-container>
+          </div>
+          <div>
+            <b-container>
+              <div style="text-align:center">
+                <h6 style="margin: 5px 0px">装備</h6>
+              </div>
+              <b-form-row v-for="(param, name, index) in supportItems" :key="index">
+                <b-col style="text-align: right">
+                  <label style="width: 10em">{{param.label}}</label>
+                </b-col>
+                <b-col>
+                  <b-dropdown v-if="param.type == 'amulet1'" style="width: 14em" :text="param.value ? param.value.name : '(なし)'" size="sm" class="input-dropdown" menu-class="long-dropdown">
+                    <b-dropdown-item class="d-flex" @click="param.value=null">(なし)</b-dropdown-item>
+                    <b-dropdown-item class="d-flex" v-for="(c, i) in amulets1" :key="i" @click="param.value=c">{{ c.name }}</b-dropdown-item>
+                  </b-dropdown>
+                  <b-dropdown v-if="param.type == 'amulet2'" style="width: 14em" :text="param.value ? param.value.name : '(なし)'" size="sm" class="input-dropdown" menu-class="long-dropdown">
+                    <b-dropdown-item class="d-flex" @click="param.value=null">(なし)</b-dropdown-item>
+                    <b-dropdown-item class="d-flex" v-for="(c, i) in amulets2" :key="i" @click="param.value=c">{{ c.name }}</b-dropdown-item>
+                  </b-dropdown>
+                </b-col>
+              </b-form-row>
+
+              <div style="text-align:center">
+                <h6 style="margin: 5px 0px">アミュレットスキル</h6>
+              </div>
+              <b-form-row v-for="(param, name, index) in supportEnchants" :key="'enchant' + index">
+                <b-col style="text-align: right" align-self="end">
+                  <label style="width: 10em" :for="`stat-sup-enchant-${name}P`">{{param.label}} (%)</label>
+                </b-col>
+                <b-col>
+                  <b-form-input style="width: 4em" :id="`stat-sup-enchant-${name}P`" v-model.number="param.valueP" size="sm" type="number" class="input-param" :min="0" step="0.5"></b-form-input>
+                </b-col>
+              </b-form-row>
+            </b-container>
+          </div>
+        </div>
+        <div>
+          <b-container>
+            <div v-if="support.character.value" class="status flex" style="margin-bottom: 10px">
+              <h5>基礎ステータス:</h5>
+              <div class="param-box"><b-img-lazy :src="getImageURL('HP')" title="HP" width="18" height="18" /><span>{{statSupportResult[0]}}</span></div>
+              <div class="param-box" v-if="support.character.value.damageType=='アタック'"><b-img-lazy :src="getImageURL('アタック')" title="アタック" width="18" height="18" /><span>{{statSupportResult[1]}}</span></div>
+              <div class="param-box" v-if="support.character.value.damageType=='マジック'"><b-img-lazy :src="getImageURL('マジック')" title="マジック" width="18" height="18" /><span>{{statSupportResult[3]}}</span></div>
+              <div class="param-box"><b-img-lazy :src="getImageURL('ディフェンス')" title="ディフェンス" width="18" height="18" /><span>{{statSupportResult[2]}}</span></div>
+              <div class="param-box"><b-img-lazy :src="getImageURL('レジスト')" title="レジスト" width="18" height="18" /><span>{{statSupportResult[4]}}</span></div>
+              <div class="param-box"><span class="param-name">戦闘力:</span><span class="param-value">{{statSupportResult[6]}}</span></div>
+            </div>
+          </b-container>
+        </div>
+      </b-tab>
+    </b-tabs>
+    <div style="padding: 0px 10px 10px 10px">
+      <b-container>
+        <div style="margin-bottom: 10px">
+          <b-dropdown text="自動装備＆エンチャント" size="sm" id="stat-auto-equip">
+            <b-dropdown-item class="d-flex flex-column" v-for="(c, i) in autoEquipTypes" :key="i" @click="autoEquip(i)">
+              {{ c }}
+            </b-dropdown-item>
+          </b-dropdown>
+          <b-button id="stat-highscore" @click="highscoreSearch()" style="margin-left: 5px">このレベルで戦闘力が高い組み合わせを探す</b-button>
+          <b-table v-if="highscoreData.length" small outlined sticky-header :items="highscoreData" :fields="highscoreFields">
+            <template #cell(actions)="row">
+              <b-button size="sm" @click="highscoreReplay(row.item)" style="padding: 1px 10px">
+                再現
+              </b-button>
+            </template>
+          </b-table>
+        </div>
+        <div>
+          <b-button id="stat-copy-url" @click="copyToClipboard(statUrl)">パラメータを URL としてコピー</b-button>
+          <b-popover target="stat-copy-url" triggers="click blur" placement="top" custom-class="url-popover">
+            コピーしました：<br />{{ statUrl }}
+          </b-popover>
+        </div>
+      </b-container>
+    </div>
+  </div>
+</template>
+
+<script>
+import jsonMainActive from '../../assets/main_active.json'
+import jsonMainPassive from '../../assets/main_passive.json'
+import jsonMainTalents from '../../assets/main_talents.json'
+import jsonMainChrs from '../../assets/main_characters.json'
+import jsonSupportActive from '../../assets/support_active.json'
+import jsonSupportPassive from '../../assets/support_passive.json'
+import jsonSupportChrs from '../../assets/support_characters.json'
+import jsonItems from '../../assets/items.json'
+import common from "../common";
+
+export default {
+  name: 'StatusSimulator',
+  props: {
+  },
+  mixins: [common],
+
+  data() {
+    return {
+      main: {
+        character: {
+          label: "キャラ",
+          type: "character",
+          value: null,
+        },
+        star: {
+          label: "⭐",
+          type: "number",
+          min: 1,
+          max: 6,
+          value: 6,
+        },
+        level: {
+          label: "レベル",
+          type: "number",
+          min: 1,
+          value: 110,
+        },
+        master: {
+          label: "マスターレベル",
+          type: "number",
+          min: 0,
+          max: 3,
+          value: 3,
+        },
+        loveBonus: {
+          label: "好感度ボーナス",
+          type: "bool",
+          value: true,
+        },
+      },
+      mainBoosts: {
+        hp: {
+          label: "HP (%)",
+          type: "number",
+          min: 0,
+          value: 150,
+        },
+        atk: {
+          label: "アタック (%)",
+          type: "number",
+          min: 0,
+          value: 140,
+        },
+        def: {
+          label: "ディフェンス (%)",
+          type: "number",
+          min: 0,
+          value: 130,
+        },
+        mag: {
+          label: "マジック (%)",
+          type: "number",
+          min: 0,
+          value: 140,
+        },
+        res: {
+          label: "レジスト (%)",
+          type: "number",
+          min: 0,
+          value: 130,
+        },
+        tec: {
+          label: "テクニック (%)",
+          type: "number",
+          min: 0,
+          value: 50,
+        },
+      },
+      mainItems: {
+        weapon: {
+          label: "武器",
+          type: "weapon",
+          value: null,
+        },
+        armor: {
+          label: "鎧",
+          type: "armor",
+          value: null,
+        },
+        helmet: {
+          label: "兜",
+          type: "helmet",
+          value: null,
+        },
+        accessory: {
+          label: "アクセサリ",
+          type: "accessory",
+          value: null,
+        },
+      },
+      mainEnchants: {
+        hp: {
+          label: "HP",
+          valueP: 0,
+          valueF: 0,
+        },
+        atk: {
+          label: "アタック",
+          valueP: 0,
+          valueF: 0,
+        },
+        def: {
+          label: "ディフェンス",
+          valueP: 0,
+          valueF: 0,
+        },
+        mag: {
+          label: "マジック",
+          valueP: 0,
+          valueF: 0,
+        },
+        res: {
+          label: "レジスト",
+          valueP: 0,
+          valueF: 0,
+        },
+      },
+
+      support: {
+        character: {
+          label: "キャラ",
+          type: "character",
+          value: null,
+        },
+        star: {
+          label: "⭐",
+          type: "number",
+          min: 1,
+          max: 6,
+          value: 6,
+        },
+        level: {
+          label: "レベル",
+          type: "number",
+          min: 1,
+          value: 110,
+        },
+        master: {
+          label: "マスターレベル",
+          type: "number",
+          min: 0,
+          max: 3,
+          value: 3,
+        },
+        loveBonus: {
+          label: "好感度ボーナス",
+          type: "bool",
+          value: true,
+        },
+      },
+      supportBoosts: {
+        hp: {
+          label: "HP (%)",
+          type: "number",
+          min: 0,
+          value: 110,
+        },
+        atk: {
+          label: "アタック (%)",
+          type: "number",
+          min: 0,
+          value: 120,
+        },
+        def: {
+          label: "ディフェンス (%)",
+          type: "number",
+          min: 0,
+          value: 110,
+        },
+        mag: {
+          label: "マジック (%)",
+          type: "number",
+          min: 0,
+          value: 120,
+        },
+        res: {
+          label: "レジスト (%)",
+          type: "number",
+          min: 0,
+          value: 110,
+        },
+      },
+      supportItems: {
+        amulet1: {
+          label: "月のアミュレット",
+          type: "amulet1",
+          value: null,
+        },
+        amulet2: {
+          label: "太陽のアミュレット",
+          type: "amulet2",
+          value: null,
+        },
+      },
+      supportEnchants: {
+        hp: {
+          label: "HP",
+          valueP: 0,
+          valueF: 0,
+        },
+        atk: {
+          label: "アタック",
+          valueP: 0,
+          valueF: 0,
+        },
+        def: {
+          label: "ディフェンス",
+          valueP: 0,
+          valueF: 0,
+        },
+        mag: {
+          label: "マジック",
+          valueP: 0,
+          valueF: 0,
+        },
+        res: {
+          label: "レジスト",
+          valueP: 0,
+          valueF: 0,
+        },
+      },
+
+      autoEquipTypes: [
+        "戦闘力優先",
+        "HP 優先",
+        "アタック優先",
+        "ディフェンス優先",
+        "マジック優先",
+        "レジスト優先",
+        "テクニック優先",
+        "リセット",
+      ],
+
+      tabIndex: 0,
+      highscoreData: [],
+      highscoreFields: [
+        {
+          key: "index",
+          label: "順位",
+        },
+        {
+          key: "bp",
+          label: "戦闘力",
+        },
+        {
+          key: "main",
+          label: "メイン",
+        },
+        {
+          key: "support",
+          label: "サポート",
+        },
+        {
+          key: "actions",
+          label: "アクション",
+        }
+      ],
+    };
+  },
+
+  created() {
+    this.mainActive = structuredClone(jsonMainActive);
+    this.mainPassive = structuredClone(jsonMainPassive);
+    this.mainTalents = structuredClone(jsonMainTalents);
+    this.mainChrs = structuredClone(jsonMainChrs).filter(a => !a.hidden);
+    this.supActive = structuredClone(jsonSupportActive);
+    this.supPassive = structuredClone(jsonSupportPassive);
+    this.supChrs = structuredClone(jsonSupportChrs).filter(a => !a.hidden);
+    this.items = structuredClone(jsonItems).filter(a => !a.hidden || a.slot == "アミュレット");
+
+    for (let i = 0; i < this.mainChrs.length; ++i) {
+      let chr = this.mainChrs[i];
+      chr.index = i + 1;
+    }
+    for (let i = 0; i < this.supChrs.length; ++i) {
+      let chr = this.supChrs[i];
+      chr.index = i + 1;
+    }
+    for (let i = 0; i < this.items.length; ++i) {
+      let item = this.items[i];
+      item.index = i + 1;
+      item.status = this.getItemStatus(item);
+    }
+
+    this.searchTable = new Map();
+    for (let s of [...this.mainActive, ...this.mainPassive, ...this.mainTalents, ...this.supActive, ...this.supPassive, ...this.items])
+      this.searchTable.set(s.name, s);
+
+    const grabSkill = function (name, chr) {
+      let skill = this.findItem(name);
+      if (!skill) {
+        console.error(`skill not found: ${name}`);
+        return null;
+      }
+      if (!skill.owners)
+        skill.owners = [];
+      if (skill.owners.length == 0 || skill.owners[skill.owners.length - 1] != chr)
+        skill.owners.push(chr);
+      if (!skill.desc && skill.descs)
+        skill.desc = skill.descs["Lv 6"];
+      return skill;
+    }.bind(this);
+
+    for (let chr of this.mainChrs) {
+      chr.talent = grabSkill(chr.talent, chr);
+      chr.skills = chr.skills.flatMap(name => grabSkill(name, chr));
+      if (chr.summon) {
+        for (let s of chr.summon) {
+          s.talent = grabSkill(s.talent, chr);
+          s.skills = s.skills.flatMap(name => grabSkill(name, chr));
+        }
+      }
+    }
+    for (let chr of this.supChrs) {
+      chr.skills = chr.skills.flatMap(name => grabSkill(name, chr));
+    }
+
+    this.mainChrs.sort((a, b) => b.date.localeCompare(a.date));
+    this.supChrs.sort((a, b) => b.date.localeCompare(a.date));
+    this.items.sort((a, b) => b.date.localeCompare(a.date));
+
+    this.weapons = this.items.filter(a => a.slot == "武器");
+    this.armors = this.items.filter(a => a.slot == "鎧");
+    this.helmets = this.items.filter(a => a.slot == "兜");
+    this.accessories = this.items.filter(a => a.slot == "アクセサリ");
+    this.amulets1 = this.items.filter(a => a.slot == "アミュレット" && a.amuletType == "月");
+    this.amulets2 = this.items.filter(a => a.slot == "アミュレット" && a.amuletType == "太陽");
+
+    this.main.character.value = this.mainChrs[0];
+    //this.support.character.value = this.supChrs[0];
+
+    this.validWeapons = (() => this.weapons.filter(a => this.mainCanEquip(a))).bind(this);
+    this.validArmors = (() => this.armors.filter(a => this.mainCanEquip(a))).bind(this);
+    this.validHelmets = (() => this.helmets.filter(a => this.mainCanEquip(a))).bind(this);
+    this.validAccessories = (() => this.accessories.filter(a => this.mainCanEquip(a))).bind(this);
+
+    this.parseParamsUrl(window.location.href);
+  },
+  
+  mounted() {
+  },
+
+  methods: {
+    getParamClass(param) {
+      return param.disabled() ? "disabled" : "";
+    },
+
+    findItem(name) {
+      const r = this.searchTable.get(name);
+      if (!r)
+        console.log(`${name} not found`);
+      return r;
+    },
+
+    matchClass(item, chr) {
+      if (item) {
+        if (!item.classes || item.classes.includes(chr.class))
+          return true;
+      }
+      return false;
+    },
+    mainCanEquip(item, slot = null) {
+      if (this.matchClass(item, this.main.character.value)) {
+        if (!slot || item.slot == slot)
+          return true;
+      }
+      return false;
+    },
+    supportCanEquip(item, slot, aux) {
+      if (item) {
+        if (!slot || item.slot == slot) {
+          if (slot == "アミュレット")
+            return !aux || item.amuletType == aux;
+          else
+            return true;
+        }
+      }
+      return false;
+    },
+
+    validateItems() {
+      var mainItems = this.mainItems;
+      var supItems = this.supportItems;
+      if (!this.mainCanEquip(mainItems.weapon.value, '武器'))
+        mainItems.weapon.value = null;
+      if (!this.mainCanEquip(mainItems.armor.value, '鎧'))
+        mainItems.armor.value = null;
+      if (!this.mainCanEquip(mainItems.helmet.value, '兜'))
+        mainItems.helmet.value = null;
+      if (!this.mainCanEquip(mainItems.accessory.value, 'アクセサリ'))
+        mainItems.accessory.value = null;
+
+      if (!this.supportCanEquip(supItems.amulet1.value, 'アミュレット', '月'))
+        supItems.amulet1.value = null;
+      if (!this.supportCanEquip(supItems.amulet2.value, 'アミュレット', '太陽'))
+        supItems.amulet2.value = null;
+    },
+
+    autoEquipImpl(ma, sa, type) {
+      let result = {
+        main: {
+          items: [null, null, null, null],
+          enchants: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        },
+        support: {
+          items: [null, null],
+          enchants: [0, 0, 0, 0, 0],
+        },
+      };
+
+      const mapi = ma.character ? ma.character.damageType == "アタック" ? 1 : 3 : 0;
+      const sapi = sa.character ? sa.character.damageType == "アタック" ? 1 : 3 : 0;
+      const symbol = ma.character.symbol;
+      const tec = ma.status[5];
+      let ap = Math.round(ma.status[mapi] * 1.35);
+      if (sa.character)
+        ap += sa.status[sapi];
+      //console.log(`ap: ${ap}`);
+
+      const cmp = this.compare;
+      const getItemBattlePower = (item, api) => this.getEstimatedItemBattlePower(item.status, api, ap, tec);
+      const cmpPow = function (a, b, api) {
+        const bpa = getItemBattlePower(a, api);
+        const bpb = getItemBattlePower(b, api);
+        if (bpa != bpb) {
+          return cmp(bpa, bpb);
+        }
+        else {
+          // 戦闘力が同じなら デメリットなしを優先
+          const re1 = /^デメリット:/;
+          const ac1 = !this.matchTags(a.tags, re1) ? 1 : 0;
+          const bc1 = !this.matchTags(b.tags, re1) ? 1 : 0;
+          return cmp(ac1, bc1);
+        }
+      }.bind(this);
+
+      const pickItem = function (items, idx, api, tag) {
+        if (idx >= 0) {
+          let filtered = items.filter(a => a.status[idx]);
+          if (filtered.length)
+            items = filtered;
+        }
+        items.sort((a, b) => cmpPow(a, b, api));
+
+        if (tag) {
+          const found = items.find((a) => this.matchTags(a.tags, tag));
+          if (found)
+            return found;
+        }
+        return items[0];
+      }.bind(this);
+
+      const adjustSymbol = function (item) {
+        const pattern = /^(ゼニス|オリジン|ナディア)/;
+        if (item && item.name.match(pattern)) {
+          let r = item.name.replace(pattern, symbol);
+          return this.findItem(r);
+        }
+        return item;
+      }.bind(this);
+
+      const pickItemsMain = function (idx = -1, tag = null) {
+        const cond = a => this.matchClass(a, ma.character);
+        let weapon = pickItem(this.weapons.filter(cond), idx, mapi, tag);
+        let armor = pickItem(this.armors.filter(cond), idx, mapi, tag);
+        let helmet = pickItem(this.helmets.filter(cond), idx, mapi, tag);
+        let accessory = pickItem(this.accessories.filter(cond), idx, mapi, tag);
+        armor = adjustSymbol(armor);
+        helmet = adjustSymbol(helmet);
+        accessory = adjustSymbol(accessory);
+        result.main.items = [weapon, armor, helmet, accessory];
+      }.bind(this);
+
+      const pickItemsSupport = function (idx = -1, tag = null) {
+        let amulet1 = pickItem(this.amulets1, idx, sapi, tag);
+        let amulet2 = pickItem(this.amulets2, idx, sapi, tag);
+        result.support.items = [amulet1, amulet2];
+      }.bind(this);
+
+      const pickOptimalEnchants = function (filterFunc = null, scoreBooster = null) {
+        const s = ma.status;
+        let r = [0.05, 0, 2, 0, 2]; // score rate
+        r[mapi] = 2 * (1.0 + tec * 0.0003);
+        if (scoreBooster) {
+          for (let i = 0; i < r.length; ++i)
+            r[i] *= scoreBooster[i];
+        }
+
+        let dst = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+
+        let cmdlists = [[], [], [], []];
+        const cmd = function (i, name, score, exec) {
+          cmdlists[i].push({ name: name, score: score, exec: exec });
+        };
+        const hpP = (i, v) => cmd(i, "hpP", s[0] * (v / 100) * r[0], () => dst[0] += v);
+        const hpF = (i, v) => cmd(i, "hpF", v * r[0], () => dst[1] += v);
+        const atkP = (i, v) => cmd(i, "atkP", s[1] * (v / 100) * r[1], () => dst[2] += v);
+        const atkF = (i, v) => cmd(i, "atkF", v * r[1], () => dst[3] += v);
+        const defP = (i, v) => cmd(i, "defP", s[2] * (v / 100) * r[2], () => dst[4] += v);
+        const defF = (i, v) => cmd(i, "defF", v * r[2], () => dst[5] += v);
+        const magP = (i, v) => cmd(i, "magP", s[3] * (v / 100) * r[3], () => dst[6] += v);
+        const magF = (i, v) => cmd(i, "magF", v * r[3], () => dst[7] += v);
+        const resP = (i, v) => cmd(i, "resP", s[4] * (v / 100) * r[4], () => dst[8] += v);
+        const resF = (i, v) => cmd(i, "resF", v * r[4], () => dst[9] += v);
+
+        const paramsP = [
+          [10, 15,  5, 15,  5],
+          [15,  5, 15,  5, 15],
+          [15,  5, 15,  5, 15],
+          [10, 10, 10, 10, 10],
+        ];
+        const paramsF = [
+          [131, 31,  7, 31,  7],
+          [200, 11, 19, 11, 19],
+          [200, 11, 19, 11, 19],
+          [131, 21, 13, 21, 13],
+        ];
+        for (let i = 0; i < paramsP.length; ++i) {
+          hpP(i, paramsP[i][0]); hpF(i, paramsF[i][0]);
+          atkP(i, paramsP[i][1]); atkF(i, paramsF[i][1]);
+          defP(i, paramsP[i][2]); defF(i, paramsF[i][2]);
+          magP(i, paramsP[i][3]); magF(i, paramsF[i][3]);
+          resP(i, paramsP[i][4]); resF(i, paramsF[i][4]);
+        }
+
+        const len = cmdlists[0].length;
+        if (filterFunc) {
+          for (let i = 0; i < cmdlists.length; ++i) {
+            const filtered = cmdlists[i].filter(filterFunc).slice(0, 3);
+            for (let c of filtered)
+              c.exec();
+            cmdlists[i] = cmdlists[i].filter(a => !filtered.includes(a));
+          }
+        }
+        for (let cl of cmdlists) {
+          cl.sort((a, b) => cmp(a.score, b.score));
+        }
+        for (let cl of cmdlists) {
+          let n = 3 - (len - cl.length);
+          for (let i = 0; i < n; ++i)
+            cl[i].exec();
+        }
+        result.main.enchants = dst;
+      }.bind(this);
+
+      const pickOptialAmuletSkills = function (filterFunc = null, scoreBooster = null) {
+        const s = sa.status;
+        let r = [0.05, 0, 2, 0, 2]; // score rate
+        r[sapi] = 2 * (1.0 + tec * 0.0003); // リンク前提でテクニックも考慮
+        if (scoreBooster) {
+          for (let i = 0; i < r.length; ++i)
+            r[i] *= scoreBooster[i];
+        }
+
+        let dst = [0, 0, 0, 0, 0];
+
+        let cmdlists = [[], [], [], []];
+        const cmd = function (i, name, score, exec) {
+          cmdlists[i].push({ name: name, score: score, exec: exec });
+        };
+        const hpP = (i, v) => cmd(i, "hpP", s[0] * (v / 100) * r[0], () => dst[0] += v);
+        const atkP = (i, v) => cmd(i, "atkP", s[1] * (v / 100) * r[1], () => dst[1] += v);
+        const defP = (i, v) => cmd(i, "defP", s[2] * (v / 100) * r[2], () => dst[2] += v);
+        const magP = (i, v) => cmd(i, "magP", s[3] * (v / 100) * r[3], () => dst[3] += v);
+        const resP = (i, v) => cmd(i, "resP", s[4] * (v / 100) * r[4], () => dst[4] += v);
+
+        const paramsP = [
+          [7.5, 7.5, 7.5, 7.5, 7.5],
+          [7.5, 7.5, 7.5, 7.5, 7.5],
+        ];
+        for (let i = 0; i < paramsP.length; ++i) {
+          hpP(i, paramsP[i][0]);
+          atkP(i, paramsP[i][1]);
+          defP(i, paramsP[i][2]);
+          magP(i, paramsP[i][3]);
+          resP(i, paramsP[i][4]);
+        }
+
+        const len = cmdlists[0].length;
+        if (filterFunc) {
+          for (let i = 0; i < cmdlists.length; ++i) {
+            const filtered = cmdlists[i].filter(filterFunc).slice(0, 3);
+            for (let c of filtered)
+              c.exec();
+            cmdlists[i] = cmdlists[i].filter(a => !filtered.includes(a));
+          }
+        }
+        for (let cl of cmdlists) {
+          cl.sort((a, b) => cmp(a.score, b.score));
+        }
+        for (let cl of cmdlists) {
+          let n = 1 - (len - cl.length);
+          for (let i = 0; i < n; ++i)
+            cl[i].exec();
+        }
+        result.support.enchants = dst;
+      }.bind(this);
+
+      if (type == 0) { // 戦闘力優先
+        pickItemsMain();
+        pickOptimalEnchants();
+        pickItemsSupport();
+        pickOptialAmuletSkills();
+      }
+      else if (type == 1) { // HP 優先
+        pickItemsMain(0);
+        pickOptimalEnchants(c => c.name.match(/^hp/));
+        pickItemsSupport(0);
+        pickOptialAmuletSkills(c => c.name.match(/^hp/));
+      }
+      else if (type == 2) { // アタック優先
+        pickItemsMain(1, /^バフ:アタック/);
+        pickOptimalEnchants(c => c.name.match(/^atk/));
+        pickItemsSupport(1, /^バフ:アタック/);
+        pickOptialAmuletSkills(c => c.name.match(/^atk/));
+      }
+      else if (type == 3) { // ディフェンス優先
+        pickItemsMain(2, /^バフ:ディフェンス/);
+        pickOptimalEnchants(c => c.name.match(/^def/));
+        pickItemsSupport(2, /^バフ:ディフェンス/);
+        pickOptialAmuletSkills(c => c.name.match(/^def/));
+      }
+      else if (type == 4) { // マジック優先
+        pickItemsMain(3, /^バフ:マジック/);
+        pickOptimalEnchants(c => c.name.match(/^mag/));
+        pickItemsSupport(3, /^バフ:マジック/);
+        pickOptialAmuletSkills(c => c.name.match(/^mag/));
+      }
+      else if (type == 5) { // レジスト優先
+        pickItemsMain(4, /^バフ:レジスト/);
+        pickOptimalEnchants(c => c.name.match(/^res/));
+        pickItemsSupport(4, /^バフ:レジスト/);
+        pickOptialAmuletSkills(c => c.name.match(/^res/));
+      }
+      else if (type == 6) { // テクニック優先
+        pickItemsMain(5, /^バフ:テクニック/);
+        pickOptimalEnchants();
+        pickItemsSupport(5, /^バフ:テクニック/);
+        pickOptialAmuletSkills();
+      }
+      return result;
+    },
+
+    autoEquip(type) {
+      let msa = this.getStatMainArgs();
+      msa.items = [];
+      msa.enchantsP = [];
+      msa.enchantsF = [];
+      let ssa = this.getStatSupportArgs();
+
+      const ma = {
+        character: msa.character,
+        status: this.calcStatMainImpl(msa, null, true),
+      };
+      const sa = {
+        character: ssa.character,
+        status: this.calcStatSupportImpl(ssa),
+      };
+      const r = this.autoEquipImpl(ma, sa, type);
+
+      if (this.tabIndex == 0) {
+        for (const v of Object.values(this.mainItems))
+          v.value = r.main.items.shift();
+        for (const v of Object.values(this.mainEnchants)) {
+          v.valueP = r.main.enchants.shift();
+          v.valueF = r.main.enchants.shift();
+        }
+      }
+      if (this.tabIndex == 1 && sa.character) {
+        for (const v of Object.values(this.supportItems))
+          v.value = r.support.items.shift();
+        for (const v of Object.values(this.supportEnchants))
+          v.valueP = r.support.enchants.shift();
+      }
+    },
+
+    highscoreSearch() {
+      let msa = this.getStatMainArgs();
+      let ssa = this.getStatSupportArgs();
+      const powMain = (a) => this.getBattlePower(this.getMainChrStatus(a, msa.level, msa.star, msa.master, msa.loveBonus, msa.boosts));
+      const powSup = (a) => this.getBattlePower(this.getSupportChrStatus(a, ssa.level, ssa.star, ssa.master, ssa.loveBonus, ssa.boosts));
+
+      const mainChrs = [...this.mainChrs].sort((a, b) => this.compare(powMain(a), powMain(b))).slice(0, 50);
+      const supChrs = [...this.supChrs].sort((a, b) => this.compare(powSup(a), powSup(b))).slice(0, 50);
+
+      let results = [];
+
+      const getPEnchants = function (a) {
+        let r = [];
+        for (let i = 0; i < a.length; ++i)
+          if (i % 2 == 0)
+            r.push(a[i]);
+        return r;
+      };
+      const getFEnchants = function (a) {
+        let r = [];
+        for (let i = 0; i < a.length; ++i)
+          if (i % 2 == 1)
+            r.push(a[i]);
+        return r;
+      };
+
+      for (const mchr of mainChrs) {
+        for (const schr of supChrs) {
+          msa.items = [];
+          msa.enchantsP = [];
+          msa.enchantsF = [];
+          ssa.items = [];
+          ssa.enchantsP = [];
+
+          msa.character = mchr;
+          ssa.character = schr;
+          const r = this.autoEquipImpl({
+            character: mchr,
+            status: this.calcStatMainImpl(msa, null, true),
+          }, {
+            character: schr,
+            status: this.calcStatSupportImpl(ssa),
+          }, 0);
+
+          msa.items = r.main.items;
+          msa.enchantsP = getPEnchants(r.main.enchants);
+          msa.enchantsF = getFEnchants(r.main.enchants);
+          ssa.items = r.support.items;
+          ssa.enchantsP = r.support.enchants;
+          const bp = this.calcStatMainImpl(msa, ssa)[7]
+
+          results.push({
+            bp: bp,
+            main: mchr.name,
+            support: schr.name,
+            data: {
+              main: mchr,
+              support: schr,
+              msa: msa,
+              ssa: ssa,
+              result: r,
+            }
+          });
+        }
+      }
+
+      results = results.sort((a, b) => this.compare(a.bp, b.bp)).slice(0, 200);
+      let mains = [];
+      let supports = [];
+      for (let i = 0; i < results.length; ++i) {
+        let r = results[i];
+        r.index = i + 1;
+        r._cellVariants = {};
+        if (!mains.includes(r.main)) {
+          mains.push(r.main);
+          r._cellVariants.main = "primary";
+        }
+        if (!supports.includes(r.support)) {
+          supports.push(r.support);
+          r._cellVariants.support = "warning";
+        }
+      }
+      this.highscoreData = results;
+    },
+
+    highscoreReplay(rec) {
+      let s = this;
+      const msa = rec.data.msa;
+      const ssa = rec.data.ssa;
+      const r = rec.data.result;
+      {
+        s.main.character.value = rec.data.main;
+        s.main.star.value = msa.star;
+        s.main.level.value = msa.level;
+        s.main.master.value = msa.master;
+        s.main.loveBonus.value = msa.loveBonus;
+
+        let boosts = [...msa.boosts];
+        for (const v of Object.values(s.mainBoosts))
+          v.value = boosts.shift();
+
+        let items = [...r.main.items];
+        for (const v of Object.values(s.mainItems))
+          v.value = items.shift();
+
+        let enchants = [...r.main.enchants];
+        for (const v of Object.values(s.mainEnchants)) {
+          v.valueP = enchants.shift();
+          v.valueF = enchants.shift();
+        }
+      }
+      {
+        s.support.character.value = rec.data.support;
+        s.support.star.value = ssa.star;
+        s.support.level.value = ssa.level;
+        s.support.master.value = ssa.master;
+        s.support.loveBonus.value = ssa.loveBonus;
+
+        let boosts = [...ssa.boosts];
+        for (const v of Object.values(s.supportBoosts))
+          v.value = boosts.shift();
+
+        let items = [...r.support.items];
+        for (const v of Object.values(s.supportItems))
+          v.value = items.shift();
+
+        let enchants = [...r.support.enchants];
+        for (const v of Object.values(s.supportEnchants)) {
+          v.valueP = enchants.shift();
+        }
+      }
+    },
+
+    getStatMainArgs() {
+      const s = this;
+      let r = {
+        character: s.main.character.value,
+        star: s.main.star.value,
+        level: s.main.level.value,
+        master: s.main.master.value,
+        loveBonus: s.main.loveBonus.value,
+        boosts: Object.values(s.mainBoosts).map(a => a.value),
+        items: Object.values(s.mainItems).map(a => a.value),
+        enchantsP: Object.values(s.mainEnchants).map(a => a.valueP),
+        enchantsF: Object.values(s.mainEnchants).map(a => a.valueF),
+      };
+      return r;
+    },
+    getStatSupportArgs() {
+      const s = this;
+      let r = {
+        character: s.support.character.value,
+        star: s.support.star.value,
+        level: s.support.level.value,
+        master: s.support.master.value,
+        loveBonus: s.support.loveBonus.value,
+        boosts: Object.values(s.supportBoosts).map(a => a.value),
+        items: Object.values(s.supportItems).map(a => a.value),
+        enchantsP: Object.values(s.supportEnchants).map(a => a.valueP),
+      };
+      return r;
+    },
+    calcStatMainImpl(ma, sa, skipBP = false) {
+      const empty = [0, 0, 0, 0, 0, 0];
+      const chr = ma.character;
+      if (!chr)
+        return empty;
+
+      let r = this.getMainChrStatus(chr, ma.level, ma.star, ma.master, ma.loveBonus, ma.boosts);
+      for (let i = 0; i < ma.enchantsP.length; ++i)
+        r[i] = Math.round(r[i] * (1.0 + ma.enchantsP[i] * 0.01));
+
+      const items = ma.items.filter(a => a != null);
+      for (const item of items) {
+        for (let i = 0; i < r.length; ++i)
+          r[i] += item.status[i];
+      }
+      for (let i = 0; i < ma.enchantsF.length; ++i)
+        r[i] += ma.enchantsF[i];
+
+      if (skipBP)
+        return r;
+
+      // 以下戦闘力
+      let bpr = 1.0;
+      bpr += 0.1 * ma.star;
+      bpr += 0.1 * ma.master;
+      bpr += 0.03 * 6; // スキルコスト
+      bpr += 0.02 * (5 * items.length); // アイテムの☆合計
+      if (items.length == 4)
+        bpr += 0.1; // エンチャント4セット
+      const bpMain = Math.round(this.getBattlePower(r) * bpr);
+      const rMain = [...r, bpMain];
+      if (!sa || !sa.character)
+        return rMain;
+
+      const sup = sa.character;
+      bpr += 0.1 * sa.star;
+      bpr += 0.1 * sa.master;
+      bpr += 0.05 * 3; // スキル開放
+
+      const sr = this.calcStatSupportImpl(sa);
+      for (let i of [0, 2, 4])
+        r[i] += sr[i];
+
+      const mapi = chr.damageType == "アタック" ? 1 : 3;
+      const sapi = sup.damageType == "アタック" ? 1 : 3;
+      r[mapi] += sr[sapi];
+      const bpTotal = Math.round(this.getBattlePower(r) * bpr);
+      return [...rMain, bpTotal];
+    },
+    calcStatMain() {
+      return this.calcStatMainImpl(this.getStatMainArgs(), this.getStatSupportArgs());
+    },
+
+    calcStatSupportImpl(sa) {
+      const empty = [0, 0, 0, 0, 0, 0];
+      const chr = sa.character;
+      if (!chr)
+        return empty;
+
+      let r = this.getSupportChrStatus(chr, sa.level, sa.star, sa.master, sa.loveBonus, sa.boosts, sa.enchantsP);
+
+      const items = sa.items.filter(a => a != null);
+      for (const item of items) {
+        for (let i = 0; i < r.length; ++i)
+          r[i] += item.status[i];
+      }
+
+      // テクニック除去
+      r[5] = 0;
+
+      // 以下戦闘力
+      let bpr = 1.0;
+      bpr += 0.1 * sa.star;
+      bpr += 0.1 * sa.master;
+      bpr += 0.05 * 3; // スキル開放
+      let bp = Math.round(this.getBattlePower(r) * bpr);
+
+      return [...r, bp];
+    },
+    calcStatSupport() {
+      return this.calcStatSupportImpl(this.getStatSupportArgs());
+    },
+
+    getParamsUrl() {
+      let params = [];
+
+      for (const v of Object.values(this.main)) {
+        if (v.type == "character")
+          params.push(v.value ? v.value.index : 0);
+        else
+          params.push(v.value);
+      }
+      for (const v of Object.values(this.mainBoosts))
+        params.push(v.value);
+      for (const v of Object.values(this.mainItems))
+        params.push(v.value ? v.value.index : 0);
+      for (const v of Object.values(this.mainEnchants)) {
+        params.push(v.valueP);
+        params.push(v.valueF);
+      }
+
+      for (const v of Object.values(this.support)) {
+        if (v.type == "character")
+          params.push(v.value ? v.value.index : 0);
+        else
+          params.push(v.value);
+      }
+      for (const v of Object.values(this.supportBoosts))
+        params.push(v.value);
+      for (const v of Object.values(this.supportItems))
+        params.push(v.value ? v.value.index : 0);
+      for (const v of Object.values(this.supportEnchants))
+        params.push(v.valueP);
+
+      let url = window.location.href.replace(/\?.+/, '').replace(/#.+/, '');
+      url += "?stat=" + params.join(',') + "#status";
+      //this.parseParamsUrl(url); // debug
+      return url;
+    },
+
+    parseParamsUrl(url) {
+      url = decodeURIComponent(url);
+      let q = url.match(/\?stat=(.+)$/);
+      if (q) {
+        let params = q[1].split(',').map(this.parseValue);
+
+        for (const v of Object.values(this.main)) {
+          if (v.type == "character") {
+            const idx = params.shift();
+            v.value = this.mainChrs.find(a => a.index == idx);
+          }
+          else {
+            v.value = params.shift();
+          }
+        }
+        for (const v of Object.values(this.mainBoosts))
+          v.value = params.shift();
+        for (const v of Object.values(this.mainItems)) {
+          const idx = params.shift();
+          v.value = this.items.find(a => a.index == idx);
+        }
+        for (const v of Object.values(this.mainEnchants)) {
+          v.valueP = params.shift();
+          v.valueF = params.shift();
+        }
+
+        for (const v of Object.values(this.support)) {
+          if (v.type == "character") {
+            const idx = params.shift();
+            v.value = this.supChrs.find(a => a.index == idx);
+          }
+          else {
+            v.value = params.shift();
+          }
+        }
+        for (const v of Object.values(this.supportBoosts))
+          v.value = params.shift();
+        for (const v of Object.values(this.supportItems)) {
+          const idx = params.shift();
+          v.value = this.items.find(a => a.index == idx);
+        }
+        for (const v of Object.values(this.supportEnchants))
+          v.valueP = params.shift();
+
+        return true;
+      }
+      return false;
+    },
+  },
+
+  computed: {
+    statMainResult() {
+      return this.calcStatMain();
+    },
+    statSupportResult() {
+      return this.calcStatSupport();
+    },
+    statUrl() {
+      return this.getParamsUrl();
+    }
+  }
+};
+</script>
+
+<style scoped>
+</style>
