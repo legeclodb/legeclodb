@@ -821,5 +821,49 @@ export default {
       for (const t of additional)
         skill.tags.push(t);
     },
-  }
+
+    setupCharacters(characters, activeSkills, passiveSkills, talents = []) {
+      for (let s of activeSkills)
+        s.skillType = "アクティブ";
+      for (let s of passiveSkills)
+        s.skillType = "パッシブ";
+      for (let s of talents)
+        s.skillType = "タレント";
+
+      let skillTable = new Map();
+      for (let s of [...activeSkills, ...passiveSkills, ...talents])
+        skillTable.set(s.name, s);
+
+      const grabSkill = function (name, chr) {
+        let skill = skillTable.get(name);
+        if (!skill) {
+          console.error(`skill not found: ${name}`);
+          return null;
+        }
+        if (!skill.owners)
+          skill.owners = [];
+        if (skill.owners.length == 0 || skill.owners[skill.owners.length - 1] != chr)
+          skill.owners.push(chr);
+        if (!skill.desc && skill.descs) {
+          skill.current = "Lv 6";
+          this.$set(skill, 'desc', skill.descs[skill.current]);
+        }
+        return skill;
+      }.bind(this);
+
+      for (let chr of characters) {
+        if (typeof chr.talent === "string")
+          chr.talent = grabSkill(chr.talent, chr);
+
+        chr.skills = chr.skills.flatMap(name => grabSkill(name, chr));
+        if (chr.summon) {
+          for (let s of chr.summon) {
+            if (typeof s.talent === "string")
+              s.talent = grabSkill(s.talent, chr);
+            s.skills = s.skills.flatMap(name => grabSkill(name, chr));
+          }
+        }
+      }
+    },
+  },
 }

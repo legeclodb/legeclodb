@@ -504,16 +504,12 @@ export default {
       this.active = structuredClone(this.active);
       this.passive = structuredClone(this.passive);
       this.characters = structuredClone(this.characters).filter(a => !a.hidden);
+      this.setupCharacters(this.characters, this.active, this.passive);
 
       this.predefinedMainTags.push("分類");
 
-      let skillMap = new Map();
-      for (let s of this.active)
-        s.skillType = "アクティブ";
-      for (let s of this.passive)
-        s.skillType = "パッシブ";
-      for (let s of [...this.active, ...this.passive]) {
-        skillMap.set(s.name, s);
+      let skillTable = [...this.active, ...this.passive];
+      for (let s of skillTable) {
         this.appendBuffTags(s);
       }
 
@@ -530,14 +526,8 @@ export default {
         });
 
         for (let si = 0; si < chr.skills.length; ++si) {
-          let skill = skillMap.get(chr.skills[si]);
-          if (!skill) {
-            console.error(`skill not found: ${chr.skills[si]}`);
-            // 開発中とりあえず表示させるための措置
-            skill = skillMap.get("大蛇薙");
-          }
-          skill.skillIndex = si; // パッシブ1 のみが複数キャラで共有され、現状全て si==1 なので問題ない
-          chr.skills[si] = skill;
+          // パッシブ1 のみが複数キャラで共有され、現状全て si==1 なので問題ない
+          chr.skills[si].skillIndex = si;
         }
 
         let active = chr.skills[0];
@@ -545,10 +535,6 @@ export default {
         if (m) {
           // 不格好だがアクティブスキルにキャラ分類タグを追加
           active.tags.push(`分類:${m[1]}`);
-        }
-        if (active.descs) {
-          active.current = "Lv 6";
-          this.$set(active, 'desc', active.descs[active.current]);
         }
       }
       this.stat.defaults = [
@@ -558,8 +544,8 @@ export default {
       this.updateStatus();
 
       // 分類タグ追加があるので、このタイミングである必要がある
-      for (let [k, v] of skillMap) {
-        this.registerTags(v.tags);
+      for (let skill of skillTable) {
+        this.registerTags(skill.tags);
       }
 
       let handledTags = new Set();

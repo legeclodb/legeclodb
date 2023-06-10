@@ -534,38 +534,12 @@ export default {
       item.status = this.getItemStatus(item);
     }
 
+    this.setupCharacters(this.mainChrs, this.mainActive, this.mainPassive, this.mainTalents);
+    this.setupCharacters(this.supChrs, this.supActive, this.supPassive);
+
     this.searchTable = new Map();
     for (let s of [...this.mainActive, ...this.mainPassive, ...this.mainTalents, ...this.supActive, ...this.supPassive, ...this.items])
       this.searchTable.set(s.name, s);
-
-    const grabSkill = function (name, chr) {
-      let skill = this.findItem(name);
-      if (!skill) {
-        console.error(`skill not found: ${name}`);
-        return null;
-      }
-      if (!skill.owners)
-        skill.owners = [];
-      if (skill.owners.length == 0 || skill.owners[skill.owners.length - 1] != chr)
-        skill.owners.push(chr);
-      if (!skill.desc && skill.descs)
-        skill.desc = skill.descs["Lv 6"];
-      return skill;
-    }.bind(this);
-
-    for (let chr of this.mainChrs) {
-      chr.talent = grabSkill(chr.talent, chr);
-      chr.skills = chr.skills.flatMap(name => grabSkill(name, chr));
-      if (chr.summon) {
-        for (let s of chr.summon) {
-          s.talent = grabSkill(s.talent, chr);
-          s.skills = s.skills.flatMap(name => grabSkill(name, chr));
-        }
-      }
-    }
-    for (let chr of this.supChrs) {
-      chr.skills = chr.skills.flatMap(name => grabSkill(name, chr));
-    }
 
     this.mainChrs.sort((a, b) => b.date.localeCompare(a.date));
     this.supChrs.sort((a, b) => b.date.localeCompare(a.date));

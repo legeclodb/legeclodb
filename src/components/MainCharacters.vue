@@ -618,36 +618,17 @@ export default {
       this.passive = structuredClone(this.passive);
       this.talents = structuredClone(this.talents);
       this.characters = structuredClone(this.characters).filter(a => !a.hidden);
+      this.setupCharacters(this.characters, this.active, this.passive, this.talents);
 
       this.predefinedMainTags.push("分類");
 
-      let skillMap = new Map();
-      for (let s of this.active)
-        s.skillType = "アクティブ";
-      for (let s of this.passive)
-        s.skillType = "パッシブ";
-      for (let s of this.talents)
-        s.skillType = "タレント";
-      for (let s of [...this.active, ...this.passive, ...this.talents]) {
-        skillMap.set(s.name, s);
+      let skillTable = [...this.active, ...this.passive, ...this.talents];
+      for (let s of skillTable) {
         this.appendBuffTags(s);
       }
 
       let chrId = 0;
       for (let chr of this.characters) {
-        const grabSkill = function (name) {
-          let skill = skillMap.get(name);
-          if (!skill) {
-            console.error(`skill not found: ${name}`);
-            return null;
-          }
-          if (!skill.owners)
-            skill.owners = [];
-          if (skill.owners.length == 0 || skill.owners[skill.owners.length - 1] != chr)
-            skill.owners.push(chr);
-          return skill;
-        };
-
         chr.id = ++chrId;
         chr.classId = this.classes.findIndex(v => v == chr.class);
         chr.symbolId = this.symbols.findIndex(v => v == chr.symbol);
@@ -657,19 +638,6 @@ export default {
         Object.defineProperty(chr, 'attackPower', {
           get: chr.damageTypeId == 0 ? function () { return this.status[1]; } : function () { return this.status[3]; },
         });
-
-        chr.talent = grabSkill(chr.talent);
-        if (chr.talent.descs) {
-          chr.talent.current = "Lv 6";
-          this.$set(chr.talent, 'desc', chr.talent.descs[chr.talent.current]);
-        }
-        chr.skills = chr.skills.flatMap(name => grabSkill(name));
-        if (chr.summon) {
-          for (let s of chr.summon) {
-            s.talent = grabSkill(s.talent);
-            s.skills = s.skills.flatMap(name => grabSkill(name));
-          }
-        }
 
         const m = chr.name.match(/\((.+?)\)/);
         if (m)
@@ -682,8 +650,8 @@ export default {
       this.updateStatus();
 
       // 分類タグ追加があるので、このタイミングである必要がある
-      for (let [k, v] of skillMap) {
-        this.registerTags(v.tags);
+      for (let skill of skillTable) {
+        this.registerTags(skill.tags);
       }
 
       // リストの上の方に出すため特別処理
