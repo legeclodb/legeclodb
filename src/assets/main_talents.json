@@ -122,13 +122,13 @@
       {
         "type": "アタック",
         "value": 20,
-        "turn": 1,
+        "duration": 1,
         "probability": 50
       },
       {
         "type": "マジック",
         "value": 20,
-        "turn": 1,
+        "duration": 1,
         "probability": 50
       }
     ],
@@ -144,8 +144,7 @@
     },
     "buff": [
       {
-        "type": "ダメージ耐性",
-        "damageType": "魔法",
+        "type": "ダメージ耐性(魔法)",
         "value": 30
       }
     ],
@@ -252,12 +251,12 @@
       {
         "type": "ディフェンス",
         "value": 30,
-        "turn": 2
+        "duration": 2
       },
       {
         "type": "被治療効果",
         "value": 30,
-        "turn": 2
+        "duration": 2
       }
     ],
     "tags": []
@@ -311,10 +310,9 @@
     },
     "buff": [
       {
-        "type": "与ダメージ",
-        "damageType": "範囲スキル",
+        "type": "与ダメージ(範囲スキル)",
         "value": 20,
-        "turn": 1
+        "duration": 1
       }
     ],
     "tags": []
@@ -390,7 +388,7 @@
     "buff": [
       {
         "type": "ランダム",
-        "value": "弱"
+        "randomType": "弱"
       }
     ],
     "tags": [],
@@ -423,7 +421,7 @@
         "type": "与ダメージ",
         "onBattle": true,
         "value": 10,
-        "turn": 1
+        "duration": 1
       }
     ],
     "tags": []
@@ -442,7 +440,7 @@
       {
         "type": "ディフェンス",
         "value": 30,
-        "turn": 1
+        "duration": 1
       }
     ],
     "tags": []
@@ -504,7 +502,7 @@
     "debuff": [
       {
         "type": "ランダム",
-        "value": "弱"
+        "randomType": "弱"
       }
     ],
     "tags": [ "地形無視(飛行)" ],
@@ -522,7 +520,7 @@
     "debuff": [
       {
         "type": "ランダム",
-        "value": "弱"
+        "randomType": "弱"
       }
     ],
     "tags": [ "単体回復(低HP)" ],
@@ -551,7 +549,7 @@
       {
         "type": "移動",
         "value": 2,
-        "turn": 1,
+        "duration": 1,
         "probability": 50
       }
     ],
@@ -601,7 +599,7 @@
       {
         "type": "ダメージ耐性",
         "value": 10,
-        "turn": 2
+        "duration": 2
       }
     ],
     "tags": []
@@ -618,24 +616,24 @@
       {
         "type": "ディフェンス",
         "value": 10,
-        "turn": 1
+        "duration": 1
       },
       {
         "type": "レジスト",
         "value": 10,
-        "turn": 1
+        "duration": 1
       }
     ],
     "debuff": [
       {
         "type": "ディフェンス",
         "value": 10,
-        "turn": 1
+        "duration": 1
       },
       {
         "type": "レジスト",
         "value": 10,
-        "turn": 1
+        "duration": 1
       }
     ],
     "tags": []
@@ -683,7 +681,7 @@
     "buff": [
       {
         "type": "ランダム",
-        "value": "弱"
+        "randomType": "弱"
       }
     ],
     "tags": [],
@@ -732,7 +730,7 @@
       {
         "type": "ダメージ耐性",
         "value": 10,
-        "turn": 3,
+        "duration": 3,
         "maxStack": 2
       }
     ],
@@ -760,31 +758,31 @@
       {
         "type": "アタック",
         "value": 5,
-        "turn": 4,
+        "duration": 4,
         "maxStack": 3
       },
       {
         "type": "ディフェンス",
         "value": 5,
-        "turn": 4,
+        "duration": 4,
         "maxStack": 3
       },
       {
         "type": "マジック",
         "value": 5,
-        "turn": 4,
+        "duration": 4,
         "maxStack": 3
       },
       {
         "type": "レジスト",
         "value": 5,
-        "turn": 4,
+        "duration": 4,
         "maxStack": 3
       },
       {
         "type": "テクニック",
         "value": 5,
-        "turn": 4,
+        "duration": 4,
         "maxStack": 3
       },
       {
@@ -842,7 +840,7 @@
       {
         "type": "与ダメージ",
         "value": 10,
-        "turn": 1
+        "duration": 1
       }
     ],
     "tags": [ "与ダメ回復", "移動+" ]
@@ -915,10 +913,9 @@
     },
     "debuff": [
       {
-        "type": "ダメージ耐性",
-        "damageType": "魔法",
+        "type": "ダメージ耐性(魔法)",
         "value": 15,
-        "turn": 1
+        "duration": 1
       }
     ],
     "tags": [ "異種攻撃タイプ", "ステータス変換", "死亡時復活" ]
@@ -973,7 +970,7 @@
       {
         "type": "ダメージ耐性",
         "value": 10,
-        "turn": 1
+        "duration": 1
       }
     ],
     "tags": [ "移動+" ]
@@ -1010,8 +1007,7 @@
         "aoe": true
       },
       {
-        "type": "ダメージ耐性",
-        "damageType": "物理",
+        "type": "ダメージ耐性(物理)",
         "value": 15,
         "aoe": true
       }
@@ -1057,8 +1053,7 @@
     ],
     "debuff": [
       {
-        "type": "ダメージ耐性",
-        "damageType": "魔法",
+        "type": "ダメージ耐性(魔法)",
         "value": 10,
         "aoe": true
       }
@@ -1212,12 +1207,12 @@
       {
         "type": "ディフェンス",
         "value": 10,
-        "turn": 1
+        "duration": 1
       },
       {
         "type": "ディフェンス",
         "value": 10,
-        "turn": 1
+        "duration": 1
       }
     ],
     "tags": []
@@ -1234,12 +1229,12 @@
       {
         "type": "ディフェンス",
         "value": 15,
-        "turn": 2
+        "duration": 2
       },
       {
         "type": "レジスト",
         "value": 15,
-        "turn": 2
+        "duration": 2
       }
     ],
     "tags": [ "与ダメ回復" ]
@@ -1264,7 +1259,7 @@
       {
         "type": "ダメージ耐性",
         "value": 10,
-        "turn": 1
+        "duration": 1
       }
     ],
     "tags": [ "移動+" ]
@@ -1361,8 +1356,7 @@
         "aoe": true
       },
       {
-        "type": "与ダメージ",
-        "damageType": "スキル",
+        "type": "与ダメージ(スキル)",
         "value": 10,
         "aoe": true
       },
@@ -1427,13 +1421,13 @@
       {
         "type": "アタック",
         "value": 8,
-        "turn": 4,
+        "duration": 4,
         "maxStack": 3
       },
       {
         "type": "マジック",
         "value": 8,
-        "turn": 4,
+        "duration": 4,
         "maxStack": 3
       }
     ],
@@ -1580,14 +1574,13 @@
     },
     "debuff": [
       {
-        "type": "ダメージ耐性",
-        "damageType": "物理",
+        "type": "ダメージ耐性(物理)",
         "value": 15,
-        "turn": 1
+        "duration": 1
       },
       {
         "type": "ランダム",
-        "value": "弱"
+        "randomType": "弱"
       }
     ],
     "tags": [ "死亡時復活", "再移動" ],
@@ -1644,13 +1637,13 @@
       {
         "type": "ディフェンス",
         "value": 15,
-        "turn": 3,
+        "duration": 3,
         "maxStack": 2
       },
       {
         "type": "ダメージ耐性",
         "value": 15,
-        "turn": 3,
+        "duration": 3,
         "maxStack": 2
       }
     ],

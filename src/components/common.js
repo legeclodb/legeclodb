@@ -798,12 +798,16 @@ export default {
     buffParamsToTags(skill) {
       const toS = function (name, p) {
         let t = name + ":" + p.type;
-        if (p.damageType)
-          t += `(${p.damageType})`;
-        if (p.onBattle)
+
+        // 不格好だが…
+        if (p.onBattle) {
           t += "(戦闘時)";
+        }
+        else if (["自身"].includes(p.target)) {
+          t += `(${p.target})`;
+        }
         if (p.type == "ランダム")
-          t += `(${p.value})`;
+          t += `(${p.randomType})`;
         if (["クラス", "シンボル"].includes(p.type))
           t += `(${p.target})`;
         return t;
