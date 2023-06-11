@@ -74,10 +74,15 @@
                     <label style="width: 12em" :for="`bs-debuff-${index}-e`">{{param.type}}</label>
                   </b-col>
                   <b-col>
-                    <b-form-checkbox style="width: 5em" :id="`bs-debuff-${index}-e`" v-model="param.enabled" size="sm" plain></b-form-checkbox>
+                    <b-form-checkbox :id="`bs-buff-${index}-e`" v-model="param.enabled" size="sm" plain></b-form-checkbox>
                   </b-col>
-                  <b-col>
-                    <b-form-input style="width: 5em" :id="`bs-debuff-${index}-w`" v-model.number="param.weight" size="sm" type="number" class="input-param"></b-form-input>
+                  <b-col class="flex">
+                    <label style="width: 3em" :for="`bs-buff-${index}-e`">重み</label>
+                    <b-form-input style="width: 3em" :id="`bs-debuff-${index}-w`" v-model.number="param.weight" size="sm" type="number" class="input-param"></b-form-input>
+                  </b-col>
+                  <b-col class="flex">
+                    <label style="width: 3em" :for="`bs-buff-${index}-e`">上限</label>
+                    <b-form-input style="width: 3em" :id="`bs-debuff-${index}-w`" v-model.number="param.limit" size="sm" type="number" class="input-param"></b-form-input>
                   </b-col>
                 </b-form-row>
               </b-container>
@@ -139,7 +144,6 @@ export default {
                 weight: 1,
                 limit: 0,
                 includeOnBattle: false,
-                value: 0,
               };
             }
             return types.map(a => make(a));
@@ -193,27 +197,43 @@ export default {
           return a == b ? 0 : a < b ? 1 : -1;
         }
 
+        getValues(opt) {
+          let r = {};
+          for (const k in opt)
+            r[k] = opt[k].value;
+          return r;
+        }
+
         doSearch(num) {
           let excluded = [...this.excluded];
-          let usedActiveBuffGlobal = {};
-          let usedActiveDebuffGlobal = {};
           let buffs = this.buffs.filter(a => a.enabled);
           let debuffs = this.debuffs.filter(a => a.enabled);
-          const opt = this.options;
+          const opt = this.getValues(this.options);
           const matchTags = this.vue.matchTags;
+
+          let usedActiveBuffGlobal = {};
+          let usedActiveDebuffGlobal = {};
+          let totalBuffAmountGlobal = {};
+          let totalDebuffAmountGlobal = {};
+
+          for (let v of buffs)
+            totalBuffAmountGlobal[v.type] = 0;
+          for (let v of debuffs)
+            totalDebuffAmountGlobal[v.type] = 0;
+
 
           const buffCondition = function (skill, buff) {
             let ok =
               (buff.target != "自身") &&
-              (opt.allowSingleUnitBuff.value || buff.target != "単体") &&
-              (opt.allowOnBattle.value || !buff.onBattle) &&
-              (opt.allowProbability.value || !buff.probability);
+              (opt.allowSingleUnitBuff || buff.target != "単体") &&
+              (opt.allowOnBattle || !buff.onBattle) &&
+              (opt.allowProbability || !buff.probability);
             return ok;
           };
           const debuffCondition = function (skill, debuff) {
             let ok =
-              (opt.allowOnBattle.value || !debuff.onBattle) &&
-              (opt.allowProbability.value || !debuff.probability);
+              (opt.allowOnBattle || !debuff.onBattle) &&
+              (opt.allowProbability || !debuff.probability);
             return ok;
           };
 
@@ -223,9 +243,17 @@ export default {
 
             let usedActiveBuff = { ...usedActiveBuffGlobal };
             let usedActiveDebuff = { ...usedActiveDebuffGlobal };
+            let totalBuffAmount = { ...totalBuffAmountGlobal };
+            let totalDebuffAmount = { ...totalDebuffAmountGlobal };
 
-            const countSkill = function (skill, updateUsedActive = false) {
-              if (!opt.allowSymbolSkill.value && matchTags(skill.tags, /^シンボルスキル$/))
+            const limitAmount = function (table, param, amount) {
+              if (param.limit > 0)
+                amount = Math.min(amount, Math.max(param.limit - table[param.type], 0));
+              return amount;
+            };
+
+            const countSkill = function (skill, updateUsedActive = false, updateTotalAmount = false) {
+              if (!opt.allowSymbolSkill && matchTags(skill.tags, /^シンボルスキル$/))
                 return 0;
 
               let score = 0;
@@ -233,13 +261,16 @@ export default {
                 for (const buff of skill.buff) {
                   let p = buffs.find(a => a.type == buff.type);
                   if (p && buffCondition(skill, buff)) {
+                    if (updateTotalAmount) {
+                      totalBuffAmount[buff.type] += buff.value;
+                    }
                     if (skill.skillType == "アクティブ") {
                       if (usedActiveBuff[buff.type])
                         continue;
                       else if (updateUsedActive)
                         usedActiveBuff[buff.type] = buff.value;
                     }
-                    score += buff.value * p.weight;
+                    score += limitAmount(totalBuffAmount, p, buff.value) * p.weight;
                   }
                 }
               }
@@ -247,13 +278,16 @@ export default {
                 for (const debuff of skill.debuff) {
                   let p = debuffs.find(a => a.type == debuff.type);
                   if (p && debuffCondition(skill, debuff)) {
+                    if (updateTotalAmount) {
+                      totalDebuffAmount[debuff.type] += debuff.value;
+                    }
                     if (skill.skillType == "アクティブ") {
                       if (usedActiveDebuff[debuff.type])
                         continue;
                       else if (updateUsedActive)
                         usedActiveDebuff[debuff.type] = debuff.value;
                     }
-                    score += debuff.value * p.weight;
+                    score += limitAmount(totalDebuffAmount, p, debuff.value) * p.weight;
                   }
                 }
               }
@@ -264,36 +298,67 @@ export default {
               equipments = equipments.filter(a => !excluded.includes(a) && this.matchClass(a, chr));
               equipments = equipments.map(a => [countSkill(a), a]);
               equipments.sort((a, b) => this.compare(a[0], b[0]));
-              if (equipments.length > 0 && equipments[0][0] > 0)
-                return equipments[0];
-              return null;
+              let r = null;
+              if (equipments.length > 0 && equipments[0][0] > 0) {
+                r = equipments[0];
+              }
+              return r;
+            }.bind(this);
+
+            const pickSkill = function (skills) {
+              let passive = [];
+              for (const skill of skills.filter(a => a.skillType != "アクティブ")) {
+                if (excluded.includes(skill))
+                  continue;
+
+                const score = countSkill(skill);
+                if (score > 0)
+                  passive.push([score, skill]);
+              }
+
+              let active = [];
+              for (const skill of skills.filter(a => a.skillType == "アクティブ")) {
+                const score = countSkill(skill);
+                if (score > 0)
+                  active.push([score, skill]);
+              }
+              active = active.sort((a, b) => this.compare(a[0], b[0]));
+              for (let a of active)
+                a[0] = countSkill(a[1]);
+              active = active.filter(a => a[0] > 0);
+
+              let r = [...passive, ...active].sort((a, b) => this.compare(a[0], b[0]))[0];
+              if (!r)
+                return null;
+              else
+                return r[0] > 0 ? r : null;
             }.bind(this);
 
             let talent = [countSkill(chr.talent), chr.talent];
-            let passive = [];
-            for (const skill of chr.skills.filter(a => a.skillType != "アクティブ")) {
-              if (excluded.includes(skill))
-                continue;
+            countSkill(talent[1], false, true);
 
-              const score = countSkill(skill);
-              if (score > 0)
-                passive.push([score, skill]);
+            let skills = [];
+            {
+              let tmpSkills = [...chr.skills];
+              for (let i = 0; i < 3; ++i) {
+                let r = pickSkill(tmpSkills);
+                if (!r)
+                  break;
+                skills.push(r);
+                tmpSkills.splice(tmpSkills.indexOf(r[1]), 1);
+                countSkill(r[1], true, true);
+              }
             }
 
-            let active = [];
-            for (const skill of chr.skills.filter(a => a.skillType == "アクティブ")) {
-              const score = countSkill(skill);
-              if (score > 0)
-                active.push([score, skill]);
+            let equipments = [];
+            for (let equips of [this.weapons, this.armors, this.helmets, this.accessories]) {
+              let r = pickEquip(equips);
+              if (r) {
+                equipments.push(r);
+                countSkill(r[1], false, true);
+              }
             }
-            active = active.sort((a, b) => this.compare(a[0], b[0]));
-            for (let a of active)
-              a[0] = countSkill(a[1], true);
-            active = active.filter(a => a[0] > 0);
 
-            let skills = [...passive, ...active].sort((a, b) => this.compare(a[0], b[0])).slice(0, 3);
-
-            let equipments = [pickEquip(this.weapons), pickEquip(this.armors), pickEquip(this.helmets), pickEquip(this.accessories)].filter(a => a);
             let totalScore = 0;
             for (let s of [talent, ...skills, ...equipments]) {
               if (s)
@@ -308,17 +373,19 @@ export default {
             ];
           }.bind(this);
 
-          const countActive = function (skill) {
+          const countGlobal = function (skill) {
             if (skill.buff) {
               for (const v of skill.buff) {
                 let p = buffs.find(a => a.type == v.type);
                 if (p) {
+                  totalBuffAmountGlobal[v.type] += v.value;
                   if (skill.skillType == "アクティブ") {
                     if (usedActiveBuffGlobal[v.type])
                       continue;
                     else
                       usedActiveBuffGlobal[v.type] = v.value;
                   }
+                  p.amount += v.value;
                 }
               }
             }
@@ -326,12 +393,14 @@ export default {
               for (const v of skill.debuff) {
                 let p = debuffs.find(a => a.type == v.type);
                 if (p) {
+                  totalDebuffAmountGlobal[v.type] += v.value;
                   if (skill.skillType == "アクティブ") {
                     if (usedActiveDebuffGlobal[v.type])
                       continue;
                     else
                       usedActiveDebuffGlobal[v.type] = v.value;
                   }
+                  p.amount += v.value;
                 }
               }
             }
@@ -358,13 +427,12 @@ export default {
             };
             result.push(r);
 
-            for (const s of [r.character, r.talent, ...r.skills, ...r.equipments]) {
-              if (s)
+            excluded.push(r.character);
+            for (const s of [r.talent, ...r.skills, ...r.equipments]) {
+              if (s) {
                 excluded.push(s);
-            }
-            for (const s of r.skills) {
-              if (s.skillType == "アクティブ")
-                countActive(s);
+                countGlobal(s);
+              }
             }
           }
           return result;

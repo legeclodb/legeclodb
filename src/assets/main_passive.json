@@ -133,13 +133,13 @@
         "type": "アタック",
         "value": 15,
         "duration": 1,
-        "singleUnit": true
+        "target": "単体"
       },
       {
         "type": "マジック",
         "value": 15,
         "duration": 1,
-        "singleUnit": true
+        "target": "単体"
       }
     ],
     "tags": [ "無効化:アタックダウン", "無効化:マジックダウン", "無効化:アクティブスキル使用不可" ]
@@ -225,7 +225,7 @@
         "type": "レジスト",
         "value": 20,
         "duration": 1,
-        "singleUnit": true
+        "target": "単体"
       }
     ],
     "tags": [ "無効化:スタン", "無効化:強化不可", "無効化:移動ダウン" ]
