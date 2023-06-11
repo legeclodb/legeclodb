@@ -19,6 +19,18 @@ areaTypeTable = [None, "単体", "全体", "範囲", "直線"]
 equipTypeTable = [None, "武器", "鎧", "兜", "アクセサリ"]
 amuletTypeTable = [None, "月", "太陽"]
 
+timingTypeTable = {
+    0: None,
+    1: "ターン開始時",
+    2: "範囲効果",
+    3: "戦闘前",
+    4: "サポート同時攻撃",
+    5: "戦闘時",
+    6: "戦闘後",
+    7: "行動終了時",
+    9: "敵撃破時",
+}
+
 statusTypeTable = {
     0: None,
     1: "HP",
@@ -266,14 +278,14 @@ def parseSkillCsv(csv, skillType = None):
             if idx == 20:
                 er["desc"] = value1
             elif idx == 28:
-                er["valueType"] =  value
-                er["value"] =  value1
+                er["valueType"] = value
+                er["value"] = value1
             elif idx == 29:
                 if value:
                     c = int(value)
                     if c < len(classTable):
-                        er["antiClass"] =  classTable[c]
-                        er["antiValue"] =  value1
+                        er["antiClass"] = classTable[c]
+                        er["antiValue"] = value1
     return ret
 
 

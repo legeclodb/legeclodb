@@ -813,9 +813,15 @@ export default {
         return t;
       };
       const map = (a, f) => a ? a.map(f) : [];
+
+      let buff = skill.buff;
+      let debuff = skill.debuff;
+      if (this.matchTags(skill.tags, /シンボルスキル/))
+        buff = buff.slice(6, buff.length); // シンボルスキル共通バフは除外
+
       return [
-        ...map(skill.buff, a => toS("バフ", a)),
-        ...map(skill.debuff, a => toS("デバフ", a))
+        ...map(buff, a => toS("バフ", a)),
+        ...map(debuff, a => toS("デバフ", a))
       ];
     },
     appendBuffTags(skill) {

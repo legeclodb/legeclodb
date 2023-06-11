@@ -28,10 +28,43 @@
     "cost": 2,
     "buff": [
       {
+        "type": "アタック",
+        "value": 20,
+        "duration": 4
+      },
+      {
+        "type": "マジック",
+        "value": 20,
+        "duration": 4
+      },
+      {
+        "type": "ディフェンス",
+        "value": 20,
+        "duration": 4
+      },
+      {
+        "type": "レジスト",
+        "value": 30,
+        "duration": 4
+      },
+      {
+        "type": "与ダメージ",
+        "value": 12,
+        "duration": 4,
+        "slot": "シンボルスキル"
+      },
+      {
+        "type": "ダメージ耐性",
+        "value": 12,
+        "duration": 4,
+        "slot": "シンボルスキル"
+      },
+      {
         "type": "与ダメージ",
         "onBattle": true,
         "value": 20,
-        "duration": 4
+        "duration": 4,
+        "slot": "シンボルスキル"
       }
     ],
     "tags": [ "シンボルスキル" ]
@@ -256,10 +289,43 @@
     "cost": 2,
     "buff": [
       {
+        "type": "アタック",
+        "value": 20,
+        "duration": 4
+      },
+      {
+        "type": "マジック",
+        "value": 20,
+        "duration": 4
+      },
+      {
+        "type": "ディフェンス",
+        "value": 20,
+        "duration": 4
+      },
+      {
+        "type": "レジスト",
+        "value": 30,
+        "duration": 4
+      },
+      {
+        "type": "与ダメージ",
+        "value": 12,
+        "duration": 4,
+        "slot": "シンボルスキル"
+      },
+      {
+        "type": "ダメージ耐性",
+        "value": 12,
+        "duration": 4,
+        "slot": "シンボルスキル"
+      },
+      {
         "type": "与ダメージ",
         "onBattle": true,
         "value": 15,
-        "duration": 4
+        "duration": 4,
+        "slot": "シンボルスキル"
       }
     ],
     "tags": [ "シンボルスキル" ]
@@ -303,10 +369,43 @@
     "cost": 2,
     "buff": [
       {
+        "type": "アタック",
+        "value": 20,
+        "duration": 4
+      },
+      {
+        "type": "マジック",
+        "value": 20,
+        "duration": 4
+      },
+      {
+        "type": "ディフェンス",
+        "value": 20,
+        "duration": 4
+      },
+      {
+        "type": "レジスト",
+        "value": 30,
+        "duration": 4
+      },
+      {
+        "type": "与ダメージ",
+        "value": 12,
+        "duration": 4,
+        "slot": "シンボルスキル"
+      },
+      {
+        "type": "ダメージ耐性",
+        "value": 12,
+        "duration": 4,
+        "slot": "シンボルスキル"
+      },
+      {
         "type": "与ダメージ",
         "onBattle": true,
         "value": 15,
-        "duration": 4
+        "duration": 4,
+        "slot": "シンボルスキル"
       }
     ],
     "tags": [ "シンボルスキル", "移動時強化" ]
@@ -346,10 +445,43 @@
     "cost": 2,
     "buff": [
       {
+        "type": "アタック",
+        "value": 20,
+        "duration": 4
+      },
+      {
+        "type": "マジック",
+        "value": 20,
+        "duration": 4
+      },
+      {
+        "type": "ディフェンス",
+        "value": 20,
+        "duration": 4
+      },
+      {
+        "type": "レジスト",
+        "value": 30,
+        "duration": 4
+      },
+      {
+        "type": "与ダメージ",
+        "value": 12,
+        "duration": 4,
+        "slot": "シンボルスキル"
+      },
+      {
+        "type": "ダメージ耐性",
+        "value": 12,
+        "duration": 4,
+        "slot": "シンボルスキル"
+      },
+      {
         "type": "与ダメージ",
         "onBattle": true,
         "value": 20,
-        "duration": 4
+        "duration": 4,
+        "slot": "シンボルスキル"
       }
     ],
     "tags": [ "シンボルスキル" ]
@@ -410,14 +542,14 @@
         "onBattle": true,
         "value": 30,
         "duration": 2,
-        "singleUnit": true
+        "target": "単体"
       },
       {
         "type": "ダメージ耐性",
         "onBattle": true,
         "value": 50,
         "duration": 2,
-        "singleUnit": true
+        "target": "単体"
       }
     ],
     "tags": [],
@@ -602,6 +734,40 @@
     "area": "全体",
     "range": "自ユニット",
     "cost": 2,
+    "buff": [
+      {
+        "type": "アタック",
+        "value": 20,
+        "duration": 4
+      },
+      {
+        "type": "マジック",
+        "value": 20,
+        "duration": 4
+      },
+      {
+        "type": "ディフェンス",
+        "value": 20,
+        "duration": 4
+      },
+      {
+        "type": "レジスト",
+        "value": 30,
+        "duration": 4
+      },
+      {
+        "type": "与ダメージ",
+        "value": 12,
+        "duration": 4,
+        "slot": "シンボルスキル"
+      },
+      {
+        "type": "ダメージ耐性",
+        "value": 12,
+        "duration": 4,
+        "slot": "シンボルスキル"
+      }
+    ],
     "tags": [ "シンボルスキル" ]
   },
   {
@@ -697,6 +863,40 @@
     "area": "全体",
     "range": "自ユニット",
     "cost": 2,
+    "buff": [
+      {
+        "type": "アタック",
+        "value": 20,
+        "duration": 4
+      },
+      {
+        "type": "マジック",
+        "value": 20,
+        "duration": 4
+      },
+      {
+        "type": "ディフェンス",
+        "value": 20,
+        "duration": 4
+      },
+      {
+        "type": "レジスト",
+        "value": 30,
+        "duration": 4
+      },
+      {
+        "type": "与ダメージ",
+        "value": 12,
+        "duration": 4,
+        "slot": "シンボルスキル"
+      },
+      {
+        "type": "ダメージ耐性",
+        "value": 12,
+        "duration": 4,
+        "slot": "シンボルスキル"
+      }
+    ],
     "tags": [ "シンボルスキル" ]
   },
   {
@@ -776,12 +976,12 @@
         "type": "アタック",
         "value": 20,
         "duration": 2,
-        "singleUnit": true
+        "target": "単体"
       },
       {
         "type": "マジック",
         "value": 20,
-        "singleUnit": true
+        "target": "単体"
       }
     ],
     "tags": [ "無効化:アタックダウン", "無効化:マジックダウン", "無効化:アクティブスキル使用不可" ]
@@ -831,6 +1031,40 @@
     "area": "全体",
     "range": "自ユニット",
     "cost": 2,
+    "buff": [
+      {
+        "type": "アタック",
+        "value": 20,
+        "duration": 4
+      },
+      {
+        "type": "マジック",
+        "value": 20,
+        "duration": 4
+      },
+      {
+        "type": "ディフェンス",
+        "value": 20,
+        "duration": 4
+      },
+      {
+        "type": "レジスト",
+        "value": 30,
+        "duration": 4
+      },
+      {
+        "type": "与ダメージ",
+        "value": 12,
+        "duration": 4,
+        "slot": "シンボルスキル"
+      },
+      {
+        "type": "ダメージ耐性",
+        "value": 12,
+        "duration": 4,
+        "slot": "シンボルスキル"
+      }
+    ],
     "tags": [ "シンボルスキル" ]
   },
   {
@@ -867,10 +1101,43 @@
     "cost": 2,
     "buff": [
       {
+        "type": "アタック",
+        "value": 20,
+        "duration": 4
+      },
+      {
+        "type": "マジック",
+        "value": 20,
+        "duration": 4
+      },
+      {
+        "type": "ディフェンス",
+        "value": 20,
+        "duration": 4
+      },
+      {
+        "type": "レジスト",
+        "value": 30,
+        "duration": 4
+      },
+      {
+        "type": "与ダメージ",
+        "value": 12,
+        "duration": 4,
+        "slot": "シンボルスキル"
+      },
+      {
+        "type": "ダメージ耐性",
+        "value": 12,
+        "duration": 4,
+        "slot": "シンボルスキル"
+      },
+      {
         "type": "与ダメージ",
         "onBattle": true,
         "value": 15,
-        "duration": 4
+        "duration": 4,
+        "slot": "シンボルスキル"
       }
     ],
     "tags": [ "シンボルスキル" ]
@@ -940,7 +1207,7 @@
         "type": "ディフェンス",
         "value": 20,
         "duration": 2,
-        "singleUnit": true
+        "target": "単体"
       }
     ],
     "tags": [ "無効化:ディフェンスダウン", "無効化:レジストダウン", "無効化:回復不可" ]
@@ -988,6 +1255,40 @@
     "area": "全体",
     "range": "自ユニット",
     "cost": 2,
+    "buff": [
+      {
+        "type": "アタック",
+        "value": 20,
+        "duration": 4
+      },
+      {
+        "type": "マジック",
+        "value": 20,
+        "duration": 4
+      },
+      {
+        "type": "ディフェンス",
+        "value": 20,
+        "duration": 4
+      },
+      {
+        "type": "レジスト",
+        "value": 30,
+        "duration": 4
+      },
+      {
+        "type": "与ダメージ",
+        "value": 12,
+        "duration": 4,
+        "slot": "シンボルスキル"
+      },
+      {
+        "type": "ダメージ耐性",
+        "value": 12,
+        "duration": 4,
+        "slot": "シンボルスキル"
+      }
+    ],
     "tags": [ "シンボルスキル" ]
   },
   {
@@ -1034,6 +1335,40 @@
     "area": "全体",
     "range": "自ユニット",
     "cost": 2,
+    "buff": [
+      {
+        "type": "アタック",
+        "value": 20,
+        "duration": 4
+      },
+      {
+        "type": "マジック",
+        "value": 20,
+        "duration": 4
+      },
+      {
+        "type": "ディフェンス",
+        "value": 20,
+        "duration": 4
+      },
+      {
+        "type": "レジスト",
+        "value": 30,
+        "duration": 4
+      },
+      {
+        "type": "与ダメージ",
+        "value": 12,
+        "duration": 4,
+        "slot": "シンボルスキル"
+      },
+      {
+        "type": "ダメージ耐性",
+        "value": 12,
+        "duration": 4,
+        "slot": "シンボルスキル"
+      }
+    ],
     "tags": [ "シンボルスキル" ]
   },
   {
@@ -1093,10 +1428,43 @@
     "cost": 2,
     "buff": [
       {
+        "type": "アタック",
+        "value": 20,
+        "duration": 4
+      },
+      {
+        "type": "マジック",
+        "value": 20,
+        "duration": 4
+      },
+      {
+        "type": "ディフェンス",
+        "value": 20,
+        "duration": 4
+      },
+      {
+        "type": "レジスト",
+        "value": 30,
+        "duration": 4
+      },
+      {
+        "type": "与ダメージ",
+        "value": 12,
+        "duration": 4,
+        "slot": "シンボルスキル"
+      },
+      {
+        "type": "ダメージ耐性",
+        "value": 12,
+        "duration": 4,
+        "slot": "シンボルスキル"
+      },
+      {
         "type": "与ダメージ",
         "onBattle": true,
         "value": 15,
-        "duration": 4
+        "duration": 4,
+        "slot": "シンボルスキル"
       }
     ],
     "tags": [ "シンボルスキル" ]
@@ -1202,9 +1570,42 @@
     "cost": 2,
     "buff": [
       {
+        "type": "アタック",
+        "value": 20,
+        "duration": 4
+      },
+      {
+        "type": "マジック",
+        "value": 20,
+        "duration": 4
+      },
+      {
+        "type": "ディフェンス",
+        "value": 20,
+        "duration": 4
+      },
+      {
+        "type": "レジスト",
+        "value": 30,
+        "duration": 4
+      },
+      {
+        "type": "与ダメージ",
+        "value": 12,
+        "duration": 4,
+        "slot": "シンボルスキル"
+      },
+      {
+        "type": "ダメージ耐性",
+        "value": 12,
+        "duration": 4,
+        "slot": "シンボルスキル"
+      },
+      {
         "type": "与ダメージ(物理)",
         "value": 15,
-        "duration": 4
+        "duration": 4,
+        "slot": "シンボルスキル"
       }
     ],
     "tags": [ "シンボルスキル" ]
@@ -1228,16 +1629,50 @@
     "cost": 2,
     "buff": [
       {
+        "type": "アタック",
+        "value": 20,
+        "duration": 4
+      },
+      {
+        "type": "マジック",
+        "value": 20,
+        "duration": 4
+      },
+      {
+        "type": "ディフェンス",
+        "value": 20,
+        "duration": 4
+      },
+      {
+        "type": "レジスト",
+        "value": 30,
+        "duration": 4
+      },
+      {
+        "type": "与ダメージ",
+        "value": 12,
+        "duration": 4,
+        "slot": "シンボルスキル"
+      },
+      {
+        "type": "ダメージ耐性",
+        "value": 12,
+        "duration": 4,
+        "slot": "シンボルスキル"
+      },
+      {
         "type": "与ダメージ(物理)",
         "onBattle": true,
         "value": 15,
-        "duration": 4
+        "duration": 4,
+        "slot": "シンボルスキル"
       },
       {
         "type": "ダメージ耐性(物理)",
         "onBattle": true,
         "value": 10,
-        "duration": 4
+        "duration": 4,
+        "slot": "シンボルスキル"
       }
     ],
     "tags": [ "シンボルスキル" ]
@@ -1283,6 +1718,40 @@
     "area": "全体",
     "range": "自ユニット",
     "cost": 2,
+    "buff": [
+      {
+        "type": "アタック",
+        "value": 20,
+        "duration": 4
+      },
+      {
+        "type": "マジック",
+        "value": 20,
+        "duration": 4
+      },
+      {
+        "type": "ディフェンス",
+        "value": 20,
+        "duration": 4
+      },
+      {
+        "type": "レジスト",
+        "value": 30,
+        "duration": 4
+      },
+      {
+        "type": "与ダメージ",
+        "value": 12,
+        "duration": 4,
+        "slot": "シンボルスキル"
+      },
+      {
+        "type": "ダメージ耐性",
+        "value": 12,
+        "duration": 4,
+        "slot": "シンボルスキル"
+      }
+    ],
     "tags": [ "シンボルスキル", "デバフ:DoT" ]
   },
   {
@@ -1368,9 +1837,42 @@
     "cost": 2,
     "buff": [
       {
+        "type": "アタック",
+        "value": 20,
+        "duration": 4
+      },
+      {
+        "type": "マジック",
+        "value": 20,
+        "duration": 4
+      },
+      {
+        "type": "ディフェンス",
+        "value": 20,
+        "duration": 4
+      },
+      {
+        "type": "レジスト",
+        "value": 30,
+        "duration": 4
+      },
+      {
+        "type": "与ダメージ",
+        "value": 12,
+        "duration": 4,
+        "slot": "シンボルスキル"
+      },
+      {
+        "type": "ダメージ耐性",
+        "value": 12,
+        "duration": 4,
+        "slot": "シンボルスキル"
+      },
+      {
         "type": "与ダメージ(物理)",
         "value": 15,
-        "duration": 4
+        "duration": 4,
+        "slot": "シンボルスキル"
       }
     ],
     "tags": [ "シンボルスキル" ]
@@ -1432,9 +1934,42 @@
     "cost": 2,
     "buff": [
       {
+        "type": "アタック",
+        "value": 20,
+        "duration": 4
+      },
+      {
+        "type": "マジック",
+        "value": 20,
+        "duration": 4
+      },
+      {
+        "type": "ディフェンス",
+        "value": 20,
+        "duration": 4
+      },
+      {
+        "type": "レジスト",
+        "value": 30,
+        "duration": 4
+      },
+      {
+        "type": "与ダメージ",
+        "value": 12,
+        "duration": 4,
+        "slot": "シンボルスキル"
+      },
+      {
+        "type": "ダメージ耐性",
+        "value": 12,
+        "duration": 4,
+        "slot": "シンボルスキル"
+      },
+      {
         "type": "与ダメージ",
         "value": 10,
-        "duration": 4
+        "duration": 4,
+        "slot": "シンボルスキル"
       }
     ],
     "tags": [ "シンボルスキル", "地形無視" ]
@@ -1626,16 +2161,50 @@
     "cost": 2,
     "buff": [
       {
+        "type": "アタック",
+        "value": 20,
+        "duration": 4
+      },
+      {
+        "type": "マジック",
+        "value": 20,
+        "duration": 4
+      },
+      {
+        "type": "ディフェンス",
+        "value": 20,
+        "duration": 4
+      },
+      {
+        "type": "レジスト",
+        "value": 30,
+        "duration": 4
+      },
+      {
+        "type": "与ダメージ",
+        "value": 12,
+        "duration": 4,
+        "slot": "シンボルスキル"
+      },
+      {
+        "type": "ダメージ耐性",
+        "value": 12,
+        "duration": 4,
+        "slot": "シンボルスキル"
+      },
+      {
         "type": "ダメージ耐性(物理)",
         "onBattle": true,
         "value": 15,
-        "duration": 4
+        "duration": 4,
+        "slot": "シンボルスキル"
       },
       {
         "type": "ダメージ耐性(魔法)",
         "onBattle": true,
         "value": 15,
-        "duration": 4
+        "duration": 4,
+        "slot": "シンボルスキル"
       }
     ],
     "tags": [ "シンボルスキル" ]
@@ -2085,10 +2654,43 @@
     "cost": 2,
     "buff": [
       {
+        "type": "アタック",
+        "value": 20,
+        "duration": 4
+      },
+      {
+        "type": "マジック",
+        "value": 20,
+        "duration": 4
+      },
+      {
+        "type": "ディフェンス",
+        "value": 20,
+        "duration": 4
+      },
+      {
+        "type": "レジスト",
+        "value": 30,
+        "duration": 4
+      },
+      {
+        "type": "与ダメージ",
+        "value": 12,
+        "duration": 4,
+        "slot": "シンボルスキル"
+      },
+      {
+        "type": "ダメージ耐性",
+        "value": 12,
+        "duration": 4,
+        "slot": "シンボルスキル"
+      },
+      {
         "type": "与ダメージ",
         "onBattle": true,
         "value": 20,
-        "trun": 4
+        "trun": 4,
+        "slot": "シンボルスキル"
       }
     ],
     "tags": [ "シンボルスキル" ]
@@ -2581,16 +3183,50 @@
     "cost": 2,
     "buff": [
       {
+        "type": "アタック",
+        "value": 20,
+        "duration": 4
+      },
+      {
+        "type": "マジック",
+        "value": 20,
+        "duration": 4
+      },
+      {
+        "type": "ディフェンス",
+        "value": 20,
+        "duration": 4
+      },
+      {
+        "type": "レジスト",
+        "value": 30,
+        "duration": 4
+      },
+      {
+        "type": "与ダメージ",
+        "value": 12,
+        "duration": 4,
+        "slot": "シンボルスキル"
+      },
+      {
+        "type": "ダメージ耐性",
+        "value": 12,
+        "duration": 4,
+        "slot": "シンボルスキル"
+      },
+      {
         "type": "クリティカル率",
         "onBattle": true,
         "value": 10,
-        "duration": 4
+        "duration": 4,
+        "slot": "シンボルスキル"
       },
       {
         "type": "クリティカルダメージ倍率",
         "onBattle": true,
         "value": 15,
-        "duration": 4
+        "duration": 4,
+        "slot": "シンボルスキル"
       }
     ],
     "tags": [ "シンボルスキル" ]
@@ -2733,16 +3369,50 @@
     "cost": 2,
     "buff": [
       {
+        "type": "アタック",
+        "value": 20,
+        "duration": 4
+      },
+      {
+        "type": "マジック",
+        "value": 20,
+        "duration": 4
+      },
+      {
+        "type": "ディフェンス",
+        "value": 20,
+        "duration": 4
+      },
+      {
+        "type": "レジスト",
+        "value": 30,
+        "duration": 4
+      },
+      {
+        "type": "与ダメージ",
+        "value": 12,
+        "duration": 4,
+        "slot": "シンボルスキル"
+      },
+      {
+        "type": "ダメージ耐性",
+        "value": 12,
+        "duration": 4,
+        "slot": "シンボルスキル"
+      },
+      {
         "type": "与ダメージ(物理)",
         "onBattle": true,
         "value": 20,
-        "duration": 4
+        "duration": 4,
+        "slot": "シンボルスキル"
       },
       {
         "type": "ダメージ耐性",
         "onBattle": true,
         "value": 10,
-        "duration": 4
+        "duration": 4,
+        "slot": "シンボルスキル"
       }
     ],
     "tags": [ "シンボルスキル" ]
@@ -2975,16 +3645,50 @@
     "cost": 2,
     "buff": [
       {
+        "type": "アタック",
+        "value": 20,
+        "duration": 4
+      },
+      {
+        "type": "マジック",
+        "value": 20,
+        "duration": 4
+      },
+      {
+        "type": "ディフェンス",
+        "value": 20,
+        "duration": 4
+      },
+      {
+        "type": "レジスト",
+        "value": 30,
+        "duration": 4
+      },
+      {
+        "type": "与ダメージ",
+        "value": 12,
+        "duration": 4,
+        "slot": "シンボルスキル"
+      },
+      {
+        "type": "ダメージ耐性",
+        "value": 12,
+        "duration": 4,
+        "slot": "シンボルスキル"
+      },
+      {
         "type": "与ダメージ",
         "onBattle": true,
         "value": 20,
-        "duration": 4
+        "duration": 4,
+        "slot": "シンボルスキル"
       },
       {
         "type": "クリティカル率",
         "onBattle": true,
         "value": 10,
-        "duration": 4
+        "duration": 4,
+        "slot": "シンボルスキル"
       }
     ],
     "tags": [ "シンボルスキル" ]
@@ -3102,14 +3806,48 @@
     "cost": 2,
     "buff": [
       {
-        "type": "クリティカル率",
+        "type": "アタック",
         "value": 20,
         "duration": 4
       },
       {
-        "type": "クリティカルダメージ倍率",
+        "type": "マジック",
         "value": 20,
         "duration": 4
+      },
+      {
+        "type": "ディフェンス",
+        "value": 20,
+        "duration": 4
+      },
+      {
+        "type": "レジスト",
+        "value": 30,
+        "duration": 4
+      },
+      {
+        "type": "与ダメージ",
+        "value": 12,
+        "duration": 4,
+        "slot": "シンボルスキル"
+      },
+      {
+        "type": "ダメージ耐性",
+        "value": 12,
+        "duration": 4,
+        "slot": "シンボルスキル"
+      },
+      {
+        "type": "クリティカル率",
+        "value": 20,
+        "duration": 4,
+        "slot": "シンボルスキル"
+      },
+      {
+        "type": "クリティカルダメージ倍率",
+        "value": 20,
+        "duration": 4,
+        "slot": "シンボルスキル"
       }
     ],
     "tags": [ "シンボルスキル" ]
@@ -3139,16 +3877,50 @@
     "cost": 2,
     "buff": [
       {
+        "type": "アタック",
+        "value": 20,
+        "duration": 4
+      },
+      {
+        "type": "マジック",
+        "value": 20,
+        "duration": 4
+      },
+      {
+        "type": "ディフェンス",
+        "value": 20,
+        "duration": 4
+      },
+      {
+        "type": "レジスト",
+        "value": 30,
+        "duration": 4
+      },
+      {
+        "type": "与ダメージ",
+        "value": 12,
+        "duration": 4,
+        "slot": "シンボルスキル"
+      },
+      {
+        "type": "ダメージ耐性",
+        "value": 12,
+        "duration": 4,
+        "slot": "シンボルスキル"
+      },
+      {
         "type": "与ダメージ",
         "onBattle": true,
         "value": 15,
-        "duration": 4
+        "duration": 4,
+        "slot": "シンボルスキル"
       },
       {
         "type": "クリティカルダメージ倍率",
         "onBattle": true,
         "value": 10,
-        "duration": 4
+        "duration": 4,
+        "slot": "シンボルスキル"
       }
     ],
     "tags": [ "シンボルスキル" ]
