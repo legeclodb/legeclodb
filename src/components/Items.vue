@@ -388,6 +388,7 @@ export default {
         item.rarityId = this.rarities.findIndex(v => v == item.rarity);
         this.$set(item, 'status', [])
 
+        this.appendBuffTags(item);
         this.registerTags(item.tags);
       }
 

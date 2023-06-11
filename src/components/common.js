@@ -803,7 +803,7 @@ export default {
         if (p.onBattle) {
           t += "(戦闘時)";
         }
-        else if (["自身"].includes(p.target)) {
+        else if (["自身", "味方"].includes(p.target)) {
           t += `(${p.target})`;
         }
         if (p.type == "ランダム")
