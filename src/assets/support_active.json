@@ -1319,7 +1319,7 @@
         "type": "ダメージ耐性",
         "value": 10,
         "duration": 2,
-        "onBattle":  true
+        "onBattle": true
       }
     ],
     "tags": [],
@@ -1596,7 +1596,7 @@
       {
         "type": "ランダム",
         "randomType": "中",
-        "amount":  1
+        "amount": 1
       }
     ],
     "tags": [ "範囲攻撃(自分中心)" ],

@@ -220,6 +220,7 @@ export default {
     for (let i = 0; i < this.mainChrs.length; ++i) {
       let chr = this.mainChrs[i];
       chr.index = i + 1;
+      chr.objectType = "メイン";
       chr.classId = this.classes.findIndex(v => v == chr.class);
       chr.symbolId = this.symbols.findIndex(v => v == chr.symbol);
       chr.rarityId = this.rarities.findIndex(v => v == chr.rarity);
@@ -228,6 +229,7 @@ export default {
     for (let i = 0; i < this.supChrs.length; ++i) {
       let chr = this.supChrs[i];
       chr.index = i + 1;
+      chr.objectType = "サポート";
       chr.classId = this.classes.findIndex(v => v == chr.class);
       chr.rarityId = this.rarities.findIndex(v => v == chr.rarity);
       chr.damageTypeId = this.damageTypes.findIndex(v => v == chr.damageType);
@@ -235,47 +237,46 @@ export default {
     for (let i = 0; i < this.items.length; ++i) {
       let item = this.items[i];
       item.index = i + 1;
+      item.objectType = "アイテム";
       item.status = this.getItemStatus(item);
     }
 
-    const setSlotActive = function (skill, prefix) {
+    const setSlotActive = function (skill, ownerType) {
+      skill.ownerType = ownerType;
       if (skill.buff) {
         for (let v of skill.buff) {
           v.valueType = `バフ:${v.type}`
           if (!v.slot)
-            v.slot = `バフ${prefix}${v.onBattle ? ':戦闘時' : ''}:${v.type}`;
+            v.slot = `バフ:${ownerType}${v.onBattle ? ':戦闘時' : ''}:${v.type}`;
         }
       }
       if (skill.debuff) {
         for (let v of skill.debuff) {
           v.valueType = `デバフ:${v.type}`
           if (!v.slot)
-            v.slot = `デバフ${prefix}${v.onBattle ? ':戦闘時' : ''}:${v.type}`;
+            v.slot = `デバフ${ownerType}${v.onBattle ? ':戦闘時' : ''}:${v.type}`;
         }
       }
     };
-    const setSlotPassive = function (skill) {
-      if (skill.buff) {
-        for (let v of skill.buff) {
+    const setSlotPassive = function (skill, ownerType) {
+      skill.ownerType = ownerType;
+      if (skill.buff)
+        for (let v of skill.buff)
           v.valueType = `バフ:${v.type}`
-        }
-      }
-      if (skill.debuff) {
-        for (let v of skill.debuff) {
+      if (skill.debuff)
+        for (let v of skill.debuff)
           v.valueType = `デバフ:${v.type}`
-        }
-      }
     };
     const apply = function (array, func) {
       for (let v of array)
         func(v);
     };
-    apply(this.mainActive, a => setSlotActive(a, ":メイン"));
-    apply(this.mainPassive, a => setSlotPassive(a));
-    apply(this.mainTalents, a => setSlotPassive(a));
-    apply(this.supActive, a => setSlotActive(a, ":サポート"));
-    apply(this.supPassive, a => setSlotPassive(a));
-    apply(this.items, a => setSlotPassive(a));
+    apply(this.mainActive, a => setSlotActive(a, "メイン"));
+    apply(this.mainPassive, a => setSlotPassive(a, "メイン"));
+    apply(this.mainTalents, a => setSlotPassive(a, "メイン"));
+    apply(this.supActive, a => setSlotActive(a, "サポート"));
+    apply(this.supPassive, a => setSlotPassive(a, "サポート"));
+    apply(this.items, a => setSlotPassive(a, "アイテム"));
 
     this.mainChrs.sort((a, b) => b.date.localeCompare(a.date));
     this.supChrs.sort((a, b) => b.date.localeCompare(a.date));
@@ -305,11 +306,11 @@ export default {
     };
     this.options = makeOptions([
       ["maxPickup", "上位n人を選出", 10],
-      ["allowOnBattle", "戦闘時発動系を含める", true],
-      ["allowProbability", "確率発動系を含める", true],
+      ["allowOnBattle", "戦闘時発動効果を含める", true],
+      ["allowProbability", "確率発動効果を含める", true],
       ["allowSingleUnitBuff", "単体バフを含める", false],
       ["allowSymbolSkill", "シンボルスキルを含める", false],
-      ["allowSupportActive", "サポートのアクティブを含める", false],
+      ["allowSupportActive", "サポートのアクティブを含める", true],
     ]);
 
     const makeParams = function (buffOrDebuff, types) {
@@ -359,6 +360,11 @@ export default {
         this.filterMatch(this.rarityFilter, chr.rarityId) &&
         this.filterMatch(this.damageTypeFilter, chr.damageTypeId);
     },
+    filterMatchSupChr(chr) {
+      return this.filterMatch(this.classFilter, chr.classId) &&
+        this.filterMatch(this.rarityFilter, chr.rarityId) &&
+        this.filterMatch(this.damageTypeFilter, chr.damageTypeId);
+    },
 
     doTest() {
       let r = this.doSearch(this.options.maxPickup.value);
@@ -379,14 +385,15 @@ export default {
       return r;
     },
 
-    enumerateEffects(skill) {
-      if (skill.buff && skill.debuff)
-        return [...skill.buff, ...skill.debuff];
-      else if (skill.buff)
-        return skill.buff;
-      else if (skill.debuff)
-        return skill.debuff;
-      return [];
+    *enumerate(...arrays) {
+      for (let array of arrays) {
+        if (array)
+          yield* array;
+      }
+    },
+
+    *enumerateEffects(skill) {
+      yield* this.enumerate(skill.buff, skill.debuff);
     },
 
     doSearch(num) {
@@ -429,11 +436,16 @@ export default {
         const countSkill = function (skill, updateState = false) {
           if (!opt.allowSymbolSkill && this.matchTags(skill.tags, /^シンボルスキル$/))
             return 0;
+          if (!opt.allowSupportActive && skill.skillType == "アクティブ" && skill.ownerType == "サポート")
+            return 0;
 
           let score = 0;
           for (const v of this.enumerateEffects(skill)) {
             let p = targets.find(a => a.valueType == v.valueType);
             if (p && buffCondition(skill, v)) {
+              if (v.onBattle && !v.duration)
+                continue;
+
               if (updateState) {
                 totalAmount[v.valueType] += v.value;
               }
@@ -489,11 +501,18 @@ export default {
             return r[0] > 0 ? r : null;
         }.bind(this);
 
-        let talent = [countSkill(chr.talent), chr.talent];
-        countSkill(talent[1], true);
 
         let skills = [];
-        {
+        let equipments = [];
+
+        if (chr.talent) {
+          let tmp = [countSkill(chr.talent), chr.talent];
+          if (tmp[0] > 0) {
+            countSkill(tmp[1], true);
+            skills.push(tmp);
+          }
+        }
+        if (chr.skills) {
           let tmpSkills = [...chr.skills];
           for (let i = 0; i < 3; ++i) {
             let r = pickSkill(tmpSkills);
@@ -504,28 +523,22 @@ export default {
             countSkill(r[1], true);
           }
         }
-
-        let equipments = [];
-        for (let equips of [this.weapons, this.armors, this.helmets, this.accessories]) {
-          let r = pickEquip(equips);
-          if (r) {
-            equipments.push(r);
-            countSkill(r[1], true);
+        if (chr.objectType == "メイン") {
+          for (let equips of [this.weapons, this.armors, this.helmets, this.accessories]) {
+            let r = pickEquip(equips);
+            if (r) {
+              equipments.push(r);
+              countSkill(r[1], true);
+            }
           }
         }
 
-        let totalScore = 0;
-        for (let s of [talent, ...skills, ...equipments]) {
-          if (s)
-            totalScore += s[0];
-        }
-        return [
-          totalScore,
-          chr,
-          talent[1],
-          skills.map(a => a[1]),
-          equipments.map(a => a != null ? a[1] : null)
-        ];
+        return {
+          score: [...skills, ...equipments].reduce((t, a) => t + a[0], 0),
+          character: chr,
+          skills: skills.map(a => a[1]),
+          equipments: equipments.map(a => a[1]),
+        };
       }.bind(this);
 
       const countGlobal = function (skill) {
@@ -547,32 +560,33 @@ export default {
 
       let result = [];
       let mainChrs = this.mainChrs.filter(a => this.filterMatchMainChr(a));
+      let supChrs = this.supChrs.filter(a => this.filterMatchSupChr(a));
       for (let i = 0; i < num; ++i) {
-        let candidates = mainChrs.map(a => getScore(a)).filter(a => a != null);
-        if (candidates.length == 0)
+        let resultMain = mainChrs.map(a => getScore(a)).filter(a => a && a.score > 0).sort((a, b) => this.compare(a.score, b.score));
+        let resultSup = supChrs.map(a => getScore(a)).filter(a => a && a.score > 0).sort((a, b) => this.compare(a.score, b.score));
+        if (resultMain.length == 0 && resultSup.length == 0)
           break;
 
-        candidates.sort((a, b) => this.compare(a[0], b[0]));
-        const chosen = candidates[0];
-        if (chosen[0] == 0)
-          break;
+        let r = { score: 0 };
+        if (resultMain.length) {
+          r.main = resultMain[0];
+          r.score += resultMain[0].score;
+        }
+        if (resultSup.length) {
+          r.support = resultSup[0];
+          r.score += resultSup[0].score;
+        }
+        for (let v of [r.main, r.support]) {
+          if (!v)
+            continue;
 
-        const r = {
-          score: chosen[0],
-          character: chosen[1],
-          talent: chosen[2],
-          skills: chosen[3],
-          equipments: chosen[4]
-        };
-        result.push(r);
-
-        excluded.push(r.character);
-        for (const s of [r.talent, ...r.skills, ...r.equipments]) {
-          if (s) {
+          excluded.push(v.character);
+          for (const s of this.enumerate(v.skills, v.equipments)) {
             excluded.push(s);
             countGlobal(s);
           }
         }
+        result.push(r);
       }
       return result;
     },
