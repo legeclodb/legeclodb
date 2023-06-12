@@ -7,106 +7,142 @@
     <div class="content" style="margin-top: 70px;" :style="style">
       <div class="about">
 
-        <h2><a name="status" href="#status"></a></h2>
-        <div class="panel" style="padding: 10px 0px 0px 0px;">
-          <b-container>
-            <b-row>
-              <b-col style="text-align:center">
-                <h5 style="margin-bottom: 5px">バフ組み合わせ検索</h5>
-              </b-col>
-            </b-row>
-          </b-container>
 
-          <div class="flex">
-            <div>
-              <b-container>
-                <div style="text-align:center">
-                  <h6 style="margin: 5px 0px">オプション</h6>
-                </div>
+        <b-container>
+          <b-row>
+            <b-col style="text-align:center">
+              <h5 style="margin-bottom: 5px">バフ組み合わせ検索</h5>
+            </b-col>
+          </b-row>
+        </b-container>
 
-                <b-form-row v-for="(param, name, index) in bs.options" :key="index">
-                  <b-col style="text-align: right" align-self="end">
-                    <label style="width: 12em" :for="`bs-param-${index}`">{{param.label}}</label>
-                  </b-col>
-                  <b-col>
-                    <b-form-checkbox v-if="typeof(param.value) === 'boolean'" :id="`bs-param-${index}`" v-model="param.value" size="sm" plain></b-form-checkbox>
-                    <b-form-input v-if="typeof(param.value) === 'number'" style="width: 3em" :id="`bs-param-${index}`" v-model.number="param.value" size="sm" type="number" class="input-param"></b-form-input>
-                  </b-col>
-                </b-form-row>
-              </b-container>
-            </div>
-          </div>
-
-          <div class="flex">
-            <div>
-              <b-container>
-                <div style="text-align:center">
-                  <h6 style="margin: 5px 0px">バフ</h6>
-                </div>
-
-                <b-form-row v-for="(param, index) in bs.buffs" :key="index">
-                  <b-col style="text-align: right" align-self="end">
-                    <label style="width: 12em" :for="`bs-buff-${index}-e`">{{param.type}}</label>
-                  </b-col>
-                  <b-col>
-                    <b-form-checkbox :id="`bs-buff-${index}-e`" v-model="param.enabled" size="sm" plain></b-form-checkbox>
-                  </b-col>
-                  <b-col class="flex">
-                    <label style="width: 3em" :for="`bs-buff-${index}-e`">重み</label>
-                    <b-form-input style="width: 3em" :id="`bs-buff-${index}-w`" v-model.number="param.weight" size="sm" type="number" class="input-param"></b-form-input>
-                  </b-col>
-                  <b-col class="flex">
-                    <label style="width: 3em" :for="`bs-buff-${index}-e`">上限</label>
-                    <b-form-input style="width: 3em" :id="`bs-buff-${index}-w`" v-model.number="param.limit" size="sm" type="number" class="input-param"></b-form-input>
-                  </b-col>
-                </b-form-row>
-              </b-container>
-            </div>
-
-            <div>
-              <b-container>
-                <div style="text-align:center">
-                  <h6 style="margin: 5px 0px">デバフ</h6>
-                </div>
-
-                <b-form-row v-for="(param, index) in bs.debuffs" :key="index">
-                  <b-col style="text-align: right" align-self="end">
-                    <label style="width: 12em" :for="`bs-debuff-${index}-e`">{{param.type}}</label>
-                  </b-col>
-                  <b-col>
-                    <b-form-checkbox :id="`bs-buff-${index}-e`" v-model="param.enabled" size="sm" plain></b-form-checkbox>
-                  </b-col>
-                  <b-col class="flex">
-                    <label style="width: 3em" :for="`bs-buff-${index}-e`">重み</label>
-                    <b-form-input style="width: 3em" :id="`bs-debuff-${index}-w`" v-model.number="param.weight" size="sm" type="number" class="input-param"></b-form-input>
-                  </b-col>
-                  <b-col class="flex">
-                    <label style="width: 3em" :for="`bs-buff-${index}-e`">上限</label>
-                    <b-form-input style="width: 3em" :id="`bs-debuff-${index}-w`" v-model.number="param.limit" size="sm" type="number" class="input-param"></b-form-input>
-                  </b-col>
-                </b-form-row>
-              </b-container>
-            </div>
-          </div>
+        <div class="flex">
           <div>
             <b-container>
-              <div class="status flex" style="margin-bottom: 10px">
-                <h5></h5>
+              <div style="text-align:center">
+                <h6 style="margin: 5px 0px">オプション</h6>
               </div>
+
+              <b-form-row v-for="(param, name, index) in bs.options" :key="index">
+                <b-col style="text-align: right" align-self="end">
+                  <label style="width: 15em" :for="`bs-param-${index}`">{{param.label}}</label>
+                </b-col>
+                <b-col>
+                  <b-form-checkbox v-if="typeof(param.value) === 'boolean'" :id="`bs-param-${index}`" v-model="param.value" size="sm" plain></b-form-checkbox>
+                  <b-form-input v-if="typeof(param.value) === 'number'" style="width: 3em" :id="`bs-param-${index}`" v-model.number="param.value" size="sm" type="number" class="input-param"></b-form-input>
+                </b-col>
+              </b-form-row>
             </b-container>
           </div>
 
-          <div style="padding: 0px 10px 10px 10px">
-            <b-container>
-              <div style="margin-bottom: 10px">
-                <b-button id="stat-highscore" @click="doTest()" style="margin-left: 5px">テスト</b-button>
+          <div>
+            <div style="text-align:center">
+              <h6 style="margin: 5px 0px">フィルタ</h6>
+            </div>
+            <div class="menu-widgets flex">
+              <div class="widget">
+                <b-button-group size="sm" id="class_selector">
+                  <b-button v-for="(c, i) in classFilter" :key="i" :pressed.sync="c.state" variant="outline-secondary">
+                    <b-img-lazy :src="getImageURL(classes[i])" width="25" height="25" />
+                  </b-button>
+                </b-button-group>
               </div>
+            </div>
+            <div class="menu-widgets flex">
+              <div class="widget">
+                <b-button-group size="sm" id="symbol_selector">
+                  <b-button v-for="(c, i) in symbolFilter" :key="i" :pressed.sync="c.state" variant="outline-secondary">
+                    <b-img-lazy :src="getImageURL('シンボル:'+symbols[i])" height="25" />
+                  </b-button>
+                </b-button-group>
+              </div>
+              <div class="widget">
+                <b-button-group size="sm" id="rareiry_selector">
+                  <b-button v-for="(c, i) in rarityFilter" :key="i" :pressed.sync="c.state" variant="outline-secondary">
+                    <b-img-lazy :src="getImageURL(rarities[i])" width="36" height="20" />
+                  </b-button>
+                </b-button-group>
+              </div>
+              <div class="widget">
+                <b-button-group size="sm" id="attack_type_selector">
+                  <b-button v-for="(c, i) in damageTypeFilter" :key="i" :pressed.sync="c.state" variant="outline-secondary">
+                    <b-img-lazy :src="getImageURL(damageTypes[i])" width="25" height="25" />
+                  </b-button>
+                </b-button-group>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex">
+          <div>
+            <b-container>
+              <div style="text-align:center">
+                <h6 style="margin: 5px 0px">バフ</h6>
+              </div>
+              <b-table small borderless hover :items="bs.buffs" :fields="buffFields">
+                <template #cell(type)="r">
+                  <div class="flex">
+                    <b-form-checkbox v-model="r.item.enabled" size="sm" plain></b-form-checkbox>
+                    <div style="margin: auto 0; vertical-align: baseline;">
+                      {{r.item.type}}
+                    </div>
+                  </div>
+                </template>
+                <template #cell(weight)="r">
+                  <b-form-input style="width: 4em" v-model.number="r.item.weight" size="sm" type="number" class="input-param"></b-form-input>
+                </template>
+                <template #cell(limit)="r">
+                  <div v-if="r.item.limit != undefined">
+                    <b-form-input style="width: 4em" v-model.number="r.item.limit" size="sm" type="number" class="input-param"></b-form-input>
+                  </div>
+                </template>
+              </b-table>
+            </b-container>
+          </div>
+
+          <div>
+            <b-container>
+              <div style="text-align:center">
+                <h6 style="margin: 5px 0px">デバフ</h6>
+              </div>
+
+              <b-table small borderless hover :items="bs.debuffs" :fields="buffFields">
+                <template #cell(type)="r">
+                  <div class="flex">
+                    <b-form-checkbox v-model="r.item.enabled" size="sm" plain></b-form-checkbox>
+                    <div style="margin: auto 0; vertical-align: baseline;">
+                      {{r.item.type}}
+                    </div>
+                  </div>
+                </template>
+                <template #cell(weight)="r">
+                  <b-form-input style="width: 4em" v-model.number="r.item.weight" size="sm" type="number" class="input-param"></b-form-input>
+                </template>
+                <template #cell(limit)="r">
+                  <div v-if="r.item.limit != undefined">
+                    <b-form-input style="width: 4em" v-model.number="r.item.limit" size="sm" type="number" class="input-param"></b-form-input>
+                  </div>
+                </template>
+              </b-table>
             </b-container>
           </div>
         </div>
-        <p class="desc">
-        </p>
+        <div>
+          <b-container>
+            <div class="status flex" style="margin-bottom: 10px">
+              <h5></h5>
+            </div>
+          </b-container>
+        </div>
 
+        <div style="padding: 0px 10px 10px 10px">
+          <b-container>
+            <div style="margin-bottom: 10px">
+              <b-button id="stat-highscore" @click="doTest()" style="margin-left: 5px">テスト</b-button>
+            </div>
+          </b-container>
+        </div>
       </div>
     </div>
 
@@ -122,6 +158,7 @@ import jsonSupportActive from '../assets/support_active.json'
 import jsonSupportPassive from '../assets/support_passive.json'
 import jsonSupportChrs from '../assets/support_characters.json'
 import jsonItems from '../assets/items.json'
+import jsonConstants from '../assets/constants.json'
 import common from "./common";
 
 export default {
@@ -133,6 +170,32 @@ export default {
 
   data() {
     return {
+      classes: jsonConstants.classes,
+      symbols: jsonConstants.symbols,
+      damageTypes: jsonConstants.damageTypes,
+      rarities: jsonConstants.rarities,
+
+      classFilter: [],
+      symbolFilter: [],
+      rarityFilter: [],
+      damageTypeFilter: [],
+
+      buffFields: [
+        {
+          key: "type",
+          label: "種類",
+        },
+        {
+          key: "limit",
+          label: "上限",
+        },
+        {
+          key: "weight",
+          label: "優先度",
+        },
+      ],
+
+
       BuffSearch: class {
         constructor(vue, mainChrs, supChrs, equipments) {
 
@@ -141,9 +204,8 @@ export default {
               return {
                 type: t,
                 enabled: false,
-                weight: 1,
                 limit: 0,
-                includeOnBattle: false,
+                weight: 1,
               };
             }
             return types.map(a => make(a));
@@ -167,16 +229,17 @@ export default {
             ["allowOnBattle", "戦闘時発動系を含める", true],
             ["allowProbability", "確率発動系を含める", true],
             ["allowSingleUnitBuff", "単体バフを含める", false],
-            ["allowSymbolSkill", "シンボルスキルを含める", false]
+            ["allowSymbolSkill", "シンボルスキルを含める", false],
+            ["allowSupportActive", "サポートのアクティブを含める", false],
           ]);
 
           this.buffs = makeParams([
-            "HP", "アタック", "ディフェンス", "マジック", "レジスト", "クリティカル率", "クリティカルダメージ倍率",
+            "アタック", "ディフェンス", "マジック", "レジスト", "クリティカル率", "クリティカルダメージ倍率",
             "与ダメージ", "与ダメージ(物理)", "与ダメージ(魔法)", "与ダメージ(スキル)", "与ダメージ(範囲スキル)", "与ダメージ(通常攻撃)",
             "ダメージ耐性", "ダメージ耐性(物理)", "ダメージ耐性(魔法)",
           ]);
           this.debuffs = makeParams([
-            "アタック", "ディフェンス", "マジック", "レジスト", "被治療効果",
+            "アタック", "ディフェンス", "マジック", "レジスト",
             "与ダメージ", "与ダメージ(物理)", "与ダメージ(魔法)",
             "ダメージ耐性", "ダメージ耐性(物理)", "ダメージ耐性(魔法)",
           ]);
@@ -210,6 +273,7 @@ export default {
           let debuffs = this.debuffs.filter(a => a.enabled);
           const opt = this.getValues(this.options);
           const matchTags = this.vue.matchTags;
+          const filterMatchMainChr = this.vue.filterMatchMainChr;
 
           let usedActiveBuffGlobal = {};
           let usedActiveDebuffGlobal = {};
@@ -220,7 +284,6 @@ export default {
             totalBuffAmountGlobal[v.type] = 0;
           for (let v of debuffs)
             totalDebuffAmountGlobal[v.type] = 0;
-
 
           const buffCondition = function (skill, buff) {
             let ok =
@@ -408,8 +471,9 @@ export default {
 
 
           let result = [];
+          let mainChrs = this.mainChrs.filter(a => filterMatchMainChr(a));
           for (let i = 0; i < num; ++i) {
-            let candidates = this.mainChrs.map(a => getScore(a)).filter(a => a != null);
+            let candidates = mainChrs.map(a => getScore(a)).filter(a => a != null);
             if (candidates.length == 0)
               break;
 
@@ -452,13 +516,29 @@ export default {
     this.supChrs = structuredClone(jsonSupportChrs).filter(a => !a.hidden);
     this.items = structuredClone(jsonItems).filter(a => !a.hidden || a.slot == "アミュレット");
 
+    this.classFilter = [];
+    this.symbolFilter = [];
+    this.rarityFilter = [];
+    this.damageTypeFilter = [];
+    this.fillFilter(this.classFilter, this.classes);
+    this.fillFilter(this.symbolFilter, this.symbols);
+    this.fillFilter(this.rarityFilter, this.rarities);
+    this.fillFilter(this.damageTypeFilter, this.damageTypes);
+
     for (let i = 0; i < this.mainChrs.length; ++i) {
       let chr = this.mainChrs[i];
       chr.index = i + 1;
+      chr.classId = this.classes.findIndex(v => v == chr.class);
+      chr.symbolId = this.symbols.findIndex(v => v == chr.symbol);
+      chr.rarityId = this.rarities.findIndex(v => v == chr.rarity);
+      chr.damageTypeId = this.damageTypes.findIndex(v => v == chr.damageType);
     }
     for (let i = 0; i < this.supChrs.length; ++i) {
       let chr = this.supChrs[i];
       chr.index = i + 1;
+      chr.classId = this.classes.findIndex(v => v == chr.class);
+      chr.rarityId = this.rarities.findIndex(v => v == chr.rarity);
+      chr.damageTypeId = this.damageTypes.findIndex(v => v == chr.damageType);
     }
     for (let i = 0; i < this.items.length; ++i) {
       let item = this.items[i];
@@ -500,6 +580,13 @@ export default {
       return param.disabled() ? "disabled" : "";
     },
 
+    filterMatchMainChr(chr) {
+      return this.filterMatch(this.classFilter, chr.classId) &&
+        this.filterMatch(this.symbolFilter, chr.symbolId) &&
+        this.filterMatch(this.rarityFilter, chr.rarityId) &&
+        this.filterMatch(this.damageTypeFilter, chr.damageTypeId);
+    },
+
     doTest() {
       let r = this.bs.doSearch(this.bs.options.maxPickup.value);
       console.log(r);
@@ -517,7 +604,7 @@ export default {
     margin: 5px;
     border: 1px solid rgba(0, 0, 0, 0.2);
     border-radius: 0.3rem;
-    background: rgb(245, 245, 245);
+    background: white;
     box-shadow: 0 3px 6px rgba(140,149,159,0.5);
   }
 
@@ -570,5 +657,9 @@ export default {
 
   .input-dropdown button {
     padding: 0.1em;
+  }
+
+  .table-sm td {
+    padding: 0.1rem;
   }
 </style>

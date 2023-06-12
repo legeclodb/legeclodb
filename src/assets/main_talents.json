@@ -255,7 +255,7 @@
       },
       {
         "type": "被治療効果",
-        "value": 30,
+        "value": 20,
         "duration": 2
       }
     ],
@@ -1210,7 +1210,7 @@
         "duration": 1
       },
       {
-        "type": "ディフェンス",
+        "type": "レジスト",
         "value": 10,
         "duration": 1
       }

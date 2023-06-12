@@ -37,7 +37,8 @@
     "buff": [
       {
         "type": "ディフェンス",
-        "value": 10
+        "value": 10,
+        "aoe": true
       }
     ],
     "tags": []
@@ -249,11 +250,13 @@
     "buff": [
       {
         "type": "アタック",
-        "value": 10
+        "value": 10,
+        "aoe": true
       },
       {
         "type": "マジック",
-        "value": 10
+        "value": 10,
+        "aoe": true
       }
     ],
     "tags": []
@@ -437,11 +440,13 @@
     "buff": [
       {
         "type": "アタック",
-        "value": 10
+        "value": 10,
+        "aoe": true
       },
       {
         "type": "マジック",
-        "value": 10
+        "value": 10,
+        "aoe": true
       }
     ],
     "tags": [ "地形無視", "再行動", "再攻撃" ]
@@ -514,11 +519,13 @@
     "buff": [
       {
         "type": "アタック",
-        "value": 10
+        "value": 10,
+        "aoe": true
       },
       {
         "type": "マジック",
-        "value": 10
+        "value": 10,
+        "aoe": true
       }
     ],
     "tags": []
@@ -530,23 +537,28 @@
     "buff": [
       {
         "type": "アタック",
-        "value": 5
+        "value": 5,
+        "aoe": true
       },
       {
         "type": "ディフェンス",
-        "value": 5
+        "value": 5,
+        "aoe": true
       },
       {
         "type": "マジック",
-        "value": 5
+        "value": 5,
+        "aoe": true
       },
       {
         "type": "レジスト",
-        "value": 5
+        "value": 5,
+        "aoe": true
       },
       {
         "type": "テクニック",
-        "value": 5
+        "value": 5,
+        "aoe": true
       }
     ],
     "tags": [ "移動+" ]
@@ -558,11 +570,13 @@
     "buff": [
       {
         "type": "アタック",
-        "value": 12
+        "value": 12,
+        "aoe": true
       },
       {
         "type": "マジック",
-        "value": 12
+        "value": 12,
+        "aoe": true
       }
     ],
     "tags": []
@@ -574,19 +588,23 @@
     "buff": [
       {
         "type": "アタック",
-        "value": 8
+        "value": 8,
+        "aoe": true
       },
       {
         "type": "ディフェンス",
-        "value": 8
+        "value": 8,
+        "aoe": true
       },
       {
         "type": "マジック",
-        "value": 8
+        "value": 8,
+        "aoe": true
       },
       {
         "type": "レジスト",
-        "value": 8
+        "value": 8,
+        "aoe": true
       }
     ],
     "tags": [ "範囲回復(自分中心)" ]
@@ -616,7 +634,8 @@
     "buff": [
       {
         "type": "与ダメージ",
-        "value": 12
+        "value": 12,
+        "aoe": true
       }
     ],
     "tags": [ "デメリット付き" ]
@@ -708,12 +727,14 @@
       {
         "type": "ディフェンス",
         "value": 20,
-        "duration": 1
+        "duration": 1,
+        "onKill": true
       },
       {
         "type": "レジスト",
         "value": 20,
-        "duration": 1
+        "duration": 1,
+        "onKill": true
       }
     ],
     "tags": []
@@ -801,23 +822,28 @@
     "buff": [
       {
         "type": "アタック",
-        "value": 8
+        "value": 8,
+        "aoe": true
       },
       {
         "type": "ディフェンス",
-        "value": 8
+        "value": 8,
+        "aoe": true
       },
       {
         "type": "マジック",
-        "value": 8
+        "value": 8,
+        "aoe": true
       },
       {
         "type": "レジスト",
-        "value": 8
+        "value": 8,
+        "aoe": true
       },
       {
         "type": "テクニック",
-        "value": 8
+        "value": 8,
+        "aoe": true
       }
     ],
     "tags": [ "CT減(自身)" ]
