@@ -1,9 +1,7 @@
 ﻿#!/usr/bin/env python
 import os, shutil, glob, re, json
 
-# AssetStudio で展開したアセットの場所で実行される想定
-# (_material.mat, .atlas.gz, .skel.bytes, skeletondata.asset を AssetStudio で展開すると
-#  MonoBehaviour, TextAsset, Texture2D ディレクトリができているはず。それらがある場所で実行する)
+os.chdir("tmp/st")
 
 for d in ["MonoBehaviour", "TextAsset", "Texture2D"]:
     for f in glob.glob(d + "/*"):

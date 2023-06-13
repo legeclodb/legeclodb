@@ -212,8 +212,9 @@ def updateDescs(dst, descs):
                 return "[variable]"
             desc = re.sub(r'\[([^]]+)\](.+?)\[/\1\]', cb, dst['descs'][k])
             if prev and desc != prev:
-                if vals[-2] != "100%":
-                    print(f"!! {desc} {vals[-2]} : {vals[-1]}")
+                print(f"!! {desc}")
+                #if vals[-2] != "100%":
+                    #print(f"!! {desc} {vals[-2]} : {vals[-1]}")
             prev = desc
         if eq:
             return
