@@ -832,6 +832,19 @@ export default {
         skill.tags.push(t);
     },
 
+    setupEffects(skill) {
+      if (skill.buff) {
+        for (let v of skill.buff) {
+          v.effectType = "バフ";
+        }
+      }
+      if (skill.debuff) {
+        for (let v of skill.debuff) {
+          v.effectType = "デバフ";
+        }
+      }
+    },
+
     setupCharacters(characters, activeSkills, passiveSkills, talents = []) {
       for (let s of activeSkills)
         s.skillType = "アクティブ";
@@ -841,8 +854,10 @@ export default {
         s.skillType = "タレント";
 
       let skillTable = new Map();
-      for (let s of [...activeSkills, ...passiveSkills, ...talents])
+      for (let s of [...activeSkills, ...passiveSkills, ...talents]) {
+        this.setupEffects(s);
         skillTable.set(s.name, s);
+      }
 
       const grabSkill = function (name, chr) {
         let skill = skillTable.get(name);
