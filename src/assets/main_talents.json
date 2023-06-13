@@ -789,24 +789,28 @@
       {
         "type": "与ダメージ",
         "onBattle": true,
-        "value": 15
+        "value": 15,
+        "duration": 4
       },
       {
         "type": "ダメージ耐性",
         "onBattle": true,
-        "value": 15
+        "value": 15,
+        "duration": 4
       }
     ],
     "debuff": [
       {
         "type": "与ダメージ",
         "onBattle": true,
-        "value": 10
+        "value": 10,
+        "duration": 4
       },
       {
         "type": "ダメージ耐性",
         "onBattle": true,
-        "value": 10
+        "value": 10,
+        "duration": 4
       }
     ],
     "tags": [ "範囲回復(味方全体)", "デバフ解除" ]

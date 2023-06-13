@@ -189,7 +189,7 @@
 
           <div class="flex">
             <div v-if="r.summon" class="portrait">
-              <b-img-lazy :src="getImageURL(r.summon.character.name)" :title="r.summon.character.name" :id="'portrait_m_'+ri" width="100" height="100" rounded />
+              <b-img-lazy :src="getImageURL(r.summon.character.name)" :title="`${r.summon.character.name} (召喚ユニット)`" :id="'portrait_m_'+ri" width="100" height="100" rounded />
             </div>
             <div v-if="r.summon" class="detail" v-show="displayType >= 1">
               <div class="skills">
@@ -500,7 +500,7 @@ export default {
         if (v.type != "移動") {
           unit = "%";
         }
-        lines.push(`<span class="effect ${additionalClass}">${v.type}${onBattle}${prefix}${v.value}${unit}</span>`);
+        lines.push(`<span class="effect ${additionalClass}">${v.type}${onBattle}${prefix}${this.getEffectValue(v)}${unit}</span>`);
       }
       return lines.length ? `[ ${lines.join(", ")} ]` : "";
     },
@@ -517,11 +517,6 @@ export default {
         this.filterMatch(this.damageTypeFilter, chr.damageTypeId);
     },
 
-    doTest() {
-      let r = this.doSearch(this.options.maxPickup.value);
-      console.log(r);
-    },
-
     matchClass(item, chr) {
       return item && (!item.classes || item.classes.includes(chr.class));
     },
@@ -533,6 +528,13 @@ export default {
       let r = {};
       for (const k in opt)
         r[k] = opt[k].value;
+      return r;
+    },
+
+    getEffectValue(effect) {
+      let r = effect.value;
+      if (effect.maxStack)
+        r *= effect.maxStack;
       return r;
     },
 
@@ -552,7 +554,7 @@ export default {
       let targets = this.enabledEffects;
 
       let totalAmountGlobal = {};
-      let usedActiveSlotsGlobal = {};
+      let usedSlotsGlobal = {};
 
       for (let v of targets)
         totalAmountGlobal[v.valueType] = 0;
@@ -563,13 +565,12 @@ export default {
 
         const opt = this.optionValues;
         let totalAmount = { ...totalAmountGlobal };
-        let usedActiveSlots = { ...usedActiveSlotsGlobal };
-        let overriddenActiveSlots = {};
+        let usedSlots = { ...usedSlotsGlobal };
         let usedEffects = [];
 
-        const limitAmount = function (param, amount) {
+        const limitAmount = function (param, amount, tm) {
           if (param.limit > 0)
-            amount = Math.min(amount, Math.max(param.limit - totalAmount[param.valueType], 0));
+            amount = Math.min(amount, Math.max(param.limit - tm[param.valueType], 0));
           return amount;
         }.bind(this);
 
@@ -589,7 +590,7 @@ export default {
           }
         }.bind(this);
 
-        const countSkill = function (skill, updateState = false) {
+        const getScore = function (skill, parentState = null) {
           if (excluded.includes(skill))
             return 0;
           if (!opt.allowSymbolSkill && this.matchTags(skill.tags, /^シンボルスキル$/))
@@ -597,100 +598,105 @@ export default {
           if (!opt.allowSupportActive && skill.skillType == "アクティブ" && skill.ownerType == "サポート")
             return 0;
 
-          let score = 0;
-          let newUsedSlots = updateState ? { ...usedActiveSlots } : null;
-
+          let r = {
+            skill: skill,
+            score: 0,
+          };
+          if (parentState) {
+            r.usedSlots = parentState.usedSlots;
+            r.totalAmount = parentState.totalAmount;
+            r.usedEffects = parentState.usedEffects;
+          }
+          else {
+            r.usedSlots = { ...usedSlots };
+            r.totalAmount = { ...totalAmount };
+            r.usedEffects = [...usedEffects];
+          }
+ 
           for (const v of this.enumerateEffects(skill)) {
             let p = targets.find(a => a.valueType == v.valueType);
             if (p && buffCondition(skill, v)) {
-              const amount = limitAmount(p, v.value);
+              const amount = limitAmount(p, this.getEffectValue(v), r.totalAmount);
               if (skill.skillType == "アクティブ") {
-                let prev = usedActiveSlots[v.slot];
+                let prev = usedSlots[v.slot];
                 if (prev /*&& prev[0] >= amount*/) {
                   continue;
                 }
-                if (updateState) {
-                  newUsedSlots[v.slot] = [amount, chr];
-                  if (prev)
-                    overriddenActiveSlots[v.slot] = prev;
-                }
+                r.usedSlots[v.slot] = [v, skill, chr];
               }
-              score += amount * p.weight;
-              if (updateState) {
-                totalAmount[v.valueType] += amount;
-                usedEffects.push(v);
+              const score = amount * p.weight;
+              if (score > 0) {
+                r.score += score;
+                r.totalAmount[v.valueType] += amount;
+                r.usedEffects.push(v);
               }
             }
           }
-          if (newUsedSlots)
-            usedActiveSlots = newUsedSlots;
 
           if (skill.summon) {
             let sch = skill.summon[0];
-            for (const s of [sch.talent, ...sch.skills])
-              score += countSkill(s, updateState);
+            r.summon = {
+              character: sch,
+              skills: [],
+            };
+            for (const s of [sch.talent, ...sch.skills]) {
+              const sr = getScore(s, r);
+              if (sr.score > 0) {
+                r.score += sr.score;
+                r.summon.skills.push(s);
+              }
+            }
           }
-          return score;
+          return r;
         }.bind(this);
 
         const pickEquip = function (equipments) {
           equipments = equipments.filter(a => !excluded.includes(a) && this.matchClass(a, chr));
-          equipments = equipments.map(a => [countSkill(a), a]);
-          equipments.sort((a, b) => this.compare(a[0], b[0]));
+          equipments = equipments.map(a => getScore(a));
+          equipments.sort((a, b) => this.compare(a.score, b.score));
           let r = null;
-          if (equipments.length > 0 && equipments[0][0] > 0) {
+          if (equipments.length > 0 && equipments[0].score > 0) {
             r = equipments[0];
           }
           return r;
         }.bind(this);
 
         const pickSkill = function (skills) {
-          let passive = [];
-          for (const skill of skills.filter(a => a.skillType != "アクティブ")) {
+          let scoreList = [];
+          for (const skill of skills) {
             if (excluded.includes(skill))
               continue;
 
-            const score = countSkill(skill);
-            if (score > 0)
-              passive.push([score, skill]);
+            const r = getScore(skill);
+            if (r.score > 0)
+              scoreList.push(r);
           }
-
-          let active = [];
-          for (const skill of skills.filter(a => a.skillType == "アクティブ")) {
-            const score = countSkill(skill);
-            if (score > 0)
-              active.push([score, skill]);
-          }
-          active = active.sort((a, b) => this.compare(a[0], b[0]));
-          for (let a of active)
-            a[0] = countSkill(a[1]);
-          active = active.filter(a => a[0] > 0);
-
-          let r = [...passive, ...active].sort((a, b) => this.compare(a[0], b[0]))[0];
-          if (!r || r[0] == 0)
+          if (scoreList.length == 0)
             return null;
-          if (r[1].summon) {
-            let sch = r[1].summon[0];
-            let sr = [sch.talent, ...sch.skills].map(a => [countSkill(a), a]).filter(a => a[0] > 0).map(a => a[1]);
-            let summon = { character: sch, skills: sr };
-            r.push(summon);
-          }
+
+          let r = scoreList.sort((a, b) => this.compare(a.score, b.score))[0];
           return r;
         }.bind(this);
+
+        const updateState = function (score) {
+          usedSlots = score.usedSlots;
+          totalAmount = score.totalAmount;
+          usedEffects = score.usedEffects;
+        };
 
 
         let skills = [];
         let equipments = [];
 
         if (chr.talent) {
-          let tmp = [countSkill(chr.talent), chr.talent];
-          if (tmp[0] > 0) {
-            countSkill(tmp[1], true);
-            skills.push(tmp);
+          let r = getScore(chr.talent);
+          if (r.score > 0) {
+            updateState(r);
+            skills.push(r);
           }
         }
 
-        let summon = undefined;
+        let summon = null;
         if (chr.skills) {
           let tmpSkills = [...chr.skills];
           for (let i = 0; i < 3; ++i) {
@@ -698,14 +704,11 @@ export default {
             if (!r)
               break;
 
-            tmpSkills.splice(tmpSkills.indexOf(r[1]), 1);
+            tmpSkills.splice(tmpSkills.indexOf(r.skill), 1);
             skills.push(r);
-            countSkill(r[1], true);
-            if (r.length == 3) {
-              summon = r[2];
-              for (let ss of summon.skills) {
-                countSkill(ss, true);
-              }
+            updateState(r);
+            if (r.summon) {
+              summon = r.summon;
             }
           }
         }
@@ -714,21 +717,20 @@ export default {
             let r = pickEquip(equips);
             if (r) {
               equipments.push(r);
-              countSkill(r[1], true);
+              updateState(r);
             }
           }
         }
 
         return {
-          score: [...skills, ...equipments].reduce((t, a) => t + a[0], 0),
+          score: [...skills, ...equipments].reduce((t, a) => t + a.score, 0),
           character: chr,
-          skills: skills.map(a => a[1]),
-          equipments: equipments.map(a => a[1]),
+          skills: skills.map(a => a.skill),
+          equipments: equipments.map(a => a.skill),
           summon: summon,
 
           totalAmount: totalAmount,
-          usedActiveSlots: usedActiveSlots,
-          overriddenActiveSlots: overriddenActiveSlots,
+          usedSlots: usedSlots,
           usedEffects: usedEffects,
         };
       }.bind(this);
@@ -748,12 +750,11 @@ export default {
         const updateState = function (field, t) {
           r[field] = t;
           r.score += t.score;
-          if (t.summon) {
+          if (t.summon)
             r.summon = t.summon;
-            delete t.summon;
-          }
+          r.totalAmount = t.totalAmount; // for debug
           totalAmountGlobal = t.totalAmount;
-          usedActiveSlotsGlobal = t.usedActiveSlots;
+          usedSlotsGlobal = t.usedSlots;
         };
 
         let bestMain = pickBest(mainChrs);
@@ -776,6 +777,7 @@ export default {
 
         result.push(r);
       }
+      //console.log(result); // for debug
       return result;
     },
 
