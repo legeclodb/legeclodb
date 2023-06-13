@@ -872,6 +872,11 @@ export default {
               s.talent = grabSkill(s.talent, chr);
             s.skills = s.skills.flatMap(name => grabSkill(name, chr));
           }
+          for (let s of chr.skills) {
+            if (s.summon) {
+              s.summon = s.summon.map(name => chr.summon.find(sch => sch.name == name));
+            }
+          }
         }
       }
     },

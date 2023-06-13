@@ -70,6 +70,21 @@
           </div>
 
           <div class="text-nowrap">
+            <b-container>
+              <div style="text-align:center">
+                <h6 style="margin: 5px 0px">除外リスト</h6>
+              </div>
+
+              <b-table small borderless hover :items="excluded" :fields="excludedFields">
+                <template #cell(name)="r">
+                  <img :src="getImageURL(r.item.name)" :title="r.item.name" with="50" height="50" />
+                  <b-button @click="excluded.splice(excluded.indexOf(r.item), 1)">有効化</b-button>
+                </template>
+              </b-table>
+            </b-container>
+          </div>
+
+          <div class="text-nowrap">
             <div>
               <b-container>
                 <div style="text-align:center">
@@ -136,6 +151,123 @@
           </b-container>
         </div>
       </div>
+
+      <template v-for="(r, ri) in result">
+        <div class="character" :key="ri">
+          <div class="flex">
+            <div v-if="r.main" class="portrait">
+              <b-img-lazy :src="getImageURL(r.main.character.name)" :alt="r.main.character.name" :id="'portrait_m_'+ri" width="100" height="100" rounded />
+              <b-popover v-if="displayType>=1" :target="'portrait_m_'+ri" triggers="hover click blur" :delay="{show:0, hide:250}" no-fade :title="r.main.character.name" placement="top">
+                <div class="flex">
+                  <b-button @click="excluded.push(r.main.character)">このキャラを除外</b-button>
+                </div>
+              </b-popover>
+            </div>
+            <div v-if="r.main" class="detail" v-show="displayType >= 1">
+              <div class="skills">
+                <div class="skill" v-for="(skill, si) in r.main.skills" :key="si">
+                  <div class="flex">
+                    <div class="icon">
+                      <b-img-lazy :src="getImageURL(skill.name)" with="50" height="50" :id="'skill_m_'+ri+'_'+si" />
+                      <b-popover v-if="displayType>=1" :target="'skill_m_'+ri+'_'+si" triggers="hover focus" :delay="{show:0, hide:250}" no-fade :title="skill.name" placement="top">
+                        <div class="flex">
+                          <b-button @click="excluded.push(skill)">このスキルを除外</b-button>
+                        </div>
+                      </b-popover>
+                    </div>
+                    <div class="desc" v-show="displayType >= 2">
+                      <div class="flex">
+                        <h6>{{ skill.name }}</h6>
+                        <div class="param-group" v-html="skillParamsToHtml(skill)"></div>
+                      </div>
+                      <p><span v-html="descToHtml(skill)"></span><span v-if="skill.note" class="note" v-html="noteToHtml(skill)"></span></p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="skills">
+                <div class="skill" v-for="(skill, si) in r.main.equipments" :key="si">
+                  <div class="flex">
+                    <div class="icon">
+                      <b-img-lazy :src="getImageURL(skill.name)" with="50" height="50" :id="'item_'+ri+'_'+si" />
+                      <b-popover v-if="displayType>=1" :target="'item_'+ri+'_'+si" triggers="hover focus" :delay="{show:0, hide:250}" no-fade :title="skill.name" placement="top">
+                        <div class="flex">
+                          <b-button @click="excluded.push(skill)">このアイテムを除外</b-button>
+                        </div>
+                      </b-popover>
+                    </div>
+                    <div class="desc" v-show="displayType >= 2">
+                      <div class="flex">
+                        <h6>{{ skill.name }}</h6>
+                        <div class="param-group" v-html="skillParamsToHtml(skill)"></div>
+                      </div>
+                      <p><span v-html="descToHtml(skill)"></span><span v-if="skill.note" class="note" v-html="noteToHtml(skill)"></span></p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div v-if="r.support" class="portrait">
+              <b-img-lazy :src="getImageURL(r.support.character.name)" :alt="r.support.character.name" :id="'portrait_s_'+ri" width="100" height="100" rounded />
+              <b-popover v-if="displayType>=1" :target="'portrait_s_'+ri" triggers="hover focus" :delay="{show:0, hide:250}" no-fade :title="r.support.character.name" placement="top">
+                <div class="flex">
+                  <b-button @click="excluded.push(r.support.character)">このキャラを除外</b-button>
+                </div>
+              </b-popover>
+            </div>
+            <div v-if="r.support" class="detail" v-show="displayType >= 1">
+              <div class="skills">
+                <div class="skill" v-for="(skill, si) in enumerate(r.support.skills)" :key="si">
+                  <div class="flex">
+                    <div class="icon">
+                      <b-img-lazy :src="getImageURL(skill.name)" with="50" height="50" :id="'skill_s_'+ri+'_'+si" />
+                    </div>
+                    <div class="desc" v-show="displayType >= 2">
+                      <div class="flex">
+                        <h6>{{ skill.name }}</h6>
+                        <div class="param-group" v-html="skillParamsToHtml(skill)"></div>
+                      </div>
+                      <p><span v-html="descToHtml(skill)"></span><span v-if="skill.note" class="note" v-html="noteToHtml(skill)"></span></p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex">
+            <div v-if="r.summon" class="portrait">
+              <b-img-lazy :src="getImageURL(r.summon.character.name)" :alt="r.summon.character.name" :id="'portrait_m_'+ri" width="100" height="100" rounded />
+            </div>
+            <div v-if="r.summon" class="detail" v-show="displayType >= 1">
+              <div class="skills">
+                <div class="skill" v-for="(skill, si) in r.summon.skills" :key="si">
+                  <div class="flex">
+                    <div class="icon">
+                      <b-img-lazy :src="getImageURL(skill.name)" with="50" height="50" :id="'skill_m_'+ri+'_'+si" />
+                      <b-popover v-if="displayType>=1" :target="'skill_m_'+ri+'_'+si" triggers="hover focus" :delay="{show:0, hide:250}" no-fade :title="skill.name" placement="top">
+                        <div class="flex">
+                          <b-button @click="excluded.push(skill)">このスキルを除外</b-button>
+                        </div>
+                      </b-popover>
+                    </div>
+                    <div class="desc" v-show="displayType >= 2">
+                      <div class="flex">
+                        <h6>{{ skill.name }}</h6>
+                        <div class="param-group" v-html="skillParamsToHtml(skill)"></div>
+                      </div>
+                      <p><span v-html="descToHtml(skill)"></span><span v-if="skill.note" class="note" v-html="noteToHtml(skill)"></span></p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </template>
     </div>
 
   </div>
@@ -172,7 +304,7 @@ export default {
       rarityFilter: [],
       damageTypeFilter: [],
 
-      optiond: [],
+      options: [],
       buffs: [],
       debuffs: [],
       excluded: [],
@@ -189,6 +321,12 @@ export default {
         {
           key: "weight",
           label: "優先度",
+        },
+      ],
+      excludedFields: [
+        {
+          key: "name",
+          label: "対象",
         },
       ],
     };
@@ -401,8 +539,8 @@ export default {
       let targets = [...this.buffs.filter(a => a.enabled), ...this.debuffs.filter(a => a.enabled)];
       const opt = this.getValues(this.options);
 
-      let usedActiveSlotsGlobal = {};
       let totalAmountGlobal = {};
+      let usedActiveSlotsGlobal = {};
 
       for (let v of targets)
         totalAmountGlobal[v.valueType] = 0;
@@ -424,8 +562,9 @@ export default {
         if (excluded.includes(chr))
           return null;
 
-        let usedActiveSlots = { ...usedActiveSlotsGlobal };
         let totalAmount = { ...totalAmountGlobal };
+        let usedActiveSlots = { ...usedActiveSlotsGlobal };
+        let overriddenActiveSlots = {};
 
         const limitAmount = function (param, amount) {
           if (param.limit > 0)
@@ -434,6 +573,8 @@ export default {
         }.bind(this);
 
         const countSkill = function (skill, updateState = false) {
+          if (excluded.includes(skill))
+            return 0;
           if (!opt.allowSymbolSkill && this.matchTags(skill.tags, /^シンボルスキル$/))
             return 0;
           if (!opt.allowSupportActive && skill.skillType == "アクティブ" && skill.ownerType == "サポート")
@@ -446,17 +587,28 @@ export default {
               if (v.onBattle && !v.duration)
                 continue;
 
+              const amount = limitAmount(p, v.value);
               if (updateState) {
-                totalAmount[v.valueType] += v.value;
+                totalAmount[v.valueType] += amount;
               }
               if (skill.skillType == "アクティブ") {
-                if (usedActiveSlots[v.slot])
+                let prev = usedActiveSlots[v.slot];
+                if (prev /*&& prev[0] >= amount*/) {
                   continue;
-                else if (updateState)
-                  usedActiveSlots[v.slot] = v.value;
+                }
+                else if (updateState) {
+                  usedActiveSlots[v.slot] = [amount, chr];
+                  if (prev)
+                    overriddenActiveSlots[v.slot] = prev;
+                }
               }
-              score += limitAmount(p, v.value) * p.weight;
+              score += amount * p.weight;
             }
+          }
+          if (skill.summon) {
+            let sch = skill.summon[0];
+            for (const s of [sch.talent, ...sch.skills])
+              score += countSkill(s);
           }
           return score;
         }.bind(this);
@@ -495,10 +647,15 @@ export default {
           active = active.filter(a => a[0] > 0);
 
           let r = [...passive, ...active].sort((a, b) => this.compare(a[0], b[0]))[0];
-          if (!r)
+          if (!r || r[0] == 0)
             return null;
-          else
-            return r[0] > 0 ? r : null;
+          if (r[1].summon) {
+            let sch = r[1].summon[0];
+            let sr = [sch.talent, ...sch.skills].map(a => [countSkill(a), a]).filter(a => a[0] > 0).map(a => a[1]);
+            let summon = { character: sch, skills: sr };
+            r.push(summon);
+          }
+          return r;
         }.bind(this);
 
 
@@ -512,15 +669,24 @@ export default {
             skills.push(tmp);
           }
         }
+
+        let summon = undefined;
         if (chr.skills) {
           let tmpSkills = [...chr.skills];
           for (let i = 0; i < 3; ++i) {
             let r = pickSkill(tmpSkills);
             if (!r)
               break;
-            skills.push(r);
+
             tmpSkills.splice(tmpSkills.indexOf(r[1]), 1);
+            skills.push(r);
             countSkill(r[1], true);
+            if (r.length == 3) {
+              summon = r[2];
+              for (let ss of summon.skills) {
+                countSkill(ss, true);
+              }
+            }
           }
         }
         if (chr.objectType == "メイン") {
@@ -538,23 +704,12 @@ export default {
           character: chr,
           skills: skills.map(a => a[1]),
           equipments: equipments.map(a => a[1]),
-        };
-      }.bind(this);
+          summon: summon,
 
-      const countGlobal = function (skill) {
-        for (const v of this.enumerateEffects(skill)) {
-          let p = targets.find(a => a.valueType == v.valueType);
-          if (p) {
-            totalAmountGlobal[v.valueType] += v.value;
-            if (skill.skillType == "アクティブ") {
-              if (usedActiveSlotsGlobal[v.slot])
-                continue;
-              else
-                usedActiveSlotsGlobal[v.slot] = v.value;
-            }
-            p.amount += v.value;
-          }
-        }
+          totalAmount: totalAmount,
+          usedActiveSlots: usedActiveSlots,
+          overriddenActiveSlots: overriddenActiveSlots,
+        };
       }.bind(this);
 
 
@@ -562,30 +717,42 @@ export default {
       let mainChrs = this.mainChrs.filter(a => this.filterMatchMainChr(a));
       let supChrs = this.supChrs.filter(a => this.filterMatchSupChr(a));
       for (let i = 0; i < num; ++i) {
-        let resultMain = mainChrs.map(a => getScore(a)).filter(a => a && a.score > 0).sort((a, b) => this.compare(a.score, b.score));
-        let resultSup = supChrs.map(a => getScore(a)).filter(a => a && a.score > 0).sort((a, b) => this.compare(a.score, b.score));
-        if (resultMain.length == 0 && resultSup.length == 0)
-          break;
-
         let r = { score: 0 };
-        if (resultMain.length) {
-          r.main = resultMain[0];
-          r.score += resultMain[0].score;
-        }
-        if (resultSup.length) {
-          r.support = resultSup[0];
-          r.score += resultSup[0].score;
-        }
+
+        const pickBest = function (chrs) {
+          let ordered = chrs.map(a => getScore(a)).filter(a => a && a.score > 0).sort((a, b) => this.compare(a.score, b.score));
+          return ordered.length ? ordered[0] : null;
+        }.bind(this);
+
+        const updateState = function (field, t) {
+          r[field] = t;
+          r.score += t.score;
+          if (t.summon) {
+            r.summon = t.summon;
+            delete t.summon;
+          }
+          totalAmountGlobal = t.totalAmount;
+          usedActiveSlotsGlobal = t.usedActiveSlots;
+        };
+
+        let bestMain = pickBest(mainChrs);
+        if (bestMain)
+          updateState("main", bestMain);
+
+        let bestSup = pickBest(supChrs);
+        if (bestSup)
+          updateState("support", bestSup);
+
         for (let v of [r.main, r.support]) {
           if (!v)
             continue;
-
           excluded.push(v.character);
-          for (const s of this.enumerate(v.skills, v.equipments)) {
+          for (const s of this.enumerate(v.skills, v.equipments))
             excluded.push(s);
-            countGlobal(s);
-          }
         }
+        if (!bestMain && !bestSup)
+          break;
+
         result.push(r);
       }
       return result;
@@ -594,6 +761,9 @@ export default {
   },
 
   computed: {
+    result() {
+      return this.doSearch(this.options.maxPickup.value);
+    }
   }
 
 }</script>
@@ -645,9 +815,27 @@ export default {
     background: white;
   }
 
-    .panel h6 {
-      margin-bottom: 5px;
-    }
+  .panel h6 {
+    margin-bottom: 5px;
+  }
+
+  div.character {
+    padding: 3px;
+    margin: 5px;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 0.3rem;
+    background: rgb(245, 245, 245);
+    flex-grow: initial;
+    box-shadow: 0 3px 6px rgba(140,149,159,0.5);
+    min-width: 1440px;
+    max-width: none;
+  }
+
+  div.detail {
+    width: 600px;
+    flex: none;
+  }
+
 </style>
 <style>
   .desc .table {
