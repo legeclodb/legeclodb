@@ -866,12 +866,18 @@ export default {
     },
 
     setupCharacters(characters, activeSkills, passiveSkills, talents = []) {
-      for (let s of activeSkills)
+      for (let s of activeSkills) {
         s.skillType = "アクティブ";
-      for (let s of passiveSkills)
+        s.isActive = true;
+      }
+      for (let s of passiveSkills) {
         s.skillType = "パッシブ";
-      for (let s of talents)
+        s.isPassive = true;
+      }
+      for (let s of talents) {
         s.skillType = "タレント";
+        s.isTalent = true;
+      }
 
       let skillTable = new Map();
       for (let s of [...activeSkills, ...passiveSkills, ...talents]) {

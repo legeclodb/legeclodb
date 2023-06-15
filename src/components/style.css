@@ -246,6 +246,9 @@ div.skill {
 .caution {
   color: rgb(255, 64, 80);
 }
+.blue {
+  color: rgb(64, 64, 255);
+}
 .owners {
   margin-top: 5px;
 }

@@ -3,29 +3,31 @@
     <div class="header" :class="{ 'hidden': !showHeader }">
       <Navigation />
     </div>
-    <div class="about" style="margin-top: 70px;">
-      <h2 style="margin-bottom: 5px">バフ・デバフ組み合わせ検索</h2>
+    <div class="about" style="margin-top: 55px;">
 
       <div class="menu-content">
-        <div class="menu-panel">
+        <div class="menu-panel" id="cb-settings">
           <b-container>
-            <div style="text-align:center">
+            <div>
               <h3 style="margin: 5px 0px">設定</h3>
             </div>
 
-            <b-form-row v-for="(param, name, index) in options" :key="index">
-              <b-col style="text-align: right" align-self="end">
-                <label style="width: 15em" :for="`bs-param-${index}`">{{param.label}}</label>
-              </b-col>
-              <b-col>
-                <b-form-checkbox v-if="typeof(param.value) === 'boolean'" :id="`bs-param-${index}`" v-model="param.value"></b-form-checkbox>
-                <b-form-input v-if="typeof(param.value) === 'number'" style="width: 3em" :id="`bs-param-${index}`" v-model.number="param.value" size="sm" type="number" class="input-param"></b-form-input>
-              </b-col>
-            </b-form-row>
+            <b-table small borderless hover :items="Object.values(options)" :fields="optionFields">
+              <template #cell(value)="r">
+                <div class="flex" style="flex-direction: row-reverse">
+                  <b-form-checkbox v-if="r.item.type == 'boolean'" v-model="r.item.value"></b-form-checkbox>
+                  <b-form-input v-if="r.item.type == 'number'" style="width: 3em" v-model.number="r.item.value" size="sm" type="number" class="input-param"></b-form-input>
+                </div>
+              </template>
+              <template #cell(label)="r">
+                <div :id="`cb-p-${r.item.name}`">{{r.item.label}}</div>
+              </template>
+            </b-table>
+
           </b-container>
 
           <b-container>
-            <div style="text-align:center">
+            <div>
               <h3 style="margin: 5px 0px">フィルタ</h3>
             </div>
             <div class="menu-widgets flex">
@@ -56,62 +58,54 @@
           </b-container>
         </div>
 
-        <div class="menu-panel">
+        <div class="menu-panel" id="cb-buff-list">
           <b-container>
-            <div style="text-align:center">
+            <div>
               <h3 style="margin: 5px 0px">バフ</h3>
             </div>
             <b-table small borderless hover :items="buffs" :fields="buffFields">
+              <template #cell(enabled)="r">
+                <b-form-checkbox v-model="r.item.enabled"></b-form-checkbox>
+              </template>
               <template #cell(label)="r">
-                <div class="flex">
-                  <b-form-checkbox v-model="r.item.enabled"></b-form-checkbox>
-                  <div style="margin: auto 0; vertical-align: baseline;">
-                    {{r.item.label}}
-                  </div>
-                </div>
+                {{r.item.label}}
+              </template>
+              <template #cell(limit)="r">
+                <b-form-input style="width: 4.5em" v-model.number="r.item.limit" size="sm" type="number" class="input-param" step="10" placeholder="無制限"></b-form-input>
               </template>
               <template #cell(weight)="r">
                 <b-form-input style="width: 3.5em" v-model.number="r.item.weight" size="sm" type="number" class="input-param"></b-form-input>
-              </template>
-              <template #cell(limit)="r">
-                <div v-if="r.item.limit != undefined">
-                  <b-form-input style="width: 3.5em" v-model.number="r.item.limit" size="sm" type="number" class="input-param"></b-form-input>
-                </div>
               </template>
             </b-table>
           </b-container>
         </div>
 
-        <div class="menu-panel">
+        <div class="menu-panel" id="cb-debuff-list">
           <b-container>
-            <div style="text-align:center">
+            <div>
               <h3 style="margin: 5px 0px">デバフ</h3>
             </div>
 
             <b-table small borderless hover :items="debuffs" :fields="buffFields">
+              <template #cell(enabled)="r">
+                <b-form-checkbox v-model="r.item.enabled"></b-form-checkbox>
+              </template>
               <template #cell(label)="r">
-                <div class="flex">
-                  <b-form-checkbox v-model="r.item.enabled"></b-form-checkbox>
-                  <div style="margin: auto 0; vertical-align: baseline;">
-                    {{r.item.label}}
-                  </div>
-                </div>
+                {{r.item.label}}
+              </template>
+              <template #cell(limit)="r">
+                <b-form-input style="width: 4.5em" v-model.number="r.item.limit" size="sm" type="number" class="input-param" step="10" placeholder="無制限"></b-form-input>
               </template>
               <template #cell(weight)="r">
                 <b-form-input style="width: 3.5em" v-model.number="r.item.weight" size="sm" type="number" class="input-param"></b-form-input>
-              </template>
-              <template #cell(limit)="r">
-                <div v-if="r.item.limit != undefined">
-                  <b-form-input style="width: 3.5em" v-model.number="r.item.limit" size="sm" type="number" class="input-param"></b-form-input>
-                </div>
               </template>
             </b-table>
           </b-container>
         </div>
 
-        <div class="menu-panel">
+        <div class="menu-panel" id="cb-exclude-list">
           <b-container style="width: 270px">
-            <div style="text-align:center">
+            <div>
               <h3 style="margin: 5px 0px">除外リスト</h3>
             </div>
             <div>
@@ -126,6 +120,24 @@
     </div>
 
     <div class="content" :style="style">
+
+      <div v-if="result.length == 0" class="menu-panel" style="padding: 10px">
+
+        <div class="about">
+          <h5 style="margin-bottom: 5px">バフ・デバフ組み合わせ検索</h5>
+
+          指定のバフ・デバフの最適な組み合わせを探すツールです。<br />
+          メインキャラ(スキル×装備)×サポート の組み合わせから、競合を考慮しつつ、総効果量の高いものを探索します。<br />
+          例えば「与ダメージバフ＋クリティカルダメージ倍率バフ＋ダメージ耐性デバフ」のいい感じの組み合わせを探したい、というようなケースで役立ちます。<br />
+          <br />
+          味方全体の強化の最適化が目的であるため、自己バフは考慮していません。単体のバフも「<b-link @mouseenter="highlight('cb-p-allowSingleUnitBuff', true)" @mouseleave="highlight('cb-p-allowSingleUnitBuff', false)">単体バフを含める</b-link>」にチェックしていない限り考慮しません。<br />
+          特定のキャラやスキルを除外したい場合、アイコンをマウスオーバーすると出てくるポップアップから除外できます。<br />
+          <br />
+          なお、必ずしも本当に最適な結果になるとは限らないことに注意が必要です。<br />
+          完璧に解くには時間がかかりすぎるため、若干正確性を犠牲にしつつ高速に解く方法 (貪欲法) を用いています。<br />
+          また、発動に条件がある効果の条件を考慮していないため、現実的ではない結果が出ることもあります。(除外や優先度によりある程度の調整は可能)<br />
+        </div>
+      </div>
 
       <template v-for="(r, ri) in result">
         <div class="character" :key="ri">
@@ -155,7 +167,7 @@
                       <p>
                         <span v-html="descToHtml(skill)" />
                         <span v-if="skill.note" class="note" v-html="noteToHtml(skill)" />
-                        <span class="note" v-html="effectsToHtml(skill, r.main.usedEffects)" />
+                        <span class="note" v-html="effectsToHtml(skill, r.main)" />
                       </p>
                     </div>
                   </div>
@@ -178,7 +190,7 @@
                       <p>
                         <span v-html="descToHtml(skill)" />
                         <span v-if="skill.note" class="note" v-html="noteToHtml(skill)" />
-                        <span class="note" v-html="effectsToHtml(skill, r.main.usedEffects)" />
+                        <span class="note" v-html="effectsToHtml(skill, r.main)" />
                       </p>
                     </div>
                   </div>
@@ -209,7 +221,7 @@
                       <p>
                         <span v-html="descToHtml(skill)" />
                         <span v-if="skill.note" class="note" v-html="noteToHtml(skill)" />
-                        <span class="note" v-html="effectsToHtml(skill, r.main.usedEffects)" />
+                        <span class="note" v-html="effectsToHtml(skill, r.main)" />
                       </p>
                     </div>
                   </div>
@@ -240,7 +252,7 @@
                       <p>
                         <span v-html="descToHtml(skill)" />
                         <span v-if="skill.note" class="note" v-html="noteToHtml(skill)" />
-                        <span class="note" v-html="effectsToHtml(skill, r.support.usedEffects)" />
+                        <span class="note" v-html="effectsToHtml(skill, r.support)" />
                       </p>
                     </div>
                   </div>
@@ -295,6 +307,10 @@ export default {
 
       buffFields: [
         {
+          key: "enabled",
+          label: "",
+        },
+        {
           key: "label",
           label: "種類",
         },
@@ -307,10 +323,14 @@ export default {
           label: "優先度",
         },
       ],
-      excludedFields: [
+      optionFields: [
         {
-          key: "name",
-          label: "対象",
+          key: "value",
+          label: "",
+        },
+        {
+          key: "label",
+          label: "項目",
         },
       ],
     };
@@ -336,6 +356,12 @@ export default {
     this.setupCharacters(this.supChrs, this.supActive, this.supPassive);
     for (let i of this.items)
       this.setupSkill(i);
+
+    for (let s of this.mainActive) {
+      if (this.matchTags(s.tags, /^再行動$/)) {
+        s.hasReaction = true;
+      }
+    }
 
     this.searchTable = new Map();
     for (let s of [...this.mainActive, ...this.mainPassive, ...this.mainTalents, ...this.supActive, ...this.supPassive, ...this.items])
@@ -372,6 +398,8 @@ export default {
           v.valueType = `バフ:${v.type}`
           if (!v.slot)
             v.slot = `バフ:${ownerType}${v.onBattle ? ':戦闘時' : ''}:${v.type}`;
+          else
+            v.hasSpecialSlot = true;
         }
       }
       if (skill.debuff) {
@@ -379,6 +407,8 @@ export default {
           v.valueType = `デバフ:${v.type}`
           if (!v.slot)
             v.slot = `デバフ${ownerType}${v.onBattle ? ':戦闘時' : ''}:${v.type}`;
+          else
+            v.hasSpecialSlot = true;
         }
       }
     };
@@ -418,14 +448,14 @@ export default {
 
     const makeOptions = function (params) {
       let r = {};
-      const add = function (name, label, value) {
-        r[name] = {
-          label: label,
-          value: value,
+      for(const p of params) {
+        r[p[0]] = {
+          name: p[0],
+          label: p[1],
+          value: p[2],
+          type: typeof(p[2]),
         };
       }
-      for (const v of params)
-        add(v[0], v[1], v[2]);
       return r;
     };
     this.options = makeOptions([
@@ -435,30 +465,50 @@ export default {
       ["allowSingleUnitBuff", "単体バフを含める", false],
       ["allowSymbolSkill", "シンボルスキルを含める", false],
       ["allowSupportActive", "サポートのアクティブを含める", true],
+      ["allowOnlyOneActive", "再行動なしアクティブを1つに制限", false],
     ]);
 
     const makeParams = function (effectType, types) {
       const make = function (t) {
         return {
-          label: t,
+          label: t.name,
           enabled: false,
-          limit: 0,
-          weight: 1,
+          limit: t.limit ? t.limit : "",
+          weight: t.weight ? t.weight : 10,
           effectType: effectType,
-          valueType: `${effectType}:${t}`,
+          valueType: `${effectType}:${t.name}`,
         };
       }
       return types.map(a => make(a));
     };
+
     this.buffs = makeParams("バフ", [
-      "アタック", "ディフェンス", "マジック", "レジスト", "クリティカル率", "クリティカルダメージ倍率",
-      "与ダメージ", "与ダメージ(物理)", "与ダメージ(魔法)", "与ダメージ(スキル)", "与ダメージ(範囲スキル)", "与ダメージ(通常攻撃)",
-      "ダメージ耐性", "ダメージ耐性(物理)", "ダメージ耐性(魔法)",
+      {name: "アタック"},
+      {name: "ディフェンス"},
+      {name: "マジック"},
+      {name: "レジスト"},
+      {name: "クリティカル率"},
+      {name: "クリティカルダメージ倍率"},
+      {name: "与ダメージ"},
+      {name: "与ダメージ(物理)"},
+      {name: "与ダメージ(魔法)"},
+      {name: "与ダメージ(スキル)"},
+      {name: "与ダメージ(範囲スキル)"},
+      //{name: "与ダメージ(単体スキル)"},
+      {name: "与ダメージ(通常攻撃)"},
+      {name: "ダメージ耐性", limit:70},
+      {name: "ダメージ耐性(物理)", limit:70},
+      {name: "ダメージ耐性(魔法)", limit:70},
     ]);
     this.debuffs = makeParams("デバフ", [
-      "アタック", "ディフェンス", "マジック", "レジスト",
-      "与ダメージ", "与ダメージ(物理)", "与ダメージ(魔法)",
-      "ダメージ耐性", "ダメージ耐性(物理)", "ダメージ耐性(魔法)",
+      {name: "アタック", limit:70},
+      {name: "ディフェンス", limit:70},
+      {name: "マジック", limit:70},
+      {name: "レジスト", limit:70},
+      {name: "与ダメージ", limit:70},
+      {name: "ダメージ耐性"},
+      {name: "ダメージ耐性(物理)"},
+      {name: "ダメージ耐性(魔法)"},
     ]);
     this.excluded = [];
   },
@@ -483,10 +533,11 @@ export default {
         passive: skill.skillType == 'パッシブ',
       }
     },
-    effectsToHtml(skill, usedEffects) {
+    effectsToHtml(skill, ctx) {
       let lines = [];
       for (const v of this.enumerate(skill.buff, skill.debuff)) {
-        if (["ランダム", "クラス", "シンボル"].includes(v.type)) {
+        if (["ランダム", "クラス", "シンボル"].includes(v.type) ||
+          ["自身"].includes(v.target)) {
           continue
         }
 
@@ -494,15 +545,27 @@ export default {
         let prefix = v.effectType == "デバフ" ? "-" : "+";
         let onBattle = v.onBattle ? "(戦闘時)" : "";
         let unit = "";
-        if (usedEffects.includes(v)) {
+        let title = "";
+        if (ctx.usedEffects.includes(v)) {
           additionalClass += " caution";
         }
-        if (["移動", "射程", "範囲"].includes(v.type)) {
+        if (ctx.conflictedEffects.includes(v)) {
+          additionalClass += " blue";
+          title = "アクティブ同士で競合、もしくは既に上限に達している";
+        }
+        if (!["移動", "射程", "範囲"].includes(v.type)) {
           unit = "%";
         }
-        lines.push(`<span class="effect ${additionalClass}">${v.type}${onBattle}${prefix}${this.getEffectValue(v)}${unit}</span>`);
+        lines.push(`<span class="effect ${additionalClass}" title="${title}">${v.type}${onBattle}${prefix}${this.getEffectValue(v)}${unit}</span>`);
       }
       return lines.length ? `[ ${lines.join(", ")} ]` : "";
+    },
+    highlight(id, enabled) {
+      var element = document.getElementById(id);
+      if(enabled)
+        element.classList.add("param-highlighted");
+      else
+        element.classList.remove("param-highlighted");
     },
 
     filterMatchMainChr(chr) {
@@ -627,6 +690,7 @@ export default {
         let totalAmount = { ...(parentState ? parentState.totalAmount : totalAmountGlobal) };
         let usedSlots = { ...(parentState ? parentState.usedSlots : usedSlotsGlobal) };
         let usedEffects = [];
+        let conflictedEffects = [];
 
         const limitAmount = function (param, amount, current) {
           if (param.limit > 0)
@@ -645,35 +709,48 @@ export default {
           let r = {
             skill: skill,
             score: 0,
+            usedEffects: [],
+            conflictedEffects: [],
           };
           if (parentState) {
             r.totalAmount = parentState.totalAmount;
             r.usedSlots = parentState.usedSlots;
             r.usedEffects = parentState.usedEffects;
+            r.conflictedEffects = parentState.conflictedEffects;
           }
           else {
             r.totalAmount = { ...totalAmount };
             r.usedSlots = { ...usedSlots };
-            r.usedEffects = [...usedEffects];
+          }
+
+          let scoreBoost = 1;
+          if(skill.hasReaction && skill.area >= 5 && skill.range == "自ユニット") {
+              scoreBoost += 0.5;
           }
  
           for (const v of this.enumerateEffects(skill)) {
             let p = targets.find(a => a.valueType == v.valueType);
             if (p && buffCondition(skill, v)) {
-              const current = r.totalAmount[p.valueType];
-              const amount = limitAmount(p, this.getEffectValue(v), current);
-              if (skill.skillType == "アクティブ") {
-                let prev = usedSlots[v.slot];
-                if (prev /*&& prev[0] >= amount*/) {
+              if (skill.isActive) {
+                if (usedSlots[v.slot]) {
+                  r.conflictedEffects.push(v);
                   continue;
                 }
-                r.usedSlots[v.slot] = [v, skill, chr];
+                r.usedSlots[v.slot] = [v.value];
               }
-              const score = amount * p.weight;
+              const current = r.totalAmount[p.valueType];
+              const amount = limitAmount(p, this.getEffectValue(v), current);
+              let score = amount * (p.weight * 0.1) * scoreBoost;
+              if (amount == v.value && skill.isActive)
+                score *= Math.min(Math.pow(v.value / 20, 2), 1); // 中途半端な効果量のアクティブは選ばれにくいようにスコア補正
+
               if (score > 0) {
                 r.score += score;
                 r.totalAmount[v.valueType] += amount;
                 r.usedEffects.push(v);
+              }
+              if (amount == 0) {
+                r.conflictedEffects.push(v);
               }
             }
           }
@@ -706,10 +783,10 @@ export default {
           return r;
         }.bind(this);
 
-        const pickSkill = function (skills) {
+        const pickSkill = function (skills, ignoreActive) {
           let scoreList = [];
           for (const skill of skills) {
-            if (excluded.includes(skill))
+            if (excluded.includes(skill) || (ignoreActive && skill.isActive && !skill.hasReaction))
               continue;
 
             const r = getSkillScore(skill);
@@ -736,7 +813,8 @@ export default {
           score += s.score;
           usedSlots = s.usedSlots;
           totalAmount = s.totalAmount;
-          usedEffects = s.usedEffects;
+          usedEffects = usedEffects.concat(s.usedEffects);
+          conflictedEffects = conflictedEffects.concat(s.conflictedEffects);
         };
 
         if (chr.talent) {
@@ -749,17 +827,19 @@ export default {
 
         if (chr.skills) {
           let tmpSkills = [...chr.skills];
+          let ignoreActive = false;
           for (let i = 0; i < 3; ++i) {
-            let r = pickSkill(tmpSkills);
+            let r = pickSkill(tmpSkills, ignoreActive);
             if (!r)
               break;
 
             tmpSkills.splice(tmpSkills.indexOf(r.skill), 1);
             skills.push(r);
             updateState(r);
-            if (r.summon) {
+            if (r.summon)
               summon = r.summon;
-            }
+            if (opt.allowOnlyOneActive && (r.skill.isActive && !r.skill.hasReaction))
+              ignoreActive = true;
           }
         }
 
@@ -799,6 +879,7 @@ export default {
         result.totalAmount = totalAmount;
         result.usedSlots = usedSlots;
         result.usedEffects = usedEffects;
+        result.conflictedEffects = conflictedEffects;
         return result;
       }.bind(this);
 
@@ -920,6 +1001,10 @@ export default {
     box-shadow: 0 3px 6px rgba(140,149,159,0.5);
   }
 
+  label {
+    margin: 0.2rem 0 !important;
+  }
+
 </style>
 <style>
   .desc .table {
@@ -933,5 +1018,17 @@ export default {
 
   .table-sm td {
     padding: 0.1rem;
+    vertical-align: baseline;
   }
+
+  input::placeholder {
+    color: rgb(190, 190, 190) !important;
+    font-size: small !important;
+  }
+
+  .param-highlighted {
+    background-color: rgb(255, 190, 190) !important;
+  }
+
+
 </style>

@@ -5,10 +5,11 @@
       <b-nav-item to="/main.html">メインキャラ</b-nav-item>
       <b-nav-item to="/support.html">サポートキャラ</b-nav-item>
       <b-nav-item to="/item.html">アイテム</b-nav-item>
+      <b-nav-item to="/lookup.html">逆引き</b-nav-item>
       <b-nav-item to="/about.html">解説</b-nav-item>
     </b-navbar-nav>
     <b-navbar-nav class="ml-auto">
-      <b-nav-item href="https://github.com/legeclodb/legeclodb">
+      <b-nav-item href="https://github.com/legeclodb/legeclodb" target="_blank">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="24" height="24" focusable="false" role="img" class="navbar-nav-svg">
           <title>GitHub</title>
           <g fill="currentColor">
