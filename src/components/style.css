@@ -207,6 +207,7 @@ div.skill {
 .param-group {
   display: flex;
   margin-left: auto;
+  flex-wrap: wrap;
 }
 .param-box {
   margin: 0px 2px;
@@ -217,6 +218,7 @@ div.skill {
   background: white;
   display: flex;
   align-items: center;
+  white-space: nowrap;
 }
 .param-box span {
   margin-left: 1px;

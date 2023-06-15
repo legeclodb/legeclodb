@@ -14,9 +14,11 @@
 
             <b-table small borderless hover :items="Object.values(options)" :fields="optionFields">
               <template #cell(value)="r">
-                <div class="flex" style="flex-direction: row-reverse">
-                  <b-form-checkbox v-if="r.item.type == 'boolean'" v-model="r.item.value"></b-form-checkbox>
-                  <b-form-input v-if="r.item.type == 'number'" style="width: 3em" v-model.number="r.item.value" size="sm" type="number" class="input-param"></b-form-input>
+                <div class="flex">
+                  <div style="margin-left: auto">
+                    <b-form-checkbox v-if="r.item.type == 'boolean'" v-model="r.item.value"></b-form-checkbox>
+                    <b-form-input v-if="r.item.type == 'number'" style="width: 3em" v-model.number="r.item.value" size="sm" type="number" class="input-param"></b-form-input>
+                  </div>
                 </div>
               </template>
               <template #cell(label)="r">
@@ -77,6 +79,9 @@
                 <b-form-input style="width: 3.5em" v-model.number="r.item.weight" size="sm" type="number" class="input-param"></b-form-input>
               </template>
             </b-table>
+            <div style="margin: 5px 3px">
+              <b-button size="sm" @click="buffs.forEach(a => a.reset())">リセット</b-button>
+            </div>
           </b-container>
         </div>
 
@@ -100,18 +105,30 @@
                 <b-form-input style="width: 3.5em" v-model.number="r.item.weight" size="sm" type="number" class="input-param"></b-form-input>
               </template>
             </b-table>
+            <div style="margin: 5px 3px">
+              <b-button size="sm" @click="debuffs.forEach(a => a.reset())">リセット</b-button>
+            </div>
           </b-container>
         </div>
 
         <div class="menu-panel" id="cb-exclude-list">
-          <b-container style="width: 270px">
+          <b-container style="width: 320px">
             <div>
               <h3 style="margin: 5px 0px">除外リスト</h3>
             </div>
-            <div>
+            <div class="flex" style="flex-wrap: wrap">
               <b-link v-for="(v, i) in excluded" :key="i" @click="excluded.splice(excluded.indexOf(v), 1)">
-                <b-img-lazy :src="getImageURL(v.name)" :title="v.name" with="50" height="50" />
+                <div v-if="!v.owner" :title="v.name">
+                  <b-img-lazy :src="getImageURL(v.name)" :title="v.name" width="50" />
+                </div>
+                <div v-if="v.owner" style="width: 60px; height: 60px;" :title="v.owner.name + ' & ' + v.item.name">
+                  <b-img-lazy :src="getImageURL(v.owner.name)" :title="v.name" width="40" style="position: relative; left: 0px; top: 0px; " />
+                  <b-img-lazy :src="getImageURL(v.item.name)" :title="v.name" width="40" style="position: relative; left: 15px; top: -25px; " />
+                </div>
               </b-link>
+            </div>
+            <div v-if="excluded.length">
+              <b-button size="sm" @click="excluded=[]">クリア</b-button>
             </div>
           </b-container>
         </div>
@@ -130,12 +147,12 @@
           メインキャラ(スキル×装備)×サポート の組み合わせから、競合を考慮しつつ、総効果量の高いものを探索します。<br />
           例えば「与ダメージバフ＋クリティカルダメージ倍率バフ＋ダメージ耐性デバフ」のいい感じの組み合わせを探したい、というようなケースで役立ちます。<br />
           <br />
-          味方全体の強化の最適化が目的であるため、自己バフは考慮していません。単体のバフも「<b-link @mouseenter="highlight('cb-p-allowSingleUnitBuff', true)" @mouseleave="highlight('cb-p-allowSingleUnitBuff', false)">単体バフを含める</b-link>」にチェックしていない限り考慮しません。<br />
+          味方全体の強化の最適化が目的であるため、自己バフは考慮しません。単体のバフも「<b-link @mouseenter="highlight('cb-p-allowSingleUnitBuff', true)" @mouseleave="highlight('cb-p-allowSingleUnitBuff', false)">単体バフを含める</b-link>」にチェックしていない限り考慮しません。<br />
           特定のキャラやスキルを除外したい場合、アイコンをマウスオーバーすると出てくるポップアップから除外できます。<br />
           <br />
           なお、必ずしも本当に最適な結果になるとは限らないことに注意が必要です。<br />
           完璧に解くには時間がかかりすぎるため、若干正確性を犠牲にしつつ高速に解く方法 (貪欲法) を用いています。<br />
-          また、発動に条件がある効果の条件を考慮していないため、現実的ではない結果が出ることもあります。(除外や優先度によりある程度の調整は可能)<br />
+          また、発動に条件がある効果の条件を考慮していないため、現実的ではない結果が出ることもあります。除外や優先度により調整してみてください。<br />
         </div>
       </div>
 
@@ -146,7 +163,7 @@
             <div v-if="r.main" class="portrait">
               <b-img-lazy :src="getImageURL(r.main.character.name)" :title="r.main.character.name" :id="'portrait_m_'+ri" width="100" rounded />
               <b-popover v-if="displayType>=1" :target="'portrait_m_'+ri" :title="r.main.character.name" triggers="hover click blur" :delay="{show:0, hide:250}" no-fade placement="top">
-                <b-button @click="excluded.push(r.main.character)">このキャラを除外</b-button>
+                <b-button @click="addExclude(r.main.character)">このキャラを除外</b-button>
               </b-popover>
             </div>
             <div v-if="r.main" class="detail" v-show="displayType >= 1">
@@ -155,8 +172,15 @@
                   <div class="flex">
                     <div class="icon">
                       <b-img-lazy :src="getImageURL(skill.name)" :title="skill.name" width="50" :id="'skill_m_'+ri+'_'+si" />
-                      <b-popover v-if="skill.skillType!='タレント'" :target="'skill_m_'+ri+'_'+si" :title="skill.name" triggers="hover focus" :delay="{show:0, hide:250}" no-fade placement="top">
-                        <b-button @click="excluded.push(skill)">このスキルを除外</b-button>
+                      <b-popover :target="'skill_m_'+ri+'_'+si" :title="skill.name" triggers="hover click blur" :delay="{show:0, hide:250}" no-fade placement="top">
+                        <div v-if="skill.owners" class="owners">
+                          所持者:<br />
+                          <b-img-lazy v-for="(owner, oi) in skill.owners" :key="oi" :src="getImageURL(owner.name)" :title="owner.name" width="50" height="50" />
+                        </div>
+                        <div class="flex exclude-menu">
+                          <b-button size="sm" @click="addExclude(skill)">このスキルを除外</b-button>
+                          <b-button size="sm" @click="addExclude(skill, r.main.character)">このキャラとスキルの組み合わせを除外</b-button>
+                        </div>
                       </b-popover>
                     </div>
                     <div class="desc" v-show="displayType >= 2">
@@ -178,8 +202,11 @@
                   <div class="flex">
                     <div class="icon">
                       <b-img-lazy :src="getImageURL(skill.name)" :title="skill.name" width="50" :id="'item_'+ri+'_'+si" />
-                      <b-popover v-if="displayType>=1" :target="'item_'+ri+'_'+si" :title="skill.name" triggers="hover focus" :delay="{show:0, hide:250}" no-fade placement="top">
-                        <b-button @click="excluded.push(skill)">このアイテムを除外</b-button>
+                      <b-popover v-if="displayType>=1" :target="'item_'+ri+'_'+si" :title="skill.name" triggers="hover click blur" :delay="{show:0, hide:250}" no-fade placement="top">
+                        <div class="flex exclude-menu">
+                          <b-button size="sm" @click="addExclude(skill)">このアイテムを除外</b-button>
+                          <b-button size="sm" @click="addExclude(skill, r.main.character)">このキャラとアイテムの組み合わせを除外</b-button>
+                        </div>
                       </b-popover>
                     </div>
                     <div class="desc" v-show="displayType >= 2">
@@ -209,8 +236,11 @@
                   <div class="flex">
                     <div class="icon">
                       <b-img-lazy :src="getImageURL(skill.name)" :title="skill.name" width="50" :id="'skill_x_'+ri+'_'+si" />
-                      <b-popover v-if="skill.skillType!='タレント'" :target="'skill_x_'+ri+'_'+si" :title="skill.name" triggers="hover focus" :delay="{show:0, hide:250}" no-fade placement="top">
-                        <b-button @click="excluded.push(skill)">このスキルを除外</b-button>
+                      <b-popover :target="'skill_x_'+ri+'_'+si" :title="skill.name" triggers="hover click blur" :delay="{show:0, hide:250}" no-fade placement="top">
+                        <div class="flex exclude-menu">
+                          <b-button size="sm" @click="addExclude(skill)">このスキルを除外</b-button>
+                          <b-button size="sm" @click="addExclude(skill, r.main.character)">このキャラとスキルの組み合わせを除外</b-button>
+                        </div>
                       </b-popover>
                     </div>
                     <div class="desc" v-show="displayType >= 2">
@@ -233,8 +263,10 @@
           <div class="flex">
             <div v-if="r.support" class="portrait">
               <b-img-lazy :src="getImageURL(r.support.character.name)" :title="r.support.character.name" :id="'portrait_s_'+ri" width="100" height="100" rounded />
-              <b-popover v-if="displayType>=1" :target="'portrait_s_'+ri" :title="r.support.character.name" triggers="hover focus" :delay="{show:0, hide:250}" no-fade placement="top">
-                <b-button @click="excluded.push(r.support.character)">このキャラを除外</b-button>
+              <b-popover v-if="displayType>=1" :target="'portrait_s_'+ri" :title="r.support.character.name" triggers="hover click blur" :delay="{show:0, hide:250}" no-fade placement="top">
+                <div class="flex exclude-menu">
+                  <b-button @click="addExclude(r.support.character)">このキャラを除外</b-button>
+                </div>
               </b-popover>
             </div>
             <div v-if="r.support" class="detail" v-show="displayType >= 1">
@@ -449,34 +481,47 @@ export default {
     const makeOptions = function (params) {
       let r = {};
       for(const p of params) {
+        const v = p[2];
         r[p[0]] = {
           name: p[0],
           label: p[1],
-          value: p[2],
-          type: typeof(p[2]),
+          value: v,
+          type: typeof (p[2]),
+
+          reset: function () {
+            this.value = v;
+          }
         };
       }
       return r;
     };
     this.options = makeOptions([
-      ["maxPickup", "上位n人を選出", 10],
+      ["maxPickup", "人を選出", 10],
       ["allowOnBattle", "戦闘時発動効果を含める", true],
       ["allowProbability", "確率発動効果を含める", true],
       ["allowSingleUnitBuff", "単体バフを含める", false],
       ["allowSymbolSkill", "シンボルスキルを含める", false],
       ["allowSupportActive", "サポートのアクティブを含める", true],
-      ["allowOnlyOneActive", "再行動なしアクティブを1つに制限", false],
+      ["allowOnlyOneActive", "再行動なしアクティブを1つに制限", true],
     ]);
 
     const makeParams = function (effectType, types) {
       const make = function (t) {
+        const l = t.limit ? t.limit : null;
+        const w = t.weight ? t.weight : 10;
         return {
           label: t.name,
           enabled: false,
-          limit: t.limit ? t.limit : "",
-          weight: t.weight ? t.weight : 10,
+          limit: l,
+          weight: w,
           effectType: effectType,
           valueType: `${effectType}:${t.name}`,
+
+          reset: function () {
+            this.enabled = false;
+            this.limit = l;
+            this.weight = w;
+          }
         };
       }
       return types.map(a => make(a));
@@ -551,14 +596,14 @@ export default {
         }
         if (ctx.conflictedEffects.includes(v)) {
           additionalClass += " blue";
-          title = "アクティブ同士で競合、もしくは既に上限に達している";
+          title = "アクティブ同士で競合、または既に上限に達している";
         }
         if (!["移動", "射程", "範囲"].includes(v.type)) {
           unit = "%";
         }
-        lines.push(`<span class="effect ${additionalClass}" title="${title}">${v.type}${onBattle}${prefix}${this.getEffectValue(v)}${unit}</span>`);
+        lines.push(`<div class="effect-box"><span class="effect ${additionalClass}" title="${title}">${v.type}${onBattle}${prefix}${this.getEffectValue(v)}${unit}</span></div>`);
       }
-      return lines.length ? `[ ${lines.join(", ")} ]` : "";
+      return lines.length ? `<div class="effect-group">${lines.join("")}</div>` : "";
     },
     highlight(id, enabled) {
       var element = document.getElementById(id);
@@ -566,6 +611,19 @@ export default {
         element.classList.add("param-highlighted");
       else
         element.classList.remove("param-highlighted");
+    },
+
+    addExclude(item, owner = null) {
+      this.excluded.push(owner ? { item: item, owner: owner } : item);
+    },
+    removeExclude(item) {
+      this.excluded.splice(this.excluded.indexOf(item), 1);
+    },
+    isExcluded(list, item, owner = null) {
+      if (list.includes(item))
+        return true;
+      else if (owner)
+        return list.find(a => a.owner == owner && a.item == item) != null;
     },
 
     filterMatchMainChr(chr) {
@@ -585,6 +643,12 @@ export default {
     },
     compare(a, b) {
       return a == b ? 0 : a < b ? 1 : -1;
+    },
+    compareScore(a, b) {
+      if (a.score == b.score && a.scoreMain)
+        return this.compare(a.scoreMain, b.scoreMain);
+      else
+        return this.compare(a.score, b.score);
     },
 
     getValues(opt) {
@@ -662,8 +726,8 @@ export default {
       }.bind(this);
 
       const filterSkills = function (skills) {
-        return skills.filter(a => !excluded.includes(a)).filter(a => getBaseSkillScore(a));
-      };
+        return skills.filter(a => !this.isExcluded(excluded, a)).filter(a => getBaseSkillScore(a));
+      }.bind(this);
 
       const oederByBaseScore = function (chrs, filter) {
         let tmp = chrs.map(chr => [getBaseChrScore(chr), chr]).sort((a, b) => this.compare(a[0], b[0]));
@@ -684,7 +748,7 @@ export default {
 
 
       const getChrScore = function (chr, parentState = null) {
-        if (excluded.includes(chr))
+        if (this.isExcluded(excluded, chr))
           return null;
 
         let totalAmount = { ...(parentState ? parentState.totalAmount : totalAmountGlobal) };
@@ -699,7 +763,7 @@ export default {
         }.bind(this);
 
         const getSkillScore = function (skill, parentState = null) {
-          if (excluded.includes(skill))
+          if (this.isExcluded(excluded, skill, chr))
             return 0;
           if (!opt.allowSymbolSkill && this.matchTags(skill.tags, /^シンボルスキル$/))
             return 0;
@@ -773,9 +837,8 @@ export default {
         }.bind(this);
 
         const pickEquip = function (equipments) {
-          equipments = equipments.filter(a => !excluded.includes(a) && this.matchClass(a, chr));
-          equipments = equipments.map(a => getSkillScore(a));
-          equipments.sort((a, b) => this.compare(a.score, b.score));
+          equipments = equipments.filter(a => this.matchClass(a, chr)).map(a => getSkillScore(a));
+          equipments.sort(this.compareScore);
           let r = null;
           if (equipments.length > 0 && equipments[0].score > 0) {
             r = equipments[0];
@@ -786,7 +849,7 @@ export default {
         const pickSkill = function (skills, ignoreActive) {
           let scoreList = [];
           for (const skill of skills) {
-            if (excluded.includes(skill) || (ignoreActive && skill.isActive && !skill.hasReaction))
+            if (ignoreActive && skill.isActive && !skill.hasReaction)
               continue;
 
             const r = getSkillScore(skill);
@@ -796,7 +859,7 @@ export default {
           if (scoreList.length == 0)
             return null;
 
-          let r = scoreList.sort((a, b) => this.compare(a.score, b.score))[0];
+          let r = scoreList.sort(this.compareScore)[0];
           return r;
         }.bind(this);
 
@@ -858,7 +921,7 @@ export default {
             totalAmount: totalAmount,
             usedSlots: usedSlots,
           };
-          let sups = supChrs.map(a => getChrScore(a, state)).filter(a => a && a.score > 0).sort((a, b) => this.compare(a.score, b.score));
+          let sups = supChrs.map(a => getChrScore(a, state)).filter(a => a && a.score > 0).sort(this.compareScore);
           if (sups.length) {
             support = sups[0];
             score += support.score;
@@ -887,7 +950,7 @@ export default {
       let result = [];
       for (let i = 0; i < num; ++i) {
 
-        let ordered = mainChrs.map(a => getChrScore(a)).filter(a => a && a.score > 0).sort((a, b) => this.compare(a.score, b.score));
+        let ordered = mainChrs.map(a => getChrScore(a)).filter(a => a && a.score > 0).sort(this.compareScore);
         if (ordered.length == 0)
           break;
 
@@ -1007,6 +1070,10 @@ export default {
 
 </style>
 <style>
+  .table {
+    margin-bottom: 1px;
+  }
+
   .desc .table {
     width: auto;
     margin: 3px;
@@ -1017,8 +1084,8 @@ export default {
   }
 
   .table-sm td {
-    padding: 0.1rem;
-    vertical-align: baseline;
+    padding: 1px;
+    vertical-align: middle;
   }
 
   input::placeholder {
@@ -1030,5 +1097,32 @@ export default {
     background-color: rgb(255, 190, 190) !important;
   }
 
+  .effect-group {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 5px;
+  }
+
+  .effect-box {
+    margin: 1px 2px;
+    padding: 0px 2px;
+    min-height: 21px;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 0.3rem;
+    background: white;
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+  }
+
+  .exclude-menu {
+    margin-top: 5px;
+  }
+  .exclude-menu .btn {
+    margin-right: 4px;
+  }
+  .popover {
+    max-width: 450px;
+  }
 
 </style>
