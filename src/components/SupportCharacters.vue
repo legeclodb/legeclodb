@@ -508,11 +508,6 @@ export default {
 
       this.predefinedMainTags.push("分類");
 
-      let skillTable = [...this.active, ...this.passive];
-      for (let s of skillTable) {
-        this.appendBuffTags(s);
-      }
-
       let chrId = 0;
       for (let chr of this.characters) {
         chr.id = ++chrId;
@@ -544,7 +539,7 @@ export default {
       this.updateStatus();
 
       // 分類タグ追加があるので、このタイミングである必要がある
-      for (let skill of skillTable) {
+      for (let skill of [...this.active, ...this.passive]) {
         this.registerTags(skill.tags);
       }
 

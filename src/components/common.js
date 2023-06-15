@@ -795,44 +795,49 @@ export default {
       return Math.round(r);
     },
 
-    buffParamsToTags(skill) {
-      const toS = function (name, p) {
-        let t = name + ":" + p.type;
+    effectParamsToTags(skill, includeSelfTag) {
+      const handleTarget = function (effect) {
+        if ((includeSelfTag && effect.target == "自身") || effect.target =="味方") {
+          return `(${effect.target})`;
+        }
+        return "";
+      };
+
+      const buffToS = function (name, effect) {
+        let t = name + ":" + effect.type;
 
         // 不格好だが…
-        if (p.onBattle) {
+        if (effect.onBattle) {
           t += "(戦闘時)";
         }
-        else if (["自身", "味方"].includes(p.target)) {
-          t += `(${p.target})`;
+        else {
+          t += handleTarget(effect);
         }
-        if (p.type == "ランダム")
-          t += `(${p.randomType})`;
-        if (["クラス", "シンボル"].includes(p.type))
-          t += `(${p.target})`;
+
+        if (effect.rangeType)
+          t += `(${effect.rangeType})`;
+        if (effect.randomType)
+          t += `(${effect.randomType})`;
+        if (["クラス", "シンボル"].includes(effect.type))
+          t += `(${effect.target})`;
         return t;
       };
       const map = (a, f) => a ? a.map(f) : [];
 
       let buff = skill.buff;
-      let debuff = skill.debuff;
       if (this.matchTags(skill.tags, /シンボルスキル/))
         buff = buff.slice(6, buff.length); // シンボルスキル共通バフは除外
 
       return [
-        ...map(buff, a => toS("バフ", a)),
-        ...map(debuff, a => toS("デバフ", a))
+        ...map(buff, a => buffToS("バフ", a)),
+        ...map(skill.debuff, a => buffToS("デバフ", a)),
+        ...map(skill.statusEffects, a => buffToS("デバフ", a)),
+        ...map(skill.immune, a => buffToS("無効化:", a)),
+        ...map(skill.drawback, a => buffToS("デメリット", a)),
       ];
     },
-    appendBuffTags(skill) {
-      const additional = this.buffParamsToTags(skill);
-      if (!skill.tags)
-        skill.tags = [];
-      for (const t of additional)
-        skill.tags.push(t);
-    },
 
-    setupEffects(skill) {
+    setupSkill(skill, includeSelfTags = true) {
       if (skill.buff) {
         for (let v of skill.buff) {
           v.effectType = "バフ";
@@ -843,6 +848,21 @@ export default {
           v.effectType = "デバフ";
         }
       }
+      if (skill.statusEffects) {
+        for (let v of skill.statusEffects) {
+          v.effectType = "状態異常";
+        }
+      }
+      if (skill.immune) {
+        for (let v of skill.immune) {
+          v.effectType = "無効化";
+        }
+      }
+
+      if (!skill.tags)
+        skill.tags = [];
+      for (const t of this.effectParamsToTags(skill, includeSelfTags))
+        skill.tags.push(t);
     },
 
     setupCharacters(characters, activeSkills, passiveSkills, talents = []) {
@@ -855,7 +875,7 @@ export default {
 
       let skillTable = new Map();
       for (let s of [...activeSkills, ...passiveSkills, ...talents]) {
-        this.setupEffects(s);
+        this.setupSkill(s);
         skillTable.set(s.name, s);
       }
 
