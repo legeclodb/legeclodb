@@ -5,7 +5,7 @@
     </div>
     <div class="about" style="margin-top: 55px;">
 
-      <div class="menu-content">
+      <div class="menu-content" style="flex-wrap: nowrap">
         <div class="menu-panel" id="cb-settings">
           <b-container>
             <div>
@@ -73,7 +73,8 @@
                 {{r.item.label}}
               </template>
               <template #cell(limit)="r">
-                <b-form-input style="width: 4.5em" v-model.number="r.item.limit" size="sm" type="number" class="input-param" step="10" placeholder="無制限"></b-form-input>
+                <b-form-input v-if="!r.item.parent" style="width: 4.5em" v-model.number="r.item.limit_" size="sm" type="number" class="input-param" step="10" placeholder="無制限"></b-form-input>
+                <div v-if="r.item.parent" style="text-align:center; color: lightgray">〃</div>
               </template>
               <template #cell(weight)="r">
                 <b-form-input style="width: 3.5em" v-model.number="r.item.weight" size="sm" type="number" class="input-param"></b-form-input>
@@ -99,7 +100,8 @@
                 {{r.item.label}}
               </template>
               <template #cell(limit)="r">
-                <b-form-input style="width: 4.5em" v-model.number="r.item.limit" size="sm" type="number" class="input-param" step="10" placeholder="無制限"></b-form-input>
+                <b-form-input v-if="!r.item.parent" style="width: 4.5em" v-model.number="r.item.limit_" size="sm" type="number" class="input-param" step="10" placeholder="無制限"></b-form-input>
+                <div v-if="r.item.parent" style="text-align:center; color: lightgray">〃</div>
               </template>
               <template #cell(weight)="r">
                 <b-form-input style="width: 3.5em" v-model.number="r.item.weight" size="sm" type="number" class="input-param"></b-form-input>
@@ -112,7 +114,7 @@
         </div>
 
         <div class="menu-panel" id="cb-exclude-list">
-          <b-container style="width: 320px">
+          <b-container style="width: 220px">
             <div>
               <h3 style="margin: 5px 0px">除外リスト</h3>
             </div>
@@ -121,14 +123,36 @@
                 <div v-if="!v.owner" :title="v.name">
                   <b-img-lazy :src="getImageURL(v.name)" :title="v.name" width="50" />
                 </div>
-                <div v-if="v.owner" style="width: 60px; height: 60px;" :title="v.owner.name + ' & ' + v.item.name">
-                  <b-img-lazy :src="getImageURL(v.owner.name)" :title="v.name" width="40" style="position: relative; left: 0px; top: 0px; " />
-                  <b-img-lazy :src="getImageURL(v.item.name)" :title="v.name" width="40" style="position: relative; left: 15px; top: -25px; " />
+                <div v-if="v.owner" style="width: 50px; height: 50px; " :title="v.owner.name + ' & ' + v.item.name">
+                  <b-img-lazy :src="getImageURL(v.owner.name)" :title="v.name" width="35" style="position: relative; left: 0px; top: 0px; " />
+                  <b-img-lazy :src="getImageURL(v.item.name)" :title="v.name" width="35" style="position: relative; left: -20px; top: 15px; " />
                 </div>
               </b-link>
             </div>
-            <div v-if="excluded.length">
+            <div v-if="excluded.length" style="margin: 2px 0px">
               <b-button size="sm" @click="excluded=[]">クリア</b-button>
+            </div>
+          </b-container>
+        </div>
+
+        <div class="menu-panel" id="cb-prioritize-list">
+          <b-container style="width: 220px">
+            <div>
+              <h3 style="margin: 5px 0px">優先リスト</h3>
+            </div>
+            <div class="flex" style="flex-wrap: wrap">
+              <b-link v-for="(v, i) in prioritized" :key="i" @click="prioritized.splice(prioritized.indexOf(v), 1)">
+                <div v-if="!v.owner" :title="v.name">
+                  <b-img-lazy :src="getImageURL(v.name)" :title="v.name" width="50" />
+                </div>
+                <div v-if="v.owner" style="width: 50px; height: 50px;" :title="v.owner.name + ' & ' + v.item.name">
+                  <b-img-lazy :src="getImageURL(v.owner.name)" :title="v.name" width="35" style="position: relative; left: 0px; top: 0px; " />
+                  <b-img-lazy :src="getImageURL(v.item.name)" :title="v.name" width="35" style="position: relative; left: -20px; top: 15px; " />
+                </div>
+              </b-link>
+            </div>
+            <div v-if="prioritized.length" style="margin: 2px 0px">
+              <b-button size="sm" @click="prioritized=[]">クリア</b-button>
             </div>
           </b-container>
         </div>
@@ -163,7 +187,12 @@
             <div v-if="r.main" class="portrait">
               <b-img-lazy :src="getImageURL(r.main.character.name)" :title="r.main.character.name" :id="'portrait_m_'+ri" width="100" rounded />
               <b-popover v-if="displayType>=1" :target="'portrait_m_'+ri" :title="r.main.character.name" triggers="hover click blur" :delay="{show:0, hide:250}" no-fade placement="top">
-                <b-button @click="addExclude(r.main.character)">このキャラを除外</b-button>
+                <div class="flex exclude-menu">
+                  <b-button @click="addExcluded(r.main.character)">このキャラを除外</b-button>
+                </div>
+                <div class="flex exclude-menu">
+                  <b-button @click="addPrioritized(r.main.character)">このキャラを優先</b-button>
+                </div>
               </b-popover>
             </div>
             <div v-if="r.main" class="detail" v-show="displayType >= 1">
@@ -178,8 +207,12 @@
                           <b-img-lazy v-for="(owner, oi) in skill.owners" :key="oi" :src="getImageURL(owner.name)" :title="owner.name" width="50" height="50" />
                         </div>
                         <div class="flex exclude-menu">
-                          <b-button size="sm" @click="addExclude(skill)">このスキルを除外</b-button>
-                          <b-button size="sm" @click="addExclude(skill, r.main.character)">このキャラとスキルの組み合わせを除外</b-button>
+                          <b-button size="sm" @click="addExcluded(skill)">このスキルを除外</b-button>
+                          <b-button size="sm" @click="addExcluded(skill, r.main.character)">このキャラとスキルの組み合わせを除外</b-button>
+                        </div>
+                        <div class="flex exclude-menu">
+                          <b-button size="sm" @click="addPrioritized(skill)">このスキルを優先</b-button>
+                          <b-button size="sm" @click="addPrioritized(skill, r.main.character)">このキャラとスキルの組み合わせを優先</b-button>
                         </div>
                       </b-popover>
                     </div>
@@ -204,8 +237,12 @@
                       <b-img-lazy :src="getImageURL(skill.name)" :title="skill.name" width="50" :id="'item_'+ri+'_'+si" />
                       <b-popover v-if="displayType>=1" :target="'item_'+ri+'_'+si" :title="skill.name" triggers="hover click blur" :delay="{show:0, hide:250}" no-fade placement="top">
                         <div class="flex exclude-menu">
-                          <b-button size="sm" @click="addExclude(skill)">このアイテムを除外</b-button>
-                          <b-button size="sm" @click="addExclude(skill, r.main.character)">このキャラとアイテムの組み合わせを除外</b-button>
+                          <b-button size="sm" @click="addExcluded(skill)">このアイテムを除外</b-button>
+                          <b-button size="sm" @click="addExcluded(skill, r.main.character)">このキャラとアイテムの組み合わせを除外</b-button>
+                        </div>
+                        <div class="flex exclude-menu">
+                          <b-button size="sm" @click="addPrioritized(skill)">このアイテムを優先</b-button>
+                          <b-button size="sm" @click="addPrioritized(skill, r.main.character)">このキャラとアイテムの組み合わせを優先</b-button>
                         </div>
                       </b-popover>
                     </div>
@@ -238,8 +275,12 @@
                       <b-img-lazy :src="getImageURL(skill.name)" :title="skill.name" width="50" :id="'skill_x_'+ri+'_'+si" />
                       <b-popover :target="'skill_x_'+ri+'_'+si" :title="skill.name" triggers="hover click blur" :delay="{show:0, hide:250}" no-fade placement="top">
                         <div class="flex exclude-menu">
-                          <b-button size="sm" @click="addExclude(skill)">このスキルを除外</b-button>
-                          <b-button size="sm" @click="addExclude(skill, r.main.character)">このキャラとスキルの組み合わせを除外</b-button>
+                          <b-button size="sm" @click="addExcluded(skill)">このスキルを除外</b-button>
+                          <b-button size="sm" @click="addExcluded(skill, r.main.character)">このキャラとスキルの組み合わせを除外</b-button>
+                        </div>
+                        <div class="flex exclude-menu">
+                          <b-button size="sm" @click="addPrioritized(skill)">このスキルを優先</b-button>
+                          <b-button size="sm" @click="addPrioritized(skill, r.main.character)">このキャラとスキルの組み合わせを優先</b-button>
                         </div>
                       </b-popover>
                     </div>
@@ -265,7 +306,7 @@
               <b-img-lazy :src="getImageURL(r.support.character.name)" :title="r.support.character.name" :id="'portrait_s_'+ri" width="100" height="100" rounded />
               <b-popover v-if="displayType>=1" :target="'portrait_s_'+ri" :title="r.support.character.name" triggers="hover click blur" :delay="{show:0, hide:250}" no-fade placement="top">
                 <div class="flex exclude-menu">
-                  <b-button @click="addExclude(r.support.character)">このキャラを除外</b-button>
+                  <b-button @click="addExcluded(r.support.character)">このキャラを除外</b-button>
                 </div>
               </b-popover>
             </div>
@@ -336,6 +377,7 @@ export default {
       buffs: [],
       debuffs: [],
       excluded: [],
+      prioritized: [],
 
       buffFields: [
         {
@@ -399,27 +441,41 @@ export default {
     for (let s of [...this.mainActive, ...this.mainPassive, ...this.mainTalents, ...this.supActive, ...this.supPassive, ...this.items])
       this.searchTable.set(s.name, s);
 
-    for (let i = 0; i < this.mainChrs.length; ++i) {
-      let chr = this.mainChrs[i];
-      chr.index = i + 1;
-      chr.objectType = "メイン";
-      chr.classId = this.classes.findIndex(v => v == chr.class);
-      chr.symbolId = this.symbols.findIndex(v => v == chr.symbol);
-      chr.rarityId = this.rarities.findIndex(v => v == chr.rarity);
-      chr.damageTypeId = this.damageTypes.findIndex(v => v == chr.damageType);
+    const setId = function (list, prefix) {
+      for (let i = 0; i < list.length; ++i) {
+        let obj = list[i];
+        obj.index = i + 1;
+        obj.id = `${prefix}${i + 1}`;
+      }
+    };
+    setId(this.mainChrs, "m");
+    setId(this.mainActive, "ma");
+    setId(this.mainPassive, "ms");
+    setId(this.mainTalents, "mt");
+    setId(this.supChrs, "s");
+    setId(this.supActive, "sa");
+    setId(this.supPassive, "sp");
+    setId(this.items, "i");
+
+    const setupPropIndex = function (obj, typeName) {
+      obj.objectType = typeName;
+      if (obj.class)
+        obj.classId = this.classes.findIndex(v => v == obj.class);
+      if (obj.symbol)
+        obj.symbolId = this.symbols.findIndex(v => v == obj.symbol);
+      if (obj.rarity)
+        obj.rarityId = this.rarities.findIndex(v => v == obj.rarity);
+      if (obj.damageType)
+        obj.damageTypeId = this.damageTypes.findIndex(v => v == obj.damageType);
+    }.bind(this);
+    for (let chr of this.mainChrs) {
+      setupPropIndex(chr, "メイン");
     }
-    for (let i = 0; i < this.supChrs.length; ++i) {
-      let chr = this.supChrs[i];
-      chr.index = i + 1;
-      chr.objectType = "サポート";
-      chr.classId = this.classes.findIndex(v => v == chr.class);
-      chr.rarityId = this.rarities.findIndex(v => v == chr.rarity);
-      chr.damageTypeId = this.damageTypes.findIndex(v => v == chr.damageType);
+    for (let chr of this.supChrs) {
+      setupPropIndex(chr, "サポート");
     }
-    for (let i = 0; i < this.items.length; ++i) {
-      let item = this.items[i];
-      item.index = i + 1;
-      item.objectType = "アイテム";
+    for (let item of this.items) {
+      setupPropIndex(item, "アイテム");
       item.status = this.getItemStatus(item);
     }
 
@@ -510,14 +566,17 @@ export default {
         const l = t.limit ? t.limit : null;
         const w = t.weight ? t.weight : 10;
         return {
-          label: t.name,
+          label: t.label,
           enabled: false,
-          limit: l,
+          limit_: l,
           weight: w,
           effectType: effectType,
-          valueType: `${effectType}:${t.name}`,
+          valueType: `${effectType}:${t.label}`,
 
-          reset: function () {
+          get limit() {
+            return this.parent ? this.parent.limit_ : this.limit_;
+          },
+          reset() {
             this.enabled = false;
             this.limit = l;
             this.weight = w;
@@ -528,34 +587,46 @@ export default {
     };
 
     this.buffs = makeParams("バフ", [
-      {name: "アタック"},
-      {name: "ディフェンス"},
-      {name: "マジック"},
-      {name: "レジスト"},
-      {name: "クリティカル率"},
-      {name: "クリティカルダメージ倍率"},
-      {name: "与ダメージ"},
-      {name: "与ダメージ(物理)"},
-      {name: "与ダメージ(魔法)"},
-      {name: "与ダメージ(スキル)"},
-      {name: "与ダメージ(範囲スキル)"},
-      //{name: "与ダメージ(単体スキル)"},
-      {name: "与ダメージ(通常攻撃)"},
-      {name: "ダメージ耐性", limit:70},
-      {name: "ダメージ耐性(物理)", limit:70},
-      {name: "ダメージ耐性(魔法)", limit:70},
+      {label: "アタック"},
+      {label: "ディフェンス"},
+      {label: "マジック"},
+      {label: "レジスト"},
+      {label: "クリティカル率"},
+      {label: "クリティカルダメージ倍率"},
+      {label: "与ダメージ"},
+      {label: "与ダメージ(物理)"},
+      {label: "与ダメージ(魔法)"},
+      {label: "与ダメージ(スキル)"},
+      {label: "与ダメージ(範囲スキル)"},
+      //{label: "与ダメージ(単体スキル)"},
+      {label: "与ダメージ(通常攻撃)"},
+      {label: "ダメージ耐性", limit:70},
+      {label: "ダメージ耐性(物理)"},
+      {label: "ダメージ耐性(魔法)"},
     ]);
     this.debuffs = makeParams("デバフ", [
-      {name: "アタック", limit:70},
-      {name: "ディフェンス", limit:70},
-      {name: "マジック", limit:70},
-      {name: "レジスト", limit:70},
-      {name: "与ダメージ", limit:70},
-      {name: "ダメージ耐性"},
-      {name: "ダメージ耐性(物理)"},
-      {name: "ダメージ耐性(魔法)"},
+      {label: "アタック", limit:70},
+      {label: "ディフェンス", limit:70},
+      {label: "マジック", limit:70},
+      {label: "レジスト", limit:70},
+      {label: "与ダメージ", limit:70},
+      {label: "ダメージ耐性"},
+      {label: "ダメージ耐性(物理)"},
+      {label: "ダメージ耐性(魔法)"},
     ]);
     this.excluded = [];
+
+    const setParent = function (list, child, parent) {
+      list.find(a => a.label == child).parent = list.find(a => a.label == parent);
+    };
+    setParent(this.buffs, "与ダメージ(物理)", "与ダメージ");
+    setParent(this.buffs, "与ダメージ(魔法)", "与ダメージ");
+    setParent(this.buffs, "与ダメージ(スキル)", "与ダメージ");
+    setParent(this.buffs, "与ダメージ(範囲スキル)", "与ダメージ");
+    setParent(this.buffs, "ダメージ耐性(物理)", "ダメージ耐性");
+    setParent(this.buffs, "ダメージ耐性(魔法)", "ダメージ耐性");
+    setParent(this.debuffs, "ダメージ耐性(物理)", "ダメージ耐性");
+    setParent(this.debuffs, "ダメージ耐性(魔法)", "ダメージ耐性");
   },
 
   mounted() {
@@ -613,10 +684,10 @@ export default {
         element.classList.remove("param-highlighted");
     },
 
-    addExclude(item, owner = null) {
+    addExcluded(item, owner = null) {
       this.excluded.push(owner ? { item: item, owner: owner } : item);
     },
-    removeExclude(item) {
+    removeExcluded(item) {
       this.excluded.splice(this.excluded.indexOf(item), 1);
     },
     isExcluded(list, item, owner = null) {
@@ -624,6 +695,14 @@ export default {
         return true;
       else if (owner)
         return list.find(a => a.owner == owner && a.item == item) != null;
+      return false;
+    },
+
+    addPrioritized(item, owner = null) {
+      this.prioritized.push(owner ? { item: item, owner: owner } : item);
+    },
+    removePrioritized(item) {
+      this.prioritized.splice(this.prioritized.indexOf(item), 1);
     },
 
     filterMatchMainChr(chr) {
@@ -643,12 +722,6 @@ export default {
     },
     compare(a, b) {
       return a == b ? 0 : a < b ? 1 : -1;
-    },
-    compareScore(a, b) {
-      if (a.score == b.score && a.scoreMain)
-        return this.compare(a.scoreMain, b.scoreMain);
-      else
-        return this.compare(a.score, b.score);
     },
 
     getValues(opt) {
@@ -678,6 +751,7 @@ export default {
 
     doSearch(num) {
       const opt = this.optionValues;
+      const priotitized = this.prioritized;
       let excluded = [...this.excluded];
       let targets = this.enabledEffects;
 
@@ -686,6 +760,21 @@ export default {
 
       for (let v of targets)
         totalAmountGlobal[v.valueType] = 0;
+
+      const isPrioritized = function(item, owner = null) {
+        if (priotitized.includes(item))
+          return true;
+        else if (owner)
+          return priotitized.find(a => a.owner == owner && a.item == item) != null;
+        return false;
+      };
+
+      const compareScore = function (a, b) {
+        if (a.score == b.score && a.scoreMain)
+          return this.compare(a.scoreMain, b.scoreMain);
+        else
+          return this.compare(a.score, b.score);
+      }.bind(this);
 
 
       const buffCondition = function (skill, effect) {
@@ -837,13 +926,15 @@ export default {
         }.bind(this);
 
         const pickEquip = function (equipments) {
-          equipments = equipments.filter(a => this.matchClass(a, chr)).map(a => getSkillScore(a));
-          equipments.sort(this.compareScore);
-          let r = null;
-          if (equipments.length > 0 && equipments[0].score > 0) {
-            r = equipments[0];
-          }
-          return r;
+          const scoreList = equipments.filter(a => this.matchClass(a, chr)).map(a => getSkillScore(a));
+          for (const s of scoreList)
+            if (s.score > 0 && isPrioritized(s.skill, chr))
+              return s;
+
+          scoreList.sort(compareScore);
+          if (scoreList.length > 0 && scoreList[0].score > 0)
+            return scoreList[0];
+          return null;
         }.bind(this);
 
         const pickSkill = function (skills, ignoreActive) {
@@ -853,13 +944,16 @@ export default {
               continue;
 
             const r = getSkillScore(skill);
-            if (r.score > 0)
+            if (r.score > 0) {
+              if (isPrioritized(skill, chr))
+                return r;
               scoreList.push(r);
+            }
           }
           if (scoreList.length == 0)
             return null;
 
-          let r = scoreList.sort(this.compareScore)[0];
+          let r = scoreList.sort(compareScore)[0];
           return r;
         }.bind(this);
 
@@ -867,10 +961,10 @@ export default {
 
         let result = { character: chr };
         let score = 0;
-        let skills = [];
-        let equipments = null;
-        let summon = null;
-        let support = null;
+        let skillsScore = [];
+        let equipmentsScore = null;
+        let summonScore = null;
+        let supportScore = null;
 
         const updateState = function (s) {
           score += s.score;
@@ -884,7 +978,7 @@ export default {
           let r = getSkillScore(chr.talent);
           if (r.score > 0) {
             updateState(r);
-            skills.push(r);
+            skillsScore.push(r);
           }
         }
 
@@ -897,21 +991,21 @@ export default {
               break;
 
             tmpSkills.splice(tmpSkills.indexOf(r.skill), 1);
-            skills.push(r);
+            skillsScore.push(r);
             updateState(r);
             if (r.summon)
-              summon = r.summon;
+              summonScore = r.summon;
             if (opt.allowOnlyOneActive && (r.skill.isActive && !r.skill.hasReaction))
               ignoreActive = true;
           }
         }
 
         if (chr.objectType == "メイン") {
-          equipments = [];
+          equipmentsScore = [];
           for (let equips of [weapons, armors, helmets, accessories]) {
             let r = pickEquip(equips);
             if (r) {
-              equipments.push(r);
+              equipmentsScore.push(r);
               updateState(r);
             }
           }
@@ -921,24 +1015,29 @@ export default {
             totalAmount: totalAmount,
             usedSlots: usedSlots,
           };
-          let sups = supChrs.map(a => getChrScore(a, state)).filter(a => a && a.score > 0).sort(this.compareScore);
-          if (sups.length) {
-            support = sups[0];
-            score += support.score;
-            totalAmount = support.totalAmount;
-            usedSlots = support.usedSlots;
-            usedEffects = usedEffects.concat(support.usedEffects);
+          const supScores = supChrs.map(a => getChrScore(a, state)).filter(a => a && a.score > 0).sort(compareScore);
+          if (supScores.length) {
+            for (const s of supScores)
+              if (s.score > 0 && isPrioritized(s.character, chr))
+                supportScore = s;
+            if (!supportScore)
+              supportScore = supScores[0];
+
+            score += supportScore.score;
+            totalAmount = supportScore.totalAmount;
+            usedSlots = supportScore.usedSlots;
+            usedEffects = usedEffects.concat(supportScore.usedEffects);
           }
         }
 
         result.score = score;
-        result.skills = skills.map(a => a.skill);
-        if (equipments)
-          result.equipments = equipments.map(a => a.skill);
-        if (summon)
-          result.summon = summon;
-        if (support)
-          result.support = support;
+        result.skills = skillsScore.map(a => a.skill);
+        if (equipmentsScore)
+          result.equipments = equipmentsScore.map(a => a.skill);
+        if (summonScore)
+          result.summon = summonScore;
+        if (supportScore)
+          result.support = supportScore;
         result.totalAmount = totalAmount;
         result.usedSlots = usedSlots;
         result.usedEffects = usedEffects;
@@ -949,12 +1048,18 @@ export default {
 
       let result = [];
       for (let i = 0; i < num; ++i) {
-
-        let ordered = mainChrs.map(a => getChrScore(a)).filter(a => a && a.score > 0).sort(this.compareScore);
+        let ordered = mainChrs.map(a => getChrScore(a)).filter(a => a && a.score > 0).sort(compareScore);
         if (ordered.length == 0)
           break;
 
         let best = ordered[0];
+        for (const s of ordered) {
+          if (s.scoreMain > 0 && isPrioritized(s.character)) {
+            best = s;
+            break;
+          }
+        }
+
         let r = {
           score: best.score,
           main: best,
@@ -976,8 +1081,7 @@ export default {
         }
         result.push(r);
 
-        ordered.shift();
-        ordered = ordered.filter(a => a.scoreMain > 0).sort((a, b) => this.compare(a.scoreMain, b.scoreMain));
+        ordered = ordered.filter(a => a.scoreMain > 0 && a != best).sort((a, b) => this.compare(a.scoreMain, b.scoreMain));
         mainChrs = ordered.map(a => a.character);
 
         if (best.support) {
