@@ -11,13 +11,12 @@
             <div>
               <h3 style="margin: 5px 0px">設定</h3>
             </div>
-
             <b-table small borderless hover :items="Object.values(options)" :fields="optionFields">
               <template #cell(value)="r">
                 <div class="flex">
                   <div style="margin-left: auto">
                     <b-form-checkbox v-if="r.item.type == 'boolean'" v-model="r.item.value"></b-form-checkbox>
-                    <b-form-input v-if="r.item.type == 'number'" style="width: 3em" v-model.number="r.item.value" size="sm" type="number" class="input-param"></b-form-input>
+                    <b-form-input v-if="r.item.type == 'number'" style="width: 3em" v-model.number="r.item.value" size="sm" type="number" class="input-param" min="0"></b-form-input>
                   </div>
                 </div>
               </template>
@@ -36,7 +35,7 @@
               <div class="widget">
                 <b-button-group size="sm" id="class_selector">
                   <b-button v-for="(c, i) in classFilter" :key="i" :pressed.sync="c.state" variant="outline-secondary">
-                    <b-img-lazy :src="getImageURL(classes[i])" width="20%" />
+                    <b-img-lazy :src="getImageURL(classes[i])" width="20px" />
                   </b-button>
                 </b-button-group>
               </div>
@@ -45,14 +44,14 @@
               <div class="widget">
                 <b-button-group size="sm" id="symbol_selector">
                   <b-button v-for="(c, i) in symbolFilter" :key="i" :pressed.sync="c.state" variant="outline-secondary">
-                    <b-img-lazy :src="getImageURL('シンボル:'+symbols[i])" width="20%" />
+                    <b-img-lazy :src="getImageURL('シンボル:'+symbols[i])" width="20px" />
                   </b-button>
                 </b-button-group>
               </div>
               <div class="widget">
                 <b-button-group size="sm" id="rareiry_selector">
                   <b-button v-for="(c, i) in rarityFilter" :key="i" :pressed.sync="c.state" variant="outline-secondary">
-                    <b-img-lazy :src="getImageURL(rarities[i])" width="30%" />
+                    <b-img-lazy :src="getImageURL(rarities[i])" width="30px" />
                   </b-button>
                 </b-button-group>
               </div>
@@ -62,8 +61,11 @@
 
         <div class="menu-panel" id="cb-buff-list">
           <b-container>
-            <div>
+            <div class="flex">
               <h3 style="margin: 5px 0px">バフ</h3>
+              <div class="right-align">
+                <b-button size="sm" @click="debuffs.forEach(a => a.reset())">リセット</b-button>
+              </div>
             </div>
             <b-table small borderless hover :items="buffs" :fields="buffFields">
               <template #cell(enabled)="r">
@@ -80,16 +82,16 @@
                 <b-form-input style="width: 3.5em" v-model.number="r.item.weight" size="sm" type="number" class="input-param"></b-form-input>
               </template>
             </b-table>
-            <div style="margin: 5px 3px">
-              <b-button size="sm" @click="buffs.forEach(a => a.reset())">リセット</b-button>
-            </div>
           </b-container>
         </div>
 
         <div class="menu-panel" id="cb-debuff-list">
           <b-container>
-            <div>
+            <div class="flex">
               <h3 style="margin: 5px 0px">デバフ</h3>
+              <div class="right-align">
+                <b-button size="sm" @click="debuffs.forEach(a => a.reset())">リセット</b-button>
+              </div>
             </div>
 
             <b-table small borderless hover :items="debuffs" :fields="buffFields">
@@ -107,18 +109,18 @@
                 <b-form-input style="width: 3.5em" v-model.number="r.item.weight" size="sm" type="number" class="input-param"></b-form-input>
               </template>
             </b-table>
-            <div style="margin: 5px 3px">
-              <b-button size="sm" @click="debuffs.forEach(a => a.reset())">リセット</b-button>
-            </div>
           </b-container>
         </div>
 
         <div class="menu-panel" id="cb-exclude-list">
-          <b-container style="width: 220px">
-            <div>
+          <b-container>
+            <div class="flex">
               <h3 style="margin: 5px 0px">除外リスト</h3>
+              <div class="right-align">
+                <b-button v-if="excluded.length" size="sm" @click="excluded=[]">クリア</b-button>
+              </div>
             </div>
-            <div class="flex" style="flex-wrap: wrap">
+            <div class="flex exclude-box">
               <b-link v-for="(v, i) in excluded" :key="i" @click="excluded.splice(excluded.indexOf(v), 1)">
                 <div v-if="!v.owner" :title="v.name">
                   <b-img-lazy :src="getImageURL(v.name)" :title="v.name" width="50" />
@@ -129,18 +131,22 @@
                 </div>
               </b-link>
             </div>
-            <div v-if="excluded.length" style="margin: 2px 0px">
-              <b-button size="sm" @click="excluded=[]">クリア</b-button>
-            </div>
-          </b-container>
-        </div>
 
-        <div class="menu-panel" id="cb-prioritize-list">
-          <b-container style="width: 220px">
-            <div>
+            <div class="flex">
               <h3 style="margin: 5px 0px">優先リスト</h3>
+              <div class="right-align">
+                <b-button size="sm" id="add-prioritized" style="margin-right: 5px">追加</b-button>
+                <b-popover target="add-prioritized" triggers="click blur" :delay="{show:0, hide:250}" no-fade placement="bottom">
+                  <div class="exclude-box" style="width: 425px; max-height: 405px">
+                    <b-link v-for="(v, i) in mainChrs" :key="i" @click="addPrioritized(v)">
+                      <b-img-lazy :src="getImageURL(v.name)" :title="v.name" width="50" />
+                    </b-link>
+                  </div>
+                </b-popover>
+                <b-button size="sm" v-if="prioritized.length" @click="prioritized=[]">クリア</b-button>
+              </div>
             </div>
-            <div class="flex" style="flex-wrap: wrap">
+            <div class="flex exclude-box">
               <b-link v-for="(v, i) in prioritized" :key="i" @click="prioritized.splice(prioritized.indexOf(v), 1)">
                 <div v-if="!v.owner" :title="v.name">
                   <b-img-lazy :src="getImageURL(v.name)" :title="v.name" width="50" />
@@ -150,9 +156,6 @@
                   <b-img-lazy :src="getImageURL(v.item.name)" :title="v.name" width="35" style="position: relative; left: -20px; top: 15px; " />
                 </div>
               </b-link>
-            </div>
-            <div v-if="prioritized.length" style="margin: 2px 0px">
-              <b-button size="sm" @click="prioritized=[]">クリア</b-button>
             </div>
           </b-container>
         </div>
@@ -206,13 +209,15 @@
                           所持者:<br />
                           <b-img-lazy v-for="(owner, oi) in skill.owners" :key="oi" :src="getImageURL(owner.name)" :title="owner.name" width="50" height="50" />
                         </div>
-                        <div class="flex exclude-menu">
-                          <b-button size="sm" @click="addExcluded(skill)">このスキルを除外</b-button>
-                          <b-button size="sm" @click="addExcluded(skill, r.main.character)">このキャラとスキルの組み合わせを除外</b-button>
-                        </div>
-                        <div class="flex exclude-menu">
-                          <b-button size="sm" @click="addPrioritized(skill)">このスキルを優先</b-button>
-                          <b-button size="sm" @click="addPrioritized(skill, r.main.character)">このキャラとスキルの組み合わせを優先</b-button>
+                        <div v-if="skill.skillType!='タレント'">
+                          <div class="flex exclude-menu">
+                            <b-button size="sm" @click="addExcluded(skill)">このスキルを除外</b-button>
+                            <b-button size="sm" @click="addExcluded(skill, r.main.character)">このキャラとスキルの組み合わせを除外</b-button>
+                          </div>
+                          <div class="flex exclude-menu">
+                            <b-button size="sm" @click="addPrioritized(skill)">このスキルを優先</b-button>
+                            <b-button size="sm" @click="addPrioritized(skill, r.main.character)">このキャラとスキルの組み合わせを優先</b-button>
+                          </div>
                         </div>
                       </b-popover>
                     </div>
@@ -274,13 +279,19 @@
                     <div class="icon">
                       <b-img-lazy :src="getImageURL(skill.name)" :title="skill.name" width="50" :id="'skill_x_'+ri+'_'+si" />
                       <b-popover :target="'skill_x_'+ri+'_'+si" :title="skill.name" triggers="hover click blur" :delay="{show:0, hide:250}" no-fade placement="top">
-                        <div class="flex exclude-menu">
-                          <b-button size="sm" @click="addExcluded(skill)">このスキルを除外</b-button>
-                          <b-button size="sm" @click="addExcluded(skill, r.main.character)">このキャラとスキルの組み合わせを除外</b-button>
+                        <div v-if="skill.owners" class="owners">
+                          所持者:<br />
+                          <b-img-lazy v-for="(owner, oi) in skill.owners" :key="oi" :src="getImageURL(owner.name)" :title="owner.name" width="50" height="50" />
                         </div>
-                        <div class="flex exclude-menu">
-                          <b-button size="sm" @click="addPrioritized(skill)">このスキルを優先</b-button>
-                          <b-button size="sm" @click="addPrioritized(skill, r.main.character)">このキャラとスキルの組み合わせを優先</b-button>
+                        <div v-if="skill.skillType!='タレント'">
+                          <div class="flex exclude-menu">
+                            <b-button size="sm" @click="addExcluded(skill)">このスキルを除外</b-button>
+                            <b-button size="sm" @click="addExcluded(skill, r.main.character)">このキャラとスキルの組み合わせを除外</b-button>
+                          </div>
+                          <div class="flex exclude-menu">
+                            <b-button size="sm" @click="addPrioritized(skill)">このスキルを優先</b-button>
+                            <b-button size="sm" @click="addPrioritized(skill, r.main.character)">このキャラとスキルの組み合わせを優先</b-button>
+                          </div>
                         </div>
                       </b-popover>
                     </div>
@@ -307,6 +318,9 @@
               <b-popover v-if="displayType>=1" :target="'portrait_s_'+ri" :title="r.support.character.name" triggers="hover click blur" :delay="{show:0, hide:250}" no-fade placement="top">
                 <div class="flex exclude-menu">
                   <b-button @click="addExcluded(r.support.character)">このキャラを除外</b-button>
+                </div>
+                <div class="flex exclude-menu">
+                  <b-button @click="addPrioritized(r.support.character)">このキャラを優先</b-button>
                 </div>
               </b-popover>
             </div>
@@ -553,12 +567,12 @@ export default {
     };
     this.options = makeOptions([
       ["maxPickup", "人を選出", 10],
+      ["maxNonReactiveActive", "アクティブ数制限 (再行動ありを除く)", 2],
       ["allowOnBattle", "戦闘時発動効果を含める", true],
       ["allowProbability", "確率発動効果を含める", true],
       ["allowSingleUnitBuff", "単体バフを含める", false],
       ["allowSymbolSkill", "シンボルスキルを含める", false],
       ["allowSupportActive", "サポートのアクティブを含める", true],
-      ["allowOnlyOneActive", "再行動なしアクティブを1つに制限", true],
     ]);
 
     const makeParams = function (effectType, types) {
@@ -684,8 +698,18 @@ export default {
         element.classList.remove("param-highlighted");
     },
 
+    addPriorityItem(list, item, owner) {
+      const cb = owner ?
+        a => a.owner == owner && a.item == item :
+        a => a == item;
+      let i = list.findIndex(cb);
+      if (i >= 0)
+        list.splice(i, 1);
+
+      list.splice(0, 0, owner ? { item: item, owner: owner } : item);
+    },
     addExcluded(item, owner = null) {
-      this.excluded.push(owner ? { item: item, owner: owner } : item);
+      this.addPriorityItem(this.excluded, item, owner);
     },
     removeExcluded(item) {
       this.excluded.splice(this.excluded.indexOf(item), 1);
@@ -697,9 +721,8 @@ export default {
         return list.find(a => a.owner == owner && a.item == item) != null;
       return false;
     },
-
     addPrioritized(item, owner = null) {
-      this.prioritized.push(owner ? { item: item, owner: owner } : item);
+      this.addPriorityItem(this.prioritized, item, owner);
     },
     removePrioritized(item) {
       this.prioritized.splice(this.prioritized.indexOf(item), 1);
@@ -767,6 +790,14 @@ export default {
         else if (owner)
           return priotitized.find(a => a.owner == owner && a.item == item) != null;
         return false;
+      };
+      const findPrioritizedChr = function (scoreList) {
+        for (const p of priotitized) {
+          const r = scoreList.find(a => (a.scoreMain != undefined ? a.scoreMain > 0 : a.score > 0) && a.character == p);
+          if (r)
+            return r;
+        }
+        return null;
       };
 
       const compareScore = function (a, b) {
@@ -984,9 +1015,9 @@ export default {
 
         if (chr.skills) {
           let tmpSkills = [...chr.skills];
-          let ignoreActive = false;
+          let activeCount = false;
           for (let i = 0; i < 3; ++i) {
-            let r = pickSkill(tmpSkills, ignoreActive);
+            let r = pickSkill(tmpSkills, activeCount >= opt.maxNonReactiveActive);
             if (!r)
               break;
 
@@ -995,8 +1026,8 @@ export default {
             updateState(r);
             if (r.summon)
               summonScore = r.summon;
-            if (opt.allowOnlyOneActive && (r.skill.isActive && !r.skill.hasReaction))
-              ignoreActive = true;
+            if (r.skill.isActive && !r.skill.hasReaction)
+              ++activeCount;
           }
         }
 
@@ -1017,9 +1048,7 @@ export default {
           };
           const supScores = supChrs.map(a => getChrScore(a, state)).filter(a => a && a.score > 0).sort(compareScore);
           if (supScores.length) {
-            for (const s of supScores)
-              if (s.score > 0 && isPrioritized(s.character, chr))
-                supportScore = s;
+            supportScore = findPrioritizedChr(supScores);
             if (!supportScore)
               supportScore = supScores[0];
 
@@ -1052,13 +1081,9 @@ export default {
         if (ordered.length == 0)
           break;
 
-        let best = ordered[0];
-        for (const s of ordered) {
-          if (s.scoreMain > 0 && isPrioritized(s.character)) {
-            best = s;
-            break;
-          }
-        }
+        let best = findPrioritizedChr(ordered);
+        if (!best)
+          best = ordered[0];
 
         let r = {
           score: best.score,
@@ -1225,6 +1250,27 @@ export default {
   .exclude-menu .btn {
     margin-right: 4px;
   }
+  .exclude-box {
+    flex-wrap: wrap;
+    align-items: flex-start;
+    align-content: flex-start;
+    width: 275px;
+    min-height: 50px;
+    max-height: 200px;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  .button-box {
+    display: flex;
+  }
+  .left-align {
+    margin: 2px auto 2px 0px;
+  }
+  .right-align {
+    margin: 2px 0px 2px auto;
+  }
+
   .popover {
     max-width: 450px;
   }
