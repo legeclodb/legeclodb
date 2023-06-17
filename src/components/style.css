@@ -293,3 +293,6 @@ div.skill {
   max-width: 400px !important;
   width: 400px !important;
 }
+.url-popover {
+  max-width: 65em !important;
+}

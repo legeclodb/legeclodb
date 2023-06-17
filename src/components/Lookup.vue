@@ -57,6 +57,18 @@
               </div>
             </div>
           </b-container>
+
+          <b-container>
+            <div class="button-box">
+              <div class="left-align">
+                <b-button size="sm" id="copy-url" @click="copyToClipboard(getParamsUrl())">パラメータを URL としてコピー</b-button>
+                <b-popover target="copy-url" triggers="click blur" placement="top" custom-class="url-popover">
+                  コピーしました：<br />{{ getParamsUrl() }}
+                </b-popover>
+              </div>
+            </div>
+          </b-container>
+
         </div>
 
         <div class="menu-panel" id="cb-buff-list">
@@ -199,7 +211,7 @@
     </div>
 
     <div v-if="result.length != 0" class="content">
-      <div class="character">
+      <div class="total-params">
         <div class="flex info">
           <div><h6>全ユニット合計:</h6></div>
           <template v-for="(e, ei) in allEffectsToHtml(result)">
@@ -461,7 +473,6 @@ export default {
         class: [],
         symbol: [],
         rarity: [],
-        damageType: [],
       },
       pickFilter: {
         class: [],
@@ -474,6 +485,10 @@ export default {
       debuffs: [],
       excluded: [],
       prioritized: [],
+
+      initialState: {},
+      history: [],
+      historyIndex: 0,
 
       buffFields: [
         {
@@ -533,10 +548,6 @@ export default {
       }
     }
 
-    this.searchTable = new Map();
-    for (let s of [...this.mainActive, ...this.mainPassive, ...this.mainTalents, ...this.supActive, ...this.supPassive, ...this.items])
-      this.searchTable.set(s.name, s);
-
     const setId = function (list, prefix) {
       for (let i = 0; i < list.length; ++i) {
         let obj = list[i];
@@ -546,12 +557,16 @@ export default {
     };
     setId(this.mainChrs, "m");
     setId(this.mainActive, "ma");
-    setId(this.mainPassive, "ms");
+    setId(this.mainPassive, "mp");
     setId(this.mainTalents, "mt");
     setId(this.supChrs, "s");
     setId(this.supActive, "sa");
     setId(this.supPassive, "sp");
     setId(this.items, "i");
+
+    this.searchTable = new Map();
+    for (let s of this.enumerate(this.mainChrs, this.mainActive, this.mainPassive, this.mainTalents, this.supChrs, this.supActive, this.supPassive, this.items))
+      this.searchTable.set(s.id, s);
 
     const setupPropIndex = function (obj, typeName) {
       obj.objectType = typeName;
@@ -722,13 +737,21 @@ export default {
   },
 
   mounted() {
+    this.pushHistory();
+    this.initialState = this.history[0];
+
+    window.addEventListener('keydown', this.onKeyDown);
+    this.parseParamsUrl(window.location.href);
+  },
+  destroyed() {
+    window.removeEventListener('keydown', this.onKeyDown);
   },
 
   methods: {
-    findItem(name) {
-      const r = this.searchTable.get(name);
+    findItemById(id) {
+      const r = this.searchTable.get(id);
       if (!r)
-        console.log(`${name} not found`);
+        console.log(`${id} not found`);
       return r;
     },
 
@@ -809,13 +832,11 @@ export default {
     filterMatchMainChr(chr, filter = this.filter) {
       return (!filter.class || this.filterMatch(filter.class, chr.classId)) &&
         (!filter.symbol || this.filterMatch(filter.symbol, chr.symbolId)) &&
-        (!filter.rarity || this.filterMatch(filter.rarity, chr.rarityId)) &&
-        (!filter.damageType || this.filterMatch(filter.damageType, chr.damageTypeId));
+        (!filter.rarity || this.filterMatch(filter.rarity, chr.rarityId));
     },
     filterMatchSupChr(chr, filter = this.filter) {
       return (!filter.class || this.filterMatch(filter.class, chr.classId)) &&
-        (!filter.rarity || this.filterMatch(filter.rarity, chr.rarityId)) &&
-        (!filter.damageType || this.filterMatch(filter.damageType, chr.damageTypeId));
+        (!filter.rarity || this.filterMatch(filter.rarity, chr.rarityId));
     },
 
     matchClass(item, chr) {
@@ -823,13 +844,6 @@ export default {
     },
     compare(a, b) {
       return a == b ? 0 : a < b ? 1 : -1;
-    },
-
-    getValues(opt) {
-      let r = {};
-      for (const k in opt)
-        r[k] = opt[k].value;
-      return r;
     },
 
     getEffectValue(effect) {
@@ -877,7 +891,6 @@ export default {
       return lines;
     },
     allEffectsToHtml(recs) {
-      console.log(recs);
       let total = null;
       for (let r of recs) {
         total = this.getEffectValueList(r.main.usedEffects, total);
@@ -1246,8 +1259,176 @@ export default {
           supChrs.splice(supChrs.indexOf(best.support.character), 1);
         }
       }
-      console.log(result); // for debug
+      //console.log(result); // for debug
       return result;
+    },
+
+
+    serializeParams() {
+      const handleOptions = function (obj) {
+        return Object.values(obj).map(a => a.value);
+      };
+      const handleFilter = function (obj) {
+        return Object.values(obj).map(a => this.serializeFilter(a));
+      }.bind(this);
+      const handleBuffs = function (list) {
+        let r = [];
+        for (let v of list) {
+          if (v.parent)
+            r.push([v.enabled ? 1 : 0, v.weight]);
+          else
+            r.push([v.enabled ? 1 : 0, v.limit ? v.limit : 0, v.weight]);
+        }
+        return r;
+      };
+      const handleExcludes = function (list) {
+        let r = [];
+        for (let v of list) {
+          if (v.owner != undefined)
+            r.push([v.item.id, v.owner.id]);
+          else
+            r.push(v.id);
+        }
+        return r;
+      };
+
+      let r = {};
+      r.options = handleOptions(this.options);
+      r.filter = handleFilter(this.filter);
+      r.buffs = handleBuffs(this.buffs);
+      r.debuffs = handleBuffs(this.debuffs);
+      r.excluded = handleExcludes(this.excluded);
+      r.prioritized = handleExcludes(this.prioritized);
+      return r;
+    },
+    deserializeParams(obj) {
+      const handleOptions = function (dst, src) {
+        dst = Object.values(dst);
+        if (src && dst.length == src.length) {
+          for (let i = 0; i < dst.length; ++i) {
+            if (typeof dst[i].value == typeof src[i])
+              dst[i].value = src[i];
+          }
+        }
+      };
+      const handleFilter = function (dst, src) {
+        dst = Object.values(dst);
+        if (src && dst.length == src.length) {
+          for (let i = 0; i < dst.length; ++i) {
+            this.deserializeFilter(dst[i], src[i]);
+          }
+        }
+      }.bind(this);
+      const handleBuffs = function (dst, src) {
+        if (src && dst.length == src.length) {
+          for (let i = 0; i < dst.length; ++i) {
+            let d = dst[i];
+            let s = src[i];
+            if (d.parent && s.length == 2) {
+              d.enabled = s[0] != 0;
+              d.weight = s[1];
+            }
+            else if (s.length == 3) {
+              d.enabled = s[0] != 0;
+              d.limit = s[1] != 0 ? s[1] : null;
+              d.weight = s[2];
+            }
+          }
+        }
+      };
+      const handleExcludes = function (dst, src) {
+        if (src) {
+          dst.splice(0, dst.length);
+          for (let v of src) {
+            if (Array.isArray(v)) {
+              let t = {
+                item: this.findItemById(v[0]),
+                owner: this.findItemById(v[1]),
+              }
+              if (t.item && t.owner)
+                dst.push(t);
+            }
+            else {
+              let t = this.findItemById(v);
+              if (t)
+                dst.push(t);
+            }
+          }
+        }
+        return dst;
+      }.bind(this);
+
+      handleOptions(this.options, obj.options);
+      handleFilter(this.filter, obj.filter);
+      handleBuffs(this.buffs, obj.buffs);
+      handleBuffs(this.debuffs, obj.debuffs);
+      handleExcludes(this.excluded, obj.excluded);
+      handleExcludes(this.prioritized, obj.prioritized);
+    },
+
+    pushHistory() {
+      const r = this.serializeParams();
+      const l = this.history.length;
+      if (!this.rightAfterUndo && (l == 0 || !this.objectEqual(this.history[l - 1], r))) {
+        this.history.splice(this.historyIndex + 1, l);
+        this.history.push(r);
+        this.historyIndex = this.history.length - 1;
+        //console.log(this.history);
+      }
+      this.rightAfterUndo = false;
+    },
+    onKeyDown(e) {
+      if (e.ctrlKey && e.key == "z") {
+        this.undo();
+      }
+      else if (e.ctrlKey && e.key == "y") {
+        this.redo();
+      }
+    },
+    undo() {
+      if (this.historyIndex > 0) {
+        this.historyIndex--;
+        this.deserializeParams(this.history[this.historyIndex]);
+        this.rightAfterUndo = true;
+        //console.log(this.history);
+      }
+    },
+    redo() {
+      if (this.historyIndex < this.history.length - 1) {
+        this.historyIndex++;
+        this.deserializeParams(this.history[this.historyIndex]);
+        this.rightAfterUndo = true;
+        //console.log(this.history);
+      }
+    },
+
+    getParamsUrl() {
+      const base = this.initialState;
+      const r = this.serializeParams();
+
+      let params = {};
+      for (const k in base) {
+        if (!this.objectEqual(base[k], r[k])) {
+          params[k] = r[k];
+        }
+      }
+
+      let url = window.location.href.replace(/\?.+/, '').replace(/#.+/, '');
+      url += "?p=" + encodeURIComponent(JSON.stringify(params));
+      //console.log(url);
+      //this.parseParamsUrl(url);
+      return url;
+    },
+    parseParamsUrl(url) {
+      let params = {};
+
+      url = decodeURIComponent(url);
+      let q = url.match(/\?p=(.+)$/);
+      if (q) {
+        params = JSON.parse(q[1]);
+      }
+      this.deserializeParams(params);
+      this.pushHistory();
     },
 
   },
@@ -1261,14 +1442,23 @@ export default {
       return this.doSearch(this.options.maxPickup.value);
     },
     optionValues() {
-      return this.getValues(this.options);
+      const opt = this.options;
+      let r = {};
+      for (const k in opt)
+        r[k] = opt[k].value;
+      return r;
     },
     enabledEffects() {
       return [...this.buffs.filter(a => a.enabled), ...this.debuffs.filter(a => a.enabled)];
     },
-  }
+  },
 
-}</script>
+  updated: function () {
+    this.pushHistory();
+  },
+
+}
+</script>
 
 <style scoped>
   div.about {
@@ -1319,6 +1509,15 @@ export default {
     margin-bottom: 5px;
   }
 
+  div.total-params {
+    padding: 3px;
+    margin: 5px;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 0.3rem;
+    background: rgb(245, 245, 245);
+    flex-grow: initial;
+    box-shadow: 0 3px 6px rgba(140,149,159,0.5);
+  }
   div.character {
     padding: 3px;
     margin: 5px;

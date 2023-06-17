@@ -518,8 +518,4 @@ div.about {
 label.disabled {
   color: rgb(180, 180, 180);
 }
-
-.url-popover {
-  max-width: 65em !important;
-}
 </style>
