@@ -454,7 +454,7 @@ export default {
         return name;
       }
     },
-    descToHtml(item) {
+    descToHtml(item, removeMarkup = false) {
       let text = item.desc;
       if (!text)
         return "";
@@ -462,7 +462,8 @@ export default {
       while (true) {
         // [caution]hoge[/caution] -> <span class='caution'>hoge</span>
         // 入れ子のケースに対応するためループする必要がある
-        let tmp = text.replaceAll(/\[([^\]]+?)\](.+?)\[\/\1\]/g, "<span class='$1'>$2</span>");
+        let replaced = removeMarkup ? "$2" : "<span class='$1'>$2</span>";
+        let tmp = text.replaceAll(/\[([^\]]+?)\](.+?)\[\/\1\]/g, replaced);
         if (tmp == text)
           break;
         text = tmp;
