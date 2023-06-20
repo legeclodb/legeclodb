@@ -1140,9 +1140,6 @@ export default {
             return score;
           },
           prepassChr(chr) {
-            if (!this.isAvailable(chr))
-              return 0;
-
             let score = 0;
             score += this.prepassSkill(chr.talent, chr);
             for (const skill of chr.skills)
@@ -1168,17 +1165,19 @@ export default {
           },
 
           pickCandidates(chrs, num = 5) {
-            let tmp = chrs.map(chr => [this.prepassChr(chr), chr]).sort((a, b) => vue.compare(a[0], b[0]));
-            //console.log(tmp);
-            return tmp.slice(0, num).map(a => a[1]);
+            chrs = chrs.filter(a => this.isAvailable(a));
+            let tmp = chrs.map(a => [this.prepassChr(a), a]).sort((a, b) => vue.compare(a[0], b[0]));
+            let r = tmp.slice(0, num).map(a => a[1]);
+            for (let p of vue.prioritized) {
+              if (chrs.includes(p) && !r.includes(p))
+                r.splice(0, 0, p);
+            }
+            return r;
           },
 
         };
         return ctx;
       }.bind(this);
-
-
-      let gctx = createContext();
 
       const getChrScore = function (parentCtx, chr) {
         if (!parentCtx.isAvailable(chr))
@@ -1346,67 +1345,109 @@ export default {
       }.bind(this);
 
 
-      let result = [];
-      for (let i = 0; i < num; ++i) {
-        let bestSup = null;
-        let r = {
-          score: 0,
-          totalAmount: {},
-          usedSlots: [],
+      let bestScore = 0;
+      let bestResult = [];
+      const updateBest = function (score, depth, resultGetter) {
+        if (score > bestScore || (score == bestScore && depth < bestResult.length)) {
+          bestScore = score;
+          bestResult = resultGetter();
+        }
+      };
 
-          usedEffects: [],
-          conflictedEffects: [],
-        };
-
-        const updateState = function (s) {
-          r.score += s.score;
-          if (s.usedEffects.length)
-            r.usedEffects.splice(r.usedEffects.length, 0, ...s.usedEffects);
-          if (s.conflictedEffects.length)
-            r.conflictedEffects.splice(r.conflictedEffects.length, 0, ...s.conflictedEffects);
-          gctx.acceptEffects(s.usedEffects);
-        };
+      const searchRecursive = function (pctx, results, stack = [], depth = 0) {
+        let ctx = pctx;
 
         // サポートを先に処理
-        let sups = gctx.pickCandidates(supChrs);
-        const supScores = sups.map(a => getChrScore(gctx, a)).filter(a => a && a.score > 0).sort(compareScore);
+        let score = 0;
+        let bestSup = null;
+        let sups = pctx.pickCandidates(supChrs);
+        const supScores = sups.map(a => getChrScore(pctx, a)).filter(a => a && a.score > 0).sort(compareScore);
         if (supScores.length) {
           bestSup = findPrioritizedChr(supScores);
           if (!bestSup)
             bestSup = supScores[0];
-
-          updateState(bestSup);
-          r.support = bestSup;
+          score += bestSup.score;
+          ctx.acceptEffects(bestSup.usedEffects);
         }
 
-        let mains = gctx.pickCandidates(mainChrs);
-        let mainScores = mains.map(a => getChrScore(gctx, a)).filter(a => a).sort(compareScore);
-        if (mainScores.length == 0 || r.score + mainScores[0].score == 0)
-          break;
-
-        let bestMain = findPrioritizedChr(mainScores);
-        if (!bestMain)
-          bestMain = mainScores[0];
-
-        updateState(bestMain);
-        r.main = bestMain;
-        if (bestMain.summon)
-          r.summon = bestMain.summon;
-
-        for (let v of [r.main, r.summon, r.support]) {
-          if (!v)
-            continue;
-          gctx.markAsUsed(v);
-          for (const s of this.enumerate(v.skills, v.equipments))
-            gctx.markAsUsed(s);
+        let candidateCount = 0;
+        switch (depth) {
+          case 0:
+          case 1: candidateCount = 5; break;
+          case 2:
+          case 3: candidateCount = 4; break;
+          case 4: candidateCount = 3; break;
+          default: candidateCount = 2; break;
         }
-        result.push(r);
 
-        //console.log(gctx);
-      }
-      //console.log(result); // for debug
-      //console.log(usedSkillsGlobal);
-      return result;
+        let mains = pctx.pickCandidates(mainChrs, candidateCount);
+        let mainScores = mains.map(a => getChrScore(pctx, a)).filter(a => a).sort(compareScore);
+        if (mainScores.length == 0 || score + mainScores[0].score == 0)
+          return;
+
+        let prio = findPrioritizedChr(mainScores);
+        if (prio) {
+          mainScores = [prio];
+        }
+
+        for (let ms of mainScores) {
+          let cctx = createContext(ctx);
+
+          let r = {
+            score: stack.length ? stack[stack.length - 1].score : 0,
+            usedEffects: [],
+            conflictedEffects: [],
+            children: [],
+          };
+          results.push(r);
+
+          const updateState = function (s) {
+            r.score += s.score;
+            if (s.usedEffects.length)
+              r.usedEffects.splice(r.usedEffects.length, 0, ...s.usedEffects);
+            if (s.conflictedEffects.length)
+              r.conflictedEffects.splice(r.conflictedEffects.length, 0, ...s.conflictedEffects);
+          };
+          if (bestSup) {
+            updateState(bestSup);
+            r.support = bestSup;
+          }
+          {
+            updateState(ms);
+            cctx.acceptEffects(ms.usedEffects);
+            r.main = ms;
+            if (ms.summon)
+              r.summon = ms.summon;
+          }
+          for (let v of [r.main, r.summon, r.support]) {
+            if (!v)
+              continue;
+            cctx.markAsUsed(v.character);
+            for (const s of this.enumerate(v.skills, v.equipments))
+              cctx.markAsUsed(s);
+          }
+
+          if (depth + 1 < num) {
+            let cstack = [...stack, r];
+            searchRecursive(cctx, r.children, cstack, depth + 1);
+
+            if (r.children.length == 0 && depth + 1 < num) {
+              updateBest(r.score, depth, () => cstack);
+            }
+          }
+          else {
+            updateBest(r.score, depth, () => [...stack, r]);
+          }
+        }
+
+      }.bind(this);
+
+      let ctx = createContext();
+      let results = [];
+      searchRecursive(ctx, results);
+      //console.log(results);
+
+      return bestResult;
     },
 
 
