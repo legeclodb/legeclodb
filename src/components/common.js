@@ -842,21 +842,25 @@ export default {
       if (skill.buff) {
         for (let v of skill.buff) {
           v.effectType = "バフ";
+          v.isBuff = true;
         }
       }
       if (skill.debuff) {
         for (let v of skill.debuff) {
           v.effectType = "デバフ";
+          v.isDebuff = true;
         }
       }
       if (skill.statusEffects) {
         for (let v of skill.statusEffects) {
           v.effectType = "状態異常";
+          v.isStatusEffect = true;
         }
       }
       if (skill.immune) {
         for (let v of skill.immune) {
           v.effectType = "無効化";
+          v.isImmune = true;
         }
       }
 
@@ -867,6 +871,8 @@ export default {
     },
 
     setupCharacters(characters, activeSkills, passiveSkills, talents = []) {
+      const isMain = talents.length > 0;
+
       for (let s of activeSkills) {
         s.skillType = "アクティブ";
         s.isActive = true;
@@ -878,6 +884,13 @@ export default {
       for (let s of talents) {
         s.skillType = "タレント";
         s.isTalent = true;
+      }
+
+      for (let s of [...activeSkills, ...passiveSkills, ...talents]) {
+        if (isMain)
+          s.isMainSkill = true;
+        else
+          s.isSupportSkill = true;
       }
 
       let skillTable = new Map();
@@ -904,8 +917,13 @@ export default {
       }.bind(this);
 
       for (let chr of characters) {
-        if (typeof chr.talent === "string")
+        if (typeof chr.talent === "string") {
+          chr.isMain = true;
           chr.talent = grabSkill(chr.talent, chr);
+        }
+        else {
+          chr.isSupport = true;
+        }
 
         chr.skills = chr.skills.flatMap(name => grabSkill(name, chr));
         if (chr.summon) {

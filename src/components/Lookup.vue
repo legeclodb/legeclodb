@@ -543,16 +543,19 @@ export default {
       this.setupSkill(i);
 
     for (let s of this.mainActive) {
-      if (this.matchTags(s.tags, /^再行動$/)) {
+      if (this.matchTags(s.tags, /^再行動$/))
         s.hasReaction = true;
-      }
+      if (this.matchTags(s.tags, /^シンボルスキル$/))
+        s.isSymbolSkill = true;
     }
 
+    let uid = 0;
     const setId = function (list, prefix) {
       for (let i = 0; i < list.length; ++i) {
         let obj = list[i];
         obj.index = i + 1;
         obj.id = `${prefix}${i + 1}`;
+        obj.uid = ++uid;
       }
     };
     setId(this.mainChrs, "m");
@@ -563,13 +566,20 @@ export default {
     setId(this.supActive, "sa");
     setId(this.supPassive, "sp");
     setId(this.items, "i");
+    this.itemCount = uid;
 
     this.searchTable = new Map();
     for (let s of this.enumerate(this.mainChrs, this.mainActive, this.mainPassive, this.mainTalents, this.supChrs, this.supActive, this.supPassive, this.items))
       this.searchTable.set(s.id, s);
 
     const setupPropIndex = function (obj, typeName) {
-      obj.objectType = typeName;
+      if (typeName == "メイン")
+        obj.isMain = true;
+      else if (typeName == "サポート")
+        obj.isSupport = true;
+      else if (typeName == "アイテム")
+        obj.isItem = true;
+
       if (obj.class)
         obj.classId = this.classes.findIndex(v => v == obj.class);
       if (obj.symbol)
@@ -659,8 +669,8 @@ export default {
       return r;
     };
     this.options = makeOptions([
-      ["maxPickup", "人を選出", 10],
-      ["maxNonReactiveActive", "アクティブ数制限 (再行動ありを除く)", 2],
+      ["maxPickup", "人を選出", 5],
+      ["maxActiveCount", "アクティブ数制限 (再行動ありを除く)", 2],
       ["allowOnBattle", "戦闘時発動効果を含める", true],
       ["allowProbability", "確率発動効果を含める", true],
       ["allowSingleUnitBuff", "単体バフを含める", false],
@@ -760,8 +770,8 @@ export default {
     },
     getSkillClass(skill) {
       return {
-        active: skill.skillType == 'アクティブ',
-        passive: skill.skillType == 'パッシブ',
+        active: skill.isActive,
+        passive: skill.isPassive,
       }
     },
     effectsToHtml(skill, ctx) {
@@ -773,7 +783,7 @@ export default {
         }
 
         let additionalClass = "";
-        let prefix = v.effectType == "デバフ" ? "-" : "+";
+        let prefix = v.isDebuff ? "-" : "+";
         let onBattle = v.onBattle ? "(戦闘時)" : "";
         let unit = "";
         let title = "";
@@ -809,24 +819,53 @@ export default {
 
       list.splice(0, 0, owner ? { item: item, owner: owner } : item);
     },
-    addExcluded(item, owner = null) {
-      this.addPriorityItem(this.excluded, item, owner);
-    },
-    removeExcluded(item) {
-      this.excluded.splice(this.excluded.indexOf(item), 1);
-    },
-    isExcluded(list, item, owner = null) {
+    isInPrioritizeList(list, item, owner = null) {
       if (list.includes(item))
         return true;
       else if (owner)
         return list.find(a => a.owner == owner && a.item == item) != null;
       return false;
     },
+    addExcluded(item, owner = null) {
+      this.addPriorityItem(this.excluded, item, owner);
+    },
+    removeExcluded(item) {
+      this.excluded.splice(this.excluded.indexOf(item), 1);
+    },
+    isExcluded(item, owner = null) {
+      return this.isInPrioritizeList(this.excluded, item, owner);
+    },
     addPrioritized(item, owner = null) {
       this.addPriorityItem(this.prioritized, item, owner);
     },
     removePrioritized(item) {
       this.prioritized.splice(this.prioritized.indexOf(item), 1);
+    },
+    isPrioritized(item, owner = null) {
+      return this.isInPrioritizeList(this.prioritized, item, owner);
+    },
+
+    createUsedFlags(parent = null) {
+      if (parent) {
+        return new Uint32Array(parent);
+      }
+      else {
+        const n = (this.itemCount >> 5) + (this.itemCount & 31 ? 1 : 0);
+        return new Uint32Array(n);
+      }
+    },
+    setFlag(list, n, value) {
+      const byte = n >> 5;
+      const bit = n & 31;
+      if (value)
+        list[byte] |= 1 << bit;
+      else
+        list[byte] &= ~(1 << bit);
+    },
+    getFlag(list, n) {
+      const byte = n >> 5;
+      const bit = n & 31;
+      return (list[byte] & (1 << bit)) != 0;
     },
 
     filterMatchMainChr(chr, filter = this.filter) {
@@ -835,8 +874,8 @@ export default {
         (!filter.rarity || this.filterMatch(filter.rarity, chr.rarityId));
     },
     filterMatchSupChr(chr, filter = this.filter) {
-      return (!filter.class || this.filterMatch(filter.class, chr.classId)) &&
-        (!filter.rarity || this.filterMatch(filter.rarity, chr.rarityId));
+      // チャレンジクエストはサポートのクラスは無制限らしいので、クラスフィルタは考慮しない
+      return (!filter.rarity || this.filterMatch(filter.rarity, chr.rarityId));
     },
 
     matchClass(item, chr) {
@@ -855,8 +894,11 @@ export default {
 
     getEffectValueList(effectList, total = null) {
       const doCount = function (dst) {
-        for (const e of effectList)
-          dst[e.effectType][e.type] += this.getEffectValue(e);
+        for (const e of effectList) {
+          let table = dst[e.effectType];
+          if (e.type in table)
+            table[e.type] += this.getEffectValue(e);
+        }
       }.bind(this);
       if (total) {
         doCount(total);
@@ -879,7 +921,7 @@ export default {
     },
 
     chrEffectsToHtml(rec) {
-      const data = this.getEffectValueList(rec.main.usedEffects);
+      const data = this.getEffectValueList(rec.usedEffects);
 
       let lines = [];
       for (const [effectType, records] of Object.entries(data)) {
@@ -893,7 +935,7 @@ export default {
     allEffectsToHtml(recs) {
       let total = null;
       for (let r of recs) {
-        total = this.getEffectValueList(r.main.usedEffects, total);
+        total = this.getEffectValueList(r.usedEffects, total);
       }
 
       let lines = [];
@@ -919,31 +961,32 @@ export default {
 
     doSearch(num) {
       const opt = this.optionValues;
-      const priotitized = this.prioritized;
-      let excluded = [...this.excluded];
       let targets = this.enabledEffects;
 
       let totalAmountGlobal = {};
       let usedSlotsGlobal = {};
+      let usedSkillsGlobal = this.createUsedFlags();
 
       for (let v of targets)
         totalAmountGlobal[v.valueType] = 0;
 
-      const isPrioritized = function(item, owner = null) {
-        if (priotitized.includes(item))
-          return true;
-        else if (owner)
-          return priotitized.find(a => a.owner == owner && a.item == item) != null;
-        return false;
-      };
+      const isPrioritized = this.isPrioritized;
       const findPrioritizedChr = function (scoreList) {
-        for (const p of priotitized) {
+        for (const p of this.prioritized) {
           const r = scoreList.find(a => (a.scoreMain != undefined ? a.scoreMain > 0 : a.score > 0) && a.character == p);
           if (r)
             return r;
         }
         return null;
-      };
+      }.bind(this);
+
+      const isAvailable = function (item, owner = null) {
+        return !this.getFlag(usedSkillsGlobal, item.uid) && !this.isExcluded(item, owner);
+      }.bind(this);
+      const markAsUsed = function (item) {
+        if (item.uid)
+          this.setFlag(usedSkillsGlobal, item.uid, true);
+      }.bind(this);
 
       const compareScore = function (a, b) {
         if (a.score == b.score && a.scoreMain)
@@ -975,8 +1018,10 @@ export default {
         let score = 0;
         for (const v of this.enumerateEffects(skill)) {
           let p = targets.find(a => a.valueType == v.valueType);
-          if (p && buffCondition(skill, v))
-            score += this.getEffectValue(v) * p.weight;
+          if (p && buffCondition(skill, v)) {
+            let ev = this.getEffectValue(v);
+            score += ev * p.weight;
+          }
         }
         if (skill.summon) {
           let sch = skill.summon[0];
@@ -991,7 +1036,7 @@ export default {
       }.bind(this);
 
       const filterSkills = function (skills) {
-        return skills.filter(a => !this.isExcluded(excluded, a)).filter(a => getBaseSkillScore(a));
+        return skills.filter(a => isAvailable(a)).filter(a => getBaseSkillScore(a));
       }.bind(this);
 
       const oederByBaseScore = function (chrs, filter) {
@@ -1013,7 +1058,7 @@ export default {
 
 
       const getChrScore = function (chr, parentState = null) {
-        if (this.isExcluded(excluded, chr))
+        if (!isAvailable(chr))
           return null;
 
         let totalAmount = { ...(parentState ? parentState.totalAmount : totalAmountGlobal) };
@@ -1022,11 +1067,11 @@ export default {
         let conflictedEffects = [];
 
         const getSkillScore = function (skill, parentState = null) {
-          if (this.isExcluded(excluded, skill, chr))
+          if (!isAvailable(skill, chr))
             return 0;
-          if (!opt.allowSymbolSkill && this.matchTags(skill.tags, /^シンボルスキル$/))
+          if (!opt.allowSymbolSkill && skill.isSymbolSkill)
             return 0;
-          if (!opt.allowSupportActive && skill.skillType == "アクティブ" && skill.ownerType == "サポート")
+          if (!opt.allowSupportActive && skill.isActive && skill.isSupportSkill)
             return 0;
 
           let r = {
@@ -1151,6 +1196,18 @@ export default {
           conflictedEffects = conflictedEffects.concat(s.conflictedEffects);
         };
 
+        if (chr.isMain) {
+          equipmentsScore = [];
+          for (let equips of [weapons, armors, helmets, accessories]) {
+            let r = pickEquip(equips);
+            if (r) {
+              equipmentsScore.push(r);
+              updateState(r);
+            }
+          }
+          result.scoreMainItem = score;
+        }
+
         if (chr.talent) {
           let r = getSkillScore(chr.talent);
           if (r.score > 0) {
@@ -1158,12 +1215,11 @@ export default {
             skillsScore.push(r);
           }
         }
-
         if (chr.skills) {
           let tmpSkills = [...chr.skills];
           let activeCount = false;
           for (let i = 0; i < 3; ++i) {
-            let r = pickSkill(tmpSkills, activeCount >= opt.maxNonReactiveActive);
+            let r = pickSkill(tmpSkills, activeCount >= opt.maxActiveCount);
             if (!r)
               break;
 
@@ -1177,32 +1233,9 @@ export default {
           }
         }
 
-        if (chr.objectType == "メイン") {
-          equipmentsScore = [];
-          for (let equips of [weapons, armors, helmets, accessories]) {
-            let r = pickEquip(equips);
-            if (r) {
-              equipmentsScore.push(r);
-              updateState(r);
-            }
-          }
+        if (chr.isMain) {
+          result.scoreMainSkill = score - result.scoreMainItem;
           result.scoreMain = score;
-
-          let state = {
-            totalAmount: totalAmount,
-            usedSlots: usedSlots,
-          };
-          const supScores = supChrs.map(a => getChrScore(a, state)).filter(a => a && a.score > 0).sort(compareScore);
-          if (supScores.length) {
-            supportScore = findPrioritizedChr(supScores);
-            if (!supportScore)
-              supportScore = supScores[0];
-
-            score += supportScore.score;
-            totalAmount = supportScore.totalAmount;
-            usedSlots = supportScore.usedSlots;
-            usedEffects = usedEffects.concat(supportScore.usedEffects);
-          }
         }
 
         result.score = score;
@@ -1223,43 +1256,66 @@ export default {
 
       let result = [];
       for (let i = 0; i < num; ++i) {
-        let ordered = mainChrs.map(a => getChrScore(a)).filter(a => a && a.score > 0).sort(compareScore);
-        if (ordered.length == 0)
-          break;
-
-        let best = findPrioritizedChr(ordered);
-        if (!best)
-          best = ordered[0];
-
+        let bestSup = null;
         let r = {
-          score: best.score,
-          main: best,
-          totalAmount: best.totalAmount, // for debug
+          score: 0,
+          totalAmount: {},
+          usedSlots: [],
+
+          usedEffects: [],
+          conflictedEffects: [],
         };
 
-        if (best.summon)
-          r.summon = best.summon;
-        if (best.support)
-          r.support = best.support;
-        totalAmountGlobal = best.totalAmount;
-        usedSlotsGlobal = best.usedSlots;
+        const updateState = function (s) {
+          r.score += s.score;
+          totalAmountGlobal = s.totalAmount;
+          usedSlotsGlobal = s.usedSlots;
+
+          if (s.usedEffects.length)
+            r.usedEffects.splice(r.usedEffects.length, 0, ...s.usedEffects);
+          if (s.conflictedEffects.length)
+            r.conflictedEffects.splice(r.conflictedEffects.length, 0, ...s.conflictedEffects);
+        };
+
+        // サポートを先に処理
+        const supScores = supChrs.map(a => getChrScore(a)).filter(a => a && a.score > 0).sort(compareScore);
+        if (supScores.length) {
+          bestSup = findPrioritizedChr(supScores);
+          if (!bestSup)
+            bestSup = supScores[0];
+
+          updateState(bestSup);
+          r.support = bestSup;
+          supChrs.splice(supChrs.indexOf(bestSup.character), 1);
+        }
+
+        let mainScores = mainChrs.map(a => getChrScore(a)).filter(a => a).sort(compareScore);
+        if (mainScores.length == 0 || r.score + mainScores[0].score == 0)
+          break;
+
+        let bestMain = findPrioritizedChr(mainScores);
+        if (!bestMain)
+          bestMain = mainScores[0];
+
+        updateState(bestMain);
+        r.main = bestMain;
+        if (bestMain.summon)
+          r.summon = bestMain.summon;
 
         for (let v of [r.main, r.summon, r.support]) {
           if (!v)
             continue;
+          markAsUsed(v);
           for (const s of this.enumerate(v.skills, v.equipments))
-            excluded.push(s);
+            markAsUsed(s);
         }
         result.push(r);
 
-        ordered = ordered.filter(a => a.scoreMain > 0 && a != best).sort((a, b) => this.compare(a.scoreMain, b.scoreMain));
-        mainChrs = ordered.map(a => a.character);
-
-        if (best.support) {
-          supChrs.splice(supChrs.indexOf(best.support.character), 1);
-        }
+        mainScores = mainScores.filter(a => a.scoreMain > 0 && a != bestMain).sort((a, b) => this.compare(a.scoreMain, b.scoreMain));
+        mainChrs = mainScores.map(a => a.character);
       }
       //console.log(result); // for debug
+      //console.log(usedSkillsGlobal);
       return result;
     },
 
