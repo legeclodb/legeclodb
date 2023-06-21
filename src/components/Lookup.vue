@@ -16,7 +16,7 @@
                 <div class="flex">
                   <div style="margin-left: auto">
                     <b-form-checkbox v-if="r.item.type == 'boolean'" v-model="r.item.value"></b-form-checkbox>
-                    <b-form-input v-if="r.item.type == 'number'" style="width: 3em" v-model.number="r.item.value" size="sm" type="number" class="input-param" min="0" lazy></b-form-input>
+                    <b-form-input v-if="r.item.type == 'number'" style="width: 3em" v-model.number="r.item.value" :min="r.item.min" :max="r.item.max" size="sm" type="number" class="input-param" lazy></b-form-input>
                   </div>
                 </div>
               </template>
@@ -229,17 +229,17 @@
       <div v-if="progress.result.length == 0" class="menu-panel" style="padding: 10px">
         <div class="about">
           <h5 style="margin-bottom: 5px">バフ・デバフ組み合わせ検索</h5>
-
           指定のバフ・デバフの最適な組み合わせを探すツールです。<br />
           メインキャラ(スキル×装備)×サポート の組み合わせから、競合を考慮しつつ、総効果量の高いものを探索します。<br />
           例えば「与ダメージバフ＋クリティカルダメージ倍率バフ＋ダメージ耐性デバフ」のいい感じの組み合わせを探したい、というようなケースで役立ちます。<br />
           <br />
           味方全体の強化の最適化が目的であるため、自己バフは考慮しません。単体のバフも「<b-link @mouseenter="highlight('cb-p-allowSingleUnitBuff', true)" @mouseleave="highlight('cb-p-allowSingleUnitBuff', false)">単体バフを含める</b-link>」にチェックしていない限り考慮しません。<br />
           特定のキャラやスキルを除外or優先採用したい場合、アイコンをマウスオーバーすると出てくるポップアップから可能です。<br />
+          特定の効果を優先したい場合は優先度を高めると優先的に選択されます。<br />
           <br />
           なお、必ずしも本当に最適な結果になるとは限らないことに注意が必要です。<br />
-          完璧に解くには時間がかかりすぎるため、若干正確性を犠牲にしつつ高速に解く方法 (貪欲法) を用いています。<br />
-          また、発動に条件がある効果の条件を考慮していないため、現実的ではない結果が出ることもあります。除外や優先指定で調整してみてください。<br />
+          完璧に解くには時間がかかりすぎるため、若干正確性を犠牲にしつつ高速に解く方法を用いています。<br />
+          (アルゴリズムは随時改良中: 2023/06/21)<br />
         </div>
       </div>
 
@@ -616,12 +616,11 @@ export default {
     let slotTable = new Map();
     const setupSkill = function(skill) {
       for (let v of this.enumerateEffects(skill)) {
-        let valueType = "";
+        let valueType = v.type;
         if (v.isBuff)
-          valueType += "バフ:"
+          valueType += "+";
         else if (v.isDebuff)
-          valueType += "デバフ:"
-        valueType += v.type;
+          valueType += "-";
         v.valueType = valueType;
 
         if (v.target == "自身")
@@ -638,18 +637,17 @@ export default {
         if (skill.isActive) {
           let slot = v.slot;
           if (!slot) {
-            slot = "";
+            slot = v.type;
             if (v.isBuff)
-              slot += "バフ:"
+              slot += "+";
             else if (v.isDebuff)
-              slot += "デバフ:"
+              slot += "-";
             if (skill.isMainSkill)
-              slot += "メイン:"
+              slot += "(メイン)";
             else if (skill.isSupportSkill)
-              slot += "サポート:"
+              slot += "(サポート)";
             if (v.onBattle)
-              slot += "戦闘時:"
-            slot += v.type;
+              slot += "(戦闘時)";
             v.slot = slot;
           }
           v.slotIndex = slotTable.get(slot);
@@ -694,41 +692,33 @@ export default {
     const makeOptions = function (params) {
       let r = {};
       for(const p of params) {
-        const v = p[2];
-        r[p[0]] = {
-          name: p[0],
-          label: p[1],
-          value: v,
-          type: typeof (p[2]),
-
-          reset: function () {
-            this.value = v;
-          }
-        };
+        const v = p.value;
+        p.type = typeof v;
+        p.reset = function () { this.value = v; };
+        r[p.name] = p;
       }
       return r;
     };
     this.options = makeOptions([
-      ["maxPickup", "人を選出", 5],
-      ["maxActiveCount", "アクティブ数制限 (再行動ありを除く)", 2],
-      ["allowOnBattle", "戦闘時発動効果を含める", true],
-      ["allowProbability", "確率発動効果を含める", true],
-      ["allowSingleUnitBuff", "単体バフを含める", false],
-      ["allowSymbolSkill", "シンボルスキルを含める", false],
-      ["allowSupportActive", "サポートのアクティブを含める", true],
+      { name: "maxPickup", label: "人を選出", value: 5, min: 1, max: 10 },
+      { name: "maxActiveCount", label: "アクティブ数制限 (再行動ありを除く)", value: 2, min: 0, max: 3 },
+      { name: "allowOnBattle", label: "戦闘時発動効果を含める", value: true },
+      { name: "allowProbability", label: "確率発動効果を含める", value: true },
+      { name: "allowSingleUnitBuff", label: "単体バフを含める", value: false },
+      { name: "allowSymbolSkill", label: "シンボルスキルを含める", value: false },
+      { name: "allowSupportActive", label: "サポートのアクティブを含める", value: true },
     ]);
 
     const makeParams = function (effectType, types) {
       const make = function (t) {
         const l = t.limit ? t.limit : null;
         const w = t.weight ? t.weight : 10;
-        const valueType = `${effectType}:${t.label}`;
+        const valueType = `${t.label}${effectType}`;
         return {
           label: t.label,
           enabled: false,
           limit_: l,
           weight: w,
-          effectType: effectType,
           valueType: valueType,
           valueTypeIndex: valueTypeTable.get(valueType),
 
@@ -745,7 +735,7 @@ export default {
       return types.map(a => make(a));
     };
 
-    this.buffs = makeParams("バフ", [
+    this.buffs = makeParams("+", [
       {label: "アタック"},
       {label: "ディフェンス"},
       {label: "マジック"},
@@ -763,7 +753,7 @@ export default {
       {label: "ダメージ耐性(物理)"},
       {label: "ダメージ耐性(魔法)"},
     ]);
-    this.debuffs = makeParams("デバフ", [
+    this.debuffs = makeParams("-", [
       {label: "アタック", limit:70},
       {label: "ディフェンス", limit:70},
       {label: "マジック", limit:70},
@@ -773,7 +763,6 @@ export default {
       {label: "ダメージ耐性(物理)"},
       {label: "ダメージ耐性(魔法)"},
     ]);
-    this.excluded = [];
 
     const setParent = function (list, child, parent) {
       list.find(a => a.label == child).parent = list.find(a => a.label == parent);
@@ -928,60 +917,37 @@ export default {
       return r;
     },
 
-    getEffectValueList(effectList, total = null) {
-      const doCount = function (dst) {
-        for (const e of effectList) {
-          let table = dst[e.effectType];
-          if (e.type in table)
-            table[e.type] += this.getEffectValue(e);
-        }
-      }.bind(this);
-      if (total) {
-        doCount(total);
-        return total;
+    getEffectValues(effectList, dst = null) {
+      if (!dst) {
+        dst = new Array(this.valueTypeIndex);
+        dst.fill(0);
       }
-      else {
-        let buff = {};
-        let debuff = {};
-        for (let v of this.buffs)
-          buff[v.label] = 0;
-        for (let v of this.debuffs)
-          debuff[v.label] = 0;
-        let r = {
-          "バフ": buff,
-          "デバフ": debuff,
-        };
-        doCount(r);
-        return r;
-      }
+      for (const e of effectList)
+        dst[e.valueTypeIndex] += this.getEffectValue(e);
+      return dst;
     },
-
-    chrEffectsToHtml(rec) {
-      const data = this.getEffectValueList(rec.usedEffects);
-
+    effectParamsToHtml(data) {
       let lines = [];
-      for (const [effectType, records] of Object.entries(data)) {
-        const prefix = effectType == "バフ" ? "+" : "-";
-        for (const [buffType, value] of Object.entries(records).filter(a => a[1] > 0)) {
-          lines.push(`<div class="effect-box"><span class="effect caution">${buffType}${prefix}${value}%</span></div>`);
+      for (let e of this.enumerate(this.buffs, this.debuffs)) {
+        let i = e.valueTypeIndex;
+        let v = data[i];
+        if (v) {
+          if (e.limit)
+            v = Math.min(v, e.limit);
+          lines.push(`<div class="effect-box"><span class="effect caution">${e.valueType}${v}%</span></div>`);
         }
       }
       return lines;
+    },
+    chrEffectsToHtml(rec) {
+      const data = this.getEffectValues(rec.usedEffects);
+      return this.effectParamsToHtml(data);
     },
     allEffectsToHtml(recs) {
-      let total = null;
-      for (let r of recs) {
-        total = this.getEffectValueList(r.usedEffects, total);
-      }
-
-      let lines = [];
-      for (const [effectType, records] of Object.entries(total)) {
-        const prefix = effectType == "バフ" ? "+" : "-";
-        for (const [buffType, value] of Object.entries(records).filter(a => a[1] > 0)) {
-          lines.push(`<div class="effect-box"><span class="effect caution">${buffType}${prefix}${value}%</span></div>`);
-        }
-      }
-      return lines;
+      let data = null;
+      for (let r of recs)
+        data = this.getEffectValues(r.usedEffects, data);
+      return this.effectParamsToHtml(data);
     },
 
     *enumerate(...arrays) {
@@ -1395,6 +1361,7 @@ export default {
           bestScore = r.score;
           bestSkillCount = r.skillCount;
           bestResult = resultGetter();
+          //console.log(r.score, r.skillCount, bestResult);
         }
       };
 
@@ -1448,7 +1415,9 @@ export default {
 
             const updateState = function (s) {
               r.score += s.score;
-              r.skillCount += s.skills.length
+              r.skillCount += s.skills.length;
+              if (s.equipments)
+                r.skillCount += s.equipments.length;
               if (s.usedEffects.length)
                 r.usedEffects.splice(r.usedEffects.length, 0, ...s.usedEffects);
               if (s.conflictedEffects.length)
@@ -1492,7 +1461,6 @@ export default {
       let results = [];
       searchRecursive(ctx, results);
       //console.log(results);
-      //console.log(`searchCount: ${searchCount}`);
 
       return bestResult;
     },
@@ -1686,7 +1654,7 @@ export default {
     },
   },
 
-  beforeUpdate: function () {
+  updated: function () {
 
     const beginSearch = function () {
       this.progress.completed = false;
