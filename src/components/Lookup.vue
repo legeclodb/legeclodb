@@ -1211,8 +1211,8 @@ export default {
 
             let score = val * (p.weight * 0.1) * scoreBoost;
             if (score > 0) {
-              if (!hitLimit && skill.isActive)
-                score *= Math.min(Math.pow(val / 20, 2), 1); // 中途半端な効果量のアクティブは選ばれにくいようにスコア補正
+              //if (!hitLimit && skill.isActive)
+              //  score *= Math.min(Math.pow(val / 20, 2), 1); // 中途半端な効果量のアクティブは選ばれにくいようにスコア補正
               r.score += score;
               r.usedEffects.push(effect);
             }
@@ -1346,97 +1346,115 @@ export default {
 
 
       let bestScore = 0;
+      let bestSkillCount = 0;
       let bestResult = [];
-      const updateBest = function (score, depth, resultGetter) {
-        if (score > bestScore || (score == bestScore && depth < bestResult.length)) {
-          bestScore = score;
+      let searchCount = 0;
+      const updateBest = function (r, depth, resultGetter) {
+        ++searchCount;
+        let update = r.score > bestScore;
+        if (r.score == bestScore) {
+          if (depth < bestResult.length) {
+            update = true;
+          }
+          else if (depth == bestResult.length) {
+            if (r.skillCount < bestSkillCount) {
+              update = true;
+            }
+          }
+        }
+
+        if (update) {
+          bestScore = r.score;
+          bestSkillCount = r.skillCount;
           bestResult = resultGetter();
         }
       };
 
       const searchRecursive = function (pctx, results, stack = [], depth = 0) {
-        let ctx = pctx;
+        const mainPickCounts = [5, 4, 4, 3, 2, 2, 2, 2, 2, 2];
+        const supPickCounts = [3, 2, 2, 1, 1, 1, 1, 1, 1, 1];
+        if (depth > mainPickCounts.length)
+          return;
+        let mainPickCount = mainPickCounts[depth];
+        let supPickCount = supPickCounts[depth];
 
         // サポートを先に処理
-        let score = 0;
-        let bestSup = null;
-        let sups = pctx.pickCandidates(supChrs);
-        const supScores = sups.map(a => getChrScore(pctx, a)).filter(a => a && a.score > 0).sort(compareScore);
-        if (supScores.length) {
-          bestSup = findPrioritizedChr(supScores);
-          if (!bestSup)
-            bestSup = supScores[0];
-          score += bestSup.score;
-          ctx.acceptEffects(bestSup.usedEffects);
+        let sups = pctx.pickCandidates(supChrs, supPickCount);
+        let supScores = sups.map(a => getChrScore(pctx, a)).filter(a => a && a.score > 0).sort(compareScore);
+        let prioSup = findPrioritizedChr(supScores);
+        if (prioSup) {
+          supScores = [prioSup];
+        }
+        else if (supScores.length == 0) {
+          supScores = [null];
         }
 
-        let candidateCount = 0;
-        switch (depth) {
-          case 0:
-          case 1: candidateCount = 5; break;
-          case 2:
-          case 3: candidateCount = 4; break;
-          case 4: candidateCount = 3; break;
-          default: candidateCount = 2; break;
-        }
-
-        let mains = pctx.pickCandidates(mainChrs, candidateCount);
-        let mainScores = mains.map(a => getChrScore(pctx, a)).filter(a => a).sort(compareScore);
-        if (mainScores.length == 0 || score + mainScores[0].score == 0)
-          return;
-
-        let prio = findPrioritizedChr(mainScores);
-        if (prio) {
-          mainScores = [prio];
-        }
-
-        for (let ms of mainScores) {
-          let cctx = createContext(ctx);
-
-          let r = {
-            score: stack.length ? stack[stack.length - 1].score : 0,
-            usedEffects: [],
-            conflictedEffects: [],
-            children: [],
-          };
-          results.push(r);
-
-          const updateState = function (s) {
-            r.score += s.score;
-            if (s.usedEffects.length)
-              r.usedEffects.splice(r.usedEffects.length, 0, ...s.usedEffects);
-            if (s.conflictedEffects.length)
-              r.conflictedEffects.splice(r.conflictedEffects.length, 0, ...s.conflictedEffects);
-          };
-          if (bestSup) {
-            updateState(bestSup);
-            r.support = bestSup;
-          }
-          {
-            updateState(ms);
-            cctx.acceptEffects(ms.usedEffects);
-            r.main = ms;
-            if (ms.summon)
-              r.summon = ms.summon;
-          }
-          for (let v of [r.main, r.summon, r.support]) {
-            if (!v)
-              continue;
-            cctx.markAsUsed(v.character);
-            for (const s of this.enumerate(v.skills, v.equipments))
-              cctx.markAsUsed(s);
+        for (let ss of supScores) {
+          let sctx = createContext(pctx);
+          let supportScore = 0;
+          if (ss) {
+            sctx.acceptEffects(ss.usedEffects);
+            supportScore = ss.score;
           }
 
-          if (depth + 1 < num) {
-            let cstack = [...stack, r];
-            searchRecursive(cctx, r.children, cstack, depth + 1);
+          let mains = sctx.pickCandidates(mainChrs, mainPickCount);
+          let mainScores = mains.map(a => getChrScore(sctx, a)).filter(a => a).sort(compareScore);
+          if (mainScores.length == 0 || supportScore + mainScores[0].score == 0)
+            return;
+          let prioMain = findPrioritizedChr(mainScores);
+          if (prioMain) {
+            mainScores = [prioMain];
+          }
 
-            if (r.children.length == 0 && depth + 1 < num) {
-              updateBest(r.score, depth, () => cstack);
+          for (let ms of mainScores) {
+            let mctx = createContext(sctx);
+            let pr = stack.length ? stack[stack.length - 1] : null;
+            let r = {
+              score: pr ? pr.score : 0,
+              skillCount: pr ? pr.skillCount : 0,
+              usedEffects: [],
+              conflictedEffects: [],
+              children: [],
+            };
+            results.push(r);
+
+            const updateState = function (s) {
+              r.score += s.score;
+              r.skillCount += s.skills.length
+              if (s.usedEffects.length)
+                r.usedEffects.splice(r.usedEffects.length, 0, ...s.usedEffects);
+              if (s.conflictedEffects.length)
+                r.conflictedEffects.splice(r.conflictedEffects.length, 0, ...s.conflictedEffects);
+            };
+            if (ss) {
+              updateState(ss);
+              r.support = ss;
             }
-          }
-          else {
-            updateBest(r.score, depth, () => [...stack, r]);
+            {
+              updateState(ms);
+              mctx.acceptEffects(ms.usedEffects);
+              r.main = ms;
+              if (ms.summon)
+                r.summon = ms.summon;
+            }
+            for (let v of [r.main, r.summon, r.support]) {
+              if (v) {
+                mctx.markAsUsed(v.character);
+                for (const s of this.enumerate(v.skills, v.equipments))
+                  mctx.markAsUsed(s);
+              }
+            }
+
+            if (depth + 1 < num) {
+              let cstack = [...stack, r];
+              searchRecursive(mctx, r.children, cstack, depth + 1);
+
+              if (r.children.length == 0)
+                updateBest(r, depth + 1, () => cstack);
+            }
+            else {
+              updateBest(r, depth + 1, () => [...stack, r]);
+            }
           }
         }
 
@@ -1446,6 +1464,7 @@ export default {
       let results = [];
       searchRecursive(ctx, results);
       //console.log(results);
+      //console.log(`searchCount: ${searchCount}`);
 
       return bestResult;
     },
