@@ -15,8 +15,8 @@
               <template #cell(value)="r">
                 <div class="flex">
                   <div style="margin-left: auto">
-                    <b-form-checkbox v-if="r.item.type == 'boolean'" v-model="r.item.value" lazy></b-form-checkbox>
-                    <b-form-input v-if="r.item.type == 'number'" style="width: 3em" v-model.number="r.item.value" size="sm" type="number" class="input-param" min="0" lazy></b-form-input>
+                    <b-form-checkbox v-if="r.item.type == 'boolean'" v-model="r.item.value"></b-form-checkbox>
+                    <b-form-input v-if="r.item.type == 'number'" style="width: 3em" v-model.number="r.item.value" :min="r.item.min" :max="r.item.max" size="sm" type="number" class="input-param" lazy></b-form-input>
                   </div>
                 </div>
               </template>
@@ -81,7 +81,7 @@
             </div>
             <b-table small borderless hover :items="buffs" :fields="buffFields">
               <template #cell(enabled)="r">
-                <b-form-checkbox v-model="r.item.enabled" lazy></b-form-checkbox>
+                <b-form-checkbox v-model="r.item.enabled"></b-form-checkbox>
               </template>
               <template #cell(label)="r">
                 {{r.item.label}}
@@ -108,7 +108,7 @@
 
             <b-table small borderless hover :items="debuffs" :fields="buffFields">
               <template #cell(enabled)="r">
-                <b-form-checkbox v-model="r.item.enabled" lazy></b-form-checkbox>
+                <b-form-checkbox v-model="r.item.enabled"></b-form-checkbox>
               </template>
               <template #cell(label)="r">
                 {{r.item.label}}
@@ -210,11 +210,15 @@
       </div>
     </div>
 
-    <div v-if="result.length != 0" class="content">
+
+    <div v-if="progress.result.length != 0" class="content">
       <div class="total-params">
         <div class="flex info">
+          <div v-if="!progress.completed" style="margin-right: 5px">
+            <b-spinner small label="Spinning"></b-spinner>
+          </div>
           <div><h6>全ユニット合計:</h6></div>
-          <template v-for="(e, ei) in allEffectsToHtml(result)">
+          <template v-for="(e, ei) in allEffectsToHtml(progress.result)">
             <div :key="ei" v-html="e" />
           </template>
         </div>
@@ -222,24 +226,24 @@
     </div>
 
     <div class="content" :style="style">
-      <div v-if="result.length == 0" class="menu-panel" style="padding: 10px">
+      <div v-if="progress.result.length == 0" class="menu-panel" style="padding: 10px">
         <div class="about">
           <h5 style="margin-bottom: 5px">バフ・デバフ組み合わせ検索</h5>
-
           指定のバフ・デバフの最適な組み合わせを探すツールです。<br />
           メインキャラ(スキル×装備)×サポート の組み合わせから、競合を考慮しつつ、総効果量の高いものを探索します。<br />
           例えば「与ダメージバフ＋クリティカルダメージ倍率バフ＋ダメージ耐性デバフ」のいい感じの組み合わせを探したい、というようなケースで役立ちます。<br />
           <br />
           味方全体の強化の最適化が目的であるため、自己バフは考慮しません。単体のバフも「<b-link @mouseenter="highlight('cb-p-allowSingleUnitBuff', true)" @mouseleave="highlight('cb-p-allowSingleUnitBuff', false)">単体バフを含める</b-link>」にチェックしていない限り考慮しません。<br />
           特定のキャラやスキルを除外or優先採用したい場合、アイコンをマウスオーバーすると出てくるポップアップから可能です。<br />
+          特定の効果を優先したい場合は優先度を高めると優先的に選択されます。<br />
           <br />
           なお、必ずしも本当に最適な結果になるとは限らないことに注意が必要です。<br />
-          完璧に解くには時間がかかりすぎるため、若干正確性を犠牲にしつつ高速に解く方法 (貪欲法) を用いています。<br />
-          また、発動に条件がある効果の条件を考慮していないため、現実的ではない結果が出ることもあります。除外や優先指定で調整してみてください。<br />
+          完璧に解くには時間がかかりすぎるため、若干正確性を犠牲にしつつ高速に解く方法を用いています。<br />
+          (アルゴリズムは随時改良中: 2023/06/21)<br />
         </div>
       </div>
 
-      <template v-for="(r, ri) in result">
+      <template v-for="(r, ri) in progress.result">
         <div class="character" :key="ri">
           <div class="flex info">
             <div><h6>ユニット内合計:</h6></div>
@@ -518,6 +522,12 @@ export default {
           label: "項目",
         },
       ],
+
+      progress: {
+        completed: true,
+        pending: false,
+        result: [],
+      },
     };
   },
 
@@ -600,46 +610,62 @@ export default {
       item.status = this.getItemStatus(item);
     }
 
-    const setSlotActive = function (skill, ownerType) {
-      skill.ownerType = ownerType;
-      if (skill.buff) {
-        for (let v of skill.buff) {
-          v.valueType = `バフ:${v.type}`
-          if (!v.slot)
-            v.slot = `バフ:${ownerType}${v.onBattle ? ':戦闘時' : ''}:${v.type}`;
-          else
-            v.hasSpecialSlot = true;
+    let valueTypeIndex = 0;
+    let valueTypeTable = new Map();
+    let slotIndex = 0;
+    let slotTable = new Map();
+    const setupSkill = function(skill) {
+      for (let v of this.enumerateEffects(skill)) {
+        let valueType = v.type;
+        if (v.isBuff)
+          valueType += "+";
+        else if (v.isDebuff)
+          valueType += "-";
+        v.valueType = valueType;
+
+        if (v.target == "自身")
+          v.isSelfTarget = true;
+        if (v.target == "単体")
+          v.isSingleTarget = true;
+
+        v.valueTypeIndex = valueTypeTable.get(valueType);
+        if (!v.valueTypeIndex) {
+          valueTypeTable.set(valueType, valueTypeIndex);
+          v.valueTypeIndex = valueTypeIndex++;
+        }
+
+        if (skill.isActive) {
+          let slot = v.slot;
+          if (!slot) {
+            slot = v.type;
+            if (v.isBuff)
+              slot += "+";
+            else if (v.isDebuff)
+              slot += "-";
+            if (skill.isMainSkill)
+              slot += "(メイン)";
+            else if (skill.isSupportSkill)
+              slot += "(サポート)";
+            if (v.onBattle)
+              slot += "(戦闘時)";
+            v.slot = slot;
+          }
+          v.slotIndex = slotTable.get(slot);
+          if (!v.slotIndex) {
+            slotTable.set(slot, slotIndex);
+            v.slotIndex = slotIndex++;
+          }
         }
       }
-      if (skill.debuff) {
-        for (let v of skill.debuff) {
-          v.valueType = `デバフ:${v.type}`
-          if (!v.slot)
-            v.slot = `デバフ${ownerType}${v.onBattle ? ':戦闘時' : ''}:${v.type}`;
-          else
-            v.hasSpecialSlot = true;
-        }
-      }
-    };
-    const setSlotPassive = function (skill, ownerType) {
-      skill.ownerType = ownerType;
-      if (skill.buff)
-        for (let v of skill.buff)
-          v.valueType = `バフ:${v.type}`
-      if (skill.debuff)
-        for (let v of skill.debuff)
-          v.valueType = `デバフ:${v.type}`
-    };
-    const apply = function (array, func) {
-      for (let v of array)
-        func(v);
-    };
-    apply(this.mainActive, a => setSlotActive(a, "メイン"));
-    apply(this.mainPassive, a => setSlotPassive(a, "メイン"));
-    apply(this.mainTalents, a => setSlotPassive(a, "メイン"));
-    apply(this.supActive, a => setSlotActive(a, "サポート"));
-    apply(this.supPassive, a => setSlotPassive(a, "サポート"));
-    apply(this.items, a => setSlotPassive(a, "アイテム"));
+    }.bind(this);
+    for (let v of this.enumerate(this.mainActive, this.mainPassive, this.mainTalents, this.supActive, this.supPassive, this.items)) {
+      setupSkill(v);
+    }
+    this.valueTypeIndex = valueTypeIndex;
+    this.valueTypeTable = valueTypeTable;
+    this.slotIndex = slotIndex;
+    this.slotTable = slotTable;
+
 
     this.mainChrs.sort((a, b) => b.date.localeCompare(a.date));
     this.supChrs.sort((a, b) => b.date.localeCompare(a.date));
@@ -650,45 +676,51 @@ export default {
     this.fillFilter(this.filter.rarity, this.rarities);
     this.fillFilter(this.pickFilter.class, this.classes);
     this.fillFilter(this.pickFilter.symbol, this.symbols);
-    
+
+    for (let item of this.items) {
+      let flags = 0;
+      if (item.classes) {
+        for (const c of item.classes)
+          flags |= 1 << this.classes.findIndex(v => v == c);
+      }
+      else {
+        flags = 0xffff;
+      }
+      item.classFlags = flags;
+    }
+
     const makeOptions = function (params) {
       let r = {};
       for(const p of params) {
-        const v = p[2];
-        r[p[0]] = {
-          name: p[0],
-          label: p[1],
-          value: v,
-          type: typeof (p[2]),
-
-          reset: function () {
-            this.value = v;
-          }
-        };
+        const v = p.value;
+        p.type = typeof v;
+        p.reset = function () { this.value = v; };
+        r[p.name] = p;
       }
       return r;
     };
     this.options = makeOptions([
-      ["maxPickup", "人を選出", 5],
-      ["maxActiveCount", "アクティブ数制限 (再行動ありを除く)", 2],
-      ["allowOnBattle", "戦闘時発動効果を含める", true],
-      ["allowProbability", "確率発動効果を含める", true],
-      ["allowSingleUnitBuff", "単体バフを含める", false],
-      ["allowSymbolSkill", "シンボルスキルを含める", false],
-      ["allowSupportActive", "サポートのアクティブを含める", true],
+      { name: "maxPickup", label: "人を選出", value: 5, min: 1, max: 10 },
+      { name: "maxActiveCount", label: "アクティブ数制限 (再行動ありを除く)", value: 2, min: 0, max: 3 },
+      { name: "allowOnBattle", label: "戦闘時発動効果を含める", value: true },
+      { name: "allowProbability", label: "確率発動効果を含める", value: true },
+      { name: "allowSingleUnitBuff", label: "単体バフを含める", value: false },
+      { name: "allowSymbolSkill", label: "シンボルスキルを含める", value: false },
+      { name: "allowSupportActive", label: "サポートのアクティブを含める", value: true },
     ]);
 
     const makeParams = function (effectType, types) {
       const make = function (t) {
         const l = t.limit ? t.limit : null;
         const w = t.weight ? t.weight : 10;
+        const valueType = `${t.label}${effectType}`;
         return {
           label: t.label,
           enabled: false,
           limit_: l,
           weight: w,
-          effectType: effectType,
-          valueType: `${effectType}:${t.label}`,
+          valueType: valueType,
+          valueTypeIndex: valueTypeTable.get(valueType),
 
           get limit() {
             return this.parent ? this.parent.limit_ : this.limit_;
@@ -703,7 +735,7 @@ export default {
       return types.map(a => make(a));
     };
 
-    this.buffs = makeParams("バフ", [
+    this.buffs = makeParams("+", [
       {label: "アタック"},
       {label: "ディフェンス"},
       {label: "マジック"},
@@ -721,7 +753,7 @@ export default {
       {label: "ダメージ耐性(物理)"},
       {label: "ダメージ耐性(魔法)"},
     ]);
-    this.debuffs = makeParams("デバフ", [
+    this.debuffs = makeParams("-", [
       {label: "アタック", limit:70},
       {label: "ディフェンス", limit:70},
       {label: "マジック", limit:70},
@@ -731,7 +763,6 @@ export default {
       {label: "ダメージ耐性(物理)"},
       {label: "ダメージ耐性(魔法)"},
     ]);
-    this.excluded = [];
 
     const setParent = function (list, child, parent) {
       list.find(a => a.label == child).parent = list.find(a => a.label == parent);
@@ -832,17 +863,11 @@ export default {
     removeExcluded(item) {
       this.excluded.splice(this.excluded.indexOf(item), 1);
     },
-    isExcluded(item, owner = null) {
-      return this.isInPrioritizeList(this.excluded, item, owner);
-    },
     addPrioritized(item, owner = null) {
       this.addPriorityItem(this.prioritized, item, owner);
     },
     removePrioritized(item) {
       this.prioritized.splice(this.prioritized.indexOf(item), 1);
-    },
-    isPrioritized(item, owner = null) {
-      return this.isInPrioritizeList(this.prioritized, item, owner);
     },
 
     createUsedFlags(parent = null) {
@@ -879,7 +904,7 @@ export default {
     },
 
     matchClass(item, chr) {
-      return item && (!item.classes || item.classes.includes(chr.class));
+      return (item.classFlags & (1 << chr.classId)) != 0;
     },
     compare(a, b) {
       return a == b ? 0 : a < b ? 1 : -1;
@@ -892,60 +917,37 @@ export default {
       return r;
     },
 
-    getEffectValueList(effectList, total = null) {
-      const doCount = function (dst) {
-        for (const e of effectList) {
-          let table = dst[e.effectType];
-          if (e.type in table)
-            table[e.type] += this.getEffectValue(e);
-        }
-      }.bind(this);
-      if (total) {
-        doCount(total);
-        return total;
+    getEffectValues(effectList, dst = null) {
+      if (!dst) {
+        dst = new Array(this.valueTypeIndex);
+        dst.fill(0);
       }
-      else {
-        let buff = {};
-        let debuff = {};
-        for (let v of this.buffs)
-          buff[v.label] = 0;
-        for (let v of this.debuffs)
-          debuff[v.label] = 0;
-        let r = {
-          "バフ": buff,
-          "デバフ": debuff,
-        };
-        doCount(r);
-        return r;
-      }
+      for (const e of effectList)
+        dst[e.valueTypeIndex] += this.getEffectValue(e);
+      return dst;
     },
-
-    chrEffectsToHtml(rec) {
-      const data = this.getEffectValueList(rec.usedEffects);
-
+    effectParamsToHtml(data) {
       let lines = [];
-      for (const [effectType, records] of Object.entries(data)) {
-        const prefix = effectType == "バフ" ? "+" : "-";
-        for (const [buffType, value] of Object.entries(records).filter(a => a[1] > 0)) {
-          lines.push(`<div class="effect-box"><span class="effect caution">${buffType}${prefix}${value}%</span></div>`);
+      for (let e of this.enumerate(this.buffs, this.debuffs)) {
+        let i = e.valueTypeIndex;
+        let v = data[i];
+        if (v) {
+          if (e.limit)
+            v = Math.min(v, e.limit);
+          lines.push(`<div class="effect-box"><span class="effect caution">${e.valueType}${v}%</span></div>`);
         }
       }
       return lines;
+    },
+    chrEffectsToHtml(rec) {
+      const data = this.getEffectValues(rec.usedEffects);
+      return this.effectParamsToHtml(data);
     },
     allEffectsToHtml(recs) {
-      let total = null;
-      for (let r of recs) {
-        total = this.getEffectValueList(r.usedEffects, total);
-      }
-
-      let lines = [];
-      for (const [effectType, records] of Object.entries(total)) {
-        const prefix = effectType == "バフ" ? "+" : "-";
-        for (const [buffType, value] of Object.entries(records).filter(a => a[1] > 0)) {
-          lines.push(`<div class="effect-box"><span class="effect caution">${buffType}${prefix}${value}%</span></div>`);
-        }
-      }
-      return lines;
+      let data = null;
+      for (let r of recs)
+        data = this.getEffectValues(r.usedEffects, data);
+      return this.effectParamsToHtml(data);
     },
 
     *enumerate(...arrays) {
@@ -959,33 +961,37 @@ export default {
       yield* this.enumerate(skill.buff, skill.debuff);
     },
 
-    doSearch(num) {
-      const opt = this.optionValues;
-      let targets = this.enabledEffects;
-
-      let totalAmountGlobal = {};
-      let usedSlotsGlobal = {};
-      let usedSkillsGlobal = this.createUsedFlags();
-
-      for (let v of targets)
-        totalAmountGlobal[v.valueType] = 0;
-
-      const isPrioritized = this.isPrioritized;
-      const findPrioritizedChr = function (scoreList) {
-        for (const p of this.prioritized) {
-          const r = scoreList.find(a => (a.scoreMain != undefined ? a.scoreMain > 0 : a.score > 0) && a.character == p);
-          if (r)
-            return r;
+    pickMax(iter, evaluator) {
+      let r = null;
+      let highest = 0;
+      for (let v of iter) {
+        let score = evaluator(v);
+        if (score > highest) {
+          r = v;
+          highest = score;
         }
-        return null;
-      }.bind(this);
+      }
+      return [r, highest];
+    },
 
-      const isAvailable = function (item, owner = null) {
-        return !this.getFlag(usedSkillsGlobal, item.uid) && !this.isExcluded(item, owner);
+    doSearch(num) {
+      // reactive getter 回避のためコピーを用意
+      const opt = this.optionValues;
+      let targets = new Array(this.valueTypeIndex);
+      for (let v of this.enabledEffects) {
+        targets[v.valueTypeIndex] = {
+          limit: v.limit,
+          weight: v.weight,
+          valueTypeIndex: v.valueTypeIndex,
+        };
+      }
+      const excluded = [...this.excluded];
+      const prioritized = [...this.prioritized];
+      const isExcluded = function (item, owner = null) {
+        return this.isInPrioritizeList(excluded, item, owner);
       }.bind(this);
-      const markAsUsed = function (item) {
-        if (item.uid)
-          this.setFlag(usedSkillsGlobal, item.uid, true);
+      const isPrioritized = function (item, owner = null) {
+        return this.isInPrioritizeList(prioritized, item, owner);
       }.bind(this);
 
       const compareScore = function (a, b) {
@@ -995,83 +1001,187 @@ export default {
           return this.compare(a.score, b.score);
       }.bind(this);
 
-
-      const buffCondition = function (skill, effect) {
+      const effectCondition = function (effect) {
         if (effect.onBattle && !effect.duration)
           return false;
 
-        if (effect.effectType == "デバフ") {
+        if (effect.isDebuff) {
           return (opt.allowOnBattle || !effect.onBattle) &&
             (opt.allowProbability || !effect.probability);
         }
         else {
-          return (effect.target != "自身") &&
-            (opt.allowSingleUnitBuff || effect.target != "単体") &&
+          return (!effect.isSelfTarget) &&
+            (opt.allowSingleUnitBuff || !effect.isSingleTarget) &&
             (opt.allowOnBattle || !effect.onBattle) &&
             (opt.allowProbability || !effect.probability);
         }
       };
+      const skillCondition = function (skill) {
+        if (!opt.allowSymbolSkill && skill.isSymbolSkill)
+          return false;
+        if (!opt.allowSupportActive && skill.isActive && skill.isSupportSkill)
+          return false;
+        return true;
+      };
 
-      const getBaseSkillScore = function (skill) {
-        if (!skill)
-          return 0;
-        let score = 0;
-        for (const v of this.enumerateEffects(skill)) {
-          let p = targets.find(a => a.valueType == v.valueType);
-          if (p && buffCondition(skill, v)) {
-            let ev = this.getEffectValue(v);
-            score += ev * p.weight;
-          }
+      const findPrioritizedChr = function (scoreList) {
+        for (const p of this.prioritized) {
+          const r = scoreList.find(a => (a.scoreMain != undefined ? a.scoreMain > 0 : a.score > 0) && a.character == p);
+          if (r)
+            return r;
         }
-        if (skill.summon) {
-          let sch = skill.summon[0];
-          for (const s of [sch.talent, ...sch.skills])
-            score += getBaseSkillScore(s);
-        }
-        return score;
-      }.bind(this);
-
-      const getBaseChrScore = function (chr) {
-        return [chr.talent, ...chr.skills].reduce((total, skill) => total += getBaseSkillScore(skill), 0);
-      }.bind(this);
-
-      const filterSkills = function (skills) {
-        return skills.filter(a => isAvailable(a)).filter(a => getBaseSkillScore(a));
-      }.bind(this);
-
-      const oederByBaseScore = function (chrs, filter) {
-        let tmp = chrs.map(chr => [getBaseChrScore(chr), chr]).sort((a, b) => this.compare(a[0], b[0]));
-        if (filter)
-          tmp = tmp.filter(a => a[0] > 0);
-        return tmp.map(a => a[1]);
+        return null;
       }.bind(this);
 
       // 高速化のため事前フィルタ
-      let weapons = filterSkills(this.weapons);
-      let armors = filterSkills(this.armors);
-      let helmets = filterSkills(this.helmets);
-      let accessories = filterSkills(this.accessories);
+      const isRelevant = function (item) {
+        if (isExcluded(item))
+          return false;
+        if (item.isSupport) {
+          for (const skill of item.skills) {
+            for (const v of this.enumerateEffects(skill)) {
+              let p = targets[v.valueTypeIndex];
+              if (p && effectCondition(v))
+                return true;
+            }
+          }
+        }
+        else {
+          for (const v of this.enumerateEffects(item)) {
+            let p = targets[v.valueTypeIndex];
+            if (p && effectCondition(v))
+              return true;
+          }
+        }
+        return false;
+      }.bind(this);
 
-      // メインはここでは絞らないでおく
-      let mainChrs = oederByBaseScore(this.mainChrs.filter(a => this.filterMatchMainChr(a)), false);
-      let supChrs = oederByBaseScore(this.supChrs.filter(a => this.filterMatchSupChr(a)), true);
+      let mainChrs = this.mainChrs.filter(a => this.filterMatchMainChr(a));
+      let supChrs = this.supChrs.filter(a => isRelevant(a) && this.filterMatchSupChr(a));
+      let weapons = this.weapons.filter(a => isRelevant(a));
+      let armors = this.armors.filter(a => isRelevant(a));
+      let helmets = this.helmets.filter(a => isRelevant(a));
+      let accessories = this.accessories.filter(a => isRelevant(a));
 
+      const createContext = function (parent = null) {
+        let vue = this;
+        let ctx = {
+          totalAmount: new Int32Array(parent ? parent.totalAmount : vue.valueTypeIndex),
+          usedSlots: parent ? [...parent.usedSlots] : new Array(vue.slotIndex),
+          usedSkills: this.createUsedFlags(parent ? parent.usedSkills : null),
 
-      const getChrScore = function (chr, parentState = null) {
-        if (!isAvailable(chr))
+          isPrioritized: isPrioritized,
+          isAvailable: function (item, owner = null) {
+            return !vue.getFlag(this.usedSkills, item.uid) && !isExcluded(item, owner);
+          },
+          markAsUsed: function (item) {
+            if (item.uid)
+              vue.setFlag(this.usedSkills, item.uid, true);
+          },
+
+          getEffectValue(effect) {
+            let p = targets[effect.valueTypeIndex];
+            if (p && effectCondition(effect)) {
+              if (effect.slotIndex && this.usedSlots[effect.slotIndex])
+                return [0, p, true];
+
+              const current = this.totalAmount[p.valueTypeIndex];
+              let v = vue.getEffectValue(effect);
+              let hitLimit = false;
+              if (p.limit > 0 && current + v >= p.limit) {
+                hitLimit = true;
+                v = p.limit - current;
+              }
+              return [v, p, hitLimit];
+            }
+            return null;
+          },
+          acceptEffects(effectList) {
+            for (const effect of effectList) {
+              this.totalAmount[effect.valueTypeIndex] += vue.getEffectValue(effect);
+              if (effect.slotIndex)
+                this.usedSlots[effect.slotIndex] = effect;
+            }
+          },
+
+          prepassSkill(skill, owner = null) {
+            if (!skill || !this.isAvailable(skill, owner) || !skillCondition(skill))
+              return 0;
+            let score = 0;
+            for (const v of vue.enumerateEffects(skill)) {
+              let p = this.getEffectValue(v);
+              if (p)
+                score += p[0] * (p[1].weight * 0.1);
+            }
+            if (skill.summon) {
+              let sch = skill.summon[0];
+              for (const s of [sch.talent, ...sch.skills])
+                score += this.prepassSkill(s);
+            }
+            // 無価値なら以降 isAvailable() で速やかに弾く
+            if (score == 0)
+              this.markAsUsed(skill);
+            return score;
+          },
+          prepassChr(chr) {
+            let score = 0;
+            score += this.prepassSkill(chr.talent, chr);
+            for (const skill of chr.skills)
+              score += this.prepassSkill(skill, chr);
+
+            if (chr.isMain) {
+              const enumerateItems = function* (items, chr) {
+                for (let item of items) {
+                  if (!vue.getFlag(this.usedSkills, item.uid) && item.classFlags & (1 << chr.classId)) {
+                    yield item;
+                  }
+                }
+              }.bind(this);
+              const pickBest = function (equipments) {
+                return vue.pickMax(enumerateItems(equipments, chr), a => this.prepassSkill(a))[1];
+              }.bind(this);
+
+              // 補正なしだと装備の影響が強すぎるので、適当に減衰係数を用意…
+              const itemRate = 0.5;
+              score += pickBest(weapons) * itemRate;
+              score += pickBest(armors) * itemRate;
+              score += pickBest(helmets) * itemRate;
+              score += pickBest(accessories) * itemRate;
+            }
+
+            // 無価値なら以降 isAvailable() で速やかに弾く
+            if (score == 0)
+              this.markAsUsed(chr);
+            return score;
+          },
+
+          pickCandidates(chrs, num) {
+            chrs = chrs.filter(a => this.isAvailable(a));
+            let tmp = chrs.map(a => [this.prepassChr(a), a]).filter(a => a[0] > 0).sort((a, b) => vue.compare(a[0], b[0])).slice(0, num);
+            let r = tmp.map(a => a[1]);
+            for (let p of vue.prioritized) {
+              if (this.isAvailable(p) && chrs.includes(p) && !r.includes(p)) {
+                r.splice(0, 0, p);
+                break;
+              }
+            }
+            return r;
+          },
+
+        };
+        return ctx;
+      }.bind(this);
+
+      const getChrScore = function (parentCtx, chr) {
+        if (!parentCtx.isAvailable(chr))
           return null;
 
-        let totalAmount = { ...(parentState ? parentState.totalAmount : totalAmountGlobal) };
-        let usedSlots = { ...(parentState ? parentState.usedSlots : usedSlotsGlobal) };
+        let cctx = createContext(parentCtx);
         let usedEffects = [];
         let conflictedEffects = [];
 
-        const getSkillScore = function (skill, parentState = null) {
-          if (!isAvailable(skill, chr))
-            return 0;
-          if (!opt.allowSymbolSkill && skill.isSymbolSkill)
-            return 0;
-          if (!opt.allowSupportActive && skill.isActive && skill.isSupportSkill)
+        const getSkillScore = function (ctx, skill) {
+          if (!ctx.isAvailable(skill, chr) || !skillCondition(skill))
             return 0;
 
           let r = {
@@ -1080,77 +1190,55 @@ export default {
             usedEffects: [],
             conflictedEffects: [],
           };
-          if (parentState) {
-            r.totalAmount = parentState.totalAmount;
-            r.usedSlots = parentState.usedSlots;
-            r.usedEffects = parentState.usedEffects;
-            r.conflictedEffects = parentState.conflictedEffects;
-          }
-          else {
-            r.totalAmount = { ...totalAmount };
-            r.usedSlots = { ...usedSlots };
-          }
 
           let scoreBoost = 1;
           if(skill.hasReaction && skill.area >= 5 && skill.range == "自ユニット") {
               scoreBoost += 0.5;
           }
  
-          for (const v of this.enumerateEffects(skill)) {
-            let p = targets.find(a => a.valueType == v.valueType);
-            if (p && buffCondition(skill, v)) {
-              if (skill.isActive) {
-                if (usedSlots[v.slot]) {
-                  r.conflictedEffects.push(v);
-                  continue;
-                }
-                r.usedSlots[v.slot] = [v.value];
-              }
-              const limit = p.limit;
-              let hitLimit = false;
-              const current = r.totalAmount[p.valueType];
-              let baseAmount = this.getEffectValue(v);
-              let amount = baseAmount;
-              if (limit > 0 && current + amount > limit) {
-                hitLimit = true;
-                amount = limit - current;
-              }
-              let score = amount * (p.weight * 0.1) * scoreBoost;
-              if (!hitLimit && skill.isActive)
-                score *= Math.min(Math.pow(baseAmount / 20, 2), 1); // 中途半端な効果量のアクティブは選ばれにくいようにスコア補正
+          for (const effect of this.enumerateEffects(skill)) {
+            const ev = ctx.getEffectValue(effect);
+            if (!ev)
+              continue;
+            const [val, p, hitLimit] = ev;
 
-              if (score > 0) {
-                r.score += score;
-                r.totalAmount[v.valueType] += amount;
-                r.usedEffects.push(v);
-              }
-              if (amount == 0) {
-                r.conflictedEffects.push(v);
-              }
+            let score = val * (p.weight * 0.1) * scoreBoost;
+            if (score > 0) {
+              //if (!hitLimit && skill.isActive)
+              //  score *= Math.min(Math.pow(val / 20, 2), 1); // 中途半端な効果量のアクティブは選ばれにくいようにスコア補正
+              r.score += score;
+              r.usedEffects.push(effect);
+            }
+            else {
+              r.conflictedEffects.push(effect);
             }
           }
 
           if (skill.summon) {
+            let sctx = createContext(ctx);
             let sch = skill.summon[0];
             r.summon = {
               character: sch,
               skills: [],
             };
             for (const s of [sch.talent, ...sch.skills]) {
-              const sr = getSkillScore(s, r);
+              const sr = getSkillScore(sctx, s);
               if (sr.score > 0) {
                 r.score += sr.score;
+                r.usedEffects = r.usedEffects.concat(sr.usedEffects);
+                r.conflictedEffects = r.conflictedEffects.concat(sr.conflictedEffects);
                 r.summon.skills.push(s);
+                sctx.acceptEffects(sr.usedEffects);
               }
             }
           }
           return r;
         }.bind(this);
 
-        const pickEquip = function (equipments) {
-          const scoreList = equipments.filter(a => this.matchClass(a, chr)).map(a => getSkillScore(a));
+        const pickEquip = function (ctx, equipments) {
+          const scoreList = equipments.filter(a => this.matchClass(a, chr)).map(a => getSkillScore(ctx, a));
           for (const s of scoreList)
-            if (s.score > 0 && isPrioritized(s.skill, chr))
+            if (s.score > 0 && ctx.isPrioritized(s.skill, chr))
               return s;
 
           scoreList.sort(compareScore);
@@ -1159,15 +1247,15 @@ export default {
           return null;
         }.bind(this);
 
-        const pickSkill = function (skills, ignoreActive) {
+        const pickSkill = function (ctx, skills, ignoreActive) {
           let scoreList = [];
           for (const skill of skills) {
             if (ignoreActive && skill.isActive && !skill.hasReaction)
               continue;
 
-            const r = getSkillScore(skill);
+            const r = getSkillScore(ctx, skill);
             if (r.score > 0) {
-              if (isPrioritized(skill, chr))
+              if (ctx.isPrioritized(skill, chr))
                 return r;
               scoreList.push(r);
             }
@@ -1180,7 +1268,6 @@ export default {
         }.bind(this);
 
 
-
         let result = { character: chr };
         let score = 0;
         let skillsScore = [];
@@ -1190,16 +1277,15 @@ export default {
 
         const updateState = function (s) {
           score += s.score;
-          usedSlots = s.usedSlots;
-          totalAmount = s.totalAmount;
           usedEffects = usedEffects.concat(s.usedEffects);
           conflictedEffects = conflictedEffects.concat(s.conflictedEffects);
+          cctx.acceptEffects(s.usedEffects);
         };
 
         if (chr.isMain) {
           equipmentsScore = [];
           for (let equips of [weapons, armors, helmets, accessories]) {
-            let r = pickEquip(equips);
+            let r = pickEquip(cctx, equips);
             if (r) {
               equipmentsScore.push(r);
               updateState(r);
@@ -1209,17 +1295,17 @@ export default {
         }
 
         if (chr.talent) {
-          let r = getSkillScore(chr.talent);
+          let r = getSkillScore(cctx, chr.talent);
           if (r.score > 0) {
-            updateState(r);
             skillsScore.push(r);
+            updateState(r);
           }
         }
         if (chr.skills) {
           let tmpSkills = [...chr.skills];
           let activeCount = false;
           for (let i = 0; i < 3; ++i) {
-            let r = pickSkill(tmpSkills, activeCount >= opt.maxActiveCount);
+            let r = pickSkill(cctx, tmpSkills, activeCount >= opt.maxActiveCount);
             if (!r)
               break;
 
@@ -1246,79 +1332,138 @@ export default {
           result.summon = summonScore;
         if (supportScore)
           result.support = supportScore;
-        result.totalAmount = totalAmount;
-        result.usedSlots = usedSlots;
         result.usedEffects = usedEffects;
         result.conflictedEffects = conflictedEffects;
         return result;
       }.bind(this);
 
 
-      let result = [];
-      for (let i = 0; i < num; ++i) {
-        let bestSup = null;
-        let r = {
-          score: 0,
-          totalAmount: {},
-          usedSlots: [],
+      let bestScore = 0;
+      let bestSkillCount = 0;
+      let bestResult = [];
+      let searchCount = 0;
+      const updateBest = function (r, depth, resultGetter) {
+        ++searchCount;
 
-          usedEffects: [],
-          conflictedEffects: [],
-        };
+        let update = r.score > bestScore;
+        if (r.score == bestScore) {
+          if (depth < bestResult.length) {
+            update = true;
+          }
+          else if (depth == bestResult.length) {
+            if (r.skillCount < bestSkillCount) {
+              update = true;
+            }
+          }
+        }
 
-        const updateState = function (s) {
-          r.score += s.score;
-          totalAmountGlobal = s.totalAmount;
-          usedSlotsGlobal = s.usedSlots;
+        if (update) {
+          bestScore = r.score;
+          bestSkillCount = r.skillCount;
+          bestResult = resultGetter();
+          //console.log(r.score, r.skillCount, bestResult);
+        }
+      };
 
-          if (s.usedEffects.length)
-            r.usedEffects.splice(r.usedEffects.length, 0, ...s.usedEffects);
-          if (s.conflictedEffects.length)
-            r.conflictedEffects.splice(r.conflictedEffects.length, 0, ...s.conflictedEffects);
-        };
+      const searchRecursive = function (pctx, results, stack = [], depth = 0) {
+        const mainPickCounts = [5, 4, 3, 3, 2, 2, 2, 2, 2, 2];
+        const supPickCounts = [2, 2, 1, 1, 1, 1, 1, 1, 1, 1];
+        if (depth > mainPickCounts.length)
+          return;
+        let mainPickCount = mainPickCounts[depth];
+        let supPickCount = supPickCounts[depth];
 
         // サポートを先に処理
-        const supScores = supChrs.map(a => getChrScore(a)).filter(a => a && a.score > 0).sort(compareScore);
-        if (supScores.length) {
-          bestSup = findPrioritizedChr(supScores);
-          if (!bestSup)
-            bestSup = supScores[0];
-
-          updateState(bestSup);
-          r.support = bestSup;
-          supChrs.splice(supChrs.indexOf(bestSup.character), 1);
+        let sups = pctx.pickCandidates(supChrs, supPickCount);
+        let supScores = sups.map(a => getChrScore(pctx, a)).filter(a => a && a.score > 0).sort(compareScore);
+        let prioSup = findPrioritizedChr(supScores);
+        if (prioSup) {
+          supScores = [prioSup];
+        }
+        else if (supScores.length == 0) {
+          supScores = [null];
         }
 
-        let mainScores = mainChrs.map(a => getChrScore(a)).filter(a => a).sort(compareScore);
-        if (mainScores.length == 0 || r.score + mainScores[0].score == 0)
-          break;
+        for (let ss of supScores) {
+          let sctx = createContext(pctx);
+          let supportScore = 0;
+          if (ss) {
+            sctx.acceptEffects(ss.usedEffects);
+            supportScore = ss.score;
+          }
 
-        let bestMain = findPrioritizedChr(mainScores);
-        if (!bestMain)
-          bestMain = mainScores[0];
+          let mains = sctx.pickCandidates(mainChrs, mainPickCount);
+          let mainScores = mains.map(a => getChrScore(sctx, a)).filter(a => a).sort(compareScore);
+          if (mainScores.length == 0 || supportScore + mainScores[0].score == 0)
+            return;
+          let prioMain = findPrioritizedChr(mainScores);
+          if (prioMain) {
+            mainScores = [prioMain];
+          }
 
-        updateState(bestMain);
-        r.main = bestMain;
-        if (bestMain.summon)
-          r.summon = bestMain.summon;
+          for (let ms of mainScores) {
+            let mctx = createContext(sctx);
+            let pr = stack.length ? stack[stack.length - 1] : null;
+            let r = {
+              score: pr ? pr.score : 0,
+              skillCount: pr ? pr.skillCount : 0,
+              usedEffects: [],
+              conflictedEffects: [],
+              children: [],
+            };
+            results.push(r);
 
-        for (let v of [r.main, r.summon, r.support]) {
-          if (!v)
-            continue;
-          markAsUsed(v);
-          for (const s of this.enumerate(v.skills, v.equipments))
-            markAsUsed(s);
+            const updateState = function (s) {
+              r.score += s.score;
+              r.skillCount += s.skills.length;
+              if (s.equipments)
+                r.skillCount += s.equipments.length;
+              if (s.usedEffects.length)
+                r.usedEffects.splice(r.usedEffects.length, 0, ...s.usedEffects);
+              if (s.conflictedEffects.length)
+                r.conflictedEffects.splice(r.conflictedEffects.length, 0, ...s.conflictedEffects);
+            };
+            if (ss) {
+              updateState(ss);
+              r.support = ss;
+            }
+            {
+              updateState(ms);
+              mctx.acceptEffects(ms.usedEffects);
+              r.main = ms;
+              if (ms.summon)
+                r.summon = ms.summon;
+            }
+            for (let v of [r.main, r.summon, r.support]) {
+              if (v) {
+                mctx.markAsUsed(v.character);
+                for (const s of this.enumerate(v.skills, v.equipments))
+                  mctx.markAsUsed(s);
+              }
+            }
+
+            if (depth + 1 < num) {
+              let cstack = [...stack, r];
+              searchRecursive(mctx, r.children, cstack, depth + 1);
+
+              if (r.children.length == 0)
+                updateBest(r, depth + 1, () => cstack);
+            }
+            else {
+              updateBest(r, depth + 1, () => [...stack, r]);
+            }
+          }
         }
-        result.push(r);
 
-        mainScores = mainScores.filter(a => a.scoreMain > 0 && a != bestMain).sort((a, b) => this.compare(a.scoreMain, b.scoreMain));
-        mainChrs = mainScores.map(a => a.character);
-      }
-      //console.log(result); // for debug
-      //console.log(usedSkillsGlobal);
-      return result;
+      }.bind(this);
+
+      let ctx = createContext();
+      let results = [];
+      searchRecursive(ctx, results);
+      //console.log(results);
+
+      return bestResult;
     },
-
 
     serializeParams() {
       const handleOptions = function (obj) {
@@ -1423,6 +1568,7 @@ export default {
     },
 
     pushHistory() {
+      let ret = false;
       const r = this.serializeParams();
       const l = this.history.length;
       if (!this.rightAfterUndo && (l == 0 || !this.objectEqual(this.history[l - 1], r))) {
@@ -1430,8 +1576,10 @@ export default {
         this.history.push(r);
         this.historyIndex = this.history.length - 1;
         //console.log(this.history);
+        ret = true;
       }
       this.rightAfterUndo = false;
+      return ret;
     },
     onKeyDown(e) {
       if (e.ctrlKey && e.key == "z") {
@@ -1494,9 +1642,6 @@ export default {
       return this.mainChrs.filter(a => this.filterMatchMainChr(a, this.pickFilter));
     },
 
-    result() {
-      return this.doSearch(this.options.maxPickup.value);
-    },
     optionValues() {
       const opt = this.options;
       let r = {};
@@ -1510,7 +1655,25 @@ export default {
   },
 
   updated: function () {
-    this.pushHistory();
+
+    const beginSearch = function () {
+      this.progress.completed = false;
+
+      const body = function () {
+        this.progress.result = this.doSearch(this.options.maxPickup.value);
+        this.progress.completed = true;
+      }.bind(this);
+      //requestIdleCallback(body);
+      setTimeout(body, 500);
+    }.bind(this);
+
+    if (this.pushHistory()) {
+      this.progress.pending = true;
+    }
+    if (this.progress.pending && this.progress.completed) {
+      this.progress.pending = false;
+      beginSearch();
+    }
   },
 
 }
