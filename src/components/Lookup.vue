@@ -1465,6 +1465,18 @@ export default {
       return bestResult;
     },
 
+    beginSearch() {
+      this.progress.completed = false;
+
+      const body = function () {
+        this.progress.result = this.doSearch(this.options.maxPickup.value);
+        this.progress.completed = true;
+      }.bind(this);
+      //requestIdleCallback(body);
+      setTimeout(body, 500);
+    },
+
+
     serializeParams() {
       const handleOptions = function (obj) {
         return Object.values(obj).map(a => a.value);
@@ -1571,14 +1583,13 @@ export default {
       let ret = false;
       const r = this.serializeParams();
       const l = this.history.length;
-      if (!this.rightAfterUndo && (l == 0 || !this.objectEqual(this.history[l - 1], r))) {
+      if (l == 0 || !this.objectEqual(this.history[this.historyIndex], r)) {
         this.history.splice(this.historyIndex + 1, l);
         this.history.push(r);
         this.historyIndex = this.history.length - 1;
         //console.log(this.history);
         ret = true;
       }
-      this.rightAfterUndo = false;
       return ret;
     },
     onKeyDown(e) {
@@ -1593,16 +1604,14 @@ export default {
       if (this.historyIndex > 0) {
         this.historyIndex--;
         this.deserializeParams(this.history[this.historyIndex]);
-        this.rightAfterUndo = true;
-        //console.log(this.history);
+        this.beginSearch();
       }
     },
     redo() {
       if (this.historyIndex < this.history.length - 1) {
         this.historyIndex++;
         this.deserializeParams(this.history[this.historyIndex]);
-        this.rightAfterUndo = true;
-        //console.log(this.history);
+        this.beginSearch();
       }
     },
 
@@ -1630,9 +1639,10 @@ export default {
       let q = url.match(/\?p=(.+)$/);
       if (q) {
         params = JSON.parse(q[1]);
+        this.deserializeParams(params);
+        this.pushHistory();
+        this.beginSearch();
       }
-      this.deserializeParams(params);
-      this.pushHistory();
     },
 
   },
@@ -1656,23 +1666,12 @@ export default {
 
   updated: function () {
 
-    const beginSearch = function () {
-      this.progress.completed = false;
-
-      const body = function () {
-        this.progress.result = this.doSearch(this.options.maxPickup.value);
-        this.progress.completed = true;
-      }.bind(this);
-      //requestIdleCallback(body);
-      setTimeout(body, 500);
-    }.bind(this);
-
     if (this.pushHistory()) {
       this.progress.pending = true;
     }
     if (this.progress.pending && this.progress.completed) {
       this.progress.pending = false;
-      beginSearch();
+      this.beginSearch();
     }
   },
 
