@@ -15,7 +15,7 @@
               <template #cell(value)="r">
                 <div class="flex">
                   <div style="margin-left: auto">
-                    <b-form-checkbox v-if="r.item.type == 'boolean'" v-model="r.item.value" lazy></b-form-checkbox>
+                    <b-form-checkbox v-if="r.item.type == 'boolean'" v-model="r.item.value"></b-form-checkbox>
                     <b-form-input v-if="r.item.type == 'number'" style="width: 3em" v-model.number="r.item.value" size="sm" type="number" class="input-param" min="0" lazy></b-form-input>
                   </div>
                 </div>
@@ -81,7 +81,7 @@
             </div>
             <b-table small borderless hover :items="buffs" :fields="buffFields">
               <template #cell(enabled)="r">
-                <b-form-checkbox v-model="r.item.enabled" lazy></b-form-checkbox>
+                <b-form-checkbox v-model="r.item.enabled"></b-form-checkbox>
               </template>
               <template #cell(label)="r">
                 {{r.item.label}}
@@ -108,7 +108,7 @@
 
             <b-table small borderless hover :items="debuffs" :fields="buffFields">
               <template #cell(enabled)="r">
-                <b-form-checkbox v-model="r.item.enabled" lazy></b-form-checkbox>
+                <b-form-checkbox v-model="r.item.enabled"></b-form-checkbox>
               </template>
               <template #cell(label)="r">
                 {{r.item.label}}
@@ -210,11 +210,15 @@
       </div>
     </div>
 
-    <div v-if="result.length != 0" class="content">
+
+    <div v-if="progress.result.length != 0" class="content">
       <div class="total-params">
         <div class="flex info">
+          <div v-if="!progress.completed" style="margin-right: 5px">
+            <b-spinner small label="Spinning"></b-spinner>
+          </div>
           <div><h6>全ユニット合計:</h6></div>
-          <template v-for="(e, ei) in allEffectsToHtml(result)">
+          <template v-for="(e, ei) in allEffectsToHtml(progress.result)">
             <div :key="ei" v-html="e" />
           </template>
         </div>
@@ -222,7 +226,7 @@
     </div>
 
     <div class="content" :style="style">
-      <div v-if="result.length == 0" class="menu-panel" style="padding: 10px">
+      <div v-if="progress.result.length == 0" class="menu-panel" style="padding: 10px">
         <div class="about">
           <h5 style="margin-bottom: 5px">バフ・デバフ組み合わせ検索</h5>
 
@@ -239,7 +243,7 @@
         </div>
       </div>
 
-      <template v-for="(r, ri) in result">
+      <template v-for="(r, ri) in progress.result">
         <div class="character" :key="ri">
           <div class="flex info">
             <div><h6>ユニット内合計:</h6></div>
@@ -518,6 +522,12 @@ export default {
           label: "項目",
         },
       ],
+
+      progress: {
+        completed: true,
+        pending: false,
+        result: [],
+      },
     };
   },
 
@@ -864,17 +874,11 @@ export default {
     removeExcluded(item) {
       this.excluded.splice(this.excluded.indexOf(item), 1);
     },
-    isExcluded(item, owner = null) {
-      return this.isInPrioritizeList(this.excluded, item, owner);
-    },
     addPrioritized(item, owner = null) {
       this.addPriorityItem(this.prioritized, item, owner);
     },
     removePrioritized(item) {
       this.prioritized.splice(this.prioritized.indexOf(item), 1);
-    },
-    isPrioritized(item, owner = null) {
-      return this.isInPrioritizeList(this.prioritized, item, owner);
     },
 
     createUsedFlags(parent = null) {
@@ -1005,10 +1009,24 @@ export default {
     },
 
     doSearch(num) {
+      // reactive getter 回避のためコピーを用意
       const opt = this.optionValues;
       let targets = new Array(this.valueTypeIndex);
-      for (let v of this.enabledEffects)
-        targets[v.valueTypeIndex] = v;
+      for (let v of this.enabledEffects) {
+        targets[v.valueTypeIndex] = {
+          limit: v.limit,
+          weight: v.weight,
+          valueTypeIndex: v.valueTypeIndex,
+        };
+      }
+      const excluded = [...this.excluded];
+      const prioritized = [...this.prioritized];
+      const isExcluded = function (item, owner = null) {
+        return this.isInPrioritizeList(excluded, item, owner);
+      }.bind(this);
+      const isPrioritized = function (item, owner = null) {
+        return this.isInPrioritizeList(prioritized, item, owner);
+      }.bind(this);
 
       const compareScore = function (a, b) {
         if (a.score == b.score && a.scoreMain)
@@ -1051,7 +1069,7 @@ export default {
 
       // 高速化のため事前フィルタ
       const isRelevant = function (item) {
-        if (this.isExcluded(item))
+        if (isExcluded(item))
           return false;
         if (item.isSupport) {
           for (const skill of item.skills) {
@@ -1086,9 +1104,9 @@ export default {
           usedSlots: parent ? [...parent.usedSlots] : new Array(vue.slotIndex),
           usedSkills: this.createUsedFlags(parent ? parent.usedSkills : null),
 
-          isPrioritized: this.isPrioritized,
+          isPrioritized: isPrioritized,
           isAvailable: function (item, owner = null) {
-            return !vue.getFlag(this.usedSkills, item.uid) && !vue.isExcluded(item, owner);
+            return !vue.getFlag(this.usedSkills, item.uid) && !isExcluded(item, owner);
           },
           markAsUsed: function (item) {
             if (item.uid)
@@ -1134,7 +1152,7 @@ export default {
               for (const s of [sch.talent, ...sch.skills])
                 score += this.prepassSkill(s);
             }
-            // 無価値なら以降 isAvailable() で速やかに弾くようにする
+            // 無価値なら以降 isAvailable() で速やかに弾く
             if (score == 0)
               this.markAsUsed(skill);
             return score;
@@ -1145,32 +1163,41 @@ export default {
             for (const skill of chr.skills)
               score += this.prepassSkill(skill, chr);
 
-            //const enumerateItems = function* (items, chr) {
-            //  for (let item of items) {
-            //    if (!vue.getFlag(this.usedSkills, item.uid) && item.classFlags & (1 << chr.classId)) {
-            //      yield item;
-            //    }
-            //  }
-            //};
-            //const getHighestScore = function (equipments) {
-            //  return vue.pickMax(enumerateItems(equipments, chr), a => this.prepassSkill(a))[1];
-            //}.bind(this);
-            //score += getHighestScore(weapons);
-            //score += getHighestScore(armors);
-            //score += getHighestScore(helmets);
-            //score += getHighestScore(accessories);
-            //if (score == 0)
-            //  this.markAsUsed(chr);
+            if (chr.isMain) {
+              const enumerateItems = function* (items, chr) {
+                for (let item of items) {
+                  if (!vue.getFlag(this.usedSkills, item.uid) && item.classFlags & (1 << chr.classId)) {
+                    yield item;
+                  }
+                }
+              }.bind(this);
+              const pickBest = function (equipments) {
+                return vue.pickMax(enumerateItems(equipments, chr), a => this.prepassSkill(a))[1];
+              }.bind(this);
+
+              // 補正なしだと装備の影響が強すぎるので、適当に減衰係数を用意…
+              const itemRate = 0.5;
+              score += pickBest(weapons) * itemRate;
+              score += pickBest(armors) * itemRate;
+              score += pickBest(helmets) * itemRate;
+              score += pickBest(accessories) * itemRate;
+            }
+
+            // 無価値なら以降 isAvailable() で速やかに弾く
+            if (score == 0)
+              this.markAsUsed(chr);
             return score;
           },
 
-          pickCandidates(chrs, num = 5) {
+          pickCandidates(chrs, num) {
             chrs = chrs.filter(a => this.isAvailable(a));
-            let tmp = chrs.map(a => [this.prepassChr(a), a]).sort((a, b) => vue.compare(a[0], b[0]));
-            let r = tmp.slice(0, num).map(a => a[1]);
+            let tmp = chrs.map(a => [this.prepassChr(a), a]).filter(a => a[0] > 0).sort((a, b) => vue.compare(a[0], b[0])).slice(0, num);
+            let r = tmp.map(a => a[1]);
             for (let p of vue.prioritized) {
-              if (chrs.includes(p) && !r.includes(p))
+              if (this.isAvailable(p) && chrs.includes(p) && !r.includes(p)) {
                 r.splice(0, 0, p);
+                break;
+              }
             }
             return r;
           },
@@ -1351,6 +1378,7 @@ export default {
       let searchCount = 0;
       const updateBest = function (r, depth, resultGetter) {
         ++searchCount;
+
         let update = r.score > bestScore;
         if (r.score == bestScore) {
           if (depth < bestResult.length) {
@@ -1371,8 +1399,8 @@ export default {
       };
 
       const searchRecursive = function (pctx, results, stack = [], depth = 0) {
-        const mainPickCounts = [5, 4, 4, 3, 2, 2, 2, 2, 2, 2];
-        const supPickCounts = [3, 2, 2, 1, 1, 1, 1, 1, 1, 1];
+        const mainPickCounts = [5, 4, 3, 3, 2, 2, 2, 2, 2, 2];
+        const supPickCounts = [2, 2, 1, 1, 1, 1, 1, 1, 1, 1];
         if (depth > mainPickCounts.length)
           return;
         let mainPickCount = mainPickCounts[depth];
@@ -1468,7 +1496,6 @@ export default {
 
       return bestResult;
     },
-
 
     serializeParams() {
       const handleOptions = function (obj) {
@@ -1573,6 +1600,7 @@ export default {
     },
 
     pushHistory() {
+      let ret = false;
       const r = this.serializeParams();
       const l = this.history.length;
       if (!this.rightAfterUndo && (l == 0 || !this.objectEqual(this.history[l - 1], r))) {
@@ -1580,8 +1608,10 @@ export default {
         this.history.push(r);
         this.historyIndex = this.history.length - 1;
         //console.log(this.history);
+        ret = true;
       }
       this.rightAfterUndo = false;
+      return ret;
     },
     onKeyDown(e) {
       if (e.ctrlKey && e.key == "z") {
@@ -1644,9 +1674,6 @@ export default {
       return this.mainChrs.filter(a => this.filterMatchMainChr(a, this.pickFilter));
     },
 
-    result() {
-      return this.doSearch(this.options.maxPickup.value);
-    },
     optionValues() {
       const opt = this.options;
       let r = {};
@@ -1659,8 +1686,26 @@ export default {
     },
   },
 
-  updated: function () {
-    this.pushHistory();
+  beforeUpdate: function () {
+
+    const beginSearch = function () {
+      this.progress.completed = false;
+
+      const body = function () {
+        this.progress.result = this.doSearch(this.options.maxPickup.value);
+        this.progress.completed = true;
+      }.bind(this);
+      //requestIdleCallback(body);
+      setTimeout(body, 500);
+    }.bind(this);
+
+    if (this.pushHistory()) {
+      this.progress.pending = true;
+    }
+    if (this.progress.pending && this.progress.completed) {
+      this.progress.pending = false;
+      beginSearch();
+    }
   },
 
 }
