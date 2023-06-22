@@ -11,12 +11,17 @@
 #include <emscripten/val.h>
 #include <emscripten/bind.h>
 
+#include "types.h"
+
 
 namespace ldb::lookup {
 namespace em = emscripten;
 
 class SkillEffect;
 class Skill;
+class MainCharacter;
+class SupportCharacter;
+class Item;
 
 
 class Entity
@@ -73,14 +78,16 @@ public:
     SkillType skillType_{};
     Entity::Type ownerType_{};
     Flags flags_{};
-    SkillEffect effects_[16]{};
+    FixedVector<SkillEffect, 10> effects_{};
+
+    MainCharacter* summon_ = nullptr;
 };
 
 
 class MainCharacter : public Entity
 {
 public:
-    std::array<Skill*, 7> skills_;
+    FixedVector<Skill*, 7> skills_{};
     uint32_t classFlag_{};
     uint32_t symbolFlag_{};
     uint32_t rarityFlag_{};
@@ -89,7 +96,7 @@ public:
 class SupportCharacter : public Entity
 {
 public:
-    std::array<Skill*, 3> skills_;
+    FixedVector<Skill*, 3> skills_{};
     uint32_t classFlag_{};
     uint32_t rarityFlag_{};
 };
@@ -111,36 +118,17 @@ public:
 };
 
 
-template<size_t N>
-class FixedBitSet
-{
-public:
-    bool get(int i) const {
-        int byte = i / 32;
-        int bit = i % 32;
-        return data_[byte] & (1 << bit);
-    }
-
-    void set(int i, bool v) {
-        int byte = i / 32;
-        int bit = i % 32;
-        if (v)
-            data_[byte] |= 1 << bit;
-        else
-            data_[byte] &= ~(1 << bit);
-    }
-
-private:
-    uint32_t data_[N / 32]{};
-};
-
-
 class Options
 {
     struct EffectParam {
         int valueType_ = 0;
         int limit = 0;
         float weight = 1.0f;
+    };
+    struct PrioritizeParam
+    {
+        int item_ = 0;
+        int owner_ = 0;
     };
 
     int maxUnits_ = 5;
@@ -154,27 +142,51 @@ class Options
     uint32_t symbolFilter_ = 0xffff;
     uint32_t rarityFilter_ = 0xffff;
     std::vector<EffectParam> targets_;
+    std::vector<PrioritizeParam> excluded_;
+    std::vector<PrioritizeParam> prioritized;
 };
 
 class SerarchState
 {
 public:
-    std::array<int, 64> usedSlots_{};
-    std::array<int, 64> totalAmounts_{};
+    SerarchState* parent_{};
+    Array<int, 64> usedSlots_{};
+    Array<int, 64> totalAmounts_{};
     FixedBitSet<2048> usedSkills_{};
+};
+
+class ResultHolder
+{
+public:
+    ResultHolder* parent_{};
+
+    SupportCharacter* supChr_{};
+    FixedVector<Skill*, 3> supSkills_{};
+
+    FixedVector<Item*, 4> items_{};
+
+    MainCharacter* mainChr_{};
+    FixedVector<Skill*, 4> mainSkills_{};
+
+    MainCharacter* summonChr_{};
+    FixedVector<Skill*, 4> summonSkills_{};
+
+    FixedVector<SkillEffect*, 32> usedEffects_{};
+    FixedVector<SkillEffect*, 8> unusedEffects_{};
+    float scoreTotal_ = 0;
+    float scoreMain_ = 0;
 };
 
 
 class LookupContext
 {
 public:
-    void test(em::val v);
-
-    void setData(em::val data);
-
+    void setup(em::val data);
     em::val beginSearch(em::val option);
 
-public:
+    void test(em::val v);
+
+private:
     void processEntity(Entity& dst, em::val& src);
     void processSkill(Skill& dst, em::val& src);
     void processMainChr(MainCharacter& dst, em::val& src);

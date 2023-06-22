@@ -780,7 +780,7 @@ export default {
 
   mounted() {
     this.lctx = new Module.LookupContext();
-    this.lctx.setData(this);
+    this.lctx.setup(this);
 
     this.pushHistory();
     this.initialState = this.history[0];
