@@ -15,4 +15,8 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20 --bind \
 -s USE_PTHREADS=1 \
 ")
 
+add_compile_definitions(
+    $<$<CONFIG:Debug>:_DEBUG>
+)
+
 add_subdirectory(src)

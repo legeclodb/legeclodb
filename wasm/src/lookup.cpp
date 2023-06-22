@@ -3,13 +3,13 @@
 
 namespace ldb::lookup {
 
-inline void eachSkillImpl(std::span<Skill*> skills, std::function<void(Skill&)>&& cb)
+inline void eachSkill(std::span<Skill*> skills, std::function<void(Skill&)>&& cb)
 {
     for (auto s : skills)
         cb(*s);
 }
 
-inline void eachSkillEffectImpl(std::span<Skill*> skills, std::function<void(SkillEffect&, Skill&)>&& cb)
+inline void eachSkillEffect(std::span<Skill*> skills, std::function<void(SkillEffect&, Skill&)>&& cb)
 {
     for (auto s : skills) {
         for (auto e : s->effects_) {
@@ -24,9 +24,43 @@ void LookupContext::test(em::val v)
 {
     printf("GlobalContext::test()\n");
 
+#ifdef _DEBUG
+    {
+        FixedBitSet<1024> fbs;
+        for (int i = 0; i < 1024; ++i) {
+            if (i % 2 == 0)
+                fbs[i] = true;
+        }
+        for (int i = 0; i < 1024; ++i) {
+            printf("%d ", (int)fbs[i]);
+        }
+        printf("\n");
+    }
+
+    {
+        FixedVector<int, 32> fv;
+        for (int i = 0; i < 32; ++i) {
+            fv.push_back(i);
+        }
+        //try {
+        //    fv.push_back(32);
+        //}
+        //catch (const std::out_of_range& e) {
+        //    printf("%s\n", e.what());
+        //}
+        for (int i = 0; i < 32; ++i) {
+            printf("%d ", fv[i]);
+        }
+        printf("\n");
+    }
+    {
+        printf("size of ResultHolder: %d\n", (int)sizeof(ResultHolder));
+    }
+
     objectEach(v, [](em::val key, em::val val) {
         printf("%s: %d\n", key.as<std::string>().c_str(), val.as<int>());
         });
+#endif // _DEBUG
 }
 
 void LookupContext::processEntity(Entity& dst, em::val& src)
@@ -58,7 +92,7 @@ void LookupContext::processItem(Item& dst, em::val& src)
     processEntity(dst, src);
 }
 
-void LookupContext::setData(em::val data)
+void LookupContext::setup(em::val data)
 {
     em::val mainChrs = data["mainChrs"];
     em::val mainActive = data["mainActive"];
@@ -112,7 +146,7 @@ EMSCRIPTEN_BINDINGS(ldb_lookup)
     namespace ll = ldb::lookup;
     emscripten::class_<ll::LookupContext>("LookupContext")
         .constructor<>()
-        .function("setData", &ll::LookupContext::setData)
+        .function("setup", &ll::LookupContext::setup)
         .function("beginSearch", &ll::LookupContext::beginSearch)
         .function("test", &ll::LookupContext::test);
 }
