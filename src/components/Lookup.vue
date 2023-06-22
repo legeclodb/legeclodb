@@ -447,7 +447,8 @@
   </div>
 </template>
 
-<script>import Navigation from './Navigation.vue'
+<script>
+import Navigation from './Navigation.vue'
 import jsonMainActive from '../assets/main_active.json'
 import jsonMainPassive from '../assets/main_passive.json'
 import jsonMainTalents from '../assets/main_talents.json'
@@ -630,8 +631,8 @@ export default {
 
         v.valueTypeIndex = valueTypeTable.get(valueType);
         if (!v.valueTypeIndex) {
-          valueTypeTable.set(valueType, valueTypeIndex);
-          v.valueTypeIndex = valueTypeIndex++;
+          valueTypeTable.set(valueType, ++valueTypeIndex);
+          v.valueTypeIndex = valueTypeIndex;
         }
 
         if (skill.isActive) {
@@ -652,8 +653,8 @@ export default {
           }
           v.slotIndex = slotTable.get(slot);
           if (!v.slotIndex) {
-            slotTable.set(slot, slotIndex);
-            v.slotIndex = slotIndex++;
+            slotTable.set(slot, ++slotIndex);
+            v.slotIndex = slotIndex;
           }
         }
       }
@@ -778,6 +779,9 @@ export default {
   },
 
   mounted() {
+    this.lctx = new Module.LookupContext();
+    this.lctx.setData(this);
+
     this.pushHistory();
     this.initialState = this.history[0];
 
@@ -786,6 +790,9 @@ export default {
   },
   destroyed() {
     window.removeEventListener('keydown', this.onKeyDown);
+
+    this.lctx.delete();
+    this.lctx = null;
   },
 
   methods: {
