@@ -38,4 +38,54 @@ inline void objectEach(em::val obj, Callback&& cb)
     }
 }
 
+template<class Iterable, class Callback>
+inline auto map(const Iterable& src, Callback&& cb)
+{
+    using value_t = std::decay_t<decltype(*std::begin(src))>;
+    using result_t = decltype(cb(std::declval<value_t>()));
+    std::vector<result_t> ret;
+    for (const auto& v : src) {
+        ret.push_back(cb(v));
+    }
+    return ret;
+}
+template<class Dst, class Iterable, class Callback>
+inline Dst& map(Dst& dst, const Iterable& src, Callback&& cb)
+{
+    for (const auto& v : src) {
+        dst.push_back(cb(v));
+    }
+    return dst;
+}
+
+template<class Iterable, class Callback>
+inline auto filter(const Iterable& src, Callback&& cb)
+{
+    using value_t = std::decay_t<decltype(*std::begin(src))>;
+    std::vector<value_t> ret;
+    for (const auto& v : src) {
+        if (cb(v))
+            ret.push_back(v);
+    }
+    return ret;
+}
+template<class Dst, class Iterable, class Callback>
+inline Dst& filter(Dst& dst, const Iterable& src, Callback&& cb)
+{
+    for (const auto& v : src) {
+        if (cb(v))
+            dst.push_back(v);
+    }
+    return dst;
+}
+// in-place version
+template<class Container, class Callback>
+inline Container& filter_in(Container& src, Callback&& cb)
+{
+    src.erase(
+        std::remove_if(std::begin(src), std::end(src), cb),
+        src.end());
+    return src;
+}
+
 } // namespace ldb

@@ -158,6 +158,16 @@ public:
 class ResultHolder
 {
 public:
+    bool operator<(const ResultHolder& v) const;
+
+    // root -> current
+    void each(const std::function<void(ResultHolder&)>& cb) {
+        if (parent_)
+            parent_->each(cb);
+        cb(*this);
+    }
+
+public:
     ResultHolder* parent_{};
 
     SupportCharacter* supChr_{};
@@ -173,10 +183,44 @@ public:
 
     FixedVector<SkillEffect*, 32> usedEffects_{};
     FixedVector<SkillEffect*, 8> unusedEffects_{};
-    float scoreTotal_ = 0;
-    float scoreMain_ = 0;
+
+    int unitCount_ = 0;     // 
+    int skillCount_ = 0;    // 
+    float scoreTotal_ = 0;  // 親階層含む全合計
+
+    float scoreMain_ = 0;    // 
+    float scoreSupport_ = 0; // 
+    float scoreItems_ = 0;   // 現在の階層のみのスコア
 };
 
+
+class LookupContext;
+
+class SearchContext
+{
+public:
+    SearchContext(const LookupContext& lctx, const Options& opt);
+    void beginSearch();
+
+public:
+    void searchRecursive(SerarchState *pstate, ResultHolder* pr);
+    bool submitResult(ResultHolder& result);
+
+    float getScore(const SerarchState& state, const MainCharacter& obj);
+    float getScore(const SerarchState& state, const SupportCharacter& obj);
+    float getScore(const SerarchState& state, const Item& obj);
+
+public:
+    const LookupContext& lctx_;
+    const Options opt_{};
+
+    std::vector<const MainCharacter*> mainChrs_;
+    std::vector<const SupportCharacter*> supChrs_;
+    std::vector<const Item*> weapons_, armors_, helmets_, accessories_;
+
+    ResultHolder* bestResult_{};
+    FixedVector<ResultHolder, 10> bestTree_;
+};
 
 class LookupContext
 {
