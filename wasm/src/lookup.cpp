@@ -3,13 +3,45 @@
 
 namespace ldb::lookup {
 
-inline void eachSkill(std::span<Skill*> skills, std::function<void(Skill&)>&& cb)
+template<class T>
+T& getTemporary()
+{
+    static thread_local T instance_;
+    return instance_;
+}
+
+template<class T>
+struct ScoreHolder
+{
+    float score = 0;
+    T value {};
+
+    bool operator<(const ScoreHolder& v) const { return score < v.score; }
+};
+
+template<class T, class ScoreFunc>
+auto sortByScore(Span<T> span, ScoreFunc&& scoreF)
+{
+    auto& tmp = getTemporary<std::vector<ScoreHolder<T>>>();
+    for (auto& obj : span) {
+        tmp.push_back({ scoreF(obj), obj });
+    }
+    std::stable_sort(tmp.begin(), tmp.end());
+
+    auto dst = span.data();
+    for (auto& obj : tmp) {
+        *dst++ = obj.value;
+    }
+    tmp.clear();
+}
+
+inline void eachSkill(Span<Skill*> skills, std::function<void(Skill&)>&& cb)
 {
     for (auto s : skills)
         cb(*s);
 }
 
-inline void eachSkillEffect(std::span<Skill*> skills, std::function<void(SkillEffect&, Skill&)>&& cb)
+inline void eachSkillEffect(Span<Skill*> skills, std::function<void(SkillEffect&, Skill&)>&& cb)
 {
     for (auto s : skills) {
         for (auto e : s->effects_) {
@@ -19,6 +51,8 @@ inline void eachSkillEffect(std::span<Skill*> skills, std::function<void(SkillEf
         }
     }
 }
+
+
 
 void LookupContext::test(em::val v)
 {
@@ -39,22 +73,97 @@ void LookupContext::test(em::val v)
 
     {
         FixedVector<int, 32> fv;
-        for (int i = 0; i < 32; ++i) {
+        for (int i = 0; i < 16; ++i) {
             fv.push_back(i);
         }
-        //try {
-        //    fv.push_back(32);
-        //}
-        //catch (const std::out_of_range& e) {
-        //    printf("%s\n", e.what());
-        //}
-        for (int i = 0; i < 32; ++i) {
-            printf("%d ", fv[i]);
-        }
+
+        int tmp[4]{-1, -1, -1, -1};
+        fv.insert(fv.begin() + 8, std::begin(tmp), std::end(tmp));
+        for (auto& v : fv)
+            printf("%d ", v);
+        printf("\n");
+
+        fv.erase(fv.begin() + 10, fv.begin() + 14);
+        for (auto& v : fv)
+            printf("%d ", v);
         printf("\n");
     }
     {
         printf("size of ResultHolder: %d\n", (int)sizeof(ResultHolder));
+    }
+    {
+        struct Hoge { int data{}; };
+        Hoge testData[5]{ {10}, {5}, {4}, {9}, {2} };
+        Hoge* testPtr[5]{ &testData[0], &testData[1], &testData[2], &testData[3], &testData[4], };
+
+        sortByScore(Span<Hoge*>(testPtr), [](Hoge* p){ return (float)p->data * 2; });
+        printf("sortByScore: ");
+        for (auto& v : testPtr)
+            printf("%d ", v->data);
+        printf("\n");
+    }
+
+    {
+        struct Hoge
+        {
+            Hoge(int d = 0) : data_(d)
+            {
+                printf("Hoge(%d)\n", data_);
+            }
+            Hoge(const Hoge& v) noexcept
+            {
+                data_ = v.data_;
+                printf("Hoge(const Hoge&) %d\n", data_);
+            }
+            Hoge(Hoge&& v) noexcept
+            {
+                data_ = v.data_;
+                v.data_ = -v.data_;
+                printf("Hoge(Hoge&&) %d\n", data_);
+            }
+            ~Hoge()
+            {
+                printf("~Hoge() %d\n", data_);
+            }
+            Hoge& operator=(const Hoge& v) noexcept
+            {
+                data_ = v.data_;
+                printf("operator=(const Hoge&) %d\n", data_);
+                return *this;
+            }
+            Hoge& operator=(Hoge&& v) noexcept {
+                data_ = v.data_;
+                v.data_ = -v.data_;
+                printf("operator=(Hoge&&) %d\n", data_);
+                return *this;
+            }
+
+            int data_ = 0;
+        };
+
+        {
+            printf("erase test1\n");
+            std::vector<Hoge> data;
+            data.reserve(10);
+            for (int i = 0; i < 4; ++i) {
+                data.emplace_back(i);
+            }
+            printf("before insert\n");
+            data.insert(data.begin() + 2, Hoge(10));
+            printf("after insert\n");
+        }
+        {
+            printf("erase test2\n");
+            FixedVector<Hoge, 10> data;
+            for (int i = 0; i < 4; ++i) {
+                data.emplace_back(i);
+            }
+            printf("before insert\n");
+            data.insert(data.begin() + 2, Hoge(10));
+            printf("after insert\n");
+        }
+
+
     }
 
     objectEach(v, [](em::val key, em::val val) {
