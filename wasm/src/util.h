@@ -1,13 +1,11 @@
 #pragma once
-
-#include <emscripten.h>
-#include <emscripten/val.h>
+#include "types.h"
 
 namespace ldb {
 
 namespace em = emscripten;
 
-inline size_t arrayLength(em::val ary)
+inline size_t arrayLength(val ary)
 {
     if (!ary)
         return 0;
@@ -15,7 +13,7 @@ inline size_t arrayLength(em::val ary)
 }
 
 template<class Callback>
-inline void arrayEach(em::val ary, Callback&& cb)
+inline void arrayEach(val ary, Callback&& cb)
 {
     size_t len = arrayLength(ary);
     for (size_t i = 0; i < len; ++i) {
@@ -24,12 +22,12 @@ inline void arrayEach(em::val ary, Callback&& cb)
 }
 
 template<class Callback>
-inline void objectEach(em::val obj, Callback&& cb)
+inline void objectEach(val obj, Callback&& cb)
 {
     if (!obj)
         return;
-    auto protoObject = em::val::global("Object");
-    auto keys = protoObject.call<em::val>("keys", obj);
+    auto protoObject = val::global("Object");
+    auto keys = protoObject.call<val>("keys", obj);
     size_t len = keys["length"].as<size_t>();
     for (size_t i = 0; i < len; ++i) {
         auto key = keys[i];
@@ -87,5 +85,39 @@ inline Container& filter_in(Container& src, Callback&& cb)
         src.end());
     return src;
 }
+
+
+template<class T>
+inline T& getTemporary()
+{
+    static thread_local T instance_;
+    return instance_;
+}
+
+template<class T>
+struct ScoreHolder
+{
+    float score = 0;
+    T value{};
+
+    bool operator<(const ScoreHolder& v) const { return score < v.score; }
+};
+
+template<class T, class ScoreFunc>
+inline void sortByScore(std::span<T> span, ScoreFunc&& scoreF)
+{
+    auto& tmp = getTemporary<std::vector<ScoreHolder<T>>>();
+    for (auto& obj : span) {
+        tmp.push_back({ scoreF(obj), obj });
+    }
+    std::stable_sort(tmp.begin(), tmp.end());
+
+    auto dst = span.data();
+    for (auto& obj : tmp) {
+        *dst++ = obj.value;
+    }
+    tmp.clear();
+}
+
 
 } // namespace ldb

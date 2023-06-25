@@ -36,7 +36,7 @@ public:
         Item,
     };
 
-    em::val js_;
+    val js_;
     uint32_t index_ = 0;
     Type type_{};
 };
@@ -44,15 +44,19 @@ public:
 class SkillEffect
 {
 public:
-    struct Flags {
-        uint32_t singleUnit : 1;
-        uint32_t onProbablity: 1;
-        uint32_t onBattle : 1;
-        uint32_t onKill : 1;
+    enum class EffectType {
+        Unknwon,
+        Buff,
+        Debuff,
+        Immune,
     };
-
-    em::val js_;
-    Flags flags_ {};
+    val js_;
+    EffectType effectType_{};
+    uint32_t selfTarget_ : 1 {};
+    uint32_t singleTarget_ : 1 {};
+    uint32_t onProbablity_ : 1 {};
+    uint32_t onBattle_ : 1 {};
+    uint32_t onKill_ : 1 {};
     int valueType_ = 0;
     int value_ = 0;
     int duration_ = 0;
@@ -70,15 +74,13 @@ public:
         Talent,
         Item,
     };
-    struct Flags {
-        uint32_t isSymbolSkill : 1;
-        uint32_t hasReaction : 1;
-    };
-
     SkillType skillType_{};
     Entity::Type ownerType_{};
-    Flags flags_{};
-    FixedVector<SkillEffect, 10> effects_{};
+
+    uint32_t isSymbolSkill : 1 {};
+    uint32_t hasReaction : 1 {};
+
+    ist::fixed_vector<SkillEffect, 10> effects_{};
 
     MainCharacter* summon_ = nullptr;
 };
@@ -87,7 +89,7 @@ public:
 class MainCharacter : public Entity
 {
 public:
-    FixedVector<Skill*, 7> skills_{};
+    ist::fixed_vector<Skill*, 7> skills_{};
     uint32_t classFlag_{};
     uint32_t symbolFlag_{};
     uint32_t rarityFlag_{};
@@ -96,7 +98,7 @@ public:
 class SupportCharacter : public Entity
 {
 public:
-    FixedVector<Skill*, 3> skills_{};
+    ist::fixed_vector<Skill*, 3> skills_{};
     uint32_t classFlag_{};
     uint32_t rarityFlag_{};
 };
@@ -120,10 +122,12 @@ public:
 
 class Options
 {
+public:
     struct EffectParam {
+        bool enabled_ = false;
         int valueType_ = 0;
-        int limit = 0;
-        float weight = 1.0f;
+        int limit_ = 0;
+        float weight_ = 1.0f;
     };
     struct PrioritizeParam
     {
@@ -133,11 +137,13 @@ class Options
 
     int maxUnits_ = 5;
     int maxActive_ = 2;
-    bool allowOnBattle_ = true;
-    bool allowProbability_ = true;
-    bool allowSingleUnitBuff_ = false;
-    bool allowSymbolSkill_ = false;
-    bool allowSupportActive_ = true;
+
+    uint32_t allowOnBattle_ : 1 { true };
+    uint32_t allowProbability_ : 1 { true };
+    uint32_t allowSingleUnitBuff_ : 1 { false };
+    uint32_t allowSymbolSkill_ : 1 { false };
+    uint32_t allowSupportActive_ : 1 { true };
+
     uint32_t classFilter_ = 0xffff;
     uint32_t symbolFilter_ = 0xffff;
     uint32_t rarityFilter_ = 0xffff;
@@ -150,9 +156,9 @@ class SerarchState
 {
 public:
     SerarchState* parent_{};
-    Array<int, 64> usedSlots_{};
-    Array<int, 64> totalAmounts_{};
-    FixedBitSet<2048> usedSkills_{};
+    std::array<int, 64> usedSlots_{};
+    std::array<int, 64> totalAmounts_{};
+    std::bitset<2048> usedSkills_{};
 };
 
 class ResultHolder
@@ -171,18 +177,18 @@ public:
     ResultHolder* parent_{};
 
     SupportCharacter* supChr_{};
-    FixedVector<Skill*, 3> supSkills_{};
+    ist::fixed_vector<Skill*, 3> supSkills_{};
 
-    FixedVector<Item*, 4> items_{};
+    ist::fixed_vector<Item*, 4> items_{};
 
     MainCharacter* mainChr_{};
-    FixedVector<Skill*, 4> mainSkills_{};
+    ist::fixed_vector<Skill*, 4> mainSkills_{};
 
     MainCharacter* summonChr_{};
-    FixedVector<Skill*, 4> summonSkills_{};
+    ist::fixed_vector<Skill*, 4> summonSkills_{};
 
-    FixedVector<SkillEffect*, 32> usedEffects_{};
-    FixedVector<SkillEffect*, 8> unusedEffects_{};
+    ist::fixed_vector<SkillEffect*, 32> usedEffects_{};
+    ist::fixed_vector<SkillEffect*, 8> unusedEffects_{};
 
     int unitCount_ = 0;     // 
     int skillCount_ = 0;    // 
@@ -203,12 +209,22 @@ public:
     void beginSearch();
 
 public:
-    void searchRecursive(SerarchState *pstate, ResultHolder* pr);
-    bool submitResult(ResultHolder& result);
+    void searchRecursive(SerarchState *pstate, ResultHolder* pr, int depth = 0);
+    bool submitResult(const ResultHolder& result);
 
-    float getScore(const SerarchState& state, const MainCharacter& obj);
-    float getScore(const SerarchState& state, const SupportCharacter& obj);
-    float getScore(const SerarchState& state, const Item& obj);
+    bool effectCondition(const SkillEffect& effect) const;
+    bool skillCondition(const Skill& skill) const;
+
+    float getScore(const SerarchState& state, const SkillEffect& obj) const;
+    float getScore(const SerarchState& state, const Skill& skill) const;
+    float getScoreEst(const SerarchState& state, const MainCharacter& obj) const;
+    float getScoreEst(const SerarchState& state, const SupportCharacter& obj) const;
+    float getScoreEst(const SerarchState& state, const Item& obj) const;
+
+    float getScore(ResultHolder& dst, SerarchState& state, const MainCharacter& obj);
+    float getScore(ResultHolder& dst, SerarchState& state, const SupportCharacter& obj);
+    float getScore(ResultHolder& dst, SerarchState& state, const Item& obj);
+    void updateState(SerarchState& state, const ResultHolder& result);
 
 public:
     const LookupContext& lctx_;
@@ -219,23 +235,23 @@ public:
     std::vector<const Item*> weapons_, armors_, helmets_, accessories_;
 
     ResultHolder* bestResult_{};
-    FixedVector<ResultHolder, 10> bestTree_;
+    ist::fixed_vector<ResultHolder, 10> bestTree_;
 };
 
 class LookupContext
 {
 public:
-    void setup(em::val data);
-    em::val beginSearch(em::val option);
+    void setup(val data);
+    val beginSearch(val option);
 
-    void test(em::val v);
+    void test(val v);
 
 private:
-    void processEntity(Entity& dst, em::val& src);
-    void processSkill(Skill& dst, em::val& src);
-    void processMainChr(MainCharacter& dst, em::val& src);
-    void processSupChr(SupportCharacter& dst, em::val& src);
-    void processItem(Item& dst, em::val& src);
+    void processEntity(Entity& dst, val& src);
+    void processSkill(Skill& dst, val& src);
+    void processMainChr(MainCharacter& dst, val& src);
+    void processSupChr(SupportCharacter& dst, val& src);
+    void processItem(Item& dst, val& src);
 
 public:
     std::vector<Entity*> entityTable_;
