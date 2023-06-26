@@ -3,26 +3,83 @@
 
 namespace ldb {
 
-namespace em = emscripten;
+template<class T>
+struct function_traits : public function_traits<decltype(&T::operator())>
+{
+};
+template<class R, class ...Args> 
+struct function_traits<R(Args...)>
+{
+    using result_type = R;
+    static const size_t arg_count = sizeof...(Args);
+    template <size_t i> using arg_type = typename std::tuple_element<i, std::tuple<Args...>>::type;
+};
+template<class R, class C, class ...Args> 
+struct function_traits<R(C::*)(Args...)>
+{
+    using result_type = R;
+    static const size_t arg_count = sizeof...(Args);
+    template <size_t i> using arg_type = typename std::tuple_element<i, std::tuple<Args...>>::type;
+};
+template<class R, class C, class ...Args> 
+struct function_traits<R(C::*)(Args...) const>
+{
+    using result_type = R;
+    static const size_t arg_count = sizeof...(Args);
+    template <size_t i> using arg_type = typename std::tuple_element<i, std::tuple<Args...>>::type;
+};
 
-inline size_t arrayLength(val ary)
+template<class T>
+constexpr size_t arg_count()
+{
+    return function_traits<T>::arg_count;
+}
+
+inline size_t array_length(val ary)
 {
     if (!ary)
         return 0;
     return ary["length"].as<size_t>();
 }
 
-template<class Callback>
-inline void arrayEach(val ary, Callback&& cb)
+
+inline int to_bool(val v)
 {
-    size_t len = arrayLength(ary);
+    return v.isTrue() ? true : false;
+}
+inline int to_int(val v, int fallback = 0)
+{
+    return v.isNumber() ? v.as<int>() : fallback;
+}
+inline int to_uint(val v, int fallback = 0)
+{
+    return v.isNumber() ? v.as<uint32_t>() : fallback;
+}
+inline int to_float(val v, float fallback = 0)
+{
+    return v.isNumber() ? v.as<float>() : fallback;
+}
+inline std::string to_string(val v, const char* fallback = "")
+{
+    return v.isString() ? v.as<std::string>() : fallback;
+}
+
+template<class Callback>
+inline void array_each(val ary, const Callback& cb)
+{
+    size_t len = array_length(ary);
     for (size_t i = 0; i < len; ++i) {
-        cb(ary[i]);
+        if constexpr (arg_count<Callback>() == 1) {
+            cb(ary[i]);
+        }
+        else if constexpr (arg_count<Callback>() == 2) {
+            cb(ary[i], i);
+        }
     }
 }
 
 template<class Callback>
-inline void objectEach(val obj, Callback&& cb)
+inline void object_each(val obj, Callback&& cb)
 {
     if (!obj)
         return;
@@ -86,6 +143,17 @@ inline Container& filter_in(Container& src, Callback&& cb)
     return src;
 }
 
+template<class T, size_t N>
+static inline T select_value(
+    const std::pair<const char*, T>(&table)[N], const std::string& name, T fallback = {})
+{
+    for (auto& kvp : table) {
+        if (kvp.first == name) {
+            return kvp.second;
+        }
+    }
+    return fallback;
+}
 
 template<class T>
 inline T& getTemporary()

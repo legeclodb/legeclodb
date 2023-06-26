@@ -3,22 +3,33 @@
 
 namespace ldb::lookup {
 
-inline void eachSkill(std::span<Skill*> skills, std::function<void(Skill&)>&& cb)
+SearchContext::SearchContext()
 {
-    for (auto s : skills)
-        cb(*s);
+}
+size_t SearchContext::ptr() const
+{
+    return (size_t)this;
 }
 
-inline void eachSkillEffect(std::span<Skill*> skills, std::function<void(SkillEffect&, Skill&)>&& cb)
+void SearchContext::setup(LookupContext* ctx, val data)
 {
-    for (auto s : skills) {
-        for (auto e : s->effects_) {
-            if (e.valueType_ == 0)
-                break;
-            cb(e, *s);
-        }
-    }
+    lctx_ = ctx;
+    opt_.setup(data);
 }
+
+bool SearchContext::isComplete() const { return isComplete_; }
+int SearchContext::getSearchCount() const { return searchCount_; }
+
+val SearchContext::getResult() const
+{
+    return val::null();
+}
+
+void SearchContext::test()
+{
+    printf("SearchContext::test()\n");
+}
+
 
 void SearchContext::searchRecursive(SerarchState* pstate, ResultHolder* pr, int depth)
 {
@@ -29,13 +40,13 @@ bool SearchContext::effectCondition(const SkillEffect& effect) const
     if (effect.onBattle_ && effect.duration_ == 0)
         return false;
 
-    if (effect.effectType_ == SkillEffect::EffectType::Buff) {
-        return (!effect.selfTarget_) &&
-            (opt_.allowSingleUnitBuff_ || !effect.singleTarget_) &&
+    if (effect.effectType_ == EffectType::Buff) {
+        return (!effect.isSelfTarget_) &&
+            (opt_.allowSingleUnitBuff_ || !effect.isSingleTarget_) &&
             (opt_.allowOnBattle_ || !effect.onBattle_) &&
             (opt_.allowProbability_ || !effect.onProbablity_);
     }
-    else if (effect.effectType_ == SkillEffect::EffectType::Debuff) {
+    else if (effect.effectType_ == EffectType::Debuff) {
         return (opt_.allowOnBattle_ || !effect.onBattle_) &&
             (opt_.allowProbability_ || !effect.onProbablity_);
     }
@@ -44,9 +55,9 @@ bool SearchContext::effectCondition(const SkillEffect& effect) const
 
 bool SearchContext::skillCondition(const Skill& skill) const
 {
-    if (!opt_.allowSymbolSkill_ && skill.isSymbolSkill)
+    if (!opt_.allowSymbolSkill_ && skill.isSymbolSkill_)
         return false;
-    if (!opt_.allowSupportActive_ && skill.skillType_ == Skill::SkillType::Active && skill.ownerType_ == Entity::Type::Support)
+    if (!opt_.allowSupportActive_ && skill.skillType_ == SkillType::Active && skill.ownerType_ == EntityType::Support)
         return false;
     return true;
 }
@@ -65,8 +76,8 @@ float SearchContext::getScore(const SerarchState& state, const Skill& skill) con
     for (auto& effect : skill.effects_) {
         auto& param = opt_.targets_[effect.valueType_];
         if (param.enabled_ && effectCondition(effect)) {
-            if (skill.skillType_ == Skill::SkillType::Active && state.usedSlots_[effect.slot_]) {
-                continue; // ÉAÉNÉeÉBÉuògã£çá
+            if (skill.skillType_ == SkillType::Active && state.usedSlots_[effect.slot_]) {
+                continue; // „Ç¢„ÇØ„ÉÜ„Ç£„ÉñÊû†Á´∂Âêà
             }
 
             score += effect.value_ * param.weight_;
@@ -107,91 +118,96 @@ void SearchContext::updateState(SerarchState& state, const ResultHolder& result)
 }
 
 
-
-void LookupContext::processEntity(Entity& dst, val& src)
+void Options::setup(val data)
 {
-    dst.js_ = src;
-    dst.index_ = src["uid"].as<int>();
-    entityTable_[dst.index_] = &dst;
+    val options = data["options"];
+    maxUnits_ = to_int(options["maxPickup"]["value"]);
+    maxActive_ = to_int(options["maxActiveCount"]["value"]);
+    allowOnBattle_ = to_bool(options["allowOnBattle"]["value"]);
+    allowProbability_ = to_bool(options["allowProbability"]["value"]);
+    allowSingleUnitBuff_ = to_bool(options["allowSingleUnitBuff"]["value"]);
+    allowSymbolSkill_ = to_bool(options["allowSymbolSkill"]["value"]);
+    allowSupportActive_ = to_bool(options["allowSupportActive"]["value"]);
 
-    printf("%s\n", src["name"].as<std::string>().c_str());
+    auto filterToFlags = [](val filter) {
+        uint32_t flags = 0;
+        array_each(filter, [&](val obj, int nth) {
+            if (to_bool(obj["state"])) {
+                flags |= 1 << nth;
+            }
+            });
+        return flags;
+    };
+    val filter = data["filter"];
+    classFilter_ = filterToFlags(filter["class"]);
+    symbolFilter_ = filterToFlags(filter["symbol"]);
+    rarityFilter_ = filterToFlags(filter["rarity"]);
+
+    auto handleTargetParam = [&](val& param) {
+        auto& dst = targets_.emplace_back();
+        dst.enabled_ = to_bool(param["enabled"]);
+        dst.valueType_ = to_int(param["valueTypeIndex"]);
+        dst.limit_ = to_float(param["limit"]);
+        dst.weight_ = to_float(param["weight"]) * 0.1f;
+        if (dst.limit_ <= 0.0f) {
+            dst.limit_ = 10000.0f;
+        }
+    };
+    array_each(data["buffs"], [&](val param) { handleTargetParam(param); });
+    array_each(data["debuffs"], [&](val param) { handleTargetParam(param); });
+
+    auto handlePirorityItem = [](std::vector<PrioritizeParam>& cont, val& obj) {
+        auto& dst = cont.emplace_back();
+        val owner = obj["owner"];
+        if (!owner.isUndefined()) {
+            dst.item_ = to_int(obj["item"]["index"]);
+            dst.owner_ = to_int(obj["owner"]["index"]);
+        }
+        else {
+            dst.item_ = to_int(obj["index"]);
+        }
+    };
+    array_each(data["excluded"], [&](val prio) { handlePirorityItem(excluded_, prio); });
+    array_each(data["prioritized"], [&](val prio) { handlePirorityItem(prioritized, prio); });
 }
 
-void LookupContext::processSkill(Skill& dst, val& src)
+LookupContext::LookupContext(val data)
 {
-    processEntity(dst, src);
-}
-
-void LookupContext::processMainChr(MainCharacter& dst, val& src)
-{
-    processEntity(dst, src);
-}
-
-void LookupContext::processSupChr(SupportCharacter& dst, val& src)
-{
-    processEntity(dst, src);
-}
-
-void LookupContext::processItem(Item& dst, val& src)
-{
-    processEntity(dst, src);
-}
-
-void LookupContext::setup(val data)
-{
-    val mainChrs = data["mainChrs"];
-    val mainActive = data["mainActive"];
-    val mainPassive = data["mainPassive"];
-    val mainTalent = data["mainTalents"];
-
-    val supChrs = data["supChrs"];
-    val supActive = data["supActive"];
-    val supPassive = data["supPassive"];
-
-    val items = data["items"];
-
-    mainChrs_.resize(arrayLength(mainActive));
-    supChrs_.resize(arrayLength(supChrs));
-    items_.resize(arrayLength(items));
-    skills_.resize(arrayLength(mainActive) + arrayLength(mainPassive) + arrayLength(mainTalent) + arrayLength(supActive) + arrayLength(supPassive));
-    entityTable_.resize(1 + mainChrs_.size() + supChrs_.size() + items_.size() + skills_.size());
-
-    {
-        auto* dst = &skills_[0];
-        arrayEach(mainActive, [&](val src) { processSkill(*dst++, src); });
-        arrayEach(mainPassive, [&](val src) { processSkill(*dst++, src); });
-        arrayEach(mainTalent, [&](val src) { processSkill(*dst++, src); });
-        arrayEach(supActive, [&](val src) { processSkill(*dst++, src); });
-        arrayEach(supPassive, [&](val src) { processSkill(*dst++, src); });
-    }
-    {
-        auto* dst = &mainChrs_[0];
-        arrayEach(mainChrs, [&](val src) { processMainChr(*dst++, src); });
-    }
-    {
-        auto* dst = &supChrs_[0];
-        arrayEach(supChrs, [&](val src) { processSupChr(*dst++, src); });
-    }
-    {
-        auto* dst = &items_[0];
-        arrayEach(items, [&](val src) { processItem(*dst++, src); });
-    }
+    setup(data);
 }
 
 val LookupContext::beginSearch(val option)
 {
-    return {};
+    val ret = val::global("Module")["SearchContext"].new_();
+    SearchContext* ptr = (SearchContext*)ret.call<size_t>("ptr");
+    ptr->setup(this, option);
+    return ret;
+}
+
+size_t self(SearchContext* obj)
+{
+    return (size_t)obj;
 }
 
 } // namespace ldb::lookup
 
-
 EMSCRIPTEN_BINDINGS(ldb_lookup)
 {
+    using val = emscripten::val;
     namespace ll = ldb::lookup;
+
     emscripten::class_<ll::LookupContext>("LookupContext")
-        .constructor<>()
-        .function("setup", &ll::LookupContext::setup)
+        .constructor<val>()
         .function("beginSearch", &ll::LookupContext::beginSearch)
-        .function("test", &ll::LookupContext::test);
+        .function("test", &ll::LookupContext::test)
+        ;
+
+    emscripten::class_<ll::SearchContext>("SearchContext")
+        .constructor<>()
+        .function("ptr", &ll::SearchContext::ptr, emscripten::allow_raw_pointers())
+        .function("isComplete", &ll::SearchContext::isComplete)
+        .function("getSearchCount", &ll::SearchContext::getSearchCount)
+        .function("getResult", &ll::SearchContext::getResult)
+        .function("test", &ll::SearchContext::test)
+        ;
 }

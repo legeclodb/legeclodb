@@ -1,0 +1,170 @@
+#pragma once
+#include <memory>
+#include <array>
+#include <vector>
+#include <bitset>
+#include <functional>
+#include <cstdint>
+#include <span>
+#include <emscripten.h>
+#include <emscripten/val.h>
+#include <emscripten/bind.h>
+#include "types.h"
+
+namespace ldb {
+
+class SkillEffect;
+class Skill;
+class MainCharacter;
+class SupportCharacter;
+class Item;
+
+enum class EntityType
+{
+    Unknown,
+    Skill,
+    Main,
+    Support,
+    Item,
+};
+enum class EffectType
+{
+    Unknown,
+    Buff,
+    Debuff,
+    StatusEffect,
+    Immune,
+};
+enum class SkillType
+{
+    Unknown,
+    Active,
+    Passive,
+    Talent,
+    Item,
+};
+enum class AttackType
+{
+    Unknown,
+    Attack,
+    Magic,
+};
+enum class ItemType
+{
+    Unknown,
+    Weapon,
+    Armor,
+    Helmet,
+    Accessory,
+    Amulet,
+};
+
+
+class Entity
+{
+public:
+    val js_;
+    uint32_t index_ = 0;
+    EntityType type_{};
+};
+
+class SkillEffect
+{
+public:
+    val js_;
+    EffectType effectType_{};
+    uint32_t isSelfTarget_ : 1 {};
+    uint32_t isSingleTarget_ : 1 {};
+    uint32_t onProbablity_ : 1 {};
+    uint32_t onBattle_ : 1 {};
+    uint32_t onKill_ : 1 {};
+    int valueType_ = 0;
+    int value_ = 0;
+    int duration_ = 0;
+    int slot_ = 0;
+
+    std::string toString() const;
+};
+
+class Skill : public Entity
+{
+public:
+    SkillType skillType_{};
+    EntityType ownerType_{};
+    uint32_t isSymbolSkill_ : 1 {};
+    uint32_t hasReaction_ : 1 {};
+    ist::fixed_vector<SkillEffect, 12> effects_{};
+    MainCharacter* summon_ = nullptr;
+
+    std::string toString() const;
+};
+
+
+class MainCharacter : public Entity
+{
+public:
+    int range_{};
+    int move_{};
+    AttackType attackType_{};
+    uint32_t classFlag_{};
+    uint32_t symbolFlag_{};
+    uint32_t rarityFlag_{};
+    ist::fixed_vector<Skill*, 7> skills_{};
+    std::array<float, 6> statusInit_{};
+    std::array<float, 6> statusLv_{};
+    std::array<float, 6> statusStar_{};
+};
+
+class SupportCharacter : public Entity
+{
+public:
+    int range_{};
+    AttackType attackType_{};
+    uint32_t classFlag_{};
+    uint32_t rarityFlag_{};
+    ist::fixed_vector<Skill*, 3> skills_{};
+    std::array<float, 6> statusInit_{};
+    std::array<float, 6> statusLv_{};
+    std::array<float, 6> statusStar_{};
+};
+
+// 極めて微妙だが装備は Skill の派生ということにしておく
+class Item : public Skill
+{
+public:
+    uint32_t classFlags_{};
+    uint32_t rarityFlag_{};
+    ItemType itemType_{};
+    std::array<float, 6> statusInit_{};
+    std::array<float, 6> statusLv_{};
+};
+
+
+class BaseContext
+{
+public:
+    void setup(val data);
+
+    Entity* getEntity(int id);
+    Entity* getEntity(val v);
+
+private:
+    void processEntity(Entity& dst, val& src);
+    void processEffects(Skill& dst, val& src);
+    void processSkill(Skill& dst, val& src);
+    void processMainChr(MainCharacter& dst, val& src);
+    void processSupChr(SupportCharacter& dst, val& src);
+    void processItem(Item& dst, val& src);
+
+public:
+    val data_;
+    std::vector<Entity*> entityTable_;
+    std::vector<Skill> skills_;
+    std::vector<MainCharacter> mainChrs_;
+    std::vector<SupportCharacter> supChrs_;
+    std::vector<Item> items_;
+    std::vector<Item*> weapons_, armors_, helmets_, accessories_;
+};
+
+} // namespace ldb
+

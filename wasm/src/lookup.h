@@ -1,124 +1,7 @@
 #pragma once
-#include <memory>
-#include <array>
-#include <vector>
-#include <bitset>
-#include <functional>
-#include <cstdint>
-#include <span>
-
-#include <emscripten.h>
-#include <emscripten/val.h>
-#include <emscripten/bind.h>
-
-#include "types.h"
-
+#include "ldb.h"
 
 namespace ldb::lookup {
-namespace em = emscripten;
-
-class SkillEffect;
-class Skill;
-class MainCharacter;
-class SupportCharacter;
-class Item;
-
-
-class Entity
-{
-public:
-    enum class Type
-    {
-        Unknown,
-        Skill,
-        Main,
-        Support,
-        Item,
-    };
-
-    val js_;
-    uint32_t index_ = 0;
-    Type type_{};
-};
-
-class SkillEffect
-{
-public:
-    enum class EffectType {
-        Unknwon,
-        Buff,
-        Debuff,
-        Immune,
-    };
-    val js_;
-    EffectType effectType_{};
-    uint32_t selfTarget_ : 1 {};
-    uint32_t singleTarget_ : 1 {};
-    uint32_t onProbablity_ : 1 {};
-    uint32_t onBattle_ : 1 {};
-    uint32_t onKill_ : 1 {};
-    int valueType_ = 0;
-    int value_ = 0;
-    int duration_ = 0;
-    int slot_ = 0;
-};
-
-class Skill : public Entity
-{
-public:
-    enum class SkillType
-    {
-        Unknown,
-        Active,
-        Passive,
-        Talent,
-        Item,
-    };
-    SkillType skillType_{};
-    Entity::Type ownerType_{};
-
-    uint32_t isSymbolSkill : 1 {};
-    uint32_t hasReaction : 1 {};
-
-    ist::fixed_vector<SkillEffect, 10> effects_{};
-
-    MainCharacter* summon_ = nullptr;
-};
-
-
-class MainCharacter : public Entity
-{
-public:
-    ist::fixed_vector<Skill*, 7> skills_{};
-    uint32_t classFlag_{};
-    uint32_t symbolFlag_{};
-    uint32_t rarityFlag_{};
-};
-
-class SupportCharacter : public Entity
-{
-public:
-    ist::fixed_vector<Skill*, 3> skills_{};
-    uint32_t classFlag_{};
-    uint32_t rarityFlag_{};
-};
-
-// 極めて微妙だが装備は Skill の派生ということにしておく
-class Item : public Skill
-{
-public:
-    enum class SlotType
-    {
-        Weapon,
-        Armor,
-        Helmet,
-        Accessory,
-    };
-    uint32_t classFlags_{};
-    uint32_t rarityFlag_{};
-    SlotType slot_{};
-};
-
 
 class Options
 {
@@ -137,19 +20,19 @@ public:
 
     int maxUnits_ = 5;
     int maxActive_ = 2;
-
     uint32_t allowOnBattle_ : 1 { true };
     uint32_t allowProbability_ : 1 { true };
     uint32_t allowSingleUnitBuff_ : 1 { false };
     uint32_t allowSymbolSkill_ : 1 { false };
     uint32_t allowSupportActive_ : 1 { true };
-
     uint32_t classFilter_ = 0xffff;
     uint32_t symbolFilter_ = 0xffff;
     uint32_t rarityFilter_ = 0xffff;
     std::vector<EffectParam> targets_;
     std::vector<PrioritizeParam> excluded_;
     std::vector<PrioritizeParam> prioritized;
+
+    void setup(val data);
 };
 
 class SerarchState
@@ -205,8 +88,13 @@ class LookupContext;
 class SearchContext
 {
 public:
-    SearchContext(const LookupContext& lctx, const Options& opt);
-    void beginSearch();
+    SearchContext();
+    size_t ptr() const;
+    void setup(LookupContext* ctx, val data);
+    bool isComplete() const;
+    int getSearchCount() const;
+    val getResult() const;
+    void test();
 
 public:
     void searchRecursive(SerarchState *pstate, ResultHolder* pr, int depth = 0);
@@ -227,8 +115,8 @@ public:
     void updateState(SerarchState& state, const ResultHolder& result);
 
 public:
-    const LookupContext& lctx_;
-    const Options opt_{};
+    const LookupContext* lctx_{};
+    Options opt_{};
 
     std::vector<const MainCharacter*> mainChrs_;
     std::vector<const SupportCharacter*> supChrs_;
@@ -236,29 +124,18 @@ public:
 
     ResultHolder* bestResult_{};
     ist::fixed_vector<ResultHolder, 10> bestTree_;
+    bool isComplete_ = false;
+    int searchCount_ = 0;
 };
 
-class LookupContext
+class LookupContext : public BaseContext
 {
 public:
-    void setup(val data);
+    LookupContext(val data);
     val beginSearch(val option);
-
     void test(val v);
 
 private:
-    void processEntity(Entity& dst, val& src);
-    void processSkill(Skill& dst, val& src);
-    void processMainChr(MainCharacter& dst, val& src);
-    void processSupChr(SupportCharacter& dst, val& src);
-    void processItem(Item& dst, val& src);
-
-public:
-    std::vector<Entity*> entityTable_;
-    std::vector<Skill> skills_;
-    std::vector<MainCharacter> mainChrs_;
-    std::vector<SupportCharacter> supChrs_;
-    std::vector<Item> items_;
 };
 
 } // namespace ldb::lookup
