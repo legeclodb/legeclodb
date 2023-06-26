@@ -9,7 +9,7 @@ public:
     struct EffectParam {
         bool enabled_ = false;
         int valueType_ = 0;
-        int limit_ = 0;
+        float limit_ = 0;
         float weight_ = 1.0f;
     };
     struct PrioritizeParam
@@ -25,9 +25,9 @@ public:
     uint32_t allowSingleUnitBuff_ : 1 { false };
     uint32_t allowSymbolSkill_ : 1 { false };
     uint32_t allowSupportActive_ : 1 { true };
-    uint32_t classFilter_ = 0xffff;
-    uint32_t symbolFilter_ = 0xffff;
-    uint32_t rarityFilter_ = 0xffff;
+    uint32_t classFilter_ = ~0;
+    uint32_t symbolFilter_ = ~0;
+    uint32_t rarityFilter_ = ~0;
     std::vector<EffectParam> targets_;
     std::vector<PrioritizeParam> excluded_;
     std::vector<PrioritizeParam> prioritized;
@@ -89,8 +89,10 @@ class SearchContext
 {
 public:
     SearchContext();
-    size_t ptr() const;
     void setup(LookupContext* ctx, val data);
+    void beginSearch();
+
+    void wait();
     bool isComplete() const;
     int getSearchCount() const;
     val getResult() const;
@@ -126,6 +128,7 @@ public:
     ist::fixed_vector<ResultHolder, 10> bestTree_;
     bool isComplete_ = false;
     int searchCount_ = 0;
+    std::future<void> async_;
 };
 
 class LookupContext : public BaseContext

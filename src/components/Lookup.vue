@@ -65,8 +65,15 @@
                 <b-popover target="copy-url" triggers="click blur" placement="top" custom-class="url-popover">
                   コピーしました：<br />{{ getParamsUrl() }}
                 </b-popover>
-
+              </div>
+            </div>
+            <div class="button-box">
+              <div class="left-align flex">
                 <b-button size="sm" @click="testWasm()">Debug</b-button>
+                <div v-if="!progress.completed" style="margin-right: 5px">
+                  <b-spinner small label="Spinning"></b-spinner>
+                  <span>{{progress.searchCount}}</span>
+                </div>
               </div>
             </div>
           </b-container>
@@ -529,6 +536,7 @@ export default {
       progress: {
         completed: true,
         pending: false,
+        searchCount: 0,
         result: [],
       },
     };
@@ -783,6 +791,7 @@ export default {
   mounted() {
     /*global Module*/
     this.lctx = new Module.LookupContext(this);
+    this.timer = setInterval(this.onIdle, 100);
 
     this.pushHistory();
     this.initialState = this.history[0];
@@ -793,15 +802,34 @@ export default {
   destroyed() {
     window.removeEventListener('keydown', this.onKeyDown);
 
+    clearInterval(this.timer);
+    if (this.sctx) {
+      this.sctx.delete();
+      this.sctx = null;
+    }
     this.lctx.delete();
     this.lctx = null;
   },
 
   methods: {
     testWasm() {
-      let s = this.lctx.beginSearch(this);
-      s.test();
-      s.delete();
+      if (!this.sctx) {
+        this.sctx = this.lctx.beginSearch(this);
+        this.sctx.test();
+        this.progress.completed = false;
+        this.progress.searchCount = 0;
+      }
+    },
+    onIdle() {
+      if (this.sctx) {
+        this.progress.searchCount = this.sctx.getSearchCount();
+        if (this.sctx.isComplete()) {
+          this.progress.completed = true;
+          this.sctx.getResult(); // todo
+          this.sctx.delete();
+          this.sctx = null;
+        }
+      }
     },
 
     findItemById(id) {
@@ -1356,10 +1384,7 @@ export default {
       let bestScore = 0;
       let bestSkillCount = 0;
       let bestResult = [];
-      let searchCount = 0;
       const updateBest = function (r, depth, resultGetter) {
-        ++searchCount;
-
         let update = r.score > bestScore;
         if (r.score == bestScore) {
           if (depth < bestResult.length) {

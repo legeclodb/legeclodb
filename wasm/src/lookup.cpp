@@ -7,15 +7,30 @@ namespace ldb::lookup {
 SearchContext::SearchContext()
 {
 }
-size_t SearchContext::ptr() const
-{
-    return (size_t)this;
-}
 
 void SearchContext::setup(LookupContext* ctx, val data)
 {
     lctx_ = ctx;
     opt_.setup(data);
+}
+
+void SearchContext::beginSearch()
+{
+    async_ = std::async(std::launch::async, [&]() {
+        for (int i = 0; i < 10; ++i) {
+            searchCount_ += 100;
+            std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+        }
+        isComplete_ = true;
+        });
+}
+
+void SearchContext::wait()
+{
+    if (async_.valid()) {
+        async_.wait();
+        async_ = {};
+    }
 }
 
 bool SearchContext::isComplete() const { return isComplete_; }
@@ -38,26 +53,30 @@ void SearchContext::searchRecursive(SerarchState* pstate, ResultHolder* pr, int 
 
 bool SearchContext::effectCondition(const SkillEffect& effect) const
 {
-    if (effect.onBattle_ && effect.duration_ == 0)
+    if (effect.onBattle_ && effect.duration_ == 0) {
+        // 1 戦闘限りの効果は除外
         return false;
+    }
 
     if (effect.effectType_ == EffectType::Buff) {
-        return (!effect.isSelfTarget_) &&
-            (opt_.allowSingleUnitBuff_ || !effect.isSingleTarget_) &&
-            (opt_.allowOnBattle_ || !effect.onBattle_) &&
-            (opt_.allowProbability_ || !effect.onProbablity_);
+        return (!effect.isSelfTarget_) && // 自己バフ除外
+            (opt_.allowSingleUnitBuff_ || !effect.isSingleTarget_) && // 単体バフ
+            (opt_.allowOnBattle_ || !effect.onBattle_) && // 戦闘時バフ
+            (opt_.allowProbability_ || !effect.onProbablity_); // 確率発動バフ
     }
     else if (effect.effectType_ == EffectType::Debuff) {
-        return (opt_.allowOnBattle_ || !effect.onBattle_) &&
-            (opt_.allowProbability_ || !effect.onProbablity_);
+        return (opt_.allowOnBattle_ || !effect.onBattle_) && // 戦闘時バフ
+            (opt_.allowProbability_ || !effect.onProbablity_); // 確率発動デバフ
     }
     return false;
 }
 
 bool SearchContext::skillCondition(const Skill& skill) const
 {
+    // シンボルスキル
     if (!opt_.allowSymbolSkill_ && skill.isSymbolSkill_)
         return false;
+    // サポートアクティブ
     if (!opt_.allowSupportActive_ && skill.skillType_ == SkillType::Active && skill.ownerType_ == EntityType::Support)
         return false;
     return true;
@@ -137,6 +156,9 @@ void Options::setup(val data)
                 flags |= 1 << nth;
             }
             });
+        if (flags == 0) {
+            flags = ~0;
+        }
         return flags;
     };
     val filter = data["filter"];
@@ -151,7 +173,7 @@ void Options::setup(val data)
         dst.limit_ = to_float(param["limit"]);
         dst.weight_ = to_float(param["weight"]) * 0.1f;
         if (dst.limit_ <= 0.0f) {
-            dst.limit_ = 10000.0f;
+            dst.limit_ = std::numeric_limits<float>::max();
         }
     };
     array_each(data["buffs"], [&](val param) { handleTargetParam(param); });
@@ -180,8 +202,9 @@ LookupContext::LookupContext(val data)
 val LookupContext::beginSearch(val option)
 {
     val ret = val::global("Module")["SearchContext"].new_();
-    SearchContext* ptr = (SearchContext*)ret.call<size_t>("ptr");
+    auto ptr = as_ptr<SearchContext>(ret);
     ptr->setup(this, option);
+    ptr->beginSearch();
 
     return ret;
 }
@@ -206,7 +229,6 @@ EMSCRIPTEN_BINDINGS(ldb_lookup)
 
     emscripten::class_<ll::SearchContext>("SearchContext")
         .constructor<>()
-        .function("ptr", &ll::SearchContext::ptr, emscripten::allow_raw_pointers())
         .function("isComplete", &ll::SearchContext::isComplete)
         .function("getSearchCount", &ll::SearchContext::getSearchCount)
         .function("getResult", &ll::SearchContext::getResult)

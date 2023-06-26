@@ -64,6 +64,15 @@ inline std::string to_string(val v, const char* fallback = "")
     return v.isString() ? v.as<std::string>() : fallback;
 }
 
+template<class T>
+inline T* as_ptr(val v)
+{
+    if (!v) {
+        return nullptr;
+    }
+    return (T*)v["$$"]["ptr"].as<size_t>();
+}
+
 template<class Callback>
 inline void array_each(val ary, const Callback& cb)
 {

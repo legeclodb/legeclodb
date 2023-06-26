@@ -17,6 +17,7 @@ else()
     -s ALLOW_MEMORY_GROWTH=1 \
     -s ERROR_ON_UNDEFINED_SYMBOLS=1 \
     -s USE_PTHREADS=1 \
+    -s PTHREAD_POOL_SIZE=8 \
     ")
 endif()
 
