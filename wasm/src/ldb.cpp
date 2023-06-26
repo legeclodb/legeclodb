@@ -39,6 +39,7 @@ void BaseContext::processEffects(Skill& dst, val& src)
 void BaseContext::processSkill(Skill& dst, val& src)
 {
     processEntity(dst, src);
+    dst.entityType_ = EntityType::Skill;
 
     dst.skillType_ = select_value<SkillType>({
         { "アクティブ", SkillType::Active },
@@ -65,6 +66,7 @@ static inline std::array<float, 6> asBaseStatus(val src)
 void BaseContext::processMainChr(MainCharacter& dst, val& src)
 {
     processEntity(dst, src);
+    dst.entityType_ = EntityType::Main;
 
     dst.range_ = to_int(src["range"]);
     dst.move_ = to_int(src["move"]);
@@ -88,6 +90,7 @@ void BaseContext::processMainChr(MainCharacter& dst, val& src)
 void BaseContext::processSupChr(SupportCharacter& dst, val& src)
 {
     processEntity(dst, src);
+    dst.entityType_ = EntityType::Support;
 
     dst.range_ = to_int(src["range"]);
     dst.attackType_ = select_value<AttackType>({
@@ -108,6 +111,7 @@ void BaseContext::processSupChr(SupportCharacter& dst, val& src)
 void BaseContext::processItem(Item& dst, val& src)
 {
     processSkill(dst, src);
+    dst.entityType_ = EntityType::Item;
 
     dst.itemType_ = select_value<ItemType>({
         { "武器", ItemType::Weapon },

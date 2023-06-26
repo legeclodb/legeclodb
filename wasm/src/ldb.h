@@ -1,14 +1,4 @@
 #pragma once
-#include <memory>
-#include <array>
-#include <vector>
-#include <bitset>
-#include <functional>
-#include <cstdint>
-#include <span>
-#include <emscripten.h>
-#include <emscripten/val.h>
-#include <emscripten/bind.h>
 #include "types.h"
 
 namespace ldb {
@@ -65,7 +55,7 @@ class Entity
 public:
     val js_;
     uint32_t index_ = 0;
-    EntityType type_{};
+    EntityType entityType_{};
 };
 
 class SkillEffect

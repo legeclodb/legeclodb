@@ -1,5 +1,6 @@
 #include "lookup.h"
 #include "util.h"
+#include <emscripten/bind.h>
 
 namespace ldb::lookup {
 
@@ -181,6 +182,7 @@ val LookupContext::beginSearch(val option)
     val ret = val::global("Module")["SearchContext"].new_();
     SearchContext* ptr = (SearchContext*)ret.call<size_t>("ptr");
     ptr->setup(this, option);
+
     return ret;
 }
 
