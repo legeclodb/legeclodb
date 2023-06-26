@@ -44,7 +44,7 @@ struct LifecycleTest
 #endif // _DEBUG
 
 
-void LookupContext::test(em::val v)
+void LookupContext::test(val v)
 {
     printf("GlobalContext::test()\n");
 
@@ -91,7 +91,7 @@ void LookupContext::test(em::val v)
         }
     }
 
-    objectEach(v, [](val key, val val) {
+    object_each(v, [](val key, val val) {
         printf("%s: %d\n", key.as<std::string>().c_str(), val.as<int>());
         });
 #endif // _DEBUG

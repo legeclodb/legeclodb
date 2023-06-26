@@ -65,6 +65,8 @@
                 <b-popover target="copy-url" triggers="click blur" placement="top" custom-class="url-popover">
                   コピーしました：<br />{{ getParamsUrl() }}
                 </b-popover>
+
+                <b-button size="sm" @click="testWasm()">Debug</b-button>
               </div>
             </div>
           </b-container>
@@ -779,8 +781,8 @@ export default {
   },
 
   mounted() {
-    this.lctx = new Module.LookupContext();
-    this.lctx.setup(this);
+    /*global Module*/
+    this.lctx = new Module.LookupContext(this);
 
     this.pushHistory();
     this.initialState = this.history[0];
@@ -796,6 +798,12 @@ export default {
   },
 
   methods: {
+    testWasm() {
+      let s = this.lctx.beginSearch(this);
+      s.test();
+      s.delete();
+    },
+
     findItemById(id) {
       const r = this.searchTable.get(id);
       if (!r)
