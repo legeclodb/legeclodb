@@ -5,7 +5,7 @@ node_modules
 /obj
 /tmp
 /masterdata
-_build
+_build*
 
 
 # local env files

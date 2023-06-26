@@ -1,11 +1,13 @@
 #pragma once
+#include <cstdint>
+#include <array>
 #include <vector>
 #include <string>
-#include <array>
-#include <cstdint>
+#include <bitset>
 #include <span>
 #include <type_traits>
-#include <bitset>
+#include <functional>
+
 #include <emscripten.h>
 #include <emscripten/val.h>
 #include "flat_container/fixed_vector.h"
