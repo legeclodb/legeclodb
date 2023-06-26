@@ -49,6 +49,25 @@ enum class ItemType
     Amulet,
 };
 
+struct BaseStatus
+{
+    float hp;
+    float attack;
+    float defense;
+    float magic;
+    float resist;
+    float technic;
+
+    constexpr size_t size() const { return 6; }
+    float* data() { return (float*)this; }
+    const float* data() const { return (float*)this; }
+    float* begin() { return data(); }
+    const float* begin() const { return data(); }
+    float* end() { return data() + size(); }
+    const float* end() const { return data() + size(); }
+    float& operator[](size_t i) { return data()[i]; }
+    const float& operator[](size_t i) const { return data()[i]; }
+};
 
 class Entity
 {
@@ -72,8 +91,6 @@ public:
     int value_ = 0;
     int duration_ = 0;
     int slot_ = 0;
-
-    std::string toString() const;
 };
 
 class Skill : public Entity
@@ -85,8 +102,6 @@ public:
     uint32_t hasReaction_ : 1 {};
     ist::fixed_vector<SkillEffect, 12> effects_{};
     MainCharacter* summon_ = nullptr;
-
-    std::string toString() const;
 };
 
 
@@ -100,9 +115,9 @@ public:
     uint32_t symbolFlag_{};
     uint32_t rarityFlag_{};
     ist::fixed_vector<Skill*, 7> skills_{};
-    std::array<float, 6> statusInit_{};
-    std::array<float, 6> statusLv_{};
-    std::array<float, 6> statusStar_{};
+    BaseStatus statusInit_{};
+    BaseStatus statusLv_{};
+    BaseStatus statusStar_{};
 };
 
 class SupportCharacter : public Entity
@@ -113,9 +128,9 @@ public:
     uint32_t classFlag_{};
     uint32_t rarityFlag_{};
     ist::fixed_vector<Skill*, 3> skills_{};
-    std::array<float, 6> statusInit_{};
-    std::array<float, 6> statusLv_{};
-    std::array<float, 6> statusStar_{};
+    BaseStatus statusInit_{};
+    BaseStatus statusLv_{};
+    BaseStatus statusStar_{};
 };
 
 // 極めて微妙だが装備は Skill の派生ということにしておく
@@ -125,8 +140,8 @@ public:
     uint32_t classFlags_{};
     uint32_t rarityFlag_{};
     ItemType itemType_{};
-    std::array<float, 6> statusInit_{};
-    std::array<float, 6> statusLv_{};
+    BaseStatus statusInit_{};
+    BaseStatus statusLv_{};
 };
 
 

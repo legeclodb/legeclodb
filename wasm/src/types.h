@@ -6,7 +6,9 @@
 #include <bitset>
 #include <span>
 #include <type_traits>
+#include <limits>
 #include <functional>
+#include <future>
 
 #include <emscripten.h>
 #include <emscripten/val.h>

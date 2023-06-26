@@ -9,7 +9,7 @@ void BaseContext::processEntity(Entity& dst, val& src)
     dst.index_ = to_int(src["uid"]);
     entityTable_[dst.index_] = &dst;
 
-    printf("%s\n", src["name"].as<std::string>().c_str());
+    //printf("%s\n", src["name"].as<std::string>().c_str());
 }
 
 void BaseContext::processEffects(Skill& dst, val& src)
@@ -47,6 +47,13 @@ void BaseContext::processSkill(Skill& dst, val& src)
         { "タレント", SkillType::Talent },
         }, to_string(src["skillType"]));
 
+    if (to_bool(src["isMainSkill"])) {
+        dst.ownerType_ = EntityType::Main;
+    }
+    if (to_bool(src["isSupportSkill"])) {
+        dst.ownerType_ = EntityType::Support;
+    }
+
     dst.hasReaction_ = to_bool(src["hasReaction"]);
     dst.isSymbolSkill_ = to_bool(src["isSymbolSkill"]);
 
@@ -56,9 +63,9 @@ void BaseContext::processSkill(Skill& dst, val& src)
     array_each(src["immune"], [&](val effect) { processEffects(dst, effect); });
 }
 
-static inline std::array<float, 6> asBaseStatus(val src)
+static inline BaseStatus asBaseStatus(val src)
 {
-    std::array<float, 6> ret{};
+    BaseStatus ret{};
     array_each(src, [&](val v, int i) { ret[i] = to_float(v); });
     return ret;
 }
@@ -112,6 +119,7 @@ void BaseContext::processItem(Item& dst, val& src)
 {
     processSkill(dst, src);
     dst.entityType_ = EntityType::Item;
+    dst.ownerType_ = EntityType::Item;
 
     dst.itemType_ = select_value<ItemType>({
         { "武器", ItemType::Weapon },
