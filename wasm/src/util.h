@@ -2,9 +2,11 @@
 #include "types.h"
 
 #ifdef _DEBUG
-#   define dbg_print(...) printf(__VA_ARGS__)
+#   define dbg_info(...) printf(__VA_ARGS__)
+#   define dbg_error(...) printf(__VA_ARGS__)
 #else
-#   define dbg_print(...) 
+#   define dbg_info(...) 
+#   define dbg_error(...) 
 #endif
 
 namespace ldb {
@@ -136,12 +138,35 @@ inline val to_jsarray(Iterable& src)
     return ret;
 }
 
+template<class Iterable, class Cond>
+inline auto find(Iterable& src, Cond&& cond)
+{
+    using value_t = std::decay_t<decltype(*std::begin(src))>;
+    auto it = std::find_if(src.begin(), src.end(), cond);
+    if constexpr (std::is_pointer_v<value_t>) {
+        return it != src.end() ? *it : nullptr;
+    }
+    else {
+        return it != src.end() ? &(*it) : nullptr;
+    }
+}
+template<class Iterable>
+inline auto find_by_name(Iterable& src, const std::string& name)
+{
+    return find(src, [&](auto& e) { return deref(e).name_ == name; });
+}
+template<class Iterable>
+inline auto find_by_js(Iterable& src, const val& v)
+{
+    return find(src, [&](auto& e) { return deref(e).js_ == v; });
+}
+
+
 template<class Iterable, class Callback>
 inline auto map(const Iterable& src, Callback&& cb)
 {
     using value_t = std::decay_t<decltype(*std::begin(src))>;
-    using result_t = decltype(cb(std::declval<value_t>()));
-    std::vector<result_t> ret;
+    std::vector<result_t<Callback>> ret;
     for (const auto& v : src) {
         ret.push_back(cb(v));
     }
@@ -187,7 +212,7 @@ inline Container& filter_in(Container& src, Callback&& cb)
 }
 
 template<class T, size_t N>
-static inline T select_value(
+static inline T select(
     const std::pair<const char*, T>(&table)[N], const std::string& name, T fallback = {})
 {
     for (auto& kvp : table) {

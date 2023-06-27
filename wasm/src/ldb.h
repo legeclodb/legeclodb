@@ -5,6 +5,7 @@ namespace ldb {
 
 class SkillEffect;
 class Skill;
+class SummonCharacter;
 class MainCharacter;
 class SupportCharacter;
 class Item;
@@ -16,6 +17,7 @@ enum class EntityType
     Main,
     Support,
     Item,
+    Summon,
 };
 enum class EffectType
 {
@@ -75,7 +77,11 @@ public:
     val js_;
     uint32_t index_ = 0;
     EntityType entityType_{};
+    std::string name_;
 };
+
+template<class T> T* cast(Entity* p);
+template<class T> T& cast(Entity& p);
 
 class SkillEffect
 {
@@ -102,7 +108,7 @@ public:
     uint32_t isSymbolSkill_ : 1 {};
     uint32_t hasReaction_ : 1 {};
     ist::fixed_vector<SkillEffect, 12> effects_{};
-    MainCharacter* summon_ = nullptr;
+    ist::fixed_vector<SummonCharacter*, 4> summon_{};
 };
 
 
@@ -134,6 +140,16 @@ public:
     BaseStatus statusStar_{};
 };
 
+class SummonCharacter : public Entity
+{
+public:
+    int range_{};
+    int move_{};
+    AttackType attackType_{};
+    uint32_t classFlag_{};
+    ist::fixed_vector<Skill*, 4> skills_{};
+};
+
 // 極めて微妙だが装備は Skill の派生ということにしておく
 class Item : public Skill
 {
@@ -153,11 +169,13 @@ public:
 
     Entity* getEntity(int id);
     Entity* getEntity(val v);
+    Entity* findEntity(const std::string& name);
 
 private:
     void processEntity(Entity& dst, val& src);
     void processEffects(Skill& dst, val& src);
     void processSkill(Skill& dst, val& src);
+    void processSummonChr(SummonCharacter& dst, val& src);
     void processMainChr(MainCharacter& dst, val& src);
     void processSupChr(SupportCharacter& dst, val& src);
     void processItem(Item& dst, val& src);
@@ -166,6 +184,7 @@ public:
     val data_;
     std::vector<Entity*> entityTable_;
     std::vector<Skill> skills_;
+    std::vector<SummonCharacter> summonChrs_;
     std::vector<MainCharacter> mainChrs_;
     std::vector<SupportCharacter> supChrs_;
     std::vector<Item> items_;
