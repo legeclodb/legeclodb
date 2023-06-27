@@ -2,9 +2,12 @@
 # -*- coding: utf-8 -*-
 import os, json, jsbeautifier, csv, requests, datetime, re
 
+OverrideJson = True
+
 csvDir = "./masterdata/"
 projDir = "./"
-outDir = "./tmp/"
+assetsDir = f"{projDir}/src/assets/"
+outDir = assetsDir if OverrideJson else "./tmp/"
 
 
 classTable = [None, "ソルジャー", "ランサー", "ライダー", "セイント", "ソーサラー", "シューター", "エアリアル", "アサシン"]
@@ -211,10 +214,8 @@ def updateDescs(dst, descs):
                 vals.append(mo.group(2))
                 return "[variable]"
             desc = re.sub(r'\[([^]]+)\](.+?)\[/\1\]', cb, dst['descs'][k])
-            if prev and desc != prev:
-                print(f"!! {desc}")
-                #if vals[-2] != "100%":
-                    #print(f"!! {desc} {vals[-2]} : {vals[-1]}")
+            if prev and desc != prev and not '100%' in vals:
+                print(f"!! {desc} {vals}")
             prev = desc
         if eq:
             return
@@ -443,8 +444,6 @@ def processCharacters(chrJson, activeJson, passiveJson, talentJson = None):
                     js["range"] = "全体"
             if "cost" in skill and mainOrSupport == 1:
                 js["cost"] = int(skill["cost"])
-            if not "tags" in js:
-                js["tags"] = []
         elif skillType == "パッシブ":
             js = findByName(passiveJson, name);
             if not js:
@@ -453,8 +452,6 @@ def processCharacters(chrJson, activeJson, passiveJson, talentJson = None):
             updateDesc(js, skill["desc"])
             if "cost" in skill and mainOrSupport == 1:
                 js["cost"] = int(skill["cost"])
-            if not "tags" in js:
-                js["tags"] = []
         elif skillType == "タレント":
             js = findByName(talentJson, name);
             if not js:
@@ -467,9 +464,6 @@ def processCharacters(chrJson, activeJson, passiveJson, talentJson = None):
                     continue
                 descs[f"Lv {lv + 1}"] = desc
             updateDescs(js, descs)
-
-            if not "tags" in js:
-                js["tags"] = []
 
 
 def processItems(itemJson):
@@ -543,10 +537,10 @@ def dumpSkillData():
 
 
 def proceccMainChr():
-    chr = readJson(f"{projDir}/src/assets/main_characters.json")
-    active = readJson(f"{projDir}/src/assets/main_active.json")
-    passive = readJson(f"{projDir}/src/assets/main_passive.json")
-    talent = readJson(f"{projDir}/src/assets/main_talents.json")
+    chr = readJson(f"{assetsDir}/main_characters.json")
+    active = readJson(f"{assetsDir}/main_active.json")
+    passive = readJson(f"{assetsDir}/main_passive.json")
+    talent = readJson(f"{assetsDir}/main_talents.json")
     processCharacters(chr, active, passive, talent)
     writeJson(f"{outDir}/main_characters.json", chr)
     writeJson(f"{outDir}/main_active.json", active)
@@ -555,9 +549,9 @@ def proceccMainChr():
 
 
 def processSupChr():
-    chr = readJson(f"{projDir}/src/assets/support_characters.json")
-    active = readJson(f"{projDir}/src/assets/support_active.json")
-    passive = readJson(f"{projDir}/src/assets/support_passive.json")
+    chr = readJson(f"{assetsDir}/support_characters.json")
+    active = readJson(f"{assetsDir}/support_active.json")
+    passive = readJson(f"{assetsDir}/support_passive.json")
     processCharacters(chr, active, passive)
     writeJson(f"{outDir}/support_characters.json", chr)
     writeJson(f"{outDir}/support_active.json", active)
@@ -565,14 +559,14 @@ def processSupChr():
 
 
 def processEquipments():
-    items = readJson(f"{projDir}/src/assets/items.json")
+    items = readJson(f"{assetsDir}/items.json")
     processItems(items)
     writeJson(f"{outDir}/items.json", items)
 
         
 
 os.makedirs("tmp/icon", exist_ok = True)
-imageTable = readJson(f"{projDir}/src/assets/image_table.json")
+imageTable = readJson(f"{assetsDir}/image_table.json")
 
 dumpSkillData()
 proceccMainChr()
