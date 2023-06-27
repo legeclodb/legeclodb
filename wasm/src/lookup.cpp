@@ -54,7 +54,7 @@ val ResultHolder::toJsTree() const
 
 SearchContext::SearchContext()
 {
-    dbg_print("SearchContext::SearchContext()\n");
+    dbg_info("SearchContext::SearchContext()\n");
 }
 
 void SearchContext::setup(LookupContext* lctx, val data)

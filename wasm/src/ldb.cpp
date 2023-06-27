@@ -3,20 +3,25 @@
 
 namespace ldb {
 
+template<> Skill* cast(Entity* p) { return p->entityType_ == EntityType::Skill ? (Skill*)p : nullptr; }
+template<> MainCharacter* cast(Entity* p) { return p->entityType_ == EntityType::Main ? (MainCharacter*)p : nullptr; }
+template<> SupportCharacter* cast(Entity* p) { return p->entityType_ == EntityType::Support ? (SupportCharacter*)p : nullptr; }
+template<> Item* cast(Entity* p) { return p->entityType_ == EntityType::Item ? (Item*)p : nullptr; }
+
+
 void BaseContext::processEntity(Entity& dst, val& src)
 {
     dst.js_ = src;
     dst.index_ = to_int(src["uid"]);
+    dst.name_ = src["name"].as<std::string>();
     entityTable_[dst.index_] = &dst;
-
-    //printf("%s\n", src["name"].as<std::string>().c_str());
 }
 
 void BaseContext::processEffects(Skill& dst, val& src)
 {
     SkillEffect& tmp = dst.effects_.emplace_back();
     tmp.js_ = src;
-    tmp.effectType_ = select_value<EffectType>({
+    tmp.effectType_ = select<EffectType>({
         { "バフ", EffectType::Buff },
         { "デバフ", EffectType::Debuff },
         { "状態異常", EffectType::StatusEffect },
@@ -42,7 +47,7 @@ void BaseContext::processSkill(Skill& dst, val& src)
     processEntity(dst, src);
     dst.entityType_ = EntityType::Skill;
 
-    dst.skillType_ = select_value<SkillType>({
+    dst.skillType_ = select<SkillType>({
         { "アクティブ", SkillType::Active },
         { "パッシブ", SkillType::Passive },
         { "タレント", SkillType::Talent },
@@ -60,15 +65,38 @@ void BaseContext::processSkill(Skill& dst, val& src)
 
     array_each(src["buff"], [&](val effect) { processEffects(dst, effect); });
     array_each(src["debuff"], [&](val effect) { processEffects(dst, effect); });
-    array_each(src["statusEffect"], [&](val effect) { processEffects(dst, effect); });
-    array_each(src["immune"], [&](val effect) { processEffects(dst, effect); });
+    //array_each(src["statusEffect"], [&](val effect) { processEffects(dst, effect); });
+    //array_each(src["immune"], [&](val effect) { processEffects(dst, effect); });
 }
 
-static inline BaseStatus asBaseStatus(val src)
+static BaseStatus asBaseStatus(val src)
 {
     BaseStatus ret{};
     array_each(src, [&](val v, int i) { ret[i] = to_float(v); });
     return ret;
+}
+
+static AttackType toAttckType(val src)
+{
+    return select<AttackType>({
+        { "アタック", AttackType::Attack },
+        { "マジック", AttackType::Magic }
+        }, to_string(src));
+}
+
+void BaseContext::processSummonChr(SummonCharacter& dst, val& src)
+{
+    processEntity(dst, src);
+    dst.entityType_ = EntityType::Summon;
+
+    dst.range_ = to_int(src["range"]);
+    dst.move_ = to_int(src["move"]);
+    dst.attackType_ = toAttckType(src["damageType"]);
+
+    dst.classFlag_ = 1 << to_int(src["classId"]);
+
+    dst.skills_.emplace_back((Skill*)getEntity(src["talent"]));
+    array_each(src["skills"], [&](val skill) { dst.skills_.emplace_back((Skill*)getEntity(skill)); });
 }
 
 void BaseContext::processMainChr(MainCharacter& dst, val& src)
@@ -78,10 +106,7 @@ void BaseContext::processMainChr(MainCharacter& dst, val& src)
 
     dst.range_ = to_int(src["range"]);
     dst.move_ = to_int(src["move"]);
-    dst.attackType_ = select_value<AttackType>({
-        { "アタック", AttackType::Attack },
-        { "マジック", AttackType::Magic }
-        }, to_string(src["damageType"]));
+    dst.attackType_ = toAttckType(src["damageType"]);
 
     dst.classFlag_ = 1 << to_int(src["classId"]);
     dst.symbolFlag_ = 1 << to_int(src["symbolId"]);
@@ -91,8 +116,23 @@ void BaseContext::processMainChr(MainCharacter& dst, val& src)
     dst.statusLv_ = asBaseStatus(src["statusLv"]);
     dst.statusStar_ = asBaseStatus(src["statusStar"]);
 
-    dst.skills_.emplace_back((Skill*)getEntity(src["talent"]));
-    array_each(src["skills"], [&](val skill) { dst.skills_.emplace_back((Skill*)getEntity(skill)); });
+    dst.skills_.push_back(cast<Skill>(getEntity(src["talent"])));
+    array_each(src["skills"], [&](val skill) {
+        dst.skills_.push_back(cast<Skill>(getEntity(skill)));
+        });
+
+    val summon = src["summon"];
+    if (summon.isArray()) {
+        array_each(summon, [&](val s) {
+            processSummonChr(summonChrs_.emplace_back(), s);
+            });
+    }
+
+    dbg_info("%s: ", dst.name_.c_str());
+    for (auto skill : dst.skills_) {
+        dbg_info("%s, ", skill->name_.c_str());
+    }
+    dbg_info("\n");
 }
 
 void BaseContext::processSupChr(SupportCharacter& dst, val& src)
@@ -101,10 +141,7 @@ void BaseContext::processSupChr(SupportCharacter& dst, val& src)
     dst.entityType_ = EntityType::Support;
 
     dst.range_ = to_int(src["range"]);
-    dst.attackType_ = select_value<AttackType>({
-        { "アタック", AttackType::Attack },
-        { "マジック", AttackType::Magic }
-        }, to_string(src["damageType"]));
+    dst.attackType_ = toAttckType(src["damageType"]);
 
     dst.classFlag_ = 1 << to_int(src["classId"]);
     dst.rarityFlag_ = 1 << to_int(src["rarityId"]);
@@ -122,7 +159,7 @@ void BaseContext::processItem(Item& dst, val& src)
     dst.entityType_ = EntityType::Item;
     dst.ownerType_ = EntityType::Item;
 
-    dst.itemType_ = select_value<ItemType>({
+    dst.itemType_ = select<ItemType>({
         { "武器", ItemType::Weapon },
         { "鎧", ItemType::Armor },
         { "兜", ItemType::Helmet },
@@ -140,7 +177,11 @@ Entity* BaseContext::getEntity(int id)
 }
 Entity* BaseContext::getEntity(val v)
 {
-    return getEntity(to_int(v["index"]));
+    return getEntity(to_int(v["uid"]));
+}
+Entity* BaseContext::findEntity(const std::string& name)
+{
+    return find_by_name(entityTable_, name);
 }
 
 void BaseContext::setup(val data)
@@ -180,6 +221,23 @@ void BaseContext::setup(val data)
     {
         auto* dst = &mainChrs_[0];
         array_each(mainChrs, [&](val src) { processMainChr(*dst++, src); });
+
+        // 召喚キャラをスキルにも設定
+        array_each(mainActive, [&](val active) {
+            val summon = active["summon"];
+            if (summon.isArray()) {
+                Skill* skill = find_by_js(skills_, active);
+                array_each(summon, [&](val chr) {
+                    skill->summon_.push_back(find_by_js(summonChrs_, chr));
+                    });
+
+                dbg_info("%s: ", skill->name_.c_str());
+                for (auto& so : skill->summon_) {
+                    dbg_info("%s, ", so->name_.c_str());
+                }
+                dbg_info("\n");
+            }
+            });
     }
     {
         auto* dst = &supChrs_[0];
