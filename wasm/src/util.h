@@ -1,6 +1,12 @@
 #pragma once
 #include "types.h"
 
+#ifdef _DEBUG
+#   define dbg_print(...) printf(__VA_ARGS__)
+#else
+#   define dbg_print(...) 
+#endif
+
 namespace ldb {
 
 template<class T>
@@ -30,10 +36,25 @@ struct function_traits<R(C::*)(Args...) const>
 };
 
 template<class T>
-constexpr size_t arg_count()
-{
-    return function_traits<T>::arg_count;
-}
+constexpr size_t arg_count_v = function_traits<T>::arg_count;
+
+template<class T, size_t I>
+using arg_t = typename function_traits<T>::template arg_type<I>;
+
+template<class T>
+using result_t = typename function_traits<T>::result_type;
+
+
+template<class T, std::enable_if_t<!std::is_pointer_v<T>, bool> = true>
+inline T& deref(T& r) { return r; }
+template<class T, std::enable_if_t<std::is_pointer_v<T>, bool> = true>
+inline auto& deref(T r) { return *r; }
+
+template<class T, std::enable_if_t<!std::is_pointer_v<T>, bool> = true>
+inline T* ptr(T& r) { return &r; }
+template<class T, std::enable_if_t<std::is_pointer_v<T>, bool> = true>
+inline T ptr(T r) { return r; }
+
 
 inline size_t array_length(val ary)
 {
@@ -78,10 +99,10 @@ inline void array_each(val ary, const Callback& cb)
 {
     size_t len = array_length(ary);
     for (size_t i = 0; i < len; ++i) {
-        if constexpr (arg_count<Callback>() == 1) {
+        if constexpr (arg_count_v<Callback> == 1) {
             cb(ary[i]);
         }
-        else if constexpr (arg_count<Callback>() == 2) {
+        else if constexpr (arg_count_v<Callback> == 2) {
             cb(ary[i], i);
         }
     }
@@ -100,6 +121,19 @@ inline void object_each(val obj, Callback&& cb)
         auto val = obj[key];
         cb(key, val);
     }
+}
+
+template<class T>
+inline val as_js(T& r) { return deref(r).js_; }
+
+template<class Iterable>
+inline val to_jsarray(Iterable& src)
+{
+    val ret = val::array();
+    for (auto& s : src) {
+        ret.call<void>("push", as_js(s));
+    }
+    return ret;
 }
 
 template<class Iterable, class Callback>

@@ -30,9 +30,10 @@ void BaseContext::processEffects(Skill& dst, val& src)
         tmp.isSingleTarget_ = t == "単体";
     }
 
+    tmp.valueType_ = to_int(src["valueTypeIndex"]);
     tmp.value_ = to_int(src["value"]);
     tmp.duration_ = to_int(src["duration"]);
-    tmp.valueType_ = to_int(src["valueTypeIndex"]);
+    tmp.maxStack_ = to_int(src["maxStack"], 1);
     tmp.slot_ = to_int(src["slotIndex"]);
 }
 

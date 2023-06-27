@@ -1,5 +1,6 @@
 #pragma once
 #include "ldb.h"
+#include "task_feeder.h"
 
 namespace ldb::lookup {
 
@@ -25,6 +26,7 @@ public:
     uint32_t allowSingleUnitBuff_ : 1 { false };
     uint32_t allowSymbolSkill_ : 1 { false };
     uint32_t allowSupportActive_ : 1 { true };
+    uint32_t allowMaxStackValue_ : 1 { true };
     uint32_t classFilter_ = ~0;
     uint32_t symbolFilter_ = ~0;
     uint32_t rarityFilter_ = ~0;
@@ -41,18 +43,25 @@ public:
     SerarchState* parent_{};
     std::array<int, 64> usedSlots_{};
     std::array<int, 64> totalAmounts_{};
-    std::bitset<2048> usedSkills_{};
+    std::bitset<2048> usedEntities_{};
 };
 
 class ResultHolder
 {
 public:
-    bool operator<(const ResultHolder& v) const;
+    bool operator<(const ResultHolder& r) const;
+    val toJs() const;
+    val toJsTree() const;
 
     // root -> current
     void each(const std::function<void(ResultHolder&)>& cb) {
         if (parent_)
             parent_->each(cb);
+        cb(*this);
+    }
+    void each(const std::function<void(const ResultHolder&)>& cb) const {
+        if (parent_)
+            const_cast<const ResultHolder*>(parent_)->each(cb);
         cb(*this);
     }
 
@@ -71,7 +80,7 @@ public:
     ist::fixed_vector<Skill*, 4> summonSkills_{};
 
     ist::fixed_vector<SkillEffect*, 32> usedEffects_{};
-    ist::fixed_vector<SkillEffect*, 8> unusedEffects_{};
+    ist::fixed_vector<SkillEffect*, 8> deniedEffects_{};
 
     int unitCount_ = 0;     // 
     int skillCount_ = 0;    // 
@@ -104,9 +113,9 @@ public:
 
     bool effectCondition(const SkillEffect& effect) const;
     bool skillCondition(const Skill& skill) const;
+    float getEffectValue(const SkillEffect& effect) const;
 
-    float getScore(const SerarchState& state, const SkillEffect& obj) const;
-    float getScore(const SerarchState& state, const Skill& skill) const;
+    float getScoreEst(const SerarchState& state, const Skill& skill, const Entity& owner) const;
     float getScoreEst(const SerarchState& state, const MainCharacter& obj) const;
     float getScoreEst(const SerarchState& state, const SupportCharacter& obj) const;
     float getScoreEst(const SerarchState& state, const Item& obj) const;
@@ -126,9 +135,8 @@ public:
 
     ResultHolder* bestResult_{};
     ist::fixed_vector<ResultHolder, 10> bestTree_;
-    bool isComplete_ = false;
-    int searchCount_ = 0;
-    std::future<void> async_;
+    std::atomic_int searchCount_{};
+    TaskFeeder taskFeeder_;
 };
 
 class LookupContext : public BaseContext

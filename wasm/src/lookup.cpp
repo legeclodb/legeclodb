@@ -4,37 +4,113 @@
 
 namespace ldb::lookup {
 
-SearchContext::SearchContext()
+bool ResultHolder::operator<(const ResultHolder& r) const
 {
+    if (scoreTotal_ != r.scoreTotal_) {
+        return scoreTotal_ < r.scoreTotal_;
+    }
+    if (unitCount_ != r.unitCount_) {
+        return unitCount_ < r.unitCount_;
+    }
+    if (skillCount_ != r.skillCount_) {
+        return skillCount_ < r.skillCount_;
+    }
+    return false;
 }
 
-void SearchContext::setup(LookupContext* ctx, val data)
+val ResultHolder::toJs() const
 {
-    lctx_ = ctx;
+    val ret = val::object();
+    ret.set("score", scoreTotal_);
+    if (mainChr_) {
+        val tmp = val::object();
+        tmp.set("character", mainChr_->js_);
+        tmp.set("skills", to_jsarray(mainSkills_));
+        ret.set("main", tmp);
+    }
+    if (summonChr_) {
+        val tmp = val::object();
+        tmp.set("character", summonChr_->js_);
+        tmp.set("skills", to_jsarray(summonSkills_));
+        ret.set("summon", tmp);
+    }
+    if (supChr_) {
+        val tmp = val::object();
+        tmp.set("character", supChr_->js_);
+        tmp.set("skills", to_jsarray(supSkills_));
+        ret.set("main", tmp);
+    }
+    ret.set("usedEffects", to_jsarray(usedEffects_));
+    ret.set("conflictedEffects", to_jsarray(deniedEffects_));
+    return ret;
+}
+val ResultHolder::toJsTree() const
+{
+    val ret = val::array();
+    each([&](const ResultHolder& n) { ret.call<void>("push", n.toJs()); });
+    return ret;
+}
+
+
+SearchContext::SearchContext()
+{
+    dbg_print("SearchContext::SearchContext()\n");
+}
+
+void SearchContext::setup(LookupContext* lctx, val data)
+{
+    lctx_ = lctx;
     opt_.setup(data);
+
+    SerarchState state;
+    auto getCandidates = [&](auto& dst, const auto& src) {
+        dst.clear();
+        for (auto& v : src) {
+            if (getScoreEst(state, deref(v)) > 0) {
+                dst.push_back(ptr(v));
+            }
+        }
+    };
+    // 選ばれる可能性がないもの (スコア 0) を除外しつつ、残りをリスト
+    getCandidates(mainChrs_, lctx_->mainChrs_);
+    getCandidates(supChrs_, lctx_->supChrs_);
+
+    getCandidates(weapons_, lctx_->weapons_);
+    getCandidates(armors_, lctx_->armors_);
+    getCandidates(helmets_, lctx_->helmets_);
+    getCandidates(accessories_, lctx_->accessories_);
 }
 
 void SearchContext::beginSearch()
 {
-    async_ = std::async(std::launch::async, [&]() {
+    const int taskCount = 16;
+    auto taskBody = [this](int tid) {
         for (int i = 0; i < 10; ++i) {
-            searchCount_ += 100;
-            std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+            int n = ++searchCount_;
+            std::this_thread::sleep_for(std::chrono::milliseconds(250));
         }
-        isComplete_ = true;
-        });
+    };
+
+    for (int i = 0; i < taskCount; ++i) {
+        taskFeeder_.addTask([=, this]() { taskBody(i); });
+    }
+    taskFeeder_.run(gThreadCount);
 }
 
 void SearchContext::wait()
 {
-    if (async_.valid()) {
-        async_.wait();
-        async_ = {};
-    }
+    taskFeeder_.wait();
 }
 
-bool SearchContext::isComplete() const { return isComplete_; }
-int SearchContext::getSearchCount() const { return searchCount_; }
+bool SearchContext::isComplete() const
+{
+    return taskFeeder_.isComplete();
+}
+
+int SearchContext::getSearchCount() const
+{
+    return searchCount_.load();
+}
 
 val SearchContext::getResult() const
 {
@@ -82,14 +158,19 @@ bool SearchContext::skillCondition(const Skill& skill) const
     return true;
 }
 
-float SearchContext::getScore(const SerarchState& state, const SkillEffect& obj) const
+float SearchContext::getEffectValue(const SkillEffect& effect) const
 {
-    return 0;
+    if (opt_.allowMaxStackValue_) {
+        return effect.value_ * effect.maxStack_;
+    }
+    else {
+        return effect.value_;
+    }
 }
 
-float SearchContext::getScore(const SerarchState& state, const Skill& skill) const
+float SearchContext::getScoreEst(const SerarchState& state, const Skill& skill, const Entity& owner) const
 {
-    if (state.usedSkills_[skill.index_] || !skillCondition(skill))
+    if (state.usedEntities_[skill.index_] || !skillCondition(skill))
         return 0;
 
     float score = 0.0f;
@@ -99,8 +180,7 @@ float SearchContext::getScore(const SerarchState& state, const Skill& skill) con
             if (skill.skillType_ == SkillType::Active && state.usedSlots_[effect.slot_]) {
                 continue; // アクティブ枠競合
             }
-
-            score += effect.value_ * param.weight_;
+            score += getEffectValue(effect) * param.weight_;
         }
     }
     return 0;
@@ -108,15 +188,46 @@ float SearchContext::getScore(const SerarchState& state, const Skill& skill) con
 
 float SearchContext::getScoreEst(const SerarchState& state, const MainCharacter& obj) const
 {
-    return 0;
+    float ret = 0;
+    for (auto& skill : obj.skills_) {
+        ret += getScoreEst(state, *skill, obj);
+    }
+
+    auto getBestItemScore = [&](const std::vector<Item*>& items) {
+        float bestScore = 0;
+        Item* bestItem{};
+        for (Item* item : items) {
+            if (item->classFlags_ & obj.classFlag_) {
+                float score = getScoreEst(state, *item);
+                if (score > bestScore) {
+                    bestScore = score;
+                    bestItem = item;
+                }
+            }
+        }
+        // そのままだと影響力が強すぎるので補正…
+        const float scoreRate = 0.5f;
+        return bestScore * scoreRate;
+    };
+    ret += getBestItemScore(lctx_->weapons_);
+    ret += getBestItemScore(lctx_->armors_);
+    ret += getBestItemScore(lctx_->helmets_);
+    ret += getBestItemScore(lctx_->accessories_);
+
+    return ret;
 }
 float SearchContext::getScoreEst(const SerarchState& state, const SupportCharacter& obj) const
 {
-    return 0;
+    float ret = 0;
+    for (auto& skill : obj.skills_) {
+        ret += getScoreEst(state, *skill, obj);
+    }
+    return ret;
 }
 float SearchContext::getScoreEst(const SerarchState& state, const Item& obj) const
 {
-    return 0;
+    float ret = getScoreEst(state, obj, obj);
+    return ret;
 }
 
 float SearchContext::getScore(ResultHolder& dst, SerarchState& state, const MainCharacter& obj)

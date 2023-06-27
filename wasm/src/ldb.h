@@ -90,6 +90,7 @@ public:
     int valueType_ = 0;
     int value_ = 0;
     int duration_ = 0;
+    int maxStack_ = 0;
     int slot_ = 0;
 };
 
