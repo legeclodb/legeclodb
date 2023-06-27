@@ -791,7 +791,7 @@ export default {
   mounted() {
     /*global Module*/
     this.lctx = new Module.LookupContext(this);
-    this.timer = setInterval(this.onIdle, 100);
+    this.timer = setInterval(this.tick, 500);
 
     this.pushHistory();
     this.initialState = this.history[0];
@@ -820,7 +820,7 @@ export default {
         this.progress.searchCount = 0;
       }
     },
-    onIdle() {
+    tick() {
       if (this.sctx) {
         this.progress.searchCount = this.sctx.getSearchCount();
         if (this.sctx.isComplete()) {
