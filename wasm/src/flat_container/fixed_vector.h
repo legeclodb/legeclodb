@@ -162,7 +162,7 @@ public:
     using super::size;
     using super::data;
 
-    constexpr bool empty() const { return size_ > 0; }
+    constexpr bool empty() const { return size_ == 0; }
     constexpr bool full() const { return size_ == capacity_; }
     constexpr iterator begin() { return data_; }
     constexpr iterator end() { return data_ + size_; }

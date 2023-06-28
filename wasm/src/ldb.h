@@ -173,7 +173,7 @@ public:
 
 private:
     void processEntity(Entity& dst, val& src);
-    void processEffects(Skill& dst, val& src);
+    void processEffects(SkillEffect& dst, val& src);
     void processSkill(Skill& dst, val& src);
     void processSummonChr(SummonCharacter& dst, val& src);
     void processMainChr(MainCharacter& dst, val& src);
