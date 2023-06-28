@@ -65,11 +65,21 @@ void SearchContext::setup(LookupContext* lctx, val data)
     SerarchState state;
     auto getCandidates = [&](auto& dst, const auto& src) {
         dst.clear();
+        using ptr_t = decltype(ptr(dst[0]));
+        auto& tmp = getTemporary<std::vector<std::tuple<float, ptr_t>>>();
         for (auto& v : src) {
-            if (getScoreEst(state, deref(v)) > 0) {
-                dst.push_back(ptr(v));
+            float score = getScoreEst(state, deref(v));
+            if (score > 0) {
+                tmp.emplace_back(score, ptr(v));
             }
         }
+        std::stable_sort(tmp.begin(), tmp.end(), [](auto& a, auto& b) { return std::get<0>(a) > std::get<0>(b); });
+        for (auto [score, p] : tmp) {
+            dbg_info("%s: %.0f\n", p->name_.c_str(), score);
+            dst.push_back(p);
+        }
+        dbg_info("\n");
+        tmp.clear();
     };
     // 選ばれる可能性がないもの (スコア 0) を除外しつつ、残りをリスト
     getCandidates(mainChrs_, lctx_->mainChrs_);
@@ -180,10 +190,19 @@ float SearchContext::getScoreEst(const SerarchState& state, const Skill& skill, 
             if (skill.skillType_ == SkillType::Active && state.usedSlots_[effect.slot_]) {
                 continue; // アクティブ枠競合
             }
-            score += getEffectValue(effect) * param.weight_;
+            float s = getEffectValue(effect) * param.weight_;
+            score += s;
         }
     }
-    return 0;
+
+    // 召喚ユニットがあればそのスキルも加算
+    if (!skill.summon_.empty()) {
+        auto& summon = *skill.summon_.front();
+        for (auto& s : summon.skills_) {
+            score += getScoreEst(state, *s, owner);
+        }
+    }
+    return score;
 }
 
 float SearchContext::getScoreEst(const SerarchState& state, const MainCharacter& obj) const
@@ -278,9 +297,13 @@ void Options::setup(val data)
     rarityFilter_ = filterToFlags(filter["rarity"]);
 
     auto handleTargetParam = [&](val& param) {
-        auto& dst = targets_.emplace_back();
+        int valueType = to_int(param["valueTypeIndex"]);
+        if (valueType > targets_.size()) {
+            dbg_error("valueTypeIndex exceeded targets_.size()\n");
+        }
+        auto& dst = targets_[valueType];
+        dst.valueType_ = valueType;
         dst.enabled_ = to_bool(param["enabled"]);
-        dst.valueType_ = to_int(param["valueTypeIndex"]);
         dst.limit_ = to_float(param["limit"]);
         dst.weight_ = to_float(param["weight"]) * 0.1f;
         if (dst.limit_ <= 0.0f) {

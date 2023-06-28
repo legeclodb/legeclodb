@@ -17,11 +17,10 @@ void BaseContext::processEntity(Entity& dst, val& src)
     entityTable_[dst.index_] = &dst;
 }
 
-void BaseContext::processEffects(Skill& dst, val& src)
+void BaseContext::processEffects(SkillEffect& dst, val& src)
 {
-    SkillEffect& tmp = dst.effects_.emplace_back();
-    tmp.js_ = src;
-    tmp.effectType_ = select<EffectType>({
+    dst.js_ = src;
+    dst.effectType_ = select<EffectType>({
         { "バフ", EffectType::Buff },
         { "デバフ", EffectType::Debuff },
         { "状態異常", EffectType::StatusEffect },
@@ -31,15 +30,19 @@ void BaseContext::processEffects(Skill& dst, val& src)
     val target = src["target"];
     if (target.isString()) {
         std::string t = target.as<std::string>();
-        tmp.isSelfTarget_ = t == "自身";
-        tmp.isSingleTarget_ = t == "単体";
+        dst.isSelfTarget_ = t == "自身";
+        dst.isSingleTarget_ = t == "単体";
     }
 
-    tmp.valueType_ = to_int(src["valueTypeIndex"]);
-    tmp.value_ = to_int(src["value"]);
-    tmp.duration_ = to_int(src["duration"]);
-    tmp.maxStack_ = to_int(src["maxStack"], 1);
-    tmp.slot_ = to_int(src["slotIndex"]);
+    dst.valueType_ = to_int(src["valueTypeIndex"]);
+    dst.value_ = to_int(src["value"]);
+    dst.duration_ = to_int(src["duration"]);
+    dst.maxStack_ = to_int(src["maxStack"], 1);
+    dst.slot_ = to_int(src["slotIndex"]);
+
+    dst.onProbablity_ = to_float(src["probability"]) != 0.0f;
+    dst.onBattle_ = to_bool(src["onBattle"]);
+    dst.onKill_ = to_bool(src["onKill"]);
 }
 
 void BaseContext::processSkill(Skill& dst, val& src)
@@ -63,10 +66,10 @@ void BaseContext::processSkill(Skill& dst, val& src)
     dst.hasReaction_ = to_bool(src["hasReaction"]);
     dst.isSymbolSkill_ = to_bool(src["isSymbolSkill"]);
 
-    array_each(src["buff"], [&](val effect) { processEffects(dst, effect); });
-    array_each(src["debuff"], [&](val effect) { processEffects(dst, effect); });
-    //array_each(src["statusEffect"], [&](val effect) { processEffects(dst, effect); });
-    //array_each(src["immune"], [&](val effect) { processEffects(dst, effect); });
+    array_each(src["buff"], [&](val effect) { processEffects(dst.effects_.emplace_back(), effect); });
+    array_each(src["debuff"], [&](val effect) { processEffects(dst.effects_.emplace_back(), effect); });
+    //array_each(src["statusEffect"], [&](val effect) { processEffects(dst.effects_.emplace_back(), effect); });
+    //array_each(src["immune"], [&](val effect) { processEffects(dst.effects_.emplace_back(), effect); });
 }
 
 static BaseStatus asBaseStatus(val src)
@@ -95,8 +98,14 @@ void BaseContext::processSummonChr(SummonCharacter& dst, val& src)
 
     dst.classFlag_ = 1 << to_int(src["classId"]);
 
-    dst.skills_.emplace_back((Skill*)getEntity(src["talent"]));
-    array_each(src["skills"], [&](val skill) { dst.skills_.emplace_back((Skill*)getEntity(skill)); });
+    dst.skills_.emplace_back(cast<Skill>(getEntity(src["talent"])));
+    array_each(src["skills"], [&](val skill) { dst.skills_.emplace_back(cast<Skill>(getEntity(skill))); });
+
+    dbg_info("%s: ", dst.name_.c_str());
+    for (auto skill : dst.skills_) {
+        dbg_info("%s, ", skill->name_.c_str());
+    }
+    dbg_info("\n");
 }
 
 void BaseContext::processMainChr(MainCharacter& dst, val& src)
@@ -186,12 +195,6 @@ Entity* BaseContext::findEntity(const std::string& name)
 
 void BaseContext::setup(val data)
 {
-    if (!mainChrs_.empty()) {
-        // テストで何度も setup() を呼ぶケース用。
-        // production 環境では setup() は 1 度しか呼ばれない想定。
-        *this = {};
-    }
-
     data_ = data;
     val mainChrs = data["mainChrs"];
     val mainActive = data["mainActive"];

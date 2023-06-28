@@ -30,7 +30,7 @@ public:
     uint32_t classFilter_ = ~0;
     uint32_t symbolFilter_ = ~0;
     uint32_t rarityFilter_ = ~0;
-    std::vector<EffectParam> targets_;
+    std::array<EffectParam, 64> targets_;
     std::vector<PrioritizeParam> excluded_;
     std::vector<PrioritizeParam> prioritized;
 
