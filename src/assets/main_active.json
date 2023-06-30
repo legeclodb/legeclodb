@@ -4428,12 +4428,14 @@
       },
       {
         "type": "マジック",
+        "onBattle": true,
         "value": 15,
         "duration": 4,
         "slot": "シンボルスキル"
       },
       {
         "type": "与ダメージ",
+        "onBattle": true,
         "value": 15,
         "duration": 4,
         "slot": "シンボルスキル"

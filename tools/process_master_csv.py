@@ -326,6 +326,11 @@ def processCharacters(chrJson, activeJson, passiveJson, talentJson = None):
         cid = ch["uid"]
 
         l = findByCid(chrCsv, cid)
+
+        if not "name" in ch:
+            ch["name"] = name.replace('（', '(').replace('）', ')')
+            ch["date"] = datetime.datetime.now().strftime("%Y/%m/%d")
+
         ch["class"] = classTable[int(l["SoldierType"])]
         if l["ForceType"]:
             ch["symbol"] = symbolTable[int(l["ForceType"])]
@@ -509,9 +514,6 @@ def processItems(itemJson):
             [int(el["StatusType2"]) - 1, float(el["InitStatus2"]), float(el["UpStatus2"])] ]:
             item["statusInit"][sv[0]] = sv[1]
             item["statusLv"][sv[0]] = sv[2]
-
-        if not "tags" in item:
-            item["tags"] = []
 
         #for f in ["EquipmentType", "SoldierTypeCondition", "CharacterCondition", "AmuletType", "AbilityGroupId1", "AbilityGroupId2"]:
         #    if f in el:
