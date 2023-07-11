@@ -327,8 +327,9 @@ def processCharacters(chrJson, activeJson, passiveJson, talentJson = None):
 
         l = findByCid(chrCsv, cid)
 
+        name = l["CharacterName"].replace('（', '(').replace('）', ')')
         if not "name" in ch:
-            ch["name"] = name.replace('（', '(').replace('）', ')')
+            ch["name"] = name
             ch["date"] = datetime.datetime.now().strftime("%Y/%m/%d")
 
         ch["class"] = classTable[int(l["SoldierType"])]
@@ -481,7 +482,7 @@ def processItems(itemJson):
             print(f"item not found : {iid}")
             continue
 
-        name = il["Name"]
+        name = il["Name"].replace('（', '(').replace('）', ')')
         if not "name" in item:
             item["name"] = name
             item["date"] = datetime.datetime.now().strftime("%Y/%m/%d")
@@ -570,7 +571,7 @@ def processEquipments():
 os.makedirs("tmp/icon", exist_ok = True)
 imageTable = readJson(f"{assetsDir}/image_table.json")
 
-dumpSkillData()
+#dumpSkillData()
 proceccMainChr()
 processSupChr()
 processEquipments()
