@@ -326,6 +326,12 @@ def processCharacters(chrJson, activeJson, passiveJson, talentJson = None):
         cid = ch["uid"]
 
         l = findByCid(chrCsv, cid)
+
+        name = l["CharacterName"].replace('（', '(').replace('）', ')')
+        if not "name" in ch:
+            ch["name"] = name
+            ch["date"] = datetime.datetime.now().strftime("%Y/%m/%d")
+
         ch["class"] = classTable[int(l["SoldierType"])]
         if l["ForceType"]:
             ch["symbol"] = symbolTable[int(l["ForceType"])]
@@ -476,7 +482,7 @@ def processItems(itemJson):
             print(f"item not found : {iid}")
             continue
 
-        name = il["Name"]
+        name = il["Name"].replace('（', '(').replace('）', ')')
         if not "name" in item:
             item["name"] = name
             item["date"] = datetime.datetime.now().strftime("%Y/%m/%d")
@@ -509,9 +515,6 @@ def processItems(itemJson):
             [int(el["StatusType2"]) - 1, float(el["InitStatus2"]), float(el["UpStatus2"])] ]:
             item["statusInit"][sv[0]] = sv[1]
             item["statusLv"][sv[0]] = sv[2]
-
-        if not "tags" in item:
-            item["tags"] = []
 
         #for f in ["EquipmentType", "SoldierTypeCondition", "CharacterCondition", "AmuletType", "AbilityGroupId1", "AbilityGroupId2"]:
         #    if f in el:
@@ -568,7 +571,7 @@ def processEquipments():
 os.makedirs("tmp/icon", exist_ok = True)
 imageTable = readJson(f"{assetsDir}/image_table.json")
 
-dumpSkillData()
+#dumpSkillData()
 proceccMainChr()
 processSupChr()
 processEquipments()
