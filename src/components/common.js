@@ -833,7 +833,7 @@ export default {
         ...map(buff, a => buffToS("バフ", a)),
         ...map(skill.debuff, a => buffToS("デバフ", a)),
         ...map(skill.statusEffects, a => buffToS("デバフ", a)),
-        ...map(skill.immune, a => buffToS("無効化:", a)),
+        ...map(skill.immune, a => buffToS("無効化", a)),
         ...map(skill.drawback, a => buffToS("デメリット", a)),
       ];
     },
