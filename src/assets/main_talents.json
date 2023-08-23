@@ -1868,46 +1868,50 @@
       {
         "type": "アタック",
         "value": 5,
-        "duration": 3,
+        "duration": 4,
         "maxStack": 3
       },
       {
         "type": "マジック",
         "value": 5,
-        "duration": 3,
+        "duration": 4,
         "maxStack": 3
       },
       {
         "type": "ディフェンス",
         "value": 5,
-        "duration": 3,
+        "duration": 4,
         "maxStack": 3
       },
       {
         "type": "レジスト",
         "value": 5,
-        "duration": 3,
+        "duration": 4,
         "maxStack": 3
       },
       {
         "type": "テクニック",
         "value": 5,
-        "duration": 3,
+        "duration": 4,
         "maxStack": 3
       },
       {
         "type": "クリティカル率",
         "value": 15,
+        "duration": 4,
         "onBattle": true
       },
       {
         "type": "クリティカルダメージ倍率",
         "value": 15,
+        "duration": 4,
         "onBattle": true
       },
       {
         "type": "与ダメージ(スキル)",
-        "value": 20
+        "duration": 4,
+        "value": 20,
+        "onHPAbove": 100
       }
     ],
     "tags": [ "バフ:リジェネ" ]
