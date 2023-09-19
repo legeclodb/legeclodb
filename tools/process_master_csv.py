@@ -10,7 +10,7 @@ assetsDir = f"{projDir}/src/assets/"
 outDir = assetsDir if OverrideJson else "./tmp/"
 
 
-classTable = [None, "ソルジャー", "ランサー", "ライダー", "セイント", "ソーサラー", "シューター", "エアリアル", "アサシン"]
+classTable = {0: None, 1: "ソルジャー", 2: "ランサー", 3: "ライダー", 4: "セイント", 5: "ソーサラー", 6: "シューター", 7: "エアリアル", 8: "アサシン", 99: "ヴォイド"}
 symbolTable = [None, "ゼニス", "オリジン", "ナディア"]
 supportTypeTable = [None, "支援", "攻撃", "妨害"]
 rarityTable = [None, "N", "R", "SR", "SSR"]
@@ -166,9 +166,14 @@ def findByName(ls, name):
     return None
 
 def findByCid(csv, cid):
-    for a in csv:
-        if a["CharacterID"] == cid:
-            return a
+    if "CharacterID" in csv[0]:
+        for a in csv:
+            if a["CharacterID"] == cid:
+                return a
+    elif "CharacterId" in csv[0]:
+        for a in csv:
+            if a["CharacterId"] == cid:
+                return a
     return None
 
 
@@ -311,6 +316,7 @@ mainTalentCsv      = parseSkillCsv(readCsvTable(f"{csvDir}/Skill/SkillListTalent
 supActiveCsv       = parseSkillCsv(readCsvTable(f"{csvDir}/Skill/SkillListSupportAbility.csv"), "アクティブ")
 supPassiveCsv      = parseSkillCsv(readCsvTable(f"{csvDir}/Skill/SkillListSupportPassive.csv"), "パッシブ")
 itemEffectCsv      = parseSkillCsv(readCsvTable(f"{csvDir}/Skill/SkillListEquipment.csv"))
+summonEffectCsv    = readCsvTable(f"{csvDir}/Skill/SummonEffect.csv")
 
 skillTable = {**mainActiveCsv, **mainPassiveCsv, **mainTalentCsv, **supActiveCsv, **supPassiveCsv, **itemEffectCsv}
 itemTable = equipmentsCsv + amuletsCsv
@@ -356,6 +362,34 @@ def processCharacters(chrJson, activeJson, passiveJson, talentJson = None):
 
         l = findByCid(initStatusCsv, cid)
         ch["statusInit"] = list(map(lambda s: int(s), [l["HP"], l["ATK"], l["DEF"], l["MATK"], l["MDEF"], l["DEX"]]))
+
+        if "summon" in ch:
+            summons = ch["summon"]
+            for su in summons:
+                sid = su["uid"]
+
+                l = findByCid(chrCsv, sid)
+                su["name"] = l["CharacterName"]
+                su["class"] = classTable[int(l["SoldierType"])]
+                su["damageType"] = attackTypeTable[int(l["CharacterAttackType"])]
+                su["range"] = int(l["AttackRange"])
+                su["move"] = int(l["MovingValue"])
+
+                sec = findByCid(summonEffectCsv, sid)
+                chrSkills[sid] = []
+                for k in ["TalentSkillGroupId", "FirstSkillGroupId", "SecondSkillGroupId", "ThirdSkillGroupId"]:
+                    sk = sec[k]
+                    if sk in skillTable:
+                        skill = skillTable[sk]
+                        print(skill)
+                        chrSkills[sid].append(skill)
+                skillNames = list(map(lambda a: a["name"], chrSkills[sid]))
+                print(l)
+                print(sec)
+                print(skillNames)
+                su["talent"] = skillNames.pop(0)
+                su["skills"] = skillNames
+
 
     lvCsv = None
     starCsv = None
@@ -464,12 +498,15 @@ def processCharacters(chrJson, activeJson, passiveJson, talentJson = None):
                 js = {"name": name}
                 talentJson.append(js);
 
-            descs = {}
-            for (lv, desc) in enumerate(skill["descs"]):
-                if desc=="未使用" or desc=="使用しない":
-                    continue
-                descs[f"Lv {lv + 1}"] = desc
-            updateDescs(js, descs)
+            if "descs" in skill:
+                descs = {}
+                for (lv, desc) in enumerate(skill["descs"]):
+                    if desc=="未使用" or desc=="使用しない":
+                        continue
+                    descs[f"Lv {lv + 1}"] = desc
+                updateDescs(js, descs)
+            elif "desc" in skill:
+                updateDesc(js, skill["desc"])
 
 
 def processItems(itemJson):
