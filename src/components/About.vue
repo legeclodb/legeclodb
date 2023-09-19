@@ -15,7 +15,6 @@
             <li><a href="#damage">ダメージ計算</a></li>
             <li><a href="#status">基礎ステータスについて</a></li>
             <li><a href="#battle_power">戦闘力について</a></li>
-            <li><a href="#thanks">謝辞</a></li>
           </ul>
         </p>
 
@@ -320,11 +319,6 @@
               </ul>
             </li>
           </ul>
-        </p>
-
-        <h2><a name="thanks" href="#thanks"></a>謝辞</h2>
-        <p>
-          <a href="https://discord.gg/7KnBSnRNRx" target="_blank">ニルフガード帝国</a>の皆さん (データ提供、フィードバックなど)
         </p>
       </div>
     </div>
