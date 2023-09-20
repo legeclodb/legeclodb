@@ -229,9 +229,7 @@
                   <div class="param-box"><b-img-lazy :src="getImageURL('移動')" title="移動" width="18" height="18" /><span>{{chr.move}}</span></div>
                   <div class="param-box"><span class="param-name">実装日:</span><span class="param-value">{{chr.date}}</span></div>
                 </div>
-                <div v-if="chr.status" class="status2" :title="`☆${stat.base.star.value} Lv${stat.base.level.value} 時のステータス`" v-html="statusToHtml(chr.status)">
-                  <div class="param-box"><span class="param-name">戦闘力:</span><span class="param-value">{{chr.status[6]}}</span></div>
-                </div>
+                <div v-if="chr.status" class="status2" :title="`☆${stat.base.star.value} Lv${stat.base.level.value} 時のステータス`" v-html="statusToHtml(chr.status)" />
               </div>
               <div class="skills">
                 <div class="talent" :class="{ 'highlighted': isTalentHighlighted(chr.talent) }">
@@ -304,14 +302,7 @@
                     <div class="param-box"><b-img-lazy :src="getImageURL('射程')" title="射程" width="18" height="18" /><span>{{summon.range}}</span></div>
                     <div class="param-box"><b-img-lazy :src="getImageURL('移動')" title="移動" width="18" height="18" /><span>{{summon.move}}</span></div>
                   </div>
-                  <div v-if="summon.status" class="status2" title="Lv110 時の能力値">
-                    <div class="param-box"><b-img-lazy :src="getImageURL('HP')" title="HP" width="18" height="18" /><span>{{summon.status[0]}}</span></div>
-                    <div class="param-box"><b-img-lazy :src="getImageURL('アタック')" title="アタック" width="18" height="18" /><span>{{summon.status[1]}}</span></div>
-                    <div class="param-box"><b-img-lazy :src="getImageURL('ディフェンス')" title="ディフェンス" width="18" height="18" /><span>{{summon.status[2]}}</span></div>
-                    <div class="param-box"><b-img-lazy :src="getImageURL('マジック')" title="マジック" width="18" height="18" /><span>{{summon.status[3]}}</span></div>
-                    <div class="param-box"><b-img-lazy :src="getImageURL('レジスト')" title="レジスト" width="18" height="18" /><span>{{summon.status[4]}}</span></div>
-                    <div class="param-box"><b-img-lazy :src="getImageURL('テクニック')" title="テクニック" width="18" height="18" /><span>{{summon.status[5]}}</span></div>
-                  </div>
+                  <div v-if="summon.statusLvs" class="status2" title="Lv110 時の能力値" v-html="statusToHtml(summon.statusLvs[110])" />
                 </div>
                 <div class="skills">
                   <div class="talent" :class="{ 'highlighted': isTalentHighlighted(summon.talent) }">

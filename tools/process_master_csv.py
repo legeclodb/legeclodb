@@ -176,6 +176,16 @@ def findByCid(csv, cid):
                 return a
     return None
 
+def filterByCid(csv, cid):
+    if "CharacterID" in csv[0]:
+        for a in csv:
+            if a["CharacterID"] == cid:
+                yield a
+    elif "CharacterId" in csv[0]:
+        for a in csv:
+            if a["CharacterId"] == cid:
+                yield a
+
 
 def cleanupDesc(desc):
     # マスターデータの説明文の誤字や表記揺れを矯正
@@ -303,6 +313,7 @@ mainLvStatusCsv    = readCsvTable(f"{csvDir}/Character/MainCharacterLevelStatus.
 mainStarStatusCsv  = readCsvTable(f"{csvDir}/Character/MainCharacterBreakLimitStatus.csv")
 supLvStatusCsv     = readCsvTable(f"{csvDir}/Character/SupportCharacterLevelStatus.csv")
 supStarStatusCsv   = readCsvTable(f"{csvDir}/Character/SupportCharacterBreakLimitStatus.csv")
+enemyLvStatusCsv   = readCsvTable(f"{csvDir}/Character/EnemyMainLevelStatus.csv")
 talentSkillCsv     = readCsvTable(f"{csvDir}/Character/CharacterTalentSkill.csv")
 supSkillCsv        = readCsvTable(f"{csvDir}/Character/SupportCharacterAbilitySkill.csv")
 skillSettingCsv    = readCsvTable(f"{csvDir}/TrainingBoard/SkillSetting.csv")
@@ -328,6 +339,12 @@ imageTable = {}
 def processCharacters(chrJson, activeJson, passiveJson, talentJson = None):
     mainOrSupport = 0
     chrSkills = {}
+
+    def getStatusValues(t):
+        return [int(t["HP"]), int(t["ATK"]), int(t["DEF"]), int(t["MATK"]), int(t["MDEF"]), int(t["DEX"])]
+
+    def getStatusUpValues(t):
+        return [float(t["UpHP"]), float(t["UpATK"]), float(t["UpDEF"]), float(t["UpMATK"]), float(t["UpMDEF"]), float(t["UpDEX"])]
 
     # ここで各キャラを処理
     for ch in chrJson:
@@ -363,9 +380,8 @@ def processCharacters(chrJson, activeJson, passiveJson, talentJson = None):
             active = skillTable[ findByCid(supSkillCsv, cid)["AbilitySkillGroupId"] ]
             active["cid"] = cid
             chrSkills[cid].append(active)
-
-        l = findByCid(initStatusCsv, cid)
-        ch["statusInit"] = list(map(lambda s: int(s), [l["HP"], l["ATK"], l["DEF"], l["MATK"], l["MDEF"], l["DEX"]]))
+            
+        ch["statusInit"] = getStatusValues(findByCid(initStatusCsv, cid))
 
         # 召喚ユニット
         if "summon" in ch:
@@ -373,6 +389,7 @@ def processCharacters(chrJson, activeJson, passiveJson, talentJson = None):
             for su in summons:
                 sid = su["uid"]
 
+                # 基礎データ
                 l = findByCid(chrCsv, sid)
                 su["name"] = l["CharacterName"]
                 su["class"] = classTable[int(l["SoldierType"])]
@@ -380,18 +397,24 @@ def processCharacters(chrJson, activeJson, passiveJson, talentJson = None):
                 su["range"] = int(l["AttackRange"])
                 su["move"] = int(l["MovingValue"])
 
+                # ステータス
+                # 召喚ユニットや敵ユニットは 初期値 と 10　レベル刻みの数値になっている
+                stats = {}
+                stats[1] = getStatusValues(findByCid(initStatusCsv, sid))
+                for v in filterByCid(enemyLvStatusCsv, sid):
+                    stats[int(v["Lv"])] = getStatusValues(v)
+                su["statusLvs"] = stats
+                del su["statusLv"]
+
+                # スキル
                 sec = findByCid(summonEffectCsv, sid)
                 chrSkills[sid] = []
                 for k in ["TalentSkillGroupId", "FirstSkillGroupId", "SecondSkillGroupId", "ThirdSkillGroupId"]:
                     sk = sec[k]
                     if sk in skillTable:
                         skill = skillTable[sk]
-                        print(skill)
                         chrSkills[sid].append(skill)
                 skillNames = list(map(lambda a: a["name"], chrSkills[sid]))
-                print(l)
-                print(sec)
-                print(skillNames)
                 su["talent"] = skillNames.pop(0)
                 su["skills"] = skillNames
 
@@ -408,10 +431,8 @@ def processCharacters(chrJson, activeJson, passiveJson, talentJson = None):
     # レベル上昇値 & ☆上昇値
     for ch in chrJson:
         cid = ch["uid"]
-        l = findByCid(lvCsv, cid)
-        ch["statusLv"] = list(map(lambda s: float(s), [l["UpHP"], l["UpATK"], l["UpDEF"], l["UpMATK"], l["UpMDEF"], l["UpDEX"]]))
-        l = findByCid(starCsv, cid)
-        ch["statusStar"] = list(map(lambda s: float(s), [l["UpHP"], l["UpATK"], l["UpDEF"], l["UpMATK"], l["UpMDEF"], l["UpDEX"]]))
+        ch["statusLv"] = getStatusUpValues(findByCid(lvCsv, cid))
+        ch["statusStar"] = getStatusUpValues(findByCid(starCsv, cid))
 
     # スキルシートから各キャラのスキル取得
     for cid in chrSkills:
