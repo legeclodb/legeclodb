@@ -5,6 +5,7 @@ node_modules
 /obj
 /tmp
 /masterdata
+*/_build*
 
 
 # local env files
@@ -25,3 +26,4 @@ pnpm-debug.log*
 *.njsproj
 *.sw?
 *.esproj.user
+*.bak

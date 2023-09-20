@@ -324,10 +324,12 @@ itemTable = equipmentsCsv + amuletsCsv
 imageTable = {}
 
 
+# キャラ情報
 def processCharacters(chrJson, activeJson, passiveJson, talentJson = None):
     mainOrSupport = 0
     chrSkills = {}
 
+    # ここで各キャラを処理
     for ch in chrJson:
         cid = ch["uid"]
 
@@ -348,6 +350,8 @@ def processCharacters(chrJson, activeJson, passiveJson, talentJson = None):
         ch["rarity"] = rarityTable[min(int(l["Rarity"]), 4)]
         ch["damageType"] = attackTypeTable[int(l["CharacterAttackType"])]
         ch["range"] = int(l["AttackRange"])
+
+        # スキルは chrSkills に突っ込んで後で別途処理
         chrSkills[cid] = []
         if mainOrSupport == 1:
             ch["move"] = int(l["MovingValue"])
@@ -363,6 +367,7 @@ def processCharacters(chrJson, activeJson, passiveJson, talentJson = None):
         l = findByCid(initStatusCsv, cid)
         ch["statusInit"] = list(map(lambda s: int(s), [l["HP"], l["ATK"], l["DEF"], l["MATK"], l["MDEF"], l["DEX"]]))
 
+        # 召喚ユニット
         if "summon" in ch:
             summons = ch["summon"]
             for su in summons:
@@ -400,6 +405,7 @@ def processCharacters(chrJson, activeJson, passiveJson, talentJson = None):
         lvCsv = supLvStatusCsv
         starCsv = supStarStatusCsv
 
+    # レベル上昇値 & ☆上昇値
     for ch in chrJson:
         cid = ch["uid"]
         l = findByCid(lvCsv, cid)
@@ -407,6 +413,7 @@ def processCharacters(chrJson, activeJson, passiveJson, talentJson = None):
         l = findByCid(starCsv, cid)
         ch["statusStar"] = list(map(lambda s: float(s), [l["UpHP"], l["UpATK"], l["UpDEF"], l["UpMATK"], l["UpMDEF"], l["UpDEX"]]))
 
+    # スキルシートから各キャラのスキル取得
     for cid in chrSkills:
         for l in skillSettingCsv:
             if l["CharacterID"] == cid:
@@ -432,6 +439,7 @@ def processCharacters(chrJson, activeJson, passiveJson, talentJson = None):
         l = findByCid(chrCsv, cid)
         return int(l["Rarity"]) - 2
 
+    # 味方キャラから使われているスキルを抽出 (=敵専用スキルは除外) してデータをセットアップ
     skillIds = set()
     for cid in chrSkills:
         for skill in chrSkills[cid]:
@@ -441,6 +449,7 @@ def processCharacters(chrJson, activeJson, passiveJson, talentJson = None):
         skillType = skill["skillType"]
         name = skill["name"]
 
+        # ここでアイコン取得
         downloadSkillIcon(skill["icon"])
         if not name in imageTable:
             imageTable[name] = f"{skill['icon']}.png"
@@ -498,6 +507,7 @@ def processCharacters(chrJson, activeJson, passiveJson, talentJson = None):
                 js = {"name": name}
                 talentJson.append(js);
 
+            # 召喚ユニットのタレント説明文は 1 つだけだったりレベル別に用意されていたりする
             if "descs" in skill:
                 descs = {}
                 for (lv, desc) in enumerate(skill["descs"]):
@@ -509,6 +519,7 @@ def processCharacters(chrJson, activeJson, passiveJson, talentJson = None):
                 updateDesc(js, skill["desc"])
 
 
+# アイテム情報
 def processItems(itemJson):
     for item in itemJson:
         iid = item["uid"]
@@ -603,7 +614,7 @@ def processEquipments():
     processItems(items)
     writeJson(f"{outDir}/items.json", items)
 
-        
+
 
 os.makedirs("tmp/icon", exist_ok = True)
 imageTable = readJson(f"{assetsDir}/image_table.json")
