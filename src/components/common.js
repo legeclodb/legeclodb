@@ -731,6 +731,18 @@ export default {
       return r;
     },
 
+    // seq must be sorted array
+    lowerBound(seq, n) {
+      let first = 0, last = seq.length - 1;
+      while (first <= last) {
+        const middle = (first + last) / 2;
+        if (seq[middle] < n)
+          first = middle + 1;
+        else
+          last = middle - 1;
+      }
+      return first;
+    },
     compare(a, b) {
       return a == b ? 0 : a < b ? 1 : -1;
     },

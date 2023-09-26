@@ -239,7 +239,7 @@
           <br />
           なお、必ずしも本当に最適な結果になるとは限らないことに注意が必要です。<br />
           完璧に解くには時間がかかりすぎるため、若干正確性を犠牲にしつつ高速に解く方法を用いています。<br />
-          (アルゴリズムは随時改良中: 2023/06/21)<br />
+          (アルゴリズムは随時改良中: 2023/09/26)<br />
         </div>
       </div>
 
@@ -1192,8 +1192,9 @@ export default {
           };
 
           let scoreBoost = 1;
-          if(skill.hasReaction && skill.area >= 5 && skill.range == "自ユニット") {
-              scoreBoost += 0.5;
+          if (skill.hasReaction) {
+              // 再行動つきアクティブは優先的に選ぶ
+              scoreBoost += 0.25;
           }
  
           for (const effect of this.enumerateEffects(skill)) {
@@ -1204,8 +1205,8 @@ export default {
 
             let score = val * (p.weight * 0.1) * scoreBoost;
             if (score > 0) {
-              //if (!hitLimit && skill.isActive)
-              //  score *= Math.min(Math.pow(val / 20, 2), 1); // 中途半端な効果量のアクティブは選ばれにくいようにスコア補正
+              if (!hitLimit && skill.isActive)
+                score *= Math.pow(Math.min(val / 20, 1), 2); // 中途半端な効果量のアクティブは選ばれにくいようにスコア補正
               r.score += score;
               r.usedEffects.push(effect);
             }
