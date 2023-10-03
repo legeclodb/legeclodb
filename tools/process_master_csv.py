@@ -404,7 +404,6 @@ def processCharacters(chrJson, activeJson, passiveJson, talentJson = None):
                 for v in filterByCid(enemyLvStatusCsv, sid):
                     stats[int(v["Lv"])] = getStatusValues(v)
                 su["statusLvs"] = stats
-                del su["statusLv"]
 
                 # スキル
                 sec = findByCid(summonEffectCsv, sid)

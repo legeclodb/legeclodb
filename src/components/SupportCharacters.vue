@@ -506,8 +506,6 @@ export default {
       this.characters = structuredClone(this.characters).filter(a => !a.hidden);
       this.setupCharacters(this.characters, this.active, this.passive);
 
-      this.predefinedMainTags.push("分類");
-
       let chrId = 0;
       for (let chr of this.characters) {
         chr.id = ++chrId;
@@ -524,13 +522,6 @@ export default {
           // パッシブ1 のみが複数キャラで共有され、現状全て si==1 なので問題ない
           chr.skills[si].skillIndex = si;
         }
-
-        let active = chr.skills[0];
-        const m = chr.name.match(/\((.+?)\)/);
-        if (m) {
-          // 不格好だがアクティブスキルにキャラ分類タグを追加
-          active.tags.push(`分類:${m[1]}`);
-        }
       }
       this.stat.defaults = [
         ...Object.values(this.stat.base).map(a => a.value),
@@ -538,7 +529,6 @@ export default {
       ];
       this.updateStatus();
 
-      // 分類タグ追加があるので、このタイミングである必要がある
       for (let skill of [...this.active, ...this.passive]) {
         this.registerTags(skill.tags);
       }

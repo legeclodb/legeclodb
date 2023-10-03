@@ -611,8 +611,6 @@ export default {
       this.characters = structuredClone(this.characters).filter(a => !a.hidden);
       this.setupCharacters(this.characters, this.active, this.passive, this.talents);
 
-      this.predefinedMainTags.push("分類");
-
       let chrId = 0;
       for (let chr of this.characters) {
         chr.id = ++chrId;
@@ -624,10 +622,6 @@ export default {
         Object.defineProperty(chr, 'attackPower', {
           get: chr.damageTypeId == 0 ? function () { return this.status[1]; } : function () { return this.status[3]; },
         });
-
-        const m = chr.name.match(/\((.+?)\)/);
-        if (m)
-          chr.talent.tags.push(`分類:${m[1]}`);
       }
       this.stat.defaults = [
         ...Object.values(this.stat.base).map(a => a.value),
@@ -635,7 +629,6 @@ export default {
       ];
       this.updateStatus();
 
-      // 分類タグ追加があるので、このタイミングである必要がある
       for (let skill of [...this.active, ...this.passive, ...this.talents]) {
         this.registerTags(skill.tags);
       }
