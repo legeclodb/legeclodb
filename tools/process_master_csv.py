@@ -346,7 +346,7 @@ def processEngageData():
         engageInfo[cid] = { "cid": cid, "date": re.sub(r' \d{2}:\d{2}', '', e["ReleaseDate"]), "skills": [] }
     for e in engageSkillCsv:
         cid = e["CharacterID"]
-        skill = {"id": e["AfterSkillGroupID"], "target": e["BeforeSkillGroupID"]}
+        skill = {"id": e["AfterSkillGroupID"], "base": e["BeforeSkillGroupID"]}
         engageInfo[cid]["skills"].append(skill)
 
     print(engageInfo)
@@ -358,6 +358,7 @@ def processCharacters(chrJson, activeJson, passiveJson, talentJson = None):
     mainOrSupport = 0
     chrSkills = {}
     engageSkills = {}
+    skillIds = set()
 
     def getStatusValues(t):
         return [int(t["HP"]), int(t["ATK"]), int(t["DEF"]), int(t["MATK"]), int(t["MDEF"]), int(t["DEX"])]
@@ -411,7 +412,9 @@ def processCharacters(chrJson, activeJson, passiveJson, talentJson = None):
             engage["date"] = ei["date"]
             l = []
             for s in ei["skills"]:
-                l.append({"skill": skillTable[s["id"]], "target": s["target"]})
+                skillId = s["id"]
+                skillIds.add(skillId)
+                l.append({"skill": skillTable[skillId], "base": s["base"]})
             engageSkills[cid] = l
 
         # 召喚ユニット
@@ -444,9 +447,9 @@ def processCharacters(chrJson, activeJson, passiveJson, talentJson = None):
                     if sk in skillTable:
                         skill = skillTable[sk]
                         chrSkills[sid].append(skill)
-                skillNames = list(map(lambda a: a["name"], chrSkills[sid]))
-                su["talent"] = skillNames.pop(0)
-                su["skills"] = skillNames
+                sids = list(map(lambda a: a["id"], chrSkills[sid]))
+                su["talent"] = sids.pop(0)
+                su["skills"] = sids
 
 
     lvCsv = None
@@ -476,13 +479,13 @@ def processCharacters(chrJson, activeJson, passiveJson, talentJson = None):
     if mainOrSupport == 1:
         for ch in chrJson:
             cid = ch["uid"]
-            skills = list(map(lambda a: a["name"], chrSkills[cid]))
+            skills = list(map(lambda a: a["id"], chrSkills[cid]))
             ch["talent"] = skills[0]
             ch["skills"] = skills[1:7]
     elif mainOrSupport == 2:
         for ch in chrJson:
             cid = ch["uid"]
-            skills = list(map(lambda a: a["name"], chrSkills[cid]))
+            skills = list(map(lambda a: a["id"], chrSkills[cid]))
             ch["skills"] = skills
 
 
@@ -491,23 +494,25 @@ def processCharacters(chrJson, activeJson, passiveJson, talentJson = None):
         return int(l["Rarity"]) - 2
 
     # 味方キャラから使われているスキルを抽出 (=敵専用スキルは除外) してデータをセットアップ
-    skillIds = set()
     for cid in chrSkills:
         for skill in chrSkills[cid]:
             skillIds.add(skill["id"])
-    for cid in engageSkills:
-        for info in engageSkills[cid]:
-            skillIds.add(info["skill"]["id"])
 
+    iconTable = {}
     for sid in skillIds:
         skill = skillTable[sid]
         skillType = skill["skillType"]
         name = skill["name"]
 
         # ここでアイコン取得
-        downloadSkillIcon(skill["icon"])
-        if not name in imageTable:
-            imageTable[name] = f"{skill['icon']}.png"
+        iconName = skill["icon"]
+        if name in imageTable:
+            imageTable[iconName] = imageTable[name]
+            del imageTable[name]
+
+        if not iconName in imageTable:
+            downloadSkillIcon(iconName)
+            imageTable[iconName] = f"{skill['icon']}.png"
 
         js = None
         if skillType == "アクティブ":

@@ -908,13 +908,13 @@ export default {
       let skillTable = new Map();
       for (let s of [...activeSkills, ...passiveSkills, ...talents]) {
         this.setupSkill(s);
-        skillTable.set(s.name, s);
+        skillTable.set(s.id, s);
       }
 
-      const grabSkill = function (name, chr) {
-        let skill = skillTable.get(name);
+      const grabSkill = function (id, chr) {
+        let skill = skillTable.get(id);
         if (!skill) {
-          console.error(`skill not found: ${name}`);
+          console.error(`skill not found: ${id}`);
           return null;
         }
         if (!skill.owners)
@@ -937,12 +937,12 @@ export default {
           chr.isSupport = true;
         }
 
-        chr.skills = chr.skills.flatMap(name => grabSkill(name, chr));
+        chr.skills = chr.skills.flatMap(id => grabSkill(id, chr));
         if (chr.summon) {
           for (let s of chr.summon) {
             if (typeof s.talent === "string")
               s.talent = grabSkill(s.talent, chr);
-            s.skills = s.skills.flatMap(name => grabSkill(name, chr));
+            s.skills = s.skills.flatMap(id => grabSkill(id, chr));
           }
           for (let s of chr.skills) {
             if (s.summon) {

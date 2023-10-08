@@ -236,7 +236,7 @@
                 <div class="skill" v-for="(skill, si) in chr.skills" :class="{'active': skill.skillType == 'アクティブ', 'passive': skill.skillType == 'パッシブ', 'highlighted': isSkillHighlighted(skill) }" :key="si">
                   <div class="flex">
                     <div class="icon" :id="'chr_'+chr.id+'_skill'+si">
-                      <b-img-lazy :src="getImageURL(skill.name)" with="50" height="50" />
+                      <b-img-lazy :src="getImageURL(skill.icon)" with="50" height="50" />
                       <b-popover v-if="displayType==1" :target="'chr_'+chr.id+'_skill'+si" triggers="hover focus" :title="skill.name" placement="top">
                         <div class="flex">
                           <div v-html="descToHtml(skill)"></div>

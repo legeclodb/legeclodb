@@ -268,7 +268,7 @@
                 <div class="skill" v-for="(skill, si) in chr.skills" :class="getSkillClass(skill)" :key="si">
                   <div class="flex">
                     <div class="icon" :id="'chr_'+chr.id+'_skill'+si">
-                      <b-link @click="setSkillFilter(skill)"><b-img-lazy :src="getImageURL(skill.name)" with="50" height="50" /></b-link>
+                      <b-link @click="setSkillFilter(skill)"><b-img-lazy :src="getImageURL(skill.icon)" with="50" height="50" /></b-link>
                       <b-popover v-if="displayType>=1" :target="'chr_'+chr.id+'_skill'+si" triggers="hover focus" :delay="{show:0, hide:250}" no-fade :title="skill.name" placement="top">
                         <div class="flex" v-if="displayType==1">
                           <div v-html="descToHtml(skill)"></div>
@@ -317,7 +317,7 @@
                   <div class="talent" :class="{ 'highlighted': isTalentHighlighted(summon.talent) }">
                     <div class="flex">
                       <div class="icon" :id="'summon_'+chr.id+'_'+smi+'_talent'">
-                        <b-img-lazy :src="getImageURL(summon.talent.name)" with="50" height="50" />
+                        <b-img-lazy :src="getImageURL(summon.talent.icon)" with="50" height="50" />
                         <b-popover v-if="displayType==1" :target="'summon_'+chr.id+'_'+smi+'_talent'" triggers="hover focus" :title="summon.talent.name" placement="top">
                           <div class="flex">
                             <div v-html="descToHtml(summon.talent)"></div>
@@ -338,7 +338,7 @@
                   <div class="skill" v-for="(skill, si) in summon.skills" :class="getSkillClass(skill)" :key="si">
                     <div class="flex">
                       <div class="icon" :id="'summon_'+chr.id+'_'+smi+'_skill'+si">
-                        <b-link @click="setSkillFilter(skill)"><b-img-lazy :src="getImageURL(skill.name)" with="50" height="50" /></b-link>
+                        <b-link @click="setSkillFilter(skill)"><b-img-lazy :src="getImageURL(skill.icon)" with="50" height="50" /></b-link>
                         <b-popover v-if="displayType>=1" :target="'summon_'+chr.id+'_'+smi+'_skill'+si" triggers="hover focus" :delay="{show:0, hide:250}" no-fade :title="skill.name" placement="top">
                           <div class="flex" v-if="displayType==1">
                             <div v-html="descToHtml(skill)"></div>
