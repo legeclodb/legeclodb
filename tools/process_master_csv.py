@@ -329,16 +329,35 @@ supPassiveCsv      = parseSkillCsv(readCsvTable(f"{csvDir}/Skill/SkillListSuppor
 itemEffectCsv      = parseSkillCsv(readCsvTable(f"{csvDir}/Skill/SkillListEquipment.csv"))
 summonEffectCsv    = readCsvTable(f"{csvDir}/Skill/SummonEffect.csv")
 
+engageCsv          = readCsvTable(f"{csvDir}/Engage/Engage.csv")
+engageSkillCsv     = readCsvTable(f"{csvDir}/Engage/EngageSkill.csv")
+
 skillTable = {**mainActiveCsv, **mainPassiveCsv, **mainTalentCsv, **supActiveCsv, **supPassiveCsv, **itemEffectCsv}
 itemTable = equipmentsCsv + amuletsCsv
 
 imageTable = {}
 
 
+# エンゲージ情報
+engageInfo = {}
+def processEngageData():
+    for e in engageCsv:
+        cid = e["CharacterID"]
+        engageInfo[cid] = { "cid": cid, "date": re.sub(r' \d{2}:\d{2}', '', e["ReleaseDate"]), "skills": [] }
+    for e in engageSkillCsv:
+        cid = e["CharacterID"]
+        skill = {"id": e["AfterSkillGroupID"], "target": e["BeforeSkillGroupID"]}
+        engageInfo[cid]["skills"].append(skill)
+
+    print(engageInfo)
+
+
+
 # キャラ情報
 def processCharacters(chrJson, activeJson, passiveJson, talentJson = None):
     mainOrSupport = 0
     chrSkills = {}
+    engageSkills = {}
 
     def getStatusValues(t):
         return [int(t["HP"]), int(t["ATK"]), int(t["DEF"]), int(t["MATK"]), int(t["MDEF"]), int(t["DEX"])]
@@ -382,6 +401,18 @@ def processCharacters(chrJson, activeJson, passiveJson, talentJson = None):
             chrSkills[cid].append(active)
             
         ch["statusInit"] = getStatusValues(findByCid(initStatusCsv, cid))
+
+        # エンゲージ情報
+        if cid in engageInfo:
+            ei = engageInfo[cid]
+            if not "engage" in ch:
+                ch["engage"] = {}
+            engage = ch["engage"]
+            engage["date"] = ei["date"]
+            l = []
+            for s in ei["skills"]:
+                l.append({"skill": skillTable[s["id"]], "target": s["target"]})
+            engageSkills[cid] = l
 
         # 召喚ユニット
         if "summon" in ch:
@@ -464,6 +495,10 @@ def processCharacters(chrJson, activeJson, passiveJson, talentJson = None):
     for cid in chrSkills:
         for skill in chrSkills[cid]:
             skillIds.add(skill["id"])
+    for cid in engageSkills:
+        for info in engageSkills[cid]:
+            skillIds.add(info["skill"]["id"])
+
     for sid in skillIds:
         skill = skillTable[sid]
         skillType = skill["skillType"]
@@ -474,6 +509,7 @@ def processCharacters(chrJson, activeJson, passiveJson, talentJson = None):
         if not name in imageTable:
             imageTable[name] = f"{skill['icon']}.png"
 
+        js = None
         if skillType == "アクティブ":
             js = findByName(activeJson, name);
             if not js:
@@ -537,6 +573,9 @@ def processCharacters(chrJson, activeJson, passiveJson, talentJson = None):
                 updateDescs(js, descs)
             elif "desc" in skill:
                 updateDesc(js, skill["desc"])
+
+        js["id"] = skill["id"]
+        js["icon"] = skill["icon"]
 
 
 # アイテム情報
@@ -640,6 +679,7 @@ os.makedirs("tmp/icon", exist_ok = True)
 imageTable = readJson(f"{assetsDir}/image_table.json")
 
 #dumpSkillData()
+processEngageData()
 proceccMainChr()
 processSupChr()
 processEquipments()

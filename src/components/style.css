@@ -177,6 +177,11 @@ div.info {
 .level-selector .btn:hover {
   background-color: #6c757d;
 }
+.engage-selector {
+  margin-left: 5px;
+  padding: 0px 5px;
+  background-color: white;
+}
 
 div.skills {
   display: var(--skills-display);

@@ -950,6 +950,10 @@ export default {
             }
           }
         }
+
+        if (chr.engage) {
+          this.$set(chr.engage, 'enabled', true);
+        }
       }
     },
 

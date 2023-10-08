@@ -62,6 +62,11 @@
                 </b-button>
               </b-button-group>
             </div>
+            <div class="widget">
+              <b-button size="sm" :pressed.sync="engageFilter" variant="outline-secondary">
+                <b-img-lazy :src="getImageURL('エンゲージ')" width="25" height="25" />
+              </b-button>
+            </div>
           </div>
           <div class="menu-widgets flex">
             <div class="widget">
@@ -228,6 +233,7 @@
                   <div class="param-box"><b-img-lazy :src="getImageURL('射程')" title="射程" width="18" height="18" /><span>{{chr.range}}</span></div>
                   <div class="param-box"><b-img-lazy :src="getImageURL('移動')" title="移動" width="18" height="18" /><span>{{chr.move}}</span></div>
                   <div class="param-box"><span class="param-name">実装日:</span><span class="param-value">{{chr.date}}</span></div>
+                  <div class="param-box" v-if="chr.engage"><span class="param-name">エンゲージ:</span><span class="param-value">{{chr.engage.date}}</span></div>
                 </div>
                 <div v-if="chr.status" class="status2" :title="`☆${stat.base.star.value} Lv${stat.base.level.value} 時のステータス`" v-html="statusToHtml(chr.status)" />
               </div>
@@ -248,6 +254,9 @@
                         <b-dropdown class="level-selector" :text="chr.talent.current" v-if="chr.talent.descs" variant="outline-secondary">
                           <b-dropdown-item class="d-flex flex-column" v-for="(ds, di) in chr.talent.descs" :key="di" @click="chr.talent.current=di; chr.talent.desc=ds;">{{di}}</b-dropdown-item>
                         </b-dropdown>
+                        <b-button v-if="chr.engage" class="engage-selector" size="sm" :pressed.sync="chr.engage.enabled" variant="outline-secondary">
+                          エンゲージ後
+                        </b-button>
                       </h5>
                       <p><span v-html="descToHtml(chr.talent)"></span><span v-if="chr.talent.note" class="note" v-html="noteToHtml(chr.talent)"></span></p>
                     </div>
@@ -470,6 +479,7 @@ export default {
       rarityFilter: [],
       damageTypeFilter: [],
       skillTypeFilter: [],
+      engageFilter: false,
 
       stat: {
         base: {
@@ -779,10 +789,11 @@ export default {
         (skill.skillType == "アクティブ" && this.skillTypeFilter[2].state);
     },
     applyClassFilter(chr) {
-      return this.filterMatch(this.classFilter, chr.classId) &&
+      return (!this.engageFilter || chr.engage) && (
+        this.filterMatch(this.classFilter, chr.classId) &&
         this.filterMatch(this.symbolFilter, chr.symbolId) &&
         this.filterMatch(this.rarityFilter, chr.rarityId) &&
-        this.filterMatch(this.damageTypeFilter, chr.damageTypeId);
+        this.filterMatch(this.damageTypeFilter, chr.damageTypeId));
     },
     applySearchPatterns(chr) {
       const doApply = function (obj) {
