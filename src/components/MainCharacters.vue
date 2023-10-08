@@ -220,7 +220,7 @@
         <div class="character" :id="'chr_'+chr.id" :key="chr.id">
           <div class="flex">
             <div class="portrait">
-              <b-img-lazy :src="getImageURL(chr.uid)" :alt="chr.name" width="100" height="100" rounded />
+              <b-img-lazy :src="getImageURL(chr.icon)" :alt="chr.name" width="100" height="100" rounded />
             </div>
             <div class="detail" v-show="displayType >= 1">
               <div class="info" :class="{ 'highlighted': isInfoHighlighted(chr) }">
@@ -276,7 +276,7 @@
                         <div v-if="skill.owners" class="owners">
                           所持者:<br />
                           <b-link v-for="(owner, oi) in skill.owners" :key="oi" @click="moveToChr(owner)">
-                            <b-img-lazy :src="getImageURL(owner.uid)" :title="owner.name" width="50" height="50" />
+                            <b-img-lazy :src="getImageURL(owner.icon)" :title="owner.name" width="50" height="50" />
                           </b-link>
                         </div>
                       </b-popover>
@@ -300,7 +300,7 @@
           <div class="summon" v-if="chr.summon" v-show="displayType >= 1">
             <div class="flex" v-for="(summon, smi) in chr.summon" :key="smi">
               <div class="portrait">
-                <b-img-lazy :src="getImageURL(summon.uid)" :alt="summon.name" width="100" height="100" rounded />
+                <b-img-lazy :src="getImageURL(summon.icon)" :alt="summon.name" width="100" height="100" rounded />
               </div>
               <div class="detail" v-show="displayType >= 1">
                 <div class="info" :class="{ 'highlighted': isInfoHighlighted(summon) }">
@@ -346,7 +346,7 @@
                           <div v-if="skill.owners" class="owners">
                             所持者:<br />
                             <b-link v-for="(owner, oi) in skill.owners" :key="oi" @click="moveToChr(owner)">
-                              <b-img-lazy :src="getImageURL(owner.name)" :title="owner.name" width="50" height="50" />
+                              <b-img-lazy :src="getImageURL(owner.icon)" :title="owner.name" width="50" height="50" />
                             </b-link>
                           </div>
                         </b-popover>

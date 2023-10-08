@@ -166,7 +166,10 @@ export default {
       if (name in this.imageTable) {
         return this.imageTable[name];
       }
-      return "./empty.png";
+      else {
+        console.log(`getImageURL(): ${name} not found`);
+        return "./empty.png";
+      }
     },
 
     compareDate(a, b) {
@@ -880,6 +883,13 @@ export default {
         skill.tags = [];
       for (const t of this.effectParamsToTags(skill, includeSelfTags))
         skill.tags.push(t);
+
+      if (!skill.icon)
+        skill.icon = skill.uid;
+    },
+    setupItems(items) {
+      for(let item of items)
+        this.setupSkill(item, false);
     },
 
     setupCharacters(characters, activeSkills, passiveSkills, talents = []) {
@@ -936,6 +946,7 @@ export default {
         else {
           chr.isSupport = true;
         }
+        chr.icon = chr.uid;
 
         chr.skills = chr.skills.flatMap(id => grabSkill(id, chr));
         if (chr.summon) {
@@ -943,6 +954,7 @@ export default {
             if (typeof s.talent === "string")
               s.talent = grabSkill(s.talent, chr);
             s.skills = s.skills.flatMap(id => grabSkill(id, chr));
+            s.icon = s.uid;
           }
           for (let s of chr.skills) {
             if (s.summon) {

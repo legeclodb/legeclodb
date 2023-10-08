@@ -165,7 +165,7 @@
         <div class="item" :id="'item_'+item.id" :key="item.id">
           <div class="flex">
             <div class="portrait" :id="'item_'+item.id+'_icon'">
-              <b-img-lazy :src="getImageURL(item.uid)" :alt="item.name" width="60" height="60" rounded />
+              <b-img-lazy :src="getImageURL(item.icon)" :alt="item.name" width="60" height="60" rounded />
               <b-popover v-if="displayType==1" :target="'item_'+item.id+'_icon'" triggers="hover focus" :title="item.name" placement="top">
                 <div class="flex">
                   <div v-html="descToHtml(item)"></div>
@@ -373,6 +373,7 @@ export default {
     setupDB() {
       // 外部 json 由来のデータへの変更はセッションをまたいでしまうので、deep copy しておく
       this.equipments = structuredClone(this.equipments).filter(a => !a.hidden && a.slot != "アミュレット");
+      this.setupItems(this.equipments);
 
       this.predefinedMainTags.push("分類");
       this.predefinedMainTags.push("デメリット");
@@ -388,7 +389,6 @@ export default {
         item.rarityId = this.rarities.findIndex(v => v == item.rarity);
         this.$set(item, 'status', [])
 
-        this.setupSkill(item, false);
         this.registerTags(item.tags);
       }
 

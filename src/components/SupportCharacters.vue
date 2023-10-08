@@ -216,7 +216,7 @@
         <div class="character" :id="'chr_'+chr.id" :key="chr.id">
           <div class="flex">
             <div class="portrait">
-              <b-img-lazy :src="getImageURL(chr.uid)" :alt="chr.name" width="100" height="100" rounded />
+              <b-img-lazy :src="getImageURL(chr.icon)" :alt="chr.name" width="100" height="100" rounded />
             </div>
             <div class="detail" v-show="displayType >= 1">
               <div class="info" :class="{ 'highlighted': isInfoHighlighted(chr) }">

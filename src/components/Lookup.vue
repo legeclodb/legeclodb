@@ -140,13 +140,13 @@
                       </b-button-group>
                       <b-button-group size="sm">
                         <b-button v-for="(c, i) in pickFilter.symbol" :key="i" :pressed.sync="c.state" variant="outline-secondary">
-                          <b-img-lazy :src="getImageURL('シンボル:'+symbols[i])" width="20px" />
+                          <b-img-lazy :src="getImageURL(symbols[i])" width="20px" />
                         </b-button>
                       </b-button-group>
                     </div>
                     <div class="exclude-box" style="width: 425px; max-height: 250px">
                       <b-link v-for="(v, i) in mainChrPick" :key="i" @click="addPrioritized(v)">
-                        <b-img-lazy :src="getImageURL(v.name)" :title="v.name" width="50" />
+                        <b-img-lazy :src="getImageURL(v.icon)" :title="v.name" width="50" />
                       </b-link>
                     </div>
                   </b-popover>
@@ -156,11 +156,11 @@
               <div class="flex exclude-box">
                 <b-link v-for="(v, i) in prioritized" :key="i" @click="prioritized.splice(prioritized.indexOf(v), 1)">
                   <div v-if="!v.owner" :title="v.name">
-                    <b-img-lazy :src="getImageURL(v.name)" :title="v.name" width="50" />
+                    <b-img-lazy :src="getImageURL(v.icon)" :title="v.name" width="50" />
                   </div>
                   <div v-if="v.owner" style="width: 50px; height: 50px;" :title="v.owner.name + ' & ' + v.item.name">
-                    <b-img-lazy :src="getImageURL(v.owner.name)" :title="v.name" width="35" style="position: relative; left: 0px; top: 0px; " />
-                    <b-img-lazy :src="getImageURL(v.item.name)" :title="v.name" width="35" style="position: relative; left: -20px; top: 15px; " />
+                    <b-img-lazy :src="getImageURL(v.owner.icon)" :title="v.name" width="35" style="position: relative; left: 0px; top: 0px; " />
+                    <b-img-lazy :src="getImageURL(v.item.icon)" :title="v.name" width="35" style="position: relative; left: -20px; top: 15px; " />
                   </div>
                 </b-link>
               </div>
@@ -179,13 +179,13 @@
                       </b-button-group>
                       <b-button-group size="sm">
                         <b-button v-for="(c, i) in pickFilter.symbol" :key="i" :pressed.sync="c.state" variant="outline-secondary">
-                          <b-img-lazy :src="getImageURL('シンボル:'+symbols[i])" width="20px" />
+                          <b-img-lazy :src="getImageURL(symbols[i])" width="20px" />
                         </b-button>
                       </b-button-group>
                     </div>
                     <div class="exclude-box" style="width: 425px; max-height: 250px">
                       <b-link v-for="(v, i) in mainChrPick" :key="i" @click="addExcluded(v)">
-                        <b-img-lazy :src="getImageURL(v.name)" :title="v.name" width="50" />
+                        <b-img-lazy :src="getImageURL(v.icon)" :title="v.name" width="50" />
                       </b-link>
                     </div>
                   </b-popover>
@@ -195,11 +195,11 @@
               <div class="flex exclude-box">
                 <b-link v-for="(v, i) in excluded" :key="i" @click="excluded.splice(excluded.indexOf(v), 1)">
                   <div v-if="!v.owner" :title="v.name">
-                    <b-img-lazy :src="getImageURL(v.name)" :title="v.name" width="50" />
+                    <b-img-lazy :src="getImageURL(v.icon)" :title="v.name" width="50" />
                   </div>
                   <div v-if="v.owner" style="width: 50px; height: 50px; " :title="v.owner.name + ' & ' + v.item.name">
-                    <b-img-lazy :src="getImageURL(v.owner.name)" :title="v.name" width="35" style="position: relative; left: 0px; top: 0px; " />
-                    <b-img-lazy :src="getImageURL(v.item.name)" :title="v.name" width="35" style="position: relative; left: -20px; top: 15px; " />
+                    <b-img-lazy :src="getImageURL(v.owner.icon)" :title="v.name" width="35" style="position: relative; left: 0px; top: 0px; " />
+                    <b-img-lazy :src="getImageURL(v.item.icon)" :title="v.name" width="35" style="position: relative; left: -20px; top: 15px; " />
                   </div>
                 </b-link>
               </div>
@@ -253,11 +253,11 @@
           </div>
           <div class="flex">
             <div v-if="r.main" class="portrait">
-              <b-img-lazy :src="getImageURL(r.main.character.name)" :title="r.main.character.name" :id="'portrait_m_'+ri" width="100" rounded />
+              <b-img-lazy :src="getImageURL(r.main.character.icon)" :title="r.main.character.name" :id="'portrait_m_'+ri" width="100" rounded />
               <b-popover v-if="displayType>=1" :target="'portrait_m_'+ri" :title="r.main.character.name" triggers="hover click blur" :delay="{show:0, hide:250}" no-fade placement="top">
                 <div class="status flex">
                   <b-img-lazy :src="getImageURL(r.main.character.class)" :title="'クラス:'+r.main.character.class" height="25" />
-                  <b-img-lazy :src="getImageURL('シンボル:'+r.main.character.symbol)" :title="'シンボル:'+r.main.character.symbol" height="25" />
+                  <b-img-lazy :src="getImageURL(r.main.character.symbol)" :title="'シンボル:'+r.main.character.symbol" height="25" />
                   <b-img-lazy :src="getImageURL(r.main.character.rarity)" :title="'レアリティ:'+r.main.character.rarity" height="20" />
                   <div class="param-box"><b-img-lazy :src="getImageURL(r.main.character.damageType)" :title="'攻撃タイプ:'+r.main.character.damageType" width="20" height="20" /></div>
                   <div class="param-box"><b-img-lazy :src="getImageURL('射程')" title="射程" width="18" height="18" /><span>{{r.main.character.range}}</span></div>
@@ -266,7 +266,7 @@
                 </div>
                 <div class="status flex">
                   <b-link v-for="(skill, si) in r.main.character.skills" :key="si" @click="addPrioritized(skill)">
-                    <b-img-lazy :src="getImageURL(skill.name)" :title="skill.name" width="50" />
+                    <b-img-lazy :src="getImageURL(skill.icon)" :title="skill.name" width="50" />
                   </b-link>
                 </div>
                 <div class="flex exclude-menu">
@@ -282,12 +282,12 @@
                 <div class="skill" v-for="(skill, si) in r.main.skills" :class="getSkillClass(skill)" :key="si">
                   <div class="flex">
                     <div class="icon">
-                      <b-img-lazy :src="getImageURL(skill.name)" :title="skill.name" width="50" :id="'skill_m_'+ri+'_'+si" />
+                      <b-img-lazy :src="getImageURL(skill.icon)" :title="skill.name" width="50" :id="'skill_m_'+ri+'_'+si" />
                       <b-popover :target="'skill_m_'+ri+'_'+si" :title="skill.name" triggers="hover click blur" :delay="{show:0, hide:250}" no-fade placement="top">
                         <div v-if="skill.owners" class="owners">
                           所持者:<br />
                           <b-link v-for="(owner, oi) in skill.owners" :key="oi" @click="addPrioritized(owner)">
-                            <b-img-lazy :src="getImageURL(owner.name)" :title="owner.name" width="50" />
+                            <b-img-lazy :src="getImageURL(owner.icon)" :title="owner.name" width="50" />
                           </b-link>
                         </div>
                         <div v-if="skill.skillType!='タレント'">
@@ -317,30 +317,30 @@
                 </div>
               </div>
               <div class="skills">
-                <div class="skill" v-for="(skill, si) in r.main.equipments" :key="si">
+                <div class="skill" v-for="(iten, si) in r.main.equipments" :key="si">
                   <div class="flex">
                     <div class="icon">
-                      <b-img-lazy :src="getImageURL(skill.name)" :title="skill.name" width="50" :id="'item_'+ri+'_'+si" />
-                      <b-popover v-if="displayType>=1" :target="'item_'+ri+'_'+si" :title="skill.name" triggers="hover click blur" :delay="{show:0, hide:250}" no-fade placement="top">
+                      <b-img-lazy :src="getImageURL(iten.icon)" :title="iten.name" width="50" :id="'item_'+ri+'_'+si" />
+                      <b-popover v-if="displayType>=1" :target="'item_'+ri+'_'+si" :title="iten.name" triggers="hover click blur" :delay="{show:0, hide:250}" no-fade placement="top">
                         <div class="flex exclude-menu">
-                          <b-button size="sm" @click="addPrioritized(skill)">このアイテムを優先</b-button>
-                          <b-button size="sm" @click="addPrioritized(skill, r.main.character)">このキャラとアイテムの組み合わせを優先</b-button>
+                          <b-button size="sm" @click="addPrioritized(iten)">このアイテムを優先</b-button>
+                          <b-button size="sm" @click="addPrioritized(iten, r.main.character)">このキャラとアイテムの組み合わせを優先</b-button>
                         </div>
                         <div class="flex exclude-menu">
-                          <b-button size="sm" @click="addExcluded(skill)">このアイテムを除外</b-button>
-                          <b-button size="sm" @click="addExcluded(skill, r.main.character)">このキャラとアイテムの組み合わせを除外</b-button>
+                          <b-button size="sm" @click="addExcluded(iten)">このアイテムを除外</b-button>
+                          <b-button size="sm" @click="addExcluded(iten, r.main.character)">このキャラとアイテムの組み合わせを除外</b-button>
                         </div>
                       </b-popover>
                     </div>
                     <div class="desc" v-show="displayType >= 2">
                       <div class="flex">
-                        <h6><b-img-lazy :src="getImageURL(skill.slot)" :title="skill.name" width="18" />{{ skill.name }}</h6>
-                        <div class="param-group" v-html="skillParamsToHtml(skill)"></div>
+                        <h6><b-img-lazy :src="getImageURL(iten.slot)" :title="iten.name" width="18" />{{ iten.name }}</h6>
+                        <div class="param-group" v-html="skillParamsToHtml(iten)"></div>
                       </div>
                       <p>
-                        <span v-html="descToHtml(skill, true)" />
-                        <span v-if="skill.note" class="note" v-html="noteToHtml(skill)" />
-                        <span class="note" v-html="effectsToHtml(skill, r.main)" />
+                        <span v-html="descToHtml(iten, true)" />
+                        <span v-if="iten.note" class="note" v-html="noteToHtml(iten)" />
+                        <span class="note" v-html="effectsToHtml(iten, r.main)" />
                       </p>
                     </div>
                   </div>
@@ -351,19 +351,19 @@
 
           <div class="flex">
             <div v-if="r.summon" class="portrait">
-              <b-img-lazy :src="getImageURL(r.summon.character.name)" :title="`${r.summon.character.name} (召喚ユニット)`" :id="'portrait_m_'+ri" width="100" rounded />
+              <b-img-lazy :src="getImageURL(r.summon.character.icon)" :title="`${r.summon.character.name} (召喚ユニット)`" :id="'portrait_m_'+ri" width="100" rounded />
             </div>
             <div v-if="r.summon" class="detail" v-show="displayType >= 1">
               <div class="skills">
                 <div class="skill" v-for="(skill, si) in r.summon.skills" :class="getSkillClass(skill)" :key="si">
                   <div class="flex">
                     <div class="icon">
-                      <b-img-lazy :src="getImageURL(skill.name)" :title="skill.name" width="50" :id="'skill_x_'+ri+'_'+si" />
+                      <b-img-lazy :src="getImageURL(skill.icon)" :title="skill.name" width="50" :id="'skill_x_'+ri+'_'+si" />
                       <b-popover :target="'skill_x_'+ri+'_'+si" :title="skill.name" triggers="hover click blur" :delay="{show:0, hide:250}" no-fade placement="top">
                         <div v-if="skill.owners" class="owners">
                           所持者:<br />
                           <b-link v-for="(owner, oi) in skill.owners" :key="oi" @click="addPrioritized(owner)">
-                            <b-img-lazy :src="getImageURL(owner.name)" :title="owner.name" width="50" height="50" />
+                            <b-img-lazy :src="getImageURL(owner.icon)" :title="owner.name" width="50" height="50" />
                           </b-link>
                         </div>
                         <div v-if="skill.skillType!='タレント'">
@@ -397,7 +397,7 @@
 
           <div class="flex">
             <div v-if="r.support" class="portrait">
-              <b-img-lazy :src="getImageURL(r.support.character.name)" :title="r.support.character.name" :id="'portrait_s_'+ri" width="100" height="100" rounded />
+              <b-img-lazy :src="getImageURL(r.support.character.icon)" :title="r.support.character.name" :id="'portrait_s_'+ri" width="100" height="100" rounded />
               <b-popover v-if="displayType>=1" :target="'portrait_s_'+ri" :title="r.support.character.name" triggers="hover click blur" :delay="{show:0, hide:250}" no-fade placement="top">
                 <div class="status flex">
                   <b-img-lazy :src="getImageURL(r.support.character.class)" :title="'クラス:'+r.support.character.class" height="25" />
@@ -420,7 +420,7 @@
                 <div class="skill" v-for="(skill, si) in enumerate(r.support.skills)" :class="getSkillClass(skill)" :key="si">
                   <div class="flex">
                     <div class="icon">
-                      <b-img-lazy :src="getImageURL(skill.name)" :title="skill.name" with="50" height="50" :id="'skill_s_'+ri+'_'+si" />
+                      <b-img-lazy :src="getImageURL(skill.icon)" :title="skill.name" with="50" height="50" :id="'skill_s_'+ri+'_'+si" />
                     </div>
                     <div class="desc" v-show="displayType >= 2">
                       <div class="flex">
@@ -549,8 +549,7 @@ export default {
 
     this.setupCharacters(this.mainChrs, this.mainActive, this.mainPassive, this.mainTalents);
     this.setupCharacters(this.supChrs, this.supActive, this.supPassive);
-    for (let i of this.items)
-      this.setupSkill(i);
+    this.setupItems(this.items);
 
     for (let s of this.mainActive) {
       if (this.matchTags(s.tags, /^再行動$/))
@@ -559,13 +558,13 @@ export default {
         s.isSymbolSkill = true;
     }
 
-    let uid = 0;
+    let idx = 0;
     const setId = function (list, prefix) {
       for (let i = 0; i < list.length; ++i) {
         let obj = list[i];
         obj.index = i + 1;
         obj.id = `${prefix}${i + 1}`;
-        obj.uid = ++uid;
+        obj.index = ++idx;
       }
     };
     setId(this.mainChrs, "m");
@@ -576,7 +575,7 @@ export default {
     setId(this.supActive, "sa");
     setId(this.supPassive, "sp");
     setId(this.items, "i");
-    this.itemCount = uid;
+    this.itemCount = idx;
 
     this.searchTable = new Map();
     for (let s of this.enumerate(this.mainChrs, this.mainActive, this.mainPassive, this.mainTalents, this.supChrs, this.supActive, this.supPassive, this.items))
@@ -1072,11 +1071,11 @@ export default {
 
           isPrioritized: isPrioritized,
           isAvailable: function (item, owner = null) {
-            return !vue.getFlag(this.usedSkills, item.uid) && !isExcluded(item, owner);
+            return !vue.getFlag(this.usedSkills, item.index) && !isExcluded(item, owner);
           },
           markAsUsed: function (item) {
-            if (item.uid)
-              vue.setFlag(this.usedSkills, item.uid, true);
+            if (item.index)
+              vue.setFlag(this.usedSkills, item.index, true);
           },
 
           getEffectValue(effect) {
@@ -1132,7 +1131,7 @@ export default {
             if (chr.isMain) {
               const enumerateItems = function* (items, chr) {
                 for (let item of items) {
-                  if (!vue.getFlag(this.usedSkills, item.uid) && item.classFlags & (1 << chr.classId)) {
+                  if (!vue.getFlag(this.usedSkills, item.index) && item.classFlags & (1 << chr.classId)) {
                     yield item;
                   }
                 }
