@@ -338,16 +338,22 @@ itemTable = equipmentsCsv + amuletsCsv
 imageTable = {}
 
 
+
 # エンゲージ情報
 engageInfo = {}
+engageSkillTable = {}
 def processEngageData():
     for e in engageCsv:
         cid = e["CharacterID"]
         engageInfo[cid] = { "cid": cid, "date": re.sub(r' \d{2}:\d{2}', '', e["ReleaseDate"]), "skills": [] }
     for e in engageSkillCsv:
         cid = e["CharacterID"]
-        skill = {"id": e["AfterSkillGroupID"], "base": e["BeforeSkillGroupID"]}
-        engageInfo[cid]["skills"].append(skill)
+        before = e["BeforeSkillGroupID"]
+        after = e["AfterSkillGroupID"]
+        skillTable[after]["desc"] = re.sub(r'<color=red>(.+?)</color>', '[b]\\1[/b]', e["EffectDescription"])
+        if not cid in engageSkillTable:
+            engageSkillTable[cid] = {}
+        engageSkillTable[cid][before] = after
 
     print(engageInfo)
 
@@ -481,6 +487,15 @@ def processCharacters(chrJson, activeJson, passiveJson, talentJson = None):
             skills = list(map(lambda a: a["id"], chrSkills[cid]))
             ch["talent"] = skills[0]
             ch["skills"] = skills[1:7]
+
+            if cid in engageSkillTable:
+                table = engageSkillTable[cid]
+                eskills = ch["skills"].copy()
+                for idx, sid in enumerate(eskills):
+                    if sid in table:
+                        eskills[idx] = table[sid]
+                ch["engage"]["skills"] = eskills
+
     elif mainOrSupport == 2:
         for ch in chrJson:
             cid = ch["uid"]

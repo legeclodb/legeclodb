@@ -254,7 +254,7 @@
                         <b-dropdown class="level-selector" :text="chr.talent.current" v-if="chr.talent.descs" variant="outline-secondary">
                           <b-dropdown-item class="d-flex flex-column" v-for="(ds, di) in chr.talent.descs" :key="di" @click="chr.talent.current=di; chr.talent.desc=ds;">{{di}}</b-dropdown-item>
                         </b-dropdown>
-                        <b-button v-if="chr.engage" class="engage-selector" size="sm" :pressed.sync="chr.engage.enabled" variant="outline-secondary">
+                        <b-button v-if="chr.engage" class="engage-selector" size="sm" :pressed.sync="chr.engage.enabled" @click="toggleEngage(chr)" variant="outline-secondary">
                           エンゲージ後
                         </b-button>
                       </h5>
@@ -685,6 +685,14 @@ export default {
       this.reorderSubtag();
     },
 
+    toggleEngage(chr) {
+      if (chr.engage.enabled) {
+        chr.skills = chr.engage.skills;
+      }
+      else {
+        chr.skills = chr.skillsBase;
+      }
+    },
     updateStatus() {
       const s = this.stat;
       const base = Object.values(s.base).map(a => a.value);
