@@ -44,7 +44,7 @@
               <div class="widget">
                 <b-button-group size="sm" id="symbol_selector">
                   <b-button v-for="(c, i) in filter.symbol" :key="i" :pressed.sync="c.state" variant="outline-secondary">
-                    <b-img-lazy :src="getImageURL('シンボル:'+symbols[i])" width="20px" />
+                    <b-img-lazy :src="getImageURL(symbols[i])" width="20px" />
                   </b-button>
                 </b-button-group>
               </div>

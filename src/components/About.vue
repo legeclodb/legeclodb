@@ -326,12 +326,12 @@
     <template v-for="(e, i) in popoverElements">
       <b-popover :target="e.element" :key="i" triggers="hover focus" custom-class="item_po" :title="e.name" placement="top">
         <div class="flex">
-          <div><b-img-lazy :src="getImageURL(e.name)" width="50" height="50" /></div>
+          <div><b-img-lazy :src="getImageURL(e.item.icon ? e.item.icon : e.item.uid)" width="50" height="50" /></div>
           <div v-html="descToHtml(e.item)"></div>
         </div>
         <div v-if="e.item.owners" class="owners">
           所持者:<br />
-          <b-img-lazy v-for="(owner, oi) in e.item.owners" :key="oi" :src="getImageURL(owner.name)" :title="owner.name" width="50" height="50" />
+          <b-img-lazy v-for="(owner, oi) in e.item.owners" :key="oi" :src="getImageURL(owner.uid)" :title="owner.name" width="50" height="50" />
         </div>
       </b-popover>
     </template>

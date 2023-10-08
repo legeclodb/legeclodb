@@ -72,7 +72,7 @@
             <div class="widget">
               <b-button-group size="sm" id="symbol_selector">
                 <b-button v-for="(c, i) in symbolFilter" :key="i" :pressed.sync="c.state" @click="updateQuery('symbol')" variant="outline-secondary">
-                  <b-img-lazy :src="getImageURL('シンボル:'+symbols[i])" height="25" />
+                  <b-img-lazy :src="getImageURL(symbols[i])" height="25" />
                 </b-button>
               </b-button-group>
             </div>
@@ -220,14 +220,14 @@
         <div class="character" :id="'chr_'+chr.id" :key="chr.id">
           <div class="flex">
             <div class="portrait">
-              <b-img-lazy :src="getImageURL(chr.name)" :alt="chr.name" width="100" height="100" rounded />
+              <b-img-lazy :src="getImageURL(chr.uid)" :alt="chr.name" width="100" height="100" rounded />
             </div>
             <div class="detail" v-show="displayType >= 1">
               <div class="info" :class="{ 'highlighted': isInfoHighlighted(chr) }">
                 <h5 v-html="chrNameToHtml(chr.name)"></h5>
                 <div class="status">
                   <b-img-lazy :src="getImageURL(chr.class)" :title="'クラス:'+chr.class" height="25" />
-                  <b-img-lazy :src="getImageURL('シンボル:'+chr.symbol)" :title="'シンボル:'+chr.symbol" height="25" />
+                  <b-img-lazy :src="getImageURL(chr.symbol)" :title="'シンボル:'+chr.symbol" height="25" />
                   <b-img-lazy :src="getImageURL(chr.rarity)" :title="'レアリティ:'+chr.rarity" height="20" />
                   <div class="param-box"><b-img-lazy :src="getImageURL(chr.damageType)" :title="'攻撃タイプ:'+chr.damageType" width="20" height="20" /></div>
                   <div class="param-box"><b-img-lazy :src="getImageURL('射程')" title="射程" width="18" height="18" /><span>{{chr.range}}</span></div>
@@ -241,7 +241,7 @@
                 <div class="talent" :class="{ 'highlighted': isTalentHighlighted(chr.talent) }">
                   <div class="flex">
                     <div class="icon" :id="'chr_'+chr.id+'_talent'">
-                      <b-img-lazy :src="getImageURL(chr.talent.name)" with="50" height="50" />
+                      <b-img-lazy :src="getImageURL(chr.talent.icon)" with="50" height="50" />
                       <b-popover v-if="displayType==1" :target="'chr_'+chr.id+'_talent'" triggers="hover focus" :title="chr.talent.name" placement="top">
                         <div class="flex">
                           <div v-html="descToHtml(chr.talent)"></div>
@@ -276,7 +276,7 @@
                         <div v-if="skill.owners" class="owners">
                           所持者:<br />
                           <b-link v-for="(owner, oi) in skill.owners" :key="oi" @click="moveToChr(owner)">
-                            <b-img-lazy :src="getImageURL(owner.name)" :title="owner.name" width="50" height="50" />
+                            <b-img-lazy :src="getImageURL(owner.uid)" :title="owner.name" width="50" height="50" />
                           </b-link>
                         </div>
                       </b-popover>
@@ -300,7 +300,7 @@
           <div class="summon" v-if="chr.summon" v-show="displayType >= 1">
             <div class="flex" v-for="(summon, smi) in chr.summon" :key="smi">
               <div class="portrait">
-                <b-img-lazy :src="getImageURL(summon.name)" :alt="summon.name" width="100" height="100" rounded />
+                <b-img-lazy :src="getImageURL(summon.uid)" :alt="summon.name" width="100" height="100" rounded />
               </div>
               <div class="detail" v-show="displayType >= 1">
                 <div class="info" :class="{ 'highlighted': isInfoHighlighted(summon) }">

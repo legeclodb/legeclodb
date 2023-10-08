@@ -369,7 +369,6 @@ def processCharacters(chrJson, activeJson, passiveJson, talentJson = None):
     # ここで各キャラを処理
     for ch in chrJson:
         cid = ch["uid"]
-
         l = findByCid(chrCsv, cid)
 
         name = l["CharacterName"].replace('（', '(').replace('）', ')')
@@ -506,10 +505,6 @@ def processCharacters(chrJson, activeJson, passiveJson, talentJson = None):
 
         # ここでアイコン取得
         iconName = skill["icon"]
-        if name in imageTable:
-            imageTable[iconName] = imageTable[name]
-            del imageTable[name]
-
         if not iconName in imageTable:
             downloadSkillIcon(iconName)
             imageTable[iconName] = f"{skill['icon']}.png"
@@ -579,7 +574,7 @@ def processCharacters(chrJson, activeJson, passiveJson, talentJson = None):
             elif "desc" in skill:
                 updateDesc(js, skill["desc"])
 
-        js["id"] = skill["id"]
+        js["uid"] = skill["id"]
         js["icon"] = skill["icon"]
 
 
@@ -601,8 +596,8 @@ def processItems(itemJson):
 
         resourceId = il["ResourceId"].lower()
         downloadEquipIcon(resourceId)
-        if not name in imageTable:
-            imageTable[name] = f"{resourceId}.png"
+        if not iid in imageTable:
+            imageTable[iid] = f"{resourceId}.png"
 
         if "PartsType" in el:
             item["slot"] = equipTypeTable[int(el["PartsType"])]

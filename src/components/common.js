@@ -908,7 +908,7 @@ export default {
       let skillTable = new Map();
       for (let s of [...activeSkills, ...passiveSkills, ...talents]) {
         this.setupSkill(s);
-        skillTable.set(s.id, s);
+        skillTable.set(s.uid, s);
       }
 
       const grabSkill = function (id, chr) {
