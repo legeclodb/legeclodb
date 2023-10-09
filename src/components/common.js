@@ -552,7 +552,7 @@ export default {
       }
 
       if (modified || !['tag', 'free'].includes(name)) {
-        if (['class', 'rarity', 'symbol', 'supportType', 'damageType', 'skillType', 'itemType', 'any'].includes(name))
+        if (['class', 'engage', 'rarity', 'symbol', 'supportType', 'damageType', 'skillType', 'itemType', 'any'].includes(name))
           this.updateTagCounts();
         if (updateURL)
           this.updateURL();

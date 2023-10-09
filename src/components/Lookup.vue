@@ -317,30 +317,30 @@
                 </div>
               </div>
               <div class="skills">
-                <div class="skill" v-for="(iten, si) in r.main.equipments" :key="si">
+                <div class="skill" v-for="(item, si) in r.main.equipments" :key="si">
                   <div class="flex">
                     <div class="icon">
-                      <b-img-lazy :src="getImageURL(iten.icon)" :title="iten.name" width="50" :id="'item_'+ri+'_'+si" />
-                      <b-popover v-if="displayType>=1" :target="'item_'+ri+'_'+si" :title="iten.name" triggers="hover click blur" :delay="{show:0, hide:250}" no-fade placement="top">
+                      <b-img-lazy :src="getImageURL(item.icon)" :title="item.name" width="50" :id="'item_'+ri+'_'+si" />
+                      <b-popover v-if="displayType>=1" :target="'item_'+ri+'_'+si" :title="item.name" triggers="hover click blur" :delay="{show:0, hide:250}" no-fade placement="top">
                         <div class="flex exclude-menu">
-                          <b-button size="sm" @click="addPrioritized(iten)">このアイテムを優先</b-button>
-                          <b-button size="sm" @click="addPrioritized(iten, r.main.character)">このキャラとアイテムの組み合わせを優先</b-button>
+                          <b-button size="sm" @click="addPrioritized(item)">このアイテムを優先</b-button>
+                          <b-button size="sm" @click="addPrioritized(item, r.main.character)">このキャラとアイテムの組み合わせを優先</b-button>
                         </div>
                         <div class="flex exclude-menu">
-                          <b-button size="sm" @click="addExcluded(iten)">このアイテムを除外</b-button>
-                          <b-button size="sm" @click="addExcluded(iten, r.main.character)">このキャラとアイテムの組み合わせを除外</b-button>
+                          <b-button size="sm" @click="addExcluded(item)">このアイテムを除外</b-button>
+                          <b-button size="sm" @click="addExcluded(item, r.main.character)">このキャラとアイテムの組み合わせを除外</b-button>
                         </div>
                       </b-popover>
                     </div>
                     <div class="desc" v-show="displayType >= 2">
                       <div class="flex">
-                        <h6><b-img-lazy :src="getImageURL(iten.slot)" :title="iten.name" width="18" />{{ iten.name }}</h6>
-                        <div class="param-group" v-html="skillParamsToHtml(iten)"></div>
+                        <h6><b-img-lazy :src="getImageURL(item.slot)" :title="item.name" width="18" />{{ item.name }}</h6>
+                        <div class="param-group" v-html="skillParamsToHtml(item)"></div>
                       </div>
                       <p>
-                        <span v-html="descToHtml(iten, true)" />
-                        <span v-if="iten.note" class="note" v-html="noteToHtml(iten)" />
-                        <span class="note" v-html="effectsToHtml(iten, r.main)" />
+                        <span v-html="descToHtml(item, true)" />
+                        <span v-if="item.note" class="note" v-html="noteToHtml(item)" />
+                        <span class="note" v-html="effectsToHtml(item, r.main)" />
                       </p>
                     </div>
                   </div>

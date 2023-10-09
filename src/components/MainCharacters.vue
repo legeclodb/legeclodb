@@ -63,7 +63,7 @@
               </b-button-group>
             </div>
             <div class="widget">
-              <b-button size="sm" :pressed.sync="engageFilter" variant="outline-secondary">
+              <b-button size="sm" :pressed.sync="engageFilter" @click="updateQuery('engage')" variant="outline-secondary">
                 <b-img-lazy :src="getImageURL('エンゲージ')" width="25" height="25" />
               </b-button>
             </div>
@@ -877,6 +877,8 @@ export default {
         seri.tag = this.tagSearchPattern;
       if (this.freeSearchPattern.length > 0)
         seri.free = this.freeSearchPattern;
+      if (this.engageFilter)
+        seri.engage = 1;
 
       if (kvp) {
         for (const k in kvp)
@@ -919,6 +921,8 @@ export default {
           this.page = data.p;
         if (data.id > -1)
           this.moveToChr(data.id);
+        if (data.engage)
+          this.engageFilter = true;
       }
     },
   }
