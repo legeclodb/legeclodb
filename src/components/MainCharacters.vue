@@ -220,7 +220,7 @@
         <div class="character" :id="'chr_'+chr.id" :key="chr.id">
           <div class="flex">
             <div class="portrait">
-              <b-img-lazy :src="getImageURL(chr.icon)" :alt="chr.name" width="100" height="100" rounded />
+              <b-img-lazy :src="getImageURL(chr.icon)" :title="chr.name" width="100" height="100" rounded />
             </div>
             <div class="detail" v-show="displayType >= 1">
               <div class="info" :class="{ 'highlighted': isInfoHighlighted(chr) }">
@@ -251,12 +251,13 @@
                     <div class="desc" v-show="displayType >= 2">
                       <h5>
                         {{ chr.talent.name }}
-                        <b-dropdown class="level-selector" :text="chr.talent.current" v-if="chr.talent.descs" variant="outline-secondary">
+                        <b-dropdown v-if="chr.talent.descs" class="level-selector" :text="chr.talent.current" variant="outline-secondary">
                           <b-dropdown-item class="d-flex flex-column" v-for="(ds, di) in chr.talent.descs" :key="di" @click="chr.talent.current=di; chr.talent.desc=ds;">{{di}}</b-dropdown-item>
                         </b-dropdown>
-                        <b-button v-if="chr.engage" class="engage-selector" size="sm" :pressed.sync="chr.engage.enabled" @click="toggleEngage(chr)" variant="outline-secondary">
-                          エンゲージ後
-                        </b-button>
+                        <b-dropdown v-if="chr.engage" class="level-selector" :text="chr.engage.enabled ? 'エンゲージ後': 'エンゲージ前'" variant="outline-secondary">
+                          <b-dropdown-item class="d-flex flex-column" @click="switchEngage(chr, false)">エンゲージ前</b-dropdown-item>
+                          <b-dropdown-item class="d-flex flex-column" @click="switchEngage(chr, true)">エンゲージ後</b-dropdown-item>
+                        </b-dropdown>
                       </h5>
                       <p><span v-html="descToHtml(chr.talent)"></span><span v-if="chr.talent.note" class="note" v-html="noteToHtml(chr.talent)"></span></p>
                     </div>
@@ -300,7 +301,7 @@
           <div class="summon" v-if="chr.summon" v-show="displayType >= 1">
             <div class="flex" v-for="(summon, smi) in chr.summon" :key="smi">
               <div class="portrait">
-                <b-img-lazy :src="getImageURL(summon.icon)" :alt="summon.name" width="100" height="100" rounded />
+                <b-img-lazy :src="getImageURL(summon.icon)" :title="summon.name" width="100" height="100" rounded />
               </div>
               <div class="detail" v-show="displayType >= 1">
                 <div class="info" :class="{ 'highlighted': isInfoHighlighted(summon) }">
@@ -685,8 +686,9 @@ export default {
       this.reorderSubtag();
     },
 
-    toggleEngage(chr) {
-      if (chr.engage.enabled) {
+    switchEngage(chr, v) {
+      chr.engage.enabled = v;
+      if (v) {
         chr.skills = chr.engage.skills;
       }
       else {
