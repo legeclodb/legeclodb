@@ -816,7 +816,7 @@ def proceccBattleCsv():
                 def fillCommonData():
                     dst["cid"] = cid
                     dst["level"] = int(line["Level"])
-                    dst["statusRate"] = list(map(lambda k: float(line[k]) / 100, corKeys))
+                    dst["statusRate"] = list(map(lambda k: int(line[k]), corKeys))
 
                 if mainOrSupport == "1":
                     dst = {}

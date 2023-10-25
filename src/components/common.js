@@ -734,6 +734,18 @@ export default {
       return r;
     },
 
+    getNPCChrStatus(chr, level, rate = [100, 100, 100, 100, 100, 100])
+    {
+      // todo: 補間
+      let r = [...chr.statusLvs[level]];
+      if (rate) {
+        for (let i = 0; i < r.length; ++i)
+          r[i] = Math.round(r[i] * (rate[i] * 0.01));
+      }
+      return r;
+    },
+
+
     // seq must be sorted array
     lowerBound(seq, n) {
       let first = 0, last = seq.length - 1;

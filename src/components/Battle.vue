@@ -12,14 +12,32 @@
     </div>
 
     <div class="content">
-      <div class="grid-container panel">
-        <div v-for="(cell, i) in cells" :key="i" class="grid-cell" :id="cell.id">
-          {{cell.id}}
-          <div v-if="cell.enemy">
-            <b-img-lazy :src="getImageURL(cell.enemy.class)" :id="cell.enemy.id" @click="selectEnemy(cell.enemy)" width="50" height="50" />
+      <div class="main-panel">
+        <b-tabs nav-class="tab-index" v-model="searchTabIndex">
+          <b-tab v-for="(v, k) in phaseNames" :title="v" @click="selectPhase(k)" :key="k"></b-tab>
+        </b-tabs>
+
+        <div style="margin-top: 10px; padding: 10px; display: flex">
+          <div class="grid-container">
+            <div v-for="(cell, i) in cells" :key="i" class="grid-cell" :id="cell.id">
+              {{cell.id}}
+              <div v-if="cell.enemy">
+                <b-img-lazy :src="getImageURL(cell.enemy.class)" :id="cell.enemy.id" @click="selectEnemy(cell.enemy)" width="50" height="50" />
+              </div>
+            </div>
           </div>
+
+          <div class="enemy-list">
+            <div v-for="(enemy, ei) in enemies" :key="ei">
+              {{enemy.main.name}}
+              {{[enemy.main.talent.name,  ...enemy.main.skills.map(skill => skill.name)]}}
+              {{enemy.main.status}}
+            </div>
+          </div>
+
         </div>
       </div>
+
     </div>
 
   </div>
@@ -50,14 +68,13 @@ export default {
       symbols: jsonConstants.symbols,
       damageTypes: jsonConstants.damageTypes,
       rarities: jsonConstants.rarities,
-      battleList: jsonBattle,
 
       phaseNames: {
         "0": "開始時",
-        "1E": "1T裏",
-        "2E": "2T裏",
-        "3E": "3T裏",
-        "4E": "4T裏",
+        "1E": "1T敵フェイズ",
+        "2E": "2T敵フェイズ",
+        "3E": "3T敵フェイズ",
+        "4E": "4T敵フェイズ",
       },
 
       battleId: null,
@@ -82,6 +99,36 @@ export default {
 
     this.setupCharacters(this.mainChrs, this.mainActive, this.mainPassive, this.mainTalents);
     this.setupCharacters(this.supChrs, this.supActive, this.supPassive);
+
+    let skillTable = new Map();
+    for (let s of [...this.mainActive, ...this.mainPassive, ...this.mainTalents]) {
+      skillTable.set(s.uid, s);
+    }
+
+    const mergeChrData = function (dst, src) {
+      dst.name = src.name;
+      dst.class = src.class;
+      dst.damageType = src.damageType;
+      dst.range = src.range;
+    };
+
+    this.battleList = structuredClone(jsonBattle);
+    for (let battle of this.battleList) {
+      for (let enemy of battle.enemies) {
+        {
+          const chr = this.mainChrs.find(c => c.uid == enemy.main.cid);
+          mergeChrData(enemy.main, chr);
+          enemy.main.status = this.getNPCChrStatus(chr, enemy.main.level, enemy.main.statusRate);
+          enemy.main.talent = skillTable.get(enemy.main.talent);
+          enemy.main.skills = enemy.main.skills.map(id => skillTable.get(id));
+        }
+        if (enemy.support) {
+          const chr = this.supChrs.find(c => c.uid == enemy.support.cid);
+          mergeChrData(enemy.support, chr);
+          enemy.support.status = this.getNPCChrStatus(chr, enemy.support.level, enemy.support.statusRate);
+        }
+      }
+    }
   },
 
   mounted() {
@@ -115,12 +162,13 @@ export default {
       if (battle) {
         this.battleId = bid;
         this.battleData = battle;
-        console.log(`selected battle "${bid}"`);
+        this.selectPhase("0");
       }
     },
 
     selectPhase(phase) {
-
+      this.phase = phase;
+      this.enemies = this.battleData.enemies.filter(e => e.phase == phase);
     },
   },
 
@@ -134,66 +182,36 @@ export default {
 </script>
 
 <style scoped>
-  div.about {
-  }
-
-  .about h2 {
-    font-size: 1.75em;
-    margin-left: 1em;
-  }
-  .about h3 {
-    font-size: 1.5em;
-    margin-left: 1em;
-  }
-
-  .about p {
-    margin-bottom: 30px;
-  }
-
-  .about ul {
-    list-style-type: disc;
-    margin: 0;
-  }
-
-  .about li {
-    display: list-item;
-    margin: 0 15px;
-  }
-
-  .panel {
-    padding: 10px;
-    margin-top: 10px;
-    margin-bottom: 10px;
+  .main-panel {
+    padding-top: 10px;
     border: 1px solid rgba(0, 0, 0, 0.2);
     border-radius: 0.3rem;
     display: inline-block;
     background: white;
   }
 
-  .panel h6 {
-    margin-bottom: 5px;
-  }
-
-  label {
-    margin: 0.2rem 0 !important;
-  }
-
   .grid-container {
     display: grid;
     grid-template-columns: 50px 50px 50px 50px 50px 50px 50px 50px 50px 50px 50px 50px 50px 50px 50px;
     grid-template-rows: 50px 50px 50px 50px 50px 50px 50px 50px 50px 50px 50px 50px 50px 50px 50px;
+    margin-right: 20px;
   }
   .grid-cell {
     border: 1px solid rgba(140,149,159,0.5);
     width: 50px;
     height: 50px;
   }
-
-  .enemy {
+  .enemy-cell {
     background: rgb(255, 128, 128);
   }
-  .ally {
+
+  .ally-cell {
     background: rgb(128, 128, 255);
+  }
+
+  .enemy-list {
+  }
+  .enemy-panel {
   }
 
 </style>
