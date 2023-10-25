@@ -948,17 +948,19 @@ export default {
         }
         chr.icon = chr.uid;
 
-        chr.skills = chr.skills.flatMap(id => grabSkill(id, chr));
-        if (chr.summon) {
-          for (let s of chr.summon) {
-            if (typeof s.talent === "string")
-              s.talent = grabSkill(s.talent, chr);
-            s.skills = s.skills.flatMap(id => grabSkill(id, chr));
-            s.icon = s.uid;
-          }
-          for (let s of chr.skills) {
-            if (s.summon) {
-              s.summon = s.summon.map(name => chr.summon.find(sch => sch.name == name));
+        if (chr.skills) {
+          chr.skills = chr.skills.flatMap(id => grabSkill(id, chr));
+          if (chr.summon) {
+            for (let s of chr.summon) {
+              if (typeof s.talent === "string")
+                s.talent = grabSkill(s.talent, chr);
+              s.skills = s.skills.flatMap(id => grabSkill(id, chr));
+              s.icon = s.uid;
+            }
+            for (let s of chr.skills) {
+              if (s.summon) {
+                s.summon = s.summon.map(name => chr.summon.find(sch => sch.name == name));
+              }
             }
           }
         }

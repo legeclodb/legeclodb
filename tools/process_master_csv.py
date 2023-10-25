@@ -62,10 +62,10 @@ statusTypeTable = {
     24: "被治療効果",
     25: "ディフェンス無視",
     26: "レジスト無視",
-    27: "???",
+    27: "移動コストを1にする",
     28: "範囲",
-    29: "???",
-    30: "???",
+    29: "ディフェンスとレジストのどちらか高い方",
+    30: "ディフェンスとレジストのどちらか低い方",
     31: "与ダメージ(通常攻撃)",
 }
 
@@ -135,8 +135,8 @@ def csvToTable(csv):
            header = line
         elif i>=2:
             tmp = {}
-            for j, field in enumerate(line):
-                tmp[header[j]] = field
+            for j in range(min(len(line), len(header))):
+                tmp[header[j]] = line[j]
             ret.append(tmp)
     return ret
 
@@ -153,28 +153,28 @@ def find(ls, cond):
             return a;
     return None;
 
-def findByUid(ls, uid):
+def findByField(ls, fieldName, fieldValue):
     for a in ls:
-        if a["uid"] == uid:
+        if a[fieldName] == fieldValue:
             return a
     return None
 
-def findByName(ls, name):
+def filterByField(ls, fieldName, fieldValue):
     for a in ls:
-        if a["name"] == name:
-            return a
-    return None
+        if a[fieldName] == fieldValue:
+            yield a
+
+def findByUid(ls, uid):
+    return findByField(ls, "uid", uid)
+
+def findByName(ls, name):
+    return findByField(ls, "name", name)
 
 def findByCid(csv, cid):
     if "CharacterID" in csv[0]:
-        for a in csv:
-            if a["CharacterID"] == cid:
-                return a
+        return findByField(csv, "CharacterID", cid)
     elif "CharacterId" in csv[0]:
-        for a in csv:
-            if a["CharacterId"] == cid:
-                return a
-    return None
+        return findByField(csv, "CharacterId", cid)
 
 def filterByCid(csv, cid):
     if "CharacterID" in csv[0]:
@@ -313,7 +313,6 @@ mainLvStatusCsv    = readCsvTable(f"{csvDir}/Character/MainCharacterLevelStatus.
 mainStarStatusCsv  = readCsvTable(f"{csvDir}/Character/MainCharacterBreakLimitStatus.csv")
 supLvStatusCsv     = readCsvTable(f"{csvDir}/Character/SupportCharacterLevelStatus.csv")
 supStarStatusCsv   = readCsvTable(f"{csvDir}/Character/SupportCharacterBreakLimitStatus.csv")
-enemyLvStatusCsv   = readCsvTable(f"{csvDir}/Character/EnemyMainLevelStatus.csv")
 talentSkillCsv     = readCsvTable(f"{csvDir}/Character/CharacterTalentSkill.csv")
 supSkillCsv        = readCsvTable(f"{csvDir}/Character/SupportCharacterAbilitySkill.csv")
 skillSettingCsv    = readCsvTable(f"{csvDir}/TrainingBoard/SkillSetting.csv")
@@ -331,6 +330,11 @@ summonEffectCsv    = readCsvTable(f"{csvDir}/Skill/SummonEffect.csv")
 
 engageCsv          = readCsvTable(f"{csvDir}/Engage/Engage.csv")
 engageSkillCsv     = readCsvTable(f"{csvDir}/Engage/EngageSkill.csv")
+
+enemyMainLvStatusCsv    = readCsvTable(f"{csvDir}/Character/EnemyMainLevelStatus.csv")
+enemySupportLvStatusCsv = readCsvTable(f"{csvDir}/Character/EnemySupportLevelStatus.csv")
+
+
 
 skillTable = {**mainActiveCsv, **mainPassiveCsv, **mainTalentCsv, **supActiveCsv, **supPassiveCsv, **itemEffectCsv}
 itemTable = equipmentsCsv + amuletsCsv
@@ -360,8 +364,10 @@ def processEngageData():
 
 
 # キャラ情報
-def processCharacters(chrJson, activeJson, passiveJson, talentJson = None):
-    mainOrSupport = 0
+def processCharacters(args):
+    isMain = args.talentJson != None
+    isSupport = args.talentJson == None
+    isEnemy = args.lvStatusCsv != None
     chrSkills = {}
     engageSkills = {}
     skillIds = set()
@@ -373,40 +379,42 @@ def processCharacters(chrJson, activeJson, passiveJson, talentJson = None):
         return [float(t["UpHP"]), float(t["UpATK"]), float(t["UpDEF"]), float(t["UpMATK"]), float(t["UpMDEF"]), float(t["UpDEX"])]
 
     # ここで各キャラを処理
-    for ch in chrJson:
+    for ch in args.chrJson:
         cid = ch["uid"]
         l = findByCid(chrCsv, cid)
 
         name = l["CharacterName"].replace('（', '(').replace('）', ')')
         if not "name" in ch:
             ch["name"] = name
-            ch["date"] = datetime.datetime.now().strftime("%Y/%m/%d")
+            if not isEnemy:
+                ch["date"] = datetime.datetime.now().strftime("%Y/%m/%d")
 
         ch["class"] = classTable[int(l["SoldierType"])]
         if l["ForceType"]:
             ch["symbol"] = symbolTable[int(l["ForceType"])]
-            mainOrSupport = 1
         if l["SupportType"] != "0":
             ch["supportType"] = supportTypeTable[int(l["SupportType"])]
-            mainOrSupport = 2
-        ch["rarity"] = rarityTable[min(int(l["Rarity"]), 4)]
+        rarity = rarityTable[min(int(l["Rarity"]), 4)]
+        if rarity:
+            ch["rarity"] = rarity
         ch["damageType"] = attackTypeTable[int(l["CharacterAttackType"])]
         ch["range"] = int(l["AttackRange"])
 
         # スキルは chrSkills に突っ込んで後で別途処理
-        chrSkills[cid] = []
-        if mainOrSupport == 1:
-            ch["move"] = int(l["MovingValue"])
-            talent = skillTable[ findByCid(talentSkillCsv, cid)["TalentSkillGroupId"] ]
-            talent["cid"] = cid
-            chrSkills[cid].append(talent)
-            chrSkills[cid].append(skillTable[l["InitialSkillId"]])
-        elif mainOrSupport == 2:
-            active = skillTable[ findByCid(supSkillCsv, cid)["AbilitySkillGroupId"] ]
-            active["cid"] = cid
-            chrSkills[cid].append(active)
+        if not isEnemy:
+            chrSkills[cid] = []
+            if isMain:
+                ch["move"] = int(l["MovingValue"])
+                rec = findByCid(talentSkillCsv, cid)
+                talent = skillTable[ rec["TalentSkillGroupId"] ]
+                chrSkills[cid].append(talent)
+                chrSkills[cid].append(skillTable[l["InitialSkillId"]])
+            elif isSupport:
+                rec = findByCid(supSkillCsv, cid)
+                active = skillTable[ rec["AbilitySkillGroupId"] ]
+                chrSkills[cid].append(active)
             
-        ch["statusInit"] = getStatusValues(findByCid(initStatusCsv, cid))
+            ch["statusInit"] = getStatusValues(findByCid(initStatusCsv, cid))
 
         # エンゲージ情報
         if cid in engageInfo:
@@ -440,7 +448,7 @@ def processCharacters(chrJson, activeJson, passiveJson, talentJson = None):
                 # 召喚ユニットや敵ユニットは 初期値 と 10　レベル刻みの数値になっている
                 stats = {}
                 stats[1] = getStatusValues(findByCid(initStatusCsv, sid))
-                for v in filterByCid(enemyLvStatusCsv, sid):
+                for v in filterByCid(enemyMainLvStatusCsv, sid):
                     stats[int(v["Lv"])] = getStatusValues(v)
                 su["statusLvs"] = stats
 
@@ -456,63 +464,67 @@ def processCharacters(chrJson, activeJson, passiveJson, talentJson = None):
                 su["talent"] = sids.pop(0)
                 su["skills"] = sids
 
-
-    lvCsv = None
-    starCsv = None
-    if mainOrSupport == 1:
-        lvCsv = mainLvStatusCsv
-        starCsv = mainStarStatusCsv
-    elif mainOrSupport == 2:
-        lvCsv = supLvStatusCsv
-        starCsv = supStarStatusCsv
-
     # レベル上昇値 & ☆上昇値
-    for ch in chrJson:
-        cid = ch["uid"]
-        ch["statusLv"] = getStatusUpValues(findByCid(lvCsv, cid))
-        ch["statusStar"] = getStatusUpValues(findByCid(starCsv, cid))
+    if args.lvCsv and args.starCsv:
+        for ch in args.chrJson:
+            cid = ch["uid"]
+            ch["statusLv"] = getStatusUpValues(findByCid(args.lvCsv, cid))
+            ch["statusStar"] = getStatusUpValues(findByCid(args.starCsv, cid))
+    elif args.lvStatusCsv:
+        for ch in args.chrJson:
+            cid = ch["uid"]
+            stats = {}
+            stats[1] = getStatusValues(findByCid(initStatusCsv, cid))
+            for v in filterByCid(args.lvStatusCsv, cid):
+                stats[int(v["Lv"])] = getStatusValues(v)
+            ch["statusLvs"] = stats
 
     # スキルシートから各キャラのスキル取得
-    for cid in chrSkills:
-        for l in skillSettingCsv:
-            if l["CharacterID"] == cid:
-                sid = l["SkillGroupID"]
-                skill = skillTable.get(sid)
-                if skill:
-                    chrSkills[cid].append(skill)
+    if not isEnemy:
+        for cid in chrSkills:
+            for l in skillSettingCsv:
+                if l["CharacterID"] == cid:
+                    sid = l["SkillGroupID"]
+                    skill = skillTable.get(sid)
+                    if skill:
+                        chrSkills[cid].append(skill)
 
-    if mainOrSupport == 1:
-        for ch in chrJson:
-            cid = ch["uid"]
-            skills = list(map(lambda a: a["id"], chrSkills[cid]))
-            ch["talent"] = skills[0]
-            ch["skills"] = skills[1:7]
+        if isMain:
+            for ch in args.chrJson:
+                cid = ch["uid"]
+                skills = list(map(lambda a: a["id"], chrSkills[cid]))
+                ch["talent"] = skills[0]
+                ch["skills"] = skills[1:7]
 
-            if cid in engageSkillTable:
-                table = engageSkillTable[cid]
-                eskills = ch["skills"].copy()
-                for idx, sid in enumerate(eskills):
-                    if sid in table:
-                        eskills[idx] = table[sid]
-                ch["engage"]["skills"] = eskills
+                if cid in engageSkillTable:
+                    table = engageSkillTable[cid]
+                    eskills = ch["skills"].copy()
+                    for idx, sid in enumerate(eskills):
+                        if sid in table:
+                            eskills[idx] = table[sid]
+                    ch["engage"]["skills"] = eskills
+        elif isSupport:
+            for ch in args.chrJson:
+                cid = ch["uid"]
+                skills = list(map(lambda a: a["id"], chrSkills[cid]))
+                ch["skills"] = skills
 
-    elif mainOrSupport == 2:
-        for ch in chrJson:
-            cid = ch["uid"]
-            skills = list(map(lambda a: a["id"], chrSkills[cid]))
-            ch["skills"] = skills
+        # 使用されているスキルを抽出してデータをセットアップ
+        for cid in chrSkills:
+            for skill in chrSkills[cid]:
+                skillIds.add(skill["id"])
+        addSkills(args, skillIds)
 
+
+def addSkills(args, skillIds):
+    isMain = args.talentJson != None
+    isSupport = args.talentJson == None
+    iconTable = {}
 
     def getBaseSkillLevel(cid):
         l = findByCid(chrCsv, cid)
         return int(l["Rarity"]) - 2
 
-    # 味方キャラから使われているスキルを抽出 (=敵専用スキルは除外) してデータをセットアップ
-    for cid in chrSkills:
-        for skill in chrSkills[cid]:
-            skillIds.add(skill["id"])
-
-    iconTable = {}
     for sid in skillIds:
         skill = skillTable[sid]
         skillType = skill["skillType"]
@@ -526,14 +538,14 @@ def processCharacters(chrJson, activeJson, passiveJson, talentJson = None):
 
         js = None
         if skillType == "アクティブ":
-            js = findByName(activeJson, name);
+            js = findByName(args.activeJson, name);
             if not js:
                 js = {"name": name}
-                activeJson.append(js);
+                args.activeJson.append(js);
 
-            if mainOrSupport == 1:
+            if isMain:
                 updateDesc(js, skill["desc"])
-            elif mainOrSupport == 2:
+            elif isSupport:
                 descs = {}
                 baseSkillLevel = getBaseSkillLevel(skill["cid"])
                 for (lv, desc) in enumerate(skill["descs"]):
@@ -562,21 +574,21 @@ def processCharacters(chrJson, activeJson, passiveJson, talentJson = None):
                     js["range"] = int(skill["range"])
                 elif rangeType == 3:
                     js["range"] = "全体"
-            if "cost" in skill and mainOrSupport == 1:
+            if "cost" in skill and isMain:
                 js["cost"] = int(skill["cost"])
         elif skillType == "パッシブ":
-            js = findByName(passiveJson, name);
+            js = findByName(args.passiveJson, name);
             if not js:
                 js = {"name": name}
-                passiveJson.append(js);
+                args.passiveJson.append(js);
             updateDesc(js, skill["desc"])
-            if "cost" in skill and mainOrSupport == 1:
+            if "cost" in skill and isSupport:
                 js["cost"] = int(skill["cost"])
         elif skillType == "タレント":
-            js = findByName(talentJson, name);
+            js = findByName(args.talentJson, name);
             if not js:
                 js = {"name": name}
-                talentJson.append(js);
+                args.talentJson.append(js);
 
             # 召喚ユニットのタレント説明文は 1 つだけだったりレベル別に用意されていたりする
             if "descs" in skill:
@@ -661,26 +673,43 @@ def dumpSkillData():
     writeJson(f"{outDir}/item_skills_raw.json", itemEffectCsv)
 
 
-def proceccMainChr():
-    chr = readJson(f"{assetsDir}/main_characters.json")
-    active = readJson(f"{assetsDir}/main_active.json")
-    passive = readJson(f"{assetsDir}/main_passive.json")
-    talent = readJson(f"{assetsDir}/main_talents.json")
-    processCharacters(chr, active, passive, talent)
-    writeJson(f"{outDir}/main_characters.json", chr)
-    writeJson(f"{outDir}/main_active.json", active)
-    writeJson(f"{outDir}/main_passive.json", passive)
-    writeJson(f"{outDir}/main_talents.json", talent)
+class ChrArgs:
+  def __init__(self):
+      self.chrJson = None
+      self.activeJson = None
+      self.passiveJson = None
+      self.talentJson = None
+      self.lvCsv = None
+      self.starCsv = None
+      self.lvStatusCsv = None
+      self.additionalSkills = None
 
+
+def proceccMainChr():
+    args = ChrArgs()
+    args.chrJson = readJson(f"{assetsDir}/main_characters.json")
+    args.activeJson = readJson(f"{assetsDir}/main_active.json")
+    args.passiveJson = readJson(f"{assetsDir}/main_passive.json")
+    args.talentJson = readJson(f"{assetsDir}/main_talents.json")
+    args.lvCsv = mainLvStatusCsv
+    args.starCsv = mainStarStatusCsv
+    processCharacters(args)
+    writeJson(f"{outDir}/main_characters.json", args.chrJson)
+    writeJson(f"{outDir}/main_active.json", args.activeJson)
+    writeJson(f"{outDir}/main_passive.json", args.passiveJson)
+    writeJson(f"{outDir}/main_talents.json", args.talentJson)
 
 def processSupChr():
-    chr = readJson(f"{assetsDir}/support_characters.json")
-    active = readJson(f"{assetsDir}/support_active.json")
-    passive = readJson(f"{assetsDir}/support_passive.json")
-    processCharacters(chr, active, passive)
-    writeJson(f"{outDir}/support_characters.json", chr)
-    writeJson(f"{outDir}/support_active.json", active)
-    writeJson(f"{outDir}/support_passive.json", passive)
+    args = ChrArgs()
+    args.chrJson = readJson(f"{assetsDir}/support_characters.json")
+    args.activeJson = readJson(f"{assetsDir}/support_active.json")
+    args.passiveJson = readJson(f"{assetsDir}/support_passive.json")
+    args.lvCsv = supLvStatusCsv
+    args.starCsv = supStarStatusCsv
+    processCharacters(args)
+    writeJson(f"{outDir}/support_characters.json", args.chrJson)
+    writeJson(f"{outDir}/support_active.json", args.activeJson)
+    writeJson(f"{outDir}/support_passive.json", args.passiveJson)
 
 
 def processEquipments():
@@ -690,13 +719,215 @@ def processEquipments():
 
 
 
+def proceccEnemyMainChr():
+    args = ChrArgs()
+    args.chrJson = readJson(f"{assetsDir}/enemy_main_characters.json")
+    args.activeJson = readJson(f"{assetsDir}/main_active.json")
+    args.passiveJson = readJson(f"{assetsDir}/main_passive.json")
+    args.talentJson = readJson(f"{assetsDir}/main_talents.json")
+    args.lvStatusCsv = enemyMainLvStatusCsv
+    processCharacters(args)
+    writeJson(f"{outDir}/enemy_main_characters.json", args.chrJson)
+    writeJson(f"{outDir}/main_active.json", args.activeJson)
+    writeJson(f"{outDir}/main_passive.json", args.passiveJson)
+    writeJson(f"{outDir}/main_talents.json", args.talentJson)
+
+def processEnemySupChr():
+    args = ChrArgs()
+    args.chrJson = readJson(f"{assetsDir}/enemy_support_characters.json")
+    args.activeJson = readJson(f"{assetsDir}/support_active.json")
+    args.passiveJson = readJson(f"{assetsDir}/support_passive.json")
+    args.lvStatusCsv = enemySupportLvStatusCsv
+    processCharacters(args)
+    writeJson(f"{outDir}/enemy_support_characters.json", args.chrJson)
+    writeJson(f"{outDir}/support_active.json", args.activeJson)
+    writeJson(f"{outDir}/support_passive.json", args.passiveJson)
+
+def proceccBattleCsv():
+    battleCsv = readCsvTable(f"{csvDir}/Battle/Battle_Guild_Ex02.csv")
+    eventCsv = readCsvTable(f"{csvDir}/SimulationEvent/SimulationEvent.csv")
+    writeJson(f"{outDir}/guild_ex2.json", battleCsv)
+
+    mainJson = readJson(f"{assetsDir}/enemy_main_characters.json")
+    mainActiveJson = readJson(f"{assetsDir}/main_active.json")
+    mainPassiveJson = readJson(f"{assetsDir}/main_passive.json")
+    mainTalentJson = readJson(f"{assetsDir}/main_talents.json")
+
+    supJson = readJson(f"{assetsDir}/enemy_support_characters.json")
+    supActiveJson = readJson(f"{assetsDir}/support_active.json")
+    supPassiveJson = readJson(f"{assetsDir}/support_passive.json")
+
+    corKeys = ["HPCorrection", "ATKCorrection", "DEFCorrection", "MATKCorrection", "MDEFCorrection", "DEXCorrection"]
+    skillKeys = ["TalentSkillGroupId", "FirstSkillGroupId", "SecondSkillGroupId", "ThirdSkillGroupId"]
+    mainSkillIds = set()
+    supSkillIds = set()
+
+    def makeBattle(uid):
+        return {
+            "uid": uid,
+            "leftTop": [0, 0],
+            "rightDown": [0, 0],
+            "allies": [],
+            "enemies": [],
+            }
+
+    def massToInt2(mass):
+        m = re.match(r'(\d+),(\d+)', mass)
+        return [int(m.group(1)) - 1, int(m.group(2)) - 1]
+
+    battleList = readJson(f"{assetsDir}/battle.json")
+    battle = None
+
+    for line in battleCsv:
+        bid = line["BattleID"]
+        if bid and line["VerID"] != "dummy":
+            battle = findByUid(battleList, bid)
+            if not battle:
+                battle = makeBattle(bid)
+                battleList.append(battle)
+            battle["leftTop"] = massToInt2(line["MapRangeLeftTop"])
+            battle["rightDown"] = massToInt2(line["MapRangeRightDown"])
+            battle["allies"] = []
+            battle["enemies"] = []
+
+        coord = massToInt2(line["MassData"])
+        fid = line["FormationId"]
+        if fid and re.match(r'A\d+', fid):
+            battle["allies"].append({
+                "fid": fid,
+                "coord": coord,
+                "phase": "0",
+            })
+        elif fid and re.match(r'E\d+', fid):
+            unit = findByField(battle["enemies"], "fid", fid)
+            if not unit:
+                unit = {
+                    "fid": fid,
+                    "coord": coord,
+                    "phase": "0",
+                }
+                battle["enemies"].append(unit)
+
+            cid = line["CharacterId"]
+            if cid:
+                mainOrSupport = line["CharacterType"] # 1: メイン 2: サポート
+                dst = None
+
+                def fillCommonData():
+                    dst["cid"] = cid
+                    dst["level"] = int(line["Level"])
+                    dst["statusRate"] = list(map(lambda k: float(line[k]) / 100, corKeys))
+
+                if mainOrSupport == "1":
+                    dst = {}
+                    unit["main"] = dst
+                    fillCommonData()
+                    if not findByUid(mainJson, cid):
+                        mainJson.append({"uid": cid})
+                    dst["skills"] = []
+                    for k in skillKeys:
+                        sid = line[k]
+                        if sid:
+                            mainSkillIds.add(sid)
+                            if k == skillKeys[0]:
+                                dst["talent"] = sid
+                            else:
+                                dst["skills"].append(sid)
+
+                elif mainOrSupport == "2":
+                    dst = {}
+                    unit["support"] = dst
+                    fillCommonData()
+                    if not findByUid(supJson, cid):
+                        supJson.append({"uid": cid})
+                    for k in skillKeys:
+                        sid = line[k]
+                        if sid:
+                            supSkillIds.add(sid)
+
+    #eventContent = {
+    #    0: None,
+    #    1: "コマ劇発生",
+    #    2: "指定の敵ユニット出現",
+    #    3: "指定のNPCユニット出現",
+    #    4: "ランダム敵ユニット出現",
+    #    5: "ランダムNPCユニット出現",
+    #    6: "指定の敵ユニット退場",
+    #    7: "指定のNPCユニット退場",
+    #    8: "指定のイベント発生",
+    #    9: "指定バトルBGMに切り替え",
+    #}
+    #eventTrigger = {
+    #    0: None,
+    #    1: "指定ターンの味方フェーズ開始時",
+    #    2: "指定のターン開始時",
+    #    3: "指定のユニット戦闘不能",
+    #    4: "味方ユニットの指定の目標移動",
+    #    5: "敵ユニットの指定の目標移動",
+    #    6: "指定のチュートリアル終了時",
+    #    7: "対象パーティ全滅",
+    #    8: "指定ターンの敵フェーズ開始時",
+    #    9: "味方NPCユニットの指定マス到達",
+    #    10: "味方ユニット（NPC含む）が指定エリアに到達",
+    #}
+    for battle in battleList:
+        for event in filterByField(eventCsv, "BattleId", battle["uid"]):
+            content = event["ContentType"]
+            contentVal = event["ContentValue"]
+            trigger = event["TriggerType"]
+            triggerVal = event["ConditionValue"]
+            if content == "2":
+                unit = findByField(battle["enemies"], "fid", contentVal)
+                if unit:
+                    if trigger == "1" or trigger == "2":
+                        unit["phase"] = triggerVal + "A"
+                    if trigger == "8":
+                        unit["phase"] = triggerVal + "E"
+
+    writeJson(f"{outDir}/battle.json", battleList)
+
+    def writeChrAndSkillData():
+        args = ChrArgs()
+        args.chrJson = mainJson
+        args.activeJson = mainActiveJson
+        args.passiveJson = mainPassiveJson
+        args.talentJson = mainTalentJson
+        addSkills(args, mainSkillIds)
+        writeJson(f"{outDir}/enemy_main_characters.json", args.chrJson)
+        writeJson(f"{outDir}/main_active.json", args.activeJson)
+        writeJson(f"{outDir}/main_passive.json", args.passiveJson)
+        writeJson(f"{outDir}/main_talents.json", args.talentJson)
+        proceccEnemyMainChr()
+
+        args = ChrArgs()
+        args.chrJson = supJson
+        args.activeJson = supActiveJson
+        args.passiveJson = supPassiveJson
+        addSkills(args, supSkillIds)
+        writeJson(f"{outDir}/enemy_support_characters.json", args.chrJson)
+        writeJson(f"{outDir}/support_active.json", args.activeJson)
+        writeJson(f"{outDir}/support_passive.json", args.passiveJson)
+        processEnemySupChr()
+
+    #writeChrAndSkillData()
+
+
+
+
+
+
+
 os.makedirs("tmp/icon", exist_ok = True)
 imageTable = readJson(f"{assetsDir}/image_table.json")
 
 #dumpSkillData()
-processEngageData()
-proceccMainChr()
-processSupChr()
-processEquipments()
+#processEngageData()
+#proceccMainChr()
+#processSupChr()
+#processEquipments()
+
+#proceccEnemyMainChr()
+#processEnemySupChr()
+proceccBattleCsv()
 
 writeJson(f"{outDir}/image_table.json", imageTable)

@@ -5,6 +5,7 @@ import SupportCharacters from './components/SupportCharacters.vue'
 import Items from './components/Items.vue'
 import Lookup from './components/Lookup.vue'
 import About from './components/About.vue'
+import Battle from './components/Battle.vue'
 
 Vue.use(Router)
 
@@ -41,6 +42,11 @@ export default new Router({
       path: '/about.html',
       name: 'about',
       component: About
+    },
+    {
+      path: '/battle.html',
+      name: 'battle',
+      component: Battle
     }
   ]
 })

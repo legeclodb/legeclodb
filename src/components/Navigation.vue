@@ -7,6 +7,7 @@
       <b-nav-item to="/item.html">アイテム</b-nav-item>
       <b-nav-item to="/lookup.html">逆引き</b-nav-item>
       <b-nav-item to="/about.html">解説</b-nav-item>
+      <b-nav-item v-if="devmode" to="/battle.html">戦闘</b-nav-item>
     </b-navbar-nav>
     <b-navbar-nav class="ml-auto">
       <b-nav-item href="https://github.com/legeclodb/legeclodb" target="_blank">
@@ -25,7 +26,17 @@
 export default {
   name: 'Navigation',
   props: {
-  }
+  },
+
+  data() {
+    return {
+      devmode: false,
+    };
+  },
+
+  mounted() {
+    this.devmode = process.env.NODE_ENV === 'development';
+  },
 };
 </script>
 
