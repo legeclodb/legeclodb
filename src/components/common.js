@@ -958,7 +958,9 @@ export default {
         else {
           chr.isSupport = true;
         }
-        chr.icon = chr.uid;
+        if (!chr.icon) {
+          chr.icon = chr.uid;
+        }
 
         if (chr.skills) {
           chr.skills = chr.skills.flatMap(id => grabSkill(id, chr));

@@ -389,6 +389,11 @@ def processCharacters(args):
             if not isEnemy:
                 ch["date"] = datetime.datetime.now().strftime("%Y/%m/%d")
 
+        icon = l["ThumbnailResourceID"]
+        ch["icon"] = icon
+        if not icon in imageTable:
+            imageTable[icon] = f"Default_{re.sub(r'^Ch', '', icon)}.png"
+
         ch["class"] = classTable[int(l["SoldierType"])]
         if l["ForceType"]:
             ch["symbol"] = symbolTable[int(l["ForceType"])]

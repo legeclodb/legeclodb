@@ -19,20 +19,75 @@
 
         <div style="margin-top: 10px; padding: 10px; display: flex">
           <div class="grid-container">
-            <div v-for="(cell, i) in cells" :key="i" class="grid-cell" :id="cell.id">
-              {{cell.id}}
-              <div v-if="cell.enemy">
-                <b-img-lazy :src="getImageURL(cell.enemy.class)" :id="cell.enemy.id" @click="selectEnemy(cell.enemy)" width="50" height="50" />
-              </div>
+            <div v-for="(cell, i) in cells" :key="i" :class="`grid-cell ${cell.enemy ? 'enemy-cell' : ''} ${cell.ally ? 'ally-cell' : ''}`" :id="cell.id">
+              <b-img-lazy v-if="cell.enemy" :src="getImageURL(cell.enemy.main.class)" @click="selectEnemy(cell.enemy)" width="30" height="30" class="center" />
             </div>
           </div>
 
           <div class="enemy-list">
-            <div v-for="(enemy, ei) in enemies" :key="ei">
-              {{enemy.main.name}}
-              {{[enemy.main.talent.name,  ...enemy.main.skills.map(skill => skill.name)]}}
-              {{enemy.main.status}}
-            </div>
+
+            <template v-for="ene in enemies">
+              <div class="character" :id="'chr_'+ene.fid" :key="ene.fid">
+                <div class="flex">
+                  <div class="portrait">
+                    <b-img-lazy :src="getImageURL(ene.main.icon)" :title="ene.main.name" width="100" height="100" rounded />
+                  </div>
+                  <div class="detail" v-show="displayType >= 1">
+                    <div class="info">
+                      <h5 v-html="chrNameToHtml(ene.main.name)"></h5>
+                      <div class="status">
+                        <b-img-lazy :src="getImageURL(ene.main.class)" :title="'クラス:'+ene.main.class" height="25" />
+                        <div class="param-box"><b-img-lazy :src="getImageURL(ene.main.damageType)" :title="'攻撃タイプ:'+ene.main.damageType" width="20" height="20" /></div>
+                        <div class="param-box"><b-img-lazy :src="getImageURL('射程')" title="射程" width="18" height="18" /><span>{{ene.main.range}}</span></div>
+                        <div class="param-box"><b-img-lazy :src="getImageURL('移動')" title="移動" width="18" height="18" /><span>{{ene.main.move}}</span></div>
+                      </div>
+                      <div v-if="ene.main.status" class="status2" v-html="statusToHtml(ene.main.status)" />
+                    </div>
+                    <div class="skills">
+                      <div class="talent">
+                        <div class="flex">
+                          <div class="icon" :id="'chr_'+ene.fid+'_talent'">
+                            <b-img-lazy :src="getImageURL(ene.main.talent.icon)" with="50" height="50" />
+                            <b-popover v-if="displayType==1" :target="'chr_'+ene.fid+'_talent'" triggers="hover focus" :title="ene.main.talent.name" placement="top">
+                              <div class="flex">
+                                <div v-html="descToHtml(ene.main.talent)"></div>
+                              </div>
+                            </b-popover>
+                          </div>
+                          <div class="desc" v-show="displayType >= 2">
+                            <h5>
+                              {{ ene.main.talent.name }}
+                            </h5>
+                            <p><span v-html="descToHtml(ene.main.talent)"></span><span v-if="ene.main.talent.note" class="note" v-html="noteToHtml(ene.main.talent)"></span></p>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="skill" v-for="(skill, si) in ene.main.skills" :class="getSkillClass(skill)" :key="si">
+                        <div class="flex">
+                          <div class="icon" :id="'chr_'+ene.fid+'_skill'+si">
+                            <b-link><b-img-lazy :src="getImageURL(skill.icon)" with="50" height="50" /></b-link>
+                            <b-popover v-if="displayType>=1" :target="'chr_'+ene.fid+'_skill'+si" triggers="hover focus" :delay="{show:0, hide:250}" no-fade :title="skill.name" placement="top">
+                              <div class="flex" v-if="displayType==1">
+                                <div v-html="descToHtml(skill)"></div>
+                              </div>
+                            </b-popover>
+                          </div>
+                          <div class="desc" v-show="displayType >= 2">
+                            <div class="flex">
+                              <h6>{{ skill.name }}</h6>
+                              <div class="param-group" v-html="skillParamsToHtml(skill)"></div>
+                            </div>
+                            <p><span v-html="descToHtml(skill)"></span><span v-if="skill.note" class="note" v-html="noteToHtml(skill)"></span></p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </template>
+
           </div>
 
         </div>
@@ -121,14 +176,18 @@ export default {
           enemy.main.status = this.getNPCChrStatus(chr, enemy.main.level, enemy.main.statusRate);
           enemy.main.talent = skillTable.get(enemy.main.talent);
           enemy.main.skills = enemy.main.skills.map(id => skillTable.get(id));
+          enemy.main.icon = chr.icon;
         }
         if (enemy.support) {
           const chr = this.supChrs.find(c => c.uid == enemy.support.cid);
           mergeChrData(enemy.support, chr);
           enemy.support.status = this.getNPCChrStatus(chr, enemy.support.level, enemy.support.statusRate);
+          enemy.support.icon = chr.icon;
         }
       }
     }
+
+    this.displayType = 2;
   },
 
   mounted() {
@@ -145,11 +204,11 @@ export default {
           x: x,
           y: y,
           enemy: null,
+          ally: null,
         };
       }
     }
     this.cells = cells;
-
     this.selectBattle(this.battleList.slice(-1)[0].uid);
   },
 
@@ -168,7 +227,31 @@ export default {
 
     selectPhase(phase) {
       this.phase = phase;
-      this.enemies = this.battleData.enemies.filter(e => e.phase == phase);
+      this.enemies = this.battleData.enemies.filter(e => e.phase == phase || e.fid == "E01");
+      this.allies = this.battleData.allies.filter(e => e.phase == phase);
+
+      for (let cell of this.cells) {
+        cell.enemy = null;
+        cell.ally = null;
+
+        for (let enemy of this.enemies) {
+          if (enemy.coord[0] == cell.x && enemy.coord[1] == cell.y) {
+            cell.enemy = enemy;
+          }
+        }
+        for (let ally of this.allies) {
+          if (ally.coord[0] == cell.x && ally.coord[1] == cell.y) {
+            cell.ally = ally;
+          }
+        }
+      }
+    },
+
+    getSkillClass(skill) {
+      return {
+        active: skill.skillType == 'アクティブ',
+        passive: skill.skillType == 'パッシブ',
+      }
     },
   },
 
@@ -200,18 +283,24 @@ export default {
     border: 1px solid rgba(140,149,159,0.5);
     width: 50px;
     height: 50px;
+    display: flex;
+    justify-content: center;
   }
   .enemy-cell {
-    background: rgb(255, 128, 128);
+    background: rgb(255, 160, 160);
   }
 
   .ally-cell {
-    background: rgb(128, 128, 255);
+    background: rgb(140, 160, 255);
   }
 
   .enemy-list {
   }
   .enemy-panel {
+  }
+
+  .center {
+    margin: auto;
   }
 
 </style>
