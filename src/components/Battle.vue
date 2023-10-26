@@ -11,7 +11,7 @@
             <div class="widget">
               <span>マップデータ：</span>
               <b-dropdown :text="battleData ? battleData.uid : ''" size="sm" id="battle_selector">
-                <b-dropdown-item v-for="(battle, i) in battleList" class="d-flex flex-column" :key="i" @click="selectBattle(battle.uid); updateURL();">
+                <b-dropdown-item v-for="(battle, i) in battleList" class="d-flex flex-column" :key="i" @click="selectBattle(battle.uid, true); updateURL();">
                   {{ battle.uid }}
                 </b-dropdown-item>
               </b-dropdown>
@@ -48,10 +48,10 @@
     <div class="content" :style="style">
       <div class="main-panel">
         <b-tabs nav-class="tab-index" v-model="phaseTabIndex">
-          <b-tab v-for="phase in phaseList" :title="phase.desc" @click="selectPhase(phase.id); updateURL();" :key="phase.id"></b-tab>
+          <b-tab v-for="phase in phaseList" :title="phase.desc" @click="selectPhase(phase.id, true); updateURL();" :key="phase.id"></b-tab>
         </b-tabs>
 
-        <div style="margin-top: 10px; padding: 10px; display: flex">
+        <div style="padding: 10px; background-color: white; display: flex;">
           <div class="grid-container">
             <div v-for="(cell, i) in cells" :key="i" class="grid-cell" :class="getCellClass(cell)" :id="cell.id"
                  @click="onCellClick(cell)" v-on:mouseover="onCellEnter(cell)" v-on:mouseleave="onCellLeave(cell)">
@@ -198,10 +198,10 @@ export default {
       ],
 
       battleList: [],
-      battleId: null,
+      battleId: "",
       battleData: null,
       cells: [],
-      phase: "0",
+      phase: "",
 
       enemies: [],
       allies: [],
@@ -210,7 +210,6 @@ export default {
       hovered: null,
 
       phaseTabIndex: 0,
-      enableUpdateURL: false,
       prevURL: "",
     };
   },
@@ -278,17 +277,16 @@ export default {
       }
     }
     this.cells = cells;
+
     this.selectBattle(this.battleList.slice(-1)[0].uid);
+    this.selectPhase("0");
+    this.$nextTick(function () {
+      // 即時実行するとなんか tab の連動が追いつかないっぽいので $nextTick で行う
+      this.decodeURL();
+    });
 
-    this.decodeURL();
-
-    this.enableUpdateURL = true;
     window.onpopstate = function () {
-      this.enableUpdateURL = false;
       this.decodeURL(true);
-      this.$nextTick(function () {
-        this.enableUpdateURL = true;
-      });
     }.bind(this);
   },
 
@@ -297,34 +295,24 @@ export default {
       return String(num).padStart(pad, '0');
     },
 
-    findUnit(fid) {
-      if (!fid)
-        return null;
-      return this.battleData.enemies.find(u => u.fid == fid);
-    },
-
-    selectBattle(bid) {
+    selectBattle(bid, clear = false) {
       const battle = this.battleList.find(a => a.uid == bid);
       if (!battle)
         return;
       this.battleId = bid;
       this.battleData = battle;
 
-      this.selectPhase("0");
+      if (clear) {
+        this.selectPhase("0", clear);
+      }
     },
 
-    selectPhase(pid) {
-      let phase = null;
-      for (const p of this.phaseList) {
-        if (p.id == pid) {
-          phase = p;
-          this.phaseTabIndex = p.index;
-          break;
-        }
-      }
+    selectPhase(pid, clear = false) {
+      let phase = this.phaseList.find(p => p.id == pid);
       if (!phase)
         return;
 
+      this.phaseTabIndex = phase.index;
       this.phase = pid;
       this.enemies = this.battleData.enemies.filter(e => e.phase == pid || e.fid == "E01");
       this.allies = this.battleData.allies.filter(e => e.phase == pid);
@@ -345,11 +333,13 @@ export default {
         }
       }
 
-      this.selectUnit(null);
+      if (clear) {
+        this.selectUnit(null);
+      }
     },
 
     selectUnit(fid) {
-      const unit = this.findUnit(fid);
+      const unit = this.enemies.find(u => u.fid == fid);
       if (unit) {
         this.selected = fid;
         this.scrollTo(`unit_${fid}`);
@@ -382,7 +372,7 @@ export default {
         r.push("ally-cell");
       }
       else {
-        const u = this.findUnit(this.selected);
+        const u = this.battleData.enemies.find(u => u.fid == this.selected);
         if (u) {
           let d = Math.abs(u.coord[0] - cell.coord[0]) + Math.abs(u.coord[1] - cell.coord[1]);
           if (d <= u.main.move) {
@@ -400,7 +390,7 @@ export default {
       this.$nextTick(function () {
         let e = document.getElementById(id);
         if (e) {
-          e.scrollIntoView(false);
+          e.scrollIntoView();
         }
       });
     },
@@ -421,9 +411,6 @@ export default {
     },
 
     updateURL() {
-      if (!this.enableUpdateURL)
-        return false;
-
       let seri = new this.URLSerializer();
       seri.b = this.battleId;
       if (this.phase != "0")
@@ -451,6 +438,8 @@ export default {
           this.selectBattle(data.b);
         if (data.p)
           this.selectPhase(data.p);
+        else if (data.b)
+          this.selectPhase("0");
         if (data.u)
           this.selectUnit(data.u);
       }
@@ -469,7 +458,7 @@ export default {
     border: 1px solid rgba(0, 0, 0, 0.2);
     border-radius: 0.3rem;
     display: inline-block;
-    background: white;
+    background: rgb(245, 245, 245);
   }
 
   .grid-container {
