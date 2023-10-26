@@ -7,11 +7,34 @@
 
       <div class="menu-content" style="flex-wrap: nowrap">
         <div class="menu-panel" id="cb-settings">
+          <div class="menu-widgets flex">
+            <div class="widget">
+              <span>戦闘データ：</span>
+              <b-dropdown :text="battleData ? battleData.uid : ''" size="sm" id="battle_selector">
+                <b-dropdown-item v-for="(battle, i) in battleList" class="d-flex flex-column" :key="i" @click="selectBattle(battle.uid)">
+                  {{ battle.uid }}
+                </b-dropdown-item>
+              </b-dropdown>
+            </div>
+          </div>
+        </div>
+
+        <div class="menu-panel" id="cb-settings">
+          <div class="menu-widgets flex">
+            <div class="widget">
+              <span>敵情報：</span>
+              <b-dropdown :text="displayTypes[displayType]" size="sm" id="detail_selector">
+                <b-dropdown-item class="d-flex flex-column" v-for="(c, i) in displayTypes" :key="i" @click="displayType=i">
+                  {{ c }}
+                </b-dropdown-item>
+              </b-dropdown>
+            </div>
+          </div>
         </div>
       </div>
     </div>
 
-    <div class="content">
+    <div class="content" :style="style">
       <div class="main-panel">
         <b-tabs nav-class="tab-index" v-model="searchTabIndex">
           <b-tab v-for="(v, k) in phaseNames" :title="v" @click="selectPhase(k)" :key="k"></b-tab>
@@ -19,36 +42,37 @@
 
         <div style="margin-top: 10px; padding: 10px; display: flex">
           <div class="grid-container">
-            <div v-for="(cell, i) in cells" :key="i" :class="`grid-cell ${cell.enemy ? 'enemy-cell' : ''} ${cell.ally ? 'ally-cell' : ''}`" :id="cell.id">
+            <div v-for="(cell, i) in cells" :key="i" :class="`grid-cell ${cell.enemy ? 'enemy-cell' : ''} ${cell.ally ? 'ally-cell' : ''}`" :id="cell.id"
+                 @click="onCellClick(cell)" v-on:mouseover="onCellEnter(cell)" v-on:mouseleave="onCellLeave(cell)">
               <b-img-lazy v-if="cell.enemy" :src="getImageURL(cell.enemy.main.class)" @click="selectEnemy(cell.enemy)" width="30" height="30" class="center" />
             </div>
           </div>
 
           <div class="enemy-list">
-
             <template v-for="ene in enemies">
-              <div class="character" :id="'chr_'+ene.fid" :key="ene.fid">
+              <div class="character" :class="{ 'highlighted': isUnitHighlighted(ene) }" :id="'unit_'+ene.fid" :key="ene.fid">
                 <div class="flex">
                   <div class="portrait">
-                    <b-img-lazy :src="getImageURL(ene.main.icon)" :title="ene.main.name" width="100" height="100" rounded />
+                    <b-img-lazy :src="getImageURL(ene.main.icon)" :title="ene.main.name" width="80" height="80" rounded />
                   </div>
                   <div class="detail" v-show="displayType >= 1">
                     <div class="info">
-                      <h5 v-html="chrNameToHtml(ene.main.name)"></h5>
+                      <h5 v-html="chrNameToHtml(ene.main.name+' (メイン)')"></h5>
                       <div class="status">
                         <b-img-lazy :src="getImageURL(ene.main.class)" :title="'クラス:'+ene.main.class" height="25" />
                         <div class="param-box"><b-img-lazy :src="getImageURL(ene.main.damageType)" :title="'攻撃タイプ:'+ene.main.damageType" width="20" height="20" /></div>
                         <div class="param-box"><b-img-lazy :src="getImageURL('射程')" title="射程" width="18" height="18" /><span>{{ene.main.range}}</span></div>
                         <div class="param-box"><b-img-lazy :src="getImageURL('移動')" title="移動" width="18" height="18" /><span>{{ene.main.move}}</span></div>
+                        <div class="param-box"><span class="param-name">レベル:</span><span class="param-value">{{ene.main.level}}</span></div>
                       </div>
                       <div v-if="ene.main.status" class="status2" v-html="statusToHtml(ene.main.status)" />
                     </div>
                     <div class="skills">
                       <div class="talent">
                         <div class="flex">
-                          <div class="icon" :id="'chr_'+ene.fid+'_talent'">
+                          <div class="icon" :id="'unit_'+ene.fid+'_talent'">
                             <b-img-lazy :src="getImageURL(ene.main.talent.icon)" with="50" height="50" />
-                            <b-popover v-if="displayType==1" :target="'chr_'+ene.fid+'_talent'" triggers="hover focus" :title="ene.main.talent.name" placement="top">
+                            <b-popover v-if="displayType==1" :target="'unit_'+ene.fid+'_talent'" triggers="hover focus" :title="ene.main.talent.name" placement="top">
                               <div class="flex">
                                 <div v-html="descToHtml(ene.main.talent)"></div>
                               </div>
@@ -64,9 +88,9 @@
                       </div>
                       <div class="skill" v-for="(skill, si) in ene.main.skills" :class="getSkillClass(skill)" :key="si">
                         <div class="flex">
-                          <div class="icon" :id="'chr_'+ene.fid+'_skill'+si">
+                          <div class="icon" :id="'unit_'+ene.fid+'_skill'+si">
                             <b-link><b-img-lazy :src="getImageURL(skill.icon)" with="50" height="50" /></b-link>
-                            <b-popover v-if="displayType>=1" :target="'chr_'+ene.fid+'_skill'+si" triggers="hover focus" :delay="{show:0, hide:250}" no-fade :title="skill.name" placement="top">
+                            <b-popover v-if="displayType>=1" :target="'unit_'+ene.fid+'_skill'+si" triggers="hover focus" :delay="{show:0, hide:250}" no-fade :title="skill.name" placement="top">
                               <div class="flex" v-if="displayType==1">
                                 <div v-html="descToHtml(skill)"></div>
                               </div>
@@ -85,6 +109,23 @@
                   </div>
                 </div>
 
+                <div v-if="ene.support && displayType >= 2" class="flex">
+                  <div class="portrait">
+                    <b-img-lazy :src="getImageURL(ene.support.icon)" :title="ene.support.name" width="80" height="80" rounded />
+                  </div>
+                  <div class="detail" v-show="displayType >= 1">
+                    <div class="info">
+                      <h5 v-html="chrNameToHtml(ene.support.name+' (サポート)')"></h5>
+                      <div class="status">
+                        <b-img-lazy :src="getImageURL(ene.support.class)" :title="'クラス:'+ene.support.class" height="25" />
+                        <div class="param-box"><b-img-lazy :src="getImageURL(ene.support.damageType)" :title="'攻撃タイプ:'+ene.support.damageType" width="20" height="20" /></div>
+                        <div class="param-box"><b-img-lazy :src="getImageURL('射程')" title="射程" width="18" height="18" /><span>{{ene.support.range}}</span></div>
+                        <div class="param-box"><span class="param-name">レベル:</span><span class="param-value">{{ene.support.level}}</span></div>
+                      </div>
+                      <div v-if="ene.support.status" class="status2" v-html="statusToHtml(ene.support.status)" />
+                    </div>
+                  </div>
+                </div>
               </div>
             </template>
 
@@ -124,6 +165,11 @@ export default {
       damageTypes: jsonConstants.damageTypes,
       rarities: jsonConstants.rarities,
 
+      displayTypes: [
+        "アイコン",
+        "シンプル",
+        "詳細",
+      ],
       phaseNames: {
         "0": "開始時",
         "1E": "1T敵フェイズ",
@@ -132,6 +178,7 @@ export default {
         "4E": "4T敵フェイズ",
       },
 
+      battleList: [],
       battleId: null,
       battleData: null,
       cells: [],
@@ -139,6 +186,9 @@ export default {
 
       enemies: [],
       allies: [],
+
+      selected: null,
+      hovered: null,
     };
   },
 
@@ -165,6 +215,8 @@ export default {
       dst.class = src.class;
       dst.damageType = src.damageType;
       dst.range = src.range;
+      dst.move = src.move;
+      dst.icon = src.icon;
     };
 
     this.battleList = structuredClone(jsonBattle);
@@ -176,18 +228,14 @@ export default {
           enemy.main.status = this.getNPCChrStatus(chr, enemy.main.level, enemy.main.statusRate);
           enemy.main.talent = skillTable.get(enemy.main.talent);
           enemy.main.skills = enemy.main.skills.map(id => skillTable.get(id));
-          enemy.main.icon = chr.icon;
         }
         if (enemy.support) {
           const chr = this.supChrs.find(c => c.uid == enemy.support.cid);
           mergeChrData(enemy.support, chr);
           enemy.support.status = this.getNPCChrStatus(chr, enemy.support.level, enemy.support.statusRate);
-          enemy.support.icon = chr.icon;
         }
       }
     }
-
-    this.displayType = 2;
   },
 
   mounted() {
@@ -253,6 +301,33 @@ export default {
         passive: skill.skillType == 'パッシブ',
       }
     },
+
+    isUnitHighlighted(unit) {
+      return unit.fid == this.selected || unit.fid == this.hovered;
+    },
+
+    scrollTo(id) {
+      let e = document.getElementById(id);
+      if (e) {
+        e.scrollIntoView(false);
+      }
+    },
+
+    onCellEnter(cell) {
+      this.hovered = cell.enemy ? cell.enemy.fid : null;
+      if (cell.enemy)
+        this.scrollTo(`unit_${cell.enemy.fid}`);
+    },
+    onCellLeave(cell) {
+      if (cell.enemy && this.hovered == cell.enemy.fid) {
+        this.hovered = null;
+      }
+    },
+    onCellClick(cell) {
+      this.selected = cell.enemy ? cell.enemy.fid : null;
+      if (cell.enemy)
+        this.scrollTo(`unit_${cell.enemy.fid}`);
+    },
   },
 
   computed: {
@@ -295,6 +370,8 @@ export default {
   }
 
   .enemy-list {
+    max-height: 750px;
+    overflow-y: scroll;
   }
   .enemy-panel {
   }

@@ -404,12 +404,13 @@ def processCharacters(args):
             ch["rarity"] = rarity
         ch["damageType"] = attackTypeTable[int(l["CharacterAttackType"])]
         ch["range"] = int(l["AttackRange"])
+        if isMain:
+            ch["move"] = int(l["MovingValue"])
 
         # スキルは chrSkills に突っ込んで後で別途処理
         if not isEnemy:
             chrSkills[cid] = []
             if isMain:
-                ch["move"] = int(l["MovingValue"])
                 rec = findByCid(talentSkillCsv, cid)
                 talent = skillTable[ rec["TalentSkillGroupId"] ]
                 chrSkills[cid].append(talent)
@@ -931,8 +932,8 @@ imageTable = readJson(f"{assetsDir}/image_table.json")
 #processSupChr()
 #processEquipments()
 
-#proceccEnemyMainChr()
-#processEnemySupChr()
+proceccEnemyMainChr()
+processEnemySupChr()
 proceccBattleCsv()
 
 writeJson(f"{outDir}/image_table.json", imageTable)
