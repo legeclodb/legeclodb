@@ -9,9 +9,9 @@
         <div class="menu-panel" id="cb-settings">
           <div class="menu-widgets flex">
             <div class="widget">
-              <span>戦闘データ：</span>
+              <span>マップデータ：</span>
               <b-dropdown :text="battleData ? battleData.uid : ''" size="sm" id="battle_selector">
-                <b-dropdown-item v-for="(battle, i) in battleList" class="d-flex flex-column" :key="i" @click="selectBattle(battle.uid)">
+                <b-dropdown-item v-for="(battle, i) in battleList" class="d-flex flex-column" :key="i" @click="selectBattle(battle.uid); updateURL();">
                   {{ battle.uid }}
                 </b-dropdown-item>
               </b-dropdown>
@@ -31,20 +31,39 @@
             </div>
           </div>
         </div>
+
+        <!--
+        <div class="menu-panel" id="cb-settings">
+          <div class="menu-widgets flex">
+            <div class="widget">
+              <b-button @click="dbgTest()">テスト</b-button>
+            </div>
+          </div>
+        </div>
+        -->
+
       </div>
     </div>
 
     <div class="content" :style="style">
       <div class="main-panel">
-        <b-tabs nav-class="tab-index" v-model="searchTabIndex">
-          <b-tab v-for="(v, k) in phaseNames" :title="v" @click="selectPhase(k)" :key="k"></b-tab>
+        <b-tabs nav-class="tab-index" v-model="phaseTabIndex">
+          <b-tab v-for="phase in phaseList" :title="phase.desc" @click="selectPhase(phase.id); updateURL();" :key="phase.id"></b-tab>
         </b-tabs>
 
         <div style="margin-top: 10px; padding: 10px; display: flex">
           <div class="grid-container">
-            <div v-for="(cell, i) in cells" :key="i" :class="`grid-cell ${cell.enemy ? 'enemy-cell' : ''} ${cell.ally ? 'ally-cell' : ''}`" :id="cell.id"
+            <div v-for="(cell, i) in cells" :key="i" class="grid-cell" :class="getCellClass(cell)" :id="cell.id"
                  @click="onCellClick(cell)" v-on:mouseover="onCellEnter(cell)" v-on:mouseleave="onCellLeave(cell)">
-              <b-img-lazy v-if="cell.enemy" :src="getImageURL(cell.enemy.main.class)" @click="selectEnemy(cell.enemy)" width="30" height="30" class="center" />
+              <template v-if="cell.enemy && cell.enemy.support">
+                <b-img-lazy :src="getImageURL(cell.enemy.main.class)" class="center"
+                            width="30" height="30" style="position: relative; left: 8px; top: -8px; z-index: 1;" />
+                <b-img-lazy :src="getImageURL(cell.enemy.support.class)" class="center"
+                            width="30" height="30" style="position: relative; left: -8px; top: 8px; z-index: 0;" />
+              </template>
+              <template v-else-if="cell.enemy && !cell.enemy.support">
+                <b-img-lazy :src="getImageURL(cell.enemy.main.class)" class="center" width="40" height="40" />
+              </template>
             </div>
           </div>
 
@@ -72,7 +91,7 @@
                         <div class="flex">
                           <div class="icon" :id="'unit_'+ene.fid+'_talent'">
                             <b-img-lazy :src="getImageURL(ene.main.talent.icon)" with="50" height="50" />
-                            <b-popover v-if="displayType==1" :target="'unit_'+ene.fid+'_talent'" triggers="hover focus" :title="ene.main.talent.name" placement="top">
+                            <b-popover v-if="displayType==1" :target="'unit_'+ene.fid+'_talent'" triggers="hover focus" :delay="{show:0, hide:250}" no-fade :title="ene.main.talent.name" placement="top">
                               <div class="flex">
                                 <div v-html="descToHtml(ene.main.talent)"></div>
                               </div>
@@ -89,9 +108,9 @@
                       <div class="skill" v-for="(skill, si) in ene.main.skills" :class="getSkillClass(skill)" :key="si">
                         <div class="flex">
                           <div class="icon" :id="'unit_'+ene.fid+'_skill'+si">
-                            <b-link><b-img-lazy :src="getImageURL(skill.icon)" with="50" height="50" /></b-link>
-                            <b-popover v-if="displayType>=1" :target="'unit_'+ene.fid+'_skill'+si" triggers="hover focus" :delay="{show:0, hide:250}" no-fade :title="skill.name" placement="top">
-                              <div class="flex" v-if="displayType==1">
+                            <b-img-lazy :src="getImageURL(skill.icon)" with="50" height="50" />
+                            <b-popover v-if="displayType==1" :target="'unit_'+ene.fid+'_skill'+si" triggers="hover focus" :delay="{show:0, hide:250}" no-fade :title="skill.name" placement="top">
+                              <div class="flex">
                                 <div v-html="descToHtml(skill)"></div>
                               </div>
                             </b-popover>
@@ -170,13 +189,13 @@ export default {
         "シンプル",
         "詳細",
       ],
-      phaseNames: {
-        "0": "開始時",
-        "1E": "1T敵フェイズ",
-        "2E": "2T敵フェイズ",
-        "3E": "3T敵フェイズ",
-        "4E": "4T敵フェイズ",
-      },
+      phaseList: [
+        { index: 0, id: "0", desc: "初期配置" },
+        { index: 1, id: "1E", desc: "1T敵フェイズ" },
+        { index: 2, id: "2E", desc: "2T敵フェイズ" },
+        { index: 3, id: "3E", desc: "3T敵フェイズ" },
+        { index: 4, id: "4E", desc: "4T敵フェイズ" },
+      ],
 
       battleList: [],
       battleId: null,
@@ -189,6 +208,10 @@ export default {
 
       selected: null,
       hovered: null,
+
+      phaseTabIndex: 0,
+      enableUpdateURL: false,
+      prevURL: "",
     };
   },
 
@@ -222,6 +245,7 @@ export default {
     this.battleList = structuredClone(jsonBattle);
     for (let battle of this.battleList) {
       for (let enemy of battle.enemies) {
+        enemy.cellID = `c${this.zeroPad(enemy.coord[0])}${this.zeroPad(enemy.coord[1])}`;
         {
           const chr = this.mainChrs.find(c => c.uid == enemy.main.cid);
           mergeChrData(enemy.main, chr);
@@ -239,8 +263,6 @@ export default {
   },
 
   mounted() {
-    const zeroPad = (num, pad = 2) => String(num).padStart(pad, '0');
-
     const div_x = 15;
     const div_y = 15;
     let cells = new Array(div_x * div_y);
@@ -248,9 +270,8 @@ export default {
       for (let x = 0; x < div_x; ++x) {
         let i = y * div_x + x;
         cells[i] = {
-          id: `c${zeroPad(x)}${zeroPad(y)}`,
-          x: x,
-          y: y,
+          id: `c${this.zeroPad(x)}${this.zeroPad(y)}`,
+          coord: [x, y],
           enemy: null,
           ally: null,
         };
@@ -258,40 +279,83 @@ export default {
     }
     this.cells = cells;
     this.selectBattle(this.battleList.slice(-1)[0].uid);
-  },
 
-  destroyed() {
+    this.decodeURL();
+
+    this.enableUpdateURL = true;
+    window.onpopstate = function () {
+      this.enableUpdateURL = false;
+      this.decodeURL(true);
+      this.$nextTick(function () {
+        this.enableUpdateURL = true;
+      });
+    }.bind(this);
   },
 
   methods: {
-    selectBattle(bid) {
-      const battle = this.battleList.find(a => a.uid == bid);
-      if (battle) {
-        this.battleId = bid;
-        this.battleData = battle;
-        this.selectPhase("0");
-      }
+    zeroPad(num, pad = 2) {
+      return String(num).padStart(pad, '0');
     },
 
-    selectPhase(phase) {
-      this.phase = phase;
-      this.enemies = this.battleData.enemies.filter(e => e.phase == phase || e.fid == "E01");
-      this.allies = this.battleData.allies.filter(e => e.phase == phase);
+    findUnit(fid) {
+      if (!fid)
+        return null;
+      return this.battleData.enemies.find(u => u.fid == fid);
+    },
+
+    selectBattle(bid) {
+      const battle = this.battleList.find(a => a.uid == bid);
+      if (!battle)
+        return;
+      this.battleId = bid;
+      this.battleData = battle;
+
+      this.selectPhase("0");
+    },
+
+    selectPhase(pid) {
+      let phase = null;
+      for (const p of this.phaseList) {
+        if (p.id == pid) {
+          phase = p;
+          this.phaseTabIndex = p.index;
+          break;
+        }
+      }
+      if (!phase)
+        return;
+
+      this.phase = pid;
+      this.enemies = this.battleData.enemies.filter(e => e.phase == pid || e.fid == "E01");
+      this.allies = this.battleData.allies.filter(e => e.phase == pid);
 
       for (let cell of this.cells) {
         cell.enemy = null;
         cell.ally = null;
 
         for (let enemy of this.enemies) {
-          if (enemy.coord[0] == cell.x && enemy.coord[1] == cell.y) {
+          if (enemy.coord[0] == cell.coord[0] && enemy.coord[1] == cell.coord[1]) {
             cell.enemy = enemy;
           }
         }
         for (let ally of this.allies) {
-          if (ally.coord[0] == cell.x && ally.coord[1] == cell.y) {
+          if (ally.coord[0] == cell.coord[0] && ally.coord[1] == cell.coord[1]) {
             cell.ally = ally;
           }
         }
+      }
+
+      this.selectUnit(null);
+    },
+
+    selectUnit(fid) {
+      const unit = this.findUnit(fid);
+      if (unit) {
+        this.selected = fid;
+        this.scrollTo(`unit_${fid}`);
+      }
+      else {
+        this.selected = null;
       }
     },
 
@@ -306,11 +370,39 @@ export default {
       return unit.fid == this.selected || unit.fid == this.hovered;
     },
 
-    scrollTo(id) {
-      let e = document.getElementById(id);
-      if (e) {
-        e.scrollIntoView(false);
+    getCellClass(cell) {
+      let r = [];
+      if (cell.enemy) {
+        r.push("enemy-cell");
+        if (cell.enemy.fid == this.selected) {
+          r.push("selected");
+        }
       }
+      else if (cell.ally) {
+        r.push("ally-cell");
+      }
+      else {
+        const u = this.findUnit(this.selected);
+        if (u) {
+          let d = Math.abs(u.coord[0] - cell.coord[0]) + Math.abs(u.coord[1] - cell.coord[1]);
+          if (d <= u.main.move) {
+            r.push("in-move-range");
+          }
+          else if (d <= u.main.move + u.main.range) {
+            r.push("in-attack-range");
+          }
+        }
+      }
+      return r;
+    },
+
+    scrollTo(id) {
+      this.$nextTick(function () {
+        let e = document.getElementById(id);
+        if (e) {
+          e.scrollIntoView(false);
+        }
+      });
     },
 
     onCellEnter(cell) {
@@ -324,18 +416,50 @@ export default {
       }
     },
     onCellClick(cell) {
-      this.selected = cell.enemy ? cell.enemy.fid : null;
-      if (cell.enemy)
-        this.scrollTo(`unit_${cell.enemy.fid}`);
+      this.selectUnit(cell.enemy ? cell.enemy.fid : null);
+      this.updateURL();
+    },
+
+    updateURL() {
+      if (!this.enableUpdateURL)
+        return false;
+
+      let seri = new this.URLSerializer();
+      seri.b = this.battleId;
+      if (this.phase != "0")
+        seri.p = this.phase;
+      if (this.selected)
+        seri.u = this.selected;
+
+      let url = seri.serialize();
+      if (url != this.prevURL) {
+        window.history.pushState(null, null, url);
+        this.prevURL = url;
+        return true;
+      }
+      return false;
+    },
+    decodeURL(initState = false) {
+      let data = new this.URLSerializer({
+        b: "",
+        p: "",
+        u: "",
+      });
+
+      if (data.deserialize(window.location.href) || initState) {
+        if (data.b)
+          this.selectBattle(data.b);
+        if (data.p)
+          this.selectPhase(data.p);
+        if (data.u)
+          this.selectUnit(data.u);
+      }
+    },
+
+    dbgTest() {
+      this.decodeURL();
     },
   },
-
-  computed: {
-  },
-
-  updated: function () {
-  },
-
 }
 </script>
 
@@ -364,9 +488,18 @@ export default {
   .enemy-cell {
     background: rgb(255, 160, 160);
   }
-
   .ally-cell {
     background: rgb(140, 160, 255);
+  }
+  .selected {
+    border-color: rgb(255, 40, 40);
+    background: rgb(255, 80, 80);
+  }
+  .in-move-range {
+    background: rgb(255, 230, 215);
+  }
+  .in-attack-range {
+    background: rgb(255, 245, 230);
   }
 
   .enemy-list {

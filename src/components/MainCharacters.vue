@@ -242,7 +242,7 @@
                   <div class="flex">
                     <div class="icon" :id="'chr_'+chr.id+'_talent'">
                       <b-img-lazy :src="getImageURL(chr.talent.icon)" with="50" height="50" />
-                      <b-popover v-if="displayType==1" :target="'chr_'+chr.id+'_talent'" triggers="hover focus" :title="chr.talent.name" placement="top">
+                      <b-popover v-if="displayType==1" :target="'chr_'+chr.id+'_talent'" :title="chr.talent.name" triggers="hover focus" :delay="{show:0, hide:250}" no-fade placement="top">
                         <div class="flex">
                           <div v-html="descToHtml(chr.talent)"></div>
                         </div>
@@ -270,7 +270,7 @@
                   <div class="flex">
                     <div class="icon" :id="'chr_'+chr.id+'_skill'+si">
                       <b-link @click="setSkillFilter(skill)"><b-img-lazy :src="getImageURL(skill.icon)" with="50" height="50" /></b-link>
-                      <b-popover v-if="displayType>=1" :target="'chr_'+chr.id+'_skill'+si" triggers="hover focus" :delay="{show:0, hide:250}" no-fade :title="skill.name" placement="top">
+                      <b-popover v-if="displayType>=1" :target="'chr_'+chr.id+'_skill'+si" :title="skill.name" triggers="hover focus" :delay="{show:0, hide:250}" no-fade placement="top">
                         <div class="flex" v-if="displayType==1">
                           <div v-html="descToHtml(skill)"></div>
                         </div>
