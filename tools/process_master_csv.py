@@ -354,12 +354,17 @@ def processEngageData():
         cid = e["CharacterID"]
         before = e["BeforeSkillGroupID"]
         after = e["AfterSkillGroupID"]
-        skillTable[after]["desc"] = re.sub(r'<color=red>(.+?)</color>', '[b]\\1[/b]', e["EffectDescription"])
+
+        desc = e["EffectDescription"]
+        desc = re.sub(r'<color=[^>]+>＿+</color>', '', desc)
+        desc = re.sub(r'<color=[^>]+>(.+?)</color>', '[b]\\1[/b]', desc)
+        skillTable[after]["desc"] = desc
+
         if not cid in engageSkillTable:
             engageSkillTable[cid] = {}
         engageSkillTable[cid][before] = after
 
-    print(engageInfo)
+    #print(engageInfo)
 
 
 
@@ -429,12 +434,6 @@ def processCharacters(args):
                 ch["engage"] = {}
             engage = ch["engage"]
             engage["date"] = ei["date"]
-            l = []
-            for s in ei["skills"]:
-                skillId = s["id"]
-                skillIds.add(skillId)
-                l.append({"skill": skillTable[skillId], "base": s["base"]})
-            engageSkills[cid] = l
 
         # 召喚ユニット
         if "summon" in ch:
@@ -507,13 +506,16 @@ def processCharacters(args):
                     eskills = ch["skills"].copy()
                     for idx, sid in enumerate(eskills):
                         if sid in table:
-                            eskills[idx] = table[sid]
+                            esid = table[sid]
+                            eskills[idx] = esid
+                            skillIds.add(esid)
                     ch["engage"]["skills"] = eskills
         elif isSupport:
             for ch in args.chrJson:
                 cid = ch["uid"]
                 skills = list(map(lambda a: a["id"], chrSkills[cid]))
                 ch["skills"] = skills
+                chrSkills[cid][0]["cid"] = cid
 
         # 使用されているスキルを抽出してデータをセットアップ
         for cid in chrSkills:
@@ -534,7 +536,7 @@ def addSkills(args, skillIds):
     for sid in skillIds:
         skill = skillTable[sid]
         skillType = skill["skillType"]
-        name = skill["name"]
+        name = re.sub(r'<color=[^>]+>(.+?)</color>', '\\1', skill["name"]) 
 
         # ここでアイコン取得
         iconName = skill["icon"]
@@ -786,15 +788,23 @@ def proceccBattleCsv():
 
     for line in battleCsv:
         bid = line["BattleID"]
+        battle = None
         if bid and line["VerID"] != "dummy":
             battle = findByUid(battleList, bid)
-            if not battle:
-                battle = makeBattle(bid)
-                battleList.append(battle)
-            battle["leftTop"] = massToInt2(line["MapRangeLeftTop"])
-            battle["rightDown"] = massToInt2(line["MapRangeRightDown"])
-            battle["allies"] = []
-            battle["enemies"] = []
+            # json 側で uid 指定があるもののみ追加
+            # 全部追加したい場合以下のコメントアウトを外す
+            #if not battle:
+            #    battle = makeBattle(bid)
+            #    battleList.append(battle)
+
+        if not battle:
+            continue
+
+        print(f"battle {battle['uid']}");
+        battle["leftTop"] = massToInt2(line["MapRangeLeftTop"])
+        battle["rightDown"] = massToInt2(line["MapRangeRightDown"])
+        battle["allies"] = []
+        battle["enemies"] = []
 
         coord = massToInt2(line["MassData"])
         fid = line["FormationId"]
@@ -927,13 +937,13 @@ os.makedirs("tmp/icon", exist_ok = True)
 imageTable = readJson(f"{assetsDir}/image_table.json")
 
 #dumpSkillData()
-#processEngageData()
-#proceccMainChr()
-#processSupChr()
-#processEquipments()
+processEngageData()
+proceccMainChr()
+processSupChr()
+processEquipments()
 
-proceccEnemyMainChr()
-processEnemySupChr()
-proceccBattleCsv()
+#proceccEnemyMainChr()
+#processEnemySupChr()
+#proceccBattleCsv()
 
 writeJson(f"{outDir}/image_table.json", imageTable)

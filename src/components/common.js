@@ -483,6 +483,9 @@ export default {
       }
       return text.replaceAll("\n", "<br/>") + "<br/>";
     },
+    skillNameToHtml(skill) {
+      return skill.name;
+    },
     skillParamsToHtml(skill) {
       return [
         ["CT", skill.ct],
@@ -982,8 +985,9 @@ export default {
         if (chr.engage) {
           chr.engage.skills = chr.engage.skills.flatMap(id => grabSkill(id, chr));
           chr.skillsBase = chr.skills;
-          chr.skills = chr.engage.skills;
-          this.$set(chr.engage, 'enabled', true);
+          this.$set(chr.engage, 'enabled', false);
+        //  chr.skills = chr.engage.skills;
+        //  this.$set(chr.engage, 'enabled', true);
         }
       }
     },

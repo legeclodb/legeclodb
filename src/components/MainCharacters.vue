@@ -250,7 +250,7 @@
                     </div>
                     <div class="desc" v-show="displayType >= 2">
                       <h5>
-                        {{ chr.talent.name }}
+                        {{ skillNameToHtml(chr.talent) }}
                         <b-dropdown v-if="chr.talent.descs" class="level-selector" :text="chr.talent.current" variant="outline-secondary">
                           <b-dropdown-item class="d-flex flex-column" v-for="(ds, di) in chr.talent.descs" :key="di" @click="chr.talent.current=di; chr.talent.desc=ds;">{{di}}</b-dropdown-item>
                         </b-dropdown>
@@ -284,7 +284,7 @@
                     </div>
                     <div class="desc" v-show="displayType >= 2">
                       <div class="flex">
-                        <h6>{{ skill.name }}</h6>
+                        <h6>{{ skillNameToHtml(skill) }}</h6>
                         <div class="param-group" v-html="skillParamsToHtml(skill)"></div>
                       </div>
                       <p><span v-html="descToHtml(skill)"></span><span v-if="skill.note" class="note" v-html="noteToHtml(skill)"></span></p>
