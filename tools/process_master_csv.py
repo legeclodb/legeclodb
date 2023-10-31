@@ -167,9 +167,6 @@ def filterByField(ls, fieldName, fieldValue):
 def findByUid(ls, uid):
     return findByField(ls, "uid", uid)
 
-def findByName(ls, name):
-    return findByField(ls, "name", name)
-
 def findByCid(csv, cid):
     if "CharacterID" in csv[0]:
         return findByField(csv, "CharacterID", cid)
@@ -536,7 +533,7 @@ def addSkills(args, skillIds):
     for sid in skillIds:
         skill = skillTable[sid]
         skillType = skill["skillType"]
-        name = re.sub(r'<color=[^>]+>(.+?)</color>', '\\1', skill["name"]) 
+        name = re.sub(r'<color=[^>]+>♥(.+?)♥</color>', '\\1', skill["name"]) 
 
         # ここでアイコン取得
         iconName = skill["icon"]
@@ -546,7 +543,7 @@ def addSkills(args, skillIds):
 
         js = None
         if skillType == "アクティブ":
-            js = findByName(args.activeJson, name);
+            js = findByUid(args.activeJson, sid);
             if not js:
                 js = {"name": name}
                 args.activeJson.append(js);
@@ -585,7 +582,7 @@ def addSkills(args, skillIds):
             if "cost" in skill and isMain:
                 js["cost"] = int(skill["cost"])
         elif skillType == "パッシブ":
-            js = findByName(args.passiveJson, name);
+            js = findByUid(args.passiveJson, sid);
             if not js:
                 js = {"name": name}
                 args.passiveJson.append(js);
@@ -593,7 +590,7 @@ def addSkills(args, skillIds):
             if "cost" in skill and isSupport:
                 js["cost"] = int(skill["cost"])
         elif skillType == "タレント":
-            js = findByName(args.talentJson, name);
+            js = findByUid(args.talentJson, sid);
             if not js:
                 js = {"name": name}
                 args.talentJson.append(js);
@@ -788,23 +785,15 @@ def proceccBattleCsv():
 
     for line in battleCsv:
         bid = line["BattleID"]
-        battle = None
         if bid and line["VerID"] != "dummy":
             battle = findByUid(battleList, bid)
-            # json 側で uid 指定があるもののみ追加
-            # 全部追加したい場合以下のコメントアウトを外す
-            #if not battle:
-            #    battle = makeBattle(bid)
-            #    battleList.append(battle)
-
-        if not battle:
-            continue
-
-        print(f"battle {battle['uid']}");
-        battle["leftTop"] = massToInt2(line["MapRangeLeftTop"])
-        battle["rightDown"] = massToInt2(line["MapRangeRightDown"])
-        battle["allies"] = []
-        battle["enemies"] = []
+            if not battle:
+                battle = makeBattle(bid)
+                battleList.append(battle)
+            battle["leftTop"] = massToInt2(line["MapRangeLeftTop"])
+            battle["rightDown"] = massToInt2(line["MapRangeRightDown"])
+            battle["allies"] = []
+            battle["enemies"] = []
 
         coord = massToInt2(line["MassData"])
         fid = line["FormationId"]
@@ -925,7 +914,7 @@ def proceccBattleCsv():
         writeJson(f"{outDir}/support_passive.json", args.passiveJson)
         processEnemySupChr()
 
-    #writeChrAndSkillData()
+    writeChrAndSkillData()
 
 
 
@@ -937,13 +926,12 @@ os.makedirs("tmp/icon", exist_ok = True)
 imageTable = readJson(f"{assetsDir}/image_table.json")
 
 #dumpSkillData()
+
 processEngageData()
 proceccMainChr()
 processSupChr()
 processEquipments()
 
-#proceccEnemyMainChr()
-#processEnemySupChr()
 #proceccBattleCsv()
 
 writeJson(f"{outDir}/image_table.json", imageTable)
