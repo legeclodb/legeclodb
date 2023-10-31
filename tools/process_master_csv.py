@@ -195,6 +195,7 @@ def cleanupDesc(desc):
         ['クームタイム', 'クールタイム'],
         ['%\n行動終了時', '%。\n行動終了時'],
         ['\)敵ユニット', ')。敵ユニット'],
+        ['自身がアクティブスキルで敵ユニットを倒した時、', '自身がアクティブスキルで敵ユニットを倒したとき、'],
         [r'。 +', '。'],
     ]:
         desc = re.sub(pattern[0], pattern[1], desc)
@@ -577,7 +578,11 @@ def addSkills(args, skillIds):
                 if rangeType == 1:
                     js["range"] = "自ユニット"
                 elif rangeType == 2:
-                    js["range"] = int(skill["range"])
+                    # どうも例外的な処理があるっぽいのだが、その条件がわからないので個別対応する…
+                    if js["name"] == "ライトニングヒット":
+                        js["range"] = 2
+                    else:
+                        js["range"] = int(skill["range"])
                 elif rangeType == 3:
                     js["range"] = "全体"
             if "cost" in skill and isMain:
