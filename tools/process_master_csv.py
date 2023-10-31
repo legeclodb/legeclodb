@@ -533,7 +533,7 @@ def addSkills(args, skillIds):
     for sid in skillIds:
         skill = skillTable[sid]
         skillType = skill["skillType"]
-        name = re.sub(r'<color=[^>]+>♥(.+?)♥</color>', '\\1', skill["name"]) 
+        name = re.sub(r'<color=[^>]+>(.+?)</color>', '\\1', skill["name"]) 
 
         # ここでアイコン取得
         iconName = skill["icon"]
@@ -545,9 +545,10 @@ def addSkills(args, skillIds):
         if skillType == "アクティブ":
             js = findByUid(args.activeJson, sid);
             if not js:
-                js = {"name": name}
+                js = {}
                 args.activeJson.append(js);
 
+            js["name"] = name
             if isMain:
                 updateDesc(js, skill["desc"])
             elif isSupport:
