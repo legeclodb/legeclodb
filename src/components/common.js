@@ -462,6 +462,8 @@ export default {
       if (!text)
         return "";
 
+      // 行を跨ぐ置換がありうるため、先に \n -> <br/> 置換
+      text = text.replaceAll("\n", "<br/>") + "<br/>";
       while (true) {
         // [caution]hoge[/caution] -> <span class='caution'>hoge</span>
         // 入れ子のケースに対応するためループする必要がある
@@ -471,7 +473,7 @@ export default {
           break;
         text = tmp;
       }
-      return text.replaceAll("\n", "<br/>") + "<br/>";
+      return text;
     },
     noteToHtml(item) {
       let text = item.note;

@@ -355,7 +355,7 @@ def processEngageData():
 
         desc = e["EffectDescription"]
         desc = re.sub(r'<color=[^>]+>＿+</color>', '', desc)
-        desc = re.sub(r'<color=[^>]+>(.+?)</color>', '[b]\\1[/b]', desc)
+        desc = re.sub(r'<color=[^>]+>(.+?)</color>', '[b]\\1[/b]', desc, flags=(re.MULTILINE | re.DOTALL))
         skillTable[after]["desc"] = desc
 
         if not cid in engageSkillTable:

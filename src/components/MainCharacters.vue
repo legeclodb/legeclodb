@@ -694,6 +694,7 @@ export default {
       else {
         chr.skills = chr.skillsBase;
       }
+      this.updateTagCounts();
     },
     updateStatus() {
       const s = this.stat;
