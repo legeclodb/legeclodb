@@ -17,7 +17,7 @@
           </b-form-row>
           <b-form-row v-for="(param, name, index) in main" :key="index">
             <b-col style="text-align: right" align-self="end">
-              <label style="width: 10em" :class="getParamClass(param)" :for="`bp-main-${name}`">{{param.label}}</label>
+              <label style="width: 11em" :class="getParamClass(param)" :for="`bp-main-${name}`">{{param.label}}</label>
             </b-col>
             <b-col>
               <b-form-input v-if="param.type == 'number'" style="width: 5em" :id="`bp-main-${name}`" v-model.number="param.value"
@@ -146,6 +146,12 @@ export default {
           value: true,
           disabled: () => !this.mainEnabled,
         },
+        engageSkillCount: {
+          label: "エンゲージ後スキルの数",
+          type: "number",
+          value: 0,
+          disabled: () => !this.mainEnabled,
+        },
       },
       support: {
         stars: {
@@ -231,6 +237,7 @@ export default {
         rate += params.master.value * 0.1;
         rate += params.skillCost.value * 0.03;
         rate += params.eqStars.value * 0.02;
+        rate += params.engageSkillCount.value * 0.05;
         if (params.enchant.value)
           rate += 0.1;
       }
