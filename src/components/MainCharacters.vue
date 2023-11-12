@@ -112,6 +112,13 @@
                     </b-dropdown-item>
                   </b-dropdown>
                 </div>
+                <div class="widget">
+                  <span>エンゲージ：</span>
+                  <b-dropdown text="一括切替" size="sm">
+                    <b-dropdown-item class="d-flex flex-column" @click="switchEngageAll(false)">エンゲージ前</b-dropdown-item>
+                    <b-dropdown-item class="d-flex flex-column" @click="switchEngageAll(true)">エンゲージ後</b-dropdown-item>
+                  </b-dropdown>
+                </div>
               </div>
               <div class="menu-widgets flex">
                 <div class="widget">
@@ -687,12 +694,18 @@ export default {
     },
 
     switchEngage(chr, v) {
-      chr.engage.enabled = v;
-      if (v) {
-        chr.skills = chr.engage.skills;
+      if (chr.engage) {
+        chr.engage.enabled = v;
+        chr.skills = v ? chr.engage.skills : chr.skillsBase;
       }
-      else {
-        chr.skills = chr.skillsBase;
+      this.updateTagCounts();
+    },
+    switchEngageAll(v) {
+      for (let chr of this.characters) {
+        if (chr.engage) {
+          chr.engage.enabled = v;
+          chr.skills = v ? chr.engage.skills : chr.skillsBase;
+        }
       }
       this.updateTagCounts();
     },
