@@ -1615,7 +1615,30 @@
     "range": 6,
     "cost": 2,
     "uid": "1100627",
-    "icon": "sk_a081"
+    "icon": "sk_a081",
+    "debuff": [
+      {
+        "type": "ディフェンス",
+        "value": 20,
+        "duration": 1
+      },
+      {
+        "type": "レジスト",
+        "value": 20,
+        "duration": 1
+      },
+      {
+        "type": "ダメージ耐性",
+        "value": 10,
+        "duration": 1
+      },
+      {
+        "type": "移動",
+        "value": 2,
+        "duration": 1
+      }
+    ],
+    "tags": [ "単体攻撃(非戦闘)", "位置移動(敵)" ]
   },
   {
     "name": "クレードル",
