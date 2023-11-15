@@ -593,7 +593,7 @@ def addSkills(args, skillIds):
                 js = {"name": name}
                 args.passiveJson.append(js);
             updateDesc(js, skill["desc"])
-            if "cost" in skill and isSupport:
+            if "cost" in skill and isMain:
                 js["cost"] = int(skill["cost"])
         elif skillType == "タレント":
             js = findByUid(args.talentJson, sid);
