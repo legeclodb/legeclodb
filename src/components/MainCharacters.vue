@@ -440,6 +440,7 @@ export default {
       ],
       sortTypes: [
         "実装日",
+        "エンゲージ実装日",
         "戦闘力",
         "攻撃力",
         "HP",
@@ -570,8 +571,24 @@ export default {
       let ret = this.characters.filter(a => this.filterItem(a)); // filter & shallow copy
 
       const c = this.compare;
+
+      const getEngateDate = function (chr) {
+        return chr.engage ? chr.engage.date : "";
+      };
+      const compareEngageDate = function (l, r) {
+        const ld = getEngateDate(l);
+        const rd = getEngateDate(r);
+        if (ld || rd) {
+          return ld == rd ? r.date.localeCompare(l.date) : rd.localeCompare(ld);
+        }
+        else {
+          return r.date.localeCompare(l.date);
+        }
+      };
+
       const comparer = [
         (a, b) => b.date.localeCompare(a.date), // 実装日
+        (a, b) => compareEngageDate(a, b), // エンゲージ実装日
         (a, b) => c(a.status[6], b.status[6]), // 戦闘力
         (a, b) => c(a.attackPower, b.attackPower), // 攻撃力
         (a, b) => c(a.status[0], b.status[0]), // HP
