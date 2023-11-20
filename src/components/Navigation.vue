@@ -8,9 +8,11 @@
       <b-nav-item to="/lookup.html">逆引き</b-nav-item>
       <b-nav-item to="/about.html">解説</b-nav-item>
       <b-nav-item v-if="devmode" to="/battle.html">戦闘</b-nav-item>
+      <b-nav-item v-if="devmode" to="/misc.html">その他</b-nav-item>
     </b-navbar-nav>
     <b-navbar-nav class="ml-auto">
-      <b-nav-item href="https://github.com/legeclodb/legeclodb" target="_blank">
+      <b-nav-item class="icon" to="/misc.html" id="nav-misc">❗️</b-nav-item>
+      <b-nav-item class="icon" href="https://github.com/legeclodb/legeclodb" target="_blank">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="24" height="24" focusable="false" role="img" class="navbar-nav-svg">
           <title>GitHub</title>
           <g fill="currentColor">
@@ -19,6 +21,14 @@
         </svg>
       </b-nav-item>
     </b-navbar-nav>
+
+    <b-popover target="nav-misc" placement="bottom" triggers="hover focus">
+      <ul>
+        <li>
+          <b-link to="misc.html#master-rank-bug">マスターランク切り替えボタンについて</b-link>
+        </li>
+      </ul>
+    </b-popover>
   </b-navbar>
 </template>
 
@@ -60,4 +70,9 @@ export default {
 .nav-link:hover, .nav-link:focus {
   color: rgba(255, 255, 255, 0.5) !important;
 }
+.icond {
+  margin: 0 0;
+}
+
+
 </style>
