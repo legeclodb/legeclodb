@@ -11,7 +11,6 @@
       <b-nav-item v-if="devmode" to="/misc.html">その他</b-nav-item>
     </b-navbar-nav>
     <b-navbar-nav class="ml-auto">
-      <b-nav-item class="icon" to="/misc.html" id="nav-misc">❗️</b-nav-item>
       <b-nav-item class="icon" href="https://github.com/legeclodb/legeclodb" target="_blank">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="24" height="24" focusable="false" role="img" class="navbar-nav-svg">
           <title>GitHub</title>
