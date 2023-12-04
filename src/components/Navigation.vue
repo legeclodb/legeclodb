@@ -20,14 +20,6 @@
         </svg>
       </b-nav-item>
     </b-navbar-nav>
-
-    <b-popover target="nav-misc" placement="bottom" triggers="hover focus">
-      <ul>
-        <li>
-          <b-link to="misc.html#master-rank-bug">マスターランク切り替えボタンについて</b-link>
-        </li>
-      </ul>
-    </b-popover>
   </b-navbar>
 </template>
 

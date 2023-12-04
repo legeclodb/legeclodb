@@ -18,7 +18,7 @@
               </div>
               <b-form-row v-for="(param, name, index) in main" :key="index">
                 <b-col style="text-align: right" align-self="end">
-                  <label :for="`stat-main-${name}`">{{param.label}}</label>
+                  <label :for="`stat-main-${name}`" style="width: 12em">{{param.label}}</label>
                 </b-col>
                 <b-col>
                   <b-form-input v-if="param.type == 'number'" style="width: 5em" :id="`stat-main-${name}`" v-model.number="param.value" size="sm" type="number" class="input-param" :min="param.min" :max="param.max"></b-form-input>
@@ -276,6 +276,11 @@ export default {
         },
         loveBonus: {
           label: "好感度ボーナス",
+          type: "bool",
+          value: true,
+        },
+        engageSkillBonus: {
+          label: "エンゲージスキルボーナス",
           type: "bool",
           value: true,
         },
@@ -1041,6 +1046,7 @@ export default {
         level: s.main.level.value,
         master: s.main.master.value,
         loveBonus: s.main.loveBonus.value,
+        engageSkillBonus: s.main.engageSkillBonus.value,
         boosts: Object.values(s.mainBoosts).map(a => a.value),
         items: Object.values(s.mainItems).map(a => a.value),
         enchantsP: Object.values(s.mainEnchants).map(a => a.valueP),
@@ -1091,6 +1097,8 @@ export default {
       bpr += 0.02 * (5 * items.length); // アイテムの☆合計
       if (items.length == 4)
         bpr += 0.1; // エンチャント4セット
+      if (chr.engage && ma.engageSkillBonus)
+        bpr += 0.05 * Math.min(chr.engage.skills.length, 3);
       const bpMain = Math.round(this.getBattlePower(r) * bpr);
       const rMain = [...r, bpMain];
       if (!sa || !sa.character)

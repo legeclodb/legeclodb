@@ -800,9 +800,9 @@ export default {
       r += status[4] * 2;
       return r;
     },
-    getMainBattlePower(status, star = 6, master = 3, skillCost = 6, itemStar = 20, enchantComplete = true) {
+    getMainBattlePower(status, star = 6, master = 3, skillCost = 6, itemStar = 20, enchantComplete = true, engageSkillCount = 0) {
       let r = this.getBattlePower(status);
-      return Math.round(r * (1.0 + 0.1 * star + 0.1 * master + 0.03 * skillCost + 0.02 * itemStar + (enchantComplete ? 0.1 : 0)));
+      return Math.round(r * (1.0 + 0.1 * star + 0.1 * master + 0.03 * skillCost + 0.02 * itemStar + (enchantComplete ? 0.1 : 0) + engageSkillCount * 0.05));
     },
     getSupportBattlePower(status, star = 6, master = 3, skillCount = 3) {
       status = [...status];
