@@ -725,6 +725,12 @@ export default {
           get limit() {
             return this.parent ? this.parent.limit_ : this.limit_;
           },
+          set limit(v) {
+            if (this.parent)
+              this.parent.limit_ = v;
+            else
+              this.limit_ = v;
+          },
           reset() {
             this.enabled = false;
             this.limit = l;
