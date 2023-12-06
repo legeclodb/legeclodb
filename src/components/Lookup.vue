@@ -239,7 +239,7 @@
           <br />
           なお、必ずしも本当に最適な結果になるとは限らないことに注意が必要です。<br />
           完璧に解くには時間がかかりすぎるため、若干正確性を犠牲にしつつ高速に解く方法を用いています。<br />
-          (アルゴリズムは随時改良中: 2023/09/26)<br />
+          (アルゴリズムは随時改良中: 2023/12/06)<br />
         </div>
       </div>
 
@@ -701,6 +701,7 @@ export default {
     this.options = makeOptions([
       { name: "maxPickup", label: "人を選出", value: 5, min: 1, max: 10 },
       { name: "maxActiveCount", label: "アクティブ数制限 (再行動ありを除く)", value: 2, min: 0, max: 3 },
+      { name: "allowEngageSkills", label: "エンゲージスキルを含める", value: true },
       { name: "allowOnBattle", label: "戦闘時発動効果を含める", value: true },
       { name: "allowProbability", label: "確率発動効果を含める", value: true },
       { name: "allowSingleUnitBuff", label: "単体バフを含める", value: false },
@@ -898,7 +899,7 @@ export default {
         (!filter.rarity || this.filterMatch(filter.rarity, chr.rarityId));
     },
     filterMatchSupChr(chr, filter = this.filter) {
-      // チャレンジクエストはサポートのクラスは無制限らしいので、クラスフィルタは考慮しない
+      // チャレンジクエストはサポートのクラスは無制限なので、クラスフィルタは考慮しない
       return (!filter.rarity || this.filterMatch(filter.rarity, chr.rarityId));
     },
 
@@ -1061,6 +1062,12 @@ export default {
       let armors = this.armors.filter(a => isRelevant(a));
       let helmets = this.helmets.filter(a => isRelevant(a));
       let accessories = this.accessories.filter(a => isRelevant(a));
+
+      for (let chr of mainChrs) {
+        if (chr.engage) {
+          chr.skills = opt.allowEngageSkills ? chr.engage.skills : chr.skillsBase;
+        }
+      }
 
       const createContext = function (parent = null) {
         let vue = this;
