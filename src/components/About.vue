@@ -77,12 +77,7 @@
               攻撃側＼防御側{{r.null}}
             </template>
             <template #cell()="r">
-              <span v-if="typeof(r.value)=='number'">
-                {{r.value == 0 ? "-" : r.value > 0 ? "+" + r.value + "%" : r.value + "%" }}
-              </span>
-              <span v-else>
-                <b>{{r.value}}</b>
-              </span>
+              <span v-html="n2percent(r.value)" />
             </template>
           </b-table>
           <br />
@@ -96,12 +91,7 @@
               攻撃側＼防御側{{r.null}}
             </template>
             <template #cell()="r">
-              <span v-if="typeof(r.value)=='number'">
-                {{r.value == 0 ? "-" : r.value > 0 ? "+" + r.value + "%" : r.value + "%" }}
-              </span>
-              <span v-else>
-                <b>{{r.value}}</b>
-              </span>
+              <span v-html="n2percent(r.value)" />
             </template>
           </b-table>
         </p>
@@ -505,6 +495,13 @@ export default {
           });
         }
       }
+    },
+
+    n2percent(n) {
+      if (typeof (n) === 'number')
+        return n == 0 ? "-" : n > 0 ? `+${n}%` : `${n}%`;
+      else
+        return `<b>${n}</b>`;
     },
   },
 
