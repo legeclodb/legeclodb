@@ -1,4 +1,5 @@
 {
+  "null": "empty.png",
   "ソルジャー": "img/09deac5ba0c3171c157a3b28b971e3c4.png",
   "ランサー": "img/ce8a32197b4f700b19c4cee1197b8dd8.png",
   "ライダー": "img/a598843e7453ba66e1398c5c134d45ed.png",
@@ -20,6 +21,8 @@
   "兜": "img/74338b6c1f4ab41fb40282ba67b265bd.png",
   "アクセサリ": "img/17aa9d1e8547f4c42c4dda3c603067d1.png",
   "アミュレット": "img/839d48d69433e37fa744056d7e8a53e5.png",
+  "月のアミュレット": "img/839d48d69433e37fa744056d7e8a53e5.png",
+  "太陽のアミュレット": "img/839d48d69433e37fa744056d7e8a53e5.png",
   "N": "img/8d9c307cb7f3c4a32822a51922d1ceaa.png",
   "R": "img/e1e1d3d40573127e9ee0480caf1283d6.png",
   "SR": "img/8cb2010d27e13509d364436256e972c0.png",

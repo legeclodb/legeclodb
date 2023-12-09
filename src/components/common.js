@@ -1,4 +1,5 @@
 import jsonImageTable from '../assets/image_table.json'
+import jsonConstants from '../assets/constants.json'
 
 export default {
   data() {
@@ -905,12 +906,27 @@ export default {
         skill.icon = skill.uid;
     },
     setupItems(items) {
-      for(let item of items)
+      const consts = jsonConstants;
+      const allClasses = [0, 1, 2, 3, 4, 5, 6, 7];
+
+      for (let item of items) {
         this.setupSkill(item, false);
+
+        if (item.classes)
+          item.classIds = item.classes.map(cls => consts.classes.findIndex(v => v == cls));
+        else
+          item.classIds = allClasses;
+
+        if (item.rarity)
+          item.rarityId = consts.rarities.findIndex(v => v == item.rarity);
+        if (item.slot)
+          item.slotId = consts.itemTypes.findIndex(v => v == item.slot);
+      }
     },
 
     setupCharacters(characters, activeSkills, passiveSkills, talents = []) {
       const isMain = talents.length > 0;
+      const consts = jsonConstants;
 
       for (let s of activeSkills) {
         s.skillType = "アクティブ";
@@ -966,6 +982,17 @@ export default {
         if (!chr.icon) {
           chr.icon = chr.uid;
         }
+
+        if (chr.class)
+          chr.classId = consts.classes.findIndex(v => v == chr.class);
+        if (chr.symbol)
+          chr.symbolId = consts.symbols.findIndex(v => v == chr.symbol);
+        if (chr.rarity)
+          chr.rarityId = consts.rarities.findIndex(v => v == chr.rarity);
+        if (chr.damageType)
+          chr.damageTypeId = consts.damageTypes.findIndex(v => v == chr.damageType);
+        if (chr.supportType)
+          chr.supportTypeId = consts.supportTypes.findIndex(v => v == chr.supportType);
 
         if (chr.skills) {
           chr.skills = chr.skills.flatMap(id => grabSkill(id, chr));

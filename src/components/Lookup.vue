@@ -131,26 +131,8 @@
                 <h3 style="margin: 5px 0px">優先リスト</h3>
                 <div class="right-align">
                   <b-button size="sm" id="add-prioritized">追加</b-button>
-                  <b-popover target="add-prioritized" triggers="click blur" :delay="{show:0, hide:250}" no-fade placement="bottom">
-                    <div style="margin: 4px 0px">
-                      <b-button-group size="sm" style="margin-right: 10px">
-                        <b-button v-for="(c, i) in pickFilter.class" :key="i" :pressed.sync="c.state" variant="outline-secondary">
-                          <b-img-lazy :src="getImageURL(classes[i])" width="20px" />
-                        </b-button>
-                      </b-button-group>
-                      <b-button-group size="sm">
-                        <b-button v-for="(c, i) in pickFilter.symbol" :key="i" :pressed.sync="c.state" variant="outline-secondary">
-                          <b-img-lazy :src="getImageURL(symbols[i])" width="20px" />
-                        </b-button>
-                      </b-button-group>
-                    </div>
-                    <div class="exclude-box" style="width: 425px; max-height: 250px">
-                      <b-link v-for="(v, i) in mainChrPick" :key="i" @click="addPrioritized(v)">
-                        <b-img-lazy :src="getImageURL(v.icon)" :title="v.name" width="50" />
-                      </b-link>
-                    </div>
-                  </b-popover>
                   <b-button size="sm" @click="prioritized=[]" style="margin-left: 5px">クリア</b-button>
+                  <ChrSelector target="add-prioritized" :chrs="mainChrs" @click="addPrioritized" classfilter symbolfilter />
                 </div>
               </div>
               <div class="flex exclude-box">
@@ -170,26 +152,8 @@
                 <h3 style="margin: 5px 0px">除外リスト</h3>
                 <div class="right-align">
                   <b-button size="sm" id="add-excluded">追加</b-button>
-                  <b-popover target="add-excluded" triggers="click blur" :delay="{show:0, hide:250}" no-fade placement="bottom">
-                    <div style="margin: 4px 0px">
-                      <b-button-group size="sm" style="margin-right: 10px">
-                        <b-button v-for="(c, i) in pickFilter.class" :key="i" :pressed.sync="c.state" variant="outline-secondary">
-                          <b-img-lazy :src="getImageURL(classes[i])" width="20px" />
-                        </b-button>
-                      </b-button-group>
-                      <b-button-group size="sm">
-                        <b-button v-for="(c, i) in pickFilter.symbol" :key="i" :pressed.sync="c.state" variant="outline-secondary">
-                          <b-img-lazy :src="getImageURL(symbols[i])" width="20px" />
-                        </b-button>
-                      </b-button-group>
-                    </div>
-                    <div class="exclude-box" style="width: 425px; max-height: 250px">
-                      <b-link v-for="(v, i) in mainChrPick" :key="i" @click="addExcluded(v)">
-                        <b-img-lazy :src="getImageURL(v.icon)" :title="v.name" width="50" />
-                      </b-link>
-                    </div>
-                  </b-popover>
                   <b-button size="sm" @click="excluded=[]" style="margin-left: 5px">クリア</b-button>
+                  <ChrSelector target="add-excluded" :chrs="mainChrs" @click="addExcluded" classfilter symbolfilter />
                 </div>
               </div>
               <div class="flex exclude-box">
@@ -447,7 +411,9 @@
   </div>
 </template>
 
-<script>import Navigation from './Navigation.vue'
+<script>
+import Navigation from './Navigation.vue'
+import ChrSelector from './parts/ChrSelector.vue'
 import jsonMainActive from '../assets/main_active.json'
 import jsonMainPassive from '../assets/main_passive.json'
 import jsonMainTalents from '../assets/main_talents.json'
@@ -463,6 +429,7 @@ export default {
   name: 'Lookup',
   components: {
     Navigation,
+    ChrSelector,
   },
   mixins: [common],
 
@@ -588,15 +555,6 @@ export default {
         obj.isSupport = true;
       else if (typeName == "アイテム")
         obj.isItem = true;
-
-      if (obj.class)
-        obj.classId = this.classes.findIndex(v => v == obj.class);
-      if (obj.symbol)
-        obj.symbolId = this.symbols.findIndex(v => v == obj.symbol);
-      if (obj.rarity)
-        obj.rarityId = this.rarities.findIndex(v => v == obj.rarity);
-      if (obj.damageType)
-        obj.damageTypeId = this.damageTypes.findIndex(v => v == obj.damageType);
     }.bind(this);
     for (let chr of this.mainChrs) {
       setupPropIndex(chr, "メイン");

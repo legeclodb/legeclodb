@@ -351,7 +351,7 @@ export default {
     this.setupDB();
 
     this.fillFilter(this.classFilter, this.classes);
-    this.fillFilter(this.itemTypeFilter, this.itemTypes);
+    this.fillFilter(this.itemTypeFilter, this.itemTypes.slice(0, 4));
     this.fillFilter(this.rarityFilter, this.rarities);
 
     this.decodeURL();
@@ -372,8 +372,9 @@ export default {
   methods: {
     setupDB() {
       // 外部 json 由来のデータへの変更はセッションをまたいでしまうので、deep copy しておく
-      this.equipments = structuredClone(this.equipments).filter(a => !a.hidden && a.slot != "アミュレット");
+      this.equipments = structuredClone(this.equipments);
       this.setupItems(this.equipments);
+      this.equipments = this.equipments.filter(a => !a.hidden && a.slotId < 4); // アミュレットは除外
 
       this.predefinedMainTags.push("分類");
       this.predefinedMainTags.push("デメリット");

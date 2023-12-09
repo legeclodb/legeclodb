@@ -23,11 +23,11 @@
                 <b-col>
                   <b-form-input v-if="param.type == 'number'" style="width: 5em" :id="`stat-main-${name}`" v-model.number="param.value" size="sm" type="number" class="input-param" :min="param.min" :max="param.max"></b-form-input>
                   <b-form-checkbox v-if="param.type == 'bool'" style="width: 5em" :id="`stat-main-${name}`" v-model="param.value" size="sm" plain></b-form-checkbox>
-                  <b-dropdown v-if="param.type == 'character'" style="width: 15em" :text="param.value ? param.value.name : '(なし)'" size="sm" class="input-dropdown" :id="`stat-main-${name}`" menu-class="long-dropdown">
-                    <b-dropdown-item class="d-flex" v-for="(c, i) in mainChrs" :key="i" @click="param.value=c; validateItems();">
-                      {{ c.name }}
-                    </b-dropdown-item>
-                  </b-dropdown>
+                  <b-button v-if="param.type == 'character'" style="width: 15em" size="sm" class="input-dropdown" :id="`stat-main-${name}`" menu-class="long-dropdown">
+                    {{param.value ? param.value.name : '(なし)'}}
+                    <ChrSelector :target="`stat-main-${name}`" :chrs="mainChrs" classfilter symbolfilter closeonclick
+                                 @click="function(chr){param.value=chr; validateItems();}" />
+                  </b-button>
                 </b-col>
               </b-form-row>
             </b-container>
@@ -57,22 +57,26 @@
                   <label style="width: 5em">{{param.label}}</label>
                 </b-col>
                 <b-col>
-                  <b-dropdown v-if="param.type == 'weapon'" style="width: 14em" :text="param.value ? param.value.name : '(なし)'" size="sm" class="input-dropdown" menu-class="long-dropdown">
-                    <b-dropdown-item class="d-flex" @click="param.value=null">(なし)</b-dropdown-item>
-                    <b-dropdown-item class="d-flex" v-for="(c, i) in validWeapons()" :key="i" @click="param.value=c">{{ c.name }}</b-dropdown-item>
-                  </b-dropdown>
-                  <b-dropdown v-if="param.type == 'armor'" style="width: 14em" :text="param.value ? param.value.name : '(なし)'" size="sm" class="input-dropdown" menu-class="long-dropdown">
-                    <b-dropdown-item class="d-flex" @click="param.value=null">(なし)</b-dropdown-item>
-                    <b-dropdown-item class="d-flex" v-for="(c, i) in validArmors()" :key="i" @click="param.value=c">{{ c.name }}</b-dropdown-item>
-                  </b-dropdown>
-                  <b-dropdown v-if="param.type == 'helmet'" style="width: 14em" :text="param.value ? param.value.name : '(なし)'" size="sm" class="input-dropdown" menu-class="long-dropdown">
-                    <b-dropdown-item class="d-flex" @click="param.value=null">(なし)</b-dropdown-item>
-                    <b-dropdown-item class="d-flex" v-for="(c, i) in validHelmets()" :key="i" @click="param.value=c">{{ c.name }}</b-dropdown-item>
-                  </b-dropdown>
-                  <b-dropdown v-if="param.type == 'accessory'" style="width: 14em" :text="param.value ? param.value.name : '(なし)'" size="sm" class="input-dropdown" menu-class="long-dropdown">
-                    <b-dropdown-item class="d-flex" @click="param.value=null">(なし)</b-dropdown-item>
-                    <b-dropdown-item class="d-flex" v-for="(c, i) in validAccessories()" :key="i" @click="param.value=c">{{ c.name }}</b-dropdown-item>
-                  </b-dropdown>
+                  <b-button v-if="param.type == 'weapon'" style="width: 14em" size="sm" class="input-dropdown" id="stat-main-weapon">
+                    {{param.value ? param.value.name : '(なし)'}}
+                    <ItemSelector target="stat-main-weapon" :items="items" @click="v => param.value=v"
+                                  slotfilter="武器" :classfilter="mainClass" nullable closeonclick />
+                  </b-button>
+                  <b-button v-if="param.type == 'armor'" style="width: 14em" size="sm" class="input-dropdown" id="stat-main-armor">
+                    {{param.value ? param.value.name : '(なし)'}}
+                    <ItemSelector target="stat-main-armor" :items="items" @click="v => param.value=v"
+                                  slotfilter="鎧" :classfilter="mainClass" nullable closeonclick />
+                  </b-button>
+                  <b-button v-if="param.type == 'helmet'" style="width: 14em" size="sm" class="input-dropdown" id="stat-main-helmet">
+                    {{param.value ? param.value.name : '(なし)'}}
+                    <ItemSelector target="stat-main-helmet" :items="items" @click="v => param.value=v"
+                                  slotfilter="兜" :classfilter="mainClass" nullable closeonclick />
+                  </b-button>
+                  <b-button v-if="param.type == 'accessory'" style="width: 14em" size="sm" class="input-dropdown" id="stat-main-accessory">
+                    {{param.value ? param.value.name : '(なし)'}}
+                    <ItemSelector target="stat-main-accessory" :items="items" @click="v => param.value=v"
+                                  slotfilter="アクセサリ" :classfilter="mainClass" nullable closeonclick />
+                  </b-button>
                 </b-col>
               </b-form-row>
 
@@ -121,17 +125,16 @@
               </div>
               <b-form-row v-for="(param, name, index) in support" :key="index">
                 <b-col style="text-align: right" align-self="end">
-                  <label :for="`stat-sup-${name}`">{{param.label}}</label>
+                  <label style="width: 12em" :for="`stat-sup-${name}`">{{param.label}}</label>
                 </b-col>
                 <b-col>
                   <b-form-input v-if="param.type == 'number'" style="width: 5em" :id="`stat-sup-${name}`" v-model.number="param.value" size="sm" type="number" class="input-param" :min="param.min" :max="param.max"></b-form-input>
                   <b-form-checkbox v-if="param.type == 'bool'" style="width: 5em" :id="`stat-sup-${name}`" v-model="param.value" size="sm" plain></b-form-checkbox>
-                  <b-dropdown v-if="param.type == 'character'" style="width: 15em" :text="param.value ? param.value.name : '(なし)'" size="sm" class="input-dropdown" id="stat-sup-${name}" menu-class="long-dropdown">
-                    <b-dropdown-item class="d-flex" @click="param.value=null">(なし)</b-dropdown-item>
-                    <b-dropdown-item class="d-flex" v-for="(c, i) in supChrs" :key="i" @click="param.value=c">
-                      {{ c.name }}
-                    </b-dropdown-item>
-                  </b-dropdown>
+                  <b-button v-if="param.type == 'character'" style="width: 15em" size="sm" class="input-dropdown" :id="`stat-sup-${name}`" menu-class="long-dropdown">
+                    {{param.value ? param.value.name : '(なし)'}}
+                    <ChrSelector :target="`stat-sup-${name}`" :chrs="supChrs" nullable classfilter closeonclick
+                                 @click="c => param.value=c" />
+                  </b-button>
                 </b-col>
               </b-form-row>
             </b-container>
@@ -161,14 +164,16 @@
                   <label style="width: 10em">{{param.label}}</label>
                 </b-col>
                 <b-col>
-                  <b-dropdown v-if="param.type == 'amulet1'" style="width: 14em" :text="param.value ? param.value.name : '(なし)'" size="sm" class="input-dropdown" menu-class="long-dropdown">
-                    <b-dropdown-item class="d-flex" @click="param.value=null">(なし)</b-dropdown-item>
-                    <b-dropdown-item class="d-flex" v-for="(c, i) in amulets1" :key="i" @click="param.value=c">{{ c.name }}</b-dropdown-item>
-                  </b-dropdown>
-                  <b-dropdown v-if="param.type == 'amulet2'" style="width: 14em" :text="param.value ? param.value.name : '(なし)'" size="sm" class="input-dropdown" menu-class="long-dropdown">
-                    <b-dropdown-item class="d-flex" @click="param.value=null">(なし)</b-dropdown-item>
-                    <b-dropdown-item class="d-flex" v-for="(c, i) in amulets2" :key="i" @click="param.value=c">{{ c.name }}</b-dropdown-item>
-                  </b-dropdown>
+                  <b-button v-if="param.type == 'amulet1'" style="width: 14em" size="sm" class="input-dropdown" id="stat-sup-amulet1">
+                    {{param.value ? param.value.name : '(なし)'}}
+                    <ItemSelector target="stat-sup-amulet1" :items="items" @click="v => param.value=v"
+                                  slotfilter="月のアミュレット" nullable closeonclick />
+                  </b-button>
+                  <b-button v-if="param.type == 'amulet2'" style="width: 14em" size="sm" class="input-dropdown" id="stat-sup-amulet2">
+                    {{param.value ? param.value.name : '(なし)'}}
+                    <ItemSelector target="stat-sup-amulet2" :items="items" @click="v => param.value=v"
+                                  slotfilter="太陽のアミュレット" nullable closeonclick />
+                  </b-button>
                 </b-col>
               </b-form-row>
 
@@ -230,6 +235,8 @@
 </template>
 
 <script>
+import ChrSelector from '../parts/ChrSelector.vue'
+import ItemSelector from '../parts/ItemSelector.vue'
 import jsonMainActive from '../../assets/main_active.json'
 import jsonMainPassive from '../../assets/main_passive.json'
 import jsonMainTalents from '../../assets/main_talents.json'
@@ -242,6 +249,10 @@ import common from "../common";
 
 export default {
   name: 'StatusSimulator',
+  components: {
+    ChrSelector,
+    ItemSelector,
+  },
   props: {
   },
   mixins: [common],
@@ -541,6 +552,7 @@ export default {
 
     this.setupCharacters(this.mainChrs, this.mainActive, this.mainPassive, this.mainTalents);
     this.setupCharacters(this.supChrs, this.supActive, this.supPassive);
+    this.setupItems(this.items);
 
     this.searchTable = new Map();
     for (let s of [...this.mainActive, ...this.mainPassive, ...this.mainTalents, ...this.supActive, ...this.supPassive, ...this.items])
@@ -554,8 +566,8 @@ export default {
     this.armors = this.items.filter(a => a.slot == "鎧");
     this.helmets = this.items.filter(a => a.slot == "兜");
     this.accessories = this.items.filter(a => a.slot == "アクセサリ");
-    this.amulets1 = this.items.filter(a => a.slot == "アミュレット" && a.amuletType == "月");
-    this.amulets2 = this.items.filter(a => a.slot == "アミュレット" && a.amuletType == "太陽");
+    this.amulets1 = this.items.filter(a => a.slot == "月のアミュレット");
+    this.amulets2 = this.items.filter(a => a.slot == "太陽のアミュレット");
 
     this.main.character.value = this.mainChrs[0];
     //this.support.character.value = this.supChrs[0];
@@ -1241,6 +1253,11 @@ export default {
   },
 
   computed: {
+    mainClass() {
+      const chr = this.main.character.value;
+      return chr ? chr.class : true;
+    },
+
     statMainResult() {
       return this.calcStatMain();
     },
@@ -1254,5 +1271,8 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
+.input-dropdown {
+  padding: 0.1em;
+}
 </style>
