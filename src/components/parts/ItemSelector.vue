@@ -118,18 +118,20 @@ export default {
 </script>
 
 <style>
-  .chr-area {
-    flex-wrap: wrap;
-    align-items: flex-start;
-    align-content: flex-start;
-    width: 425px;
-    min-height: 150px;
-    max-height: 250px;
-    overflow-y: auto;
-    overflow-x: hidden;
-  }
+.chr-area {
+  flex-wrap: wrap;
+  align-items: flex-start;
+  align-content: flex-start;
+  width: 425px;
+  min-height: 150px;
+  max-height: 250px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
 
-  .btn-outline-secondary {
-    padding: 3px !important;
-  }
+/*
+.btn-outline-secondary {
+  padding: 3px !important;
+}
+*/
 </style>

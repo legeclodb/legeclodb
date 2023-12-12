@@ -118,7 +118,9 @@ export default {
   overflow-x: hidden;
 }
 
+/*
 .btn-outline-secondary {
   padding: 3px !important;
 }
+*/
 </style>
