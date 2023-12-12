@@ -459,6 +459,7 @@ export default {
     border-radius: 0.3rem;
     display: inline-block;
     background: rgb(245, 245, 245);
+    box-shadow: 0 3px 6px rgba(140,149,159,0.5);
   }
 
   .grid-container {

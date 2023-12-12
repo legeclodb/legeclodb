@@ -696,7 +696,7 @@ class ChrArgs:
       self.additionalSkills = None
 
 
-def proceccMainChr():
+def processMainChr():
     args = ChrArgs()
     args.chrJson = readJson(f"{assetsDir}/main_characters.json")
     args.activeJson = readJson(f"{assetsDir}/main_active.json")
@@ -730,7 +730,7 @@ def processEquipments():
 
 
 
-def proceccEnemyMainChr():
+def processEnemyMainChr():
     args = ChrArgs()
     args.chrJson = readJson(f"{assetsDir}/enemy_main_characters.json")
     args.activeJson = readJson(f"{assetsDir}/main_active.json")
@@ -754,7 +754,7 @@ def processEnemySupChr():
     writeJson(f"{outDir}/support_active.json", args.activeJson)
     writeJson(f"{outDir}/support_passive.json", args.passiveJson)
 
-def proceccBattleCsv():
+def processBattleCsv():
     battleCsv = readCsvTable(f"{csvDir}/Battle/Battle_Guild_Ex02.csv")
     eventCsv = readCsvTable(f"{csvDir}/SimulationEvent/SimulationEvent.csv")
     writeJson(f"{outDir}/guild_ex2.json", battleCsv)
@@ -784,7 +784,7 @@ def proceccBattleCsv():
 
     def massToInt2(mass):
         m = re.match(r'(\d+),(\d+)', mass)
-        return [int(m.group(1)) - 1, int(m.group(2)) - 1]
+        return [int(m.group(1)) - 1, int(m.group(2)) - 1] if m else None
 
     battleList = readJson(f"{assetsDir}/battle.json")
     battle = None
@@ -801,8 +801,11 @@ def proceccBattleCsv():
             battle["allies"] = []
             battle["enemies"] = []
 
-        coord = massToInt2(line["MassData"])
         fid = line["FormationId"]
+        if not fid:
+            continue
+        coord = massToInt2(line["MassData"])
+
         if fid and re.match(r'A\d+', fid):
             battle["allies"].append({
                 "fid": fid,
@@ -908,7 +911,7 @@ def proceccBattleCsv():
         writeJson(f"{outDir}/main_active.json", args.activeJson)
         writeJson(f"{outDir}/main_passive.json", args.passiveJson)
         writeJson(f"{outDir}/main_talents.json", args.talentJson)
-        proceccEnemyMainChr()
+        processEnemyMainChr()
 
         args = ChrArgs()
         args.chrJson = supJson
@@ -934,10 +937,10 @@ imageTable = readJson(f"{assetsDir}/image_table.json")
 #dumpSkillData()
 
 processEngageData()
-proceccMainChr()
+processMainChr()
 processSupChr()
 processEquipments()
 
-#proceccBattleCsv()
+#processBattleCsv()
 
 writeJson(f"{outDir}/image_table.json", imageTable)
