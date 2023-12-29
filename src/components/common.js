@@ -829,16 +829,19 @@ export default {
       return Math.round(r);
     },
 
-    effectParamsToTags(skill, includeSelfTag) {
+    effectParamsToTags(skill, params) {
       const handleTarget = function (effect) {
-        if ((includeSelfTag && effect.target == "自身") || effect.target =="味方") {
+        if ((params.includeSelfTag && effect.target == "自身") || effect.target =="味方") {
           return `(${effect.target})`;
         }
         return "";
       };
 
-      const buffToS = function (name, effect) {
-        let t = name + ":" + effect.type;
+      const buffToS = function (effectCategory, effect) {
+        if (params.tagFilter && !params.tagFilter(skill, effectCategory, effect))
+          return [];
+
+        let t = effectCategory + ":" + effect.type;
 
         // 不格好だが…
         if (effect.onBattle) {
@@ -856,12 +859,12 @@ export default {
           t += `(${effect.target})`;
         return t;
       };
-      const map = (a, f) => a ? a.map(f) : [];
 
       let buff = skill.buff;
       if (this.matchTags(skill.tags, /シンボルスキル/))
         buff = buff.slice(6, buff.length); // シンボルスキル共通バフは除外
 
+      const map = (a, f) => a ? a.flatMap(f) : [];
       return [
         ...map(buff, a => buffToS("バフ", a)),
         ...map(skill.debuff, a => buffToS("デバフ", a)),
@@ -871,7 +874,7 @@ export default {
       ];
     },
 
-    setupSkill(skill, includeSelfTags = true) {
+    setupSkill(skill, params) {
       if (skill.buff) {
         for (let v of skill.buff) {
           v.effectType = "バフ";
@@ -899,18 +902,19 @@ export default {
 
       if (!skill.tags)
         skill.tags = [];
-      for (const t of this.effectParamsToTags(skill, includeSelfTags))
-        skill.tags.push(t);
+      if (params.effectParamsToTags)
+        skill.tags = [...skill.tags, ...this.effectParamsToTags(skill, params)];
 
       if (!skill.icon)
         skill.icon = skill.uid;
     },
-    setupItems(items) {
+
+    setupItems(items, params = {}) {
       const consts = jsonConstants;
       const allClasses = [0, 1, 2, 3, 4, 5, 6, 7];
 
       for (let item of items) {
-        this.setupSkill(item, false);
+        this.setupSkill(item, params);
 
         if (item.classes)
           item.classIds = item.classes.map(cls => consts.classes.findIndex(v => v == cls));
@@ -924,7 +928,13 @@ export default {
       }
     },
 
-    setupCharacters(characters, activeSkills, passiveSkills, talents = []) {
+    // params:
+    // {
+    //   includeSelfTag: bool,
+    //   effectParamsToTags: bool,
+    //   tagFilter: (skill, effectCategory, effect) => bool,
+    // }
+    setupCharacters(characters, activeSkills, passiveSkills, talents = [], params = {}) {
       const isMain = talents.length > 0;
       const consts = jsonConstants;
 
@@ -950,7 +960,7 @@ export default {
 
       let skillTable = new Map();
       for (let s of [...activeSkills, ...passiveSkills, ...talents]) {
-        this.setupSkill(s);
+        this.setupSkill(s, params);
         skillTable.set(s.uid, s);
       }
 
@@ -964,9 +974,22 @@ export default {
           skill.owners = [];
         if (skill.owners.length == 0 || skill.owners[skill.owners.length - 1] != chr)
           skill.owners.push(chr);
+
         if (!skill.desc && skill.descs) {
           skill.current = "Lv 6";
           this.$set(skill, 'desc', skill.descs[skill.current]);
+
+          let effects = [
+            ...(skill.buff ? skill.buff : []),
+            ...(skill.debuff ? skill.debuff : []),
+          ]
+          for (let effect of effects) {
+            if (Array.isArray(effect.value)) {
+              effect.values = effect.value;
+              effect.value = effect.values[effect.values.length - 1];
+              //console.log(`${skill.name} (${effect.type})`);
+            }
+          }
         }
         return skill;
       }.bind(this);

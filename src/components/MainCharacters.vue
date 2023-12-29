@@ -644,7 +644,24 @@ export default {
       this.passive = structuredClone(this.passive);
       this.talents = structuredClone(this.talents);
       this.characters = structuredClone(this.characters).filter(a => !a.hidden);
-      this.setupCharacters(this.characters, this.active, this.passive, this.talents);
+
+      const tagFilter = (skill, effectCategory, effect) => {
+        if (effectCategory == "バフ") {
+          if (effect.target == "自身")
+            return false;
+        }
+        else if (effectCategory == "デバフ") {
+          const cond = effect.condition;
+          if (cond && cond.onBattle && !effect.duration)
+            return false;
+        }
+        return true;
+      };
+      this.setupCharacters(this.characters, this.active, this.passive, this.talents,
+        {
+          effectParamsToTags: true,
+          tagFilter: tagFilter
+        });
 
       let chrId = 0;
       for (let chr of this.characters) {

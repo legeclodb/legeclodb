@@ -504,7 +504,11 @@ export default {
       this.active = structuredClone(this.active);
       this.passive = structuredClone(this.passive);
       this.characters = structuredClone(this.characters).filter(a => !a.hidden);
-      this.setupCharacters(this.characters, this.active, this.passive);
+      this.setupCharacters(this.characters, this.active, this.passive, [],
+        {
+          effectParamsToTags: true,
+          includeSelfTags: true,
+        });
 
       let chrId = 0;
       for (let chr of this.characters) {
