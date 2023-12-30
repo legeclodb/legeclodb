@@ -1007,12 +1007,16 @@ export default {
           let effects = [
             ...(skill.buff ? skill.buff : []),
             ...(skill.debuff ? skill.debuff : []),
+            ...(skill.immune ? skill.immune : []),
           ]
           for (let effect of effects) {
             if (Array.isArray(effect.value)) {
               effect.values = effect.value;
               effect.value = effect.values[effect.values.length - 1];
-              //console.log(`${skill.name} (${effect.type})`);
+            }
+            if (Array.isArray(effect.duration)) {
+              effect.durations = effect.duration;
+              effect.duration = effect.durations[effect.durations.length - 1];
             }
           }
         }
