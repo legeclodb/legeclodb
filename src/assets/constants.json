@@ -184,5 +184,37 @@
     "armor": [ 200, 11, 19, 11, 19 ],
     "helmet": [ 200, 11, 19, 11, 19 ],
     "accessory": [ 131, 21, 13, 21, 13 ]
+  },
+
+  "conditionList": {
+    "onAlways": [ "boolean" ],
+    "onTurnBegin": [ "boolean" ],
+    "onActionBegin": [ "boolean" ],
+    "onBattle": [ "boolean" ],
+    "onBattleBegin": [ "boolean" ],
+    "onBattleEnd": [ "boolean" ],
+    "onActionEnd": [ "boolean" ],
+    "onTurnEnd": [ "boolean" ],
+
+    "onCloseCombat": [ "boolean" ],
+    "onRangedCombat": [ "boolean" ],
+    "onCriticalHit": [ "boolean" ],
+    "onGuard": [ "boolean" ],
+    "onKill": [ "boolean" ],
+    "onMove": [ "boolean" ],
+    "onSkill": [ "boolean" ],
+    "onAreaSkill": [ "boolean" ],
+    "onOwnTurn": [ "boolean" ],
+    "onEnemyTurn": [ "boolean" ],
+    "onNearAlly": [ "number" ],
+    "onNoNearAlly": [ "number" ],
+    "onNearEnemy": [ "number" ],
+    "onNoNearEnemy": [ "number" ],
+
+    "probability": [ "number" ],
+    "hp": [ "string" ],
+    "move": [ "number", "boolean" ],
+    "token": [ "number", "boolean" ],
+    "activeBuffCount": [ "number", "boolean" ]
   }
 }

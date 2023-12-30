@@ -840,6 +840,8 @@ export default {
       const buffToS = function (effectCategory, effect) {
         if (params.tagFilter && !params.tagFilter(skill, effectCategory, effect))
           return [];
+        if (typeof (effect.value) == 'number' && effect.value < 0)
+          return [];
 
         let t = effectCategory + ":" + effect.type;
 
@@ -962,6 +964,29 @@ export default {
       for (let s of [...activeSkills, ...passiveSkills, ...talents]) {
         this.setupSkill(s, params);
         skillTable.set(s.uid, s);
+      }
+
+      // debug
+      const checkConditions = function () {
+        const conditionTypes = new Set(Object.keys(consts.conditionList));
+        for (const skill of [...activeSkills, ...passiveSkills, ...talents]) {
+          let effects = [
+            ...(skill.buff ? skill.buff : []),
+            ...(skill.debuff ? skill.debuff : []),
+          ]
+          for (const effect of effects) {
+            if (effect.condition) {
+              for (const cond in effect.condition) {
+                if (!conditionTypes.has(cond)) {
+                  console.log(`unknown condition: ${cond} in ${skill.name} (${skill.skillType})`);
+                }
+              }
+            }
+          }
+        }
+      };
+      if (process.env.NODE_ENV === 'development') {
+        checkConditions();
       }
 
       const grabSkill = function (id, chr) {

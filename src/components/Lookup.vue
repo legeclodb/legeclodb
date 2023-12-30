@@ -969,15 +969,18 @@ export default {
         if (effect.onBattle && !effect.duration)
           return false;
 
+        const cond = effect.condition;
+        const onBattle = (cond ? cond.onBattle : effect.onBattle) && !effect.duration;
+        const probability = cond ? cond.probability : effect.probability;
         if (effect.isDebuff) {
-          return (opt.allowOnBattle || !effect.onBattle) &&
-            (opt.allowProbability || !effect.probability);
+          return (opt.allowOnBattle || !onBattle) &&
+            (opt.allowProbability || !probability);
         }
         else {
           return (!effect.isSelfTarget) &&
             (opt.allowSingleUnitBuff || !effect.isSingleTarget) &&
-            (opt.allowOnBattle || !effect.onBattle) &&
-            (opt.allowProbability || !effect.probability);
+            (opt.allowOnBattle || !onBattle) &&
+            (opt.allowProbability || !probability);
         }
       };
       const skillCondition = function (skill) {

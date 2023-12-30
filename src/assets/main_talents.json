@@ -2177,7 +2177,9 @@
         "type": "与ダメージ(スキル)",
         "duration": 4,
         "value": 20,
-        "onHPAbove": 100
+        "condition": {
+          "hp": ">=100%"
+        }
       }
     ],
     "tags": [ "バフ:リジェネ" ],
@@ -2665,7 +2667,9 @@
       {
         "type": "与ダメージ",
         "value": 25,
-        "onHPAbove": 100
+        "condition": {
+          "hp": ">=100%"
+        }
       }
     ],
     "tags": [ "CT減(自身)", "再行動", "再攻撃" ]
@@ -2819,7 +2823,7 @@
         "value": [ 10, 12, 15, 20 ],
         "target": "自身",
         "condition": {
-          "onHPAbove": 50
+          "hp": ">=50%"
         }
       },
       {
@@ -2827,7 +2831,7 @@
         "value": [ 10, 12, 15, 20 ],
         "target": "自身",
         "condition": {
-          "onHPAbove": 50
+          "hp": ">=50%"
         }
       },
       {
@@ -2836,7 +2840,7 @@
         "maxStack": 4,
         "target": "自身",
         "condition": {
-          "onToken": true
+          "token": true
         }
       },
       {
@@ -2845,7 +2849,7 @@
         "maxStack": 4,
         "target": "自身",
         "condition": {
-          "onToken": 2,
+          "token": 2,
           "onAreaSkill": true
         }
       },
@@ -2854,7 +2858,7 @@
         "value": [ 15, 18, 23, 30 ],
         "target": "自身",
         "condition": {
-          "onToken": 3,
+          "token": 3,
           "onCloseCombat": true,
           "probability": [ 60, 70, 80, 100 ]
         }
