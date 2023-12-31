@@ -73,10 +73,13 @@
       },
       {
         "type": "与ダメージ",
-        "onBattle": true,
         "value": 20,
         "duration": 4,
-        "slot": "シンボルスキル"
+        "slot": "シンボル加護",
+        "condition": {
+          "onBattle": true,
+          "onClassAdvantage": true
+        }
       }
     ],
     "tags": [ "シンボルスキル" ]
@@ -91,6 +94,18 @@
     "range": 2,
     "cost": 2,
     "damageRate": 1.5,
+    "buff": [
+      {
+        "type": "ダメージ耐性",
+        "value": 15,
+        "duration": 0,
+        "target": "自身",
+        "condition": {
+          "onBattle": true,
+          "hp": ">=50%"
+        }
+      }
+    ],
     "tags": [ "単体攻撃" ]
   },
   {
@@ -147,6 +162,20 @@
     "range": "自ユニット",
     "cost": 2,
     "damageRate": 0.55,
+    "buff": [
+      {
+        "type": "ディフェンス",
+        "value": 10,
+        "duration": 2,
+        "target": "自身"
+      },
+      {
+        "type": "レジスト",
+        "value": 10,
+        "duration": 2,
+        "target": "自身"
+      }
+    ],
     "debuff": [
       {
         "type": "ランダム",
@@ -166,6 +195,26 @@
     "range": 1,
     "cost": 2,
     "damageRate": 1.5,
+    "buff": [
+      {
+        "type": "ディフェンス",
+        "value": 30,
+        "duration": 0,
+        "target": "自身",
+        "condition": {
+          "onBattle": true
+        }
+      },
+      {
+        "type": "レジスト",
+        "value": 30,
+        "duration": 0,
+        "target": "自身",
+        "condition": {
+          "onBattle": true
+        }
+      }
+    ],
     "tags": [ "単体攻撃" ]
   },
   {
@@ -177,6 +226,14 @@
     "area": "単体",
     "range": "自ユニット",
     "cost": 2,
+    "buff": [
+      {
+        "type": "アタック",
+        "value": 20,
+        "duration": 1,
+        "target": "自身"
+      }
+    ],
     "tags": [ "再行動" ]
   },
   {
@@ -224,7 +281,9 @@
       {
         "type": "アクティブスキル使用不可",
         "duration": 1,
-        "probability": 50
+        "condition": {
+          "probability": 50
+        }
       }
     ],
     "tags": [ "単体攻撃", "特効(エアリアル)" ],
@@ -264,6 +323,16 @@
     "range": 1,
     "cost": 2,
     "damageRate": 1.3,
+    "debuff": [
+      {
+        "type": "ダメージ耐性",
+        "value": 10,
+        "duration": 0,
+        "condition": {
+          "onBattle": true
+        }
+      }
+    ],
     "tags": [ "単体攻撃" ]
   },
   {
@@ -288,6 +357,19 @@
     "range": 1,
     "cost": 2,
     "damageRate": 1.6,
+    "buff": [
+      {
+        "type": "ダメージ耐性",
+        "value": 15,
+        "duration": 2,
+        "target": "自身",
+        "slot": "崩天画撃",
+        "condition": {
+          "onBattle": true,
+          "hp": ">=50%"
+        }
+      }
+    ],
     "tags": [ "単体攻撃", "再行動(確率)", "再攻撃(確率)" ]
   },
   {
@@ -312,6 +394,28 @@
     "range": 1,
     "cost": 2,
     "damageRate": 2.0,
+    "buff": [
+      {
+        "type": "与ダメージ(物理)",
+        "value": 10,
+        "duration": 0,
+        "target": "自身",
+        "condition": {
+          "onBattle": true
+        }
+      }
+    ],
+    "debuff": [
+      {
+        "type": "与ダメージ(物理)",
+        "value": 10,
+        "duration": 0,
+        "target": "自身",
+        "condition": {
+          "onBattle": true
+        }
+      }
+    ],
     "tags": [ "単体攻撃", "与ダメ回復" ]
   },
   {
@@ -400,10 +504,13 @@
       },
       {
         "type": "与ダメージ",
-        "onBattle": true,
         "value": 15,
         "duration": 4,
-        "slot": "シンボルスキル"
+        "slot": "シンボル加護",
+        "condition": {
+          "onBattle": true,
+          "hp": ">=80%"
+        }
       }
     ],
     "tags": [ "シンボルスキル" ]
@@ -430,6 +537,17 @@
     "range": 1,
     "cost": 2,
     "damageRate": 1.0,
+    "buff": [
+      {
+        "type": "アタック",
+        "value": 15,
+        "duration": 0,
+        "target": "自身",
+        "condition": {
+          "onBattle": true
+        }
+      }
+    ],
     "statusEffects": [
       {
         "type": "回復不可",
@@ -447,6 +565,32 @@
     "area": "単体",
     "range": "自ユニット",
     "cost": 2,
+    "buff": [
+      {
+        "type": "アタック",
+        "value": 20,
+        "duration": 2,
+        "target": "自身"
+      },
+      {
+        "type": "マジック",
+        "value": 20,
+        "duration": 2,
+        "target": "自身"
+      },
+      {
+        "type": "ダメージ耐性",
+        "value": 30,
+        "duration": 2,
+        "target": "自身",
+        "slot": "オーヴァーリザーブ",
+        "condition": {
+          "onBattle": true,
+          "onOwnTurn": true,
+          "hp": ">=80%"
+        }
+      }
+    ],
     "immune": [
       {
         "type": "全デバフ(アクティブ由来)",
@@ -501,10 +645,14 @@
       },
       {
         "type": "与ダメージ",
-        "onBattle": true,
-        "value": 15,
+        "value": 5,
+        "maxStack": 3,
         "duration": 4,
-        "slot": "シンボルスキル"
+        "slot": "シンボル加護",
+        "condition": {
+          "onBattle": true,
+          "onMove": true
+        }
       }
     ],
     "tags": [ "シンボルスキル", "移動時強化" ]
@@ -543,6 +691,14 @@
     "area": "単体",
     "range": "自ユニット",
     "cost": 2,
+    "buff": [
+      {
+        "type": "クリティカル率耐性",
+        "value": 20,
+        "duration": 3,
+        "target": "自身"
+      }
+    ],
     "tags": [ "ステータス変換", "ガード" ]
   },
   {
@@ -554,6 +710,32 @@
     "area": "単体",
     "range": "自ユニット",
     "cost": 2,
+    "buff": [
+      {
+        "type": "クリティカル率",
+        "value": 30,
+        "duration": 3,
+        "target": "自身"
+      },
+      {
+        "type": "ダメージ耐性",
+        "value": 20,
+        "duration": 3,
+        "target": "自身"
+      },
+      {
+        "type": "クリティカル率耐性",
+        "value": 50,
+        "duration": 3,
+        "target": "自身"
+      },
+      {
+        "type": "移動",
+        "value": 1,
+        "duration": 3,
+        "target": "自身"
+      }
+    ],
     "tags": [ "移動+", "射程+(反撃)", "ステータス変換", "ガード", "再行動" ]
   },
   {
@@ -600,10 +782,13 @@
       },
       {
         "type": "与ダメージ",
-        "onBattle": true,
         "value": 20,
         "duration": 4,
-        "slot": "シンボルスキル"
+        "slot": "シンボル加護",
+        "condition": {
+          "onBattle": true,
+          "onEnemyTurn": true
+        }
       }
     ],
     "tags": [ "シンボルスキル" ]
@@ -654,8 +839,10 @@
         "type": "与ダメージ",
         "value": 20,
         "duration": 4,
-        "onHPAbove": 80,
-        "slot": "シンボル加護"
+        "slot": "シンボル加護",
+        "condition": {
+          "hp": ">=80%"
+        }
       }
     ],
     "tags": [ "シンボルスキル", "与ダメ回復" ]
@@ -670,6 +857,14 @@
     "range": 1,
     "cost": 2,
     "damageRate": 1.4,
+    "buff": [
+      {
+        "type": "アタック",
+        "value": 20,
+        "duration": 2,
+        "target": "自身"
+      }
+    ],
     "tags": [ "単体攻撃", "与ダメ回復" ]
   },
   {
@@ -682,6 +877,14 @@
     "range": 1,
     "cost": 2,
     "damageRate": 2.0,
+    "buff": [
+      {
+        "type": "アタック",
+        "value": 20,
+        "duration": 2,
+        "target": "自身"
+      }
+    ],
     "debuff": [
       {
         "type": "ダメージ耐性(物理)",
@@ -756,17 +959,26 @@
     "buff": [
       {
         "type": "与ダメージ",
-        "onBattle": true,
         "value": 30,
         "duration": 2,
-        "target": "単体"
+        "target": "単体",
+        "slot": "ロサ・センティフォリア",
+        "condition": {
+          "onBattle": true,
+          "onOwnTurn": true
+        }
       },
       {
         "type": "ダメージ耐性",
         "onBattle": true,
         "value": 50,
         "duration": 2,
-        "target": "単体"
+        "target": "単体",
+        "slot": "ロサ・センティフォリア",
+        "condition": {
+          "onBattle": true,
+          "onOwnTurn": true
+        }
       }
     ],
     "tags": [],
@@ -860,6 +1072,17 @@
     "cost": 2,
     "damageRate": 0.5,
     "damageRateSp": 0.8,
+    "buff": [
+      {
+        "type": "クリティカル率",
+        "value": 50,
+        "duration": 0,
+        "target": "自身",
+        "condition": {
+          "onBattle": true
+        }
+      }
+    ],
     "tags": [ "超広範囲攻撃(自分中心)", "範囲攻撃(自分中心)", "特効(ソーサラー)" ],
     "note": "対象がソーサラーの場合、0.8倍のダメージ"
   },
@@ -922,6 +1145,17 @@
     "range": 1,
     "cost": 2,
     "damageRate": 1.4,
+    "buff": [
+      {
+        "type": "クリティカル率",
+        "value": 20,
+        "duration": 0,
+        "target": "自身",
+        "condition": {
+          "onBattle": true
+        }
+      }
+    ],
     "tags": [ "単体攻撃" ]
   },
   {
@@ -971,6 +1205,17 @@
     "range": 2,
     "cost": 2,
     "damageRate": 1.2,
+    "buff": [
+      {
+        "type": "クリティカル率",
+        "value": 20,
+        "duration": 0,
+        "target": "自身",
+        "condition": {
+          "onBattle": true
+        }
+      }
+    ],
     "tags": [ "単体攻撃", "ガード不可攻撃" ]
   },
   {
@@ -1013,6 +1258,14 @@
     "area": "単体",
     "range": "自ユニット",
     "cost": 2,
+    "buff": [
+      {
+        "type": "クリティカル率耐性",
+        "value": 20,
+        "duration": 3,
+        "target": "自身"
+      }
+    ],
     "tags": [ "ステータス変換", "ガード(物理攻撃)" ]
   },
   {
@@ -1024,6 +1277,14 @@
     "area": "単体",
     "range": "自ユニット",
     "cost": 2,
+    "buff": [
+      {
+        "type": "ディフェンス",
+        "value": 20,
+        "duration": 3,
+        "target": "自身"
+      }
+    ],
     "statusEffects": [
       {
         "type": "DoT",
@@ -1087,6 +1348,12 @@
     "range": "自ユニット",
     "cost": 2,
     "buff": [
+      {
+        "type": "ディフェンス",
+        "value": 50,
+        "duration": 4,
+        "target": "自身"
+      },
       {
         "type": "アタック",
         "value": 30,
@@ -1307,7 +1574,9 @@
       {
         "type": "アクティブスキル使用不可",
         "duration": 2,
-        "probability": 50
+        "condition": {
+          "probability": 50
+        }
       }
     ],
     "tags": [ "範囲攻撃(中心指定)" ]
@@ -1368,6 +1637,14 @@
     "area": "単体",
     "range": "自ユニット",
     "cost": 1,
+    "buff": [
+      {
+        "type": "与ダメージ",
+        "value": 10,
+        "duration": 1,
+        "target": "自身"
+      }
+    ],
     "tags": [ "再行動" ]
   },
   {
@@ -1551,6 +1828,20 @@
     "area": "単体",
     "range": "自ユニット",
     "cost": 2,
+    "buff": [
+      {
+        "type": "クリティカル率",
+        "value": 15,
+        "duration": 2,
+        "target": "自身"
+      },
+      {
+        "type": "クリティカルダメージ倍率",
+        "value": 15,
+        "duration": 2,
+        "target": "自身"
+      }
+    ],
     "tags": [ "再行動" ]
   },
   {
@@ -1620,10 +1911,13 @@
       },
       {
         "type": "与ダメージ",
-        "onBattle": true,
         "value": 15,
         "duration": 4,
-        "slot": "シンボルスキル"
+        "slot": "シンボル加護",
+        "condition": {
+          "onBattle": true,
+          "onNearAlly": 2
+        }
       }
     ],
     "tags": [ "シンボルスキル" ]
@@ -1648,6 +1942,28 @@
     "area": "単体",
     "range": "自ユニット",
     "cost": 1,
+    "buff": [
+      {
+        "type": "アタック",
+        "value": 20,
+        "duration": 3
+      },
+      {
+        "type": "ディフェンス",
+        "value": 20,
+        "duration": 3
+      },
+      {
+        "type": "ダメージ耐性",
+        "value": 20,
+        "duration": 3
+      },
+      {
+        "type": "移動",
+        "value": 2,
+        "duration": 3
+      }
+    ],
     "tags": [ "ガード(物理攻撃)", "移動+", "再行動" ]
   },
   {
@@ -1768,15 +2084,18 @@
     "immune": [
       {
         "type": "ディフェンスダウン",
-        "duration": 2
+        "duration": 2,
+        "target": "単体"
       },
       {
         "type": "レジストダウン",
-        "duration": 2
+        "duration": 2,
+        "target": "単体"
       },
       {
         "type": "回復不可",
-        "duration": 2
+        "duration": 2,
+        "target": "単体"
       }
     ]
   },
@@ -1801,6 +2120,7 @@
     "area": "単体",
     "range": 1,
     "cost": 2,
+    "damageRate": 1.5,
     "tags": [ "単体攻撃" ]
   },
   {
@@ -2015,6 +2335,14 @@
     "area": "単体",
     "range": 2,
     "cost": 2,
+    "buff": [
+      {
+        "type": "移動",
+        "value": 1,
+        "duration": 1,
+        "target": "単体"
+      }
+    ],
     "tags": [ "単体回復", "再行動(味方)", "再攻撃(味方)" ]
   },
   {
@@ -2030,12 +2358,14 @@
       {
         "type": "アタック",
         "value": 20,
-        "duration": 2
+        "duration": 2,
+        "target": "単体"
       },
       {
         "type": "ディフェンス",
         "value": 20,
-        "duration": 2
+        "duration": 2,
+        "target": "単体"
       }
     ],
     "immune": [
@@ -2059,12 +2389,14 @@
       {
         "type": "アタック",
         "value": 30,
-        "duration": 2
+        "duration": 2,
+        "target": "単体"
       },
       {
         "type": "ディフェンス",
         "value": 30,
-        "duration": 2
+        "duration": 2,
+        "target": "単体"
       }
     ],
     "immune": [
@@ -2161,10 +2493,13 @@
       },
       {
         "type": "与ダメージ",
-        "onBattle": true,
         "value": 15,
         "duration": 4,
-        "slot": "シンボルスキル"
+        "slot": "シンボル加護",
+        "condition": {
+          "onBattle": true,
+          "activeDebuffCount": ">=3"
+        }
       }
     ],
     "tags": [ "シンボルスキル" ]
@@ -2230,7 +2565,8 @@
       {
         "type": "レジスト",
         "value": 30,
-        "duration": 2
+        "duration": 2,
+        "target": "単体"
       }
     ],
     "immune": [
@@ -2291,7 +2627,9 @@
       {
         "type": "アクティブスキル使用不可",
         "duration": 2,
-        "probability": 50
+        "condition": {
+          "probability": 50
+        }
       }
     ],
     "tags": [ "範囲攻撃(中心指定)" ]
@@ -2342,7 +2680,10 @@
         "type": "与ダメージ(物理)",
         "value": 15,
         "duration": 4,
-        "slot": "シンボルスキル"
+        "slot": "シンボル加護",
+        "condition": {
+          "onOwnTurn": true
+        }
       }
     ],
     "tags": [ "シンボルスキル" ]
@@ -2405,17 +2746,21 @@
       },
       {
         "type": "与ダメージ(物理)",
-        "onBattle": true,
         "value": 15,
         "duration": 4,
-        "slot": "シンボルスキル"
+        "slot": "シンボル加護",
+        "condition": {
+          "onBattle": true
+        }
       },
       {
         "type": "ダメージ耐性(物理)",
-        "onBattle": true,
         "value": 10,
         "duration": 4,
-        "slot": "シンボルスキル"
+        "slot": "シンボル加護",
+        "condition": {
+          "onBattle": true
+        }
       }
     ],
     "tags": [ "シンボルスキル" ]
@@ -2430,6 +2775,30 @@
     "range": 1,
     "cost": 2,
     "damageRate": 1.4,
+    "buff": [
+      {
+        "type": "アタック",
+        "value": 5,
+        "maxStack": 4,
+        "duration": 0,
+        "target": "自身",
+        "condition": {
+          "onBattle": true,
+          "onNearEnemy": 3
+        }
+      },
+      {
+        "type": "クリティカル率",
+        "value": 5,
+        "maxStack": 4,
+        "duration": 0,
+        "target": "自身",
+        "condition": {
+          "onBattle": true,
+          "onNearEnemy": 3
+        }
+      }
+    ],
     "tags": [ "単体攻撃", "バフ解除" ]
   },
   {
@@ -2460,6 +2829,28 @@
     "area": "単体",
     "range": "自ユニット",
     "cost": 2,
+    "buff": [
+      {
+        "type": "ダメージ耐性(物理)",
+        "value": 10,
+        "duration": 3,
+        "target": "自身",
+        "condition": {
+          "onBattle": true,
+          "onGuard": true
+        }
+      },
+      {
+        "type": "ダメージ耐性(魔法)",
+        "value": 10,
+        "duration": 3,
+        "target": "自身",
+        "condition": {
+          "onBattle": true,
+          "onGuard": true
+        }
+      }
+    ],
     "statusEffects": [
       {
         "type": "DoT",
@@ -2492,6 +2883,26 @@
         "type": "クリティカルダメージ倍率",
         "value": 15,
         "duration": 3
+      },
+      {
+        "type": "ダメージ耐性(物理)",
+        "value": 20,
+        "duration": 3,
+        "target": "自身",
+        "condition": {
+          "onBattle": true,
+          "onGuard": true
+        }
+      },
+      {
+        "type": "ダメージ耐性(魔法)",
+        "value": 20,
+        "duration": 3,
+        "target": "自身",
+        "condition": {
+          "onBattle": true,
+          "onGuard": true
+        }
       }
     ],
     "tags": [ "ガード", "再行動", "デバフ:DoT" ]
@@ -2593,15 +3004,19 @@
         "type": "与ダメージ(物理)",
         "value": 20,
         "duration": 4,
-        "onBattle": true,
-        "slot": "シンボル加護"
+        "slot": "シンボル加護",
+        "condition": {
+          "onBattle": true
+        }
       },
       {
         "type": "ダメージ耐性(物理)",
         "value": 20,
         "duration": 4,
-        "onBattle": true,
-        "slot": "シンボル加護"
+        "slot": "シンボル加護",
+        "condition": {
+          "onBattle": true
+        }
       }
     ],
     "tags": [ "シンボルスキル", "デバフ:DoT" ]
@@ -2645,7 +3060,9 @@
       {
         "type": "強化不可",
         "duration": 2,
-        "probability": 50
+        "condition": {
+          "probability": 50
+        }
       }
     ],
     "tags": [ "範囲攻撃(自分中心)" ]
@@ -2708,7 +3125,9 @@
       {
         "type": "アクティブスキル使用不可",
         "duration": 2,
-        "probability": 50
+        "condition": {
+          "probability": 50
+        }
       }
     ],
     "tags": [ "範囲攻撃(直線)" ]
@@ -2780,7 +3199,11 @@
         "type": "与ダメージ(物理)",
         "value": 15,
         "duration": 4,
-        "slot": "シンボルスキル"
+        "slot": "シンボル加護",
+        "condition": {
+          "onBattle": true,
+          "onOwnTurn": true
+        }
       }
     ],
     "tags": [ "シンボルスキル" ]
@@ -2848,6 +3271,18 @@
     "range": "自ユニット",
     "cost": 2,
     "damageRate": 0.45,
+    "buff": [
+      {
+        "type": "与ダメージ(範囲スキル)",
+        "value": 5,
+        "maxStack": 6,
+        "duration": 0,
+        "target": "自身",
+        "condition": {
+          "onNearAlly": 3
+        }
+      }
+    ],
     "tags": [ "範囲攻撃(自分中心)" ]
   },
   {
@@ -2896,7 +3331,7 @@
         "type": "与ダメージ",
         "value": 10,
         "duration": 4,
-        "slot": "シンボルスキル"
+        "slot": "シンボル加護"
       }
     ],
     "tags": [ "シンボルスキル", "地形無視" ]
@@ -2947,13 +3382,13 @@
         "type": "与ダメージ",
         "value": 20,
         "duration": 4,
-        "slot": "シンボルスキル"
+        "slot": "シンボル加護"
       },
       {
         "type": "移動",
         "value": 1,
         "duration": 4,
-        "slot": "シンボルスキル"
+        "slot": "シンボル加護"
       }
     ],
     "tags": [ "シンボルスキル", "地形無視" ]
@@ -3007,7 +3442,9 @@
       {
         "type": "スタン",
         "duration": 1,
-        "probability": 25
+        "condition": {
+          "probability": 25
+        }
       }
     ],
     "damageRate": 0.4,
@@ -3022,6 +3459,20 @@
     "area": "単体",
     "range": "自ユニット",
     "cost": 1,
+    "buff": [
+      {
+        "type": "ダメージ耐性",
+        "value": 30,
+        "duration": 1,
+        "target": "自身"
+      },
+      {
+        "type": "移動",
+        "value": 2,
+        "duration": 1,
+        "target": "自身"
+      }
+    ],
     "tags": [ "移動+", "再行動" ]
   },
   {
@@ -3058,6 +3509,14 @@
     "area": "単体",
     "range": "自ユニット",
     "cost": 1,
+    "buff": [
+      {
+        "type": "射程(スキル)",
+        "value": 2,
+        "duration": 1,
+        "target": "自身"
+      }
+    ],
     "tags": [ "射程+(スキル)", "再行動" ]
   },
   {
@@ -3122,7 +3581,10 @@
       {
         "type": "ダメージ耐性",
         "value": 15,
-        "duration": 1
+        "duration": 1,
+        "condition": {
+          "token": ">=1"
+        }
       }
     ],
     "tags": [ "単体攻撃", "与ダメ回復" ]
@@ -3155,6 +3617,20 @@
     "area": "単体",
     "range": "自ユニット",
     "cost": 2,
+    "buff": [
+      {
+        "type": "クリティカル率",
+        "value": 20,
+        "duration": 1,
+        "target": "自身"
+      },
+      {
+        "type": "クリティカルダメージ倍率",
+        "value": 20,
+        "duration": 1,
+        "target": "自身"
+      }
+    ],
     "tags": [ "再行動", "地形無視", "射程+", "固定ダメージ" ]
   },
   {
@@ -3167,6 +3643,18 @@
     "range": 3,
     "cost": 2,
     "damageRate": 1.7,
+    "buff": [
+      {
+        "type": "ディフェンス無視",
+        "value": 20,
+        "duration": 0,
+        "target": "自身",
+        "condition": {
+          "onBattle": true,
+          "token": ">=3"
+        }
+      }
+    ],
     "debuff": [
       {
         "type": "ランダム",
@@ -3191,6 +3679,20 @@
     "area": "単体",
     "range": "自ユニット",
     "cost": 1,
+    "buff": [
+      {
+        "type": "与ダメージ",
+        "value": 10,
+        "duration": 1,
+        "target": "自身"
+      },
+      {
+        "type": "移動",
+        "value": 2,
+        "duration": 1,
+        "target": "自身"
+      }
+    ],
     "tags": [ "再行動", "移動+" ]
   },
   {
@@ -3307,6 +3809,18 @@
     "range": 2,
     "cost": 2,
     "damageRate": 1.6,
+    "buff": [
+      {
+        "type": "与ダメージ(スキル)",
+        "value": 6,
+        "maxStack": 5,
+        "duration": 0,
+        "target": "自身",
+        "condition": {
+          "onBattle": true
+        }
+      }
+    ],
     "tags": [ "単体攻撃", "移動時強化" ]
   },
   {
@@ -3319,6 +3833,18 @@
     "range": 2,
     "cost": 2,
     "damageRate": 1.8,
+    "buff": [
+      {
+        "type": "与ダメージ(スキル)",
+        "value": 6,
+        "maxStack": 6,
+        "duration": 0,
+        "target": "自身",
+        "condition": {
+          "onBattle": true
+        }
+      }
+    ],
     "tags": [ "単体攻撃", "移動時強化" ]
   },
   {
@@ -3492,6 +4018,20 @@
     "area": "単体",
     "range": "自ユニット",
     "cost": 1,
+    "buff": [
+      {
+        "type": "ダメージ耐性",
+        "value": 20,
+        "duration": 1,
+        "target": "自身"
+      },
+      {
+        "type": "移動",
+        "value": 3,
+        "duration": 1,
+        "target": "自身"
+      }
+    ],
     "tags": [ "再行動", "移動+" ]
   },
   {
@@ -3508,17 +4048,23 @@
       {
         "type": "スタン",
         "duration": 1,
-        "probability": 33
+        "condition": {
+          "probability": 33
+        }
       },
       {
         "type": "アクティブスキル使用不可",
         "duration": 1,
-        "probability": 33
+        "condition": {
+          "probability": 33
+        }
       },
       {
         "type": "パッシブスキル使用不可",
         "duration": 1,
-        "probability": 33
+        "condition": {
+          "probability": 33
+        }
       }
     ],
     "tags": [ "単体攻撃", "サポート同時攻撃" ]
@@ -3579,6 +4125,20 @@
     "area": "単体",
     "range": "自ユニット",
     "cost": 1,
+    "buff": [
+      {
+        "type": "与ダメージ",
+        "value": 20,
+        "duration": 2,
+        "target": "自身"
+      },
+      {
+        "type": "ダメージ耐性",
+        "value": 20,
+        "duration": 2,
+        "target": "自身"
+      }
+    ],
     "tags": [ "再行動" ]
   },
   {
@@ -3633,6 +4193,17 @@
     "range": 3,
     "cost": 2,
     "damageRate": 1.7,
+    "buff": [
+      {
+        "type": "与ダメージ(物理)",
+        "value": 10,
+        "duration": 0,
+        "target": "自身",
+        "condition": {
+          "onBattle": true
+        }
+      }
+    ],
     "tags": [ "単体攻撃", "長射程攻撃" ]
   },
   {
@@ -3756,8 +4327,8 @@
     "ct": 3,
     "area": "単体",
     "range": 1,
-    "damageRate": 2.0,
     "cost": 2,
+    "damageRate": 2.0,
     "debuff": [
       {
         "type": "ダメージ耐性(物理)",
@@ -3919,6 +4490,19 @@
     "range": "自ユニット",
     "cost": 2,
     "damageRate": 0.5,
+    "buff": [
+      {
+        "type": "クリティカル率",
+        "value": 50,
+        "duration": 2,
+        "target": "自身",
+        "condition": {
+          "onBattle": true,
+          "onEnemyTurn": true
+        },
+        "slot": "手の平で踊り、穿たれよ"
+      }
+    ],
     "debuff": [
       {
         "type": "与ダメージ",
@@ -4094,6 +4678,17 @@
     "cost": 2,
     "damageRate": 1.3,
     "damageRateSp": 1.8,
+    "buff": [
+      {
+        "type": "与ダメージ",
+        "value": 30,
+        "duration": 0,
+        "target": "自身",
+        "condition": {
+          "onBattle": true
+        }
+      }
+    ],
     "statusEffects": [
       {
         "type": "強化不可",
@@ -4208,7 +4803,9 @@
       {
         "type": "スタン",
         "duration": 1,
-        "probability": 15
+        "condition": {
+          "probability": 15
+        }
       }
     ],
     "tags": [ "超広範囲攻撃(自分中心)", "範囲攻撃(自分中心)" ]
@@ -4223,6 +4820,17 @@
     "range": "自ユニット",
     "cost": 2,
     "damageRate": 0.55,
+    "buff": [
+      {
+        "type": "クリティカル率",
+        "value": 50,
+        "duration": 0,
+        "target": "自身",
+        "condition": {
+          "onBattle": true
+        }
+      }
+    ],
     "tags": [ "範囲攻撃(自分中心)" ]
   },
   {
@@ -4303,7 +4911,10 @@
       {
         "type": "与ダメージ(スキル)",
         "value": 20,
-        "duration": 2
+        "duration": 2,
+        "condition": {
+          "onBattleEnd": true
+        }
       }
     ],
     "tags": [ "単体攻撃" ]
@@ -4330,6 +4941,20 @@
     "range": 1,
     "cost": 1,
     "damageRate": 2.0,
+    "buff": [
+      {
+        "type": "クリティカル率",
+        "value": 15,
+        "duration": 1,
+        "target": "自身"
+      },
+      {
+        "type": "クリティカルダメージ倍率",
+        "value": 15,
+        "duration": 1,
+        "target": "自身"
+      }
+    ],
     "tags": [ "単体攻撃", "単体回復(低HP)" ]
   },
   {
@@ -4365,6 +4990,28 @@
     "range": 1,
     "cost": 2,
     "damageRate": 1.8,
+    "buff": [
+      {
+        "type": "ダメージ耐性(物理)",
+        "value": 15,
+        "duration": 1,
+        "target": "自身",
+        "condition": {
+          "onBattleEnd": true,
+          "hp": "<=50%"
+        }
+      },
+      {
+        "type": "ダメージ耐性(魔法)",
+        "value": 15,
+        "duration": 1,
+        "target": "自身",
+        "condition": {
+          "onBattleEnd": true,
+          "hp": "<=50%"
+        }
+      }
+    ],
     "debuff": [
       {
         "type": "ダメージ耐性",
@@ -4384,6 +5031,28 @@
     "range": 1,
     "cost": 2,
     "damageRate": 2.0,
+    "buff": [
+      {
+        "type": "ダメージ耐性(物理)",
+        "value": 15,
+        "duration": 2,
+        "target": "自身",
+        "condition": {
+          "onBattleEnd": true,
+          "hp": "<=65%"
+        }
+      },
+      {
+        "type": "ダメージ耐性(魔法)",
+        "value": 15,
+        "duration": 2,
+        "target": "自身",
+        "condition": {
+          "onBattleEnd": true,
+          "hp": "<=65%"
+        }
+      }
+    ],
     "debuff": [
       {
         "type": "ダメージ耐性",
@@ -4414,6 +5083,26 @@
     "area": "単体",
     "range": "自ユニット",
     "cost": 1,
+    "buff": [
+      {
+        "type": "与ダメージ",
+        "value": 10,
+        "duration": 1,
+        "target": "自身"
+      },
+      {
+        "type": "射程(スキル)",
+        "value": 1,
+        "duration": 1,
+        "target": "自身"
+      },
+      {
+        "type": "移動",
+        "value": 1,
+        "duration": 1,
+        "target": "自身"
+      }
+    ],
     "tags": [ "移動+", "射程+(スキル)", "再行動" ]
   },
   {
@@ -4455,6 +5144,14 @@
     "range": 2,
     "cost": 2,
     "damageRate": 1.8,
+    "buff": [
+      {
+        "type": "クリティカルダメージ倍率",
+        "value": 30,
+        "duration": 1,
+        "target": "自身"
+      }
+    ],
     "tags": [ "単体攻撃" ]
   },
   {
@@ -4526,6 +5223,17 @@
     "uid": "1100272",
     "icon": "sk_a311",
     "damageRate": 0.55,
+    "buff": [
+      {
+        "type": "ディフェンス無視",
+        "value": 20,
+        "duration": 0,
+        "target": "自身",
+        "condition": {
+          "onBattle": true
+        }
+      }
+    ],
     "tags": [ "超広範囲攻撃(自分中心)", "範囲攻撃(自分中心)" ]
   },
   {
@@ -4581,6 +5289,20 @@
     "range": "自ユニット",
     "cost": 2,
     "damageRate": 0.5,
+    "buff": [
+      {
+        "type": "アタック",
+        "value": 20,
+        "duration": 2,
+        "target": "自身"
+      },
+      {
+        "type": "ディフェンス",
+        "value": 20,
+        "duration": 2,
+        "target": "自身"
+      }
+    ],
     "tags": [ "超広範囲攻撃(自分中心)", "範囲攻撃(自分中心)" ]
   },
   {
@@ -4597,17 +5319,26 @@
       {
         "type": "アタック",
         "value": 15,
-        "duration": 2
+        "duration": 2,
+        "condition": {
+          "onBattleEnd": true
+        }
       },
       {
         "type": "マジック",
         "value": 15,
-        "duration": 2
+        "duration": 2,
+        "condition": {
+          "onBattleEnd": true
+        }
       },
       {
         "type": "ダメージ耐性",
         "value": 15,
-        "duration": 2
+        "duration": 2,
+        "condition": {
+          "onBattleEnd": true
+        }
       }
     ],
     "tags": [ "単体攻撃" ]
@@ -4668,6 +5399,14 @@
     "area": "単体",
     "range": 2,
     "cost": 2,
+    "buff": [
+      {
+        "type": "与ダメージ",
+        "value": 20,
+        "duration": 3,
+        "target": "自身"
+      }
+    ],
     "tags": [ "再行動(味方)", "再攻撃(味方)" ]
   },
   {
@@ -4679,6 +5418,14 @@
     "area": "単体",
     "range": 2,
     "cost": 2,
+    "buff": [
+      {
+        "type": "与ダメージ",
+        "value": 20,
+        "duration": 4,
+        "target": "自身"
+      }
+    ],
     "tags": [ "再行動(味方)", "再攻撃(味方)" ]
   },
   {
@@ -4691,6 +5438,14 @@
     "range": 1,
     "cost": 2,
     "damageRate": 1.7,
+    "buff": [
+      {
+        "type": "クリティカル率",
+        "value": 30,
+        "duration": 1,
+        "target": "自身"
+      }
+    ],
     "statusEffects": [
       {
         "type": "パッシブスキル使用不可",
@@ -4709,6 +5464,14 @@
     "range": 1,
     "cost": 2,
     "damageRate": 2.0,
+    "buff": [
+      {
+        "type": "クリティカル率",
+        "value": 40,
+        "duration": 2,
+        "target": "自身"
+      }
+    ],
     "statusEffects": [
       {
         "type": "パッシブスキル使用不可",
@@ -4727,6 +5490,18 @@
     "range": 1,
     "cost": 2,
     "damageRate": 1.5,
+    "buff": [
+      {
+        "type": "クリティカル率",
+        "value": 20,
+        "duration": 1,
+        "target": "自身",
+        "condition": {
+          "onBattleEnd": true,
+          "onKill": true
+        }
+      }
+    ],
     "debuff": [
       {
         "type": "レジスト",
@@ -4746,6 +5521,28 @@
     "range": 1,
     "cost": 2,
     "damageRate": 1.8,
+    "buff": [
+      {
+        "type": "クリティカルダメージ倍率",
+        "value": 20,
+        "duration": 1,
+        "target": "自身",
+        "condition": {
+          "onBattleEnd": true,
+          "onKill": true
+        }
+      },
+      {
+        "type": "クリティカル率",
+        "value": 20,
+        "duration": 1,
+        "target": "自身",
+        "condition": {
+          "onBattleEnd": true,
+          "onKill": true
+        }
+      }
+    ],
     "debuff": [
       {
         "type": "レジスト",
@@ -4883,6 +5680,16 @@
     "range": 1,
     "cost": 2,
     "damageRate": 1.7,
+    "debuff": [
+      {
+        "type": "ダメージ耐性(魔法)",
+        "value": 20,
+        "duration": 0,
+        "condition": {
+          "onBattle": true
+        }
+      }
+    ],
     "tags": [ "単体攻撃", "与ダメ回復" ]
   },
   {
@@ -4899,7 +5706,11 @@
       {
         "type": "ダメージ耐性",
         "value": 10,
-        "duration": 1
+        "duration": 1,
+        "condition": {
+          "onBattleEnd": true,
+          "enemyHp": ">=50%"
+        }
       }
     ],
     "tags": [ "単体攻撃" ]
@@ -6189,7 +7000,9 @@
       {
         "type": "スタン",
         "duration": 1,
-        "probability":  50
+        "condition": {
+          "probability": 50
+        }
       }
     ],
     "tags": [ "超広範囲攻撃(自分中心)", "範囲攻撃(自分中心)" ]
@@ -8159,7 +8972,9 @@
       {
         "type": "パッシブスキル使用不可",
         "duration": 2,
-        "probability": 50
+        "condition": {
+          "probability": 50
+        }
       }
     ],
     "tags": [ "超広範囲攻撃(中心指定)", "範囲攻撃(中心指定)" ]
@@ -8178,7 +8993,9 @@
       {
         "type": "パッシブスキル使用不可",
         "duration": 2,
-        "probability": 75
+        "condition": {
+          "probability": 75
+        }
       }
     ],
     "tags": [ "超広範囲攻撃(中心指定)", "範囲攻撃(中心指定)" ]

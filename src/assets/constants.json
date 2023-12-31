@@ -224,11 +224,14 @@
     "onNoNearEnemy": [ "number" ],
     "onClass": [ "object" ],
     "onEnemyClass": [ "object" ],
+    "onClassAdvantage": [ "boolean" ],
 
     "probability": [ "number" ],
     "hp": [ "string" ],
+    "enemyHp": [ "string" ],
     "move": [ "number", "boolean" ],
     "token": [ "number", "boolean" ],
-    "activeBuffCount": [ "number", "boolean" ]
+    "activeBuffCount": [ "number", "string" ],
+    "activeDebuffCount": [ "number", "string" ]
   }
 }
