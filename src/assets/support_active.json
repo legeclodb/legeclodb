@@ -14,7 +14,7 @@
     "debuff": [
       {
         "type": "ランダム",
-        "randomType": "中",
+        "variant": "中",
         "amount": 2
       }
     ],
@@ -322,7 +322,7 @@
       },
       {
         "type": "ランダム",
-        "randomType": "中",
+        "variant": "中",
         "amount": 1
       }
     ],
@@ -497,7 +497,7 @@
     "debuff": [
       {
         "type": "ランダム",
-        "randomType": "弱",
+        "variant": "弱",
         "amount": 1,
         "target": "単体"
       }
@@ -907,7 +907,7 @@
     "buff": [
       {
         "type": "ランダム",
-        "randomType": "強",
+        "variant": "強",
         "amount": 2
       }
     ],
@@ -952,7 +952,10 @@
         "type": "ダメージ耐性",
         "value": [ 10, 12, 14, 16, 20 ],
         "duration": 2,
-        "onBattle": true
+        "condition": {
+          "onBattle": true,
+          "onEnemyTurn": true
+        }
       }
     ],
     "tags": [],
@@ -1508,7 +1511,10 @@
         "type": "ダメージ耐性",
         "value": 10,
         "duration": 2,
-        "onBattle": true
+        "condition": {
+          "onBattle": true,
+          "onEnemyTurn": true
+        }
       }
     ],
     "tags": [],
@@ -1801,7 +1807,7 @@
     "debuff": [
       {
         "type": "ランダム",
-        "randomType": "中",
+        "variant": "中",
         "amount": 1
       }
     ],

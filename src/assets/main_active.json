@@ -1,5 +1,7 @@
 [
   {
+    "$schema": "schema_skill.json",
+
     "uid": "1100004",
     "icon": "sk_a022",
     "name": "ソードダンス",
@@ -179,7 +181,7 @@
     "debuff": [
       {
         "type": "ランダム",
-        "randomType": "中"
+        "variant": "中"
       }
     ],
     "tags": [ "範囲攻撃(自分中心)" ],
@@ -248,7 +250,7 @@
     "debuff": [
       {
         "type": "ランダム",
-        "randomType": "強"
+        "variant": "強"
       }
     ],
     "tags": [ "範囲攻撃(自分中心)" ],
@@ -970,7 +972,6 @@
       },
       {
         "type": "ダメージ耐性",
-        "onBattle": true,
         "value": 50,
         "duration": 2,
         "target": "単体",
@@ -1111,7 +1112,7 @@
     "debuff": [
       {
         "type": "ランダム",
-        "randomType": "強"
+        "variant": "強"
       }
     ],
     "tags": [ "範囲攻撃(中心指定)" ],
@@ -2592,7 +2593,7 @@
     "debuff": [
       {
         "type": "ランダム",
-        "randomType": "強"
+        "variant": "強"
       }
     ],
     "damageRate": 0.45,
@@ -3658,7 +3659,7 @@
     "debuff": [
       {
         "type": "ランダム",
-        "randomType": "中"
+        "variant": "中"
       }
     ],
     "statusEffects": [
@@ -4375,7 +4376,7 @@
     "debuff": [
       {
         "type": "ランダム",
-        "randomType": "強"
+        "variant": "強"
       }
     ],
     "tags": [ "範囲攻撃(自分中心)" ],
@@ -4583,10 +4584,12 @@
       },
       {
         "type": "与ダメージ",
-        "onBattle": true,
         "value": 20,
-        "trun": 4,
-        "slot": "シンボルスキル"
+        "duration": 4,
+        "slot": "シンボルスキル",
+        "condition": {
+          "onBattle": true
+        }
       }
     ],
     "tags": [ "シンボルスキル" ]
@@ -4637,8 +4640,10 @@
         "type": "与ダメージ",
         "value": 20,
         "duration": 4,
-        "onBattle": true,
-        "slot": "シンボル加護"
+        "slot": "シンボル加護",
+        "condition": {
+          "onBattle": true
+        }
       }
     ],
     "tags": [ "シンボルスキル" ]
@@ -5596,17 +5601,21 @@
       },
       {
         "type": "クリティカル率",
-        "onBattle": true,
         "value": 10,
         "duration": 4,
-        "slot": "シンボルスキル"
+        "slot": "シンボルスキル",
+        "condition": {
+          "onBattle": true
+        }
       },
       {
         "type": "クリティカルダメージ倍率",
-        "onBattle": true,
         "value": 15,
         "duration": 4,
-        "slot": "シンボルスキル"
+        "slot": "シンボルスキル",
+        "condition": {
+          "onBattle": true
+        }
       }
     ],
     "tags": [ "シンボルスキル" ]
@@ -5655,17 +5664,21 @@
       },
       {
         "type": "クリティカル率",
-        "onBattle": true,
         "value": 20,
         "duration": 4,
-        "slot": "シンボルスキル"
+        "slot": "シンボルスキル",
+        "condition": {
+          "onBattle": true
+        }
       },
       {
         "type": "クリティカルダメージ倍率",
-        "onBattle": true,
         "value": 20,
         "duration": 4,
-        "slot": "シンボルスキル"
+        "slot": "シンボルスキル",
+        "condition": {
+          "onBattle": true
+        }
       }
     ],
     "tags": [ "シンボルスキル" ]
@@ -5892,17 +5905,21 @@
       },
       {
         "type": "与ダメージ(物理)",
-        "onBattle": true,
         "value": 20,
         "duration": 4,
-        "slot": "シンボルスキル"
+        "slot": "シンボルスキル",
+        "condition": {
+          "onBattle": true
+        }
       },
       {
         "type": "ダメージ耐性",
-        "onBattle": true,
         "value": 10,
         "duration": 4,
-        "slot": "シンボルスキル"
+        "slot": "シンボルスキル",
+        "condition": {
+          "onBattle": true
+        }
       }
     ],
     "tags": [ "シンボルスキル" ]
@@ -6059,7 +6076,7 @@
     "debuff": [
       {
         "type": "ランダム",
-        "randomType": "中"
+        "variant": "中"
       }
     ],
     "tags": [ "範囲攻撃(直線)" ],
@@ -6262,17 +6279,21 @@
       },
       {
         "type": "与ダメージ",
-        "onBattle": true,
         "value": 20,
         "duration": 4,
-        "slot": "シンボルスキル"
+        "slot": "シンボルスキル",
+        "condition": {
+          "onBattle": true
+        }
       },
       {
         "type": "クリティカル率",
-        "onBattle": true,
         "value": 10,
         "duration": 4,
-        "slot": "シンボルスキル"
+        "slot": "シンボルスキル",
+        "condition": {
+          "onBattle": true
+        }
       }
     ],
     "tags": [ "シンボルスキル" ]
@@ -6584,19 +6605,23 @@
       },
       {
         "type": "与ダメージ",
-        "onBattle": true,
         "value": 15,
         "duration": 4,
         "slot": "シンボルスキル",
-        "onHPAbove": 50
+        "condition": {
+          "onBattle": true,
+          "hp": ">=50%"
+        }
       },
       {
         "type": "クリティカルダメージ倍率",
-        "onBattle": true,
         "value": 10,
         "duration": 4,
         "slot": "シンボルスキル",
-        "onHPAbove": 50
+        "condition": {
+          "onBattle": true,
+          "hp": ">=50%"
+        }
       }
     ],
     "tags": [ "シンボルスキル" ]
@@ -6940,17 +6965,21 @@
       },
       {
         "type": "マジック",
-        "onBattle": true,
         "value": 15,
         "duration": 4,
-        "slot": "シンボルスキル"
+        "slot": "シンボルスキル",
+        "condition": {
+          "onBattle": true
+        }
       },
       {
         "type": "与ダメージ",
-        "onBattle": true,
         "value": 15,
         "duration": 4,
-        "slot": "シンボルスキル"
+        "slot": "シンボルスキル",
+        "condition": {
+          "onBattle": true
+        }
       }
     ],
     "tags": [ "シンボルスキル" ]
@@ -7293,21 +7322,27 @@
         "value": 10,
         "duration": 4,
         "slot": "シンボルスキル",
-        "onHPAbove": 50
+        "condition": {
+          "hp": ">=50%"
+        }
       },
       {
         "type": "クリティカルダメージ倍率",
         "value": 10,
         "duration": 4,
         "slot": "シンボルスキル",
-        "onHPAbove": 50
+        "condition": {
+          "hp": ">=50%"
+        }
       },
       {
         "type": "移動",
         "value": 1,
         "duration": 4,
         "slot": "シンボルスキル",
-        "onHPAbove": 50
+        "condition": {
+          "hp": ">=50%"
+        }
       }
     ],
     "tags": [ "シンボルスキル" ]
@@ -7358,22 +7393,28 @@
         "type": "クリティカル率",
         "value": 15,
         "duration": 4,
-        "onHPAbove": 30,
-        "slot": "シンボル加護"
+        "slot": "シンボル加護",
+        "condition": {
+          "hp": ">=30%"
+        }
       },
       {
         "type": "クリティカルダメージ倍率",
         "value": 15,
         "duration": 4,
-        "onHPAbove": 30,
-        "slot": "シンボル加護"
+        "slot": "シンボル加護",
+        "condition": {
+          "hp": ">=30%"
+        }
       },
       {
         "type": "移動",
         "value": 1,
         "duration": 4,
-        "onHPAbove": 30,
-        "slot": "シンボル加護"
+        "slot": "シンボル加護",
+        "condition": {
+          "hp": ">=30%"
+        }
       }
     ],
     "tags": [ "シンボルスキル" ]
@@ -7824,15 +7865,19 @@
         "type": "与ダメージ",
         "value": 18,
         "duration": 4,
-        "onBattle": true,
-        "slot": "記憶なき女神の祝福"
+        "slot": "記憶なき女神の祝福",
+        "condition": {
+          "onBattle": true
+        }
       },
       {
         "type": "クリティカル率",
         "value": 10,
         "duration": 4,
-        "onBattle": true,
-        "slot": "記憶なき女神の祝福"
+        "slot": "記憶なき女神の祝福",
+        "condition": {
+          "onBattle": true
+        }
       }
     ],
     "note": "与ダメージ/クリティカル率 バフは他のアクティブと競合せず加算になる"

@@ -548,7 +548,9 @@ def addSkills(args, skillIds):
             if not js:
                 js = {}
                 args.activeJson.append(js);
-
+                
+            js["uid"] = skill["id"]
+            js["icon"] = skill["icon"]
             js["name"] = name
             if isMain:
                 updateDesc(js, skill["desc"])
@@ -611,9 +613,6 @@ def addSkills(args, skillIds):
                 updateDescs(js, descs)
             elif "desc" in skill:
                 updateDesc(js, skill["desc"])
-
-        js["uid"] = skill["id"]
-        js["icon"] = skill["icon"]
 
 
 # アイテム情報

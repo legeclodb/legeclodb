@@ -1,5 +1,7 @@
 [
   {
+    "uid": "2200001",
+    "icon": "sk_sp1001",
     "name": "剛気",
     "desc": "自ユニットのアタック+5%。",
     "buff": [
@@ -8,11 +10,11 @@
         "value": 5,
         "target": "自身"
       }
-    ],
-    "uid": "2200001",
-    "icon": "sk_sp1001"
+    ]
   },
   {
+    "uid": "2200003",
+    "icon": "sk_sp1003",
     "name": "堅守",
     "desc": "自ユニットのディフェンス+5%。",
     "buff": [
@@ -21,11 +23,11 @@
         "value": 5,
         "target": "自身"
       }
-    ],
-    "uid": "2200003",
-    "icon": "sk_sp1003"
+    ]
   },
   {
+    "uid": "2200005",
+    "icon": "sk_sp1005",
     "name": "魔性",
     "desc": "自ユニットのマジック+5%。",
     "buff": [
@@ -34,11 +36,11 @@
         "value": 5,
         "target": "自身"
       }
-    ],
-    "uid": "2200005",
-    "icon": "sk_sp1005"
+    ]
   },
   {
+    "uid": "2200008",
+    "icon": "sk_sp1008",
     "name": "迅速",
     "desc": "自ユニットの移動+1。",
     "buff": [
@@ -47,11 +49,11 @@
         "value": 1,
         "target": "自身"
       }
-    ],
-    "uid": "2200008",
-    "icon": "sk_sp1008"
+    ]
   },
   {
+    "uid": "2200007",
+    "icon": "sk_sp1007",
     "name": "強靭",
     "desc": "自ユニットの最大HP+5%。",
     "buff": [
@@ -60,11 +62,11 @@
         "value": 5,
         "target": "自身"
       }
-    ],
-    "uid": "2200007",
-    "icon": "sk_sp1007"
+    ]
   },
   {
+    "uid": "2200006",
+    "icon": "sk_sp1006",
     "name": "集中",
     "desc": "自ユニットのクリティカル率+5%。",
     "buff": [
@@ -73,11 +75,11 @@
         "value": 5,
         "target": "自身"
       }
-    ],
-    "uid": "2200006",
-    "icon": "sk_sp1006"
+    ]
   },
   {
+    "uid": "2200002",
+    "icon": "sk_sp1002",
     "name": "奮迅",
     "desc": "自ユニットのスキル与ダメージ+5%。",
     "buff": [
@@ -86,11 +88,11 @@
         "value": 5,
         "target": "自身"
       }
-    ],
-    "uid": "2200002",
-    "icon": "sk_sp1002"
+    ]
   },
   {
+    "uid": "2200004",
+    "icon": "sk_sp1004",
     "name": "治術",
     "desc": "自ユニットの治療効果+5%。",
     "buff": [
@@ -99,11 +101,11 @@
         "value": 5,
         "target": "自身"
       }
-    ],
-    "uid": "2200004",
-    "icon": "sk_sp1004"
+    ]
   },
   {
+    "uid": "2300001",
+    "icon": "sk_sp2001",
     "name": "八塩折之酒",
     "desc": "戦闘で敵ユニットを倒した時、自ユニットのアタック+5%(2ターン/最大4回まで重複可能)。",
     "buff": [
@@ -112,131 +114,172 @@
         "value": 5,
         "duration": 2,
         "maxStack": 4,
-        "target": "自身"
+        "target": "自身",
+        "condition": {
+          "onKill": true
+        }
       }
     ],
-    "tags": [ "蓄積バフ" ],
-    "uid": "2300001",
-    "icon": "sk_sp2001"
+    "tags": [ "蓄積バフ" ]
   },
   {
+    "uid": "2300002",
+    "icon": "sk_sp2002",
     "name": "青春のプロミネンス",
     "desc": "味方ターンでの戦闘時、その戦闘前、自ユニットの与ダメージ+20%/ダメージ耐性+10%。",
     "buff": [
       {
         "type": "与ダメージ",
         "value": 20,
+        "duration": 0,
         "target": "自身",
-        "onBattle": true
+        "condition": {
+          "onBattle": true,
+          "onOwnTurn": true
+        }
       },
       {
         "type": "ダメージ耐性",
         "value": 10,
+        "duration": 0,
         "target": "自身",
-        "onBattle": true
+        "condition": {
+          "onBattle": true,
+          "onOwnTurn": true
+        }
       }
-    ],
-    "uid": "2300002",
-    "icon": "sk_sp2002"
+    ]
   },
   {
+    "uid": "2300003",
+    "icon": "sk_sp2003",
     "name": "破壊と創造の舞踊",
     "desc": "敵ターンでの戦闘時、その戦闘前、自ユニットのアタック/ディフェンス+10%。",
     "buff": [
       {
         "type": "アタック",
         "value": 10,
+        "duration": 0,
         "target": "自身",
-        "onBattle": true
+        "condition": {
+          "onBattle": true,
+          "onEnemyTurn": true
+        }
       },
       {
         "type": "ディフェンス",
         "value": 10,
+        "duration": 0,
         "target": "自身",
-        "onBattle": true
+        "condition": {
+          "onBattle": true,
+          "onEnemyTurn": true
+        }
       }
-    ],
-    "uid": "2300003",
-    "icon": "sk_sp2003"
+    ]
   },
   {
+    "uid": "2300004",
+    "icon": "sk_sp2004",
     "name": "魔槍戦神",
     "desc": "味方ターンでの戦闘時、その戦闘前、自ユニットのディフェンス/レジスト+10%。",
     "buff": [
       {
         "type": "ディフェンス",
         "value": 10,
+        "duration": 0,
         "target": "自身",
-        "onBattle": true
+        "condition": {
+          "onBattle": true,
+          "onOwnTurn": true
+        }
       },
       {
         "type": "レジスト",
         "value": 10,
+        "duration": 0,
         "target": "自身",
-        "onBattle": true
+        "condition": {
+          "onBattle": true,
+          "onOwnTurn": true
+        }
       }
-    ],
-    "uid": "2300004",
-    "icon": "sk_sp2004"
+    ]
   },
   {
+    "uid": "2300005",
+    "icon": "sk_sp2005",
     "name": "魂の安寧",
     "desc": "行動終了時、自身を中心とした範囲2マス以内の味方ユニットのHPをサポートのマジックの1.5倍回復する。",
-    "tags": [ "範囲回復(自分中心)" ],
-    "uid": "2300005",
-    "icon": "sk_sp2005"
+    "tags": [ "範囲回復(自分中心)" ]
   },
   {
+    "uid": "2300006",
+    "icon": "sk_sp2006",
     "name": "女禍造呪",
     "desc": "味方ターンでの戦闘時、その戦闘後、敵ユニットにランダムな弱化効果を1個付与する。",
     "debuff": [
       {
         "type": "ランダム",
-        "randomType": "弱",
-        "amount": 1
+        "variant": "弱",
+        "amount": 1,
+        "condition": {
+          "onBattleEnd": true,
+          "onOwnTurn": true
+        }
       }
     ],
-    "tags": [],
-    "note": "ランダムデバフ内訳: アタック-10%(2ターン)、ディフェンス-10%(2ターン)、マジック-10%(2ターン)、レジスト-20%(2ターン)、与ダメージ-10%(2ターン)、ダメージ耐性-10%(2ターン)",
-    "uid": "2300006",
-    "icon": "sk_sp2006"
+    "note": "ランダムデバフ内訳: アタック-10%(2ターン)、ディフェンス-10%(2ターン)、マジック-10%(2ターン)、レジスト-20%(2ターン)、与ダメージ-10%(2ターン)、ダメージ耐性-10%(2ターン)"
   },
   {
+    "uid": "2300007",
+    "icon": "sk_sp2007",
     "name": "射抜くは銀影の矢",
     "desc": "味方ターンでの戦闘時、その戦闘前、メインのクリティカル率+15%/サポートのダメージ耐性+30%。",
     "buff": [
       {
         "type": "クリティカル率",
         "value": 15,
+        "duration": 0,
         "target": "自身",
-        "onBattle": true
+        "condition": {
+          "onBattle": true,
+          "onOwnTurn": true
+        }
       },
       {
         "type": "ダメージ耐性",
         "value": 30,
+        "duration": 0,
         "target": "自身",
-        "onBattle": true
+        "condition": {
+          "onBattle": true,
+          "onOwnTurn": true
+        }
       }
-    ],
-    "uid": "2300007",
-    "icon": "sk_sp2007"
+    ]
   },
   {
+    "uid": "2300008",
+    "icon": "sk_sp2008",
     "name": "太陽神の後光",
     "desc": "行動終了時、自身を中心とした範囲2マス以内の味方ユニット1隊にランダムな強化効果を1個付与する。",
     "buff": [
       {
         "type": "ランダム",
-        "randomType": "弱",
-        "amount": 1
+        "variant": "弱",
+        "amount": 1,
+        "condition": {
+          "onActionEnd": true
+        }
       }
     ],
     "tags": [],
-    "note": "ランダムバフ内訳: アタック+10%(2ターン)、ディフェンス+10%(2ターン)、マジック+10%(2ターン)、レジスト+10%(2ターン)、与ダメージ+10%(2ターン)、ダメージ耐性+10%(2ターン)、移動+1(2ターン)",
-    "uid": "2300008",
-    "icon": "sk_sp2008"
+    "note": "ランダムバフ内訳: アタック+10%(2ターン)、ディフェンス+10%(2ターン)、マジック+10%(2ターン)、レジスト+10%(2ターン)、与ダメージ+10%(2ターン)、ダメージ耐性+10%(2ターン)、移動+1(2ターン)"
   },
   {
+    "uid": "2300009",
+    "icon": "sk_sp2009",
     "name": "最強ですから！",
     "desc": "味方ターンでの戦闘時、その戦闘前、自ユニットのアタック+15%。",
     "buff": [
@@ -244,26 +287,32 @@
         "type": "アタック",
         "value": 15,
         "target": "自身",
-        "onBattle": true
+        "condition": {
+          "onBattle": true,
+          "onOwnTurn": true
+        }
       }
-    ],
-    "uid": "2300009",
-    "icon": "sk_sp2009"
+    ]
   },
   {
+    "uid": "2300010",
+    "icon": "sk_sp2010",
     "name": "ロキの悪戯",
     "desc": "自ユニットのHPが80%以上の時、自ユニットのレジスト+15%。",
     "buff": [
       {
         "type": "レジスト",
         "value": 15,
-        "target": "自身"
+        "target": "自身",
+        "condition": {
+          "hp": ">=80%"
+        }
       }
-    ],
-    "uid": "2300010",
-    "icon": "sk_sp2010"
+    ]
   },
   {
+    "uid": "2300011",
+    "icon": "sk_sp2011",
     "name": "北方聖獣",
     "desc": "戦闘で敵ユニットを倒した時、自ユニットのアタック+5%(2ターン/最大4回まで重複可能)。",
     "buff": [
@@ -272,14 +321,17 @@
         "value": 5,
         "duration": 2,
         "maxStack": 4,
-        "target": "自身"
+        "target": "自身",
+        "condition": {
+          "onKill": true
+        }
       }
     ],
-    "tags": [ "蓄積バフ" ],
-    "uid": "2300011",
-    "icon": "sk_sp2011"
+    "tags": [ "蓄積バフ" ]
   },
   {
+    "uid": "2300012",
+    "icon": "sk_sp2012",
     "name": "快速クマラ号",
     "desc": "自ユニットの移動+1。",
     "buff": [
@@ -288,11 +340,11 @@
         "value": 1,
         "target": "自身"
       }
-    ],
-    "uid": "2300012",
-    "icon": "sk_sp2012"
+    ]
   },
   {
+    "uid": "2300013",
+    "icon": "sk_sp2013",
     "name": "大天使の意地",
     "desc": "自ユニットの治療効果+15%。",
     "buff": [
@@ -301,24 +353,30 @@
         "value": 15,
         "target": "自身"
       }
-    ],
-    "uid": "2300013",
-    "icon": "sk_sp2013"
+    ]
   },
   {
+    "uid": "2300017",
+    "icon": "sk_sp2017",
     "name": "矢避けの定石",
     "desc": "敵ターンで遠距離による戦闘時、自ユニットのダメージ耐性+15%。",
     "buff": [
       {
         "type": "ダメージ耐性",
         "value": 15,
-        "target": "自身"
+        "duration": 0,
+        "target": "自身",
+        "condition": {
+          "onBattle": true,
+          "onEnemyTurn": true,
+          "onRangedCombat": true
+        }
       }
-    ],
-    "uid": "2300017",
-    "icon": "sk_sp2017"
+    ]
   },
   {
+    "uid": "2300014",
+    "icon": "sk_sp2014",
     "name": "ザヴィーラの進言",
     "desc": "自ユニットの範囲スキル与ダメージ+15%",
     "buff": [
@@ -327,11 +385,11 @@
         "value": 15,
         "target": "自身"
       }
-    ],
-    "uid": "2300014",
-    "icon": "sk_sp2014"
+    ]
   },
   {
+    "uid": "2300015",
+    "icon": "sk_sp2015",
     "name": "無貌",
     "desc": "自ユニットのスキル与ダメージ+15%。",
     "buff": [
@@ -340,18 +398,18 @@
         "value": 15,
         "target": "自身"
       }
-    ],
-    "uid": "2300015",
-    "icon": "sk_sp2015"
+    ]
   },
   {
+    "uid": "2300016",
+    "icon": "sk_sp2016",
     "name": "大天使の仁愛",
     "desc": "戦闘後、自ユニットのメイン、サポートそれぞれのHPが最大HPの10%分回復する。",
-    "tags": [ "自己回復" ],
-    "uid": "2300016",
-    "icon": "sk_sp2016"
+    "tags": [ "自己回復" ]
   },
   {
+    "uid": "2300018",
+    "icon": "sk_sp2018",
     "name": "西方聖獣",
     "desc": "自ユニットのクリティカルダメージ倍率+10%。",
     "buff": [
@@ -360,25 +418,30 @@
         "value": 10,
         "target": "自身"
       }
-    ],
-    "uid": "2300018",
-    "icon": "sk_sp2018"
+    ]
   },
   {
+    "uid": "2300029",
+    "icon": "sk_sp2029",
     "name": "東方聖獣",
     "desc": "味方ターンで遠距離による戦闘時、自ユニットのマジック+10%。",
     "buff": [
       {
         "type": "マジック",
         "value": 10,
+        "duration": 0,
         "target": "自身",
-        "onBattle": true
+        "condition": {
+          "onBattle": true,
+          "onOwnTurn": true,
+          "onRangedCombat": true
+        }
       }
-    ],
-    "uid": "2300029",
-    "icon": "sk_sp2029"
+    ]
   },
   {
+    "uid": "2300019",
+    "icon": "sk_sp2019",
     "name": "正義の炎",
     "desc": "自ユニットの与ダメージ+10%。",
     "buff": [
@@ -387,25 +450,29 @@
         "value": 10,
         "target": "自身"
       }
-    ],
-    "uid": "2300019",
-    "icon": "sk_sp2019"
+    ]
   },
   {
+    "uid": "2300020",
+    "icon": "sk_sp2020",
     "name": "商売繁盛の秘訣",
     "desc": "近距離による戦闘時、自ユニットのダメージ耐性+10%",
     "buff": [
       {
         "type": "ダメージ耐性",
         "value": 10,
+        "duration": 0,
         "target": "自身",
-        "onBattle": true
+        "condition": {
+          "onBattle": true,
+          "onCloseCombat": true
+        }
       }
-    ],
-    "uid": "2300020",
-    "icon": "sk_sp2020"
+    ]
   },
   {
+    "uid": "2300022",
+    "icon": "sk_sp2022",
     "name": "海のアイドル",
     "desc": "自ユニットのアタック/ディフェンス+5%。",
     "buff": [
@@ -419,11 +486,11 @@
         "value": 5,
         "target": "自身"
       }
-    ],
-    "uid": "2300022",
-    "icon": "sk_sp2022"
+    ]
   },
   {
+    "uid": "2300027",
+    "icon": "sk_sp2027",
     "name": "酩酊白翼",
     "desc": "自ユニットのレジスト+10%。",
     "buff": [
@@ -432,11 +499,11 @@
         "value": 10,
         "target": "自身"
       }
-    ],
-    "uid": "2300027",
-    "icon": "sk_sp2027"
+    ]
   },
   {
+    "uid": "2300025",
+    "icon": "sk_sp2025",
     "name": "メイドの心得",
     "desc": "自ユニットのマジック+10%。",
     "buff": [
@@ -445,11 +512,11 @@
         "value": 10,
         "target": "自身"
       }
-    ],
-    "uid": "2300025",
-    "icon": "sk_sp2025"
+    ]
   },
   {
+    "uid": "2300024",
+    "icon": "sk_sp2024",
     "name": "蕗葉の傘",
     "desc": "自ユニットのレジスト+10%。",
     "buff": [
@@ -458,11 +525,11 @@
         "value": 10,
         "target": "自身"
       }
-    ],
-    "uid": "2300024",
-    "icon": "sk_sp2024"
+    ]
   },
   {
+    "uid": "2300023",
+    "icon": "sk_sp2023",
     "name": "湖上のワルツ",
     "desc": "自ユニットのレジスト+10%。",
     "buff": [
@@ -471,11 +538,11 @@
         "value": 10,
         "target": "自身"
       }
-    ],
-    "uid": "2300023",
-    "icon": "sk_sp2023"
+    ]
   },
   {
+    "uid": "2300028",
+    "icon": "sk_sp2028",
     "name": "水底への誘い",
     "desc": "自ユニットのクリティカル率+10%。",
     "buff": [
@@ -484,11 +551,11 @@
         "value": 10,
         "target": "自身"
       }
-    ],
-    "uid": "2300028",
-    "icon": "sk_sp2028"
+    ]
   },
   {
+    "uid": "2300026",
+    "icon": "sk_sp2026",
     "name": "恋に一直線",
     "desc": "自ユニットのクリティカル率+10%。",
     "buff": [
@@ -497,92 +564,114 @@
         "value": 10,
         "target": "自身"
       }
-    ],
-    "uid": "2300026",
-    "icon": "sk_sp2026"
+    ]
   },
   {
+    "uid": "2300021",
+    "icon": "sk_sp2021",
     "name": "キャットウォーク",
     "desc": "味方ターンでの戦闘時、自ユニットのディフェンス+10%。",
     "buff": [
       {
         "type": "ディフェンス",
         "value": 10,
+        "duration": 0,
         "target": "自身",
-        "onBattle": true
+        "condition": {
+          "onBattle": true,
+          "onOwnTurn": true
+        }
       }
-    ],
-    "uid": "2300021",
-    "icon": "sk_sp2021"
+    ]
   },
   {
+    "uid": "2300030",
+    "icon": "sk_sp2030",
     "name": "ルナトス",
     "desc": "行動終了時、自ユニットのメイン、サポートそれぞれのHPが最大HPの10%分回復する。",
-    "tags": [ "自己回復" ],
-    "uid": "2300030",
-    "icon": "sk_sp2030"
+    "tags": [ "自己回復" ]
   },
   {
+    "uid": "2300031",
+    "icon": "sk_sp2031",
     "name": "ヘルフィヨトゥルの祝聖",
     "desc": "味方ターンでの戦闘時、その戦闘前、敵ユニットのアタック/マジック-10%。",
     "debuff": [
       {
         "type": "アタック",
         "value": 10,
-        "onBattle": true
+        "duration": 0,
+        "condition": {
+          "onBattle": true,
+          "onOwnTurn": true
+        }
       },
       {
         "type": "マジック",
         "value": 10,
-        "onBattle": true
+        "duration": 0,
+        "condition": {
+          "onBattle": true,
+          "onOwnTurn": true
+        }
       }
-    ],
-    "uid": "2300031",
-    "icon": "sk_sp2031"
+    ]
   },
   {
+    "uid": "2300035",
+    "icon": "sk_sp2036",
     "name": "最カワですから！",
     "desc": "行動終了時、自身を中心とした範囲2マス以内の敵ユニットのダメージ耐性-10%(2ターン)。",
     "debuff": [
       {
         "type": "ダメージ耐性",
         "value": 10,
-        "duration": 2
+        "duration": 2,
+        "area": 2,
+        "condition": {
+          "onActionEnd": true
+        }
       }
-    ],
-    "uid": "2300035",
-    "icon": "sk_sp2036"
+    ]
   },
   {
+    "uid": "2300032",
+    "icon": "sk_sp2032",
     "name": "月光夜曲",
     "desc": "味方ターンでの戦闘時、その戦闘前、自ユニットのアタック+20%。",
     "buff": [
       {
         "type": "アタック",
         "value": 20,
+        "duration": 0,
         "target": "自身",
-        "onBattle": true
+        "condition": {
+          "onBattle": true,
+          "onOwnTurn": true
+        }
       }
-    ],
-    "uid": "2300032",
-    "icon": "sk_sp2032"
+    ]
   },
   {
+    "uid": "2300036",
+    "icon": "sk_sp2037",
     "name": "クリスマスの決意",
     "desc": "行動終了時、自ユニットにランダムな強化効果を1個付与。",
     "buff": [
       {
         "type": "ランダム",
-        "randomType": "弱",
-        "amount": 1
+        "variant": "弱",
+        "amount": 1,
+        "condition": {
+          "onActionEnd": true
+        }
       }
     ],
-    "tags": [],
-    "note": "ランダムバフ内訳: アタック+10%(2ターン)、ディフェンス+10%(2ターン)、マジック+10%(2ターン)、レジスト+10%(2ターン)、与ダメージ+10%(2ターン)、ダメージ耐性+10%(2ターン)、移動+1(2ターン)",
-    "uid": "2300036",
-    "icon": "sk_sp2037"
+    "note": "ランダムバフ内訳: アタック+10%(2ターン)、ディフェンス+10%(2ターン)、マジック+10%(2ターン)、レジスト+10%(2ターン)、与ダメージ+10%(2ターン)、ダメージ耐性+10%(2ターン)、移動+1(2ターン)"
   },
   {
+    "uid": "2300037",
+    "icon": "sk_sp2038",
     "name": "正しき月に反しても",
     "desc": "敵ターンでの戦闘時、その戦闘前、自ユニットの最大HP以外の全ステータス+5%(2ターン/最大4回まで重複可能)。",
     "buff": [
@@ -591,278 +680,374 @@
         "value": 5,
         "duration": 2,
         "maxStack": 4,
-        "target": "自身"
+        "target": "自身",
+        "condition": {
+          "onBattle": true,
+          "onEnemyTurn": true
+        }
       },
       {
         "type": "ディフェンス",
         "value": 5,
         "duration": 2,
         "maxStack": 4,
-        "target": "自身"
+        "target": "自身",
+        "condition": {
+          "onBattle": true,
+          "onEnemyTurn": true
+        }
       },
       {
         "type": "マジック",
         "value": 5,
         "duration": 2,
         "maxStack": 4,
-        "target": "自身"
+        "target": "自身",
+        "condition": {
+          "onBattle": true,
+          "onEnemyTurn": true
+        }
       },
       {
         "type": "レジスト",
         "value": 5,
         "duration": 2,
         "maxStack": 4,
-        "target": "自身"
+        "target": "自身",
+        "condition": {
+          "onBattle": true,
+          "onEnemyTurn": true
+        }
       },
       {
         "type": "テクニック",
         "value": 5,
         "duration": 2,
         "maxStack": 4,
-        "target": "自身"
+        "target": "自身",
+        "condition": {
+          "onBattle": true,
+          "onEnemyTurn": true
+        }
       }
     ],
-    "tags": [ "蓄積バフ" ],
-    "uid": "2300037",
-    "icon": "sk_sp2038"
+    "tags": [ "蓄積バフ" ]
   },
   {
+    "uid": "2300033",
+    "icon": "sk_sp2034",
     "name": "厄災の魔法使い",
     "desc": "自ユニットのHPが100%の時、自ユニットのマジック+20%。",
     "buff": [
       {
         "type": "マジック",
         "value": 20,
-        "target": "自身"
+        "target": "自身",
+        "condition": {
+          "hp": ">=100%"
+        }
       }
-    ],
-    "uid": "2300033",
-    "icon": "sk_sp2034"
+    ]
   },
   {
+    "uid": "2300038",
+    "icon": "sk_sp2039",
     "name": "はらぺこ精霊",
     "desc": "敵ターンで遠距離による戦闘時、その戦闘前、自ユニットのディフェンス/レジスト+10%。",
     "buff": [
       {
         "type": "ディフェンス",
         "value": 10,
+        "duration": 0,
         "target": "自身",
-        "onBattle": true
+        "condition": {
+          "onBattle": true,
+          "onEnemyTurn": true,
+          "onRangedCombat": true
+        }
       },
       {
         "type": "レジスト",
         "value": 10,
+        "duration": 0,
         "target": "自身",
-        "onBattle": true
+        "condition": {
+          "onBattle": true,
+          "onEnemyTurn": true,
+          "onRangedCombat": true
+        }
       }
-    ],
-    "uid": "2300038",
-    "icon": "sk_sp2039"
+    ]
   },
   {
+    "uid": "2300039",
+    "icon": "sk_sp2040",
     "name": "妙智の力",
     "desc": "近距離による戦闘時、その戦闘前、自ユニットのアタック+15%。",
     "buff": [
       {
         "type": "アタック",
         "value": 15,
+        "duration": 0,
         "target": "自身",
-        "onBattle": true
+        "condition": {
+          "onBattle": true,
+          "onCloseCombat": true
+        }
       }
-    ],
-    "uid": "2300039",
-    "icon": "sk_sp2040"
+    ]
   },
   {
+    "uid": "2300040",
+    "icon": "sk_sp2041",
     "name": "愛がための自縛",
     "desc": "味方ターンでの戦闘時、その戦闘前、自ユニットの物理与ダメージ+15%/物理ダメージ耐性+15%。",
     "buff": [
       {
         "type": "与ダメージ(物理)",
         "value": 15,
+        "duration": 0,
         "target": "自身",
-        "onBattle": true
+        "condition": {
+          "onBattle": true,
+          "onOwnTurn": true
+        }
       },
       {
         "type": "ダメージ耐性(物理)",
         "value": 15,
+        "duration": 0,
         "target": "自身",
-        "onBattle": true
+        "condition": {
+          "onBattle": true,
+          "onOwnTurn": true
+        }
       }
-    ],
-    "uid": "2300040",
-    "icon": "sk_sp2041"
+    ]
   },
   {
+    "uid": "2300041",
+    "icon": "sk_sp2042",
     "name": "陽光の恵み",
     "desc": "行動終了時、自身を中心とした範囲2マス以内の全ての味方ユニットのスキル与ダメージ+20%(2ターン)。",
     "buff": [
       {
         "type": "与ダメージ(スキル)",
         "value": 20,
-        "duration": 2
+        "duration": 2,
+        "area": 2,
+        "condition": {
+          "onActionEnd": true
+        }
       }
-    ],
-    "uid": "2300041",
-    "icon": "sk_sp2042"
+    ]
   },
   {
+    "uid": "2300042",
+    "icon": "sk_sp2043",
     "name": "勝利への鼓舞",
     "desc": "近距離による戦闘時、その戦闘前、自ユニットのアタック/ディフェンス+10%。",
     "buff": [
       {
         "type": "アタック",
         "value": 10,
+        "duration": 0,
         "target": "自身",
-        "onBattle": true
+        "condition": {
+          "onBattle": true,
+          "onRangedCombat": true
+        }
       },
       {
         "type": "ディフェンス",
         "value": 10,
+        "duration": 0,
         "target": "自身",
-        "onBattle": true
+        "condition": {
+          "onBattle": true,
+          "onRangedCombat": true
+        }
       }
-    ],
-    "uid": "2300042",
-    "icon": "sk_sp2043"
+    ]
   },
   {
+    "uid": "2300034",
+    "icon": "sk_sp2035",
     "name": "死者の聖別",
     "desc": "行動終了時、現在HP割合が最も低い味方ユニットのHPを最大HPの10%分回復する。",
-    "tags": [ "単体回復(低HP)" ],
-    "uid": "2300034",
-    "icon": "sk_sp2035"
+    "tags": [ "単体回復(低HP)" ]
   },
   {
+    "uid": "2300044",
+    "icon": "sk_sp2045",
     "name": "酒宴の始まり",
     "desc": "遠距離による戦闘時、その戦闘前、自ユニットのクリティカルダメージ倍率+25%。",
     "buff": [
       {
         "type": "クリティカルダメージ倍率",
         "value": 25,
+        "duration": 0,
         "target": "自身",
-        "onBattle": true
+        "condition": {
+          "onBattle": true,
+          "onRangedCombat": true
+        }
       }
-    ],
-    "uid": "2300044",
-    "icon": "sk_sp2045"
+    ]
   },
   {
+    "uid": "2300043",
+    "icon": "sk_sp2044",
     "name": "こっち見ないで！",
     "desc": "敵ターンでの戦闘時、その戦闘前、自ユニットの物理ダメージ耐性+15%。",
     "buff": [
       {
         "type": "ダメージ耐性(物理)",
         "value": 15,
+        "duration": 0,
         "target": "自身",
-        "onBattle": true
+        "condition": {
+          "onBattle": true,
+          "onEnemyTurn": true
+        }
       }
-    ],
-    "uid": "2300043",
-    "icon": "sk_sp2044"
+    ]
   },
   {
+    "uid": "2300045",
+    "icon": "sk_sp2046",
     "name": "場を和ませるMC",
     "desc": "味方ターンでの戦闘時、その戦闘前、自ユニットの弱化効果を1個解除し、その戦闘後、自ユニットのメイン、サポートそれぞれのHPが最大HPの10%分回復する。",
-    "tags": [ "デバフ解除(自身)", "自己回復" ],
-    "uid": "2300045",
-    "icon": "sk_sp2046"
+    "tags": [ "デバフ解除(自身)", "自己回復" ]
   },
   {
+    "uid": "2300046",
+    "icon": "sk_sp2047",
     "name": "会場の端まで響け",
     "desc": "味方ターンで遠距離による戦闘時、その戦闘前、自ユニットのスキル与ダメージ+30%。",
     "buff": [
       {
         "type": "与ダメージ(スキル)",
         "value": 30,
+        "duration": 0,
         "target": "自身",
-        "onBattle": true
+        "condition": {
+          "onBattle": true,
+          "onOwnTurn": true,
+          "onRangedCombat": true
+        }
       }
-    ],
-    "uid": "2300046",
-    "icon": "sk_sp2047"
+    ]
   },
   {
+    "uid": "2300047",
+    "icon": "sk_sp2048",
     "name": "そんな声じゃ届かない",
     "desc": "敵ターンで遠距離による戦闘時、自ユニットのダメージ耐性+10%。",
     "buff": [
       {
         "type": "ダメージ耐性",
         "value": 10,
+        "duration": 0,
         "target": "自身",
-        "onBattle": true
+        "condition": {
+          "onBattle": true,
+          "onEnemyTurn": true,
+          "onRangedCombat": true
+        }
       }
-    ],
-    "uid": "2300047",
-    "icon": "sk_sp2048"
+    ]
   },
   {
+    "uid": "2300048",
+    "icon": "sk_sp2049",
     "name": "戦い続ける運命",
     "desc": "近距離での戦闘時、その戦闘後、味方メインが与えたダメージの10%分HPを回復する。",
-    "tags": [ "与ダメ回復" ],
-    "uid": "2300048",
-    "icon": "sk_sp2049"
+    "tags": [ "与ダメ回復" ]
   },
   {
+    "uid": "2300049",
+    "icon": "sk_sp2050",
     "name": "掃き溜めの天使",
     "desc": "味方ターンでの戦闘時、その戦闘前、自ユニットの与ダメージ+25%。",
     "buff": [
       {
         "type": "与ダメージ",
         "value": 25,
+        "duration": 0,
         "target": "自身",
-        "onBattle": true
+        "condition": {
+          "onBattle": true,
+          "onOwnTurn": true
+        }
       }
-    ],
-    "uid": "2300049",
-    "icon": "sk_sp2050"
+    ]
   },
   {
+    "uid": "2300050",
+    "icon": "sk_sp2051",
     "name": "樹よ、花よ",
     "desc": "敵ターンで遠距離による戦闘時、その戦闘前、敵ユニットの与ダメージ-10%。",
     "debuff": [
       {
         "type": "与ダメージ",
         "value": 10,
-        "onBattle": true
+        "duration": 0,
+        "condition": {
+          "onBattle": true,
+          "onEnemyTurn": true,
+          "onRangedCombat": true
+        }
       }
-    ],
-    "uid": "2300050",
-    "icon": "sk_sp2051"
+    ]
   },
   {
+    "uid": "2300051",
+    "icon": "sk_sp2052",
     "name": "祝福の呪い",
     "desc": "行動終了時、自身を中心とした範囲3マス以内の全ての敵ユニットのディフェンス/レジスト-10%(2ターン)。",
     "debuff": [
       {
         "type": "ディフェンス",
         "value": 10,
-        "duration": 2
+        "duration": 2,
+        "area": 3,
+        "condition": {
+          "onActionEnd": true
+        }
       },
       {
         "type": "レジスト",
         "value": 10,
-        "duration": 2
+        "duration": 2,
+        "area": 3,
+        "condition": {
+          "onActionEnd": true
+        }
       }
-    ],
-    "uid": "2300051",
-    "icon": "sk_sp2052"
+    ]
   },
   {
+    "uid": "2300052",
+    "icon": "sk_sp2053",
     "name": "天の川のこちらから",
     "desc": "遠距離による戦闘時、その戦闘前、自ユニットの与ダメージ+20%。",
     "buff": [
       {
         "type": "与ダメージ",
         "value": 20,
+        "duration": 0,
         "target": "自身",
-        "onBattle": true
+        "condition": {
+          "onBattle": true,
+          "onRangedCombat": true
+        }
       }
-    ],
-    "uid": "2300052",
-    "icon": "sk_sp2053"
+    ]
   },
   {
+    "uid": "2300053",
+    "icon": "sk_sp2033",
     "name": "南方聖獣",
     "desc": "自ユニットのスキル与ダメージ+15%。",
     "buff": [
@@ -871,100 +1056,133 @@
         "value": 15,
         "target": "自身"
       }
-    ],
-    "uid": "2300053",
-    "icon": "sk_sp2033"
+    ]
   },
   {
+    "uid": "2300054",
+    "icon": "sk_sp2054",
     "name": "逃れられぬ災厄",
     "desc": "戦闘前、敵ユニットの魔法ダメージ耐性-20%。",
     "debuff": [
       {
         "type": "ダメージ耐性(魔法)",
         "value": 20,
-        "onBattle": true
+        "duration": 0,
+        "condition": {
+          "onBattle": true
+        }
       }
-    ],
-    "uid": "2300054",
-    "icon": "sk_sp2054"
+    ]
   },
   {
+    "uid": "2300055",
+    "icon": "sk_sp2055",
     "name": "夏！海！水着の天使！",
     "desc": "味方ターンでの戦闘時、その戦闘前、自ユニットのアタック/クリティカル率+15%。",
     "buff": [
       {
         "type": "アタック",
         "value": 15,
+        "duration": 0,
         "target": "自身",
-        "onBattle": true
+        "condition": {
+          "onBattle": true,
+          "onOwnTurn": true
+        }
       },
       {
         "type": "クリティカル率",
         "value": 15,
+        "duration": 0,
         "target": "自身",
-        "onBattle": true
+        "condition": {
+          "onBattle": true,
+          "onOwnTurn": true
+        }
       }
-    ],
-    "uid": "2300055",
-    "icon": "sk_sp2055"
+    ]
   },
   {
+    "uid": "2300056",
+    "icon": "sk_sp2056",
     "name": "常夏の夢",
     "desc": "味方ターンでの戦闘時、その戦闘前、自ユニットの与ダメージ+5%/クリティカル率+10%。",
     "buff": [
       {
         "type": "与ダメージ",
         "value": 5,
+        "duration": 0,
         "target": "自身",
-        "onBattle": true
+        "condition": {
+          "onBattle": true,
+          "onOwnTurn": true
+        }
       },
       {
         "type": "クリティカル率",
         "value": 10,
+        "duration": 0,
         "target": "自身",
-        "onBattle": true
+        "condition": {
+          "onBattle": true,
+          "onOwnTurn": true
+        }
       }
-    ],
-    "uid": "2300056",
-    "icon": "sk_sp2056"
+    ]
   },
   {
+    "uid": "2300057",
+    "icon": "sk_sp2057",
     "name": "オレの女に手は出させない",
     "desc": "自ユニットのHPが75%以上の時、自ユニットのアタック+15%。\n自ユニットのHPが75%以下の時、自ユニットのダメージ耐性+15%。",
     "buff": [
       {
         "type": "アタック",
         "value": 15,
-        "target": "自身"
+        "target": "自身",
+        "condition": {
+          "hp": ">=75%"
+        }
       },
       {
         "type": "ダメージ耐性",
         "value": 15,
-        "target": "自身"
+        "target": "自身",
+        "condition": {
+          "hp": "<=75%"
+        }
       }
-    ],
-    "uid": "2300057",
-    "icon": "sk_sp2057"
+    ]
   },
   {
+    "uid": "2300058",
+    "icon": "sk_sp2058",
     "name": "鉄壁の清楚",
     "desc": "行動終了時、自身を中心とした範囲2マス以内の全ての味方ユニットのディフェンス/レジスト+5%(1ターン)。",
     "buff": [
       {
         "type": "ディフェンス",
         "value": 5,
-        "duration": 1
+        "duration": 1,
+        "area": 2,
+        "condition": {
+          "onActionEnd": true
+        }
       },
       {
         "type": "レジスト",
         "value": 5,
-        "duration": 1
+        "duration": 1,
+        "area": 2,
+        "condition": {
+          "onActionEnd": true
+        }
       }
-    ],
-    "uid": "2300058",
-    "icon": "sk_sp2058"
+    ]
   },
   {
+    "uid": "2300059",
+    "icon": "sk_sp2059",
     "name": "破壊神すら制する母性",
     "desc": "戦闘前、自ユニットのアタック/ディフェンス+5%(2ターン/最大4回まで重複可能)。",
     "buff": [
@@ -973,236 +1191,313 @@
         "value": 5,
         "duration": 2,
         "maxStack": 4,
-        "target": "自身"
+        "target": "自身",
+        "condition": {
+          "onBattle": true
+        }
       },
       {
         "type": "ディフェンス",
         "value": 5,
         "duration": 2,
         "maxStack": 4,
-        "target": "自身"
+        "target": "自身",
+        "condition": {
+          "onBattle": true
+        }
       }
     ],
-    "tags": [ "蓄積バフ" ],
-    "uid": "2300059",
-    "icon": "sk_sp2059"
+    "tags": [ "蓄積バフ" ]
   },
   {
+    "uid": "2300060",
+    "icon": "sk_sp2060",
     "name": "冥府の呪縛",
     "desc": "味方ターンでの戦闘時、その戦闘前、敵ユニットのディフェンス/物理ダメージ耐性-10%。",
     "debuff": [
       {
         "type": "ディフェンス",
         "value": 10,
-        "onBattle": true
+        "duration": 0,
+        "condition": {
+          "onBattle": true,
+          "onOwnTurn": true
+        }
       },
       {
         "type": "ダメージ耐性(物理)",
         "value": 10,
-        "onBattle": true
+        "duration": 0,
+        "condition": {
+          "onBattle": true,
+          "onOwnTurn": true
+        }
       }
-    ],
-    "uid": "2300060",
-    "icon": "sk_sp2060"
+    ]
   },
   {
+    "uid": "2300061",
+    "icon": "sk_sp2061",
     "name": "お菓子はたっぷり、準備万端！",
     "desc": "自ユニットのHPが100%の時、自ユニットのスキル与ダメージ+30%。",
     "buff": [
       {
         "type": "与ダメージ(スキル)",
         "value": 30,
-        "target": "自身"
+        "target": "自身",
+        "condition": {
+          "hp": ">=100%"
+        }
       }
-    ],
-    "uid": "2300061",
-    "icon": "sk_sp2061"
+    ]
   },
   {
+    "uid": "2300062",
+    "icon": "sk_sp2062",
     "name": "パンプキン・ブロック",
     "desc": "味方ターンでの戦闘時、その戦闘後、敵ユニットの与ダメージ-10%(1ターン)。",
     "debuff": [
       {
         "type": "与ダメージ",
         "value": 10,
-        "duration": 1
+        "duration": 1,
+        "condition": {
+          "onBattle": true,
+          "onOwnTurn": true
+        }
       }
-    ],
-    "uid": "2300062",
-    "icon": "sk_sp2062"
+    ]
   },
   {
+    "uid": "2300063",
+    "icon": "sk_sp2063",
     "name": "賑やかな酒宴",
     "desc": "味方ターンでの戦闘時、その戦闘前、敵ユニットのダメージ耐性-10%。\n行動終了時、自身を中心とした範囲2マス以内の全ての味方ユニットのメイン、サポートそれぞれのHPが最大HPの8%分回復する。",
     "debuff": [
       {
         "type": "ダメージ耐性",
         "value": 10,
-        "onBattle": true
+        "duration": 0,
+        "condition": {
+          "onBattle": true,
+          "onOwnTurn": true
+        }
       }
     ],
-    "tags": [ "範囲回復(自分中心)" ],
-    "uid": "2300063",
-    "icon": "sk_sp2063"
+    "tags": [ "範囲回復(自分中心)" ]
   },
   {
+    "uid": "2300064",
+    "icon": "sk_sp2064",
     "name": "女神の義憤",
     "desc": "敵ターンでの戦闘時、その戦闘前、敵ユニットのアタック/ディフェンス-15%。",
     "debuff": [
       {
         "type": "アタック",
         "value": 15,
-        "onBattle": true
+        "duration": 0,
+        "condition": {
+          "onBattle": true,
+          "onEnemyTurn": true
+        }
       },
       {
         "type": "ディフェンス",
         "value": 15,
-        "onBattle": true
+        "duration": 0,
+        "condition": {
+          "onBattle": true,
+          "onEnemyTurn": true
+        }
       }
-    ],
-    "uid": "2300064",
-    "icon": "sk_sp2064"
+    ]
   },
   {
+    "uid": "2300065",
+    "icon": "sk_sp2065",
     "name": "聖春！クリスマス！",
     "desc": "自ユニットのHPが100%の時、自ユニットの物理与ダメージ+30%。",
     "buff": [
       {
         "type": "与ダメージ(物理)",
         "value": 30,
-        "target": "自身"
+        "target": "自身",
+        "condition": {
+          "hp": ">=100%"
+        }
       }
-    ],
-    "uid": "2300065",
-    "icon": "sk_sp2065"
+    ]
   },
   {
+    "uid": "2300066",
+    "icon": "sk_sp2066",
     "name": "混沌蠢く聖夜",
     "desc": "自ユニットのHPが80%以上の時、自ユニットのアタック/ディフェンス+10%。",
     "buff": [
       {
         "type": "アタック",
         "value": 10,
-        "target": "自身"
+        "target": "自身",
+        "condition": {
+          "hp": ">=80%"
+        }
       },
       {
         "type": "ディフェンス",
         "value": 10,
-        "target": "自身"
+        "target": "自身",
+        "condition": {
+          "hp": ">=80%"
+        }
       }
-    ],
-    "uid": "2300066",
-    "icon": "sk_sp2066"
+    ]
   },
   {
+    "uid": "2300067",
+    "icon": "sk_sp2067",
     "name": "妹はサンタクロース",
     "desc": "自ユニットのHPが100%の時、自ユニットの与ダメージ+25%。",
     "buff": [
       {
         "type": "与ダメージ",
         "value": 25,
-        "target": "自身"
+        "target": "自身",
+        "condition": {
+          "hp": ">=100%"
+        }
       }
-    ],
-    "uid": "2300067",
-    "icon": "sk_sp2067"
+    ]
   },
   {
+    "uid": "2300068",
+    "icon": "sk_sp2068",
     "name": "刺激的なプレゼント",
     "desc": "行動終了時、自身を中心とした周囲1マス以内の全ての味方ユニットの与ダメージ+10%(1ターン)。",
     "buff": [
       {
         "type": "与ダメージ",
         "value": 10,
-        "duration": 1
+        "duration": 1,
+        "area": "1s",
+        "condition": {
+          "onActionEnd": true
+        }
       }
-    ],
-    "uid": "2300068",
-    "icon": "sk_sp2068"
+    ]
   },
   {
+    "uid": "2300069",
+    "icon": "sk_sp2069",
     "name": "いざ、うさぎさんと共に",
     "desc": "味方ターンでの戦闘時、その戦闘前、自ユニットのアタック+15%/スキル与ダメージ+15%。",
     "buff": [
       {
         "type": "アタック",
         "value": 15,
+        "duration": 0,
         "target": "自身",
-        "onBattle": true
+        "condition": {
+          "onBattle": true,
+          "onOwnTurn": true
+        }
       },
       {
         "type": "与ダメージ(スキル)",
         "value": 15,
+        "duration": 0,
         "target": "自身",
-        "onBattle": true
+        "condition": {
+          "onBattle": true,
+          "onOwnTurn": true
+        }
       }
-    ],
-    "uid": "2300069",
-    "icon": "sk_sp2069"
+    ]
   },
   {
+    "uid": "2300070",
+    "icon": "sk_sp2070",
     "name": "闊達態度",
     "desc": "味方ターンでの戦闘時、その戦闘前、自ユニットのアタック+10%/ディフェンス+5%。",
     "buff": [
       {
         "type": "アタック",
         "value": 10,
+        "duration": 0,
         "target": "自身",
-        "onBattle": true
+        "condition": {
+          "onBattle": true,
+          "onOwnTurn": true
+        }
       },
       {
         "type": "ディフェンス",
         "value": 5,
+        "duration": 0,
         "target": "自身",
-        "onBattle": true
+        "condition": {
+          "onBattle": true,
+          "onOwnTurn": true
+        }
       }
-    ],
-    "uid": "2300070",
-    "icon": "sk_sp2070"
+    ]
   },
   {
+    "uid": "2300071",
+    "icon": "sk_sp2071",
     "name": "怒りの母神",
     "desc": "味方ターンでの戦闘時、その戦闘前、自ユニットのマジック+20%。",
     "buff": [
       {
         "type": "マジック",
         "value": 15,
+        "duration": 0,
         "target": "自身",
-        "onBattle": true
+        "condition": {
+          "onBattle": true,
+          "onOwnTurn": true
+        }
       }
-    ],
-    "uid": "2300071",
-    "icon": "sk_sp2071"
+    ]
   },
   {
+    "uid": "2300072",
+    "icon": "sk_sp2072",
     "name": "小さな幸せ",
     "desc": "敵ターンでの近距離による戦闘時、その戦闘前、自ユニットのアタック+15%。",
     "buff": [
       {
         "type": "アタック",
         "value": 15,
+        "duration": 0,
         "target": "自身",
-        "onBattle": true
+        "condition": {
+          "onBattle": true,
+          "onEnemyTurn": true
+        }
       }
-    ],
-    "uid": "2300072",
-    "icon": "sk_sp2072"
+    ]
   },
   {
+    "uid": "2300073",
+    "icon": "sk_sp2073",
     "name": "王の守護者",
     "desc": "遠距離による戦闘時、その戦闘前、自ユニットの魔法与ダメージ+30%。",
     "buff": [
       {
         "type": "与ダメージ(魔法)",
         "value": 20,
+        "duration": 0,
         "target": "自身",
-        "onBattle": true
+        "condition": {
+          "onBattle": true,
+          "onRangedCombat": true
+        }
       }
-    ],
-    "uid": "2300073",
-    "icon": "sk_sp2073"
+    ]
   },
   {
+    "uid": "2300074",
+    "icon": "sk_sp2074",
     "name": "甘々おでかけモード",
     "desc": "自ユニットのHPが80%以上の時、自ユニットのスキル与ダメージ+20%/クリティカル率+10%。",
     "buff": [
@@ -1216,98 +1511,129 @@
         "value": 10,
         "target": "自身"
       }
-    ],
-    "uid": "2300074",
-    "icon": "sk_sp2074"
+    ]
   },
   {
+    "uid": "2300075",
+    "icon": "sk_sp2075",
     "name": "とっておきの一杯",
     "desc": "近距離による戦闘時、その戦闘前、自ユニットのクリティカル率/クリティカルダメージ倍率+15%。",
     "buff": [
       {
         "type": "クリティカル率",
         "value": 15,
+        "duration": 0,
         "target": "自身",
-        "onBattle": true
+        "condition": {
+          "onBattle": true,
+          "onCloseCombat": true
+        }
       },
       {
         "type": "クリティカルダメージ倍率",
         "value": 15,
+        "duration": 0,
         "target": "自身",
-        "onBattle": true
+        "condition": {
+          "onBattle": true,
+          "onCloseCombat": true
+        }
       }
-    ],
-    "uid": "2300075",
-    "icon": "sk_sp2075"
+    ]
   },
   {
+    "uid": "2300076",
+    "icon": "sk_sp2076",
     "name": "白無垢お雛様",
     "desc": "自ユニットのHPが100%の時、自ユニットのアタック/クリティカル率+15%。",
     "buff": [
       {
         "type": "アタック",
         "value": 15,
-        "target": "自身"
+        "target": "自身",
+        "condition": {
+          "hp": ">=100%"
+        }
       },
       {
         "type": "クリティカル率",
         "value": 15,
-        "target": "自身"
+        "target": "自身",
+        "condition": {
+          "hp": ">=100%"
+        }
       }
-    ],
-    "uid": "2300076",
-    "icon": "sk_sp2076"
+    ]
   },
   {
+    "uid": "2300077",
+    "icon": "sk_sp2077",
     "name": "乙女の祝い酒",
     "desc": "自ユニットのHPが100%の時、自ユニットのアタック+15%。",
     "buff": [
       {
         "type": "アタック",
         "value": 15,
-        "target": "自身"
+        "target": "自身",
+        "condition": {
+          "hp": ">=100%"
+        }
       }
-    ],
-    "uid": "2300077",
-    "icon": "sk_sp2077"
+    ]
   },
   {
+    "uid": "2300079",
+    "icon": "sk_sp2079",
     "name": "失われた青春を求めて",
     "desc": "自ユニットのHPが80%以上の時、自ユニットの通常攻撃与ダメージ+20%/クリティカルダメージ倍率+10%。",
     "buff": [
       {
         "type": "与ダメージ(通常攻撃)",
         "value": 20,
-        "target": "自身"
+        "target": "自身",
+        "condition": {
+          "hp": ">=80%"
+        }
       },
       {
         "type": "クリティカルダメージ倍率",
         "value": 10,
-        "target": "自身"
+        "target": "自身",
+        "condition": {
+          "hp": ">=80%"
+        }
       }
-    ],
-    "uid": "2300079",
-    "icon": "sk_sp2079"
+    ]
   },
   {
+    "uid": "2300078",
+    "icon": "sk_sp2078",
     "name": "正義の魔法使い",
     "desc": "味方ターンでの戦闘時、その戦闘前、敵ユニットのレジスト/魔法ダメージ耐性-10%。",
     "debuff": [
       {
         "type": "レジスト",
         "value": 10,
-        "onBattle": true
+        "duration": 0,
+        "condition": {
+          "onBattle": true,
+          "onOwnTurn": true
+        }
       },
       {
         "type": "ダメージ耐性(魔法)",
         "value": 10,
-        "onBattle": true
+        "duration": 0,
+        "condition": {
+          "onBattle": true,
+          "onOwnTurn": true
+        }
       }
-    ],
-    "uid": "2300078",
-    "icon": "sk_sp2078"
+    ]
   },
   {
+    "uid": "2300080",
+    "icon": "sk_sp2080",
     "name": "天然のギャンブラー",
     "desc": "戦闘前、自ユニットのアタック/クリティカル率+8%(3ターン/最大3回まで重複可能)。",
     "buff": [
@@ -1316,42 +1642,52 @@
         "value": 8,
         "duration": 3,
         "maxStack": 3,
-        "target": "自身"
+        "target": "自身",
+        "condition": {
+          "onBattle": true
+        }
       },
       {
         "type": "クリティカル率",
         "value": 8,
         "duration": 3,
         "maxStack": 3,
-        "target": "自身"
+        "target": "自身",
+        "condition": {
+          "onBattle": true
+        }
       }
     ],
-    "tags": [ "蓄積バフ" ],
-    "uid": "2300080",
-    "icon": "sk_sp2080"
+    "tags": [ "蓄積バフ" ]
   },
   {
+    "uid": "2300081",
+    "icon": "sk_sp2081",
     "name": "レイズ・アンド・レイズ！",
     "desc": "遠距離による戦闘時、その戦闘前、自ユニットのアタック+20%。",
     "buff": [
       {
         "type": "アタック",
         "value": 20,
+        "duration": 0,
         "target": "自身",
-        "onBattle": true
+        "condition": {
+          "onBattle": true,
+          "onRangedCombat": true
+        }
       }
-    ],
-    "uid": "2300081",
-    "icon": "sk_sp2081"
+    ]
   },
   {
+    "uid": "2300082",
+    "icon": "sk_sp2082",
     "name": "バニー給仕の奉仕",
     "desc": "遠距離による戦闘時、その戦闘後、味方メインが与えたダメージの10%分HPを回復する。",
-    "tags": [ "与ダメ回復" ],
-    "uid": "2300082",
-    "icon": "sk_sp2082"
+    "tags": [ "与ダメ回復" ]
   },
   {
+    "uid": "2300083",
+    "icon": "sk_sp2083",
     "name": "艶やかな花嫁",
     "desc": "自ユニットのHPが80%以上のとき、自ユニットのマジック+20%/クリティカルダメージ倍率+10%。",
     "buff": [
@@ -1365,11 +1701,11 @@
         "value": 10,
         "target": "自身"
       }
-    ],
-    "uid": "2300083",
-    "icon": "sk_sp2083"
+    ]
   },
   {
+    "uid": "2300084",
+    "icon": "sk_sp2084",
     "name": "全員まとめて愛してね！",
     "desc": "自ユニットのHPが80%以上のとき、自ユニットのマジック/レジスト+10%。",
     "buff": [
@@ -1383,62 +1719,83 @@
         "value": 10,
         "target": "自身"
       }
-    ],
-    "uid": "2300084",
-    "icon": "sk_sp2084"
+    ]
   },
   {
+    "uid": "2300085",
+    "icon": "sk_sp2085",
     "name": "深淵と月を見つめし者",
     "desc": "戦闘前、敵ユニットの物理ダメージ耐性-20%。",
     "debuff": [
       {
         "type": "ダメージ耐性(物理)",
         "value": 20,
-        "onBattle": true
+        "duration": 0,
+        "condition": {
+          "onBattle": true
+        }
       }
-    ],
-    "uid": "2300085",
-    "icon": "sk_sp2085"
+    ]
   },
   {
+    "uid": "2300086",
+    "icon": "sk_sp2086",
     "name": "涼やかな大天使",
     "desc": "近距離による戦闘時、その戦闘前、自ユニットの与ダメージ+20%/クリティカル率+10%。",
     "buff": [
       {
         "type": "与ダメージ",
         "value": 20,
-        "target": "自身"
+        "duration": 0,
+        "target": "自身",
+        "condition": {
+          "onBattle": true,
+          "onCloseCombat": true
+        }
       },
       {
         "type": "クリティカル率",
         "value": 10,
-        "target": "自身"
+        "duration": 0,
+        "target": "自身",
+        "condition": {
+          "onBattle": true,
+          "onCloseCombat": true
+        }
       }
-    ],
-    "uid": "2300086",
-    "icon": "sk_sp2086"
+    ]
   },
   {
+    "uid": "2300088",
+    "icon": "sk_sp2088",
     "name": "スプラッシュスマイル！",
     "desc": "味方ターンでの戦闘時、その戦闘前、自ユニットのアタック+10%/クリティカル率+5%。",
     "buff": [
       {
         "type": "アタック",
         "value": 10,
+        "duration": 0,
         "target": "自身",
-        "onBattle": true
+        "condition": {
+          "onBattle": true,
+          "onOwnTurn": true
+        }
       },
       {
         "type": "クリティカル率",
         "value": 5,
+        "duration": 0,
         "target": "自身",
-        "onBattle": true
+        "condition": {
+          "onBattle": true,
+          "onOwnTurn": true
+        }
       }
-    ],
-    "uid": "2300088",
-    "icon": "sk_sp2088"
+    ]
   },
   {
+    "uid": "2300087",
+    "icon": "sk_sp2087",
     "name": "夜空に咲く花を楽しんで",
     "desc": "自ユニットのスキル与ダメージ+25%。",
     "buff": [
@@ -1447,11 +1804,11 @@
         "value": 25,
         "target": "自身"
       }
-    ],
-    "uid": "2300087",
-    "icon": "sk_sp2087"
+    ]
   },
   {
+    "uid": "2300089",
+    "icon": "sk_sp2089",
     "name": "目映いほどのあざとさ",
     "desc": "自ユニットのHPが80%以上のとき、自ユニットの物理与ダメージ+20%/クリティカル率+10%。",
     "buff": [
@@ -1459,123 +1816,198 @@
         "type": "与ダメージ(物理)",
         "value": 20,
         "target": "自身",
-        "onHPAbove": 80
+        "condition": {
+          "hp": ">=80%"
+        }
       },
       {
         "type": "クリティカル率",
         "value": 10,
         "target": "自身",
-        "onHPAbove": 80
+        "condition": {
+          "hp": ">=80%"
+        }
       }
-    ],
-    "uid": "2300089",
-    "icon": "sk_sp2089"
+    ]
   },
   {
+    "uid": "2300090",
+    "icon": "sk_sp2090",
     "name": "体操服が紡いだ絆",
     "desc": "行動終了時、自身を中心とした範囲2マス以内の全ての味方ユニットのスキル与ダメージ+20%(2ターン)。",
     "buff": [
       {
         "type": "与ダメージ(スキル)",
         "value": 20,
-        "duration": 2
+        "duration": 2,
+        "area": 2,
+        "condition": {
+          "onActionEnd": true
+        }
       }
-    ],
-    "uid": "2300090",
-    "icon": "sk_sp2090"
+    ]
   },
   {
-    "name": "札を取っても止まらぬ愛",
-    "desc": "自ユニットのHPが100%のとき、自ユニットのアタック/クリティカル率+10%。",
     "uid": "2300092",
     "icon": "sk_sp2092",
+    "name": "札を取っても止まらぬ愛",
+    "desc": "自ユニットのHPが100%のとき、自ユニットのアタック/クリティカル率+10%。",
     "buff": [
       {
         "type": "アタック",
         "value": 10,
-        "onHPAbove": 100,
-        "target": "自身"
+        "target": "自身",
+        "condition": {
+          "hp": ">=100%"
+        }
       },
       {
         "type": "クリティカル率",
         "value": 10,
-        "onHPAbove": 100,
-        "target": "自身"
+        "target": "自身",
+        "condition": {
+          "hp": ">=100%"
+        }
       }
     ]
   },
   {
-    "name": "悪戯天使の本領発揮",
-    "desc": "行動終了時、自身を中心とした範囲2マス以内の敵ユニットの物理ダメージ耐性-15%(2ターン)。",
     "uid": "2300091",
     "icon": "sk_sp2091",
+    "name": "悪戯天使の本領発揮",
+    "desc": "行動終了時、自身を中心とした範囲2マス以内の敵ユニットの物理ダメージ耐性-15%(2ターン)。",
     "debuff": [
       {
         "type": "ダメージ耐性(物理)",
         "value": 15,
-        "duration": 2
+        "duration": 2,
+        "area": 2,
+        "condition": {
+          "onActionEnd": true
+        }
       }
     ]
   },
   {
-    "name": "メイド・イン・ムーン",
-    "desc": "近距離による戦闘時、その戦闘前、自ユニットのクリティカル率/クリティカルダメージ倍率+20%/スキル与ダメージ+10%。",
     "uid": "2300093",
     "icon": "sk_sp2093",
+    "name": "メイド・イン・ムーン",
+    "desc": "近距離による戦闘時、その戦闘前、自ユニットのクリティカル率/クリティカルダメージ倍率+20%/スキル与ダメージ+10%。",
     "buff": [
       {
         "type": "クリティカル率",
         "value": 20,
-        "target": "自身"
+        "duration": 0,
+        "target": "自身",
+        "condition": {
+          "onBattle": true,
+          "onCloseCombat": true
+        }
       },
       {
         "type": "クリティカルダメージ倍率",
         "value": 20,
-        "target": "自身"
+        "duration": 0,
+        "target": "自身",
+        "condition": {
+          "onBattle": true,
+          "onCloseCombat": true
+        }
       },
       {
         "type": "与ダメージ(スキル)",
         "value": 10,
-        "target": "自身"
+        "duration": 0,
+        "target": "自身",
+        "condition": {
+          "onBattle": true,
+          "onCloseCombat": true
+        }
       }
     ]
   },
   {
+    "uid": "2300095",
+    "icon": "sk_sp2095",
     "name": "お世話は全部任せてください",
     "desc": "味方ターンでの戦闘時、その戦闘前、敵ユニットのディフェンス/物理ダメージ耐性-10%。",
-    "uid": "2300095",
-    "icon": "sk_sp2095"
+    "debuff": [
+      {
+        "type": "ディフェンス",
+        "value": 10,
+        "duration": 0,
+        "target": "自身",
+        "condition": {
+          "onBattle": true,
+          "onOwnTurn": true
+        }
+      },
+      {
+        "type": "ダメージ耐性(物理)",
+        "value": 10,
+        "duration": 0,
+        "target": "自身",
+        "condition": {
+          "onBattle": true,
+          "onOwnTurn": true
+        }
+      }
+    ]
   },
   {
-    "name": "校則破りの拘束者",
-    "desc": "自ユニットのHPが50%以上のとき、自ユニットのアタック/ディフェンス+25%/クリティカル率+10%。",
     "uid": "2300094",
     "icon": "sk_sp2094",
+    "name": "校則破りの拘束者",
+    "desc": "自ユニットのHPが50%以上のとき、自ユニットのアタック/ディフェンス+25%/クリティカル率+10%。",
     "buff": [
       {
         "type": "アタック",
         "value": 25,
         "target": "自身",
-        "onHPAbove": 50
+        "condition": {
+          "hp": ">=50%"
+        }
       },
       {
         "type": "ディフェンス",
         "value": 25,
         "target": "自身",
-        "onHPAbove": 50
+        "condition": {
+          "hp": ">=50%"
+        }
       },
       {
         "type": "クリティカル率",
         "value": 10,
         "target": "自身",
-        "onHPAbove": 50
+        "condition": {
+          "hp": ">=50%"
+        }
       }
     ]
   },
   {
+    "uid": "2300096",
+    "icon": "sk_sp2096",
     "name": "あったかくして滑ろうね！",
     "desc": "自ユニットのHPが100%のとき、自ユニットのアタック/スキル与ダメージ+10%。",
-    "uid": "2300096",
-    "icon": "sk_sp2096"
+    "buff": [
+      {
+        "type": "アタック",
+        "value": 10,
+        "target": "自身",
+        "condition": {
+          "hp": ">=100%"
+        }
+      },
+      {
+        "type": "与ダメージ(スキル)",
+        "value": 10,
+        "target": "自身",
+        "condition": {
+          "hp": ">=100%"
+        }
+      }
+    ]
   }
 ]

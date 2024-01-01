@@ -1018,6 +1018,14 @@ export default {
               effect.durations = effect.duration;
               effect.duration = effect.durations[effect.durations.length - 1];
             }
+
+            let cond = effect.condition;
+            if (cond) {
+              if (Array.isArray(cond.probability)) {
+                cond.probabilities = cond.probability;
+                cond.probability = cond.probabilities[cond.probabilities.length - 1];
+              }
+            }
           }
         }
         return skill;

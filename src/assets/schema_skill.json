@@ -1,0 +1,130 @@
+﻿{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$defs": {
+    "condition": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "onAlways": { "type": "boolean" },
+        "onTurnBegin": { "type": "boolean" },
+        "onActionBegin": { "type": "boolean" },
+        "onBattle": { "type": "boolean" },
+        "onBattleBegin": { "type": "boolean" },
+        "onBattleEnd": { "type": "boolean" },
+        "onActionEnd": { "type": "boolean" },
+        "onTurnEnd": { "type": "boolean" },
+
+        "onCloseCombat": { "type": "boolean" },
+        "onRangedCombat": { "type": "boolean" },
+        "onCriticalHit": { "type": "boolean" },
+        "onGuard": { "type": "boolean" },
+        "onKill": { "type": "boolean" },
+        "onMove": { "type": "boolean" },
+        "onSkill": { "type": "boolean" },
+        "onAreaSkill": { "type": "boolean" },
+        "onOwnTurn": { "type": "boolean" },
+        "onEnemyTurn": { "type": "boolean" },
+        "onNearAlly": { "type": [ "number", "string" ] },
+        "onNoNearAlly": { "type": [ "number", "string" ] },
+        "onNearEnemy": { "type": [ "number", "string" ] },
+        "onNoNearEnemy": { "type": [ "number", "string" ] },
+        "onClass": { "type": "array" },
+        "onEnemyClass": { "type": "array" },
+        "onClassAdvantage": { "type": "boolean" },
+        "onEffect": { "type": "string" },
+
+        "probability": { "type": [ "number", "array" ] },
+        "turn": { "type": [ "number", "string" ] },
+        "hp": { "type": [ "number", "string" ] },
+        "enemyHp": { "type": [ "number", "string" ] },
+        "move": { "type": [ "number", "boolean" ] },
+        "token": { "type": [ "number", "boolean", "string" ] },
+        "activeBuffCount": { "type": [ "number", "boolean", "string" ] },
+        "activeDebuffCount": { "type": [ "number", "boolean", "string" ] },
+        "enemyActiveBuffCount": { "type": [ "number", "boolean", "string" ] },
+        "enemyActiveDebuffCount": { "type": [ "number", "boolean", "string" ] }
+      }
+    },
+
+    "effect": {
+      "type": "object",
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "type": { "type": "string" },
+        "value": { "type": [ "number", "array" ] },
+        "maxStack": { "type": "number" },
+        "duration": { "type": [ "number", "array" ] },
+        "target": { "enum": [ "単体", "自身" ] },
+        "aoe": { "type": "boolean" },
+        "area": { "type": [ "number", "string" ] },
+        "amount": { "type": [ "number", "string" ] },
+        "variant": { "type": [ "number", "string" ] },
+        "slot": { "type": "string" },
+        "timing": {
+          "enum": [ "always", "turnBegin", "turnEnd", "actionBegin", "actionEnd", "battleBegin", "battleEnd", "skillUse", "kill" ]
+        },
+        "condition": {
+          "$ref": "#/$defs/condition"
+        }
+      }
+    }
+  },
+  "type": "array",
+  "items": {
+    "type": "object",
+    "required": [
+      "uid",
+      "icon",
+      "name"
+    ],
+    "additionalProperties": false,
+    "properties": {
+      "uid": { "type": "string" },
+      "icon": { "type": "string" },
+      "name": { "type": "string" },
+      "desc": { "type": "string" },
+      "descs": { "type": "object" },
+      "ct": { "type": [ "number", "string" ] },
+      "area": { "type": [ "number", "string" ] },
+      "range": { "type": [ "number", "string" ] },
+      "cost": { "type": "number" },
+      "damageRate": { "type": [ "number", "object" ] },
+      "healRate": { "type": [ "number", "object" ] },
+      "summon": { "type": [ "array" ] },
+      "buff": {
+        "type": "array",
+        "items": {
+          "$ref": "#/$defs/effect"
+        }
+      },
+      "debuff": {
+        "type": "array",
+        "items": {
+          "$ref": "#/$defs/effect"
+        }
+      },
+      "immune": {
+        "type": "array",
+        "items": {
+          "$ref": "#/$defs/effect"
+        }
+      },
+      "statusEffects": {
+        "type": "array",
+        "items": {
+          "$ref": "#/$defs/effect"
+        }
+      },
+      "tags": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "note": { "type": "string" }
+    }
+  }
+}

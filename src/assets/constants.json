@@ -225,13 +225,17 @@
     "onClass": [ "object" ],
     "onEnemyClass": [ "object" ],
     "onClassAdvantage": [ "boolean" ],
+    "onEffect": [ "string" ],
 
     "probability": [ "number" ],
+    "turn": [ "number", "string" ],
     "hp": [ "string" ],
     "enemyHp": [ "string" ],
     "move": [ "number", "boolean" ],
     "token": [ "number", "boolean" ],
     "activeBuffCount": [ "number", "string" ],
-    "activeDebuffCount": [ "number", "string" ]
+    "activeDebuffCount": [ "number", "string" ],
+    "enemyActiveBuffCount": [ "number", "string" ],
+    "enemyActiveDebuffCount": [ "number", "string" ]
   }
 }

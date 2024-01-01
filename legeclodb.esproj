@@ -10,4 +10,9 @@
     <!-- Folder where production build objects will be placed -->
     <BuildOutputFolder>$(MSBuildProjectDirectory)\docs</BuildOutputFolder>
   </PropertyGroup>
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties src_4assets_4main_3active_1json__JsonSchema="schema_skill.json" src_4assets_4main_3passive_1json__JsonSchema="schema_skill.json" src_4assets_4main_3talents_1json__JsonSchema="schema_skill.json" src_4assets_4support_3active_1json__JsonSchema="schema_skill.json" src_4assets_4support_3passive_1json__JsonSchema="schema_skill.json" />
+    </VisualStudio>
+  </ProjectExtensions>
 </Project>

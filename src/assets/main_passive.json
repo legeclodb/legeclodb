@@ -84,7 +84,7 @@
     "debuff": [
       {
         "type": "ランダム",
-        "randomType": "強"
+        "variant": "強"
       }
     ],
     "tags": [ "範囲攻撃(自分中心)" ],
