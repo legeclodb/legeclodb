@@ -1,14 +1,79 @@
 ﻿{
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$defs": {
-    "symbolType": {
-      "enum": [ "ゼニス", "オリジン", "ナディア" ]
-    },
     "unitType": {
       "enum": [ "ソルジャー", "ランサー", "ライダー", "エアリアル", "ソーサラー", "セイント", "シューター", "アサシン", "ヴォイド" ]
     },
+    "symbolType": {
+      "enum": [ "ゼニス", "オリジン", "ナディア" ]
+    },
+    "supportlType": {
+      "enum": [ "支援", "攻撃", "妨害" ]
+    },
+    "rarityType": {
+      "enum": [ "N", "R", "SR", "SSR" ]
+    },
+    "damageType": {
+      "enum": [ "アタック", "マジック" ]
+    },
+    "equipType": {
+      "enum": [ "武器", "鎧", "兜", "アクセサリ", "月のアミュレット", "太陽のアミュレット" ]
+    },
+    "amuletType": {
+      "enum": [ "月", "太陽" ]
+    },
+
     "timingType": {
-      "enum": [ "常時", "ターン開始", "ターン終了", "戦闘前", "戦闘後", "スキル使用", "敵撃破", "行動後" ]
+      "enum": [ "常時", "ターン開始", "戦闘前", "戦闘後", "スキル使用", "敵撃破", "行動後" ]
+    },
+    "effectType": {
+      "enum": [
+        "最大HP",
+        "アタック",
+        "ディフェンス",
+        "マジック",
+        "レジスト",
+        "テクニック",
+        "ディフェンス無視",
+        "レジスト無視",
+        "与ダメージ",
+        "与ダメージ(物理)",
+        "与ダメージ(魔法)",
+        "与ダメージ(スキル)",
+        "与ダメージ(範囲スキル)",
+        "与ダメージ(通常攻撃)",
+        "ダメージ耐性",
+        "ダメージ耐性(物理)",
+        "ダメージ耐性(魔法)",
+        "ダメージ耐性(範囲)",
+        "クリティカル率",
+        "クリティカル率耐性",
+        "クリティカルダメージ倍率",
+        "治療効果",
+        "被治療効果",
+        "射程(通常攻撃)",
+        "射程(スキル)",
+        "範囲",
+        "移動",
+        "移動コスト1化",
+        "ランダム",
+
+        "スタン",
+        "アクティブスキル使用不可",
+        "パッシブスキル使用不可",
+        "ガード不可",
+        "強化不可",
+        "回復不可",
+        "DoT",
+        "全デバフ(アクティブ由来)",
+        "固定ダメージ(アクティブ由来)",
+        "アタックダウン",
+        "ディフェンスダウン",
+        "マジックダウン",
+        "レジストダウン",
+        "移動ダウン",
+        "位置移動"
+      ]
     },
 
     "condition": {
@@ -32,6 +97,7 @@
         "onKill": { "type": "boolean" },
         "onMove": { "type": "boolean" },
         "onSkill": { "type": "boolean" },
+        "onSingleSkill": { "type": "boolean" },
         "onAreaSkill": { "type": "boolean" },
         "onOwnTurn": { "type": "boolean" },
         "onEnemyTurn": { "type": "boolean" },
@@ -42,23 +108,17 @@
         "onSymbol": {
           "type": "array",
           "uniqueItems": true,
-          "items": {
-            "$ref": "#/$defs/symbolType"
-          }
+          "items": { "$ref": "#/$defs/symbolType" }
         },
         "onClass": {
           "type": "array",
           "uniqueItems": true,
-          "items": {
-            "$ref": "#/$defs/unitType"
-          }
+          "items": { "$ref": "#/$defs/unitType" }
         },
         "onEnemyClass": {
           "type": "array",
           "uniqueItems": true,
-          "items": {
-            "$ref": "#/$defs/unitType"
-          }
+          "items": { "$ref": "#/$defs/unitType" }
         },
         "onClassAdvantage": { "type": "boolean" },
         "onEffect": { "type": "string" },
@@ -66,50 +126,40 @@
         "probability": { "type": [ "number", "array" ] },
         "turn": { "type": [ "number", "string" ] },
         "hp": { "type": [ "number", "string" ] },
-        "enemyHp": { "type": [ "number", "string" ] },
+        "targetHp": { "type": [ "number", "string" ] },
         "move": { "type": [ "number", "boolean" ] },
         "token": { "type": [ "number", "boolean", "string" ] },
         "activeBuffCount": { "type": [ "number", "boolean", "string" ] },
         "activeDebuffCount": { "type": [ "number", "boolean", "string" ] },
-        "enemyActiveBuffCount": { "type": [ "number", "boolean", "string" ] },
-        "enemyActiveDebuffCount": { "type": [ "number", "boolean", "string" ] }
+        "targetActiveBuffCount": { "type": [ "number", "boolean", "string" ] },
+        "targetActiveDebuffCount": { "type": [ "number", "boolean", "string" ] }
       }
     },
 
     "effect": {
       "type": "object",
-      "required": [
-        "type"
-      ],
+      "required": [ "type" ],
       "additionalProperties": false,
       "properties": {
-        "type": { "type": "string" },
+        "type": { "$ref": "#/$defs/effectType" },
         "value": { "type": [ "number", "array" ] },
         "maxStack": { "type": "number" },
         "duration": { "type": [ "number", "array" ] },
-        "target": { "enum": [ "単体", "自身" ] },
+        "target": { "enum": [ "自身", "自ユニット", "単体", "複数", "全体" ] },
         "aoe": { "type": "boolean" },
         "area": { "type": [ "number", "string" ] },
         "amount": { "type": [ "number", "string" ] },
         "variant": { "type": [ "number", "string" ] },
         "slot": { "type": "string" },
-        "timing": {
-          "$ref": "#/$defs/timingType"
-        },
-        "condition": {
-          "$ref": "#/$defs/condition"
-        }
+        "timing": { "$ref": "#/$defs/timingType" },
+        "condition": { "$ref": "#/$defs/condition" }
       }
     }
   },
   "type": "array",
   "items": {
     "type": "object",
-    "required": [
-      "uid",
-      "icon",
-      "name"
-    ],
+    "required": [ "uid", "icon", "name" ],
     "additionalProperties": false,
     "properties": {
       "uid": { "type": "string" },
@@ -117,56 +167,41 @@
       "name": { "type": "string" },
       "desc": { "type": "string" },
       "descs": { "type": "object" },
-      "ct": { "type": [ "number", "string" ] },
-      "area": { "type": [ "number", "string" ] },
-      "range": { "type": [ "number", "string" ] },
-      "cost": { "type": "number" },
+      "ct": { "type": [ "integer", "string" ] },
+      "area": { "type": [ "integer", "string" ] },
+      "range": { "type": [ "integer", "string" ] },
+      "cost": { "type": "integer" },
       "damageRate": { "type": "number" },
       "damageRateSp": {
         "type": "object",
-        "required": [
-          "value",
-          "condition"
-        ],
+        "required": [ "value", "condition" ],
         "additionalProperties": false,
         "properties": {
           "value": { "type": "number" },
-          "condition": {
-            "$ref": "#/$defs/condition"
-          }
+          "condition": { "$ref": "#/$defs/condition" }
         }
       },
       "healRate": { "type": [ "number", "object" ] },
       "summon": { "type": [ "array" ] },
       "buff": {
         "type": "array",
-        "items": {
-          "$ref": "#/$defs/effect"
-        }
+        "items": { "$ref": "#/$defs/effect" }
       },
       "debuff": {
         "type": "array",
-        "items": {
-          "$ref": "#/$defs/effect"
-        }
+        "items": { "$ref": "#/$defs/effect" }
       },
       "immune": {
         "type": "array",
-        "items": {
-          "$ref": "#/$defs/effect"
-        }
+        "items": { "$ref": "#/$defs/effect" }
       },
       "statusEffects": {
         "type": "array",
-        "items": {
-          "$ref": "#/$defs/effect"
-        }
+        "items": { "$ref": "#/$defs/effect" }
       },
       "tags": {
         "type": "array",
-        "items": {
-          "type": "string"
-        }
+        "items": { "type": "string" }
       },
       "note": { "type": "string" }
     }

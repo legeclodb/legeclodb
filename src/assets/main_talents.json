@@ -1,7 +1,5 @@
 ﻿[
   {
-    "$schema": "schema_skill.json",
-
     "uid": "3100001",
     "icon": "sk_t011",
     "name": "ブレイブハート",
@@ -2378,13 +2376,13 @@
     "debuff": [
       {
         "type": "ディフェンス",
-        "value": 15,
+        "value": [ 8, 10, 12, 15 ],
         "duration": 3,
         "maxStack": 2
       },
       {
         "type": "ダメージ耐性",
-        "value": 15,
+        "value": [ 8, 10, 12, 15 ],
         "duration": 3,
         "maxStack": 2
       }
@@ -2970,7 +2968,7 @@
         "target": "自身",
         "condition": {
           "onBattle": true,
-          "enemyActiveDebuffCount": ">=2"
+          "targetActiveDebuffCount": ">=2"
         }
       },
       {

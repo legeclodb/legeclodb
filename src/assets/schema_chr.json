@@ -1,0 +1,74 @@
+﻿{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+
+  "type": "array",
+  "items": {
+    "type": "object",
+    "required": [
+      "uid",
+      "name"
+    ],
+    "additionalProperties": false,
+    "properties": {
+      "uid": { "type": "string" },
+      "icon": { "type": "string" },
+      "name": { "type": "string" },
+      "date": { "type": "string" },
+      "desc": { "type": "string" },
+      "descs": { "type": "object" },
+      "slot": { "$ref": "schema_skill.json#/$defs/equipType" },
+      "rarity": { "$ref": "schema_skill.json#/$defs/rarityType" },
+      "class": { "$ref": "schema_skill.json#/$defs/unitType" },
+      "symbol": { "$ref": "schema_skill.json#/$defs/symbolType" },
+      "supportType": { "$ref": "schema_skill.json#/$defs/supportlType" },
+      "damageType": { "$ref": "schema_skill.json#/$defs/damageType" },
+      "range": { "type": "integer" },
+      "move": { "type": "integer" },
+      "statusInit": { "type": "array" },
+      "statusLv": { "type": "array" },
+      "statusStar": { "type": "array" },
+      "talent": { "type": "string" },
+      "skills": {
+        "type": "array",
+        "items": { "type": "string" }
+      },
+      "summon": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "uid": { "type": "string" },
+            "name": { "type": "string" },
+            "class": { "$ref": "schema_skill.json#/$defs/unitType" },
+            "damageType": { "$ref": "schema_skill.json#/$defs/damageType" },
+            "range": { "type": "integer" },
+            "move": { "type": "integer" },
+            "statusLvs": { "type": "object" },
+            "talent": { "type": "string" },
+            "skills": {
+              "type": "array",
+              "items": { "type": "string" }
+            }
+          }
+        },
+      },
+      "engage": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "date": { "type": "string" },
+          "skills": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        }
+      },
+      "tags": {
+        "type": "array",
+        "items": { "type": "string" }
+      },
+      "note": { "type": "string" }
+    }
+  }
+}

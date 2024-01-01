@@ -1,7 +1,5 @@
 ﻿[
   {
-    "$schema": "schema_skill.json",
-
     "uid": "1100004",
     "icon": "sk_a022",
     "name": "ソードダンス",
@@ -2559,7 +2557,7 @@
         "slot": "加護",
         "condition": {
           "onBattle": true,
-          "enemyActiveDebuffCount": ">=3"
+          "targetActiveDebuffCount": ">=3"
         }
       }
     ],
@@ -5839,7 +5837,7 @@
         "duration": 1,
         "condition": {
           "onBattleEnd": true,
-          "enemyHp": ">=50%"
+          "targetHp": ">=50%"
         }
       }
     ],

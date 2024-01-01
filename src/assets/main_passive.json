@@ -817,7 +817,7 @@
         }
       },
       {
-        "type": "射程",
+        "type": "射程(通常攻撃)",
         "value": 1,
         "target": "自身",
         "condition": {
@@ -2645,7 +2645,7 @@
         "target": "自身"
       },
       {
-        "type": "射程",
+        "type": "射程(通常攻撃)",
         "value": 1,
         "target": "自身",
         "condition": {

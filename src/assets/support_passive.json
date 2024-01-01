@@ -58,7 +58,7 @@
     "desc": "自ユニットの最大HP+5%。",
     "buff": [
       {
-        "type": "HP",
+        "type": "最大HP",
         "value": 5,
         "target": "自身"
       }

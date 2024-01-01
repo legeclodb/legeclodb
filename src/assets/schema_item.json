@@ -1,6 +1,5 @@
 ﻿{
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "/schemas/item",
 
   "type": "array",
   "items": {
@@ -17,47 +16,40 @@
       "date": { "type": "string" },
       "desc": { "type": "string" },
       "descs": { "type": "object" },
-      "slot": { "type": "string" },
-      "rarity": { "type": "string" },
-      "classes": { "type": "array" },
-      "statusInit": { "type": "array" },
-      "statusLv": { "type": "array" },
-      "amuletType": { "enum": [ "月", "太陽" ] },
-      "buff": {
+      "slot": { "$ref": "schema_skill.json#/$defs/equipType" },
+      "rarity": { "$ref": "schema_skill.json#/$defs/rarityType" },
+      "classes": {
         "type": "array",
         "items": {
-          "$ref": "schema_skill.json#/$defs/effect"
+          "$ref": "schema_skill.json#/$defs/unitType"
         }
+      },
+      "statusInit": { "type": "array" },
+      "statusLv": { "type": "array" },
+      "amuletType": { "$ref": "schema_skill.json#/$defs/amuletType" },
+      "buff": {
+        "type": "array",
+        "items": { "$ref": "schema_skill.json#/$defs/effect" }
       },
       "debuff": {
         "type": "array",
-        "items": {
-          "$ref": "schema_skill.json#/$defs/effect"
-        }
+        "items": { "$ref": "schema_skill.json#/$defs/effect" }
       },
       "immune": {
         "type": "array",
-        "items": {
-          "$ref": "schema_skill.json#/$defs/effect"
-        }
+        "items": { "$ref": "schema_skill.json#/$defs/effect" }
       },
       "statusEffects": {
         "type": "array",
-        "items": {
-          "$ref": "schema_skill.json#/$defs/effect"
-        }
+        "items": { "$ref": "schema_skill.json#/$defs/effect" }
       },
       "drawback": {
         "type": "array",
-        "items": {
-          "$ref": "schema_skill.json#/$defs/effect"
-        }
+        "items": { "$ref": "schema_skill.json#/$defs/effect" }
       },
       "tags": {
         "type": "array",
-        "items": {
-          "type": "string"
-        }
+        "items": { "type": "string" }
       },
       "note": { "type": "string" }
     }
