@@ -1,4 +1,4 @@
-[
+﻿[
   {
     "$schema": "schema_skill.json",
 
@@ -77,9 +77,10 @@
         "type": "与ダメージ",
         "value": 20,
         "duration": 4,
-        "slot": "シンボル加護",
+        "slot": "加護",
         "condition": {
           "onBattle": true,
+          "onOwnTurn": true,
           "onClassAdvantage": true
         }
       }
@@ -508,7 +509,7 @@
         "type": "与ダメージ",
         "value": 15,
         "duration": 4,
-        "slot": "シンボル加護",
+        "slot": "加護",
         "condition": {
           "onBattle": true,
           "hp": ">=80%"
@@ -650,7 +651,7 @@
         "value": 5,
         "maxStack": 3,
         "duration": 4,
-        "slot": "シンボル加護",
+        "slot": "加護",
         "condition": {
           "onBattle": true,
           "onMove": true
@@ -786,7 +787,7 @@
         "type": "与ダメージ",
         "value": 20,
         "duration": 4,
-        "slot": "シンボル加護",
+        "slot": "加護",
         "condition": {
           "onBattle": true,
           "onEnemyTurn": true
@@ -841,9 +842,18 @@
         "type": "与ダメージ",
         "value": 20,
         "duration": 4,
-        "slot": "シンボル加護",
+        "slot": "加護",
         "condition": {
           "hp": ">=80%"
+        }
+      },
+      {
+        "type": "ダメージ耐性",
+        "value": 20,
+        "duration": 4,
+        "slot": "加護",
+        "condition": {
+          "hp": "<=80%"
         }
       }
     ],
@@ -1038,7 +1048,12 @@
     "range": 2,
     "cost": 1,
     "damageRate": 1.5,
-    "damageRateSp": 2.0,
+    "damageRateSp": {
+      "value": 2.0,
+      "condition": {
+        "onEnemyClass": [ "ライダー" ]
+      }
+    },
     "tags": [ "単体攻撃", "特効(ライダー)" ],
     "note": "対象がライダーの場合、2倍のダメージ"
   },
@@ -1052,7 +1067,12 @@
     "range": 3,
     "cost": 2,
     "damageRate": 0.45,
-    "damageRateSp": 0.8,
+    "damageRateSp": {
+      "value": 0.8,
+      "condition": {
+        "onEnemyClass": [ "ランサー" ]
+      }
+    },
     "statusEffects": [
       {
         "type": "ガード不可",
@@ -1072,7 +1092,12 @@
     "range": "自ユニット",
     "cost": 2,
     "damageRate": 0.5,
-    "damageRateSp": 0.8,
+    "damageRateSp": {
+      "value": 0.8,
+      "condition": {
+        "onEnemyClass": [ "ソーサラー" ]
+      }
+    },
     "buff": [
       {
         "type": "クリティカル率",
@@ -1592,7 +1617,12 @@
     "range": 2,
     "cost": 1,
     "damageRate": 1.5,
-    "damageRateSp": 2.0,
+    "damageRateSp": {
+      "value": 2.0,
+      "condition": {
+        "onEnemyClass": [ "エアリアル" ]
+      }
+    },
     "tags": [ "単体攻撃", "特効(エアリアル)" ],
     "note": "対象がエアリアルの場合、2倍のダメージ"
   },
@@ -1606,7 +1636,12 @@
     "range": 3,
     "cost": 2,
     "damageRate": 0.45,
-    "damageRateSp": 0.8,
+    "damageRateSp": {
+      "value": 0.8,
+      "condition": {
+        "onEnemyClass": [ "エアリアル" ]
+      }
+    },
     "debuff": [
       {
         "type": "与ダメージ",
@@ -1658,7 +1693,12 @@
     "range": 3,
     "cost": 2,
     "damageRate": 0.45,
-    "damageRateSp": 0.8,
+    "damageRateSp": {
+      "value": 0.8,
+      "condition": {
+        "onEnemyClass": [ "エアリアル" ]
+      }
+    },
     "tags": [ "範囲攻撃(中心指定)", "バフ解除", "特効(エアリアル)", "再移動" ],
     "note": "対象がエアリアルの場合、0.8倍のダメージ"
   },
@@ -1745,7 +1785,12 @@
     "range": 2,
     "cost": 2,
     "damageRate": 1.4,
-    "damageRateSp": 1.8,
+    "damageRateSp": {
+      "value": 1.8,
+      "condition": {
+        "onEnemyClass": [ "エアリアル" ]
+      }
+    },
     "debuff": [
       {
         "type": "移動",
@@ -1914,7 +1959,7 @@
         "type": "与ダメージ",
         "value": 15,
         "duration": 4,
-        "slot": "シンボル加護",
+        "slot": "加護",
         "condition": {
           "onBattle": true,
           "onNearAlly": 2
@@ -2232,7 +2277,12 @@
       }
     ],
     "damageRate": 0.55,
-    "damageRateSp": 0.8,
+    "damageRateSp": {
+      "value": 0.8,
+      "condition": {
+        "onEnemyClass": [ "ソルジャー" ]
+      }
+    },
     "tags": [ "超広範囲攻撃(中心指定)", "範囲攻撃(中心指定)", "特効(ソルジャー)", "固定ダメージ", "割合ダメージ" ],
     "note": "対象がソルジャーの場合、0.8倍のダメージ"
   },
@@ -2246,7 +2296,12 @@
     "range": 2,
     "cost": 1,
     "damageRate": 1.5,
-    "damageRateSp": 2.0,
+    "damageRateSp": {
+      "value": 2.0,
+      "condition": {
+        "onEnemyClass": [ "ランサー" ]
+      }
+    },
     "tags": [ "単体攻撃", "特効(ランサー)" ],
     "note": "対象がランサーの場合、2倍のダメージ"
   },
@@ -2260,7 +2315,12 @@
     "range": 3,
     "cost": 2,
     "damageRate": 0.45,
-    "damageRateSp": 0.8,
+    "damageRateSp": {
+      "value": 0.8,
+      "condition": {
+        "onEnemyClass": [ "ランサー" ]
+      }
+    },
     "debuff": [
       {
         "type": "ディフェンス",
@@ -2496,10 +2556,10 @@
         "type": "与ダメージ",
         "value": 15,
         "duration": 4,
-        "slot": "シンボル加護",
+        "slot": "加護",
         "condition": {
           "onBattle": true,
-          "activeDebuffCount": ">=3"
+          "enemyActiveDebuffCount": ">=3"
         }
       }
     ],
@@ -2549,7 +2609,12 @@
     "range": 2,
     "cost": 2,
     "damageRate": 1.5,
-    "damageRateSp": 2.0,
+    "damageRateSp": {
+      "value": 2.0,
+      "condition": {
+        "onEnemyClass": [ "アサシン" ]
+      }
+    },
     "tags": [ "単体攻撃", "単体回復(低HP)", "特効(アサシン)" ],
     "note": "対象がアサシンの場合、2倍のダメージ"
   },
@@ -2610,7 +2675,12 @@
     "range": 2,
     "cost": 2,
     "damageRate": 1.5,
-    "damageRateSp": 2.0,
+    "damageRateSp": {
+      "value": 2.0,
+      "condition": {
+        "onEnemyClass": [ "アサシン" ]
+      }
+    },
     "tags": [ "単体攻撃", "バフ解除", "特効(アサシン)" ],
     "note": "対象がアサシンの場合、2倍のダメージ"
   },
@@ -2681,7 +2751,7 @@
         "type": "与ダメージ(物理)",
         "value": 15,
         "duration": 4,
-        "slot": "シンボル加護",
+        "slot": "加護",
         "condition": {
           "onOwnTurn": true
         }
@@ -2699,7 +2769,12 @@
     "range": "自ユニット",
     "cost": 2,
     "damageRate": 0.5,
-    "damageRateSp": 0.8,
+    "damageRateSp": {
+      "value": 0.8,
+      "condition": {
+        "onEnemyClass": [ "ソーサラー" ]
+      }
+    },
     "tags": [ "超広範囲攻撃(自分中心)", "範囲攻撃(自分中心)", "特効(ソーサラー)" ],
     "note": "対象がソーサラーの場合、0.8倍のダメージ"
   },
@@ -2749,18 +2824,20 @@
         "type": "与ダメージ(物理)",
         "value": 15,
         "duration": 4,
-        "slot": "シンボル加護",
+        "slot": "加護",
         "condition": {
-          "onBattle": true
+          "onBattle": true,
+          "onOwnTurn": true
         }
       },
       {
         "type": "ダメージ耐性(物理)",
         "value": 10,
         "duration": 4,
-        "slot": "シンボル加護",
+        "slot": "加護",
         "condition": {
-          "onBattle": true
+          "onBattle": true,
+          "onOwnTurn": true
         }
       }
     ],
@@ -3005,7 +3082,7 @@
         "type": "与ダメージ(物理)",
         "value": 20,
         "duration": 4,
-        "slot": "シンボル加護",
+        "slot": "加護",
         "condition": {
           "onBattle": true
         }
@@ -3014,7 +3091,7 @@
         "type": "ダメージ耐性(物理)",
         "value": 20,
         "duration": 4,
-        "slot": "シンボル加護",
+        "slot": "加護",
         "condition": {
           "onBattle": true
         }
@@ -3143,7 +3220,12 @@
     "range": 5,
     "cost": 2,
     "damageRate": 1.7,
-    "damageRateSp": 2.2,
+    "damageRateSp": {
+      "value": 2.2,
+      "condition": {
+        "onEnemyClass": [ "ライダー" ]
+      }
+    },
     "debuff": [
       {
         "type": "ダメージ耐性",
@@ -3200,9 +3282,8 @@
         "type": "与ダメージ(物理)",
         "value": 15,
         "duration": 4,
-        "slot": "シンボル加護",
+        "slot": "加護",
         "condition": {
-          "onBattle": true,
           "onOwnTurn": true
         }
       }
@@ -3332,7 +3413,7 @@
         "type": "与ダメージ",
         "value": 10,
         "duration": 4,
-        "slot": "シンボル加護"
+        "slot": "加護"
       }
     ],
     "tags": [ "シンボルスキル", "地形無視" ]
@@ -3383,13 +3464,13 @@
         "type": "与ダメージ",
         "value": 20,
         "duration": 4,
-        "slot": "シンボル加護"
+        "slot": "加護"
       },
       {
         "type": "移動",
         "value": 1,
         "duration": 4,
-        "slot": "シンボル加護"
+        "slot": "加護"
       }
     ],
     "tags": [ "シンボルスキル", "地形無視" ]
@@ -3752,17 +3833,23 @@
       },
       {
         "type": "ダメージ耐性(物理)",
-        "onBattle": true,
         "value": 15,
         "duration": 4,
-        "slot": "シンボルスキル"
+        "slot": "加護",
+        "condition": {
+          "onBattle": true,
+          "onEnemyTurn": true
+        }
       },
       {
         "type": "ダメージ耐性(魔法)",
-        "onBattle": true,
         "value": 15,
         "duration": 4,
-        "slot": "シンボルスキル"
+        "slot": "加護",
+        "condition": {
+          "onBattle": true,
+          "onEnemyTurn": true
+        }
       }
     ],
     "tags": [ "シンボルスキル" ]
@@ -3796,7 +3883,12 @@
     "range": 2,
     "cost": 1,
     "damageRate": 1.5,
-    "damageRateSp": 2.0,
+    "damageRateSp": {
+      "value": 2.0,
+      "condition": {
+        "onEnemyClass": [ "ソルジャー", "ランサー", "ライダー" ]
+      }
+    },
     "tags": [ "単体攻撃", "特効(ソルジャー)", "特効(ランサー)", "特効(ライダー)" ],
     "note": "対象がソルジャー/ランサー/ライダーの場合、2倍のダメージ"
   },
@@ -3858,7 +3950,12 @@
     "range": 2,
     "cost": 2,
     "damageRate": 1.5,
-    "damageRateSp": 2.0,
+    "damageRateSp": {
+      "value": 2.0,
+      "condition": {
+        "onEnemyClass": [ "アサシン" ]
+      }
+    },
     "tags": [ "単体攻撃", "バフ解除", "特効(アサシン)" ],
     "note": "対象がアサシンの場合、2倍のダメージ"
   },
@@ -4523,7 +4620,12 @@
     "range": 1,
     "cost": 1,
     "damageRate": 1.3,
-    "damageRateSp": 1.8,
+    "damageRateSp": {
+      "value": 1.8,
+      "condition": {
+        "onEnemyClass": [ "ランサー" ]
+      }
+    },
     "tags": [ "単体攻撃", "特効(ランサー)" ],
     "note": "対象がランサーの場合、1.8倍のダメージ"
   },
@@ -4537,7 +4639,12 @@
     "range": 1,
     "cost": 1,
     "damageRate": 1.5,
-    "damageRateSp": 2.3,
+    "damageRateSp": {
+      "value": 2.3,
+      "condition": {
+        "onEnemyClass": [ "ランサー" ]
+      }
+    },
     "tags": [ "単体攻撃", "特効(ランサー)" ]
   },
   {
@@ -4586,9 +4693,10 @@
         "type": "与ダメージ",
         "value": 20,
         "duration": 4,
-        "slot": "シンボルスキル",
+        "slot": "加護",
         "condition": {
-          "onBattle": true
+          "onBattle": true,
+          "hp": "<=80%"
         }
       }
     ],
@@ -4640,7 +4748,7 @@
         "type": "与ダメージ",
         "value": 20,
         "duration": 4,
-        "slot": "シンボル加護",
+        "slot": "加護",
         "condition": {
           "onBattle": true
         }
@@ -4682,7 +4790,12 @@
     "range": 2,
     "cost": 2,
     "damageRate": 1.3,
-    "damageRateSp": 1.8,
+    "damageRateSp": {
+      "value": 1.8,
+      "condition": {
+        "onEnemyClass": [ "エアリアル" ]
+      }
+    },
     "buff": [
       {
         "type": "与ダメージ",
@@ -5603,18 +5716,20 @@
         "type": "クリティカル率",
         "value": 10,
         "duration": 4,
-        "slot": "シンボルスキル",
+        "slot": "加護",
         "condition": {
-          "onBattle": true
+          "onBattle": true,
+          "onOwnTurn": true
         }
       },
       {
         "type": "クリティカルダメージ倍率",
         "value": 15,
         "duration": 4,
-        "slot": "シンボルスキル",
+        "slot": "加護",
         "condition": {
-          "onBattle": true
+          "onBattle": true,
+          "onOwnTurn": true
         }
       }
     ],
@@ -5666,18 +5781,20 @@
         "type": "クリティカル率",
         "value": 20,
         "duration": 4,
-        "slot": "シンボルスキル",
+        "slot": "加護",
         "condition": {
-          "onBattle": true
+          "onBattle": true,
+          "onOwnTurn": true
         }
       },
       {
         "type": "クリティカルダメージ倍率",
         "value": 20,
         "duration": 4,
-        "slot": "シンボルスキル",
+        "slot": "加護",
         "condition": {
-          "onBattle": true
+          "onBattle": true,
+          "onOwnTurn": true
         }
       }
     ],
@@ -5907,18 +6024,20 @@
         "type": "与ダメージ(物理)",
         "value": 20,
         "duration": 4,
-        "slot": "シンボルスキル",
+        "slot": "加護",
         "condition": {
-          "onBattle": true
+          "onBattle": true,
+          "onOwnTurn": true
         }
       },
       {
         "type": "ダメージ耐性",
         "value": 10,
         "duration": 4,
-        "slot": "シンボルスキル",
+        "slot": "加護",
         "condition": {
-          "onBattle": true
+          "onBattle": true,
+          "onOwnTurn": true
         }
       }
     ],
@@ -6281,18 +6400,20 @@
         "type": "与ダメージ",
         "value": 20,
         "duration": 4,
-        "slot": "シンボルスキル",
+        "slot": "加護",
         "condition": {
-          "onBattle": true
+          "onBattle": true,
+          "onNearAlly": 2
         }
       },
       {
         "type": "クリティカル率",
         "value": 10,
         "duration": 4,
-        "slot": "シンボルスキル",
+        "slot": "加護",
         "condition": {
-          "onBattle": true
+          "onBattle": true,
+          "onNearAlly": 2
         }
       }
     ],
@@ -6531,13 +6652,19 @@
         "type": "クリティカル率",
         "value": 20,
         "duration": 4,
-        "slot": "シンボルスキル"
+        "slot": "加護",
+        "condition": {
+          "onSkill": true
+        }
       },
       {
         "type": "クリティカルダメージ倍率",
         "value": 20,
         "duration": 4,
-        "slot": "シンボルスキル"
+        "slot": "加護",
+        "condition": {
+          "onSkill": true
+        }
       }
     ],
     "tags": [ "シンボルスキル" ]
@@ -6607,7 +6734,7 @@
         "type": "与ダメージ",
         "value": 15,
         "duration": 4,
-        "slot": "シンボルスキル",
+        "slot": "加護",
         "condition": {
           "onBattle": true,
           "hp": ">=50%"
@@ -6617,7 +6744,7 @@
         "type": "クリティカルダメージ倍率",
         "value": 10,
         "duration": 4,
-        "slot": "シンボルスキル",
+        "slot": "加護",
         "condition": {
           "onBattle": true,
           "hp": ">=50%"
@@ -6967,18 +7094,20 @@
         "type": "マジック",
         "value": 15,
         "duration": 4,
-        "slot": "シンボルスキル",
+        "slot": "加護",
         "condition": {
-          "onBattle": true
+          "onBattle": true,
+          "hp": ">=50%"
         }
       },
       {
         "type": "与ダメージ",
         "value": 15,
         "duration": 4,
-        "slot": "シンボルスキル",
+        "slot": "加護",
         "condition": {
-          "onBattle": true
+          "onBattle": true,
+          "hp": ">=50%"
         }
       }
     ],
@@ -7321,7 +7450,7 @@
         "type": "クリティカル率",
         "value": 10,
         "duration": 4,
-        "slot": "シンボルスキル",
+        "slot": "加護",
         "condition": {
           "hp": ">=50%"
         }
@@ -7330,7 +7459,7 @@
         "type": "クリティカルダメージ倍率",
         "value": 10,
         "duration": 4,
-        "slot": "シンボルスキル",
+        "slot": "加護",
         "condition": {
           "hp": ">=50%"
         }
@@ -7339,7 +7468,7 @@
         "type": "移動",
         "value": 1,
         "duration": 4,
-        "slot": "シンボルスキル",
+        "slot": "加護",
         "condition": {
           "hp": ">=50%"
         }
@@ -7393,7 +7522,7 @@
         "type": "クリティカル率",
         "value": 15,
         "duration": 4,
-        "slot": "シンボル加護",
+        "slot": "加護",
         "condition": {
           "hp": ">=30%"
         }
@@ -7402,7 +7531,7 @@
         "type": "クリティカルダメージ倍率",
         "value": 15,
         "duration": 4,
-        "slot": "シンボル加護",
+        "slot": "加護",
         "condition": {
           "hp": ">=30%"
         }
@@ -7411,7 +7540,7 @@
         "type": "移動",
         "value": 1,
         "duration": 4,
-        "slot": "シンボル加護",
+        "slot": "加護",
         "condition": {
           "hp": ">=30%"
         }
@@ -8051,13 +8180,19 @@
         "type": "与ダメージ(物理)",
         "value": 20,
         "duration": 4,
-        "slot": "シンボル加護"
+        "slot": "加護",
+        "condition": {
+          "onNearAlly": 2
+        }
       },
       {
         "type": "ダメージ耐性",
         "value": 10,
         "duration": 4,
-        "slot": "シンボル加護"
+        "slot": "加護",
+        "condition": {
+          "onNearAlly": 2
+        }
       }
     ],
     "tags": [ "シンボルスキル" ]
@@ -8505,13 +8640,21 @@
         "type": "与ダメージ",
         "value": 15,
         "duration": 4,
-        "slot": "シンボル加護"
+        "slot": "加護",
+        "condition": {
+          "onBattle": true,
+          "hp": ">=50%"
+        }
       },
       {
         "type": "クリティカルダメージ倍率",
         "value": 10,
         "duration": 4,
-        "slot": "シンボル加護"
+        "slot": "加護",
+        "condition": {
+          "onBattle": true,
+          "hp": ">=50%"
+        }
       }
     ],
     "tags": [ "シンボルスキル" ]
@@ -8638,7 +8781,12 @@
     "range": 1,
     "cost": 2,
     "damageRate": 2.0,
-    "damageRateSp": 2.5,
+    "damageRateSp": {
+      "value": 2.5,
+      "condition": {
+        "onEnemyClass": [ "ソルジャー" ]
+      }
+    },
     "buff": [
       {
         "type": "クリティカル率",
@@ -8665,7 +8813,12 @@
     "range": 1,
     "cost": 2,
     "damageRate": 2.1,
-    "damageRateSp": 2.6,
+    "damageRateSp": {
+      "value": 2.6,
+      "condition": {
+        "onEnemyClass": [ "ソルジャー" ]
+      }
+    },
     "buff": [
       {
         "type": "クリティカル率",

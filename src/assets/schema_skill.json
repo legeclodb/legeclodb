@@ -1,6 +1,13 @@
 ﻿{
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$defs": {
+    "unitType": {
+      "enum": [ "ソルジャー", "ランサー", "ライダー", "エアリアル", "ソーサラー", "セイント", "シューター", "アサシン", "ヴォイド" ]
+    },
+    "timingType": {
+      "enum": [ "常時", "ターン開始", "ターン終了", "戦闘前", "戦闘後", "スキル使用", "敵撃破", "行動後" ]
+    },
+
     "condition": {
       "type": "object",
       "additionalProperties": false,
@@ -28,8 +35,20 @@
         "onNoNearAlly": { "type": [ "number", "string" ] },
         "onNearEnemy": { "type": [ "number", "string" ] },
         "onNoNearEnemy": { "type": [ "number", "string" ] },
-        "onClass": { "type": "array" },
-        "onEnemyClass": { "type": "array" },
+        "onClass": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/unitType"
+          }
+        },
+        "onEnemyClass": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/unitType"
+          }
+        },
         "onClassAdvantage": { "type": "boolean" },
         "onEffect": { "type": "string" },
 
@@ -64,7 +83,7 @@
         "variant": { "type": [ "number", "string" ] },
         "slot": { "type": "string" },
         "timing": {
-          "enum": [ "always", "turnBegin", "turnEnd", "actionBegin", "actionEnd", "battleBegin", "battleEnd", "skillUse", "kill" ]
+          "$ref": "#/$defs/timingType"
         },
         "condition": {
           "$ref": "#/$defs/condition"
@@ -91,7 +110,21 @@
       "area": { "type": [ "number", "string" ] },
       "range": { "type": [ "number", "string" ] },
       "cost": { "type": "number" },
-      "damageRate": { "type": [ "number", "object" ] },
+      "damageRate": { "type": "number" },
+      "damageRateSp": {
+        "type": "object",
+        "required": [
+          "value",
+          "condition"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "value": { "type": "number" },
+          "condition": {
+            "$ref": "#/$defs/condition"
+          }
+        }
+      },
       "healRate": { "type": [ "number", "object" ] },
       "summon": { "type": [ "array" ] },
       "buff": {
