@@ -69,7 +69,11 @@
       {
         "type": "範囲",
         "value": 1,
-        "target": "自身"
+        "duration": 0,
+        "target": "自身",
+        "condition": {
+          "onAreaSkill": true
+        }
       }
     ]
   },
@@ -92,14 +96,22 @@
       {
         "type": "アタック",
         "value": 15,
+        "duration": 0,
         "target": "自身",
-        "onBattle": [ "味方ターン" ]
+        "condition": {
+          "onBattle": true,
+          "onOwnTurn": true
+        }
       },
       {
         "type": "クリティカル率",
         "value": 10,
+        "duration": 0,
         "target": "自身",
-        "onBattle": [ "味方ターン" ]
+        "condition": {
+          "onBattle": true,
+          "onOwnTurn": true
+        }
       }
     ]
   },
@@ -118,7 +130,11 @@
         "type": "アタック",
         "value": 20,
         "duration": 2,
-        "probability": 50
+        "condition": {
+          "onBattleEnd": true,
+          "onOwnTurn": true,
+          "probability": 50
+        }
       }
     ]
   },
@@ -161,8 +177,11 @@
     "debuff": [
       {
         "type": "ランダム",
-        "randomType": "弱",
-        "amount": 1
+        "variant": "弱",
+        "amount": 1,
+        "condition": {
+          "onCriticalHit": true
+        }
       }
     ],
     "tags": [ "バフ解除" ],
@@ -230,14 +249,22 @@
       {
         "type": "ディフェンス",
         "value": 15,
+        "duration": 0,
         "target": "自身",
-        "onBattle": [ "敵ターン" ]
+        "condition": {
+          "onBattle": true,
+          "onEnemyTurn": true
+        }
       },
       {
         "type": "アタック",
         "value": 5,
+        "duration": 0,
         "target": "自身",
-        "onBattle": [ "敵ターン" ]
+        "condition": {
+          "onBattle": true,
+          "onEnemyTurn": true
+        }
       }
     ]
   },
@@ -254,7 +281,7 @@
     "buff": [
       {
         "type": "射程",
-        "rangeType": "通常攻撃",
+        "variant": "通常攻撃",
         "value": 1,
         "target": "自身"
       }
@@ -262,7 +289,7 @@
     "drawback": [
       {
         "type": "与ダメージ",
-        "value": 10,
+        "value": -10,
         "target": "自身"
       }
     ]
@@ -323,14 +350,22 @@
       {
         "type": "アタック",
         "value": 15,
+        "duration": 0,
         "target": "自身",
-        "onBattle": [ "味方ターン" ]
+        "condition": {
+          "onBattle": true,
+          "onOwnTurn": true
+        }
       },
       {
         "type": "ディフェンス",
         "value": 5,
+        "duration": 0,
         "target": "自身",
-        "onBattle": [ "味方ターン" ]
+        "condition": {
+          "onBattle": true,
+          "onOwnTurn": true
+        }
       }
     ]
   },
@@ -374,7 +409,11 @@
       {
         "type": "ディフェンス",
         "value": 20,
-        "duration": 1
+        "duration": 1,
+        "condition": {
+          "onBattleEnd": true,
+          "onOwnTurn": true
+        }
       }
     ]
   },
@@ -510,8 +549,13 @@
     "debuff": [
       {
         "type": "ランダム",
-        "randomType": "弱",
-        "amount": 1
+        "variant": "弱",
+        "amount": 1,
+        "condition": {
+          "onCriticalHit": true,
+          "onOwnTurn": true,
+          "probability": 50
+        }
       }
     ],
     "tags": [ "バフ解除" ],
@@ -539,7 +583,11 @@
         "type": "与ダメージ",
         "value": 20,
         "duration": 1,
-        "probability": 50
+        "condition": {
+          "onBattle": true,
+          "onOwnTurn": true,
+          "probability": 50
+        }
       }
     ]
   },
@@ -563,8 +611,12 @@
     "debuff": [
       {
         "type": "ランダム",
-        "randomType": "強",
-        "amount": 1
+        "variant": "強",
+        "amount": 1,
+        "condition": {
+          "onCriticalHit": true,
+          "probability": 50
+        }
       }
     ],
     "tags": [ "バフ解除" ],
@@ -584,14 +636,22 @@
       {
         "type": "アタック",
         "value": 15,
+        "duration": 0,
         "target": "自身",
-        "onBattle": [ "敵ターン" ]
+        "condition": {
+          "onBattle": true,
+          "onEnemyTurn": true
+        }
       },
       {
         "type": "ディフェンス",
         "value": 5,
+        "duration": 0,
         "target": "自身",
-        "onBattle": [ "敵ターン" ]
+        "condition": {
+          "onBattle": true,
+          "onEnemyTurn": true
+        }
       }
     ]
   },
@@ -637,14 +697,22 @@
       {
         "type": "アタック",
         "value": 15,
+        "duration": 0,
         "target": "自身",
-        "onBattle": [ "味方ターン" ]
+        "condition": {
+          "onBattle": true,
+          "onOwnTurn": true
+        }
       },
       {
         "type": "ディフェンス",
         "value": 5,
+        "duration": 0,
         "target": "自身",
-        "onBattle": [ "味方ターン" ]
+        "condition": {
+          "onBattle": true,
+          "onOwnTurn": true
+        }
       }
     ]
   },
@@ -661,7 +729,7 @@
     "buff": [
       {
         "type": "射程",
-        "rangeType": "通常攻撃",
+        "variant": "通常攻撃",
         "value": 1,
         "target": "自身"
       }
@@ -669,7 +737,7 @@
     "drawback": [
       {
         "type": "与ダメージ",
-        "value": 10,
+        "value": -10,
         "target": "自身"
       }
     ]
@@ -760,7 +828,11 @@
       {
         "type": "与ダメージ",
         "value": 20,
-        "duration": 1
+        "duration": 1,
+        "condition": {
+          "onBattleEnd": true,
+          "onOwnTurn": true
+        }
       }
     ]
   },
@@ -807,12 +879,15 @@
     "debuff": [
       {
         "type": "ランダム",
-        "randomType": "弱",
+        "variant": "弱",
         "amount": 1,
-        "probability": 30
+        "condition": {
+          "onBattleEnd": true,
+          "onOwnTurn": true,
+          "probability": 30
+        }
       }
     ],
-    "tags": [],
     "note": "ランダムデバフ内訳: アタック-10%(2ターン)、ディフェンス-10%(2ターン)、マジック-10%(2ターン)、レジスト-20%(2ターン)、与ダメージ-10%(2ターン)、ダメージ耐性-10%(2ターン)"
   },
   {
@@ -835,11 +910,14 @@
     "debuff": [
       {
         "type": "ランダム",
-        "randomType": "弱",
-        "amount": 1
+        "variant": "弱",
+        "amount": 1,
+        "condition": {
+          "onBattleEnd": true,
+          "onOwnTurn": true
+        }
       }
     ],
-    "tags": [],
     "note": "ランダムデバフ内訳: アタック-10%(2ターン)、ディフェンス-10%(2ターン)、マジック-10%(2ターン)、レジスト-20%(2ターン)、与ダメージ-10%(2ターン)、ダメージ耐性-10%(2ターン)"
   },
   {
@@ -862,12 +940,15 @@
     "debuff": [
       {
         "type": "ランダム",
-        "randomType": "弱",
+        "variant": "弱",
         "amount": 1,
-        "probability": 50
+        "condition": {
+          "onBattle": true,
+          "onOwnTurn": true,
+          "probability": 50
+        }
       }
     ],
-    "tags": [],
     "note": "ランダムデバフ内訳: アタック-10%(2ターン)、ディフェンス-10%(2ターン)、マジック-10%(2ターン)、レジスト-20%(2ターン)、与ダメージ-10%(2ターン)、ダメージ耐性-10%(2ターン)"
   },
   {
@@ -883,14 +964,22 @@
       {
         "type": "アタック",
         "value": 10,
+        "duration": 0,
         "target": "自身",
-        "onBattle": [ "味方ターン" ]
+        "condition": {
+          "onBattle": true,
+          "onOwnTurn": true
+        }
       },
       {
         "type": "マジック",
         "value": 10,
+        "duration": 0,
         "target": "自身",
-        "onBattle": [ "味方ターン" ]
+        "condition": {
+          "onBattle": true,
+          "onOwnTurn": true
+        }
       }
     ]
   },
@@ -944,8 +1033,12 @@
       {
         "type": "アタック",
         "value": 15,
+        "duration": 0,
         "target": "自身",
-        "onBattle": [ "味方ターン" ]
+        "condition": {
+          "onBattle": true,
+          "onOwnTurn": true
+        }
       }
     ]
   },
@@ -999,8 +1092,12 @@
       {
         "type": "クリティカル率",
         "value": 15,
+        "duration": 0,
         "target": "自身",
-        "onBattle": [ "味方ターン" ]
+        "condition": {
+          "onBattle": true,
+          "onOwnTurn": true
+        }
       }
     ]
   },
@@ -1108,8 +1205,12 @@
       {
         "type": "アタック",
         "value": 15,
+        "duration": 0,
         "target": "自身",
-        "onBattle": [ "味方ターン" ]
+        "condition": {
+          "onBattle": true,
+          "onOwnTurn": true
+        }
       }
     ]
   },
@@ -1163,8 +1264,12 @@
       {
         "type": "ディフェンス",
         "value": 15,
+        "duration": 0,
         "target": "自身",
-        "onBattle": [ "味方ターン" ]
+        "condition": {
+          "onBattle": true,
+          "onOwnTurn": true
+        }
       }
     ]
   },
@@ -1218,8 +1323,12 @@
       {
         "type": "アタック",
         "value": 15,
+        "duration": 0,
         "target": "自身",
-        "onBattle": [ "味方ターン" ]
+        "condition": {
+          "onBattle": true,
+          "onOwnTurn": true
+        }
       }
     ]
   },
@@ -1273,8 +1382,12 @@
       {
         "type": "クリティカル率",
         "value": 15,
+        "duration": 0,
         "target": "自身",
-        "onBattle": [ "味方ターン" ]
+        "condition": {
+          "onBattle": true,
+          "onOwnTurn": true
+        }
       }
     ]
   },
@@ -1329,7 +1442,9 @@
         "type": "マジック",
         "value": 15,
         "target": "自身",
-        "onHPAbove": 80
+        "condition": {
+          "hp": ">=80%"
+        }
       }
     ]
   },
@@ -1347,7 +1462,12 @@
       {
         "type": "与ダメージ(単体スキル)",
         "value": 15,
-        "target": "自身"
+        "duration": 0,
+        "target": "自身",
+        "condition": {
+          "onBattle": true,
+          "onSkill": true
+        }
       }
     ]
   },
@@ -1365,7 +1485,11 @@
       {
         "type": "与ダメージ(範囲スキル)",
         "value": 15,
-        "target": "自身"
+        "duration": 0,
+        "target": "自身",
+        "condition": {
+          "onAreaSkill": true
+        }
       }
     ]
   },
@@ -1384,7 +1508,9 @@
         "type": "マジック",
         "value": 15,
         "target": "自身",
-        "onHPAbove": 80
+        "condition": {
+          "hp": ">=80%"
+        }
       }
     ]
   },
@@ -1454,7 +1580,9 @@
         "type": "ディフェンス",
         "value": 15,
         "target": "自身",
-        "onHPAbove": 80
+        "condition": {
+          "hp": ">=80%"
+        }
       }
     ]
   },
@@ -1478,7 +1606,9 @@
         "type": "レジスト",
         "value": 15,
         "target": "自身",
-        "onHPAbove": 80
+        "condition": {
+          "hp": ">=80%"
+        }
       }
     ]
   },
@@ -1501,7 +1631,10 @@
       {
         "type": "ディフェンス",
         "value": 15,
-        "target": "自身"
+        "target": "自身",
+        "condition": {
+          "onNearAlly": 2
+        }
       }
     ]
   },
@@ -1562,8 +1695,11 @@
       {
         "type": "ディフェンス",
         "value": 10,
+        "duration": 0,
         "target": "自身",
-        "onBattle": []
+        "condition": {
+          "onBattle": true
+        }
       }
     ],
     "tags": [ "デバフ解除" ]
@@ -1634,7 +1770,9 @@
         "type": "ディフェンス",
         "value": 15,
         "target": "自身",
-        "onHPAbove": 80
+        "condition": {
+          "hp": ">=80%"
+        }
       }
     ]
   },
@@ -1658,7 +1796,9 @@
         "type": "レジスト",
         "value": 15,
         "target": "自身",
-        "onHPAbove": 80
+        "condition": {
+          "hp": ">=80%"
+        }
       }
     ]
   },
@@ -1744,14 +1884,20 @@
       {
         "type": "アタック",
         "value": 10,
+        "duration": 2,
         "target": "自身",
-        "onKill": true
+        "condition": {
+          "onKill": true
+        }
       },
       {
         "type": "レジスト",
         "value": 10,
+        "duration": 2,
         "target": "自身",
-        "onKill": true
+        "condition": {
+          "onKill": true
+        }
       }
     ]
   },
@@ -1774,8 +1920,12 @@
       {
         "type": "マジック",
         "value": 10,
+        "duration": 0,
         "target": "自身",
-        "onBattle": [ "味方ターン" ]
+        "condition": {
+          "onBattle": true,
+          "onOwnTurn": true
+        }
       }
     ]
   },
@@ -1864,13 +2014,17 @@
         "type": "マジック",
         "value": 10,
         "target": "自身",
-        "onHPAbove": 100
+        "condition": {
+          "hp": ">=100%"
+        }
       },
       {
         "type": "治療効果",
         "value": 10,
         "target": "自身",
-        "onHPAbove": 100
+        "condition": {
+          "hp": ">=100%"
+        }
       }
     ]
   },
@@ -1894,8 +2048,12 @@
     "debuff": [
       {
         "type": "ランダム",
-        "randomType": "弱",
-        "amount": 1
+        "variant": "弱",
+        "amount": 1,
+        "condition": {
+          "onBattleEnd": true,
+          "onEnemyTurn": true
+        }
       }
     ],
     "note": "ランダムデバフ内訳: アタック-10%(2ターン)、ディフェンス-10%(2ターン)、マジック-10%(2ターン)、レジスト-20%(2ターン)、与ダメージ-10%(2ターン)、ダメージ耐性-10%(2ターン)\n敵ターンの戦闘後に付与され、その敵ターン終了時に1ターン経過するので、効果時間は実質1ターンとなる。"
@@ -1919,14 +2077,20 @@
       {
         "type": "マジック",
         "value": 10,
+        "duration": 2,
         "target": "自身",
-        "onKill": true
+        "condition": {
+          "onKill": true
+        }
       },
       {
         "type": "レジスト",
         "value": 10,
+        "duration": 2,
         "target": "自身",
-        "onKill": true
+        "condition": {
+          "onKill": true
+        }
       }
     ]
   },
@@ -1998,8 +2162,12 @@
       {
         "type": "アタック",
         "value": 15,
+        "duration": 0,
         "target": "自身",
-        "onBattle": [ "敵ターン" ]
+        "condition": {
+          "onBattle": true,
+          "onEnemyTurn": true
+        }
       }
     ]
   },
@@ -2017,8 +2185,12 @@
       {
         "type": "クリティカル率",
         "value": 15,
+        "duration": 0,
         "target": "自身",
-        "onBattle": [ "敵ターン" ]
+        "condition": {
+          "onBattle": true,
+          "onEnemyTurn": true
+        }
       }
     ]
   },
@@ -2091,7 +2263,9 @@
         "type": "アタック",
         "value": 10,
         "target": "自身",
-        "onHPAbove": 80
+        "condition": {
+          "hp": ">=80%"
+        }
       }
     ]
   },
@@ -2110,7 +2284,9 @@
         "type": "アタック",
         "value": 10,
         "target": "自身",
-        "onHPBelow": 80
+        "condition": {
+          "hp": ">=80%"
+        }
       }
     ]
   },
@@ -2201,7 +2377,9 @@
         "type": "ディフェンス",
         "value": 15,
         "target": "自身",
-        "onHPAbove": 80
+        "condition": {
+          "hp": ">=80%"
+        }
       }
     ]
   },
@@ -2288,7 +2466,9 @@
         "type": "ダメージ耐性(物理)",
         "value": 10,
         "target": "自身",
-        "onHPAbove": 80
+        "condition": {
+          "hp": ">=80%"
+        }
       }
     ]
   },
@@ -2312,7 +2492,9 @@
         "type": "ダメージ耐性(魔法)",
         "value": 10,
         "target": "自身",
-        "onHPAbove": 80
+        "condition": {
+          "hp": ">=80%"
+        }
       }
     ]
   },
@@ -2336,8 +2518,11 @@
     "statusEffects": [
       {
         "type": "アクティブスキル使用不可",
-        "duration": 2,
-        "probability": 50
+        "duration": 1,
+        "condition": {
+          "onActionEnd": true,
+          "probability": 50
+        }
       }
     ],
     "tags": [ "バフ:ディフェンス" ]
@@ -2362,7 +2547,10 @@
         "type": "レジスト",
         "value": 20,
         "duration": 1,
-        "target": "単体"
+        "target": "単体",
+        "condition": {
+          "onActionEnd": true
+        }
       }
     ]
   },
@@ -2388,7 +2576,10 @@
         "type": "ディフェンス",
         "value": 20,
         "duration": 1,
-        "probability": 50
+        "condition": {
+          "onActionEnd": true,
+          "probability": 50
+        }
       }
     ]
   },
@@ -2466,7 +2657,9 @@
         "type": "ダメージ耐性(物理)",
         "value": 10,
         "target": "自身",
-        "onHPAbove": 80
+        "condition": {
+          "hp": ">=80%"
+        }
       }
     ]
   },
@@ -2490,7 +2683,9 @@
         "type": "ダメージ耐性(魔法)",
         "value": 10,
         "target": "自身",
-        "onHPAbove": 80
+        "condition": {
+          "hp": ">=80%"
+        }
       }
     ]
   },
@@ -2533,7 +2728,10 @@
         "type": "与ダメージ",
         "value": 20,
         "duration": 1,
-        "target": "単体"
+        "target": "単体",
+        "condition": {
+          "onActionEnd": true
+        }
       }
     ]
   },
@@ -2595,7 +2793,10 @@
         "type": "ダメージ耐性",
         "value": 10,
         "target": "自身",
-        "onBattle": [ "味方ターン" ]
+        "condition": {
+          "onBattle": true,
+          "onOwnTurn": true
+        }
       }
     ]
   },
@@ -2684,13 +2885,17 @@
         "type": "ディフェンス",
         "value": 15,
         "target": "自身",
-        "onHPAbove": 100
+        "condition": {
+          "hp": ">=100%"
+        }
       },
       {
         "type": "レジスト",
         "value": 15,
         "target": "自身",
-        "onHPAbove": 100
+        "condition": {
+          "hp": ">=100%"
+        }
       }
     ]
   },
@@ -2712,8 +2917,11 @@
       },
       {
         "type": "ランダム",
-        "randomType": "弱",
-        "amount": 1
+        "variant": "弱",
+        "amount": 1,
+        "condition": {
+          "onActionEnd": true
+        }
       }
     ],
     "note": "ランダムバフ内訳: アタック+10%(2ターン)、ディフェンス+10%(2ターン)、マジック+10%(2ターン)、レジスト+10%(2ターン)、与ダメージ+10%(2ターン)、ダメージ耐性+10%(2ターン)、移動+1(2ターン)"
@@ -2738,13 +2946,19 @@
         "type": "ディフェンス",
         "value": 10,
         "duration": 2,
-        "target": "単体"
+        "target": "単体",
+        "condition": {
+          "onActionEnd": true
+        }
       },
       {
         "type": "被治療効果",
         "value": 10,
         "duration": 2,
-        "target": "単体"
+        "target": "単体",
+        "condition": {
+          "onActionEnd": true
+        }
       }
     ]
   },
@@ -2833,8 +3047,12 @@
       {
         "type": "ディフェンス",
         "value": 15,
+        "duration": 0,
         "target": "自身",
-        "onBattle": [ "敵ターン" ]
+        "condition": {
+          "onBattle": true,
+          "onEnemyTurn": true
+        }
       }
     ]
   },
@@ -2852,8 +3070,12 @@
       {
         "type": "レジスト",
         "value": 15,
+        "duration": 0,
         "target": "自身",
-        "onBattle": [ "敵ターン" ]
+        "condition": {
+          "onBattle": true,
+          "onEnemyTurn": true
+        }
       }
     ]
   },
@@ -2926,7 +3148,9 @@
         "type": "レジスト",
         "value": 15,
         "target": "自身",
-        "onHPAbove": 80
+        "condition": {
+          "hp": ">=80%"
+        }
       }
     ]
   },
@@ -2945,7 +3169,9 @@
         "type": "ディフェンス",
         "value": 15,
         "target": "自身",
-        "onHPBelow": 80
+        "condition": {
+          "hp": "<=80%"
+        }
       }
     ]
   },
@@ -3018,7 +3244,9 @@
         "type": "レジスト",
         "value": 15,
         "target": "自身",
-        "onHPAbove": 80
+        "condition": {
+          "hp": ">=80%"
+        }
       }
     ]
   },
@@ -3037,7 +3265,9 @@
         "type": "ディフェンス",
         "value": 15,
         "target": "自身",
-        "onHPAbove": 80
+        "condition": {
+          "hp": ">=80%"
+        }
       }
     ]
   },
@@ -3072,14 +3302,22 @@
       {
         "type": "アタック",
         "value": 8,
+        "duration": 0,
         "target": "自身",
-        "onBattle": [ "味方ターン" ]
+        "condition": {
+          "onBattle": true,
+          "onOwnTurn": true
+        }
       },
       {
         "type": "アタック",
         "value": 8,
+        "duration": 0,
         "target": "自身",
-        "onBattle": [ "味方ターン" ]
+        "condition": {
+          "onBattle": true,
+          "onOwnTurn": true
+        }
       }
     ]
   },
@@ -3097,6 +3335,15 @@
         "type": "アタック",
         "value": 8,
         "target": "自身"
+      },
+      {
+        "type": "与ダメージ",
+        "value": 20,
+        "target": "自身",
+        "condition": {
+          "onBattle": true,
+          "onEnemyClass": [ "エアリアル" ]
+        }
       }
     ],
     "tags": [ "特効(エアリアル)" ]
@@ -3115,6 +3362,15 @@
         "type": "アタック",
         "value": 8,
         "target": "自身"
+      },
+      {
+        "type": "与ダメージ",
+        "value": 20,
+        "target": "自身",
+        "condition": {
+          "onBattle": true,
+          "onEnemyClass": [ "ソーサラー" ]
+        }
       }
     ],
     "tags": [ "特効(ソーサラー)" ]
@@ -3133,6 +3389,33 @@
         "type": "治療効果",
         "value": 15,
         "target": "自身"
+      },
+      {
+        "type": "マジック",
+        "value": 20,
+        "target": "自身",
+        "condition": {
+          "onBattle": true,
+          "onEnemyClass": [ "ソーサラー" ]
+        }
+      },
+      {
+        "type": "レジスト",
+        "value": 20,
+        "target": "自身",
+        "condition": {
+          "onBattle": true,
+          "onEnemyClass": [ "ソーサラー" ]
+        }
+      },
+      {
+        "type": "ディフェンス",
+        "value": 20,
+        "target": "自身",
+        "condition": {
+          "onBattle": true,
+          "onEnemyClass": [ "ソーサラー" ]
+        }
       }
     ],
     "tags": [ "特効(ソーサラー)" ]
@@ -3155,8 +3438,12 @@
       {
         "type": "ディフェンス",
         "value": 10,
+        "duration": 0,
         "target": "自身",
-        "onBattle": [ "敵ターン" ]
+        "condition": {
+          "onBattle": true,
+          "onEnemyTurn": true
+        }
       }
     ]
   },
@@ -3180,7 +3467,11 @@
       {
         "type": "与ダメージ",
         "value": 15,
-        "duration": 1
+        "duration": 1,
+        "condition": {
+          "onBattleEnd": true,
+          "onOwnTurn": true
+        }
       }
     ]
   },
@@ -3241,7 +3532,11 @@
       {
         "type": "ダメージ耐性",
         "value": 15,
-        "duration": 1
+        "duration": 1,
+        "condition": {
+          "onBattleEnd": true,
+          "onOwnTurn": true
+        }
       }
     ]
   },
@@ -3277,6 +3572,16 @@
         "type": "マジック",
         "value": 8,
         "target": "自身"
+      },
+      {
+        "type": "ディフェンス",
+        "value": 20,
+        "duration": 0,
+        "target": "自身",
+        "condition": {
+          "onBattle": true,
+          "onEnemyClass": [ "シューター", "アサシン" ]
+        }
       }
     ],
     "tags": [ "特効(シューター)", "特効(アサシン)" ]
@@ -3403,14 +3708,24 @@
       {
         "type": "ディフェンス",
         "value": 10,
+        "duration": 0,
         "target": "自身",
-        "onBattle": [ "敵ターン", "遠距離" ]
+        "condition": {
+          "onBattle": true,
+          "onEnemyTurn": true,
+          "onRangedCombat": true
+        }
       },
       {
         "type": "レジスト",
         "value": 10,
+        "duration": 0,
         "target": "自身",
-        "onBattle": [ "敵ターン", "遠距離" ]
+        "condition": {
+          "onBattle": true,
+          "onEnemyTurn": true,
+          "onRangedCombat": true
+        }
       }
     ]
   },
@@ -3427,14 +3742,24 @@
       {
         "type": "ディフェンス",
         "value": 10,
+        "duration": 0,
         "target": "自身",
-        "onBattle": [ "敵ターン", "近距離" ]
+        "condition": {
+          "onBattle": true,
+          "onEnemyTurn": true,
+          "onCloseCombat": true
+        }
       },
       {
         "type": "レジスト",
         "value": 10,
+        "duration": 0,
         "target": "自身",
-        "onBattle": [ "敵ターン", "近距離" ]
+        "condition": {
+          "onBattle": true,
+          "onEnemyTurn": true,
+          "onCloseCombat": true
+        }
       }
     ]
   },
@@ -3542,14 +3867,22 @@
       {
         "type": "ディフェンス",
         "value": 10,
+        "duration": 0,
         "target": "自身",
-        "onBattle": []
+        "condition": {
+          "onBattle": true,
+          "onNearAlly": 2
+        }
       },
       {
         "type": "レジスト",
         "value": 10,
+        "duration": 0,
         "target": "自身",
-        "onBattle": []
+        "condition": {
+          "onBattle": true,
+          "onNearAlly": 2
+        }
       }
     ]
   },
@@ -3567,13 +3900,19 @@
         "type": "アタック",
         "value": 10,
         "target": "自身",
-        "onBattle": []
+        "condition": {
+          "onBattle": true,
+          "onNoNearAlly": 2
+        }
       },
       {
         "type": "ディフェンス",
         "value": 10,
         "target": "自身",
-        "onBattle": []
+        "condition": {
+          "onBattle": true,
+          "onNoNearAlly": 2
+        }
       }
     ]
   },
@@ -3738,7 +4077,10 @@
         "type": "ダメージ耐性",
         "value": 10,
         "target": "自身",
-        "onBattle": [ "近距離" ]
+        "condition": {
+          "onBattle": true,
+          "onCloseCombat": true
+        }
       }
     ]
   },
@@ -3756,7 +4098,10 @@
         "type": "ダメージ耐性",
         "value": 10,
         "target": "自身",
-        "onBattle": [ "遠距離" ]
+        "condition": {
+          "onBattle": true,
+          "onRangedCombat": true
+        }
       }
     ]
   },
@@ -3930,49 +4275,65 @@
         "type": "最大HP",
         "value": 8,
         "target": "自身",
-        "onSymbol": "ゼニス"
+        "condition": {
+          "onSymbol": [ "ゼニス" ]
+        }
       },
       {
         "type": "アタック",
         "value": 8,
         "target": "自身",
-        "onSymbol": "ゼニス"
+        "condition": {
+          "onSymbol": [ "ゼニス" ]
+        }
       },
       {
         "type": "ディフェンス",
         "value": 8,
         "target": "自身",
-        "onSymbol": "ゼニス"
+        "condition": {
+          "onSymbol": [ "ゼニス" ]
+        }
       },
       {
         "type": "マジック",
         "value": 8,
         "target": "自身",
-        "onSymbol": "ゼニス"
+        "condition": {
+          "onSymbol": [ "ゼニス" ]
+        }
       },
       {
         "type": "レジスト",
         "value": 8,
         "target": "自身",
-        "onSymbol": "ゼニス"
+        "condition": {
+          "onSymbol": [ "ゼニス" ]
+        }
       },
       {
         "type": "テクニック",
         "value": 8,
         "target": "自身",
-        "onSymbol": "ゼニス"
+        "condition": {
+          "onSymbol": [ "ゼニス" ]
+        }
       },
       {
         "type": "クリティカルダメージ倍率",
         "value": 10,
         "target": "自身",
-        "onSymbol": "ゼニス"
+        "condition": {
+          "onSymbol": [ "ゼニス" ]
+        }
       },
       {
         "type": "移動",
         "value": 1,
         "target": "自身",
-        "onSymbol": "ゼニス"
+        "condition": {
+          "onSymbol": [ "ゼニス" ]
+        }
       }
     ],
     "tags": [ "分類:ギルド装備" ]
@@ -3991,49 +4352,65 @@
         "type": "最大HP",
         "value": 8,
         "target": "自身",
-        "onSymbol": "オリジン"
+        "condition": {
+          "onSymbol": [ "オリジン" ]
+        }
       },
       {
         "type": "アタック",
         "value": 8,
         "target": "自身",
-        "onSymbol": "オリジン"
+        "condition": {
+          "onSymbol": [ "オリジン" ]
+        }
       },
       {
         "type": "ディフェンス",
         "value": 8,
         "target": "自身",
-        "onSymbol": "オリジン"
+        "condition": {
+          "onSymbol": [ "オリジン" ]
+        }
       },
       {
         "type": "マジック",
         "value": 8,
         "target": "自身",
-        "onSymbol": "オリジン"
+        "condition": {
+          "onSymbol": [ "オリジン" ]
+        }
       },
       {
         "type": "レジスト",
         "value": 8,
         "target": "自身",
-        "onSymbol": "オリジン"
+        "condition": {
+          "onSymbol": [ "オリジン" ]
+        }
       },
       {
         "type": "テクニック",
         "value": 8,
         "target": "自身",
-        "onSymbol": "オリジン"
+        "condition": {
+          "onSymbol": [ "オリジン" ]
+        }
       },
       {
         "type": "クリティカルダメージ倍率",
         "value": 10,
         "target": "自身",
-        "onSymbol": "オリジン"
+        "condition": {
+          "onSymbol": [ "オリジン" ]
+        }
       },
       {
         "type": "移動",
         "value": 1,
         "target": "自身",
-        "onSymbol": "オリジン"
+        "condition": {
+          "onSymbol": [ "オリジン" ]
+        }
       }
     ],
     "tags": [ "分類:ギルド装備" ]
@@ -4052,49 +4429,65 @@
         "type": "最大HP",
         "value": 8,
         "target": "自身",
-        "onSymbol": "ナディア"
+        "condition": {
+          "onSymbol": [ "ナディア" ]
+        }
       },
       {
         "type": "アタック",
         "value": 8,
         "target": "自身",
-        "onSymbol": "ナディア"
+        "condition": {
+          "onSymbol": [ "ナディア" ]
+        }
       },
       {
         "type": "ディフェンス",
         "value": 8,
         "target": "自身",
-        "onSymbol": "ナディア"
+        "condition": {
+          "onSymbol": [ "ナディア" ]
+        }
       },
       {
         "type": "マジック",
         "value": 8,
         "target": "自身",
-        "onSymbol": "ナディア"
+        "condition": {
+          "onSymbol": [ "ナディア" ]
+        }
       },
       {
         "type": "レジスト",
         "value": 8,
         "target": "自身",
-        "onSymbol": "ナディア"
+        "condition": {
+          "onSymbol": [ "ナディア" ]
+        }
       },
       {
         "type": "テクニック",
         "value": 8,
         "target": "自身",
-        "onSymbol": "ナディア"
+        "condition": {
+          "onSymbol": [ "ナディア" ]
+        }
       },
       {
         "type": "クリティカルダメージ倍率",
         "value": 10,
         "target": "自身",
-        "onSymbol": "ナディア"
+        "condition": {
+          "onSymbol": [ "ナディア" ]
+        }
       },
       {
         "type": "移動",
         "value": 1,
         "target": "自身",
-        "onSymbol": "ナディア"
+        "condition": {
+          "onSymbol": [ "ナディア" ]
+        }
       }
     ],
     "tags": [ "分類:ギルド装備" ]
@@ -4122,9 +4515,13 @@
       },
       {
         "type": "ランダム",
-        "randomType": "中",
+        "variant": "中",
         "amount": 1,
-        "target": "自身"
+        "target": "自身",
+        "condition": {
+          "onBattleEnd": true,
+          "onCriticalHit": true
+        }
       }
     ],
     "tags": [ "分類:マスター装備" ],
@@ -4169,7 +4566,9 @@
         "type": "移動",
         "value": 1,
         "target": "自身",
-        "onKill": true
+        "condition": {
+          "onKill": true
+        }
       },
       {
         "type": "与ダメージ(単体スキル)",
@@ -4203,12 +4602,18 @@
       {
         "type": "移動",
         "value": 2,
-        "target": "自身"
+        "target": "自身",
+        "condition": {
+          "onNoNearAlly": "2s"
+        }
       },
       {
         "type": "ダメージ耐性(物理)",
         "value": 15,
-        "target": "自身"
+        "target": "自身",
+        "condition": {
+          "onNearAlly": "2s"
+        }
       }
     ],
     "tags": [ "分類:マスター装備" ]
@@ -4261,8 +4666,12 @@
       {
         "type": "アタック",
         "value": 10,
+        "duration": 0,
         "target": "自身",
-        "onBattle": [ "敵ターン" ]
+        "condition": {
+          "onBattle": true,
+          "onEnemyTurn": true
+        }
       }
     ],
     "tags": [ "分類:マスター装備", "与ダメ回復" ]
@@ -4290,9 +4699,13 @@
       },
       {
         "type": "クリティカル率",
-        "value": 25,
+        "value": 5,
+        "maxStack": 5,
+        "duration": 0,
         "target": "自身",
-        "onBattle": []
+        "condition": {
+          "onMove": true
+        }
       }
     ],
     "tags": [ "分類:マスター装備" ]
@@ -4316,8 +4729,12 @@
       {
         "type": "与ダメージ",
         "value": 10,
+        "duration": 0,
         "target": "自身",
-        "onBattle": [ "味方ターン" ]
+        "condition": {
+          "onBattle": true,
+          "onOwnTurn": true
+        }
       }
     ],
     "tags": [ "分類:マスター装備", "与ダメ回復" ]
@@ -4342,13 +4759,20 @@
         "type": "クリティカル率",
         "value": 10,
         "duration": 2,
-        "target": "味方"
+        "area": "2s",
+        "condition": {
+          "onActionEnd": true
+        }
       },
       {
         "type": "クリティカルダメージ倍率",
         "value": 10,
         "duration": 2,
-        "target": "味方"
+        "area": "2s",
+        "condition": {
+          "onActionEnd": true,
+          "hp": "=>80%"
+        }
       }
     ],
     "tags": [ "分類:マスター装備" ]
@@ -4372,15 +4796,21 @@
       {
         "type": "与ダメージ",
         "value": 15,
+        "duration": 0,
         "target": "自身",
-        "onBattle": []
+        "condition": {
+          "onBattle": true
+        }
       }
     ],
     "debuff": [
       {
         "type": "与ダメージ",
         "value": 15,
-        "onBattle": []
+        "duration": 0,
+        "condition": {
+          "onBattle": true
+        }
       }
     ],
     "tags": [ "分類:マスター装備" ]
@@ -4408,7 +4838,7 @@
       },
       {
         "type": "射程",
-        "rangeType": "スキル",
+        "variant": "スキル",
         "value": 1,
         "target": "自身"
       }
@@ -4434,8 +4864,12 @@
       {
         "type": "与ダメージ",
         "value": 10,
+        "duration": 0,
         "target": "自身",
-        "onBattle": [ "味方ターン" ]
+        "condition": {
+          "onBattle": true,
+          "onOwnTurn": true
+        }
       }
     ],
     "tags": [ "分類:マスター装備", "与ダメ回復" ]
@@ -4479,8 +4913,12 @@
     "debuff": [
       {
         "type": "ランダム",
-        "randomType": "弱",
-        "amount": 1
+        "variant": "弱",
+        "amount": 1,
+        "condition": {
+          "onBattleEnd": true,
+          "onOwnTurn": true
+        }
       }
     ],
     "tags": [ "分類:マスター装備" ],
@@ -4504,7 +4942,7 @@
       },
       {
         "type": "射程",
-        "rangeType": "スキル",
+        "variant": "スキル",
         "value": 1,
         "target": "自身"
       }
@@ -4526,43 +4964,57 @@
         "type": "アタック",
         "value": 12,
         "target": "自身",
-        "onHPBelow": 90
+        "condition": {
+          "hp": "<=90%"
+        }
       },
       {
         "type": "ディフェンス",
         "value": 12,
         "target": "自身",
-        "onHPBelow": 90
+        "condition": {
+          "hp": "<=90%"
+        }
       },
       {
         "type": "マジック",
         "value": 12,
         "target": "自身",
-        "onHPBelow": 90
+        "condition": {
+          "hp": "<=90%"
+        }
       },
       {
         "type": "レジスト",
         "value": 12,
         "target": "自身",
-        "onHPBelow": 90
+        "condition": {
+          "hp": "<=90%"
+        }
       },
       {
         "type": "テクニック",
         "value": 12,
         "target": "自身",
-        "onHPBelow": 90
+        "condition": {
+          "hp": "<=90%"
+        }
       },
       {
         "type": "治療効果",
         "value": 15,
         "target": "自身",
-        "onHPBelow": 90
+        "condition": {
+          "hp": "<=90%"
+        }
       },
       {
         "type": "移動",
         "value": 1,
         "target": "自身",
-        "onHPBelow": 90
+        "condition": {
+          "hp": "<=90%"
+        }
       }
     ],
     "tags": [ "分類:マスター装備" ]
@@ -4592,13 +5044,19 @@
         "type": "ディフェンス",
         "value": 10,
         "duration": 2,
-        "target": "味方"
+        "area": "2s",
+        "condition": {
+          "onActionEnd": true
+        }
       },
       {
         "type": "レジスト",
         "value": 10,
         "duration": 2,
-        "target": "味方"
+        "area": "2s",
+        "condition": {
+          "onActionEnd": true
+        }
       }
     ],
     "tags": [ "分類:マスター装備" ]
@@ -4628,8 +5086,12 @@
     "debuff": [
       {
         "type": "ランダム",
-        "randomType": "弱",
-        "amount": 1
+        "variant": "弱",
+        "amount": 1,
+        "area": "2s",
+        "condition": {
+          "onBattleEnd": true
+        }
       }
     ],
     "tags": [ "分類:マスター装備" ],
@@ -4684,7 +5146,7 @@
       },
       {
         "type": "射程",
-        "rangeType": "スキル",
+        "variant": "スキル",
         "value": 1,
         "target": "自身"
       }
@@ -4763,7 +5225,10 @@
       {
         "type": "与ダメージ",
         "value": 30,
-        "target": "自身"
+        "target": "自身",
+        "condition": {
+          "onNearEnemy": "1s"
+        }
       }
     ],
     "tags": [ "分類:マスター装備" ],
@@ -4789,19 +5254,25 @@
         "type": "移動",
         "value": 1,
         "target": "自身",
-        "onHPAbove": 50
+        "condition": {
+          "hp": ">=50%"
+        }
       },
       {
         "type": "アタック",
         "value": 10,
         "target": "自身",
-        "onHPAbove": 50
+        "condition": {
+          "hp": ">=50%"
+        }
       },
       {
         "type": "ディフェンス",
         "value": 10,
         "target": "自身",
-        "onHPAbove": 50
+        "condition": {
+          "hp": ">=50%"
+        }
       }
     ],
     "tags": [ "分類:マスター装備" ]
@@ -4820,25 +5291,33 @@
         "type": "アタック",
         "value": 10,
         "target": "自身",
-        "onSymbol": "ゼニス"
+        "condition": {
+          "onSymbol": [ "ゼニス" ]
+        }
       },
       {
         "type": "ディフェンス",
         "value": 10,
         "target": "自身",
-        "onSymbol": "ゼニス"
+        "condition": {
+          "onSymbol": [ "ゼニス" ]
+        }
       },
       {
         "type": "マジック",
         "value": 10,
         "target": "自身",
-        "onSymbol": "ゼニス"
+        "condition": {
+          "onSymbol": [ "ゼニス" ]
+        }
       },
       {
         "type": "レジスト",
         "value": 10,
         "target": "自身",
-        "onSymbol": "ゼニス"
+        "condition": {
+          "onSymbol": [ "ゼニス" ]
+        }
       }
     ],
     "tags": [ "分類:ギルド装備", "地形無視" ]
@@ -4857,25 +5336,33 @@
         "type": "アタック",
         "value": 10,
         "target": "自身",
-        "onSymbol": "オリジン"
+        "condition": {
+          "onSymbol": [ "オリジン" ]
+        }
       },
       {
         "type": "ディフェンス",
         "value": 10,
         "target": "自身",
-        "onSymbol": "オリジン"
+        "condition": {
+          "onSymbol": [ "オリジン" ]
+        }
       },
       {
         "type": "マジック",
         "value": 10,
         "target": "自身",
-        "onSymbol": "オリジン"
+        "condition": {
+          "onSymbol": [ "オリジン" ]
+        }
       },
       {
         "type": "レジスト",
         "value": 10,
         "target": "自身",
-        "onSymbol": "オリジン"
+        "condition": {
+          "onSymbol": [ "オリジン" ]
+        }
       }
     ],
     "tags": [ "分類:ギルド装備", "地形無視" ]
@@ -4894,25 +5381,33 @@
         "type": "アタック",
         "value": 10,
         "target": "自身",
-        "onSymbol": "ナディア"
+        "condition": {
+          "onSymbol": [ "ナディア" ]
+        }
       },
       {
         "type": "ディフェンス",
         "value": 10,
         "target": "自身",
-        "onSymbol": "ナディア"
+        "condition": {
+          "onSymbol": [ "ナディア" ]
+        }
       },
       {
         "type": "マジック",
         "value": 10,
         "target": "自身",
-        "onSymbol": "ナディア"
+        "condition": {
+          "onSymbol": [ "ナディア" ]
+        }
       },
       {
         "type": "レジスト",
         "value": 10,
         "target": "自身",
-        "onSymbol": "ナディア"
+        "condition": {
+          "onSymbol": [ "ナディア" ]
+        }
       }
     ],
     "tags": [ "分類:ギルド装備", "地形無視" ]
@@ -4931,7 +5426,9 @@
         "type": "最大HP",
         "value": 15,
         "target": "自身",
-        "onSymbol": "ゼニス"
+        "condition": {
+          "onSymbol": [ "ゼニス" ]
+        }
       }
     ],
     "tags": [ "分類:ギルド装備", "自己回復" ]
@@ -4950,7 +5447,9 @@
         "type": "最大HP",
         "value": 15,
         "target": "自身",
-        "onSymbol": "オリジン"
+        "condition": {
+          "onSymbol": [ "オリジン" ]
+        }
       }
     ],
     "tags": [ "分類:ギルド装備", "自己回復" ]
@@ -4969,7 +5468,9 @@
         "type": "最大HP",
         "value": 15,
         "target": "自身",
-        "onSymbol": "オリジン"
+        "condition": {
+          "onSymbol": [ "ナディア" ]
+        }
       }
     ],
     "tags": [ "分類:ギルド装備", "自己回復" ]
@@ -5008,15 +5509,21 @@
         "type": "与ダメージ",
         "value": 60,
         "target": "自身",
-        "onBattle": [ "近距離" ]
+        "condition": {
+          "onBattle": true,
+          "onCloseCombat": true
+        }
       }
     ],
     "drawback": [
       {
         "type": "与ダメージ",
-        "value": 40,
+        "value": -40,
         "target": "自身",
-        "onBattle": [ "遠距離" ]
+        "condition": {
+          "onBattle": true,
+          "onRangedCombat": true
+        }
       }
     ],
     "tags": [ "分類:遺跡装備" ]
@@ -5041,27 +5548,27 @@
     "drawback": [
       {
         "type": "アタック",
-        "value": 40,
+        "value": -40,
         "target": "自身"
       },
       {
         "type": "ディフェンス",
-        "value": 40,
+        "value": -40,
         "target": "自身"
       },
       {
         "type": "マジック",
-        "value": 40,
+        "value": -40,
         "target": "自身"
       },
       {
         "type": "レジスト",
-        "value": 40,
+        "value": -40,
         "target": "自身"
       },
       {
         "type": "テクニック",
-        "value": 40,
+        "value": -40,
         "target": "自身"
       }
     ],
@@ -5092,12 +5599,12 @@
     "drawback": [
       {
         "type": "与ダメージ(スキル)",
-        "value": 40,
+        "value": -40,
         "target": "自身"
       },
       {
         "type": "ダメージ耐性",
-        "value": 40,
+        "value": -40,
         "target": "自身"
       }
     ],
@@ -5128,7 +5635,7 @@
     "drawback": [
       {
         "type": "移動",
-        "value": 3,
+        "value": -3,
         "target": "自身"
       }
     ],
@@ -5147,9 +5654,12 @@
     "drawback": [
       {
         "type": "与ダメージ",
-        "value": 60,
+        "value": -60,
+        "duration": 0,
         "target": "自身",
-        "onBattle": []
+        "condition": {
+          "onBattle": true
+        }
       }
     ],
     "tags": [ "分類:遺跡装備", "反射" ]
@@ -5174,7 +5684,7 @@
     "drawback": [
       {
         "type": "クリティカル率",
-        "value": 70,
+        "value": -70,
         "target": "自身"
       }
     ],
@@ -5195,21 +5705,27 @@
         "type": "アタック",
         "value": 20,
         "target": "自身",
-        "onHPBelow": 80
+        "condition": {
+          "hp": "<=80%"
+        }
       },
       {
         "type": "マジック",
         "value": 20,
         "target": "自身",
-        "onHPBelow": 80
+        "condition": {
+          "hp": "<=80%"
+        }
       }
     ],
     "drawback": [
       {
         "type": "ダメージ耐性",
-        "value": 20,
+        "value": -20,
         "target": "自身",
-        "onHPAbove": 80
+        "condition": {
+          "hp": ">=80%"
+        }
       }
     ],
     "tags": [ "分類:遺跡装備" ]
@@ -5239,12 +5755,12 @@
     "drawback": [
       {
         "type": "与ダメージ(物理)",
-        "value": 20,
+        "value": -20,
         "target": "自身"
       },
       {
         "type": "与ダメージ(魔法)",
-        "value": 20,
+        "value": -20,
         "target": "自身"
       }
     ],
@@ -5274,7 +5790,10 @@
       {
         "type": "与ダメージ(スキル)",
         "value": 15,
-        "target": "自身"
+        "target": "自身",
+        "condition": {
+          "activeBuffCount": ">=4"
+        }
       }
     ],
     "tags": [ "分類:マスター装備" ]
@@ -5304,13 +5823,19 @@
         "type": "アタック",
         "value": 5,
         "maxStack": 3,
-        "target": "自身"
+        "target": "自身",
+        "condition": {
+          "onNearEnemy": "2s"
+        }
       },
       {
         "type": "ディフェンス",
         "value": 5,
         "maxStack": 3,
-        "target": "自身"
+        "target": "自身",
+        "condition": {
+          "onNearEnemy": "2s"
+        }
       }
     ],
     "tags": [ "分類:マスター装備" ]
@@ -5340,7 +5865,11 @@
         "type": "与ダメージ",
         "value": 10,
         "duration": 2,
-        "target": "味方"
+        "area": "2s",
+        "condition": {
+          "onBattleEnd": true,
+          "onSkill": true
+        }
       }
     ],
     "tags": [ "分類:マスター装備" ]
@@ -5364,12 +5893,18 @@
       {
         "type": "クリティカル率",
         "value": 20,
-        "target": "自身"
+        "target": "自身",
+        "condition": {
+          "onNoNearAlly": 1
+        }
       },
       {
         "type": "クリティカルダメージ倍率",
         "value": 20,
-        "target": "自身"
+        "target": "自身",
+        "condition": {
+          "onNoNearAlly": 1
+        }
       }
     ],
     "tags": [ "分類:マスター装備" ]
@@ -5395,7 +5930,10 @@
       {
         "type": "ダメージ耐性(魔法)",
         "value": 10,
-        "duration": 1
+        "duration": 1,
+        "condition": {
+          "enemyActiveBuffCount": ">=2"
+        }
       }
     ],
     "tags": [ "分類:マスター装備", "バフ解除" ]
@@ -5425,13 +5963,19 @@
         "type": "ディフェンス",
         "value": 15,
         "duration": 1,
-        "target": "単体"
+        "target": "単体",
+        "condition": {
+          "onBattleEnd": true
+        }
       },
       {
         "type": "レジスト",
         "value": 15,
         "duration": 1,
-        "target": "単体"
+        "target": "単体",
+        "condition": {
+          "onBattleEnd": true
+        }
       }
     ],
     "tags": [ "分類:マスター装備", "バフ:アタック", "バフ:マジック", "単体回復(低HP)" ]
@@ -5455,8 +5999,12 @@
       {
         "type": "クリティカル率",
         "value": 20,
+        "duration": 0,
         "target": "自身",
-        "onBattle": [ "味方ターン" ]
+        "condition": {
+          "onBattle": true,
+          "onOwnTurn": true
+        }
       }
     ],
     "tags": [ "分類:マスター装備", "与ダメ回復" ]
@@ -5487,7 +6035,12 @@
       {
         "type": "ダメージ耐性(物理)",
         "value": 10,
-        "duration": 1
+        "duration": 1,
+        "condition": {
+          "onBattleEnd": true,
+          "onOwnTurn": true,
+          "onCriticalHit": true
+        }
       }
     ],
     "tags": [ "分類:マスター装備" ]
@@ -5506,8 +6059,11 @@
       {
         "type": "与ダメージ",
         "value": 25,
+        "duration": 0,
         "target": "自身",
-        "onBattle": []
+        "condition": {
+          "onBattleEnd": true
+        }
       }
     ],
     "tags": [ "分類:遺跡装備", "デメリット:バフ解除" ]
@@ -5526,24 +6082,36 @@
       {
         "type": "ディフェンス",
         "value": 20,
-        "target": "自身"
+        "target": "自身",
+        "condition": {
+          "onNearEnemy": 1
+        }
       },
       {
         "type": "レジスト",
         "value": 20,
-        "target": "自身"
+        "target": "自身",
+        "condition": {
+          "onNearEnemy": 1
+        }
       }
     ],
     "drawback": [
       {
         "type": "ディフェンス",
-        "value": 20,
-        "target": "自身"
+        "value": -20,
+        "target": "自身",
+        "condition": {
+          "onNoNearEnemy": 1
+        }
       },
       {
         "type": "レジスト",
-        "value": 20,
-        "target": "自身"
+        "value": -20,
+        "target": "自身",
+        "condition": {
+          "onNoNearEnemy": 1
+        }
       }
     ],
     "tags": [ "分類:遺跡装備" ]
@@ -5828,12 +6396,20 @@
       {
         "type": "ディフェンス",
         "value": 10,
-        "duration": 1
+        "duration": 1,
+        "condition": {
+          "onBattleEnd": true,
+          "onSkill": true
+        }
       },
       {
         "type": "レジスト",
         "value": 10,
-        "duration": 1
+        "duration": 1,
+        "condition": {
+          "onBattleEnd": true,
+          "onSkill": true
+        }
       }
     ],
     "tags": [ "分類:スターフォース装備", "バフ:アタック", "バフ:マジック" ]
@@ -5853,13 +6429,19 @@
         "type": "クリティカル率",
         "value": 10,
         "duration": 2,
-        "target": "味方"
+        "area": "2s",
+        "condition": {
+          "onActionEnd": true
+        }
       },
       {
         "type": "与ダメージ(スキル)",
         "value": 10,
         "duration": 2,
-        "target": "味方"
+        "area": "2s",
+        "condition": {
+          "onActionEnd": true
+        }
       }
     ],
     "tags": [ "分類:真厄神装備", "バフ:マジック", "バフ:範囲" ]
@@ -6250,20 +6832,23 @@
       {
         "type": "アタック",
         "value": 12,
-        "target": "自身",
-        "onHPAbove": 80
+        "target": "自身"
       },
       {
         "type": "クリティカル率",
         "value": 20,
         "target": "自身",
-        "onClass": [ "シューター", "ソルジャー" ]
+        "condition": {
+          "onClass": [ "シューター", "ソルジャー" ]
+        }
       },
       {
         "type": "クリティカルダメージ倍率",
         "value": 20,
         "target": "自身",
-        "onClass": [ "シューター", "ソルジャー" ]
+        "condition": {
+          "onClass": [ "シューター", "ソルジャー" ]
+        }
       }
     ],
     "tags": [ "分類:クラスチャレンジ装備", "自己回復" ]
@@ -6317,26 +6902,28 @@
       {
         "type": "与ダメージ",
         "value": 10,
-        "target": "自身",
-        "onHPAbove": 80
+        "target": "自身"
       },
       {
         "type": "ダメージ耐性",
         "value": 10,
-        "target": "自身",
-        "onHPAbove": 80
+        "target": "自身"
       },
       {
         "type": "クリティカル率",
         "value": 20,
         "target": "自身",
-        "onClass": [ "セイント", "ランサー" ]
+        "condition": {
+          "onClass": [ "セイント", "ランサー" ]
+        }
       },
       {
         "type": "クリティカルダメージ倍率",
         "value": 20,
         "target": "自身",
-        "onClass": [ "セイント", "ランサー" ]
+        "condition": {
+          "onClass": [ "セイント", "ランサー" ]
+        }
       }
     ],
     "tags": [ "分類:クラスチャレンジ装備", "自己回復" ]
@@ -6361,13 +6948,17 @@
         "value": 3,
         "maxStack": 5,
         "target": "自身",
-        "onMove": 5
+        "condition": {
+          "onMove": true
+        }
       },
       {
         "type": "与ダメージ(スキル)",
-        "value": 20,
+        "value": 25,
         "target": "自身",
-        "onClass": [ "ライダー", "エアリアル" ]
+        "condition": {
+          "onClass": [ "ライダー", "エアリアル" ]
+        }
       }
     ],
     "tags": [ "分類:クラスチャレンジ装備", "移動時強化" ]
@@ -6451,7 +7042,9 @@
         "type": "与ダメージ(スキル)",
         "value": 20,
         "target": "自身",
-        "onClass": [ "ソルジャー", "ソーサラー" ]
+        "condition": {
+          "onClass": [ "ソルジャー", "ソーサラー" ]
+        }
       }
     ],
     "tags": [ "分類:クラスチャレンジ装備", "与ダメ回復" ]
@@ -6490,7 +7083,9 @@
         "type": "与ダメージ(スキル)",
         "value": 25,
         "target": "自身",
-        "onClass": [ "セイント", "シューター" ]
+        "condition": {
+          "onClass": [ "セイント", "シューター" ]
+        }
       }
     ],
     "tags": [ "分類:クラスチャレンジ装備" ]
@@ -6575,7 +7170,9 @@
         "type": "与ダメージ(スキル)",
         "value": 25,
         "target": "自身",
-        "onClass": [ "ランサー", "アサシン" ]
+        "condition": {
+          "onClass": [ "ランサー", "アサシン" ]
+        }
       }
     ],
     "tags": [ "分類:クラスチャレンジ装備", "移動時強化" ]
@@ -6667,7 +7264,9 @@
         "value": 3,
         "maxStack": 5,
         "target": "自身",
-        "onClass": [ "ソーサラー", "ライダー" ]
+        "condition": {
+          "onClass": [ "ソーサラー", "ライダー" ]
+        }
       }
     ],
     "tags": [ "分類:クラスチャレンジ装備", "移動時強化" ]
@@ -6703,7 +7302,9 @@
         "value": 3,
         "maxStack": 5,
         "target": "自身",
-        "onClass": [ "ソーサラー", "ライダー" ]
+        "condition": {
+          "onClass": [ "ソーサラー", "ライダー" ]
+        }
       }
     ],
     "tags": [ "分類:クラスチャレンジ装備", "移動時強化" ]
@@ -6739,7 +7340,9 @@
         "value": 3,
         "maxStack": 5,
         "target": "自身",
-        "onClass": [ "シューター", "アサシン" ]
+        "condition": {
+          "onClass": [ "シューター", "アサシン" ]
+        }
       }
     ],
     "tags": [ "分類:クラスチャレンジ装備", "移動時強化" ]
@@ -6763,14 +7366,18 @@
         "type": "与ダメージ(物理)",
         "value": 10,
         "target": "自身",
-        "onHPAbove": "50"
+        "condition": {
+          "hp": ">=50%"
+        }
       },
       {
         "type": "クリティカルダメージ倍率",
         "value": 3,
         "maxStack": 5,
         "target": "自身",
-        "onClass": [ "ランサー", "ソルジャー" ]
+        "condition": {
+          "onClass": [ "ランサー", "ソルジャー" ]
+        }
       }
     ],
     "tags": [ "分類:クラスチャレンジ装備", "移動時強化" ]
@@ -6804,7 +7411,9 @@
         "type": "与ダメージ(通常攻撃)",
         "value": 25,
         "target": "自身",
-        "onClass": [ "セイント", "アサシン" ]
+        "condition": {
+          "onClass": [ "セイント", "アサシン" ]
+        }
       }
     ],
     "tags": [ "分類:クラスチャレンジ装備" ]
@@ -6838,7 +7447,9 @@
         "type": "与ダメージ(通常攻撃)",
         "value": 25,
         "target": "自身",
-        "onClass": [ "ソルジャー", "エアリアル" ]
+        "condition": {
+          "onClass": [ "ソルジャー", "エアリアル" ]
+        }
       }
     ],
     "tags": [ "分類:クラスチャレンジ装備" ]
@@ -6867,13 +7478,17 @@
         "type": "クリティカル率",
         "value": 20,
         "target": "自身",
-        "onClass": [ "エアリアル", "ソーサラー" ]
+        "condition": {
+          "onClass": [ "エアリアル", "ソーサラー" ]
+        }
       },
       {
         "type": "クリティカルダメージ倍率",
         "value": 20,
         "target": "自身",
-        "onClass": [ "エアリアル", "ソーサラー" ]
+        "condition": {
+          "onClass": [ "エアリアル", "ソーサラー" ]
+        }
       }
     ],
     "tags": [ "分類:クラスチャレンジ装備", "与ダメ回復" ]
@@ -6897,13 +7512,17 @@
         "type": "クリティカル率",
         "value": 20,
         "target": "自身",
-        "onClass": [ "アサシン", "ライダー" ]
+        "condition": {
+          "onClass": [ "アサシン", "ライダー" ]
+        }
       },
       {
         "type": "クリティカルダメージ倍率",
         "value": 20,
         "target": "自身",
-        "onClass": [ "アサシン", "ライダー" ]
+        "condition": {
+          "onClass": [ "アサシン", "ライダー" ]
+        }
       }
     ],
     "tags": [ "分類:クラスチャレンジ装備", "与ダメ回復" ]
@@ -6926,20 +7545,28 @@
       {
         "type": "ディフェンス",
         "value": 5,
+        "maxStack": 3,
         "target": "自身",
-        "maxStack": 3
+        "condition": {
+          "onBattle": true
+        }
       },
       {
         "type": "レジスト",
         "value": 5,
+        "maxStack": 3,
         "target": "自身",
-        "maxStack": 3
+        "condition": {
+          "onBattle": true
+        }
       },
       {
         "type": "与ダメージ(通常攻撃)",
         "value": 25,
         "target": "自身",
-        "onClass": [ "ライダー", "ランサー" ]
+        "condition": {
+          "onClass": [ "ライダー", "ランサー" ]
+        }
       }
     ],
     "tags": [ "分類:クラスチャレンジ装備", "蓄積バフ" ]

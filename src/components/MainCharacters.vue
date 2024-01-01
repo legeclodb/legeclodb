@@ -649,6 +649,9 @@ export default {
         if (effectCategory == "バフ") {
           if (effect.target == "自身")
             return false;
+          const cond = effect.condition;
+          if (cond && (cond.onClass || cond.onSymbol))
+            return false;
         }
         else if (effectCategory == "デバフ") {
           const cond = effect.condition;

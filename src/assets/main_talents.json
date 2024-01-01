@@ -1265,10 +1265,39 @@
     },
     "buff": [
       {
-        "type": "クラス",
-        "target": "ソルジャー",
-        "value": 10,
-        "aoe": true
+        "type": "アタック",
+        "value": [ 5, 6, 7, 10 ],
+        "condition": {
+          "onClass": [ "ソルジャー" ]
+        }
+      },
+      {
+        "type": "ディフェンス",
+        "value": [ 5, 6, 7, 10 ],
+        "condition": {
+          "onClass": [ "ソルジャー" ]
+        }
+      },
+      {
+        "type": "マジック",
+        "value": [ 5, 6, 7, 10 ],
+        "condition": {
+          "onClass": [ "ソルジャー" ]
+        }
+      },
+      {
+        "type": "レジスト",
+        "value": [ 5, 6, 7, 10 ],
+        "condition": {
+          "onClass": [ "ソルジャー" ]
+        }
+      },
+      {
+        "type": "テクニック",
+        "value": [ 5, 6, 7, 10 ],
+        "condition": {
+          "onClass": [ "ソルジャー" ]
+        }
       }
     ]
   },
@@ -1308,10 +1337,39 @@
     },
     "buff": [
       {
-        "type": "クラス",
-        "target": "ライダー",
-        "value": 10,
-        "aoe": true
+        "type": "アタック",
+        "value": [ 5, 6, 7, 10 ],
+        "condition": {
+          "onClass": [ "ライダー" ]
+        }
+      },
+      {
+        "type": "ディフェンス",
+        "value": [ 5, 6, 7, 10 ],
+        "condition": {
+          "onClass": [ "ライダー" ]
+        }
+      },
+      {
+        "type": "マジック",
+        "value": [ 5, 6, 7, 10 ],
+        "condition": {
+          "onClass": [ "ライダー" ]
+        }
+      },
+      {
+        "type": "レジスト",
+        "value": [ 5, 6, 7, 10 ],
+        "condition": {
+          "onClass": [ "ライダー" ]
+        }
+      },
+      {
+        "type": "テクニック",
+        "value": [ 5, 6, 7, 10 ],
+        "condition": {
+          "onClass": [ "ライダー" ]
+        }
       }
     ],
     "tags": [ "地形無視", "2回攻撃" ]
@@ -1359,10 +1417,39 @@
     },
     "buff": [
       {
-        "type": "クラス",
-        "target": "エアリアル",
-        "value": 10,
-        "aoe": true
+        "type": "アタック",
+        "value": [ 5, 6, 7, 10 ],
+        "condition": {
+          "onClass": [ "エアリアル" ]
+        }
+      },
+      {
+        "type": "ディフェンス",
+        "value": [ 5, 6, 7, 10 ],
+        "condition": {
+          "onClass": [ "エアリアル" ]
+        }
+      },
+      {
+        "type": "マジック",
+        "value": [ 5, 6, 7, 10 ],
+        "condition": {
+          "onClass": [ "エアリアル" ]
+        }
+      },
+      {
+        "type": "レジスト",
+        "value": [ 5, 6, 7, 10 ],
+        "condition": {
+          "onClass": [ "エアリアル" ]
+        }
+      },
+      {
+        "type": "テクニック",
+        "value": [ 5, 6, 7, 10 ],
+        "condition": {
+          "onClass": [ "エアリアル" ]
+        }
       }
     ],
     "tags": [ "射程+(反撃)" ]
@@ -1428,15 +1515,45 @@
     },
     "buff": [
       {
-        "type": "クラス",
-        "target": "ランサー",
-        "value": 10,
-        "aoe": true
+        "type": "アタック",
+        "value": [ 5, 6, 7, 10 ],
+        "condition": {
+          "onClass": [ "ランサー" ]
+        }
+      },
+      {
+        "type": "ディフェンス",
+        "value": [ 5, 6, 7, 10 ],
+        "condition": {
+          "onClass": [ "ランサー" ]
+        }
+      },
+      {
+        "type": "マジック",
+        "value": [ 5, 6, 7, 10 ],
+        "condition": {
+          "onClass": [ "ランサー" ]
+        }
+      },
+      {
+        "type": "レジスト",
+        "value": [ 5, 6, 7, 10 ],
+        "condition": {
+          "onClass": [ "ランサー" ]
+        }
+      },
+      {
+        "type": "テクニック",
+        "value": [ 5, 6, 7, 10 ],
+        "condition": {
+          "onClass": [ "ランサー" ]
+        }
       },
       {
         "type": "ダメージ耐性(物理)",
-        "value": 15,
-        "aoe": true
+        "value": [ 5, 10, 10, 15 ],
+        "aoe": true,
+        "area": 3
       }
     ],
     "tags": [ "移動+" ]
@@ -1477,10 +1594,39 @@
     },
     "buff": [
       {
-        "type": "クラス",
-        "target": "ソーサラー",
-        "value": 10,
-        "aoe": true
+        "type": "アタック",
+        "value": [ 5, 6, 7, 10 ],
+        "condition": {
+          "onClass": [ "ソーサラー" ]
+        }
+      },
+      {
+        "type": "ディフェンス",
+        "value": [ 5, 6, 7, 10 ],
+        "condition": {
+          "onClass": [ "ソーサラー" ]
+        }
+      },
+      {
+        "type": "マジック",
+        "value": [ 5, 6, 7, 10 ],
+        "condition": {
+          "onClass": [ "ソーサラー" ]
+        }
+      },
+      {
+        "type": "レジスト",
+        "value": [ 5, 6, 7, 10 ],
+        "condition": {
+          "onClass": [ "ソーサラー" ]
+        }
+      },
+      {
+        "type": "テクニック",
+        "value": [ 5, 6, 7, 10 ],
+        "condition": {
+          "onClass": [ "ソーサラー" ]
+        }
       }
     ],
     "debuff": [
@@ -1561,10 +1707,39 @@
     },
     "buff": [
       {
-        "type": "クラス",
-        "target": "セイント",
-        "value": 10,
-        "aoe": true
+        "type": "アタック",
+        "value": [ 5, 6, 7, 10 ],
+        "condition": {
+          "onClass": [ "セイント" ]
+        }
+      },
+      {
+        "type": "ディフェンス",
+        "value": [ 5, 6, 7, 10 ],
+        "condition": {
+          "onClass": [ "セイント" ]
+        }
+      },
+      {
+        "type": "マジック",
+        "value": [ 5, 6, 7, 10 ],
+        "condition": {
+          "onClass": [ "セイント" ]
+        }
+      },
+      {
+        "type": "レジスト",
+        "value": [ 5, 6, 7, 10 ],
+        "condition": {
+          "onClass": [ "セイント" ]
+        }
+      },
+      {
+        "type": "テクニック",
+        "value": [ 5, 6, 7, 10 ],
+        "condition": {
+          "onClass": [ "セイント" ]
+        }
       }
     ],
     "tags": [ "移動+", "再行動(敵残HP依存)", "再攻撃(敵残HP依存)" ]
@@ -1623,10 +1798,39 @@
     },
     "buff": [
       {
-        "type": "クラス",
-        "target": "シューター",
-        "value": 10,
-        "aoe": true
+        "type": "アタック",
+        "value": [ 5, 6, 7, 10 ],
+        "condition": {
+          "onClass": [ "シューター" ]
+        }
+      },
+      {
+        "type": "ディフェンス",
+        "value": [ 5, 6, 7, 10 ],
+        "condition": {
+          "onClass": [ "シューター" ]
+        }
+      },
+      {
+        "type": "マジック",
+        "value": [ 5, 6, 7, 10 ],
+        "condition": {
+          "onClass": [ "シューター" ]
+        }
+      },
+      {
+        "type": "レジスト",
+        "value": [ 5, 6, 7, 10 ],
+        "condition": {
+          "onClass": [ "シューター" ]
+        }
+      },
+      {
+        "type": "テクニック",
+        "value": [ 5, 6, 7, 10 ],
+        "condition": {
+          "onClass": [ "シューター" ]
+        }
       }
     ],
     "tags": [ "与ダメ回復", "固定ダメージ" ]
@@ -1703,10 +1907,39 @@
     },
     "buff": [
       {
-        "type": "クラス",
-        "target": "アサシン",
-        "value": 10,
-        "aoe": true
+        "type": "アタック",
+        "value": [ 5, 6, 7, 10 ],
+        "condition": {
+          "onClass": [ "アサシン" ]
+        }
+      },
+      {
+        "type": "ディフェンス",
+        "value": [ 5, 6, 7, 10 ],
+        "condition": {
+          "onClass": [ "アサシン" ]
+        }
+      },
+      {
+        "type": "マジック",
+        "value": [ 5, 6, 7, 10 ],
+        "condition": {
+          "onClass": [ "アサシン" ]
+        }
+      },
+      {
+        "type": "レジスト",
+        "value": [ 5, 6, 7, 10 ],
+        "condition": {
+          "onClass": [ "アサシン" ]
+        }
+      },
+      {
+        "type": "テクニック",
+        "value": [ 5, 6, 7, 10 ],
+        "condition": {
+          "onClass": [ "アサシン" ]
+        }
       }
     ],
     "debuff": [
@@ -2128,9 +2361,18 @@
     },
     "buff": [
       {
-        "type": "シンボル",
-        "target": "ナディア",
-        "aoe": true
+        "type": "最大HP",
+        "value": [ 6, 7, 8, 10 ],
+        "condition": {
+          "onSymbol": [ "ナディア" ]
+        }
+      },
+      {
+        "type": "与ダメージ",
+        "value": [ 6, 7, 8, 10 ],
+        "condition": {
+          "onSymbol": [ "ナディア" ]
+        }
       }
     ],
     "debuff": [

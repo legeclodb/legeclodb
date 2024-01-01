@@ -853,10 +853,8 @@ export default {
           t += handleTarget(effect);
         }
 
-        if (effect.rangeType)
-          t += `(${effect.rangeType})`;
-        if (effect.randomType)
-          t += `(${effect.randomType})`;
+        if (effect.variant)
+          t += `(${effect.variant})`;
         if (["クラス", "シンボル"].includes(effect.type))
           t += `(${effect.target})`;
         return t;
@@ -964,29 +962,6 @@ export default {
       for (let s of [...activeSkills, ...passiveSkills, ...talents]) {
         this.setupSkill(s, params);
         skillTable.set(s.uid, s);
-      }
-
-      // debug
-      const checkConditions = function () {
-        const conditionTypes = new Set(Object.keys(consts.conditionList));
-        for (const skill of [...activeSkills, ...passiveSkills, ...talents]) {
-          let effects = [
-            ...(skill.buff ? skill.buff : []),
-            ...(skill.debuff ? skill.debuff : []),
-          ]
-          for (const effect of effects) {
-            if (effect.condition) {
-              for (const cond in effect.condition) {
-                if (!conditionTypes.has(cond)) {
-                  console.log(`unknown condition: ${cond} in ${skill.name} (${skill.skillType})`);
-                }
-              }
-            }
-          }
-        }
-      };
-      if (process.env.NODE_ENV === 'development') {
-        checkConditions();
       }
 
       const grabSkill = function (id, chr) {
