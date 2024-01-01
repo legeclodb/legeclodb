@@ -830,33 +830,32 @@ export default {
     },
 
     effectParamsToTags(skill, params) {
-      const handleTarget = function (effect) {
-        if ((params.includeSelfTag && effect.target == "自身") || effect.target =="味方") {
-          return `(${effect.target})`;
-        }
-        return "";
-      };
-
       const buffToS = function (effectCategory, effect) {
         if (params.tagFilter && !params.tagFilter(skill, effectCategory, effect))
           return [];
-        if (typeof (effect.value) == 'number' && effect.value < 0)
-          return [];
+        if (typeof (effect.value) == 'number') {
+          if (effect.value < 0 && effectCategory == "バフ")
+            effectCategory = "デメリット"
+        }
 
         let t = effectCategory + ":" + effect.type;
 
         // 不格好だが…
-        if (effect.onBattle) {
+        const cond = effect.condition;
+        if (cond && cond.onBattle && !effect.duration && effect.type != "ランダム") {
           t += "(戦闘時)";
         }
         else {
-          t += handleTarget(effect);
+          if ((params.includeSelfTag && effect.target == "自身") || (effect.target && effect.target != "自身")) {
+            t += `(${effect.target})`;
+          }
+          else if (params.includeAreaTag && effectCategory == "バフ" && effect.area) {
+            t += `(味方)`;
+          }
         }
 
         if (effect.variant)
           t += `(${effect.variant})`;
-        if (["クラス", "シンボル"].includes(effect.type))
-          t += `(${effect.target})`;
         return t;
       };
 

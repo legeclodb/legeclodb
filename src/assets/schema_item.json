@@ -43,10 +43,6 @@
         "type": "array",
         "items": { "$ref": "schema_skill.json#/$defs/effect" }
       },
-      "drawback": {
-        "type": "array",
-        "items": { "$ref": "schema_skill.json#/$defs/effect" }
-      },
       "tags": {
         "type": "array",
         "items": { "type": "string" }

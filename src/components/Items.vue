@@ -376,6 +376,7 @@ export default {
       this.setupItems(this.equipments, {
         effectParamsToTags: true,
         includeSelfTags: true,
+        includeAreaTag: true,
       });
       this.equipments = this.equipments.filter(a => !a.hidden && a.slotId < 4); // アミュレットは除外
 

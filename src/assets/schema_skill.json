@@ -22,6 +22,9 @@
     "amuletType": {
       "enum": [ "月", "太陽" ]
     },
+    "targetType": {
+      "enum": [ "自身", "自ユニット", "単体", "複数", "全体" ]
+    },
 
     "timingType": {
       "enum": [ "常時", "ターン開始", "戦闘前", "戦闘後", "スキル使用", "敵撃破", "行動後" ]
@@ -145,7 +148,7 @@
         "value": { "type": [ "number", "array" ] },
         "maxStack": { "type": "number" },
         "duration": { "type": [ "number", "array" ] },
-        "target": { "enum": [ "自身", "自ユニット", "単体", "複数", "全体" ] },
+        "target": { "$ref": "#/$defs/targetType" },
         "aoe": { "type": "boolean" },
         "area": { "type": [ "number", "string" ] },
         "amount": { "type": [ "number", "string" ] },

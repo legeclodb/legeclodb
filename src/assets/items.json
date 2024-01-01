@@ -283,9 +283,7 @@
         "type": "射程(通常攻撃)",
         "value": 1,
         "target": "自身"
-      }
-    ],
-    "drawback": [
+      },
       {
         "type": "与ダメージ",
         "value": -10,
@@ -730,9 +728,7 @@
         "type": "射程(通常攻撃)",
         "value": 1,
         "target": "自身"
-      }
-    ],
-    "drawback": [
+      },
       {
         "type": "与ダメージ",
         "value": -10,
@@ -5514,9 +5510,7 @@
           "onBattle": true,
           "onCloseCombat": true
         }
-      }
-    ],
-    "drawback": [
+      },
       {
         "type": "与ダメージ",
         "value": -40,
@@ -5544,9 +5538,7 @@
         "type": "被治療効果",
         "value": 80,
         "target": "自身"
-      }
-    ],
-    "drawback": [
+      },
       {
         "type": "アタック",
         "value": -40,
@@ -5595,9 +5587,7 @@
         "type": "マジック",
         "value": 20,
         "target": "自身"
-      }
-    ],
-    "drawback": [
+      },
       {
         "type": "与ダメージ(スキル)",
         "value": -40,
@@ -5631,9 +5621,7 @@
         "type": "レジスト",
         "value": 20,
         "target": "自身"
-      }
-    ],
-    "drawback": [
+      },
       {
         "type": "移動",
         "value": -3,
@@ -5652,7 +5640,7 @@
     "classes": [ "ソーサラー", "セイント", "シューター", "アサシン" ],
     "statusInit": [ 51.0, 0, 0, 0, 10.2, 0 ],
     "statusLv": [ 8.0, 0, 0, 0, 1.21, 0 ],
-    "drawback": [
+    "buff": [
       {
         "type": "与ダメージ",
         "value": -60,
@@ -5680,9 +5668,7 @@
         "type": "与ダメージ",
         "value": 25,
         "target": "自身"
-      }
-    ],
-    "drawback": [
+      },
       {
         "type": "クリティカル率",
         "value": -70,
@@ -5717,9 +5703,7 @@
         "condition": {
           "hp": "<=80%"
         }
-      }
-    ],
-    "drawback": [
+      },
       {
         "type": "ダメージ耐性",
         "value": -20,
@@ -5751,9 +5735,7 @@
         "type": "ダメージ耐性(魔法)",
         "value": 20,
         "target": "自身"
-      }
-    ],
-    "drawback": [
+      },
       {
         "type": "与ダメージ(物理)",
         "value": -20,
@@ -5933,7 +5915,7 @@
         "value": 10,
         "duration": 1,
         "condition": {
-          "enemyActiveBuffCount": ">=2"
+          "targetActiveBuffCount": ">=2"
         }
       }
     ],
@@ -6063,7 +6045,7 @@
         "duration": 0,
         "target": "自身",
         "condition": {
-          "onBattleEnd": true
+          "onBattle": true
         }
       }
     ],
@@ -6095,9 +6077,7 @@
         "condition": {
           "onNearEnemy": 1
         }
-      }
-    ],
-    "drawback": [
+      },
       {
         "type": "ディフェンス",
         "value": -20,
@@ -6127,7 +6107,54 @@
     "classes": [ "ソルジャー", "ランサー", "セイント" ],
     "statusInit": [ 68.0, 0, 0, 0, 7.8, 0 ],
     "statusLv": [ 11.0, 0, 0, 0, 0.99, 0 ],
-    "tags": [ "分類:遺跡装備", "バフ:アタック", "バフ:マジック", "バフ:ディフェンス", "バフ:レジスト", "バフ:テクニック", "デメリット:ダメージ耐性" ]
+    "buff": [
+      {
+        "type": "アタック",
+        "value": 15,
+        "target": "自身",
+        "condition": {
+          "turn": ">=5"
+        }
+      },
+      {
+        "type": "ディフェンス",
+        "value": 15,
+        "target": "自身",
+        "condition": {
+          "turn": ">=5"
+        }
+      },
+      {
+        "type": "マジック",
+        "value": 15,
+        "target": "自身",
+        "condition": {
+          "turn": ">=5"
+        }
+      },
+      {
+        "type": "レジスト",
+        "value": 15,
+        "target": "自身",
+        "condition": {
+          "turn": ">=5"
+        }
+      },
+      {
+        "type": "テクニック",
+        "value": 15,
+        "target": "自身",
+        "condition": {
+          "turn": ">=5"
+        }
+      },
+      {
+        "type": "ダメージ耐性",
+        "value": -20,
+        "target": "自身"
+      }
+    ],
+    "tags": [ "分類:遺跡装備" ]
   },
   {
     "uid": "Item_Equipment_SSR_0188",
@@ -6138,7 +6165,19 @@
     "rarity": "SSR",
     "statusInit": [ 0, 27.8, 0, 27.8, 0, 0 ],
     "statusLv": [ 0, 1.8, 0, 1.8, 0, 0 ],
-    "tags": [ "分類:コラボ装備", "バフ:アタック", "バフ:マジック", "与ダメ回復" ]
+    "buff": [
+      {
+        "type": "アタック",
+        "value": 8,
+        "target": "自身"
+      },
+      {
+        "type": "マジック",
+        "value": 8,
+        "target": "自身"
+      }
+    ],
+    "tags": [ "分類:コラボ装備", "与ダメ回復" ]
   },
   {
     "uid": "Item_Equipment_SSR_0189",
@@ -6150,7 +6189,29 @@
     "classes": [ "ソルジャー", "ライダー", "ランサー" ],
     "statusInit": [ 42.0, 20.0, 0, 0, 0, 0 ],
     "statusLv": [ 11.0, 2.2, 0, 0, 0, 0 ],
-    "tags": [ "分類:遺跡装備", "バフ:与ダメージ", "デメリット:ディフェンス", "デメリット:レジスト" ]
+    "buff": [
+      {
+        "type": "与ダメージ",
+        "value": 30,
+        "duration": 0,
+        "target": "自身",
+        "condition": {
+          "onBattle": true,
+          "onClassAdvantage": true
+        }
+      },
+      {
+        "type": "ディフェンス",
+        "value": -30,
+        "target": "自身"
+      },
+      {
+        "type": "レジスト",
+        "value": -30,
+        "target": "自身"
+      }
+    ],
+    "tags": [ "分類:遺跡装備" ]
   },
   {
     "uid": "Item_Equipment_SSR_0190",
@@ -6162,7 +6223,24 @@
     "classes": [ "エアリアル", "シューター", "アサシン" ],
     "statusInit": [ 60.0, 0, 12.3, 0, 0, 0 ],
     "statusLv": [ 9.3, 0, 1.11, 0, 0, 0 ],
-    "tags": [ "分類:遺跡装備", "バフ:与ダメージ", "デメリット:最大HP", "デメリット:被治療効果" ]
+    "buff": [
+      {
+        "type": "与ダメージ",
+        "value": 15,
+        "target": "自身"
+      },
+      {
+        "type": "最大HP",
+        "value": -20,
+        "target": "自身"
+      },
+      {
+        "type": "被治療効果",
+        "value": -50,
+        "target": "自身"
+      }
+    ],
+    "tags": [ "分類:遺跡装備" ]
   },
   {
     "uid": "Item_Equipment_SSR_0191",
@@ -6174,7 +6252,19 @@
     "classes": [ "ソーサラー", "セイント" ],
     "statusInit": [ 50.0, 0, 0, 0, 18.6, 0 ],
     "statusLv": [ 6.5, 0, 0, 0, 1.12, 0 ],
-    "tags": [ "分類:遺跡装備", "バフ:クリティカル率", "デメリット:与ダメージ" ]
+    "buff": [
+      {
+        "type": "クリティカル率",
+        "value": 50,
+        "target": "自身"
+      },
+      {
+        "type": "与ダメージ",
+        "value": -20,
+        "target": "自身"
+      }
+    ],
+    "tags": [ "分類:遺跡装備" ]
   },
   {
     "uid": "Item_Equipment_SSR_0180",
@@ -6185,7 +6275,19 @@
     "rarity": "SSR",
     "statusInit": [ 60.0, 13.0, 0, 0, 0, 0 ],
     "statusLv": [ 10.0, 1.78, 0, 0, 0, 0 ],
-    "tags": [ "分類:ギルド装備", "バフ:アタック", "バフ:ディフェンス無視" ]
+    "buff": [
+      {
+        "type": "アタック",
+        "value": 5,
+        "target": "自身"
+      },
+      {
+        "type": "ディフェンス無視",
+        "value": 8,
+        "target": "自身"
+      }
+    ],
+    "tags": [ "分類:ギルド装備" ]
   },
   {
     "uid": "Item_Equipment_SSR_0181",
@@ -6196,7 +6298,24 @@
     "rarity": "SSR",
     "statusInit": [ 0, 0, 9.0, 0, 9.0, 0 ],
     "statusLv": [ 0, 0, 1.0, 0, 1.0, 0 ],
-    "tags": [ "分類:ギルド装備", "バフ:ダメージ耐性(戦闘時)", "バフ:移動" ]
+    "buff": [
+      {
+        "type": "移動",
+        "value": 1,
+        "target": "自身"
+      },
+      {
+        "type": "ダメージ耐性",
+        "value": 8,
+        "duration": 0,
+        "target": "自身",
+        "condition": {
+          "onBattle": true,
+          "onEnemyTurn": true
+        }
+      }
+    ],
+    "tags": [ "分類:ギルド装備" ]
   },
   {
     "uid": "Item_Equipment_SSR_0182",
@@ -6207,7 +6326,25 @@
     "rarity": "SSR",
     "statusInit": [ 60.0, 13.0, 0, 0, 0, 0 ],
     "statusLv": [ 10.0, 1.78, 0, 0, 0, 0 ],
-    "tags": [ "分類:ギルド装備", "バフ:アタック", "バフ:与ダメージ" ]
+    "buff": [
+      {
+        "type": "アタック",
+        "value": 12,
+        "target": "自身",
+        "condition": {
+          "onNoNearAlly": "1s"
+        }
+      },
+      {
+        "type": "与ダメージ",
+        "value": 12,
+        "target": "自身",
+        "condition": {
+          "onNoNearAlly": "1s"
+        }
+      }
+    ],
+    "tags": [ "分類:ギルド装備" ]
   },
   {
     "uid": "Item_Equipment_SSR_0183",
@@ -6218,7 +6355,24 @@
     "rarity": "SSR",
     "statusInit": [ 0, 13.0, 0, 13.0, 0, 0 ],
     "statusLv": [ 0, 1.78, 0, 1.78, 0, 0 ],
-    "tags": [ "分類:ギルド装備", "バフ:アタック", "バフ:マジック", "バフ:与ダメージ(スキル)" ]
+    "buff": [
+      {
+        "type": "アタック",
+        "value": 8,
+        "target": "自身"
+      },
+      {
+        "type": "マジック",
+        "value": 8,
+        "target": "自身"
+      },
+      {
+        "type": "与ダメージ(スキル)",
+        "value": 10,
+        "target": "自身"
+      }
+    ],
+    "tags": [ "分類:ギルド装備" ]
   },
   {
     "uid": "Item_Equipment_SSR_0184",
@@ -6229,7 +6383,19 @@
     "rarity": "SSR",
     "statusInit": [ 60.0, 0, 0, 13.0, 0, 0 ],
     "statusLv": [ 10.0, 0, 0, 1.78, 0, 0 ],
-    "tags": [ "分類:ギルド装備", "バフ:マジック", "バフ:レジスト無視" ]
+    "buff": [
+      {
+        "type": "マジック",
+        "value": 5,
+        "target": "自身"
+      },
+      {
+        "type": "レジスト無視",
+        "value": 8,
+        "target": "自身"
+      }
+    ],
+    "tags": [ "分類:ギルド装備" ]
   },
   {
     "uid": "Item_Equipment_SSR_0185",
@@ -6240,7 +6406,14 @@
     "rarity": "SSR",
     "statusInit": [ 0, 0, 9.0, 0, 9.0, 0 ],
     "statusLv": [ 0, 0, 1.0, 0, 1.0, 0 ],
-    "tags": [ "分類:ギルド装備", "バフ:最大HP", "範囲回復" ]
+    "buff": [
+      {
+        "type": "最大HP",
+        "value": 15,
+        "target": "自身"
+      }
+    ],
+    "tags": [ "分類:ギルド装備", "範囲回復" ]
   },
   {
     "uid": "Item_Equipment_SSR_0186",
@@ -6251,7 +6424,22 @@
     "rarity": "SSR",
     "statusInit": [ 0, 13.0, 0, 13.0, 0, 0 ],
     "statusLv": [ 0, 1.78, 0, 1.78, 0, 0 ],
-    "tags": [ "分類:ギルド装備", "バフ:最大HP", "バフ:与ダメージ(範囲スキル)" ]
+    "buff": [
+      {
+        "type": "最大HP",
+        "value": 10,
+        "target": "自身"
+      },
+      {
+        "type": "与ダメージ(範囲スキル)",
+        "value": 15,
+        "target": "自身",
+        "condition": {
+          "hp": ">=100%"
+        }
+      }
+    ],
+    "tags": [ "分類:ギルド装備" ]
   },
   {
     "uid": "Item_Equipment_SSR_0187",
@@ -6262,7 +6450,19 @@
     "rarity": "SSR",
     "statusInit": [ 0, 13.0, 0, 13.0, 0, 0 ],
     "statusLv": [ 0, 1.78, 0, 1.78, 0, 0 ],
-    "tags": [ "分類:ギルド装備", "バフ:クリティカル率", "バフ:クリティカルダメージ倍率" ]
+    "buff": [
+      {
+        "type": "クリティカル率",
+        "value": 10,
+        "target": "自身"
+      },
+      {
+        "type": "クリティカルダメージ倍率",
+        "value": 10,
+        "target": "自身"
+      }
+    ],
+    "tags": [ "分類:ギルド装備" ]
   },
   {
     "uid": "Item_Equipment_SSR_0192",
@@ -6274,7 +6474,24 @@
     "classes": [ "ソルジャー", "エアリアル" ],
     "statusInit": [ 0, 16.0, 0, 0, 0, 7.6 ],
     "statusLv": [ 0, 2.04, 0, 0, 0, 0.79 ],
-    "tags": [ "分類:遺跡装備", "バフ:与ダメージ(スキル)", "デメリット:アタック", "デメリット:マジック" ]
+    "buff": [
+      {
+        "type": "与ダメージ(スキル)",
+        "value": 30,
+        "target": "自身"
+      },
+      {
+        "type": "アタック",
+        "value": -20,
+        "target": "自身"
+      },
+      {
+        "type": "マジック",
+        "value": -20,
+        "target": "自身"
+      }
+    ],
+    "tags": [ "分類:遺跡装備" ]
   },
   {
     "uid": "Item_Equipment_SSR_0193",
@@ -6286,7 +6503,19 @@
     "classes": [ "ソーサラー", "セイント", "シューター", "アサシン" ],
     "statusInit": [ 60.0, 0, 12.3, 0, 0, 0 ],
     "statusLv": [ 9.3, 0, 1.11, 0, 0, 0 ],
-    "tags": [ "分類:遺跡装備", "バフ:ダメージ耐性", "デメリット:被治療効果" ]
+    "buff": [
+      {
+        "type": "ダメージ耐性",
+        "value": 20,
+        "target": "自身"
+      },
+      {
+        "type": "被治療効果",
+        "value": -60,
+        "target": "自身"
+      }
+    ],
+    "tags": [ "分類:遺跡装備" ]
   },
   {
     "uid": "Item_Equipment_SSR_0194",
@@ -6298,7 +6527,14 @@
     "classes": [ "ライダー", "ランサー" ],
     "statusInit": [ 68.0, 0, 0, 0, 7.8, 0 ],
     "statusLv": [ 11.0, 0, 0, 0, 0.99, 0 ],
-    "tags": [ "分類:遺跡装備", "自己回復", "デメリット:最大HP" ]
+    "buff": [
+      {
+        "type": "最大HP",
+        "value": -40,
+        "target": "自身"
+      }
+    ],
+    "tags": [ "分類:遺跡装備", "自己回復" ]
   },
   {
     "uid": "Item_Equipment_SSR_0195",
@@ -6310,7 +6546,27 @@
     "classes": [ "ソルジャー", "ランサー" ],
     "statusInit": [ 49.0, 0, 10.0, 0, 0, 0 ],
     "statusLv": [ 8.0, 0, 1.33, 0, 0, 0 ],
-    "tags": [ "分類:ゴールド装備", "バフ:最大HP", "バフ:与ダメージ(スキル)", "バフ:アタック" ]
+    "buff": [
+      {
+        "type": "最大HP",
+        "value": 10,
+        "target": "自身"
+      },
+      {
+        "type": "与ダメージ(スキル)",
+        "value": 8,
+        "target": "自身"
+      },
+      {
+        "type": "アタック",
+        "value": 15,
+        "target": "自身",
+        "condition": {
+          "hp": "<=80%"
+        }
+      }
+    ],
+    "tags": [ "分類:ゴールド装備" ]
   },
   {
     "uid": "Item_Equipment_SSR_0197",
@@ -6322,7 +6578,33 @@
     "classes": [ "ライダー", "エアリアル" ],
     "statusInit": [ 50.0, 0, 8.0, 0, 0, 0 ],
     "statusLv": [ 10.0, 0, 1.21, 0, 0, 0 ],
-    "tags": [ "分類:ゴールド装備", "バフ:最大HP", "バフ:与ダメージ(物理)", "バフ:アタック" ]
+    "buff": [
+      {
+        "type": "最大HP",
+        "value": 10,
+        "target": "自身"
+      },
+      {
+        "type": "与ダメージ(物理)",
+        "value": 10,
+        "duration": 0,
+        "target": "自身",
+        "condition": {
+          "onBattle": true,
+          "onOwnTurn": true
+        }
+      },
+      {
+        "type": "アタック",
+        "value": 12,
+        "duration": 2,
+        "target": "自身",
+        "condition": {
+          "onKill": true
+        }
+      }
+    ],
+    "tags": [ "分類:ゴールド装備" ]
   },
   {
     "uid": "Item_Equipment_SSR_0196",
@@ -6334,7 +6616,43 @@
     "classes": [ "ソーサラー", "セイント" ],
     "statusInit": [ 68.0, 0, 10.0, 0, 0, 0 ],
     "statusLv": [ 11.0, 0, 1.11, 0, 0, 0 ],
-    "tags": [ "分類:ゴールド装備", "バフ:最大HP", "バフ:与ダメージ(単体スキル)", "バフ:アタック", "バフ:マジック" ]
+    "buff": [
+      {
+        "type": "最大HP",
+        "value": 10,
+        "target": "自身"
+      },
+      {
+        "type": "与ダメージ(スキル)",
+        "value": 8,
+        "duration": 0,
+        "target": "自身",
+        "condition": {
+          "onBattle": true,
+          "onOwnTurn": true,
+          "onCloseCombat": true
+        }
+      },
+      {
+        "type": "アタック",
+        "value": 12,
+        "duration": 2,
+        "target": "自身",
+        "condition": {
+          "onKill": true
+        }
+      },
+      {
+        "type": "マジック",
+        "value": 12,
+        "duration": 2,
+        "target": "自身",
+        "condition": {
+          "onKill": true
+        }
+      }
+    ],
+    "tags": [ "分類:ゴールド装備" ]
   },
   {
     "uid": "Item_Equipment_SSR_0198",
@@ -6346,7 +6664,30 @@
     "classes": [ "シューター", "アサシン" ],
     "statusInit": [ 50.0, 0, 8.0, 0, 0, 0 ],
     "statusLv": [ 10.0, 0, 1.21, 0, 0, 0 ],
-    "tags": [ "分類:ゴールド装備", "バフ:ディフェンス", "バフ:アタック", "バフ:与ダメージ(範囲スキル)" ]
+    "buff": [
+      {
+        "type": "ディフェンス",
+        "value": 10,
+        "target": "自身"
+      },
+      {
+        "type": "アタック",
+        "value": 12,
+        "target": "自身",
+        "condition": {
+          "hp": "=>100%"
+        }
+      },
+      {
+        "type": "与ダメージ(範囲スキル)",
+        "value": 10,
+        "target": "自身",
+        "condition": {
+          "hp": "=>100%"
+        }
+      }
+    ],
+    "tags": [ "分類:ゴールド装備" ]
   },
   {
     "uid": "Item_Equipment_SSR_0199",
@@ -6358,7 +6699,29 @@
     "classes": [ "ソーサラー", "セイント" ],
     "statusInit": [ 0, 18.0, 0, 18.0, 0, 0 ],
     "statusLv": [ 0, 2.0, 0, 2.0, 0, 0 ],
-    "tags": [ "分類:遺跡装備", "バフ:マジック", "バフ:与ダメージ(魔法)", "デメリット:ディフェンス", "デメリット:ダメージ耐性" ]
+    "buff": [
+      {
+        "type": "マジック",
+        "value": 20,
+        "target": "自身"
+      },
+      {
+        "type": "与ダメージ(魔法)",
+        "value": 20,
+        "target": "自身"
+      },
+      {
+        "type": "ディフェンス",
+        "value": -40,
+        "target": "自身"
+      },
+      {
+        "type": "ダメージ耐性",
+        "value": -40,
+        "target": "自身"
+      }
+    ],
+    "tags": [ "分類:遺跡装備" ]
   },
   {
     "uid": "Item_Equipment_SSR_0200",
@@ -6370,7 +6733,19 @@
     "classes": [ "ソルジャー", "ライダー", "ランサー" ],
     "statusInit": [ 59.0, 0, 15.6, 0, 0, 0 ],
     "statusLv": [ 7.4, 0, 1.14, 0, 0, 0 ],
-    "tags": [ "分類:遺跡装備", "バフ:最大HP", "デメリット:与ダメージ(物理)" ]
+    "buff": [
+      {
+        "type": "最大HP",
+        "value": 30,
+        "target": "自身"
+      },
+      {
+        "type": "与ダメージ(物理)",
+        "value": -30,
+        "target": "自身"
+      }
+    ],
+    "tags": [ "分類:遺跡装備" ]
   },
   {
     "uid": "Item_Equipment_SSR_0201",
@@ -6382,7 +6757,19 @@
     "classes": [ "エアリアル", "シューター", "アサシン" ],
     "statusInit": [ 61.0, 0, 0, 0, 15.3, 0 ],
     "statusLv": [ 7.4, 0, 0, 0, 1.06, 0 ],
-    "tags": [ "分類:遺跡装備", "バフ:アタック", "バフ:クリティカル率", "デメリット:自傷効果" ]
+    "buff": [
+      {
+        "type": "アタック",
+        "value": 15,
+        "target": "自身"
+      },
+      {
+        "type": "クリティカル率",
+        "value": 15,
+        "target": "自身"
+      }
+    ],
+    "tags": [ "分類:遺跡装備", "デメリット:自傷効果" ]
   },
   {
     "uid": "Item_Equipment_SSR_0175",
@@ -6393,11 +6780,24 @@
     "rarity": "SSR",
     "statusInit": [ 0, 13.0, 0, 13.0, 0, 0 ],
     "statusLv": [ 0, 1.78, 0, 1.78, 0, 0 ],
+    "buff": [
+      {
+        "type": "アタック",
+        "value": 10,
+        "target": "自身"
+      },
+      {
+        "type": "マジック",
+        "value": 10,
+        "target": "自身"
+      }
+    ],
     "debuff": [
       {
         "type": "ディフェンス",
         "value": 10,
         "duration": 1,
+        "area": 2,
         "condition": {
           "onBattleEnd": true,
           "onSkill": true
@@ -6407,13 +6807,14 @@
         "type": "レジスト",
         "value": 10,
         "duration": 1,
+        "area": 2,
         "condition": {
           "onBattleEnd": true,
           "onSkill": true
         }
       }
     ],
-    "tags": [ "分類:スターフォース装備", "バフ:アタック", "バフ:マジック" ]
+    "tags": [ "分類:スターフォース装備" ]
   },
   {
     "uid": "Item_Equipment_SSR_0202",
@@ -6426,6 +6827,16 @@
     "statusInit": [ 0, 0, 0, 23.0, 0, 11.0 ],
     "statusLv": [ 0, 0, 0, 2.4, 0, 1.0 ],
     "buff": [
+      {
+        "type": "マジック",
+        "value": 10,
+        "target": "自身"
+      },
+      {
+        "type": "範囲",
+        "value": 1,
+        "target": "自身"
+      },
       {
         "type": "クリティカル率",
         "value": 10,
@@ -6445,7 +6856,7 @@
         }
       }
     ],
-    "tags": [ "分類:真厄神装備", "バフ:マジック", "バフ:範囲" ]
+    "tags": [ "分類:真厄神装備" ]
   },
   {
     "uid": "Item_Equipment_SSR_0203",
@@ -6457,7 +6868,29 @@
     "classes": [ "シューター", "アサシン" ],
     "statusInit": [ 0, 23.0, 0, 0, 0, 11.0 ],
     "statusLv": [ 0, 2.4, 0, 0, 0, 1.0 ],
-    "tags": [ "分類:真厄神装備", "バフ:アタック", "バフ:クリティカル率", "バフ:クリティカルダメージ倍率(戦闘時)" ]
+    "buff": [
+      {
+        "type": "アタック",
+        "value": 10,
+        "target": "自身"
+      },
+      {
+        "type": "クリティカル率",
+        "value": 10,
+        "target": "自身"
+      },
+      {
+        "type": "クリティカルダメージ倍率",
+        "value": 20,
+        "duration": 0,
+        "target": "自身",
+        "condition": {
+          "onBattle": true,
+          "onOwnTurn": true
+        }
+      }
+    ],
+    "tags": [ "分類:真厄神装備" ]
   },
   {
     "uid": "Item_Equipment_SSR_0204",
@@ -6469,19 +6902,39 @@
     "classes": [ "ソルジャー", "セイント" ],
     "statusInit": [ 0, 23.0, 0, 23.0, 0, 0 ],
     "statusLv": [ 0, 2.4, 0, 2.4, 0, 0 ],
+    "buff": [
+      {
+        "type": "アタック",
+        "value": 10,
+        "target": "自身"
+      },
+      {
+        "type": "マジック",
+        "value": 10,
+        "target": "自身"
+      }
+    ],
     "debuff": [
       {
         "type": "レジスト",
         "value": 20,
-        "duration": 1
+        "duration": 1,
+        "condition": {
+          "onBattleEnd": true,
+          "onSkill": true
+        }
       },
       {
         "type": "ダメージ耐性",
         "value": 10,
-        "duration": 1
+        "duration": 1,
+        "condition": {
+          "onBattleEnd": true,
+          "onSkill": true
+        }
       }
     ],
-    "tags": [ "分類:真厄神装備", "バフ:アタック", "バフ:マジック" ]
+    "tags": [ "分類:真厄神装備" ]
   },
   {
     "uid": "Item_Equipment_SSR_0205",
@@ -6493,7 +6946,39 @@
     "classes": [ "ライダー", "エアリアル" ],
     "statusInit": [ 70.0, 23.0, 0, 0, 0, 0 ],
     "statusLv": [ 12.0, 2.4, 0, 0, 0, 0 ],
-    "tags": [ "分類:真厄神装備", "バフ:アタック", "バフ:ディフェンス", "バフ:レジスト", "与ダメ回復" ]
+    "buff": [
+      {
+        "type": "アタック",
+        "value": 10,
+        "target": "自身"
+      },
+      {
+        "type": "ディフェンス",
+        "value": 10,
+        "target": "自身"
+      },
+      {
+        "type": "ディフェンス",
+        "value": 15,
+        "duration": 1,
+        "target": "自身",
+        "condition": {
+          "onBattleEnd": true,
+          "onCriticalHit": true
+        }
+      },
+      {
+        "type": "レジスト",
+        "value": 15,
+        "duration": 1,
+        "target": "自身",
+        "condition": {
+          "onBattleEnd": true,
+          "onCriticalHit": true
+        }
+      }
+    ],
+    "tags": [ "分類:真厄神装備", "与ダメ回復" ]
   },
   {
     "uid": "Item_Equipment_SSR_0206",
@@ -6505,7 +6990,29 @@
     "classes": [ "シューター", "アサシン" ],
     "statusInit": [ 70.0, 23.0, 0, 0, 0, 0 ],
     "statusLv": [ 12.0, 2.4, 0, 0, 0, 0 ],
-    "tags": [ "分類:真厄神装備", "バフ:アタック", "バフ:クリティカルダメージ倍率", "バフ解除" ]
+    "buff": [
+      {
+        "type": "アタック",
+        "value": 10,
+        "target": "自身"
+      },
+      {
+        "type": "クリティカルダメージ倍率",
+        "value": 10,
+        "target": "自身"
+      },
+      {
+        "type": "アタック",
+        "value": 15,
+        "duration": 1,
+        "target": "自身",
+        "condition": {
+          "onBattleEnd": true,
+          "onCriticalHit": true
+        }
+      }
+    ],
+    "tags": [ "分類:真厄神装備", "バフ解除" ]
   },
   {
     "uid": "Item_Equipment_SSR_0207",
@@ -6517,7 +7024,29 @@
     "classes": [ "ライダー", "ランサー" ],
     "statusInit": [ 80.0, 23.0, 0, 0, 0, 0 ],
     "statusLv": [ 15.0, 2.2, 0, 0, 0, 0 ],
-    "tags": [ "分類:真厄神装備", "バフ:アタック", "バフ:クリティカル率" ]
+    "buff": [
+      {
+        "type": "アタック",
+        "value": 10,
+        "target": "自身"
+      },
+      {
+        "type": "クリティカル率",
+        "value": 10,
+        "target": "自身"
+      },
+      {
+        "type": "クリティカル率",
+        "value": 20,
+        "duration": 0,
+        "target": "自身",
+        "condition": {
+          "onBattle": true,
+          "onOwnTurn": true
+        }
+      }
+    ],
+    "tags": [ "分類:真厄神装備" ]
   },
   {
     "uid": "Item_Equipment_SSR_0208",
@@ -6529,7 +7058,39 @@
     "classes": [ "ソルジャー", "ソーサラー" ],
     "statusInit": [ 0, 23.0, 0, 23.0, 0, 0 ],
     "statusLv": [ 0, 2.4, 0, 2.4, 0, 0 ],
-    "tags": [ "分類:真厄神装備", "バフ:アタック", "バフ:マジック", "バフ:クリティカル率(戦闘時)", "バフ:クリティカルダメージ倍率(戦闘時)" ]
+    "buff": [
+      {
+        "type": "アタック",
+        "value": 10,
+        "target": "自身"
+      },
+      {
+        "type": "マジック",
+        "value": 10,
+        "target": "自身"
+      },
+      {
+        "type": "クリティカル率",
+        "value": 10,
+        "duration": 0,
+        "target": "自身",
+        "condition": {
+          "onBattle": true,
+          "onOwnTurn": true
+        }
+      },
+      {
+        "type": "クリティカルダメージ倍率",
+        "value": 10,
+        "duration": 0,
+        "target": "自身",
+        "condition": {
+          "onBattle": true,
+          "onOwnTurn": true
+        }
+      }
+    ],
+    "tags": [ "分類:真厄神装備" ]
   },
   {
     "uid": "Item_Equipment_SSR_0209",
@@ -6541,7 +7102,39 @@
     "classes": [ "ランサー", "エアリアル" ],
     "statusInit": [ 0, 23.0, 0, 0, 0, 11.0 ],
     "statusLv": [ 0, 2.4, 0, 0, 0, 1.0 ],
-    "tags": [ "分類:真厄神装備", "バフ:アタック", "バフ:ディフェンス", "バフ:与ダメージ(戦闘時)", "バフ:ダメージ耐性(戦闘時)" ]
+    "buff": [
+      {
+        "type": "アタック",
+        "value": 10,
+        "target": "自身"
+      },
+      {
+        "type": "ディフェンス",
+        "value": 10,
+        "target": "自身"
+      },
+      {
+        "type": "与ダメージ",
+        "value": 10,
+        "duration": 0,
+        "target": "自身",
+        "condition": {
+          "onBattle": true,
+          "onOwnTurn": true
+        }
+      },
+      {
+        "type": "ダメージ耐性",
+        "value": 10,
+        "duration": 0,
+        "target": "自身",
+        "condition": {
+          "onBattle": true,
+          "onEnemyTurn": true
+        }
+      }
+    ],
+    "tags": [ "分類:真厄神装備" ]
   },
   {
     "uid": "Item_Equipment_SSR_0210",
@@ -6553,7 +7146,29 @@
     "classes": [ "シューター", "アサシン" ],
     "statusInit": [ 0, 23.0, 0, 0, 0, 11.0 ],
     "statusLv": [ 0, 2.4, 0, 0, 0, 1.0 ],
-    "tags": [ "分類:遺跡装備", "バフ:クリティカルダメージ倍率", "バフ:クリティカル率", "デメリット:移動", "デメリット:ダメージ耐性" ]
+    "buff": [
+      {
+        "type": "クリティカルダメージ倍率",
+        "value": 30,
+        "target": "自身"
+      },
+      {
+        "type": "クリティカル率",
+        "value": 30,
+        "target": "自身"
+      },
+      {
+        "type": "移動",
+        "value": -2,
+        "target": "自身"
+      },
+      {
+        "type": "ダメージ耐性",
+        "value": -20,
+        "target": "自身"
+      }
+    ],
+    "tags": [ "分類:遺跡装備" ]
   },
   {
     "uid": "Item_Equipment_SSR_0211",
@@ -6565,7 +7180,19 @@
     "classes": [ "ソルジャー", "ライダー", "ランサー" ],
     "statusInit": [ 59.0, 0, 15.6, 0, 0, 0 ],
     "statusLv": [ 7.4, 0, 1.14, 0, 0, 0 ],
-    "tags": [ "分類:遺跡装備", "バフ:ダメージ耐性", "デメリット:与ダメージ(スキル)" ]
+    "buff": [
+      {
+        "type": "ダメージ耐性",
+        "value": 30,
+        "target": "自身"
+      },
+      {
+        "type": "与ダメージ(スキル)",
+        "value": -20,
+        "target": "自身"
+      }
+    ],
+    "tags": [ "分類:遺跡装備" ]
   },
   {
     "uid": "Item_Equipment_SSR_0212",
@@ -6577,7 +7204,41 @@
     "classes": [ "エアリアル", "ソーサラー", "セイント" ],
     "statusInit": [ 61.0, 0, 0, 0, 15.3, 0 ],
     "statusLv": [ 7.4, 0, 0, 0, 1.06, 0 ],
-    "tags": [ "分類:遺跡装備", "バフ:アタック", "バフ:マジック", "デメリット:アタック", "デメリット:マジック" ]
+    "buff": [
+      {
+        "type": "アタック",
+        "value": 30,
+        "target": "自身",
+        "condition": {
+          "onNoNearAlly": 2
+        }
+      },
+      {
+        "type": "マジック",
+        "value": 30,
+        "target": "自身",
+        "condition": {
+          "onNoNearAlly": 2
+        }
+      },
+      {
+        "type": "アタック",
+        "value": -30,
+        "target": "自身",
+        "condition": {
+          "onNearAlly": 2
+        }
+      },
+      {
+        "type": "アタック",
+        "value": -30,
+        "target": "自身",
+        "condition": {
+          "onNearAlly": 2
+        }
+      }
+    ],
+    "tags": [ "分類:遺跡装備" ]
   },
   {
     "uid": "Item_Equipment_SSR_0176",
@@ -6588,7 +7249,14 @@
     "rarity": "SSR",
     "statusInit": [ 0, 13.0, 9.0, 0, 0, 0 ],
     "statusLv": [ 0, 1.78, 1.0, 0, 0, 0 ],
-    "tags": [ "分類:スターフォース装備", "バフ:アタック", "CT減" ],
+    "buff": [
+      {
+        "type": "アタック",
+        "value": 12,
+        "target": "自身"
+      }
+    ],
+    "tags": [ "分類:スターフォース装備", "CT減" ],
     "note": "CT減は全スキルが対象。範囲攻撃でも発動するが、複数同時に撃破しても -1 のみ。"
   },
   {
@@ -6600,7 +7268,19 @@
     "rarity": "SSR",
     "statusInit": [ 55.0, 0, 8.0, 0, 0, 0 ],
     "statusLv": [ 10.0, 0, 1.0, 0, 0, 0 ],
-    "tags": [ "分類:コラボ装備", "バフ:最大HP", "バフ:治療効果", "範囲回復" ]
+    "buff": [
+      {
+        "type": "最大HP",
+        "value": 10,
+        "target": "自身"
+      },
+      {
+        "type": "治療効果",
+        "value": 10,
+        "target": "自身"
+      }
+    ],
+    "tags": [ "分類:コラボ装備", "範囲回復" ]
   },
   {
     "uid": "Item_Equipment_SSR_0214",
@@ -6612,7 +7292,19 @@
     "classes": [ "ライダー", "ランサー" ],
     "statusInit": [ 68.0, 14.0, 0, 0, 0, 0 ],
     "statusLv": [ 12.0, 1.59, 0, 0, 0, 0 ],
-    "tags": [ "分類:遺跡装備", "バフ:最大HP", "デメリット:被治療効果" ]
+    "buff": [
+      {
+        "type": "最大HP",
+        "value": 30,
+        "target": "自身"
+      },
+      {
+        "type": "被治療効果",
+        "value": -60,
+        "target": "自身"
+      }
+    ],
+    "tags": [ "分類:遺跡装備" ]
   },
   {
     "uid": "Item_Equipment_SSR_0215",
@@ -6624,7 +7316,19 @@
     "classes": [ "エアリアル", "ソーサラー", "セイント" ],
     "statusInit": [ 60.0, 0, 12.3, 0, 0, 0 ],
     "statusLv": [ 9.3, 0, 1.11, 0, 0, 0 ],
-    "tags": [ "分類:遺跡装備", "バフ:アタック", "バフ:マジック", "デメリット:自傷効果" ]
+    "buff": [
+      {
+        "type": "アタック",
+        "value": 20,
+        "target": "自身"
+      },
+      {
+        "type": "マジック",
+        "value": 20,
+        "target": "自身"
+      }
+    ],
+    "tags": [ "分類:遺跡装備", "デメリット:自傷効果" ]
   },
   {
     "uid": "Item_Equipment_SSR_0216",
@@ -6636,7 +7340,19 @@
     "classes": [ "ソルジャー", "シューター", "アサシン" ],
     "statusInit": [ 61.0, 0, 0, 0, 15.3, 0 ],
     "statusLv": [ 7.4, 0, 0, 0, 1.06, 0 ],
-    "tags": [ "分類:遺跡装備", "バフ:移動", "デメリット:与ダメージ(通常攻撃)" ]
+    "buff": [
+      {
+        "type": "移動",
+        "value": 2,
+        "target": "自身"
+      },
+      {
+        "type": "与ダメージ(通常攻撃)",
+        "value": -40,
+        "target": "自身"
+      }
+    ],
+    "tags": [ "分類:遺跡装備" ]
   },
   {
     "uid": "Item_Equipment_SSR_0173",
@@ -6647,7 +7363,19 @@
     "rarity": "SSR",
     "statusInit": [ 0, 0, 0, 13.0, 9.0, 0 ],
     "statusLv": [ 0, 0, 0, 1.78, 1.0, 0 ],
-    "tags": [ "分類:スターフォース装備", "バフ:マジック", "バフ:範囲" ]
+    "buff": [
+      {
+        "type": "マジック",
+        "value": 12,
+        "target": "自身"
+      },
+      {
+        "type": "範囲",
+        "value": 1,
+        "target": "自身"
+      }
+    ],
+    "tags": [ "分類:スターフォース装備" ]
   },
   {
     "uid": "Item_Equipment_SSR_0217",
@@ -6659,7 +7387,29 @@
     "classes": [ "ライダー", "ランサー", "エアリアル" ],
     "statusInit": [ 68.0, 14.0, 0, 0, 0, 0 ],
     "statusLv": [ 12.0, 1.59, 0, 0, 0, 0 ],
-    "tags": [ "分類:遺跡装備", "バフ:クリティカル率", "バフ:クリティカルダメージ倍率", "デメリット:与ダメージ", "デメリット:ダメージ耐性" ]
+    "buff": [
+      {
+        "type": "クリティカル率",
+        "value": 40,
+        "target": "自身"
+      },
+      {
+        "type": "クリティカルダメージ倍率",
+        "value": 25,
+        "target": "自身"
+      },
+      {
+        "type": "与ダメージ",
+        "value": -25,
+        "target": "自身"
+      },
+      {
+        "type": "ダメージ耐性",
+        "value": -25,
+        "target": "自身"
+      }
+    ],
+    "tags": [ "分類:遺跡装備" ]
   },
   {
     "uid": "Item_Equipment_SSR_0218",
@@ -6671,7 +7421,19 @@
     "classes": [ "シューター", "アサシン" ],
     "statusInit": [ 60.0, 0, 12.3, 0, 0, 0 ],
     "statusLv": [ 9.3, 0, 1.11, 0, 0, 0 ],
-    "tags": [ "分類:遺跡装備", "バフ:移動", "デメリット:クリティカル率" ]
+    "buff": [
+      {
+        "type": "移動",
+        "value": 2,
+        "target": "自身"
+      },
+      {
+        "type": "クリティカル率",
+        "value": -50,
+        "target": "自身"
+      }
+    ],
+    "tags": [ "分類:遺跡装備" ]
   },
   {
     "uid": "Item_Equipment_SSR_0219",
@@ -6683,7 +7445,74 @@
     "classes": [ "ソルジャー", "ソーサラー", "セイント" ],
     "statusInit": [ 68.0, 0, 0, 0, 7.8, 0 ],
     "statusLv": [ 11.0, 0, 0, 0, 0.99, 0 ],
-    "tags": [ "分類:遺跡装備", "バフ:アタック", "バフ:ディフェンス", "バフ:マジック", "バフ:レジスト", "バフ:テクニック", "デメリット:アタック", "デメリット:ディフェンス", "デメリット:マジック", "デメリット:レジスト", "デメリット:テクニック" ],
+    "buff": [
+      {
+        "type": "アタック",
+        "value": 15,
+        "target": "自身"
+      },
+      {
+        "type": "ディフェンス",
+        "value": 15,
+        "target": "自身"
+      },
+      {
+        "type": "マジック",
+        "value": 15,
+        "target": "自身"
+      },
+      {
+        "type": "レジスト",
+        "value": 15,
+        "target": "自身"
+      },
+      {
+        "type": "テクニック",
+        "value": 15,
+        "target": "自身"
+      },
+      {
+        "type": "アタック",
+        "value": -50,
+        "target": "自身",
+        "condition": {
+          "turn": ">=4"
+        }
+      },
+      {
+        "type": "ディフェンス",
+        "value": -50,
+        "target": "自身",
+        "condition": {
+          "turn": ">=4"
+        }
+      },
+      {
+        "type": "マジック",
+        "value": -50,
+        "target": "自身",
+        "condition": {
+          "turn": ">=4"
+        }
+      },
+      {
+        "type": "レジスト",
+        "value": -50,
+        "target": "自身",
+        "condition": {
+          "turn": ">=4"
+        }
+      },
+      {
+        "type": "テクニック",
+        "value": -50,
+        "target": "自身",
+        "condition": {
+          "turn": ">=4"
+        }
+      }
+    ],
+    "tags": [ "分類:遺跡装備" ],
     "note": "+15%は常時発動しているので、4ターン目以降は実質-35%となる。"
   },
   {
@@ -6782,7 +7611,35 @@
     "rarity": "SSR",
     "statusInit": [ 0, 13.0, 0, 13.0, 0, 0 ],
     "statusLv": [ 0, 1.78, 0, 1.78, 0, 0 ],
-    "tags": [ "分類:スターフォース装備", "バフ:アタック", "バフ:マジック", "バフ:クリティカル率", "バフ:クリティカルダメージ倍率" ]
+    "buff": [
+      {
+        "type": "アタック",
+        "value": 10,
+        "target": "自身"
+      },
+      {
+        "type": "マジック",
+        "value": 10,
+        "target": "自身"
+      },
+      {
+        "type": "クリティカル率",
+        "value": 15,
+        "target": "自身",
+        "condition": {
+          "hp": ">=50%"
+        }
+      },
+      {
+        "type": "クリティカルダメージ倍率",
+        "value": 15,
+        "target": "自身",
+        "condition": {
+          "hp": ">=50%"
+        }
+      }
+    ],
+    "tags": [ "分類:スターフォース装備" ]
   },
   {
     "uid": "Item_Equipment_SSR_0220",
@@ -6794,7 +7651,29 @@
     "desc": "治療効果+50%/マジック+10%。\n[caution]自ユニットのディフェンス/レジスト-40%。[/caution]",
     "statusInit": [ 68.0, 0, 0, 18.0, 0, 0 ],
     "statusLv": [ 12.0, 0, 0, 2.0, 0, 0 ],
-    "tags": [ "分類:遺跡装備", "バフ:治療効果", "バフ:マジック", "デメリット:ディフェンス", "デメリット:レジスト" ]
+    "buff": [
+      {
+        "type": "治療効果",
+        "value": 50,
+        "target": "自身"
+      },
+      {
+        "type": "マジック",
+        "value": 10,
+        "target": "自身"
+      },
+      {
+        "type": "ディフェンス",
+        "value": -40,
+        "target": "自身"
+      },
+      {
+        "type": "レジスト",
+        "value": -40,
+        "target": "自身"
+      }
+    ],
+    "tags": [ "分類:遺跡装備" ]
   },
   {
     "uid": "Item_Equipment_SSR_0221",
@@ -6806,7 +7685,19 @@
     "desc": "最大HP+40%。\n[caution]自ユニットの移動-2。[/caution]",
     "statusInit": [ 59.0, 0, 15.6, 0, 0, 0 ],
     "statusLv": [ 7.4, 0, 1.14, 0, 0, 0 ],
-    "tags": [ "分類:遺跡装備", "バフ:最大HP", "デメリット:移動" ]
+    "buff": [
+      {
+        "type": "最大HP",
+        "value": 40,
+        "target": "自身"
+      },
+      {
+        "type": "移動",
+        "value": -2,
+        "target": "自身"
+      }
+    ],
+    "tags": [ "分類:遺跡装備" ]
   },
   {
     "uid": "Item_Equipment_SSR_0222",
@@ -6818,7 +7709,19 @@
     "desc": "スキル与ダメージ+15%。\n[caution]自ユニットの被治療効果-70%[/caution]。",
     "statusInit": [ 68.0, 0, 0, 0, 7.8, 0 ],
     "statusLv": [ 11.0, 0, 0, 0, 0.99, 0 ],
-    "tags": [ "分類:遺跡装備", "バフ:与ダメージ(スキル)", "デメリット:被治療効果" ]
+    "buff": [
+      {
+        "type": "与ダメージ(スキル)",
+        "value": 15,
+        "target": "自身"
+      },
+      {
+        "type": "被治療効果",
+        "value": -70,
+        "target": "自身"
+      }
+    ],
+    "tags": [ "分類:遺跡装備" ]
   },
   {
     "uid": "Item_Equipment_SSR_0223",
@@ -6864,7 +7767,24 @@
     "desc": "アタック/通常攻撃与ダメージ+15%。\n[caution]自ユニットの被治療効果-60%。[/caution]",
     "statusInit": [ 68.0, 14.0, 0, 0, 0, 0 ],
     "statusLv": [ 12.0, 1.59, 0, 0, 0, 0 ],
-    "tags": [ "分類:遺跡装備", "バフ:アタック", "バフ:与ダメージ(通常攻撃)", "デメリット:被治療効果" ]
+    "buff": [
+      {
+        "type": "アタック",
+        "value": 15,
+        "target": "自身"
+      },
+      {
+        "type": "与ダメージ(通常攻撃)",
+        "value": 15,
+        "target": "自身"
+      },
+      {
+        "type": "被治療効果",
+        "value": -60,
+        "target": "自身"
+      }
+    ],
+    "tags": [ "分類:遺跡装備" ]
   },
   {
     "uid": "Item_Equipment_SSR_0225",
@@ -6876,7 +7796,49 @@
     "desc": "近距離による戦闘時、その戦闘前、与ダメージ/ダメージ耐性+15%。\n[caution]遠距離による戦闘時、その戦闘前、与ダメージ/ダメージ耐性-25%。[/caution]",
     "statusInit": [ 60.0, 0, 12.3, 0, 0, 0 ],
     "statusLv": [ 9.3, 0, 1.11, 0, 0, 0 ],
-    "tags": [ "分類:遺跡装備", "バフ:与ダメージ", "バフ:ダメージ耐性", "デメリット:与ダメージ", "デメリット:ダメージ耐性" ]
+    "buff": [
+      {
+        "type": "与ダメージ",
+        "value": 15,
+        "duration": 0,
+        "target": "自身",
+        "condition": {
+          "onBattle": true,
+          "onCloseCombat": true
+        }
+      },
+      {
+        "type": "ダメージ耐性",
+        "value": 15,
+        "duration": 0,
+        "target": "自身",
+        "condition": {
+          "onBattle": true,
+          "onCloseCombat": true
+        }
+      },
+      {
+        "type": "与ダメージ",
+        "value": -25,
+        "duration": 0,
+        "target": "自身",
+        "condition": {
+          "onBattle": true,
+          "onRangedCombat": true
+        }
+      },
+      {
+        "type": "ダメージ耐性",
+        "value": -25,
+        "duration": 0,
+        "target": "自身",
+        "condition": {
+          "onBattle": true,
+          "onRangedCombat": true
+        }
+      }
+    ],
+    "tags": [ "分類:遺跡装備" ]
   },
   {
     "uid": "Item_Equipment_SSR_0226",
@@ -6888,7 +7850,29 @@
     "desc": "最大HP+30%/被治療効果+50%。\n[caution]自ユニットのアタック/マジック-30%。[/caution]",
     "statusInit": [ 61.0, 0, 0, 0, 15.3, 0 ],
     "statusLv": [ 7.4, 0, 0, 0, 1.06, 0 ],
-    "tags": [ "分類:遺跡装備", "バフ:最大HP", "バフ:被治療効果", "デメリット:アタック", "デメリット:マジック" ]
+    "buff": [
+      {
+        "type": "最大HP",
+        "value": 30,
+        "target": "自身"
+      },
+      {
+        "type": "被治療効果",
+        "value": 50,
+        "target": "自身"
+      },
+      {
+        "type": "アタック",
+        "value": -30,
+        "target": "自身"
+      },
+      {
+        "type": "マジック",
+        "value": -30,
+        "target": "自身"
+      }
+    ],
+    "tags": [ "分類:遺跡装備" ]
   },
   {
     "uid": "Item_Equipment_SSR_0227",
@@ -6948,6 +7932,7 @@
         "type": "クリティカル率",
         "value": 3,
         "maxStack": 5,
+        "duration": 0,
         "target": "自身",
         "condition": {
           "onMove": true
@@ -6974,7 +7959,14 @@
     "desc": "戦闘後、味方メインが与えたダメージの8%分HPを回復する。\n[caution]自ユニットの最大HP-30%。[/caution]",
     "statusInit": [ 0, 23.0, 0, 0, 0, 11.0 ],
     "statusLv": [ 0, 2.4, 0, 0, 0, 1.0 ],
-    "tags": [ "分類:遺跡装備", "与ダメ回復", "デメリット:最大HP" ]
+    "buff": [
+      {
+        "type": "最大HP",
+        "value": -30,
+        "target": "自身"
+      }
+    ],
+    "tags": [ "分類:遺跡装備", "与ダメ回復" ]
   },
   {
     "uid": "Item_Equipment_SSR_0230",
@@ -6996,9 +7988,19 @@
         "type": "与ダメージ(物理)",
         "value": 15,
         "target": "自身"
+      },
+      {
+        "type": "ダメージ耐性",
+        "value": -40,
+        "target": "自身"
+      },
+      {
+        "type": "移動",
+        "value": -2,
+        "target": "自身"
       }
     ],
-    "tags": [ "分類:遺跡装備", "デメリット:ダメージ耐性", "デメリット:移動" ]
+    "tags": [ "分類:遺跡装備" ]
   },
   {
     "uid": "Item_Equipment_SSR_0231",
@@ -7015,9 +8017,14 @@
         "type": "移動",
         "value": 2,
         "target": "自身"
+      },
+      {
+        "type": "クリティカル率",
+        "value": -50,
+        "target": "自身"
       }
     ],
-    "tags": [ "分類:遺跡装備", "デメリット:クリティカル率" ]
+    "tags": [ "分類:遺跡装備" ]
   },
   {
     "uid": "Item_Equipment_SSR_0232",
@@ -7106,9 +8113,14 @@
         "type": "与ダメージ",
         "value": 20,
         "target": "自身"
+      },
+      {
+        "type": "最大HP",
+        "value": -50,
+        "target": "自身"
       }
     ],
-    "tags": [ "分類:遺跡装備", "デメリット:最大HP" ]
+    "tags": [ "分類:遺跡装備" ]
   },
   {
     "uid": "Item_Equipment_SSR_0235",
@@ -7120,7 +8132,14 @@
     "desc": "[caution]自ユニットの物理与ダメージ-15%。[/caution]\n行動終了時、メイン、サポートそれぞれのHPを最大HPの20%分回復する。",
     "statusInit": [ 59.0, 0, 15.6, 0, 0, 0 ],
     "statusLv": [ 7.4, 0, 1.14, 0, 0, 0 ],
-    "tags": [ "分類:遺跡装備", "自己回復", "デメリット:与ダメージ(物理)" ]
+    "buff": [
+      {
+        "type": "与ダメージ(物理)",
+        "value": -15,
+        "target": "自身"
+      }
+    ],
+    "tags": [ "分類:遺跡装備", "自己回復" ]
   },
   {
     "uid": "Item_Equipment_SSR_0236",
@@ -7142,9 +8161,19 @@
         "type": "クリティカル率",
         "value": 20,
         "target": "自身"
+      },
+      {
+        "type": "ダメージ耐性",
+        "value": -20,
+        "maxStack": 3,
+        "duration": 3,
+        "target": "自身",
+        "condition": {
+          "onTurnBegin": true
+        }
       }
     ],
-    "tags": [ "分類:遺跡装備", "デメリット:ダメージ耐性" ]
+    "tags": [ "分類:遺跡装備" ]
   },
   {
     "uid": "Item_Equipment_SSR_0237",
@@ -7165,7 +8194,11 @@
         "type": "与ダメージ(物理)",
         "value": 2,
         "maxStack": 4,
-        "target": "自身"
+        "duration": 0,
+        "target": "自身",
+        "condition": {
+          "onMove": true
+        }
       },
       {
         "type": "与ダメージ(スキル)",
@@ -7198,9 +8231,19 @@
         "type": "与ダメージ(魔法)",
         "value": 20,
         "target": "自身"
+      },
+      {
+        "type": "ディフェンス",
+        "value": -40,
+        "target": "自身"
+      },
+      {
+        "type": "与ダメージ(物理)",
+        "value": -40,
+        "target": "自身"
       }
     ],
-    "tags": [ "分類:遺跡装備", "デメリット:ディフェンス", "デメリット:与ダメージ(物理)" ]
+    "tags": [ "分類:遺跡装備" ]
   },
   {
     "uid": "Item_Equipment_SSR_0239",
@@ -7217,9 +8260,14 @@
         "type": "与ダメージ(スキル)",
         "value": 15,
         "target": "自身"
+      },
+      {
+        "type": "最大HP",
+        "value": -40,
+        "target": "自身"
       }
     ],
-    "tags": [ "分類:遺跡装備", "デメリット:最大HP" ]
+    "tags": [ "分類:遺跡装備" ]
   },
   {
     "uid": "Item_Equipment_SSR_0240",
@@ -7236,9 +8284,14 @@
         "type": "被治療効果",
         "value": 60,
         "target": "自身"
+      },
+      {
+        "type": "最大HP",
+        "value": -30,
+        "target": "自身"
       }
     ],
-    "tags": [ "分類:遺跡装備", "デメリット:最大HP" ]
+    "tags": [ "分類:遺跡装備" ]
   },
   {
     "uid": "Item_Equipment_SSR_0241",
@@ -7264,8 +8317,10 @@
         "type": "クリティカルダメージ倍率",
         "value": 3,
         "maxStack": 5,
+        "duration": 0,
         "target": "自身",
         "condition": {
+          "onMove": true,
           "onClass": [ "ソーサラー", "ライダー" ]
         }
       }
@@ -7302,8 +8357,10 @@
         "type": "クリティカルダメージ倍率",
         "value": 3,
         "maxStack": 5,
+        "duration": 0,
         "target": "自身",
         "condition": {
+          "onMove": true,
           "onClass": [ "ソーサラー", "ライダー" ]
         }
       }
@@ -7340,8 +8397,10 @@
         "type": "クリティカルダメージ倍率",
         "value": 3,
         "maxStack": 5,
+        "duration": 0,
         "target": "自身",
         "condition": {
+          "onMove": true,
           "onClass": [ "シューター", "アサシン" ]
         }
       }
@@ -7375,8 +8434,10 @@
         "type": "クリティカルダメージ倍率",
         "value": 3,
         "maxStack": 5,
+        "duration": 0,
         "target": "自身",
         "condition": {
+          "onMove": true,
           "onClass": [ "ランサー", "ソルジャー" ]
         }
       }
@@ -7406,7 +8467,12 @@
       {
         "type": "与ダメージ",
         "value": 8,
-        "target": "自身"
+        "duration": 0,
+        "target": "自身",
+        "condition": {
+          "onBattle": true,
+          "onRangedCombat": true
+        }
       },
       {
         "type": "与ダメージ(通常攻撃)",
@@ -7442,7 +8508,12 @@
       {
         "type": "与ダメージ",
         "value": 8,
-        "target": "自身"
+        "duration": 0,
+        "target": "自身",
+        "condition": {
+          "onBattle": true,
+          "onCloseCombat": true
+        }
       },
       {
         "type": "与ダメージ(通常攻撃)",
@@ -7547,6 +8618,7 @@
         "type": "ディフェンス",
         "value": 5,
         "maxStack": 3,
+        "duration": 3,
         "target": "自身",
         "condition": {
           "onBattle": true
@@ -7556,6 +8628,7 @@
         "type": "レジスト",
         "value": 5,
         "maxStack": 3,
+        "duration": 3,
         "target": "自身",
         "condition": {
           "onBattle": true
