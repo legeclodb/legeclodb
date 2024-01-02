@@ -2102,20 +2102,14 @@
         "value": 20,
         "duration": 1,
         "area": 3,
-        "timing": "戦闘後",
-        "condition": {
-          "onKill": true
-        }
+        "timing": "敵撃破時"
       },
       {
         "type": "レジスト",
         "value": 20,
         "duration": 1,
         "area": 3,
-        "timing": "戦闘後",
-        "condition": {
-          "onKill": true
-        }
+        "timing": "敵撃破時"
       }
     ]
   },
@@ -2308,14 +2302,14 @@
         "value": 10,
         "duration": 1,
         "area": "3s",
-        "timing": "スキル使用時"
+        "timing": "スキル後"
       },
       {
         "type": "ダメージ耐性",
         "value": 10,
         "duration": 1,
         "area": "3s",
-        "timing": "スキル使用時"
+        "timing": "スキル後"
       }
     ]
   },
@@ -2443,10 +2437,7 @@
         "value": 1,
         "duration": 2,
         "target": "自身",
-        "timing": "戦闘後",
-        "condition": {
-          "onKill": true
-        }
+        "timing": "敵撃破時"
       }
     ],
     "debuff": [
@@ -2607,9 +2598,7 @@
         "value": 15,
         "duration": 3,
         "target": "自身",
-        "condition": {
-          "onKill": true
-        }
+        "timing": "敵撃破時"
       }
     ],
     "tags": [ "CT減(自身)" ]
@@ -3068,7 +3057,7 @@
         "value": 50,
         "duration": 2,
         "target": "自身",
-        "timing": "スキル使用時"
+        "timing": "スキル後"
       }
     ]
   },

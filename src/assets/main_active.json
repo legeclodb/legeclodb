@@ -1113,7 +1113,7 @@
         "value": 50,
         "ephemeral": true,
         "target": "自身",
-        "timing": "戦闘前"
+        "timing": "攻撃前"
       }
     ],
     "tags": [ "超広範囲攻撃(自分中心)", "範囲攻撃(自分中心)", "特効(ソーサラー)" ],
@@ -2805,6 +2805,15 @@
         "onEnemyClass": [ "ソーサラー" ]
       }
     },
+    "buff": [
+      {
+        "type": "クリティカル率",
+        "value": 50,
+        "ephemeral": true,
+        "target": "自身",
+        "timing": "攻撃前"
+      }
+    ],
     "tags": [ "超広範囲攻撃(自分中心)", "範囲攻撃(自分中心)", "特効(ソーサラー)" ],
     "note": "対象がソーサラーの場合、0.8倍のダメージ"
   },
@@ -5021,7 +5030,7 @@
         "value": 50,
         "ephemeral": true,
         "target": "自身",
-        "timing": "戦闘前"
+        "timing": "攻撃前"
       }
     ],
     "tags": [ "範囲攻撃(自分中心)" ]
@@ -5433,7 +5442,7 @@
         "value": 20,
         "ephemeral": true,
         "target": "自身",
-        "timing": "戦闘前"
+        "timing": "攻撃前"
       }
     ],
     "tags": [ "超広範囲攻撃(自分中心)", "範囲攻撃(自分中心)" ]
@@ -5500,14 +5509,14 @@
         "value": 20,
         "duration": 2,
         "target": "自身",
-        "timing": "戦闘前"
+        "timing": "攻撃前"
       },
       {
         "type": "ディフェンス",
         "value": 20,
         "duration": 2,
         "target": "自身",
-        "timing": "戦闘前"
+        "timing": "攻撃前"
       }
     ],
     "tags": [ "超広範囲攻撃(自分中心)", "範囲攻撃(自分中心)" ]
@@ -5700,10 +5709,7 @@
         "value": 20,
         "duration": 1,
         "target": "自身",
-        "timing": "戦闘後",
-        "condition": {
-          "onKill": true
-        }
+        "timing": "敵撃破時"
       }
     ],
     "debuff": [
@@ -5731,20 +5737,14 @@
         "value": 20,
         "duration": 1,
         "target": "自身",
-        "timing": "戦闘後",
-        "condition": {
-          "onKill": true
-        }
+        "timing": "敵撃破時"
       },
       {
         "type": "クリティカル率",
         "value": 20,
         "duration": 1,
         "target": "自身",
-        "timing": "戦闘後",
-        "condition": {
-          "onKill": true
-        }
+        "timing": "敵撃破時"
       }
     ],
     "debuff": [
@@ -6012,10 +6012,7 @@
         "value": 20,
         "duration": 2,
         "target": "自身",
-        "timing": "戦闘後",
-        "condition": {
-          "onKill": true
-        }
+        "timing": "敵撃破時"
       }
     ],
     "tags": [ "単体攻撃", "与ダメ回復" ]
@@ -6241,7 +6238,8 @@
         "type": "クリティカルダメージ倍率",
         "value": 30,
         "ephemeral": true,
-        "target": "自身"
+        "target": "自身",
+        "timing": "攻撃前"
       }
     ],
     "tags": [ "超広範囲攻撃(自分中心)", "範囲攻撃(自分中心)" ]
@@ -6281,7 +6279,8 @@
         "type": "与ダメージ(範囲スキル)",
         "value": 30,
         "ephemeral": true,
-        "target": "自身"
+        "target": "自身",
+        "timing": "攻撃前"
       }
     ],
     "debuff": [
@@ -6358,7 +6357,8 @@
         "type": "クリティカル率",
         "value": 30,
         "duration": 2,
-        "target": "自身"
+        "target": "自身",
+        "timing": "攻撃前"
       }
     ],
     "tags": [ "超広範囲攻撃(中心指定)", "範囲攻撃(中心指定)", "バフ解除" ]
@@ -6559,10 +6559,7 @@
         "value": 25,
         "duration": 2,
         "target": "自身",
-        "timing": "戦闘後",
-        "condition": {
-          "onKill": true
-        }
+        "timing": "敵撃破時"
       }
     ],
     "tags": [ "単体攻撃" ]
@@ -6754,7 +6751,7 @@
         "ephemeral": true,
         "duration": 4,
         "slot": "加護",
-        "timing": "スキル使用時"
+        "timing": "スキル前"
       },
       {
         "type": "クリティカルダメージ倍率",
@@ -6762,7 +6759,7 @@
         "ephemeral": true,
         "duration": 4,
         "slot": "加護",
-        "timing": "スキル使用時"
+        "timing": "スキル前"
       }
     ],
     "tags": [ "シンボルスキル" ]
@@ -6932,20 +6929,14 @@
         "value": 10,
         "duration": 2,
         "target": "自身",
-        "timing": "戦闘後",
-        "condition": {
-          "onKill": true
-        }
+        "timing": "敵撃破時"
       },
       {
         "type": "移動",
         "value": 1,
         "duration": 2,
         "target": "自身",
-        "timing": "戦闘後",
-        "condition": {
-          "onKill": true
-        }
+        "timing": "敵撃破時"
       }
     ],
     "debuff": [
@@ -6992,13 +6983,15 @@
         "type": "クリティカル率",
         "value": 20,
         "duration": 2,
-        "target": "自身"
+        "target": "自身",
+        "timing": "攻撃前"
       },
       {
         "type": "クリティカルダメージ倍率",
         "value": 20,
         "duration": 2,
-        "target": "自身"
+        "target": "自身",
+        "timing": "攻撃前"
       }
     ],
     "tags": [ "超広範囲攻撃(自分中心)", "範囲攻撃(自分中心)" ]
@@ -7732,10 +7725,7 @@
         "value": 25,
         "duration": 4,
         "target": "自身",
-        "timing": "戦闘後",
-        "condition": {
-          "onKill": true
-        }
+        "timing": "敵撃破時"
       }
     ],
     "tags": [ "単体攻撃" ]

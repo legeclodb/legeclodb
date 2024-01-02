@@ -98,8 +98,8 @@
         "value": 15,
         "ephemeral": true,
         "target": "自身",
+        "timing": "戦闘前",
         "condition": {
-          "onBattle": true,
           "onOwnTurn": true
         }
       },
@@ -108,8 +108,8 @@
         "value": 10,
         "ephemeral": true,
         "target": "自身",
+        "timing": "戦闘前",
         "condition": {
-          "onBattle": true,
           "onOwnTurn": true
         }
       }
@@ -130,8 +130,8 @@
         "type": "アタック",
         "value": 20,
         "duration": 2,
+        "timing": "戦闘後",
         "condition": {
-          "onBattleEnd": true,
           "onOwnTurn": true,
           "probability": 50
         }
@@ -179,8 +179,8 @@
         "type": "ランダム",
         "variant": "弱",
         "amount": 1,
+        "timing": "戦闘後",
         "condition": {
-          "onBattleEnd": true,
           "onCriticalHit": true
         }
       }
@@ -210,8 +210,9 @@
         "type": "ダメージ耐性",
         "value": 20,
         "duration": 1,
+        "timing": "戦闘前",
         "condition": {
-          "onBattle": true
+          "onOwnTurn": true
         }
       }
     ]
@@ -255,8 +256,8 @@
         "value": 15,
         "ephemeral": true,
         "target": "自身",
+        "timing": "戦闘前",
         "condition": {
-          "onBattle": true,
           "onEnemyTurn": true
         }
       },
@@ -265,8 +266,8 @@
         "value": 5,
         "ephemeral": true,
         "target": "自身",
+        "timing": "戦闘前",
         "condition": {
-          "onBattle": true,
           "onEnemyTurn": true
         }
       }
@@ -353,8 +354,8 @@
         "value": 15,
         "ephemeral": true,
         "target": "自身",
+        "timing": "戦闘前",
         "condition": {
-          "onBattle": true,
           "onOwnTurn": true
         }
       },
@@ -363,8 +364,8 @@
         "value": 5,
         "ephemeral": true,
         "target": "自身",
+        "timing": "戦闘前",
         "condition": {
-          "onBattle": true,
           "onOwnTurn": true
         }
       }
@@ -411,8 +412,9 @@
         "type": "ディフェンス",
         "value": 20,
         "duration": 1,
+        "timing": "攻撃後",
         "condition": {
-          "onBattleEnd": true,
+          "onDamage": true,
           "onOwnTurn": true
         }
       }
@@ -584,8 +586,8 @@
         "type": "与ダメージ",
         "value": 20,
         "duration": 1,
+        "timing": "戦闘前",
         "condition": {
-          "onBattle": true,
           "onOwnTurn": true,
           "probability": 50
         }
@@ -639,8 +641,8 @@
         "value": 15,
         "ephemeral": true,
         "target": "自身",
+        "timing": "戦闘前",
         "condition": {
-          "onBattle": true,
           "onEnemyTurn": true
         }
       },
@@ -649,8 +651,8 @@
         "value": 5,
         "ephemeral": true,
         "target": "自身",
+        "timing": "戦闘前",
         "condition": {
-          "onBattle": true,
           "onEnemyTurn": true
         }
       }
@@ -700,8 +702,8 @@
         "value": 15,
         "ephemeral": true,
         "target": "自身",
+        "timing": "戦闘前",
         "condition": {
-          "onBattle": true,
           "onOwnTurn": true
         }
       },
@@ -710,8 +712,8 @@
         "value": 5,
         "ephemeral": true,
         "target": "自身",
+        "timing": "戦闘前",
         "condition": {
-          "onBattle": true,
           "onOwnTurn": true
         }
       }
@@ -827,8 +829,8 @@
         "type": "与ダメージ",
         "value": 20,
         "duration": 1,
+        "timing": "戦闘後",
         "condition": {
-          "onBattleEnd": true,
           "onOwnTurn": true
         }
       }
@@ -879,8 +881,8 @@
         "type": "ランダム",
         "variant": "弱",
         "amount": 1,
+        "timing": "戦闘後",
         "condition": {
-          "onBattleEnd": true,
           "onOwnTurn": true,
           "probability": 30
         }
@@ -910,8 +912,8 @@
         "type": "ランダム",
         "variant": "弱",
         "amount": 1,
+        "timing": "戦闘後",
         "condition": {
-          "onBattleEnd": true,
           "onOwnTurn": true
         }
       }
@@ -930,9 +932,14 @@
     "statusLv": [ 0, 0, 0, 2.0, 0, 0.79 ],
     "buff": [
       {
-        "type": "与ダメージ",
+        "type": "与ダメージ(スキル)",
         "value": 15,
-        "target": "自身"
+        "ephemeral": true,
+        "target": "自身",
+        "timing": "スキル前",
+        "condition": {
+          "onSingleSkill": true
+        }
       }
     ],
     "debuff": [
@@ -940,8 +947,8 @@
         "type": "ランダム",
         "variant": "弱",
         "amount": 1,
+        "timing": "戦闘前",
         "condition": {
-          "onBattle": true,
           "onOwnTurn": true,
           "onSingleSkill": true,
           "probability": 50
@@ -965,8 +972,8 @@
         "value": 10,
         "ephemeral": true,
         "target": "自身",
+        "timing": "戦闘前",
         "condition": {
-          "onBattle": true,
           "onOwnTurn": true
         }
       },
@@ -975,8 +982,8 @@
         "value": 10,
         "ephemeral": true,
         "target": "自身",
+        "timing": "戦闘前",
         "condition": {
-          "onBattle": true,
           "onOwnTurn": true
         }
       }
@@ -1034,8 +1041,8 @@
         "value": 15,
         "ephemeral": true,
         "target": "自身",
+        "timing": "戦闘前",
         "condition": {
-          "onBattle": true,
           "onOwnTurn": true
         }
       }
@@ -1093,8 +1100,8 @@
         "value": 15,
         "ephemeral": true,
         "target": "自身",
+        "timing": "戦闘前",
         "condition": {
-          "onBattle": true,
           "onOwnTurn": true
         }
       }
@@ -1206,8 +1213,8 @@
         "value": 15,
         "ephemeral": true,
         "target": "自身",
+        "timing": "戦闘前",
         "condition": {
-          "onBattle": true,
           "onOwnTurn": true
         }
       }
@@ -1265,8 +1272,8 @@
         "value": 15,
         "ephemeral": true,
         "target": "自身",
+        "timing": "戦闘前",
         "condition": {
-          "onBattle": true,
           "onOwnTurn": true
         }
       }
@@ -1324,8 +1331,8 @@
         "value": 15,
         "ephemeral": true,
         "target": "自身",
+        "timing": "戦闘前",
         "condition": {
-          "onBattle": true,
           "onOwnTurn": true
         }
       }
@@ -1383,8 +1390,8 @@
         "value": 15,
         "ephemeral": true,
         "target": "自身",
+        "timing": "戦闘前",
         "condition": {
-          "onBattle": true,
           "onOwnTurn": true
         }
       }
@@ -1463,7 +1470,7 @@
         "value": 15,
         "ephemeral": true,
         "target": "自身",
-        "timing": "スキル使用時",
+        "timing": "スキル前",
         "condition": {
           "onSingleSkill": true
         }
@@ -1486,7 +1493,7 @@
         "value": 15,
         "ephemeral": true,
         "target": "自身",
-        "timing": "スキル使用時",
+        "timing": "スキル前",
         "condition": {
           "onAreaSkill": true
         }
@@ -1697,9 +1704,7 @@
         "value": 10,
         "ephemeral": true,
         "target": "自身",
-        "condition": {
-          "onBattle": true
-        }
+        "timing": "戦闘前"
       }
     ],
     "tags": [ "デバフ解除" ]
@@ -1886,18 +1891,14 @@
         "value": 10,
         "duration": 2,
         "target": "自身",
-        "condition": {
-          "onKill": true
-        }
+        "timing": "敵撃破時"
       },
       {
         "type": "レジスト",
         "value": 10,
         "duration": 2,
         "target": "自身",
-        "condition": {
-          "onKill": true
-        }
+        "timing": "敵撃破時"
       }
     ]
   },
@@ -1922,8 +1923,8 @@
         "value": 10,
         "ephemeral": true,
         "target": "自身",
+        "timing": "戦闘前",
         "condition": {
-          "onBattle": true,
           "onOwnTurn": true
         }
       }
@@ -2050,8 +2051,8 @@
         "type": "ランダム",
         "variant": "弱",
         "amount": 1,
+        "timing": "戦闘後",
         "condition": {
-          "onBattleEnd": true,
           "onEnemyTurn": true
         }
       }
@@ -2079,18 +2080,14 @@
         "value": 10,
         "duration": 2,
         "target": "自身",
-        "condition": {
-          "onKill": true
-        }
+        "timing": "敵撃破時"
       },
       {
         "type": "レジスト",
         "value": 10,
         "duration": 2,
         "target": "自身",
-        "condition": {
-          "onKill": true
-        }
+        "timing": "敵撃破時"
       }
     ]
   },
@@ -2164,8 +2161,8 @@
         "value": 15,
         "ephemeral": true,
         "target": "自身",
+        "timing": "戦闘前",
         "condition": {
-          "onBattle": true,
           "onEnemyTurn": true
         }
       }
@@ -2187,8 +2184,8 @@
         "value": 15,
         "ephemeral": true,
         "target": "自身",
+        "timing": "戦闘前",
         "condition": {
-          "onBattle": true,
           "onEnemyTurn": true
         }
       }
@@ -2519,8 +2516,9 @@
       {
         "type": "アクティブスキル使用不可",
         "duration": 1,
+        "target": "単体",
+        "timing": "行動後",
         "condition": {
-          "onActionEnd": true,
           "probability": 50
         }
       }
@@ -2548,9 +2546,7 @@
         "value": 20,
         "duration": 1,
         "target": "単体",
-        "condition": {
-          "onActionEnd": true
-        }
+        "timing": "行動後"
       }
     ]
   },
@@ -2576,8 +2572,8 @@
         "type": "ディフェンス",
         "value": 20,
         "duration": 1,
+        "timing": "行動後",
         "condition": {
-          "onActionEnd": true,
           "probability": 50
         }
       }
@@ -2729,9 +2725,7 @@
         "value": 20,
         "duration": 1,
         "target": "単体",
-        "condition": {
-          "onActionEnd": true
-        }
+        "timing": "行動後"
       }
     ]
   },
@@ -2792,9 +2786,10 @@
       {
         "type": "ダメージ耐性",
         "value": 10,
+        "ephemeral": true,
         "target": "自身",
+        "timing": "戦闘前",
         "condition": {
-          "onBattle": true,
           "onOwnTurn": true
         }
       }
@@ -2919,9 +2914,7 @@
         "type": "ランダム",
         "variant": "弱",
         "amount": 1,
-        "condition": {
-          "onActionEnd": true
-        }
+        "timing": "行動後"
       }
     ],
     "note": "ランダムバフ内訳: アタック+10%(2ターン)、ディフェンス+10%(2ターン)、マジック+10%(2ターン)、レジスト+10%(2ターン)、与ダメージ+10%(2ターン)、ダメージ耐性+10%(2ターン)、移動+1(2ターン)"
@@ -2947,18 +2940,14 @@
         "value": 10,
         "duration": 2,
         "target": "単体",
-        "condition": {
-          "onActionEnd": true
-        }
+        "timing": "行動後"
       },
       {
         "type": "被治療効果",
         "value": 10,
         "duration": 2,
         "target": "単体",
-        "condition": {
-          "onActionEnd": true
-        }
+        "timing": "行動後"
       }
     ]
   },
@@ -3049,8 +3038,8 @@
         "value": 15,
         "ephemeral": true,
         "target": "自身",
+        "timing": "戦闘前",
         "condition": {
-          "onBattle": true,
           "onEnemyTurn": true
         }
       }
@@ -3072,8 +3061,8 @@
         "value": 15,
         "ephemeral": true,
         "target": "自身",
+        "timing": "戦闘前",
         "condition": {
-          "onBattle": true,
           "onEnemyTurn": true
         }
       }
@@ -3304,8 +3293,8 @@
         "value": 8,
         "ephemeral": true,
         "target": "自身",
+        "timing": "戦闘前",
         "condition": {
-          "onBattle": true,
           "onOwnTurn": true
         }
       },
@@ -3314,8 +3303,8 @@
         "value": 8,
         "ephemeral": true,
         "target": "自身",
+        "timing": "戦闘前",
         "condition": {
-          "onBattle": true,
           "onOwnTurn": true
         }
       }
@@ -3339,9 +3328,10 @@
       {
         "type": "与ダメージ",
         "value": 20,
+        "ephemeral": true,
         "target": "自身",
+        "timing": "戦闘前",
         "condition": {
-          "onBattle": true,
           "onEnemyClass": [ "エアリアル" ]
         }
       }
@@ -3366,9 +3356,10 @@
       {
         "type": "与ダメージ",
         "value": 20,
+        "ephemeral": true,
         "target": "自身",
+        "timing": "戦闘前",
         "condition": {
-          "onBattle": true,
           "onEnemyClass": [ "ソーサラー" ]
         }
       }
@@ -3393,27 +3384,30 @@
       {
         "type": "マジック",
         "value": 20,
+        "ephemeral": true,
         "target": "自身",
+        "timing": "戦闘前",
         "condition": {
-          "onBattle": true,
           "onEnemyClass": [ "ソーサラー" ]
         }
       },
       {
         "type": "レジスト",
         "value": 20,
+        "ephemeral": true,
         "target": "自身",
+        "timing": "戦闘前",
         "condition": {
-          "onBattle": true,
           "onEnemyClass": [ "ソーサラー" ]
         }
       },
       {
         "type": "ディフェンス",
         "value": 20,
+        "ephemeral": true,
         "target": "自身",
+        "timing": "戦闘前",
         "condition": {
-          "onBattle": true,
           "onEnemyClass": [ "ソーサラー" ]
         }
       }
@@ -3440,8 +3434,8 @@
         "value": 10,
         "ephemeral": true,
         "target": "自身",
+        "timing": "戦闘前",
         "condition": {
-          "onBattle": true,
           "onEnemyTurn": true
         }
       }
@@ -3468,8 +3462,8 @@
         "type": "与ダメージ",
         "value": 15,
         "duration": 1,
+        "timing": "戦闘後",
         "condition": {
-          "onBattleEnd": true,
           "onOwnTurn": true
         }
       }
@@ -3533,8 +3527,8 @@
         "type": "ダメージ耐性",
         "value": 15,
         "duration": 1,
+        "timing": "戦闘後",
         "condition": {
-          "onBattleEnd": true,
           "onOwnTurn": true
         }
       }
@@ -3578,8 +3572,8 @@
         "value": 20,
         "ephemeral": true,
         "target": "自身",
+        "timing": "戦闘前",
         "condition": {
-          "onBattle": true,
           "onEnemyClass": [ "シューター", "アサシン" ]
         }
       }
@@ -3710,8 +3704,8 @@
         "value": 10,
         "ephemeral": true,
         "target": "自身",
+        "timing": "戦闘前",
         "condition": {
-          "onBattle": true,
           "onEnemyTurn": true,
           "onRangedCombat": true
         }
@@ -3721,8 +3715,8 @@
         "value": 10,
         "ephemeral": true,
         "target": "自身",
+        "timing": "戦闘前",
         "condition": {
-          "onBattle": true,
           "onEnemyTurn": true,
           "onRangedCombat": true
         }
@@ -3744,8 +3738,8 @@
         "value": 10,
         "ephemeral": true,
         "target": "自身",
+        "timing": "戦闘前",
         "condition": {
-          "onBattle": true,
           "onEnemyTurn": true,
           "onCloseCombat": true
         }
@@ -3755,8 +3749,8 @@
         "value": 10,
         "ephemeral": true,
         "target": "自身",
+        "timing": "戦闘前",
         "condition": {
-          "onBattle": true,
           "onEnemyTurn": true,
           "onCloseCombat": true
         }
@@ -4079,8 +4073,8 @@
         "type": "ダメージ耐性",
         "value": 10,
         "target": "自身",
+        "timing": "戦闘前",
         "condition": {
-          "onBattle": true,
           "onCloseCombat": true
         }
       }
@@ -4100,8 +4094,8 @@
         "type": "ダメージ耐性",
         "value": 10,
         "target": "自身",
+        "timing": "戦闘前",
         "condition": {
-          "onBattle": true,
           "onRangedCombat": true
         }
       }
@@ -4520,8 +4514,8 @@
         "variant": "中",
         "amount": 1,
         "target": "自身",
+        "timing": "戦闘後",
         "condition": {
-          "onBattleEnd": true,
           "onCriticalHit": true
         }
       }
@@ -4568,16 +4562,14 @@
         "type": "移動",
         "value": 1,
         "target": "自身",
-        "condition": {
-          "onKill": true
-        }
+        "timing": "敵撃破時"
       },
       {
         "type": "与ダメージ",
         "value": 10,
         "ephemeral": true,
         "target": "自身",
-        "timing": "スキル使用時",
+        "timing": "スキル前",
         "condition": {
           "onSingleSkill": true
         }
@@ -4675,8 +4667,8 @@
         "value": 10,
         "ephemeral": true,
         "target": "自身",
+        "timing": "戦闘前",
         "condition": {
-          "onBattle": true,
           "onEnemyTurn": true
         }
       }
@@ -4738,8 +4730,8 @@
         "value": 10,
         "ephemeral": true,
         "target": "自身",
+        "timing": "戦闘前",
         "condition": {
-          "onBattle": true,
           "onOwnTurn": true
         }
       }
@@ -4767,18 +4759,16 @@
         "value": 10,
         "duration": 2,
         "area": "2s",
-        "condition": {
-          "onActionEnd": true
-        }
+        "timing": "行動後"
       },
       {
         "type": "クリティカルダメージ倍率",
         "value": 10,
         "duration": 2,
         "area": "2s",
+        "timing": "行動後",
         "condition": {
-          "onActionEnd": true,
-          "hp": "=>80%"
+          "targetHp": ">=80%"
         }
       }
     ],
@@ -4805,9 +4795,7 @@
         "value": 15,
         "ephemeral": true,
         "target": "自身",
-        "condition": {
-          "onBattle": true
-        }
+        "timing": "戦闘前"
       }
     ],
     "debuff": [
@@ -4815,9 +4803,7 @@
         "type": "与ダメージ",
         "value": 15,
         "ephemeral": true,
-        "condition": {
-          "onBattle": true
-        }
+        "timing": "戦闘前"
       }
     ],
     "tags": [ "分類:マスター装備" ]
@@ -4872,8 +4858,8 @@
         "value": 10,
         "ephemeral": true,
         "target": "自身",
+        "timing": "戦闘前",
         "condition": {
-          "onBattle": true,
           "onOwnTurn": true
         }
       }
@@ -4921,8 +4907,9 @@
         "type": "ランダム",
         "variant": "弱",
         "amount": 1,
+        "timing": "攻撃後",
         "condition": {
-          "onBattleEnd": true,
+          "onDamage": true,
           "onOwnTurn": true
         }
       }
@@ -5050,18 +5037,14 @@
         "value": 10,
         "duration": 2,
         "area": "2s",
-        "condition": {
-          "onActionEnd": true
-        }
+        "timing": "行動後"
       },
       {
         "type": "レジスト",
         "value": 10,
         "duration": 2,
         "area": "2s",
-        "condition": {
-          "onActionEnd": true
-        }
+        "timing": "行動後"
       }
     ],
     "tags": [ "分類:マスター装備" ]
@@ -5094,9 +5077,7 @@
         "variant": "弱",
         "amount": 1,
         "area": "2s",
-        "condition": {
-          "onBattleEnd": true
-        }
+        "timing": "戦闘後"
       }
     ],
     "tags": [ "分類:マスター装備" ],
@@ -5513,8 +5494,8 @@
         "type": "与ダメージ",
         "value": 60,
         "target": "自身",
+        "timing": "戦闘前",
         "condition": {
-          "onBattle": true,
           "onCloseCombat": true
         }
       },
@@ -5522,8 +5503,8 @@
         "type": "与ダメージ",
         "value": -40,
         "target": "自身",
+        "timing": "戦闘前",
         "condition": {
-          "onBattle": true,
           "onRangedCombat": true
         }
       }
@@ -5653,9 +5634,7 @@
         "value": -60,
         "ephemeral": true,
         "target": "自身",
-        "condition": {
-          "onBattle": true
-        }
+        "timing": "戦闘前"
       }
     ],
     "tags": [ "分類:遺跡装備", "反射" ]
@@ -5856,7 +5835,7 @@
         "value": 10,
         "duration": 2,
         "area": "2s",
-        "timing": "スキル使用時",
+        "timing": "スキル後",
         "condition": {
           "onDamage": true
         }
@@ -5954,18 +5933,14 @@
         "value": 15,
         "duration": 1,
         "target": "単体",
-        "condition": {
-          "onBattleEnd": true
-        }
+        "timing": "戦闘後"
       },
       {
         "type": "レジスト",
         "value": 15,
         "duration": 1,
         "target": "単体",
-        "condition": {
-          "onBattleEnd": true
-        }
+        "timing": "戦闘後"
       }
     ],
     "tags": [ "分類:マスター装備", "バフ:アタック", "バフ:マジック", "単体回復(低HP)" ]
@@ -5991,8 +5966,8 @@
         "value": 20,
         "ephemeral": true,
         "target": "自身",
+        "timing": "戦闘前",
         "condition": {
-          "onBattle": true,
           "onOwnTurn": true
         }
       }
@@ -6026,8 +6001,8 @@
         "type": "ダメージ耐性(物理)",
         "value": 10,
         "duration": 1,
+        "timing": "戦闘後",
         "condition": {
-          "onBattleEnd": true,
           "onOwnTurn": true,
           "onCriticalHit": true
         }
@@ -6051,9 +6026,7 @@
         "value": 25,
         "ephemeral": true,
         "target": "自身",
-        "condition": {
-          "onBattle": true
-        }
+        "timing": "戦闘前"
       }
     ],
     "tags": [ "分類:遺跡装備", "デメリット:バフ解除" ]
@@ -6202,8 +6175,8 @@
         "value": 30,
         "ephemeral": true,
         "target": "自身",
+        "timing": "戦闘前",
         "condition": {
-          "onBattle": true,
           "onClassAdvantage": true
         }
       },
@@ -6316,8 +6289,8 @@
         "value": 8,
         "ephemeral": true,
         "target": "自身",
+        "timing": "戦闘前",
         "condition": {
-          "onBattle": true,
           "onEnemyTurn": true
         }
       }
@@ -6596,8 +6569,8 @@
         "value": 10,
         "ephemeral": true,
         "target": "自身",
+        "timing": "戦闘前",
         "condition": {
-          "onBattle": true,
           "onOwnTurn": true
         }
       },
@@ -6606,9 +6579,7 @@
         "value": 12,
         "duration": 2,
         "target": "自身",
-        "condition": {
-          "onKill": true
-        }
+        "timing": "敵撃破時"
       }
     ],
     "tags": [ "分類:ゴールド装備" ]
@@ -6634,8 +6605,8 @@
         "value": 8,
         "ephemeral": true,
         "target": "自身",
+        "timing": "戦闘前",
         "condition": {
-          "onBattle": true,
           "onOwnTurn": true,
           "onCloseCombat": true
         }
@@ -6645,18 +6616,14 @@
         "value": 12,
         "duration": 2,
         "target": "自身",
-        "condition": {
-          "onKill": true
-        }
+        "timing": "敵撃破時"
       },
       {
         "type": "マジック",
         "value": 12,
         "duration": 2,
         "target": "自身",
-        "condition": {
-          "onKill": true
-        }
+        "timing": "敵撃破時"
       }
     ],
     "tags": [ "分類:ゴールド装備" ]
@@ -6682,7 +6649,7 @@
         "value": 12,
         "target": "自身",
         "condition": {
-          "hp": "=>100%"
+          "hp": ">=100%"
         }
       },
       {
@@ -6690,7 +6657,7 @@
         "value": 10,
         "target": "自身",
         "condition": {
-          "hp": "=>100%"
+          "hp": ">=100%"
         }
       }
     ],
@@ -6805,9 +6772,9 @@
         "value": 10,
         "duration": 1,
         "area": 2,
+        "timing": "スキル後",
         "condition": {
-          "onBattleEnd": true,
-          "onSkill": true
+          "onDamage": true
         }
       },
       {
@@ -6815,9 +6782,9 @@
         "value": 10,
         "duration": 1,
         "area": 2,
+        "timing": "スキル後",
         "condition": {
-          "onBattleEnd": true,
-          "onSkill": true
+          "onDamage": true
         }
       }
     ],
@@ -6849,18 +6816,14 @@
         "value": 10,
         "duration": 2,
         "area": "2s",
-        "condition": {
-          "onActionEnd": true
-        }
+        "timing": "行動後"
       },
       {
         "type": "与ダメージ(スキル)",
         "value": 10,
         "duration": 2,
         "area": "2s",
-        "condition": {
-          "onActionEnd": true
-        }
+        "timing": "行動後"
       }
     ],
     "tags": [ "分類:真厄神装備" ]
@@ -6891,8 +6854,8 @@
         "value": 20,
         "ephemeral": true,
         "target": "自身",
+        "timing": "戦闘前",
         "condition": {
-          "onBattle": true,
           "onOwnTurn": true
         }
       }
@@ -6926,18 +6889,18 @@
         "type": "レジスト",
         "value": 20,
         "duration": 1,
+        "timing": "スキル後",
         "condition": {
-          "onBattleEnd": true,
-          "onSkill": true
+          "onDamage": true
         }
       },
       {
         "type": "ダメージ耐性",
         "value": 10,
         "duration": 1,
+        "timing": "スキル後",
         "condition": {
-          "onBattleEnd": true,
-          "onSkill": true
+          "onDamage": true
         }
       }
     ],
@@ -7047,8 +7010,8 @@
         "value": 20,
         "ephemeral": true,
         "target": "自身",
+        "timing": "戦闘前",
         "condition": {
-          "onBattle": true,
           "onOwnTurn": true
         }
       }
@@ -7081,8 +7044,8 @@
         "value": 10,
         "ephemeral": true,
         "target": "自身",
+        "timing": "戦闘前",
         "condition": {
-          "onBattle": true,
           "onOwnTurn": true
         }
       },
@@ -7091,8 +7054,8 @@
         "value": 10,
         "ephemeral": true,
         "target": "自身",
+        "timing": "戦闘前",
         "condition": {
-          "onBattle": true,
           "onOwnTurn": true
         }
       }
@@ -7125,8 +7088,8 @@
         "value": 10,
         "ephemeral": true,
         "target": "自身",
+        "timing": "戦闘前",
         "condition": {
-          "onBattle": true,
           "onOwnTurn": true
         }
       },
@@ -7135,8 +7098,8 @@
         "value": 10,
         "ephemeral": true,
         "target": "自身",
+        "timing": "戦闘前",
         "condition": {
-          "onBattle": true,
           "onEnemyTurn": true
         }
       }
@@ -7809,8 +7772,8 @@
         "value": 15,
         "ephemeral": true,
         "target": "自身",
+        "timing": "戦闘前",
         "condition": {
-          "onBattle": true,
           "onCloseCombat": true
         }
       },
@@ -7819,8 +7782,8 @@
         "value": 15,
         "ephemeral": true,
         "target": "自身",
+        "timing": "戦闘前",
         "condition": {
-          "onBattle": true,
           "onCloseCombat": true
         }
       },
@@ -7829,8 +7792,8 @@
         "value": -25,
         "ephemeral": true,
         "target": "自身",
+        "timing": "戦闘前",
         "condition": {
-          "onBattle": true,
           "onRangedCombat": true
         }
       },
@@ -7839,8 +7802,8 @@
         "value": -25,
         "ephemeral": true,
         "target": "自身",
+        "timing": "戦闘前",
         "condition": {
-          "onBattle": true,
           "onRangedCombat": true
         }
       }
@@ -8175,9 +8138,7 @@
         "maxStack": 3,
         "duration": 3,
         "target": "自身",
-        "condition": {
-          "onTurnBegin": true
-        }
+        "timing": "ターン開始時"
       }
     ],
     "tags": [ "分類:遺跡装備" ]
@@ -8399,7 +8360,7 @@
         "value": 20,
         "duration": 2,
         "target": "自身",
-        "timing": "スキル使用時"
+        "timing": "スキル後"
       },
       {
         "type": "クリティカルダメージ倍率",

@@ -27,7 +27,21 @@
     },
 
     "timingType": {
-      "enum": [ "ターン開始時", "スキル使用時", "戦闘前", "戦闘後", "行動後", "ターン終了時", "永続" ]
+      "enum": [
+        "ターン開始時",
+        "戦闘前",
+        "戦闘後",
+        "行動後",
+        "ターン終了時",
+
+        "スキル前",
+        "スキル後",
+        "攻撃前",
+        "攻撃後",
+        "敵撃破時",
+
+        "永続"
+      ]
     },
     "effectType": {
       "enum": [
@@ -87,10 +101,9 @@
         "onRangedCombat": { "type": "boolean" },
         "onCriticalHit": { "type": "boolean" },
         "onGuard": { "type": "boolean" },
+        "onMove": { "type": "boolean" },
         "onDamage": { "type": "boolean" },
         "onKill": { "type": "boolean" },
-        "onMove": { "type": "boolean" },
-        "onSkill": { "type": "boolean" },
         "onSingleSkill": { "type": "boolean" },
         "onAreaSkill": { "type": "boolean" },
         "onOwnTurn": { "type": "boolean" },

@@ -951,10 +951,9 @@
       {
         "type": "ダメージ耐性",
         "value": [ 10, 12, 14, 16, 20 ],
-        "duration": 2,
         "ephemeral": true,
+        "duration": 2,
         "condition": {
-          "onBattle": true,
           "onEnemyTurn": true
         }
       }
@@ -1511,10 +1510,9 @@
       {
         "type": "ダメージ耐性",
         "value": 10,
-        "duration": 2,
         "ephemeral": true,
+        "duration": 2,
         "condition": {
-          "onBattle": true,
           "onEnemyTurn": true
         }
       }

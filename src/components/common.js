@@ -833,6 +833,8 @@ export default {
       const buffToS = function (effectCategory, effect) {
         if (params.tagFilter && !params.tagFilter(skill, effectCategory, effect))
           return [];
+        if (effectCategory == "デバフ" && effect.ephemeral)
+          return [];
 
         // マイナスバフをデメリットタグとして登録するか
         if (typeof (effect.value) == 'number') {
