@@ -131,7 +131,7 @@
       {
         "type": "与ダメージ",
         "value": 20,
-        "duration": 0,
+        "ephemeral": true,
         "target": "自身",
         "condition": {
           "onBattle": true,
@@ -141,7 +141,7 @@
       {
         "type": "ダメージ耐性",
         "value": 10,
-        "duration": 0,
+        "ephemeral": true,
         "target": "自身",
         "condition": {
           "onBattle": true,
@@ -159,7 +159,7 @@
       {
         "type": "アタック",
         "value": 10,
-        "duration": 0,
+        "ephemeral": true,
         "target": "自身",
         "condition": {
           "onBattle": true,
@@ -169,7 +169,7 @@
       {
         "type": "ディフェンス",
         "value": 10,
-        "duration": 0,
+        "ephemeral": true,
         "target": "自身",
         "condition": {
           "onBattle": true,
@@ -187,7 +187,7 @@
       {
         "type": "ディフェンス",
         "value": 10,
-        "duration": 0,
+        "ephemeral": true,
         "target": "自身",
         "condition": {
           "onBattle": true,
@@ -197,7 +197,7 @@
       {
         "type": "レジスト",
         "value": 10,
-        "duration": 0,
+        "ephemeral": true,
         "target": "自身",
         "condition": {
           "onBattle": true,
@@ -240,7 +240,7 @@
       {
         "type": "クリティカル率",
         "value": 15,
-        "duration": 0,
+        "ephemeral": true,
         "target": "自身",
         "condition": {
           "onBattle": true,
@@ -250,7 +250,7 @@
       {
         "type": "ダメージ耐性",
         "value": 30,
-        "duration": 0,
+        "ephemeral": true,
         "target": "自身",
         "condition": {
           "onBattle": true,
@@ -364,7 +364,7 @@
       {
         "type": "ダメージ耐性",
         "value": 15,
-        "duration": 0,
+        "ephemeral": true,
         "target": "自身",
         "condition": {
           "onBattle": true,
@@ -429,7 +429,7 @@
       {
         "type": "マジック",
         "value": 10,
-        "duration": 0,
+        "ephemeral": true,
         "target": "自身",
         "condition": {
           "onBattle": true,
@@ -461,7 +461,7 @@
       {
         "type": "ダメージ耐性",
         "value": 10,
-        "duration": 0,
+        "ephemeral": true,
         "target": "自身",
         "condition": {
           "onBattle": true,
@@ -575,7 +575,7 @@
       {
         "type": "ディフェンス",
         "value": 10,
-        "duration": 0,
+        "ephemeral": true,
         "target": "自身",
         "condition": {
           "onBattle": true,
@@ -600,7 +600,7 @@
       {
         "type": "アタック",
         "value": 10,
-        "duration": 0,
+        "ephemeral": true,
         "condition": {
           "onBattle": true,
           "onOwnTurn": true
@@ -609,7 +609,7 @@
       {
         "type": "マジック",
         "value": 10,
-        "duration": 0,
+        "ephemeral": true,
         "condition": {
           "onBattle": true,
           "onOwnTurn": true
@@ -643,7 +643,7 @@
       {
         "type": "アタック",
         "value": 20,
-        "duration": 0,
+        "ephemeral": true,
         "target": "自身",
         "condition": {
           "onBattle": true,
@@ -758,7 +758,7 @@
       {
         "type": "ディフェンス",
         "value": 10,
-        "duration": 0,
+        "ephemeral": true,
         "target": "自身",
         "condition": {
           "onBattle": true,
@@ -769,7 +769,7 @@
       {
         "type": "レジスト",
         "value": 10,
-        "duration": 0,
+        "ephemeral": true,
         "target": "自身",
         "condition": {
           "onBattle": true,
@@ -788,7 +788,7 @@
       {
         "type": "アタック",
         "value": 15,
-        "duration": 0,
+        "ephemeral": true,
         "target": "自身",
         "condition": {
           "onBattle": true,
@@ -806,7 +806,7 @@
       {
         "type": "与ダメージ(物理)",
         "value": 15,
-        "duration": 0,
+        "ephemeral": true,
         "target": "自身",
         "condition": {
           "onBattle": true,
@@ -816,7 +816,7 @@
       {
         "type": "ダメージ耐性(物理)",
         "value": 15,
-        "duration": 0,
+        "ephemeral": true,
         "target": "自身",
         "condition": {
           "onBattle": true,
@@ -851,7 +851,7 @@
       {
         "type": "アタック",
         "value": 10,
-        "duration": 0,
+        "ephemeral": true,
         "target": "自身",
         "condition": {
           "onBattle": true,
@@ -861,7 +861,7 @@
       {
         "type": "ディフェンス",
         "value": 10,
-        "duration": 0,
+        "ephemeral": true,
         "target": "自身",
         "condition": {
           "onBattle": true,
@@ -886,7 +886,7 @@
       {
         "type": "クリティカルダメージ倍率",
         "value": 25,
-        "duration": 0,
+        "ephemeral": true,
         "target": "自身",
         "condition": {
           "onBattle": true,
@@ -904,7 +904,7 @@
       {
         "type": "ダメージ耐性(物理)",
         "value": 15,
-        "duration": 0,
+        "ephemeral": true,
         "target": "自身",
         "condition": {
           "onBattle": true,
@@ -929,7 +929,7 @@
       {
         "type": "与ダメージ(スキル)",
         "value": 30,
-        "duration": 0,
+        "ephemeral": true,
         "target": "自身",
         "condition": {
           "onBattle": true,
@@ -948,7 +948,7 @@
       {
         "type": "ダメージ耐性",
         "value": 10,
-        "duration": 0,
+        "ephemeral": true,
         "target": "自身",
         "condition": {
           "onBattle": true,
@@ -974,7 +974,7 @@
       {
         "type": "与ダメージ",
         "value": 25,
-        "duration": 0,
+        "ephemeral": true,
         "target": "自身",
         "condition": {
           "onBattle": true,
@@ -992,7 +992,7 @@
       {
         "type": "与ダメージ",
         "value": 10,
-        "duration": 0,
+        "ephemeral": true,
         "condition": {
           "onBattle": true,
           "onEnemyTurn": true,
@@ -1036,7 +1036,7 @@
       {
         "type": "与ダメージ",
         "value": 20,
-        "duration": 0,
+        "ephemeral": true,
         "target": "自身",
         "condition": {
           "onBattle": true,
@@ -1067,7 +1067,7 @@
       {
         "type": "ダメージ耐性(魔法)",
         "value": 20,
-        "duration": 0,
+        "ephemeral": true,
         "condition": {
           "onBattle": true
         }
@@ -1083,7 +1083,7 @@
       {
         "type": "アタック",
         "value": 15,
-        "duration": 0,
+        "ephemeral": true,
         "target": "自身",
         "condition": {
           "onBattle": true,
@@ -1093,7 +1093,7 @@
       {
         "type": "クリティカル率",
         "value": 15,
-        "duration": 0,
+        "ephemeral": true,
         "target": "自身",
         "condition": {
           "onBattle": true,
@@ -1111,7 +1111,7 @@
       {
         "type": "与ダメージ",
         "value": 5,
-        "duration": 0,
+        "ephemeral": true,
         "target": "自身",
         "condition": {
           "onBattle": true,
@@ -1121,7 +1121,7 @@
       {
         "type": "クリティカル率",
         "value": 10,
-        "duration": 0,
+        "ephemeral": true,
         "target": "自身",
         "condition": {
           "onBattle": true,
@@ -1218,7 +1218,7 @@
       {
         "type": "ディフェンス",
         "value": 10,
-        "duration": 0,
+        "ephemeral": true,
         "condition": {
           "onBattle": true,
           "onOwnTurn": true
@@ -1227,7 +1227,7 @@
       {
         "type": "ダメージ耐性(物理)",
         "value": 10,
-        "duration": 0,
+        "ephemeral": true,
         "condition": {
           "onBattle": true,
           "onOwnTurn": true
@@ -1277,7 +1277,7 @@
       {
         "type": "ダメージ耐性",
         "value": 10,
-        "duration": 0,
+        "ephemeral": true,
         "condition": {
           "onBattle": true,
           "onOwnTurn": true
@@ -1295,7 +1295,7 @@
       {
         "type": "アタック",
         "value": 15,
-        "duration": 0,
+        "ephemeral": true,
         "condition": {
           "onBattle": true,
           "onEnemyTurn": true
@@ -1304,7 +1304,7 @@
       {
         "type": "ディフェンス",
         "value": 15,
-        "duration": 0,
+        "ephemeral": true,
         "condition": {
           "onBattle": true,
           "onEnemyTurn": true
@@ -1394,7 +1394,7 @@
       {
         "type": "アタック",
         "value": 15,
-        "duration": 0,
+        "ephemeral": true,
         "target": "自身",
         "condition": {
           "onBattle": true,
@@ -1404,7 +1404,7 @@
       {
         "type": "与ダメージ(スキル)",
         "value": 15,
-        "duration": 0,
+        "ephemeral": true,
         "target": "自身",
         "condition": {
           "onBattle": true,
@@ -1422,7 +1422,7 @@
       {
         "type": "アタック",
         "value": 10,
-        "duration": 0,
+        "ephemeral": true,
         "target": "自身",
         "condition": {
           "onBattle": true,
@@ -1432,7 +1432,7 @@
       {
         "type": "ディフェンス",
         "value": 5,
-        "duration": 0,
+        "ephemeral": true,
         "target": "自身",
         "condition": {
           "onBattle": true,
@@ -1450,7 +1450,7 @@
       {
         "type": "マジック",
         "value": 15,
-        "duration": 0,
+        "ephemeral": true,
         "target": "自身",
         "condition": {
           "onBattle": true,
@@ -1468,7 +1468,7 @@
       {
         "type": "アタック",
         "value": 15,
-        "duration": 0,
+        "ephemeral": true,
         "target": "自身",
         "condition": {
           "onBattle": true,
@@ -1486,7 +1486,7 @@
       {
         "type": "与ダメージ(魔法)",
         "value": 20,
-        "duration": 0,
+        "ephemeral": true,
         "target": "自身",
         "condition": {
           "onBattle": true,
@@ -1522,7 +1522,7 @@
       {
         "type": "クリティカル率",
         "value": 15,
-        "duration": 0,
+        "ephemeral": true,
         "target": "自身",
         "condition": {
           "onBattle": true,
@@ -1532,7 +1532,7 @@
       {
         "type": "クリティカルダメージ倍率",
         "value": 15,
-        "duration": 0,
+        "ephemeral": true,
         "target": "自身",
         "condition": {
           "onBattle": true,
@@ -1614,7 +1614,7 @@
       {
         "type": "レジスト",
         "value": 10,
-        "duration": 0,
+        "ephemeral": true,
         "condition": {
           "onBattle": true,
           "onOwnTurn": true
@@ -1623,7 +1623,7 @@
       {
         "type": "ダメージ耐性(魔法)",
         "value": 10,
-        "duration": 0,
+        "ephemeral": true,
         "condition": {
           "onBattle": true,
           "onOwnTurn": true
@@ -1669,7 +1669,7 @@
       {
         "type": "アタック",
         "value": 20,
-        "duration": 0,
+        "ephemeral": true,
         "target": "自身",
         "condition": {
           "onBattle": true,
@@ -1730,7 +1730,7 @@
       {
         "type": "ダメージ耐性(物理)",
         "value": 20,
-        "duration": 0,
+        "ephemeral": true,
         "condition": {
           "onBattle": true
         }
@@ -1746,7 +1746,7 @@
       {
         "type": "与ダメージ",
         "value": 20,
-        "duration": 0,
+        "ephemeral": true,
         "target": "自身",
         "condition": {
           "onBattle": true,
@@ -1756,7 +1756,7 @@
       {
         "type": "クリティカル率",
         "value": 10,
-        "duration": 0,
+        "ephemeral": true,
         "target": "自身",
         "condition": {
           "onBattle": true,
@@ -1774,7 +1774,7 @@
       {
         "type": "アタック",
         "value": 10,
-        "duration": 0,
+        "ephemeral": true,
         "target": "自身",
         "condition": {
           "onBattle": true,
@@ -1784,7 +1784,7 @@
       {
         "type": "クリティカル率",
         "value": 5,
-        "duration": 0,
+        "ephemeral": true,
         "target": "自身",
         "condition": {
           "onBattle": true,
@@ -1897,7 +1897,7 @@
       {
         "type": "クリティカル率",
         "value": 20,
-        "duration": 0,
+        "ephemeral": true,
         "target": "自身",
         "condition": {
           "onBattle": true,
@@ -1907,7 +1907,7 @@
       {
         "type": "クリティカルダメージ倍率",
         "value": 20,
-        "duration": 0,
+        "ephemeral": true,
         "target": "自身",
         "condition": {
           "onBattle": true,
@@ -1917,7 +1917,7 @@
       {
         "type": "与ダメージ(スキル)",
         "value": 10,
-        "duration": 0,
+        "ephemeral": true,
         "target": "自身",
         "condition": {
           "onBattle": true,
@@ -1935,7 +1935,7 @@
       {
         "type": "ディフェンス",
         "value": 10,
-        "duration": 0,
+        "ephemeral": true,
         "target": "自身",
         "condition": {
           "onBattle": true,
@@ -1945,7 +1945,7 @@
       {
         "type": "ダメージ耐性(物理)",
         "value": 10,
-        "duration": 0,
+        "ephemeral": true,
         "target": "自身",
         "condition": {
           "onBattle": true,

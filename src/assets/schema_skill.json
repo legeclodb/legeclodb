@@ -27,7 +27,7 @@
     },
 
     "timingType": {
-      "enum": [ "常時", "ターン開始", "戦闘前", "戦闘後", "スキル使用", "敵撃破", "行動後" ]
+      "enum": [ "ターン開始時", "スキル使用時", "戦闘前", "戦闘後", "行動後", "ターン終了時", "永続" ]
     },
     "effectType": {
       "enum": [
@@ -83,15 +83,6 @@
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "onAlways": { "type": "boolean" },
-        "onTurnBegin": { "type": "boolean" },
-        "onActionBegin": { "type": "boolean" },
-        "onBattle": { "type": "boolean" },
-        "onBattleBegin": { "type": "boolean" },
-        "onBattleEnd": { "type": "boolean" },
-        "onActionEnd": { "type": "boolean" },
-        "onTurnEnd": { "type": "boolean" },
-
         "onCloseCombat": { "type": "boolean" },
         "onRangedCombat": { "type": "boolean" },
         "onCriticalHit": { "type": "boolean" },
@@ -148,8 +139,8 @@
         "value": { "type": [ "number", "array" ] },
         "maxStack": { "type": "number" },
         "duration": { "type": [ "number", "array" ] },
+        "ephemeral": { "type": "boolean" },
         "target": { "$ref": "#/$defs/targetType" },
-        "aoe": { "type": "boolean" },
         "area": { "type": [ "number", "string" ] },
         "amount": { "type": [ "number", "string" ] },
         "variant": { "type": [ "number", "string" ] },

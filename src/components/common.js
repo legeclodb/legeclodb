@@ -833,25 +833,31 @@ export default {
       const buffToS = function (effectCategory, effect) {
         if (params.tagFilter && !params.tagFilter(skill, effectCategory, effect))
           return [];
+
+        // マイナスバフをデメリットタグとして登録するか
         if (typeof (effect.value) == 'number') {
-          if (effect.value < 0 && effectCategory == "バフ")
-            effectCategory = "デメリット"
+          if (effect.value < 0 && effectCategory == "バフ") {
+            if (params.includeDemeritTags) {
+              effectCategory = "デメリット"
+            }
+            else {
+              return [];
+            }
+          }
         }
 
         let t = effectCategory + ":" + effect.type;
 
-        // 不格好だが…
-        const cond = effect.condition;
-        if (cond && cond.onBattle && !effect.duration && effect.type != "ランダム") {
+        if (effect.ephemeral) {
           t += "(戦闘時)";
         }
-        else {
-          if ((params.includeSelfTag && effect.target == "自身") || (effect.target && effect.target != "自身")) {
+        if (effect.target) {
+          if ((params.includeSelfTags && effect.target == "自身")) {
             t += `(${effect.target})`;
           }
-          else if (params.includeAreaTag && effectCategory == "バフ" && effect.area) {
-            t += `(味方)`;
-          }
+        }
+        if (params.includeAreaTags && effectCategory == "バフ" && effect.area) {
+          t += `(味方)`;
         }
 
         if (effect.variant)
@@ -901,7 +907,7 @@ export default {
 
       if (!skill.tags)
         skill.tags = [];
-      if (params.effectParamsToTags)
+      if (params.includeSkillEffectTags)
         skill.tags = [...skill.tags, ...this.effectParamsToTags(skill, params)];
 
       if (!skill.icon)
@@ -929,8 +935,10 @@ export default {
 
     // params:
     // {
-    //   includeSelfTag: bool,
-    //   effectParamsToTags: bool,
+    //   includeSelfTags: bool,
+    //   includeSkillEffectTags: bool,
+    //   includeAreaTags: bool,
+    //   includeDemeritTags: bool,
     //   tagFilter: (skill, effectCategory, effect) => bool,
     // }
     setupCharacters(characters, activeSkills, passiveSkills, talents = [], params = {}) {

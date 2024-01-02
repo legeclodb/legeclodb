@@ -506,7 +506,7 @@ export default {
       this.characters = structuredClone(this.characters).filter(a => !a.hidden);
       this.setupCharacters(this.characters, this.active, this.passive, [],
         {
-          effectParamsToTags: true,
+          includeSkillEffectTags: true,
           includeSelfTags: true,
         });
 

@@ -654,15 +654,14 @@ export default {
             return false;
         }
         else if (effectCategory == "デバフ") {
-          const cond = effect.condition;
-          if (cond && cond.onBattle && !effect.duration)
+          if (effect.ephemeral)
             return false;
         }
         return true;
       };
       this.setupCharacters(this.characters, this.active, this.passive, this.talents,
         {
-          effectParamsToTags: true,
+          includeSkillEffectTags: true,
           tagFilter: tagFilter
         });
 

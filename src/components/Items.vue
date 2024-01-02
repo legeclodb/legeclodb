@@ -374,9 +374,9 @@ export default {
       // 外部 json 由来のデータへの変更はセッションをまたいでしまうので、deep copy しておく
       this.equipments = structuredClone(this.equipments);
       this.setupItems(this.equipments, {
-        effectParamsToTags: true,
-        includeSelfTags: true,
-        includeAreaTag: true,
+        includeSkillEffectTags: true,
+        includeAreaTags: true,
+        includeDemeritTags: true,
       });
       this.equipments = this.equipments.filter(a => !a.hidden && a.slotId < 4); // アミュレットは除外
 

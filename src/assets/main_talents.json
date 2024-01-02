@@ -96,13 +96,13 @@
       {
         "type": "アタック",
         "value": [ 5, 8, 11, 15 ],
-        "aoe": true,
+        "timing": "永続",
         "area": 2
       },
       {
         "type": "ディフェンス",
         "value": [ 5, 8, 11, 15 ],
-        "aoe": true,
+        "timing": "永続",
         "area": 2
       }
     ]
@@ -344,7 +344,7 @@
       {
         "type": "ダメージ耐性(魔法)",
         "value": [ 15, 20, 25, 30 ],
-        "aoe": true,
+        "timing": "永続",
         "area": 2
       }
     ],
@@ -1227,7 +1227,7 @@
       {
         "type": "被治療効果",
         "value": 30,
-        "aoe": true
+        "timing": "永続"
       }
     ],
     "tags": [ "移動+" ]
@@ -1313,12 +1313,12 @@
       {
         "type": "アタック",
         "value": 10,
-        "aoe": true
+        "timing": "永続"
       },
       {
         "type": "マジック",
         "value": 10,
-        "aoe": true
+        "timing": "永続"
       }
     ],
     "tags": [ "蓄積バフ" ]
@@ -1550,7 +1550,7 @@
       {
         "type": "ダメージ耐性(物理)",
         "value": [ 5, 10, 10, 15 ],
-        "aoe": true,
+        "timing": "永続",
         "area": 3
       }
     ],
@@ -1631,7 +1631,7 @@
       {
         "type": "ダメージ耐性(魔法)",
         "value": 10,
-        "aoe": true
+        "timing": "永続"
       }
     ],
     "tags": [ "死亡時復活" ]
@@ -1669,27 +1669,27 @@
       {
         "type": "アタック",
         "value": 10,
-        "aoe": true
+        "timing": "永続"
       },
       {
         "type": "ディフェンス",
         "value": 10,
-        "aoe": true
+        "timing": "永続"
       },
       {
         "type": "マジック",
         "value": 10,
-        "aoe": true
+        "timing": "永続"
       },
       {
         "type": "レジスト",
         "value": 10,
-        "aoe": true
+        "timing": "永続"
       },
       {
         "type": "テクニック",
         "value": 10,
-        "aoe": true
+        "timing": "永続"
       }
     ]
   },
@@ -2011,17 +2011,17 @@
       {
         "type": "与ダメージ",
         "value": 15,
-        "aoe": true
+        "timing": "永続"
       },
       {
         "type": "ダメージ耐性",
         "value": 8,
-        "aoe": true
+        "timing": "永続"
       },
       {
         "type": "被治療効果",
         "value": 20,
-        "aoe": true
+        "timing": "永続"
       }
     ],
     "tags": [ "単体回復(低HP)", "バフ:リジェネ" ]
@@ -2052,17 +2052,17 @@
       {
         "type": "マジック",
         "value": 10,
-        "aoe": true
+        "timing": "永続"
       },
       {
         "type": "与ダメージ(スキル)",
         "value": 10,
-        "aoe": true
+        "timing": "永続"
       },
       {
         "type": "クリティカル率",
         "value": 10,
-        "aoe": true
+        "timing": "永続"
       }
     ]
   },
@@ -2155,12 +2155,12 @@
       {
         "type": "ディフェンス",
         "value": 15,
-        "aoe": true
+        "timing": "永続"
       },
       {
         "type": "レジスト",
         "value": 15,
-        "aoe": true
+        "timing": "永続"
       }
     ],
     "tags": [ "移動+", "自己回復" ]
@@ -2204,7 +2204,7 @@
       {
         "type": "与ダメージ",
         "value": 15,
-        "aoe": true
+        "timing": "永続"
       }
     ],
     "tags": [ "シールド付与(自身)" ]
@@ -2218,27 +2218,27 @@
       {
         "type": "アタック",
         "value": 10,
-        "aoe": true
+        "timing": "永続"
       },
       {
         "type": "ディフェンス",
         "value": 10,
-        "aoe": true
+        "timing": "永続"
       },
       {
         "type": "マジック",
         "value": 10,
-        "aoe": true
+        "timing": "永続"
       },
       {
         "type": "レジスト",
         "value": 10,
-        "aoe": true
+        "timing": "永続"
       },
       {
         "type": "テクニック",
         "value": 10,
-        "aoe": true
+        "timing": "永続"
       }
     ]
   },
@@ -2256,7 +2256,7 @@
       {
         "type": "移動",
         "value": 1,
-        "aoe": true
+        "timing": "永続"
       }
     ],
     "tags": [ "再移動" ]
@@ -2325,12 +2325,12 @@
       {
         "type": "アタック",
         "value": 10,
-        "aoe": true
+        "timing": "永続"
       },
       {
         "type": "マジック",
         "value": 10,
-        "aoe": true
+        "timing": "永続"
       }
     ],
     "tags": [ "射程+(反撃)", "再行動", "再攻撃" ]
@@ -2755,7 +2755,7 @@
       {
         "type": "与ダメージ",
         "value": 15,
-        "aoe": true
+        "timing": "永続"
       }
     ],
     "tags": [ "ガード", "再行動", "再攻撃" ]
@@ -2774,7 +2774,7 @@
       {
         "type": "与ダメージ",
         "value": 20,
-        "aoe": true
+        "timing": "永続"
       }
     ],
     "tags": [ "蓄積バフ", "再移動" ]
@@ -2812,27 +2812,27 @@
       {
         "type": "アタック",
         "value": 3,
-        "aoe": true
+        "timing": "永続"
       },
       {
         "type": "ディフェンス",
         "value": 3,
-        "aoe": true
+        "timing": "永続"
       },
       {
         "type": "マジック",
         "value": 3,
-        "aoe": true
+        "timing": "永続"
       },
       {
         "type": "レジスト",
         "value": 3,
-        "aoe": true
+        "timing": "永続"
       },
       {
         "type": "テクニック",
         "value": 3,
-        "aoe": true
+        "timing": "永続"
       }
     ],
     "tags": [ "単体回復(低HP)" ]
@@ -2912,12 +2912,12 @@
       {
         "type": "アタック",
         "value": 25,
-        "aoe": true
+        "timing": "永続"
       },
       {
         "type": "マジック",
         "value": 25,
-        "aoe": true
+        "timing": "永続"
       }
     ]
   },
@@ -3031,31 +3031,31 @@
       {
         "type": "アタック",
         "value": 10,
-        "aoe": true,
+        "timing": "永続",
         "area": 5
       },
       {
         "type": "ディフェンス",
         "value": 10,
-        "aoe": true,
+        "timing": "永続",
         "area": 5
       },
       {
         "type": "マジック",
         "value": 10,
-        "aoe": true,
+        "timing": "永続",
         "area": 5
       },
       {
         "type": "レジスト",
         "value": 10,
-        "aoe": true,
+        "timing": "永続",
         "area": 5
       },
       {
         "type": "テクニック",
         "value": 10,
-        "aoe": true,
+        "timing": "永続",
         "area": 5
       }
     ],
@@ -4141,13 +4141,13 @@
       {
         "type": "クリティカル率",
         "value": [ 10, 12, 17, 25 ],
-        "aoe": true,
+        "timing": "永続",
         "area": "3s"
       },
       {
         "type": "クリティカルダメージ倍率",
         "value": [ 10, 12, 17, 25 ],
-        "aoe": true,
+        "timing": "永続",
         "area": "3s"
       }
     ],
