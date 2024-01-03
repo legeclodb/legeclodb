@@ -103,7 +103,7 @@
         "target": "自身",
         "timing": "戦闘前",
         "condition": {
-          "hp": ">=50%"
+          "hp": [ ">=", 50 ]
         }
       }
     ],
@@ -367,7 +367,7 @@
         "slot": "崩天画撃",
         "timing": "戦闘後",
         "condition": {
-          "hp": ">=50%"
+          "hp": [ ">=", 50 ]
         }
       }
     ],
@@ -510,7 +510,7 @@
         "slot": "加護",
         "timing": "戦闘前",
         "condition": {
-          "hp": ">=80%"
+          "hp": [ ">=", 80 ]
         }
       }
     ],
@@ -588,7 +588,7 @@
         "timing": "戦闘前",
         "condition": {
           "onOwnTurn": true,
-          "hp": ">=80%"
+          "hp": [ ">=", 80 ]
         }
       }
     ],
@@ -846,7 +846,7 @@
         "duration": 4,
         "slot": "加護",
         "condition": {
-          "hp": ">=80%"
+          "hp": [ ">=", 80 ]
         }
       },
       {
@@ -855,7 +855,7 @@
         "duration": 4,
         "slot": "加護",
         "condition": {
-          "hp": "<=80%"
+          "hp": [ "<=", 80 ]
         }
       }
     ],
@@ -2583,7 +2583,7 @@
         "slot": "加護",
         "timing": "戦闘前",
         "condition": {
-          "targetActiveDebuffCount": ">=3"
+          "targetActiveDebuffCount": [ ">=", 3 ]
         }
       }
     ],
@@ -3727,7 +3727,7 @@
         "duration": 1,
         "timing": "戦闘前",
         "condition": {
-          "token": ">=1"
+          "token": [ ">=", 1 ]
         }
       }
     ],
@@ -3796,7 +3796,7 @@
         "target": "自身",
         "timing": "戦闘前",
         "condition": {
-          "token": ">=3"
+          "token": [ ">=", 3 ]
         }
       }
     ],
@@ -4781,7 +4781,7 @@
         "slot": "加護",
         "timing": "戦闘前",
         "condition": {
-          "hp": "<=80%"
+          "hp": [ "<=", 80 ]
         }
       }
     ],
@@ -5205,7 +5205,7 @@
         "target": "自身",
         "timing": "戦闘後",
         "condition": {
-          "hp": "<=50%"
+          "hp": [ "<=", 50 ]
         }
       },
       {
@@ -5215,7 +5215,7 @@
         "target": "自身",
         "timing": "戦闘後",
         "condition": {
-          "hp": "<=50%"
+          "hp": [ "<=", 50 ]
         }
       }
     ],
@@ -5247,7 +5247,7 @@
         "target": "自身",
         "timing": "戦闘後",
         "condition": {
-          "hp": "<=65%"
+          "hp": [ "<=", 65 ]
         }
       },
       {
@@ -5257,7 +5257,7 @@
         "target": "自身",
         "timing": "戦闘後",
         "condition": {
-          "hp": "<=65%"
+          "hp": [ "<=", 65 ]
         }
       }
     ],
@@ -5927,7 +5927,7 @@
         "duration": 1,
         "timing": "戦闘後",
         "condition": {
-          "targetHp": ">=50%"
+          "targetHp": [ ">=", 50 ]
         }
       }
     ],
@@ -6834,7 +6834,7 @@
         "slot": "加護",
         "timing": "戦闘前",
         "condition": {
-          "hp": ">=50%"
+          "hp": [ ">=", 50 ]
         }
       },
       {
@@ -6845,7 +6845,7 @@
         "slot": "加護",
         "timing": "戦闘前",
         "condition": {
-          "hp": ">=50%"
+          "hp": [ ">=", 50 ]
         }
       }
     ],
@@ -6898,7 +6898,7 @@
         "value": 2,
         "duration": 2,
         "condition": {
-          "token": ">=1"
+          "token": [ ">=", 1 ]
         }
       }
     ],
@@ -6907,7 +6907,7 @@
         "type": "スタン",
         "duration": 1,
         "condition": {
-          "token": ">=2"
+          "token": [ ">=", 2 ]
         }
       }
     ],
@@ -7208,7 +7208,7 @@
         "slot": "加護",
         "timing": "戦闘前",
         "condition": {
-          "hp": ">=50%"
+          "hp": [ ">=", 50 ]
         }
       },
       {
@@ -7219,7 +7219,7 @@
         "slot": "加護",
         "timing": "戦闘前",
         "condition": {
-          "hp": ">=50%"
+          "hp": [ ">=", 50 ]
         }
       }
     ],
@@ -7571,7 +7571,7 @@
         "duration": 4,
         "slot": "加護",
         "condition": {
-          "hp": ">=50%"
+          "hp": [ ">=", 50 ]
         }
       },
       {
@@ -7580,7 +7580,7 @@
         "duration": 4,
         "slot": "加護",
         "condition": {
-          "hp": ">=50%"
+          "hp": [ ">=", 50 ]
         }
       },
       {
@@ -7589,7 +7589,7 @@
         "duration": 4,
         "slot": "加護",
         "condition": {
-          "hp": ">=50%"
+          "hp": [ ">=", 50 ]
         }
       }
     ],
@@ -7643,7 +7643,7 @@
         "duration": 4,
         "slot": "加護",
         "condition": {
-          "hp": ">=30%"
+          "hp": [ ">=", 30 ]
         }
       },
       {
@@ -7652,7 +7652,7 @@
         "duration": 4,
         "slot": "加護",
         "condition": {
-          "hp": ">=30%"
+          "hp": [ ">=", 30 ]
         }
       },
       {
@@ -7661,7 +7661,7 @@
         "duration": 4,
         "slot": "加護",
         "condition": {
-          "hp": ">=30%"
+          "hp": [ ">=", 30 ]
         }
       }
     ],
@@ -7877,7 +7877,7 @@
         "duration": 1,
         "timing": "戦闘前",
         "condition": {
-          "targetHp": ">=75%"
+          "targetHp": [ ">=", 75 ]
         }
       }
     ],
@@ -8777,7 +8777,7 @@
         "duration": 4,
         "slot": "加護",
         "condition": {
-          "hp": ">=50%"
+          "hp": [ ">=", 50 ]
         }
       },
       {
@@ -8787,7 +8787,7 @@
         "duration": 4,
         "slot": "加護",
         "condition": {
-          "hp": ">=50%"
+          "hp": [ ">=", 50 ]
         }
       }
     ],
@@ -9020,7 +9020,7 @@
         "type": "強化不可",
         "duration": 2,
         "condition": {
-          "token": ">=2"
+          "token": [ ">=", 2 ]
         }
       }
     ],

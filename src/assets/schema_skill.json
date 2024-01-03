@@ -1,4 +1,4 @@
-﻿{
+{
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$defs": {
     "unitType": {
@@ -92,6 +92,30 @@
         "位置移動"
       ]
     },
+    "conditionVariable": {
+      "enum": [
+        "token",
+        "moveAmount",
+        "activeBuffCount"
+      ]
+    },
+
+    "numericCompare": {
+      "type": "array",
+      "items": {
+        "anyOf": [
+          { "enum": [ ">", "<", ">=", "<=", "==" ] },
+          { "enum": [ "target" ] },
+          { "type": "number" },
+          {
+            "type": "array",
+            "items": { "type": "number" }
+          }
+        ]
+      },
+      "minItems": 2,
+      "maxItems": 2
+    },
 
     "condition": {
       "type": "object",
@@ -131,15 +155,14 @@
         "onEffect": { "type": "string" },
 
         "probability": { "type": [ "number", "array" ] },
-        "turn": { "type": [ "number", "string" ] },
-        "hp": { "type": [ "number", "string" ] },
-        "targetHp": { "type": [ "number", "string" ] },
-        "move": { "type": [ "number", "boolean" ] },
-        "token": { "type": [ "number", "boolean", "string" ] },
-        "activeBuffCount": { "type": [ "number", "boolean", "string" ] },
-        "activeDebuffCount": { "type": [ "number", "boolean", "string" ] },
-        "targetActiveBuffCount": { "type": [ "number", "boolean", "string" ] },
-        "targetActiveDebuffCount": { "type": [ "number", "boolean", "string" ] }
+        "turn": { "$ref": "#/$defs/numericCompare" },
+        "hp": { "$ref": "#/$defs/numericCompare" },
+        "targetHp": { "$ref": "#/$defs/numericCompare" },
+        "token": { "$ref": "#/$defs/numericCompare" },
+        "activeBuffCount": { "$ref": "#/$defs/numericCompare" },
+        "activeDebuffCount": { "$ref": "#/$defs/numericCompare" },
+        "targetActiveBuffCount": { "$ref": "#/$defs/numericCompare" },
+        "targetActiveDebuffCount": { "$ref": "#/$defs/numericCompare" }
       }
     },
 
@@ -151,6 +174,7 @@
         "type": { "$ref": "#/$defs/effectType" },
         "value": { "type": [ "number", "array" ] },
         "maxStack": { "type": "number" },
+        "stackBy": { "$ref": "#/$defs/conditionVariable" },
         "duration": { "type": [ "number", "array" ] },
         "ephemeral": { "type": "boolean" },
         "target": { "$ref": "#/$defs/targetType" },

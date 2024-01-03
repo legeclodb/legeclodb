@@ -116,7 +116,7 @@
         "value": 10,
         "target": "自身",
         "condition": {
-          "hp": ">=90%"
+          "hp": [ ">=", 90 ]
         }
       },
       {
@@ -124,7 +124,7 @@
         "value": 10,
         "target": "自身",
         "condition": {
-          "hp": ">=90%"
+          "hp": [ ">=", 90 ]
         }
       }
     ]
@@ -143,7 +143,7 @@
         "target": "自身",
         "condition": {
           "onOwnTurn": true,
-          "hp": ">enemy%"
+          "hp": [ ">", "target" ]
         }
       }
     ]
@@ -290,7 +290,7 @@
         "timing": "戦闘前",
         "condition": {
           "onOwnTurn": true,
-          "hp": ">=80%"
+          "hp": [ ">=", 80 ]
         }
       }
     ]
@@ -319,7 +319,7 @@
         "target": "自身",
         "timing": "戦闘前",
         "condition": {
-          "hp": "<enemy%"
+          "hp": [ "<", "target" ]
         }
       },
       {
@@ -329,7 +329,7 @@
         "target": "自身",
         "timing": "戦闘前",
         "condition": {
-          "hp": "<enemy%"
+          "hp": [ "<", "target" ]
         }
       }
     ]
@@ -969,7 +969,7 @@
         "target": "自身",
         "timing": "戦闘前",
         "condition": {
-          "hp": ">=50%"
+          "hp": [ ">=", 50 ]
         }
       }
     ]
@@ -1249,7 +1249,7 @@
         "value": 15,
         "target": "自身",
         "condition": {
-          "hp": ">=100%"
+          "hp": [ ">=", 100 ]
         }
       },
       {
@@ -1257,7 +1257,7 @@
         "value": 15,
         "target": "自身",
         "condition": {
-          "hp": ">=100%"
+          "hp": [ ">=", 100 ]
         }
       },
       {
@@ -1265,7 +1265,7 @@
         "value": 15,
         "target": "自身",
         "condition": {
-          "hp": ">=100%"
+          "hp": [ ">=", 100 ]
         }
       },
       {
@@ -1273,7 +1273,7 @@
         "value": 15,
         "target": "自身",
         "condition": {
-          "hp": ">=100%"
+          "hp": [ ">=", 100 ]
         }
       },
       {
@@ -1281,7 +1281,7 @@
         "value": 15,
         "target": "自身",
         "condition": {
-          "hp": ">=100%"
+          "hp": [ ">=", 100 ]
         }
       }
     ]
@@ -1402,7 +1402,7 @@
         "value": 10,
         "target": "自身",
         "condition": {
-          "token": ">=1"
+          "token": [">=", 1]
         }
       },
       {
@@ -1410,7 +1410,7 @@
         "value": 10,
         "target": "自身",
         "condition": {
-          "token": ">=3"
+          "token": [">=", 3]
         }
       },
       {
@@ -1418,7 +1418,7 @@
         "value": 10,
         "area": 2,
         "condition": {
-          "token": ">=2"
+          "token": [">=", 2]
         }
       },
       {
@@ -1426,7 +1426,7 @@
         "value": 10,
         "area": 2,
         "condition": {
-          "token": ">=2"
+          "token": [">=", 2]
         }
       }
     ]
@@ -1448,7 +1448,7 @@
         "value": 15,
         "target": "自身",
         "condition": {
-          "token": ">=1"
+          "token": [">=", 1]
         }
       },
       {
@@ -1456,7 +1456,7 @@
         "value": 20,
         "target": "自身",
         "condition": {
-          "token": ">=3"
+          "token": [">=", 3]
         }
       },
       {
@@ -1464,7 +1464,7 @@
         "value": 15,
         "area": 2,
         "condition": {
-          "token": ">=2"
+          "token": [">=", 2]
         }
       },
       {
@@ -1472,7 +1472,7 @@
         "value": 15,
         "area": 2,
         "condition": {
-          "token": ">=2"
+          "token": [">=", 2]
         }
       }
     ]
@@ -1991,7 +1991,7 @@
         "value": 10,
         "target": "自身",
         "condition": {
-          "token": ">=1"
+          "token": [">=", 1]
         }
       }
     ],
@@ -2002,7 +2002,7 @@
         "duration": 1,
         "timing": "戦闘前",
         "condition": {
-          "token": ">=2"
+          "token": [">=", 2]
         }
       }
     ],
@@ -2229,7 +2229,7 @@
         "value": 1,
         "target": "自身",
         "condition": {
-          "hp": ">=50%"
+          "hp": [ ">=", 50 ]
         }
       }
     ],
@@ -2248,7 +2248,7 @@
         "maxStack": 5,
         "target": "自身",
         "condition": {
-          "activeBuffCount": true
+          "activeBuffCount": [ ">", 0 ]
         }
       }
     ],
@@ -2266,7 +2266,7 @@
         "value": 30,
         "target": "自身",
         "condition": {
-          "token": ">=1"
+          "token": [">=", 1]
         }
       },
       {
@@ -2274,7 +2274,7 @@
         "value": 20,
         "target": "自身",
         "condition": {
-          "token": ">=2"
+          "token": [">=", 2]
         }
       }
     ],
@@ -2285,7 +2285,7 @@
         "duration": 2,
         "timing": "戦闘前",
         "condition": {
-          "token": ">=3"
+          "token": [">=", 3]
         }
       },
       {
@@ -2294,7 +2294,7 @@
         "duration": 2,
         "timing": "戦闘前",
         "condition": {
-          "token": ">=3"
+          "token": [">=", 3]
         }
       },
       {
@@ -2625,7 +2625,7 @@
         "value": 10,
         "target": "自身",
         "condition": {
-          "token": ">=1"
+          "token": [">=", 1]
         }
       },
       {
@@ -2633,7 +2633,7 @@
         "value": 30,
         "target": "自身",
         "condition": {
-          "token": ">=2"
+          "token": [">=", 2]
         }
       },
       {
@@ -2641,7 +2641,7 @@
         "value": 30,
         "target": "自身",
         "condition": {
-          "token": ">=3"
+          "token": [">=", 3]
         }
       }
     ],
@@ -2720,7 +2720,7 @@
         "value": 20,
         "target": "自身",
         "condition": {
-          "token": 3
+          "token": [ "==", 3 ]
         }
       }
     ],
@@ -2838,7 +2838,7 @@
         "value": 30,
         "target": "自身",
         "condition": {
-          "token": 1
+          "token": [ ">=", 1 ]
         }
       },
       {
@@ -2846,7 +2846,7 @@
         "value": 20,
         "target": "自身",
         "condition": {
-          "token": 2
+          "token": [ ">=", 2 ]
         }
       },
       {
@@ -2854,7 +2854,7 @@
         "value": 30,
         "target": "自身",
         "condition": {
-          "token": 3
+          "token": [ ">=", 3 ]
         }
       }
     ],
