@@ -99,7 +99,6 @@
         "activeBuffCount"
       ]
     },
-
     "numericCompare": {
       "type": "array",
       "items": {
@@ -115,6 +114,15 @@
       },
       "minItems": 2,
       "maxItems": 2
+    },
+    "unitsInArea": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "area": { "type": "integer" },
+        "shape": { "enum": [ "範囲", "周囲" ] },
+        "compare": { "$ref": "#/$defs/numericCompare" }
+      },
     },
 
     "condition": {
@@ -155,14 +163,16 @@
         "onEffect": { "type": "string" },
 
         "probability": { "type": [ "number", "array" ] },
-        "turn": { "$ref": "#/$defs/numericCompare" },
         "hp": { "$ref": "#/$defs/numericCompare" },
         "targetHp": { "$ref": "#/$defs/numericCompare" },
+        "turn": { "$ref": "#/$defs/numericCompare" },
         "token": { "$ref": "#/$defs/numericCompare" },
         "activeBuffCount": { "$ref": "#/$defs/numericCompare" },
         "activeDebuffCount": { "$ref": "#/$defs/numericCompare" },
         "targetActiveBuffCount": { "$ref": "#/$defs/numericCompare" },
-        "targetActiveDebuffCount": { "$ref": "#/$defs/numericCompare" }
+        "targetActiveDebuffCount": { "$ref": "#/$defs/numericCompare" },
+        "nearAllyCount": { "$ref": "#/$defs/unitsInArea" },
+        "nearEnemyCount": { "$ref": "#/$defs/unitsInArea" }
       }
     },
 

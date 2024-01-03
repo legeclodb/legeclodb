@@ -2857,7 +2857,34 @@
       "Lv 4": "自ユニットのアタック[b]+10%[/b]。\n「アサシン」がメインの敵ユニットと戦闘するとき、自ユニットのディフェンス/物理ダメージ耐性[b]+18%[/b]。",
       "Lv 5": "自ユニットのアタック[b]+12%[/b]。\n「アサシン」がメインの敵ユニットと戦闘するとき、自ユニットのディフェンス/物理ダメージ耐性[b]+23%[/b]。",
       "Lv 6": "自ユニットのアタック[b]+15%[/b]。\n「アサシン」がメインの敵ユニットと戦闘するとき、自ユニットのディフェンス/物理ダメージ耐性[b]+30%[/b]。"
-    }
+    },
+    "buff": [
+      {
+        "type": "アタック",
+        "value": [ 7, 8, 10, 12, 15 ],
+        "target": "自身"
+      },
+      {
+        "type": "ディフェンス",
+        "value": [ 12, 15, 18, 23, 30 ],
+        "ephemeral": true,
+        "target": "自身",
+        "timing": "戦闘前",
+        "condition": {
+          "onEnemyClass": ["アサシン"]
+        }
+      },
+      {
+        "type": "ダメージ耐性(物理)",
+        "value": [ 12, 15, 18, 23, 30 ],
+        "ephemeral": true,
+        "target": "自身",
+        "timing": "戦闘前",
+        "condition": {
+          "onEnemyClass": [ "アサシン" ]
+        }
+      }
+    ]
   },
   {
     "uid": "3100466",
@@ -2872,13 +2899,42 @@
     "buff": [
       {
         "type": "アタック",
-        "value": 25,
+        "value": [ 10, 12, 17, 25 ],
+        "area": "3s",
         "timing": "永続"
       },
       {
         "type": "マジック",
-        "value": 25,
+        "value": [ 10, 12, 17, 25 ],
+        "area": "3s",
         "timing": "永続"
+      },
+      {
+        "type": "クリティカル率",
+        "value": [ 8, 10, 12, 15 ],
+        "duration": 2,
+        "target": "自身",
+        "timing": "戦闘前",
+        "condition": {
+          "onOwnTurn": true
+        }
+      },
+      {
+        "type": "ディフェンス",
+        "value": [ 8, 10, 12, 15 ],
+        "duration": 2,
+        "target": "自身",
+        "timing": "戦闘前",
+        "condition": {
+          "onOwnTurn": true
+        }
+      },
+      {
+        "type": "ダメージ耐性",
+        "value": [ 15, 18, 23, 30 ],
+        "duration": 1,
+        "target": "自身",
+        "timing": "敵撃破時"
       }
     ]
   },
@@ -2892,6 +2948,38 @@
       "Lv 5": "自ユニットのアタック/クリティカル率[b]+23%[/b]。\n遠距離による戦闘時、その戦闘前、自ユニットの物理与ダメージ[b]+36%[/b]。\n移動するとき、全ての通過可能な地形を「平地」マスとして扱う。\n敵ユニットを倒したとき、自身の全スキルのクールタイム-1。\n味方ターンでの戦闘中、クリティカルが発生したとき、その戦闘後、自ユニットの移動[b]+2[/b](1ターン)。更に、再行動できる(この再行動は発動してから2ターン毎に発動可能)。",
       "Lv 6": "自ユニットのアタック/クリティカル率[b]+30%[/b]。\n遠距離による戦闘時、その戦闘前、自ユニットの物理与ダメージ[b]+45%[/b]。\n移動するとき、全ての通過可能な地形を「平地」マスとして扱う。\n敵ユニットを倒したとき、自身の全スキルのクールタイム-1。\n味方ターンでの戦闘中、クリティカルが発生したとき、その戦闘後、自ユニットの移動[b]+2[/b](1ターン)。更に、再行動できる(この再行動は発動してから2ターン毎に発動可能)。"
     },
+    "buff": [
+      {
+        "type": "アタック",
+        "value": [ 15, 18, 23, 30 ],
+        "target": "自身"
+      },
+      {
+        "type": "クリティカル率",
+        "value": [ 15, 18, 23, 30 ],
+        "target": "自身"
+      },
+      {
+        "type": "与ダメージ(物理)",
+        "value": [ 25, 30, 36, 45 ],
+        "ephemeral": true,
+        "target": "自身",
+        "timing": "戦闘前",
+        "condition": {
+          "onRangedCombat": true
+        }
+      },
+      {
+        "type": "移動",
+        "value": [ 1, 1, 2, 2 ],
+        "duration": 1,
+        "timing": "戦闘後",
+        "condition": {
+          "onOwnTurn": true,
+          "onCriticalHit": true
+        }
+      }
+    ],
     "tags": [ "地形無視", "CT減(自身)", "移動+", "再行動", "再攻撃" ]
   },
   {
@@ -2908,15 +2996,17 @@
       {
         "type": "クリティカル率",
         "value": [ 18, 22, 26, 30 ],
+        "ephemeral": true,
         "target": "自身",
         "timing": "戦闘前",
         "condition": {
-          "onEffect": "バットミミック"
+          "onEffect": "3100464"
         }
       },
       {
         "type": "クリティカルダメージ倍率",
         "value": [ 18, 22, 26, 30 ],
+        "ephemeral": true,
         "target": "自身",
         "timing": "戦闘前",
         "condition": {
@@ -2926,6 +3016,7 @@
       {
         "type": "与ダメージ(通常攻撃)",
         "value": [ 25, 30, 36, 45 ],
+        "ephemeral": true,
         "target": "自身",
         "timing": "戦闘前",
         "condition": {
@@ -2939,7 +3030,11 @@
         "target": "自身",
         "timing": "ターン開始時",
         "condition": {
-          "onNearAlly": "1s"
+          "nearAllyCount": {
+            "area": 1,
+            "shape": "周囲",
+            "compare": [ ">", 0 ]
+          }
         }
       },
       {
@@ -2949,17 +3044,67 @@
         "target": "自身",
         "timing": "ターン開始時",
         "condition": {
-          "onNearAlly": "1s"
+          "nearAllyCount": {
+            "area": 1,
+            "shape": "周囲",
+            "compare": [ ">", 0 ]
+          }
         }
       },
       {
         "type": "アタック",
         "value": [ 2, 3, 4, 5 ],
         "maxStack": 3,
+        "stackBy": "token",
         "duration": 5,
+        "target": "自身"
+      },
+      {
+        "type": "ディフェンス",
+        "value": [ 2, 3, 4, 5 ],
+        "maxStack": 3,
+        "stackBy": "token",
+        "duration": 5,
+        "target": "自身"
+      },
+      {
+        "type": "マジック",
+        "value": [ 2, 3, 4, 5 ],
+        "maxStack": 3,
+        "stackBy": "token",
+        "duration": 5,
+        "target": "自身"
+      },
+      {
+        "type": "レジスト",
+        "value": [ 2, 3, 4, 5 ],
+        "maxStack": 3,
+        "stackBy": "token",
+        "duration": 5,
+        "target": "自身"
+      },
+      {
+        "type": "テクニック",
+        "value": [ 2, 3, 4, 5 ],
+        "maxStack": 3,
+        "stackBy": "token",
+        "duration": 5,
+        "target": "自身"
+      },
+      {
+        "type": "ディフェンス無視",
+        "value": [ 18, 22, 26, 30 ],
         "target": "自身",
         "condition": {
-          "token": [ ">", 0 ]
+          "token": [ ">=", 2 ]
+        }
+      },
+      {
+        "type": "与ダメージ(物理)",
+        "value": [ 15, 18, 23, 30 ],
+        "target": "自身",
+        "condition": {
+          "token": [ ">=", 3 ]
         }
       }
     ],

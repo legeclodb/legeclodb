@@ -1976,6 +1976,10 @@
         "slot": "加護",
         "timing": "戦闘前",
         "condition": {
+          "nearAllyCount": {
+            "area": 2,
+            "compare": [ ">", 0 ]
+          },
           "onNearAlly": 2
         }
       }
