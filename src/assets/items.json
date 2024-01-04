@@ -4758,14 +4758,14 @@
         "type": "クリティカル率",
         "value": 10,
         "duration": 2,
-        "area": "2s",
+        "area": [ 2, "周囲" ],
         "timing": "行動後"
       },
       {
         "type": "クリティカルダメージ倍率",
         "value": 10,
         "duration": 2,
-        "area": "2s",
+        "area": [ 2, "周囲" ],
         "timing": "行動後",
         "condition": {
           "targetHp": [ ">=", 80 ]
@@ -5036,14 +5036,14 @@
         "type": "ディフェンス",
         "value": 10,
         "duration": 2,
-        "area": "2s",
+        "area": [ 2, "周囲" ],
         "timing": "行動後"
       },
       {
         "type": "レジスト",
         "value": 10,
         "duration": 2,
-        "area": "2s",
+        "area": [ 2, "周囲" ],
         "timing": "行動後"
       }
     ],
@@ -5076,7 +5076,7 @@
         "type": "ランダム",
         "variant": "弱",
         "amount": 1,
-        "area": "2s",
+        "area": [ 2, "周囲" ],
         "timing": "戦闘後"
       }
     ],
@@ -5834,7 +5834,7 @@
         "type": "与ダメージ",
         "value": 10,
         "duration": 2,
-        "area": "2s",
+        "area": [ 2, "周囲" ],
         "timing": "スキル後",
         "condition": {
           "onDamage": true
@@ -6815,14 +6815,14 @@
         "type": "クリティカル率",
         "value": 10,
         "duration": 2,
-        "area": "2s",
+        "area": [ 2, "周囲" ],
         "timing": "行動後"
       },
       {
         "type": "与ダメージ(スキル)",
         "value": 10,
         "duration": 2,
-        "area": "2s",
+        "area": [ 2, "周囲" ],
         "timing": "行動後"
       }
     ],

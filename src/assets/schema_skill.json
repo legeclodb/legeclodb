@@ -13,6 +13,9 @@
     "rarityType": {
       "enum": [ "N", "R", "SR", "SSR" ]
     },
+    "statusType": {
+      "enum": [ "最大HP", "アタック", "ディフェンス", "マジック", "レジスト", "テクニック" ]
+    },
     "damageType": {
       "enum": [ "アタック", "マジック" ]
     },
@@ -74,6 +77,7 @@
         "移動",
         "移動コスト1化",
         "ランダム",
+        "トークン",
 
         "スタン",
         "アクティブスキル使用不可",
@@ -96,6 +100,8 @@
       "enum": [
         "token",
         "moveAmount",
+        "nearAllyCount",
+        "nearEnemyCount",
         "activeBuffCount"
       ]
     },
@@ -115,14 +121,87 @@
       "minItems": 2,
       "maxItems": 2
     },
+    "areaType": {
+      "anyOf": [
+        { "type": "number" },
+        {
+          "type": "array",
+          "items": { "type": "number" }
+        },
+        {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              {
+                "anyOf": [
+                  { "type": "number" },
+                  {
+                    "type": "array",
+                    "items": { "type": "number" }
+                  }
+                ]
+              },
+              { "enum": [ "範囲", "周囲" ] },
+              { "enum": [ "自身を含む", "自身を除く" ] }
+            ]
+          }
+        }
+      ]
+    },
     "unitsInArea": {
       "type": "object",
+      "required": [ "area", "compare" ],
       "additionalProperties": false,
       "properties": {
-        "area": { "type": "integer" },
-        "shape": { "enum": [ "範囲", "周囲" ] },
+        "area": { "$ref": "#/$defs/areaType" },
         "compare": { "$ref": "#/$defs/numericCompare" }
-      },
+      }
+    },
+    "statusConversion": {
+      "type": "object",
+      "required": [ "from", "rate" ],
+      "properties": {
+        "from": { "$ref": "#/$defs/statusType" },
+        "rate": {
+          "anyOf": [
+            { "type": "number" },
+            {
+              "type": "array",
+              "items": { "type": "number" }
+            }
+          ]
+        }
+      }
+    },
+    "variableStatusRate": {
+      "type": "object",
+      "required": [ "min", "max", "by", "order" ],
+      "properties": {
+        "min": {
+          "anyOf": [
+            { "type": "number" },
+            {
+              "type": "array",
+              "items": { "type": "number" }
+            }
+          ]
+        },
+        "max": {
+          "anyOf": [
+            { "type": "number" },
+            {
+              "type": "array",
+              "items": { "type": "number" }
+            }
+          ]
+        },
+        "by": { "enum": [ "HP" ] },
+        "order": { "enum": [ "多いほど上昇", "少ないほど上昇" ] },
+        "borders": {
+          "type": "array",
+          "items": { "type": "number" }
+        }
+      }
     },
 
     "condition": {
@@ -184,11 +263,27 @@
         "type": { "$ref": "#/$defs/effectType" },
         "value": { "type": [ "number", "array" ] },
         "maxStack": { "type": "number" },
-        "stackBy": { "$ref": "#/$defs/conditionVariable" },
+        "stackBy": {
+          "anyOf": [
+            { "$ref": "#/$defs/conditionVariable" },
+            {
+              "type": "array",
+              "items": {
+                "anyOf": [
+                  { "$ref": "#/$defs/conditionVariable" },
+                  { "$ref": "#/$defs/areaType" }
+                ]
+              }
+            }
+          ]
+        },
+        "add": { "$ref": "#/$defs/statusConversion" },
+        "replace": { "$ref": "#/$defs/statusConversion" },
+        "variable": { "$ref": "#/$defs/variableStatusRate" },
         "duration": { "type": [ "number", "array" ] },
         "ephemeral": { "type": "boolean" },
         "target": { "$ref": "#/$defs/targetType" },
-        "area": { "type": [ "number", "string" ] },
+        "area": { "$ref": "#/$defs/areaType" },
         "amount": { "type": [ "number", "string" ] },
         "variant": { "type": [ "number", "string" ] },
         "slot": { "type": "string" },

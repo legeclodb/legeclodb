@@ -1359,7 +1359,7 @@
         "type": "与ダメージ",
         "value": 10,
         "duration": 1,
-        "area": "1s",
+        "area": [ 1, "周囲" ],
         "timing": "行動後"
       }
     ]
