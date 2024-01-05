@@ -829,6 +829,12 @@ export default {
       return Math.round(r);
     },
 
+
+    isPublicTarget(target) {
+      return !target ||
+        (typeof (target) == "string" && target != "自身");
+    },
+
     effectParamsToTags(skill, params) {
       const buffToS = function (effectCategory, effect) {
         if (params.tagFilter && !params.tagFilter(skill, effectCategory, effect))
@@ -854,7 +860,7 @@ export default {
           t += "(戦闘時)";
         }
         if (effect.target) {
-          if ((params.includeSelfTags && effect.target == "自身")) {
+          if ((params.includeSelfTags && this.isPublicTarget(effect.target))) {
             t += `(${effect.target})`;
           }
         }

@@ -28,8 +28,20 @@
     "terrainType": {
       "enum": [ "平地", "草原", "森", "水中", "荒地", "崖", "空", "山岳", "洞窟", "砂地", "砂丘", "積雪", "置物", "砦", "壁", "柵", "溶岩" ]
     },
-    "targetType": {
+    "targetEnum": {
       "enum": [ "自身", "自ユニット", "単体", "複数", "スキル対象", "全体" ]
+    },
+    "targetType": {
+      "anyOf": [
+        { "$ref": "#/$defs/targetEnum" },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "uid": { "type": "string" }
+          }
+        }
+      ]
     },
 
     "timingType": {
@@ -45,6 +57,7 @@
         "攻撃前",
         "攻撃後",
         "敵撃破時",
+        "復活時",
 
         "永続"
       ]

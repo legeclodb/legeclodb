@@ -594,7 +594,7 @@ export default {
     const setupSkill = function(skill) {
       for (let v of this.enumerateEffects(skill)) {
         const cond = v.condition;
-        if (v.target == "自身" ||
+        if (!this.isPublicTarget(v.target) ||
           (cond && (cond.onClass || cond.onSymbol)) ||
           (v.isDebuff && v.ephemeral && !v.duration)
         ) {
@@ -823,9 +823,9 @@ export default {
     effectsToHtml(skill, ctx) {
       let lines = [];
       for (const v of this.enumerate(skill.buff, skill.debuff)) {
-        if (["ランダム", "クラス", "シンボル"].includes(v.type) ||
-          ["自身"].includes(v.target)) {
-          continue
+        if (["ランダム"].includes(v.type) ||
+          !this.isPublicTarget(v.target)) {
+          continue;
         }
 
         let additionalClass = "";
