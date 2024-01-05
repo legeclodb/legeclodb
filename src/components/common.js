@@ -833,12 +833,12 @@ export default {
       const buffToS = function (effectCategory, effect) {
         if (params.tagFilter && !params.tagFilter(skill, effectCategory, effect))
           return [];
-        if (effectCategory == "デバフ" && effect.ephemeral)
+        if (effect.isDebuff && effect.ephemeral)
           return [];
 
         // マイナスバフをデメリットタグとして登録するか
         if (typeof (effect.value) == 'number') {
-          if (effect.value < 0 && effectCategory == "バフ") {
+          if (effect.value < 0 && effect.isBuff) {
             if (params.includeDemeritTags) {
               effectCategory = "デメリット"
             }
@@ -858,7 +858,7 @@ export default {
             t += `(${effect.target})`;
           }
         }
-        if (params.includeAreaTags && effectCategory == "バフ" && effect.area) {
+        if (params.includeAreaTags && effect.isBuff && effect.area) {
           t += `(味方)`;
         }
 
@@ -884,24 +884,28 @@ export default {
     setupSkill(skill, params) {
       if (skill.buff) {
         for (let v of skill.buff) {
+          v.parent = skill;
           v.effectType = "バフ";
           v.isBuff = true;
         }
       }
       if (skill.debuff) {
         for (let v of skill.debuff) {
+          v.parent = skill;
           v.effectType = "デバフ";
           v.isDebuff = true;
         }
       }
       if (skill.statusEffects) {
         for (let v of skill.statusEffects) {
+          v.parent = skill;
           v.effectType = "状態異常";
           v.isStatusEffect = true;
         }
       }
       if (skill.immune) {
         for (let v of skill.immune) {
+          v.parent = skill;
           v.effectType = "無効化";
           v.isImmune = true;
         }
@@ -921,6 +925,7 @@ export default {
       const allClasses = [0, 1, 2, 3, 4, 5, 6, 7];
 
       for (let item of items) {
+        item.isItem = true;
         this.setupSkill(item, params);
 
         if (item.classes)

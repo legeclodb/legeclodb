@@ -198,12 +198,14 @@
           例えば「与ダメージバフ＋クリティカルダメージ倍率バフ＋ダメージ耐性デバフ」のいい感じの組み合わせを探したい、というようなケースで役立ちます。<br />
           <br />
           味方全体の強化の最適化が目的であるため、自己バフは考慮しません。単体のバフも「<b-link @mouseenter="highlight('cb-p-allowSingleUnitBuff', true)" @mouseleave="highlight('cb-p-allowSingleUnitBuff', false)">単体バフを含める</b-link>」にチェックしていない限り考慮しません。<br />
+          マスターキャラのクラス対象バフや、ゼニス/オリジン/ナディア のシンボル対象バフ、特定のクラスへの追加効果 (<b-link :ref="po">みんな！丸太は持った！？</b-link> のスキル与ダメージなど) は除外しています。<br />
+          シンボルスキルに関しては「<b-link @mouseenter="highlight('cb-p-allowSymbolSkill', true)" @mouseleave="highlight('cb-p-allowSymbolSkill', false)">シンボルスキルを含める</b-link>」をチェックすると含めるようになります。<br />
           特定のキャラやスキルを除外or優先採用したい場合、アイコンをマウスオーバーすると出てくるポップアップから可能です。<br />
           特定の効果を優先したい場合は優先度を高めると優先的に選択されます。<br />
           <br />
           なお、必ずしも本当に最適な結果になるとは限らないことに注意が必要です。<br />
           完璧に解くには時間がかかりすぎるため、若干正確性を犠牲にしつつ高速に解く方法を用いています。<br />
-          (アルゴリズムは随時改良中: 2023/12/06)<br />
+          (アルゴリズムは随時改良中: 2024/01/06)<br />
         </div>
       </div>
 
@@ -408,6 +410,19 @@
       </template>
     </div>
 
+    <template v-for="(e, i) in popoverElements">
+      <b-popover :target="e.element" :key="i" triggers="hover focus" custom-class="item_po" :title="e.name" placement="top">
+        <div class="flex">
+          <div><b-img-lazy :src="getImageURL(e.item.icon)" width="50" height="50" /></div>
+          <div v-html="descToHtml(e.item)"></div>
+        </div>
+        <div v-if="e.item.owners" class="owners">
+          所持者:<br />
+          <b-img-lazy v-for="(owner, oi) in e.item.owners" :key="oi" :src="getImageURL(owner.icon)" :title="owner.name" width="50" height="50" />
+        </div>
+      </b-popover>
+    </template>
+
   </div>
 </template>
 
@@ -439,6 +454,8 @@ export default {
       symbols: jsonConstants.symbols,
       damageTypes: jsonConstants.damageTypes,
       rarities: jsonConstants.rarities,
+
+      popoverElements: [],
 
       filter: {
         class: [],
@@ -545,8 +562,11 @@ export default {
     this.itemCount = idx;
 
     this.searchTable = new Map();
-    for (let s of this.enumerate(this.mainChrs, this.mainActive, this.mainPassive, this.mainTalents, this.supChrs, this.supActive, this.supPassive, this.items))
+    this.searchTableWithName = new Map();
+    for (let s of this.enumerate(this.mainChrs, this.mainActive, this.mainPassive, this.mainTalents, this.supChrs, this.supActive, this.supPassive, this.items)) {{
       this.searchTable.set(s.id, s);
+      this.searchTableWithName.set(s.name, s);
+    }}
 
     const setupPropIndex = function (obj, typeName) {
       if (typeName == "メイン")
@@ -573,6 +593,15 @@ export default {
     let slotTable = new Map();
     const setupSkill = function(skill) {
       for (let v of this.enumerateEffects(skill)) {
+        const cond = v.condition;
+        if (v.target == "自身" ||
+          (cond && (cond.onClass || cond.onSymbol)) ||
+          (v.isDebuff && v.ephemeral && !v.duration)
+        ) {
+          v.excluded = true;
+          continue;
+        }
+
         let valueType = v.type;
         if (v.isBuff)
           valueType += "+";
@@ -580,9 +609,6 @@ export default {
           valueType += "-";
         v.valueType = valueType;
 
-        const cond = v.condition;
-        if (v.target == "自身" || (cond && (cond.onClass || cond.onSymbol)))
-          v.isExcluded = true;
         if (v.target == "単体")
           v.isSingleTarget = true;
 
@@ -604,7 +630,7 @@ export default {
               slot += "(メイン)";
             else if (skill.isSupportSkill)
               slot += "(サポート)";
-            if (v.onBattle)
+            if (v.ephemeral)
               slot += "(戦闘時)";
             v.slot = slot;
           }
@@ -615,6 +641,10 @@ export default {
           }
         }
       }
+      if(skill.buff)
+        skill.buff = skill.buff.filter(s => !s.excluded);
+      if(skill.debuff)
+        skill.debuff = skill.debuff.filter(s => !s.excluded);
     }.bind(this);
     for (let v of this.enumerate(this.mainActive, this.mainPassive, this.mainTalents, this.supActive, this.supPassive, this.items)) {
       setupSkill(v);
@@ -754,6 +784,26 @@ export default {
   },
 
   methods: {
+    findItem(name) {
+      const r = this.searchTableWithName.get(name);
+      if (!r)
+        console.log(`${name} not found`);
+      return r;
+    },
+
+    po(e) {
+      if (e) {
+        let el = e.$el;
+        if (!this.popoverElements.find(e => e === el)) {
+          this.popoverElements.push({
+            name: el.innerText,
+            item: this.findItem(el.innerText),
+            element: el,
+          });
+        }
+      }
+    },
+
     findItemById(id) {
       const r = this.searchTable.get(id);
       if (!r)
@@ -780,7 +830,7 @@ export default {
 
         let additionalClass = "";
         let prefix = v.isDebuff ? "-" : "+";
-        let onBattle = v.onBattle ? "(戦闘時)" : "";
+        let onBattle = v.ephemeral ? "(戦闘時)" : "";
         let unit = "";
         let title = "";
         if (ctx.usedEffects.includes(v)) {
@@ -967,20 +1017,18 @@ export default {
       }.bind(this);
 
       const effectCondition = function (effect) {
-        if (effect.onBattle && !effect.duration)
+        if (effect.ephemeral && !effect.duration)
           return false;
 
         const cond = effect.condition;
-        const onBattle = (cond ? cond.onBattle : effect.onBattle) && !effect.duration;
-        const probability = cond ? cond.probability : effect.probability;
+        const probability = cond?.probability;
         if (effect.isDebuff) {
-          return (opt.allowOnBattle || !onBattle) &&
+          return (opt.allowOnBattle || !effect.ephemeral) &&
             (opt.allowProbability || !probability);
         }
         else {
-          return (!effect.isExcluded) &&
-            (opt.allowSingleUnitBuff || !effect.isSingleTarget) &&
-            (opt.allowOnBattle || !onBattle) &&
+          return (opt.allowSingleUnitBuff || !effect.isSingleTarget) &&
+            (opt.allowOnBattle || !effect.ephemeral) &&
             (opt.allowProbability || !probability);
         }
       };
