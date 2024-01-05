@@ -869,7 +869,7 @@ export default {
 
       let buff = skill.buff;
       if (this.matchTags(skill.tags, /シンボルスキル/))
-        buff = buff.slice(6, buff.length); // シンボルスキル共通バフは除外
+        buff = buff?.slice(6, buff.length); // シンボルスキル共通バフは除外
 
       const map = (a, f) => a ? a.flatMap(f) : [];
       return [

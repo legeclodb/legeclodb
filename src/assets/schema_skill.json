@@ -217,7 +217,6 @@
         "onRangedCombat": { "type": "boolean" },
         "onCriticalHit": { "type": "boolean" },
         "onGuard": { "type": "boolean" },
-        "onMove": { "type": "boolean" },
         "onDamage": { "type": "boolean" },
         "onKill": { "type": "boolean" },
         "onSingleSkill": { "type": "boolean" },

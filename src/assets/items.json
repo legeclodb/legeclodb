@@ -4700,11 +4700,9 @@
         "type": "クリティカル率",
         "value": 5,
         "maxStack": 5,
+        "stackBy": "moveAmount",
         "ephemeral": true,
-        "target": "自身",
-        "condition": {
-          "onMove": true
-        }
+        "target": "自身"
       }
     ],
     "tags": [ "分類:マスター装備" ]
@@ -7902,11 +7900,9 @@
         "type": "クリティカル率",
         "value": 3,
         "maxStack": 5,
+        "stackBy": "moveAmount",
         "ephemeral": true,
-        "target": "自身",
-        "condition": {
-          "onMove": true
-        }
+        "target": "自身"
       },
       {
         "type": "与ダメージ(スキル)",
@@ -8162,11 +8158,9 @@
         "type": "与ダメージ(物理)",
         "value": 2,
         "maxStack": 4,
+        "stackBy": "moveAmount",
         "ephemeral": true,
-        "target": "自身",
-        "condition": {
-          "onMove": true
-        }
+        "target": "自身"
       },
       {
         "type": "与ダメージ(スキル)",
@@ -8285,10 +8279,10 @@
         "type": "クリティカルダメージ倍率",
         "value": 3,
         "maxStack": 5,
+        "stackBy": "moveAmount",
         "ephemeral": true,
         "target": "自身",
         "condition": {
-          "onMove": true,
           "onClass": [ "ソーサラー", "ライダー" ]
         }
       }
@@ -8325,10 +8319,10 @@
         "type": "クリティカルダメージ倍率",
         "value": 3,
         "maxStack": 5,
+        "stackBy": "moveAmount",
         "ephemeral": true,
         "target": "自身",
         "condition": {
-          "onMove": true,
           "onClass": [ "ソーサラー", "ライダー" ]
         }
       }
@@ -8366,11 +8360,11 @@
         "type": "クリティカルダメージ倍率",
         "value": 3,
         "maxStack": 5,
+        "stackBy": "moveAmount",
         "ephemeral": true,
         "target": "自身",
         "timing": "戦闘前",
         "condition": {
-          "onMove": true,
           "onClass": [ "シューター", "アサシン" ]
         }
       }
@@ -8404,11 +8398,11 @@
         "type": "クリティカルダメージ倍率",
         "value": 3,
         "maxStack": 5,
+        "stackBy": "moveAmount",
         "ephemeral": true,
         "target": "自身",
         "timing": "戦闘前",
         "condition": {
-          "onMove": true,
           "onClass": [ "ランサー", "ソルジャー" ]
         }
       }

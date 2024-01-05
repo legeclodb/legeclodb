@@ -648,13 +648,11 @@
         "type": "与ダメージ",
         "value": 5,
         "maxStack": 3,
+        "stackBy": "moveAmount",
         "ephemeral": true,
         "duration": 4,
         "slot": "加護",
-        "timing": "戦闘前",
-        "condition": {
-          "onMove": true
-        }
+        "timing": "戦闘前"
       }
     ],
     "tags": [ "シンボルスキル", "移動時強化" ]

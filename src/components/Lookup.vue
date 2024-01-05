@@ -580,8 +580,9 @@ export default {
           valueType += "-";
         v.valueType = valueType;
 
-        if (v.target == "自身")
-          v.isSelfTarget = true;
+        const cond = v.condition;
+        if (v.target == "自身" || (cond && (cond.onClass || cond.onSymbol)))
+          v.isExcluded = true;
         if (v.target == "単体")
           v.isSingleTarget = true;
 
@@ -977,7 +978,7 @@ export default {
             (opt.allowProbability || !probability);
         }
         else {
-          return (!effect.isSelfTarget) &&
+          return (!effect.isExcluded) &&
             (opt.allowSingleUnitBuff || !effect.isSingleTarget) &&
             (opt.allowOnBattle || !onBattle) &&
             (opt.allowProbability || !probability);

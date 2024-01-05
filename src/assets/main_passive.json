@@ -614,12 +614,10 @@
         "type": "アタック",
         "value": 5,
         "maxStack": 3,
+        "stackBy": "moveAmount",
         "ephemeral": true,
         "target": "自身",
-        "timing": "戦闘前",
-        "condition": {
-          "onMove": true
-        }
+        "timing": "戦闘前"
       }
     ],
     "tags": [ "移動時強化" ]
@@ -2394,23 +2392,19 @@
         "type": "アタック",
         "value": 5,
         "maxStack": 6,
+        "stackBy": "moveAmount",
         "ephemeral": true,
         "target": "自身",
-        "timing": "戦闘前",
-        "condition": {
-          "onMove": true
-        }
+        "timing": "戦闘前"
       },
       {
         "type": "与ダメージ(物理)",
         "value": 5,
         "maxStack": 6,
+        "stackBy": "moveAmount",
         "ephemeral": true,
         "target": "自身",
-        "timing": "戦闘前",
-        "condition": {
-          "onMove": true
-        }
+        "timing": "戦闘前"
       }
     ],
     "tags": [ "地形無視", "移動時強化" ]
@@ -2536,12 +2530,10 @@
         "type": "与ダメージ(スキル)",
         "value": 5,
         "maxStack": 6,
+        "stackBy": "moveAmount",
         "ephemeral": true,
         "target": "自身",
-        "timing": "戦闘前",
-        "condition": {
-          "onMove": true
-        }
+        "timing": "戦闘前"
       }
     ],
     "tags": [ "再移動", "移動時強化" ]
@@ -2928,12 +2920,10 @@
         "type": "被治療効果",
         "value": 15,
         "maxStack": 4,
+        "stackBy": "moveAmount",
         "ephemeral": true,
         "target": "自身",
-        "timing": "戦闘前",
-        "condition": {
-          "onMove": true
-        }
+        "timing": "戦闘前"
       }
     ],
     "debuff": [
@@ -2960,12 +2950,10 @@
         "type": "被治療効果",
         "value": 15,
         "maxStack": 4,
+        "stackBy": "moveAmount",
         "ephemeral": true,
         "target": "自身",
-        "timing": "戦闘前",
-        "condition": {
-          "onMove": true
-        }
+        "timing": "戦闘前"
       }
     ],
     "debuff": [
