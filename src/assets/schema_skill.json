@@ -25,8 +25,11 @@
     "amuletType": {
       "enum": [ "月", "太陽" ]
     },
+    "terrainType": {
+      "enum": [ "平地", "草原", "森", "水中", "荒地", "崖", "空", "山岳", "洞窟", "砂地", "砂丘", "積雪", "置物", "砦", "壁", "柵", "溶岩" ]
+    },
     "targetType": {
-      "enum": [ "自身", "自ユニット", "単体", "複数", "全体" ]
+      "enum": [ "自身", "自ユニット", "単体", "複数", "スキル対象", "全体" ]
     },
 
     "timingType": {
@@ -201,7 +204,7 @@
           ]
         },
         "by": { "enum": [ "HP" ] },
-        "order": { "enum": [ "多いほど上昇", "少ないほど上昇" ] },
+        "order": { "enum": [ "多いほど上昇", "低いほど上昇" ] },
         "borders": {
           "type": "array",
           "items": { "type": "number" }
@@ -244,6 +247,7 @@
         },
         "onClassAdvantage": { "type": "boolean" },
         "onEffect": { "type": "string" },
+        "onTerrain": { "$ref": "#/$defs/terrainType" },
 
         "probability": { "type": [ "number", "array" ] },
         "hp": { "$ref": "#/$defs/numericCompare" },
@@ -255,6 +259,7 @@
         "activeDebuffCount": { "$ref": "#/$defs/numericCompare" },
         "targetActiveBuffCount": { "$ref": "#/$defs/numericCompare" },
         "targetActiveDebuffCount": { "$ref": "#/$defs/numericCompare" },
+        "terrainDef": { "$ref": "#/$defs/numericCompare" },
         "nearAllyCount": { "$ref": "#/$defs/unitsInArea" },
         "nearEnemyCount": { "$ref": "#/$defs/unitsInArea" }
       }
