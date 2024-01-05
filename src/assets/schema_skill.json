@@ -77,6 +77,7 @@
         "移動",
         "移動コスト1化",
         "ランダム",
+        "シールド",
         "トークン",
 
         "スタン",
@@ -99,10 +100,14 @@
     "conditionVariable": {
       "enum": [
         "token",
+        "targetToken",
         "moveAmount",
         "nearAllyCount",
         "nearEnemyCount",
-        "activeBuffCount"
+        "activeBuffCount",
+        "activeDebuffCount",
+        "targetActiveBuffCount",
+        "targetActiveDebuffCount"
       ]
     },
     "numericCompare": {
@@ -246,6 +251,7 @@
         "targetHp": { "$ref": "#/$defs/numericCompare" },
         "turn": { "$ref": "#/$defs/numericCompare" },
         "token": { "$ref": "#/$defs/numericCompare" },
+        "targetToken": { "$ref": "#/$defs/numericCompare" },
         "activeBuffCount": { "$ref": "#/$defs/numericCompare" },
         "activeDebuffCount": { "$ref": "#/$defs/numericCompare" },
         "targetActiveBuffCount": { "$ref": "#/$defs/numericCompare" },
