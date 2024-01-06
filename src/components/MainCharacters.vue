@@ -614,6 +614,7 @@ export default {
   },
 
   created() {
+    document.title = "れじぇくろDB: メインキャラ";
     this.setupDB();
 
     this.fillFilter(this.classFilter, this.classes);

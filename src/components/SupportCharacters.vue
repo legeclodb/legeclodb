@@ -475,6 +475,7 @@ export default {
   },
 
   created() {
+    document.title = "れじぇくろDB: サポートキャラ";
     this.setupDB();
 
     this.fillFilter(this.classFilter, this.classes);

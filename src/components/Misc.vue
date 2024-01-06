@@ -70,6 +70,7 @@ export default {
   },
 
   created() {
+    document.title = "れじぇくろDB: その他";
   },
 
   mounted() {

@@ -373,6 +373,11 @@
                   <div class="param-box"><b-img-lazy :src="getImageURL('射程')" title="射程" width="18" height="18" /><span>{{r.support.character.range}}</span></div>
                   <div class="param-box"><span class="param-name">実装日:</span><span class="param-value">{{r.support.character.date}}</span></div>
                 </div>
+                <div class="status flex">
+                  <b-link v-for="(skill, si) in r.support.character.skills" :key="si">
+                    <b-img-lazy :src="getImageURL(skill.icon)" :title="skill.name" width="50" />
+                  </b-link>
+                </div>
                 <div class="flex exclude-menu">
                   <b-button @click="addPrioritized(r.support.character)">このキャラを優先</b-button>
                 </div>
@@ -516,6 +521,8 @@ export default {
   },
 
   created() {
+    document.title = "れじぇくろDB: 逆引き";
+
     this.mainActive = structuredClone(jsonMainActive);
     this.mainPassive = structuredClone(jsonMainPassive);
     this.mainTalents = structuredClone(jsonMainTalents);

@@ -871,7 +871,7 @@ export default {
         if (effect.variant)
           t += `(${effect.variant})`;
         return t;
-      };
+      }.bind(this);
 
       let buff = skill.buff;
       if (this.matchTags(skill.tags, /シンボルスキル/))

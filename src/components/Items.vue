@@ -348,6 +348,7 @@ export default {
   },
 
   created() {
+    document.title = "れじぇくろDB: アイテム";
     this.setupDB();
 
     this.fillFilter(this.classFilter, this.classes);

@@ -455,6 +455,8 @@ export default {
   },
 
   created() {
+    document.title = "れじぇくろDB: 解説";
+
     this.mainActive = structuredClone(jsonMainActive);
     this.mainPassive = structuredClone(jsonMainPassive);
     this.mainTalents = structuredClone(jsonMainTalents);
