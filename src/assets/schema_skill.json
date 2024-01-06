@@ -46,6 +46,7 @@
 
     "timingType": {
       "enum": [
+        "永続",
         "ターン開始時",
         "戦闘前",
         "戦闘後",
@@ -57,9 +58,8 @@
         "攻撃前",
         "攻撃後",
         "敵撃破時",
-        "復活時",
-
-        "永続"
+        "死亡時",
+        "復活時"
       ]
     },
     "effectType": {
@@ -118,6 +118,7 @@
         "token",
         "targetToken",
         "moveAmount",
+        "range",
         "nearAllyCount",
         "nearEnemyCount",
         "activeBuffCount",
