@@ -834,6 +834,10 @@ export default {
       return !target ||
         (typeof (target) == "string" && target != "自身");
     },
+    isSelfTarget(target) {
+      return !target ||
+        (typeof (target) == "string" && target == "自身");
+    },
 
     effectParamsToTags(skill, params) {
       const buffToS = function (effectCategory, effect) {
@@ -859,12 +863,12 @@ export default {
         if (effect.ephemeral) {
           t += "(戦闘時)";
         }
-        if (effect.target) {
-          if ((params.includeSelfTags && this.isPublicTarget(effect.target))) {
+        else if (effect.target) {
+          if ((params.includeSelfTags && this.isSelfTarget(effect.target))) {
             t += `(${effect.target})`;
           }
         }
-        if (params.includeAreaTags && effect.isBuff && effect.area) {
+        else if (params.includeAreaTags && effect.isBuff && effect.area) {
           t += `(味方)`;
         }
 

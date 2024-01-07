@@ -240,10 +240,6 @@
         "onAreaSkill": { "type": "boolean" },
         "onOwnTurn": { "type": "boolean" },
         "onEnemyTurn": { "type": "boolean" },
-        "onNearAlly": { "type": [ "number", "string" ] },
-        "onNoNearAlly": { "type": [ "number", "string" ] },
-        "onNearEnemy": { "type": [ "number", "string" ] },
-        "onNoNearEnemy": { "type": [ "number", "string" ] },
         "onSymbol": {
           "type": "array",
           "uniqueItems": true,

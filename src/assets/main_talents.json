@@ -6332,7 +6332,10 @@
         "value": 2,
         "target": "自身",
         "condition": {
-          "onNearAlly": "1s"
+          "nearAllyCount": {
+            "area": [ 1, "周囲" ],
+            "compare": [ ">", 0 ]
+          }
         }
       },
       {
@@ -7359,7 +7362,10 @@
         "value": [ 10, 12, 17, 25 ],
         "target": "自身",
         "condition": {
-          "onNearAlly": "2s"
+          "nearAllyCount": {
+            "area": [ 2, "周囲" ],
+            "compare": [ ">", 0 ]
+          }
         }
       },
       {
@@ -7367,7 +7373,10 @@
         "value": [ 10, 12, 17, 25 ],
         "target": "自身",
         "condition": {
-          "onNearAlly": "2s"
+          "nearAllyCount": {
+            "area": [ 2, "周囲" ],
+            "compare": [ ">", 0 ]
+          }
         }
       },
       {

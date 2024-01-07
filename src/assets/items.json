@@ -1470,7 +1470,7 @@
         "value": 15,
         "ephemeral": true,
         "target": "自身",
-        "timing": "スキル前",
+        "timing": "戦闘前",
         "condition": {
           "onSingleSkill": true
         }
@@ -1491,7 +1491,6 @@
       {
         "type": "与ダメージ(範囲スキル)",
         "value": 15,
-        "ephemeral": true,
         "target": "自身",
         "timing": "スキル前",
         "condition": {
@@ -1640,7 +1639,10 @@
         "value": 15,
         "target": "自身",
         "condition": {
-          "onNearAlly": 2
+          "nearAllyCount": {
+            "area": 2,
+            "compare": [ ">", 0 ]
+          }
         }
       }
     ]
@@ -3865,7 +3867,10 @@
         "target": "自身",
         "timing": "戦闘前",
         "condition": {
-          "onNearAlly": 2
+          "nearAllyCount": {
+            "area": 2,
+            "compare": [ ">", 0 ]
+          }
         }
       },
       {
@@ -3875,7 +3880,10 @@
         "target": "自身",
         "timing": "戦闘前",
         "condition": {
-          "onNearAlly": 2
+          "nearAllyCount": {
+            "area": 2,
+            "compare": [ ">", 0 ]
+          }
         }
       }
     ]
@@ -3897,7 +3905,10 @@
         "target": "自身",
         "timing": "戦闘前",
         "condition": {
-          "onNoNearAlly": 2
+          "nearAllyCount": {
+            "area": 2,
+            "compare": [ "==", 0 ]
+          }
         }
       },
       {
@@ -3907,7 +3918,10 @@
         "target": "自身",
         "timing": "戦闘前",
         "condition": {
-          "onNoNearAlly": 2
+          "nearAllyCount": {
+            "area": 2,
+            "compare": [ "==", 0 ]
+          }
         }
       }
     ]
@@ -4603,7 +4617,10 @@
         "value": 2,
         "target": "自身",
         "condition": {
-          "onNoNearAlly": "2s"
+          "nearAllyCount": {
+            "area": [ 2, "周囲" ],
+            "compare": [ "==", 0 ]
+          }
         }
       },
       {
@@ -4611,7 +4628,10 @@
         "value": 15,
         "target": "自身",
         "condition": {
-          "onNearAlly": "2s"
+          "nearAllyCount": {
+            "area": [ 2, "周囲" ],
+            "compare": [ "==", 0 ]
+          }
         }
       }
     ],
@@ -5210,7 +5230,10 @@
         "value": 30,
         "target": "自身",
         "condition": {
-          "onNearEnemy": "1s"
+          "nearEnemyCount": {
+            "area": [ 1, "周囲" ],
+            "compare": [ ">", 0 ]
+          }
         }
       }
     ],
@@ -5790,19 +5813,15 @@
         "type": "アタック",
         "value": 5,
         "maxStack": 3,
-        "target": "自身",
-        "condition": {
-          "onNearEnemy": "2s"
-        }
+        "stackBy": "nearEnemyCount",
+        "target": "自身"
       },
       {
         "type": "ディフェンス",
         "value": 5,
         "maxStack": 3,
-        "target": "自身",
-        "condition": {
-          "onNearEnemy": "2s"
-        }
+        "stackBy": "nearEnemyCount",
+        "target": "自身"
       }
     ],
     "tags": [ "分類:マスター装備" ]
@@ -5862,7 +5881,10 @@
         "value": 20,
         "target": "自身",
         "condition": {
-          "onNoNearAlly": 1
+          "nearAllyCount": {
+            "area": 1,
+            "compare": [ "==", 0 ]
+          }
         }
       },
       {
@@ -5870,7 +5892,10 @@
         "value": 20,
         "target": "自身",
         "condition": {
-          "onNoNearAlly": 1
+          "nearAllyCount": {
+            "area": 1,
+            "compare": [ "==", 0 ]
+          }
         }
       }
     ],
@@ -6045,7 +6070,10 @@
         "value": 20,
         "target": "自身",
         "condition": {
-          "onNearEnemy": 1
+          "nearEnemyCount": {
+            "area": 1,
+            "compare": [ ">", 0 ]
+          }
         }
       },
       {
@@ -6053,7 +6081,10 @@
         "value": 20,
         "target": "自身",
         "condition": {
-          "onNearEnemy": 1
+          "nearEnemyCount": {
+            "area": 1,
+            "compare": [ ">", 0 ]
+          }
         }
       },
       {
@@ -6061,7 +6092,10 @@
         "value": -20,
         "target": "自身",
         "condition": {
-          "onNoNearEnemy": 1
+          "nearEnemyCount": {
+            "area": 1,
+            "compare": [ "==", 0 ]
+          }
         }
       },
       {
@@ -6069,7 +6103,10 @@
         "value": -20,
         "target": "自身",
         "condition": {
-          "onNoNearEnemy": 1
+          "nearEnemyCount": {
+            "area": 1,
+            "compare": [ "==", 0 ]
+          }
         }
       }
     ],
@@ -6310,7 +6347,10 @@
         "value": 12,
         "target": "自身",
         "condition": {
-          "onNoNearAlly": "1s"
+          "nearAllyCount": {
+            "area": [ 1, "周囲" ],
+            "compare": [ "==", 0 ]
+          }
         }
       },
       {
@@ -6318,7 +6358,10 @@
         "value": 12,
         "target": "自身",
         "condition": {
-          "onNoNearAlly": "1s"
+          "nearAllyCount": {
+            "area": [ 1, "周囲" ],
+            "compare": [ "==", 0 ]
+          }
         }
       }
     ],
@@ -7178,7 +7221,10 @@
         "value": 30,
         "target": "自身",
         "condition": {
-          "onNoNearAlly": 2
+          "nearAllyCount": {
+            "area": 2,
+            "compare": [ "==", 0 ]
+          }
         }
       },
       {
@@ -7186,7 +7232,10 @@
         "value": 30,
         "target": "自身",
         "condition": {
-          "onNoNearAlly": 2
+          "nearAllyCount": {
+            "area": 2,
+            "compare": [ "==", 0 ]
+          }
         }
       },
       {
@@ -7194,7 +7243,10 @@
         "value": -30,
         "target": "自身",
         "condition": {
-          "onNearAlly": 2
+          "nearAllyCount": {
+            "area": 2,
+            "compare": [ ">", 0 ]
+          }
         }
       },
       {
@@ -7202,7 +7254,10 @@
         "value": -30,
         "target": "自身",
         "condition": {
-          "onNearAlly": 2
+          "nearAllyCount": {
+            "area": 2,
+            "compare": [ ">", 0 ]
+          }
         }
       }
     ],

@@ -1977,8 +1977,7 @@
           "nearAllyCount": {
             "area": 2,
             "compare": [ ">", 0 ]
-          },
-          "onNearAlly": 2
+          }
         }
       }
     ],
@@ -2901,23 +2900,19 @@
         "type": "アタック",
         "value": 5,
         "maxStack": 4,
+        "stackBy": "nearEnemyCount",
         "ephemeral": true,
         "target": "自身",
-        "timing": "戦闘前",
-        "condition": {
-          "onNearEnemy": 3
-        }
+        "timing": "戦闘前"
       },
       {
         "type": "クリティカル率",
         "value": 5,
         "maxStack": 4,
+        "stackBy": "nearEnemyCount",
         "ephemeral": true,
         "target": "自身",
-        "timing": "戦闘前",
-        "condition": {
-          "onNearEnemy": 3
-        }
+        "timing": "戦闘前"
       }
     ],
     "tags": [ "単体攻撃", "バフ解除" ]
@@ -3418,12 +3413,10 @@
         "type": "与ダメージ(範囲スキル)",
         "value": 5,
         "maxStack": 6,
+        "stackBy": "nearEnemyCount",
         "ephemeral": true,
         "target": "自身",
-        "timing": "戦闘前",
-        "condition": {
-          "onNearEnemy": 3
-        }
+        "timing": "戦闘前"
       }
     ],
     "tags": [ "範囲攻撃(自分中心)" ]
@@ -6502,7 +6495,10 @@
         "duration": 4,
         "slot": "加護",
         "condition": {
-          "onNearAlly": 2
+          "nearAllyCount": {
+            "area": 2,
+            "compare": [ ">", 0 ]
+          }
         }
       },
       {
@@ -6512,7 +6508,10 @@
         "duration": 4,
         "slot": "加護",
         "condition": {
-          "onNearAlly": 2
+          "nearAllyCount": {
+            "area": 2,
+            "compare": [ ">", 0 ]
+          }
         }
       }
     ],
@@ -6661,21 +6660,17 @@
         "type": "クリティカル率",
         "value": 10,
         "maxStack": 5,
+        "stackBy": "nearAllyCount",
         "ephemeral": true,
-        "target": "自身",
-        "condition": {
-          "onNearEnemy": 3
-        }
+        "target": "自身"
       },
       {
         "type": "与ダメージ(スキル)",
         "value": 10,
         "maxStack": 5,
+        "stackBy": "nearAllyCount",
         "ephemeral": true,
-        "target": "自身",
-        "condition": {
-          "onNearEnemy": 3
-        }
+        "target": "自身"
       }
     ],
     "tags": [ "単体攻撃", "CT減(味方)" ]
@@ -8127,7 +8122,10 @@
         "duration": 4,
         "slot": "記憶なき女神の祝福",
         "condition": {
-          "onNearAlly": 2
+          "nearAllyCount": {
+            "area": 2,
+            "compare": [ ">", 0 ]
+          }
         }
       },
       {
@@ -8137,7 +8135,10 @@
         "duration": 4,
         "slot": "記憶なき女神の祝福",
         "condition": {
-          "onNearAlly": 2
+          "nearAllyCount": {
+            "area": 2,
+            "compare": [ ">", 0 ]
+          }
         }
       }
     ],
@@ -8314,7 +8315,10 @@
         "duration": 4,
         "slot": "加護",
         "condition": {
-          "onNearAlly": 2
+          "nearAllyCount": {
+            "area": 2,
+            "compare": [ ">", 0 ]
+          }
         }
       },
       {
@@ -8323,7 +8327,10 @@
         "duration": 4,
         "slot": "加護",
         "condition": {
-          "onNearAlly": 2
+          "nearAllyCount": {
+            "area": 2,
+            "compare": [ ">", 0 ]
+          }
         }
       }
     ],
