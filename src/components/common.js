@@ -892,11 +892,29 @@ export default {
     },
 
     setupSkill(skill, params) {
+      const setupSlot = function (effect) {
+        if (skill.isActive && !effect.slot) {
+          let slot = effect.type;
+          if (effect.isBuff)
+            slot += "+";
+          else if (effect.isDebuff)
+            slot += "-";
+          if (skill.isMainSkill)
+            slot += "(メイン)";
+          else if (skill.isSupportSkill)
+            slot += "(サポート)";
+          if (effect.ephemeral)
+            slot += "(戦闘時)";
+          effect.slot = slot;
+        }
+      };
+
       if (skill.buff) {
         for (let v of skill.buff) {
           v.parent = skill;
           v.effectType = "バフ";
           v.isBuff = true;
+          setupSlot(v);
         }
       }
       if (skill.debuff) {
@@ -904,6 +922,7 @@ export default {
           v.parent = skill;
           v.effectType = "デバフ";
           v.isDebuff = true;
+          setupSlot(v);
         }
       }
       if (skill.statusEffects) {

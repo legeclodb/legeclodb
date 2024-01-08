@@ -831,7 +831,7 @@
         }
       },
       {
-        "type": "アタック",
+        "type": "ディフェンス",
         "value": [ 3, 5, 7, 9, 12, 15 ],
         "ephemeral": true,
         "target": "自身",
@@ -3092,16 +3092,6 @@
         }
       },
       {
-        "type": "ディフェンス",
-        "value": 20,
-        "ephemeral": true,
-        "target": "自身",
-        "timing": "戦闘前",
-        "condition": {
-          "onOwnTurn": true
-        }
-      },
-      {
         "type": "与ダメージ",
         "value": 25,
         "duration": 1,
@@ -4688,16 +4678,6 @@
       },
       {
         "type": "クリティカルダメージ倍率",
-        "value": [ 10, 12, 15, 20 ],
-        "ephemeral": true,
-        "target": "自身",
-        "timing": "戦闘前",
-        "condition": {
-          "targetToken": [ "==", 1 ]
-        }
-      },
-      {
-        "type": "ダメージ耐性",
         "value": [ 15, 18, 23, 30 ],
         "ephemeral": true,
         "target": "自身",
@@ -4707,7 +4687,7 @@
         }
       },
       {
-        "type": "クリティカルダメージ倍率",
+        "type": "ダメージ耐性",
         "value": [ 15, 18, 23, 30 ],
         "ephemeral": true,
         "target": "自身",

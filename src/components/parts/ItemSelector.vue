@@ -3,12 +3,12 @@
     <div style="margin: 4px 0px">
       <b-button-group v-if="classfilter == true" size="sm" style="margin-right: 10px">
         <b-button v-for="(c, i) in filter.class" :key="i" :pressed.sync="c.state" variant="outline-secondary">
-          <b-img-lazy :src="getImageURL(classes[i])" width="25px" />
+          <b-img-lazy :src="getImageURL(classes[i])" width="20px" />
         </b-button>
       </b-button-group>
       <b-button-group v-if="slotfilter == true" size="sm">
         <b-button v-for="(c, i) in filter.slot" :key="i" :pressed.sync="c.state" variant="outline-secondary">
-          <b-img-lazy :src="getImageURL(slots[i])" width="25px" />
+          <b-img-lazy :src="getImageURL(slots[i])" width="20px" />
         </b-button>
       </b-button-group>
     </div>

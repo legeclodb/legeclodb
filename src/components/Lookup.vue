@@ -626,21 +626,7 @@ export default {
         }
 
         if (skill.isActive) {
-          let slot = v.slot;
-          if (!slot) {
-            slot = v.type;
-            if (v.isBuff)
-              slot += "+";
-            else if (v.isDebuff)
-              slot += "-";
-            if (skill.isMainSkill)
-              slot += "(メイン)";
-            else if (skill.isSupportSkill)
-              slot += "(サポート)";
-            if (v.ephemeral)
-              slot += "(戦闘時)";
-            v.slot = slot;
-          }
+          const slot = v.slot;
           v.slotIndex = slotTable.get(slot);
           if (!v.slotIndex) {
             slotTable.set(slot, slotIndex);
@@ -749,7 +735,6 @@ export default {
       {label: "与ダメージ(魔法)"},
       {label: "与ダメージ(スキル)"},
       {label: "与ダメージ(範囲スキル)"},
-      //{label: "与ダメージ(単体スキル)"},
       {label: "与ダメージ(通常攻撃)"},
       {label: "ダメージ耐性", limit:70},
       {label: "ダメージ耐性(物理)"},
