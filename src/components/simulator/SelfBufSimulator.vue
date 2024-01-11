@@ -21,6 +21,39 @@
             </template>
           </b-table>
         </b-container>
+
+        <b-container>
+          <div>
+            <h3 style="margin: 5px 0px">フィルタ</h3>
+          </div>
+          <div class="menu-widgets flex">
+            <div class="widget">
+              <b-button-group size="sm" id="class_selector">
+                <b-button v-for="(c, i) in filter.class" :key="i" :pressed.sync="c.state" variant="outline-secondary">
+                  <b-img-lazy :src="getImageURL(classes[i])" width="20px" />
+                </b-button>
+              </b-button-group>
+            </div>
+          </div>
+          <div class="menu-widgets flex">
+            <div class="widget">
+              <b-button-group size="sm" id="symbol_selector">
+                <b-button v-for="(c, i) in filter.symbol" :key="i" :pressed.sync="c.state" variant="outline-secondary">
+                  <b-img-lazy :src="getImageURL(symbols[i])" width="20px" />
+                </b-button>
+              </b-button-group>
+            </div>
+            <div class="widget">
+              <b-button-group size="sm" id="damage_type_selector">
+                <b-button v-for="(c, i) in filter.damageType" :key="i" :pressed.sync="c.state" variant="outline-secondary">
+                  <b-img-lazy :src="getImageURL(damageTypes[i])" width="20px" />
+                </b-button>
+              </b-button-group>
+
+              <b-button @click="doSearch()">テスト</b-button>
+            </div>
+          </div>
+        </b-container>
       </div>
 
       <div class="menu-panel">
@@ -41,35 +74,25 @@
           </b-table>
         </b-container>
       </div>
-    </div>
-
-    <div class="menu-content" style="flex-wrap: nowrap">
       <div class="menu-panel">
         <b-container>
-          <div class="flex" style="margin: 5px">
-            <b-button-group size="sm" style="margin-right: 10px">
-              <b-button v-for="(c, i) in filter.class" :key="i" :pressed.sync="c.state" variant="outline-secondary">
-                <b-img-lazy :src="getImageURL(classes[i])" width="20px" />
-              </b-button>
-            </b-button-group>
-            <b-button-group size="sm" style="margin-right: 10px">
-              <b-button v-for="(c, i) in filter.symbol" :key="i" :pressed.sync="c.state" variant="outline-secondary">
-                <b-img-lazy :src="getImageURL(symbols[i])" width="20px" />
-              </b-button>
-            </b-button-group>
-            <b-button-group size="sm">
-              <b-button v-for="(c, i) in filter.damageType" :key="i" :pressed.sync="c.state" variant="outline-secondary">
-                <b-img-lazy :src="getImageURL(damageTypes[i])" width="20px" />
-              </b-button>
-            </b-button-group>
-
-            <b-button @click="doSearch()">テスト</b-button>
+          <div class="flex">
+            <h3 style="margin: 5px 0px">デバフ</h3>
+            <div class="right-align">
+              <b-button size="sm" @click="buffs.forEach(a => a.reset())">リセット</b-button>
+            </div>
           </div>
-
+          <b-table small borderless hover :items="debuffs" :fields="buffFields">
+            <template #cell(enabled)="r">
+              <b-form-checkbox v-model="r.item.enabled"></b-form-checkbox>
+            </template>
+            <template #cell(label)="r">
+              {{r.item.label}}
+            </template>
+          </b-table>
         </b-container>
-
-
       </div>
+
     </div>
 
   </div>
@@ -235,6 +258,9 @@ export default {
     this.options = makeOptions([
       { name: "maxPickup", label: "人を選出", value: 10, min: 1, max: 50 },
       { name: "maxActiveCount", label: "アクティブ数制限 (再行動ありを除く)", value: 1, min: 0, max: 3 },
+      { name: "allowTalent", label: "タレントを含める", value: true },
+      { name: "allowPassive", label: "パッシブスキルを含める", value: true },
+      { name: "allowActive", label: "アクティブスキルを含める", value: true },
       { name: "allowEngageSkills", label: "エンゲージスキルを含める", value: true },
       { name: "allowOnBattle", label: "戦闘時発動効果を含める", value: true },
       { name: "allowProbability", label: "確率発動効果を含める", value: true },
@@ -273,6 +299,16 @@ export default {
       { label: "ダメージ耐性(物理)" },
       { label: "ダメージ耐性(魔法)" },
     ]);
+    this.debuffs = makeParams("-", [
+      { label: "アタック", limit: 70 },
+      { label: "ディフェンス", limit: 70 },
+      { label: "マジック", limit: 70 },
+      { label: "レジスト", limit: 70 },
+      { label: "与ダメージ", limit: 70 },
+      { label: "ダメージ耐性" },
+      { label: "ダメージ耐性(物理)" },
+      { label: "ダメージ耐性(魔法)" },
+    ]);
 
 
     this.parseParamsUrl(window.location.href);
@@ -282,6 +318,12 @@ export default {
   },
 
   methods: {
+    filterMatchMainChr(chr, filter = this.filter) {
+      return (!filter.class || this.filterMatch(filter.class, chr.classId)) &&
+        (!filter.symbol || this.filterMatch(filter.symbol, chr.symbolId)) &&
+        (!filter.damageType || this.filterMatch(filter.damageType, chr.damageTypeId));
+    },
+
     removeEffectsOfSameType(skill) {
       const doRemove = function (effects) {
         if (!effects)
@@ -310,10 +352,10 @@ export default {
       doRemove(skill.buff);
     },
 
-
     doSearch() {
       const opt = this.optionValues;
-      const enabledEffects = this.enabledEffects.map(a => a.label);
+      const enabledBuffEffects = this.buffs.filter(a => a.enabled).map(a => a.label);
+      const enabledDebuffEffects = this.debuffs.filter(a => a.enabled).map(a => a.label);
       for (let chr of this.mainChrs) {
         if (chr.engage) {
           chr.skills = opt.allowEngageSkills ? chr.engage.skills : chr.skillsBase;
@@ -341,55 +383,57 @@ export default {
       };
 
 
-      const buffTypes = [
-        //"最大HP",
-        //"アタック",
-        //"ディフェンス",
-        //"マジック",
-        //"レジスト",
-        //"テクニック",
-        //"ディフェンス無視",
-        //"レジスト無視",
-        "与ダメージ",
-        "与ダメージ(物理)",
-        "与ダメージ(魔法)",
-        "与ダメージ(スキル)",
-        "与ダメージ(範囲スキル)",
-        "与ダメージ(通常攻撃)",
-        //"ダメージ耐性",
-        //"ダメージ耐性(物理)",
-        //"ダメージ耐性(魔法)",
-        //"ダメージ耐性(範囲)",
-        //"クリティカル率",
-        //"クリティカル率耐性",
-        "クリティカルダメージ倍率",
-        //"治療効果",
-        //"被治療効果",
-      ];
-
       const getSkillScore = function (chr, skill) {
         let score = {
           name: skill.name,
           total: 0,
+          buff: {},
+          debuff: {},
           skill: skill
+        };
+        if ((!opt.allowTalent && skill.isTalent) || (!opt.allowPassive && skill.isPassive) || (!opt.allowActive && skill.isActive)) {
+          return score;
+        }
+
+        const evalCondition = function (effect) {
+          if (!effect.value && !effect.variable)
+            return;
+
+          const cond = effect.condition;
+          const probability = cond?.probability;
+          if ((!opt.allowOnBattle && effect.ephemeral) || (!opt.allowProbability && probability) ||
+            (!opt.allowNonReaction && skill.isActive && !skill.hasReaction && !skill.damageRate))
+            return false;
+          return true;
         };
 
         if (skill.buff) {
           for (const effect of skill.buff) {
-            if ((!enabledEffects.includes(effect.type) && (enabledEffects.includes("アタック/マジック") && effect.type != chr.damageType)) || (!effect.value && !effect.variable))
+            if (!(enabledBuffEffects.includes(effect.type) || (enabledBuffEffects.includes("アタック/マジック") && effect.type == chr.damageType)))
               continue;
-
-            const cond = effect.condition;
-            const probability = cond?.probability;
-            if ((!opt.allowOnBattle && effect.ephemeral) || (!opt.allowProbability && probability) ||
-              (!opt.allowNonReaction && skill.isActive && !skill.hasReaction && !skill.damageRate))
+            if (!evalCondition(effect))
               continue;
 
             const v = getValue(effect);
-            if (!(effect.type in score)) {
-              score[effect.type] = 0;
+            if (!(effect.type in score.buff)) {
+              score.buff[effect.type] = 0;
             }
-            score[effect.type] += v;
+            score.buff[effect.type] += v;
+            score.total += v;
+          }
+        }
+        if (skill.debuff) {
+          for (const effect of skill.debuff) {
+            if (!enabledDebuffEffects.includes(effect.type))
+              continue;
+            if (!evalCondition(effect))
+              continue;
+
+            const v = getValue(effect);
+            if (!(effect.type in score.debuff)) {
+              score.debuff[effect.type] = 0;
+            }
+            score.debuff[effect.type] += v;
             score.total += v;
           }
         }
@@ -398,9 +442,12 @@ export default {
 
       let scoreTableChr = [];
       for (const chr of this.mainChrs) {
+        if (!this.filterMatchMainChr(chr))
+          continue;
+
         let skillScore = chr.skills.map(skill => getSkillScore(chr, skill));
-        skillScore = skillScore.filter(a => a.total > 0).sort((a, b) => b.total - a.total).slice(0, 3);
-        skillScore = [getSkillScore(chr, chr.talent), ...skillScore];
+        skillScore = skillScore.sort((a, b) => b.total - a.total).slice(0, 3);
+        skillScore = [getSkillScore(chr, chr.talent), ...skillScore].filter(a => a.total > 0);
 
         let score = {
           name: chr.name,
@@ -567,15 +614,22 @@ export default {
         r[k] = opt[k].value;
       return r;
     },
-    enabledEffects() {
-      return [...this.buffs.filter(a => a.enabled)];
-    },
   }
 };
 </script>
 
-<style>
+<style scoped>
 .input-dropdown {
   padding: 0.1em;
+}
+
+.about h2 {
+  font-size: 1.75em;
+  margin-left: 1em;
+}
+
+.about h3 {
+  font-size: 1.5em;
+  margin-left: 1em;
 }
 </style>
