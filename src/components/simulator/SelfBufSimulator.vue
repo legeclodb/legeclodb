@@ -487,7 +487,7 @@ export default {
         }
 
         const evalCondition = function (effect) {
-          if ((!effect.value && !effect.variable) || (skill.isActive && effect.ephemeral && !effect.duration))
+          if ((!effect.value && !effect.variable && !effect.add) || (skill.isActive && effect.ephemeral && !effect.duration))
             return;
 
           const cond = effect.condition;
@@ -562,27 +562,32 @@ export default {
     },
     effectsToHtml(skill, ctx) {
       let lines = [];
-      for (const v of this.enumerate(skill.buff, skill.debuff)) {
-        if (["ランダム"].includes(v.type)) {
+      for (const effect of this.enumerate(skill.buff, skill.debuff)) {
+        if (["ランダム"].includes(effect.type)) {
           continue;
         }
 
+        let value = this.getEffectValue(effect);
+        if (effect.add) {
+          value = `${effect.add.from}${effect.add.rate}`;
+        }
+
         let additionalClass = "";
-        let prefix = v.isDebuff ? "-" : "+";
-        let onBattle = v.ephemeral ? "(戦闘時)" : "";
+        let prefix = effect.isDebuff ? "-" : "+";
+        let onBattle = effect.ephemeral ? "(戦闘時)" : "";
         let unit = "";
         let title = "";
-        if (ctx.usedEffects.includes(v)) {
+        if (ctx.usedEffects.includes(effect)) {
           additionalClass += " caution";
         }
-        if (ctx.conflictedEffects.includes(v)) {
+        if (ctx.conflictedEffects.includes(effect)) {
           additionalClass += " blue";
           title = "アクティブ同士で競合、または既に上限に達している";
         }
-        if (!["移動", "射程", "範囲"].includes(v.type)) {
+        if (!["移動", "射程(通常攻撃)", "射程(スキル)", "範囲"].includes(effect.type)) {
           unit = "%";
         }
-        lines.push(`<div class="effect-box"><span class="effect ${additionalClass}" title="${title}">${v.type}${onBattle}${prefix}${this.getEffectValue(v)}${unit}</span></div>`);
+        lines.push(`<div class="effect-box"><span class="effect ${additionalClass}" title="${title}">${effect.type}${onBattle}${prefix}${value}${unit}</span></div>`);
       }
       return lines.length ? `<div class="effect-group">${lines.join("")}</div>` : "";
     },
@@ -598,8 +603,12 @@ export default {
       let r = 0;
       if (effect.value) {
         r = effect.value;
+        if (effect.maxStack) {
+          r *= effect.maxStack;
+          console.log(effect);
+        }
       }
-      if (effect.variable) {
+      else if (effect.variable) {
         if (Array.isArray(effect.variable.max)) {
           r = effect.variable.max[effect.variable.max.length - 1];
         }
@@ -607,9 +616,9 @@ export default {
           r = effect.variable.max;
         }
       }
-      if (effect.maxStack) {
-        r *= effect.maxStack;
-        console.log(effect);
+      else if (effect.add) {
+        // 評価不能だが 0 にはしたくないので、とりあえず 1/4 したのをスコアにしておく…
+        r = effect.add.rate * 0.25;
       }
       return r;
     },

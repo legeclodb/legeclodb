@@ -1029,19 +1029,25 @@ export default {
           ]
           for (let effect of effects) {
             if (Array.isArray(effect.value)) {
-              effect.values = effect.value;
-              effect.value = effect.values[effect.values.length - 1];
+              effect.value_ = effect.value;
+              effect.value = effect.value_[effect.value_.length - 1];
             }
             if (Array.isArray(effect.duration)) {
-              effect.durations = effect.duration;
-              effect.duration = effect.durations[effect.durations.length - 1];
+              effect.duration_ = effect.duration;
+              effect.duration = effect.duration_[effect.duration_.length - 1];
+            }
+            if (effect.add) {
+              if (Array.isArray(effect.add.rate)) {
+                effect.add.rate_ = effect.add.rate;
+                effect.add.rate = effect.add.rate_[effect.add.rate_.length - 1];
+              }
             }
 
             let cond = effect.condition;
             if (cond) {
               if (Array.isArray(cond.probability)) {
-                cond.probabilities = cond.probability;
-                cond.probability = cond.probabilities[cond.probabilities.length - 1];
+                cond.probability_ = cond.probability;
+                cond.probability = cond.probability_[cond.probability_.length - 1];
               }
             }
           }
