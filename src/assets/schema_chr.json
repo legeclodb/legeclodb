@@ -39,6 +39,7 @@
           "additionalProperties": false,
           "properties": {
             "uid": { "type": "string" },
+            "icon": { "type": "string" },
             "name": { "type": "string" },
             "class": { "$ref": "schema_skill.json#/$defs/unitType" },
             "damageType": { "$ref": "schema_skill.json#/$defs/damageType" },

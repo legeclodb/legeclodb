@@ -1,4 +1,4 @@
-﻿{
+{
   "null": "img/37a6259cc0c1dae299a7866489dff0bd.png",
   "ソルジャー": "img/09deac5ba0c3171c157a3b28b971e3c4.png",
   "ランサー": "img/ce8a32197b4f700b19c4cee1197b8dd8.png",
@@ -1394,5 +1394,15 @@
   "sk_a447": "img/b25f832cc32cb316964ec5eccf7b0761.png",
   "sk_t400": "img/5ec5b67a5b6ed09c8d95340d0e372c18.png",
   "sk_a445": "img/45cbb0328271590c31670462f2cc457c.png",
-  "Item_Equipment_SSR_0249": "img/e1a5d3ef054a5ff0cefc82182c232bd5.png"
+  "Item_Equipment_SSR_0249": "img/e1a5d3ef054a5ff0cefc82182c232bd5.png",
+  "Ch004302106": "img/989d3a7b788e69f1afbe625f71eb6c12.png",
+  "Ch003802101": "img/6009e5277de202b1379506742beb1612.png",
+  "sk_p209": "img/088923fdc9e3f1e58afcebf4e03c0d2f.png",
+  "sk_t404": "img/3ae0878227a26a95d62ed1289ea7a508.png",
+  "sk_a455": "img/886706ddcd3dcf578660f22a942b9d45.png",
+  "sk_t403": "img/6afd8550a00883a9d16673c375bfa992.png",
+  "sk_p210": "img/ac1b347f83b3fada9c499d2e66308e15.png",
+  "sk_a452": "img/e0d11acbe68c7a45537b7b8e51906ee8.png",
+  "sk_a454": "img/23cd88f394bb8b4f4a5ceadf99ce2253.png",
+  "Item_Equipment_SSR_0250": "img/2ea6b1786d2ab02b40e94e53d9dfe73c.png"
 }

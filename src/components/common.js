@@ -1079,7 +1079,9 @@ export default {
               if (typeof s.talent === "string")
                 s.talent = grabSkill(s.talent, chr);
               s.skills = s.skills.flatMap(id => grabSkill(id, chr));
-              s.icon = s.uid;
+              if (!s.icon) {
+                s.icon = s.uid;
+              }
             }
             for (let s of chr.skills) {
               if (s.summon) {
