@@ -1072,6 +1072,14 @@ export default {
         if (chr.supportType)
           chr.supportTypeId = consts.supportTypes.findIndex(v => v == chr.supportType);
 
+        const handleSummons = function (skills) {
+          for (let s of skills) {
+            if (Array.isArray(s.summon) && typeof (s.summon[0]) == "string") {
+              s.summon = s.summon.map(uid => chr.summon.find(sch => sch.uid == uid));
+            }
+          }
+        };
+
         if (chr.skills) {
           chr.skills = chr.skills.flatMap(id => grabSkill(id, chr));
           if (chr.summon) {
@@ -1083,16 +1091,15 @@ export default {
                 s.icon = s.uid;
               }
             }
-            for (let s of chr.skills) {
-              if (s.summon) {
-                s.summon = s.summon.map(name => chr.summon.find(sch => sch.name == name));
-              }
-            }
+            handleSummons(chr.skills);
           }
         }
 
         if (chr.engage) {
           chr.engage.skills = chr.engage.skills.flatMap(id => grabSkill(id, chr));
+          if (chr.summon) {
+            handleSummons(chr.engage.skills);
+          }
           chr.skillsBase = chr.skills;
           this.$set(chr.engage, 'enabled', false);
         //  chr.skills = chr.engage.skills;

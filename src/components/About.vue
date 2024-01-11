@@ -57,8 +57,9 @@
             <li>例1: <b-link :ref="po">お届け物です！</b-link>＋<b-link :ref="po">総員、突撃用意</b-link>＋<b-link :ref="po">テスト勉強のお手伝い</b-link>＋<b-link :ref="po">ロサ・センティフォリア</b-link>＝戦闘時物理通常攻撃与ダメージ +100%</li>
             <li>例2: <b-link :ref="po">お届け物です！</b-link>＋<b-link :ref="po">総員、突撃用意</b-link>＋<b-link :ref="po">リトルマロース</b-link>＋<b-link :ref="po">発明官女</b-link>＝物理範囲スキル与ダメージ +100% & 魔法範囲スキル与ダメージ +110%</li>
           </ul>
-          なお、<b>通常攻撃与ダメージバフは反撃には乗らない</b>ことが確認されています。(2023/04 現在。バグか仕様かは不明)<br />
-          同様に、<b-link :ref="po">人馬の天帽</b-link>のマイナス効果も反撃であれば適用されません。<br />
+          <br />
+          <s>なお、通常攻撃与ダメージバフは反撃には乗らないことが確認されています。(2023/04 現在。バグか仕様かは不明)</s><br />
+          2023//05 のアップデートにて通常攻撃与ダメージバフは反撃にも乗るように変更されました。<br />
           <br />
           一部のバフ・デバフには上限があることが確認されています。<br />
           該当するのは基礎ステータス値へのデバフ (アタック・ディフェンス・マジック・レジスト)、およびダメージ耐性バフと与ダメージデバフで、<br />
@@ -307,9 +308,9 @@
             </li>
           </ul>
         </p>
+
         <h2><a name="battle_power" href="#battle_power"></a>戦闘力について</h2>
         <BattlePointSimulator />
-
         <p>
           戦闘力は以下のように算出されます。<br />
           <br />
@@ -359,6 +360,14 @@
             </li>
           </ul>
         </p>
+
+        <!--
+        <h2><a name="self-buf" href="#self-buf"></a>自己バフシミュレータ(仮)</h2>
+        <SelfBufSimulator />
+        <p>
+        </p>
+        -->
+
       </div>
     </div>
 
@@ -383,6 +392,7 @@ import Navigation from './Navigation.vue'
 import DamageSimulator from './simulator/DamageSimulator.vue'
 import BattlePointSimulator from './simulator/BattlePointSimulator.vue'
 import StatusSimulator from './simulator/StatusSimulator.vue'
+import SelfBufSimulator from './simulator/SelfBufSimulator.vue'
 
 import jsonMainActive from '../assets/main_active.json'
 import jsonMainPassive from '../assets/main_passive.json'
@@ -401,6 +411,7 @@ export default {
     DamageSimulator,
     BattlePointSimulator,
     StatusSimulator,
+    //SelfBufSimulator,
   },
   mixins: [common],
 
