@@ -79,7 +79,7 @@
           <div class="flex">
             <h3 style="margin: 5px 0px">デバフ</h3>
             <div class="right-align">
-              <b-button size="sm" @click="buffs.forEach(a => a.reset())">リセット</b-button>
+              <b-button size="sm" @click="debuffs.forEach(a => a.reset())">リセット</b-button>
             </div>
           </div>
           <b-table small borderless hover :items="debuffs" :fields="buffFields">
@@ -92,7 +92,114 @@
           </b-table>
         </b-container>
       </div>
+    </div>
 
+    <div class="content" :style="style">
+      <div v-if="progress.result.length == 0" class="menu-panel" style="padding: 10px">
+        <div class="about">
+          <h5 style="margin-bottom: 5px">ユニット単体バフ・デバフ検索</h5>
+        </div>
+      </div>
+
+      <template v-for="(r, ri) in progress.result">
+        <div class="character" :key="ri">
+          <div class="flex info">
+            <div><h6>合計スコア: {{r.score}}</h6></div>
+            <template v-for="(e, ei) in chrEffectsToHtml(r.main)">
+              <div :key="ei" v-html="e" />
+            </template>
+          </div>
+          <div class="flex">
+            <div v-if="r.main" class="portrait">
+              <b-img-lazy :src="getImageURL(r.main.character.icon)" :title="r.main.character.name" :id="'portrait_m_'+ri" width="100" rounded />
+              <b-popover v-if="displayType>=1" :target="'portrait_m_'+ri" :title="r.main.character.name" triggers="hover click blur" :delay="{show:0, hide:250}" no-fade placement="top">
+                <div class="status flex">
+                  <b-img-lazy :src="getImageURL(r.main.character.class)" :title="'クラス:'+r.main.character.class" height="25" />
+                  <b-img-lazy :src="getImageURL(r.main.character.symbol)" :title="'シンボル:'+r.main.character.symbol" height="25" />
+                  <b-img-lazy :src="getImageURL(r.main.character.rarity)" :title="'レアリティ:'+r.main.character.rarity" height="20" />
+                  <div class="param-box"><b-img-lazy :src="getImageURL(r.main.character.damageType)" :title="'攻撃タイプ:'+r.main.character.damageType" width="20" height="20" /></div>
+                  <div class="param-box"><b-img-lazy :src="getImageURL('射程')" title="射程" width="18" height="18" /><span>{{r.main.character.range}}</span></div>
+                  <div class="param-box"><b-img-lazy :src="getImageURL('移動')" title="移動" width="18" height="18" /><span>{{r.main.character.move}}</span></div>
+                  <div class="param-box"><span class="param-name">実装日:</span><span class="param-value">{{r.main.character.date}}</span></div>
+                </div>
+                <div class="status flex">
+                  <template v-for="(skill, si) in r.main.character.skills">
+                    <b-img-lazy :src="getImageURL(skill.icon)" :title="skill.name" width="50" :key="si" />
+                  </template>
+                </div>
+              </b-popover>
+            </div>
+            <div v-if="r.main" class="detail" v-show="displayType >= 1">
+              <div class="skills">
+                <div class="skill" v-for="(skill, si) in r.main.skills" :class="getSkillClass(skill)" :key="si">
+                  <div class="flex">
+                    <div class="icon">
+                      <b-img-lazy :src="getImageURL(skill.icon)" :title="skill.name" width="50" :id="'skill_m_'+ri+'_'+si" />
+                      <b-popover :target="'skill_m_'+ri+'_'+si" :title="skill.name" triggers="hover click blur" :delay="{show:0, hide:250}" no-fade placement="top">
+                        <div v-if="skill.owners" class="owners">
+                          所持者:<br />
+                          <template v-for="(owner, oi) in skill.owners">
+                            <b-img-lazy :src="getImageURL(owner.icon)" :title="owner.name" width="50" :key="oi" />
+                          </template>
+                        </div>
+                      </b-popover>
+                    </div>
+                    <div class="desc" v-show="displayType >= 2">
+                      <div class="flex">
+                        <h6>{{ skill.name }}</h6>
+                        <div class="param-group" v-html="skillParamsToHtml(skill)"></div>
+                      </div>
+                      <p>
+                        <span v-html="descToHtml(skill, true)" />
+                        <span v-if="skill.note" class="note" v-html="noteToHtml(skill)" />
+                        <span class="note" v-html="effectsToHtml(skill, r.main)" />
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex">
+            <div v-if="r.summon" class="portrait">
+              <b-img-lazy :src="getImageURL(r.summon.character.icon)" :title="`${r.summon.character.name} (召喚ユニット)`" :id="'portrait_m_'+ri" width="100" rounded />
+            </div>
+            <div v-if="r.summon" class="detail" v-show="displayType >= 1">
+              <div class="skills">
+                <div class="skill" v-for="(skill, si) in r.summon.skills" :class="getSkillClass(skill)" :key="si">
+                  <div class="flex">
+                    <div class="icon">
+                      <b-img-lazy :src="getImageURL(skill.icon)" :title="skill.name" width="50" :id="'skill_x_'+ri+'_'+si" />
+                      <b-popover :target="'skill_x_'+ri+'_'+si" :title="skill.name" triggers="hover click blur" :delay="{show:0, hide:250}" no-fade placement="top">
+                        <div v-if="skill.owners" class="owners">
+                          所持者:<br />
+                          <b-link v-for="(owner, oi) in skill.owners" :key="oi" @click="addPrioritized(owner)">
+                            <b-img-lazy :src="getImageURL(owner.icon)" :title="owner.name" width="50" height="50" />
+                          </b-link>
+                        </div>
+                      </b-popover>
+                    </div>
+                    <div class="desc" v-show="displayType >= 2">
+                      <div class="flex">
+                        <h6>{{ skill.name }}</h6>
+                        <div class="param-group" v-html="skillParamsToHtml(skill)"></div>
+                      </div>
+                      <p>
+                        <span v-html="descToHtml(skill, true)" />
+                        <span v-if="skill.note" class="note" v-html="noteToHtml(skill)" />
+                        <span class="note" v-html="effectsToHtml(skill, r.main)" />
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </template>
     </div>
 
   </div>
@@ -179,6 +286,12 @@ export default {
         "治療効果",
         "被治療効果",
       ],
+
+      progress: {
+        completed: true,
+        pending: false,
+        result: [],
+      },
     };
   },
 
@@ -362,41 +475,19 @@ export default {
         }
       }
 
-      const getValue = function (effect) {
-        let r = 0;
-        if (effect.value) {
-          r = effect.value;
-        }
-        if (effect.variable) {
-          if (Array.isArray(effect.variable.max)) {
-            r = effect.variable.max[effect.variable.max.length - 1];
-          }
-          else {
-            r = effect.variable.max;
-          }
-        }
-        if (effect.maxStack) {
-          r *= effect.maxStack;
-          console.log(effect);
-        }
-        return r;
-      };
-
-
       const getSkillScore = function (chr, skill) {
-        let score = {
-          name: skill.name,
-          total: 0,
-          buff: {},
-          debuff: {},
-          skill: skill
+        let r = {
+          score: 0,
+          skill: skill,
+          usedEffects: [],
+          conflictedEffects: [],
         };
         if ((!opt.allowTalent && skill.isTalent) || (!opt.allowPassive && skill.isPassive) || (!opt.allowActive && skill.isActive)) {
-          return score;
+          return r;
         }
 
         const evalCondition = function (effect) {
-          if (!effect.value && !effect.variable)
+          if ((!effect.value && !effect.variable) || (skill.isActive && effect.ephemeral && !effect.duration))
             return;
 
           const cond = effect.condition;
@@ -414,12 +505,8 @@ export default {
             if (!evalCondition(effect))
               continue;
 
-            const v = getValue(effect);
-            if (!(effect.type in score.buff)) {
-              score.buff[effect.type] = 0;
-            }
-            score.buff[effect.type] += v;
-            score.total += v;
+            r.score += this.getEffectValue(effect);
+            r.usedEffects.push(effect);
           }
         }
         if (skill.debuff) {
@@ -429,16 +516,12 @@ export default {
             if (!evalCondition(effect))
               continue;
 
-            const v = getValue(effect);
-            if (!(effect.type in score.debuff)) {
-              score.debuff[effect.type] = 0;
-            }
-            score.debuff[effect.type] += v;
-            score.total += v;
+            r.score += this.getEffectValue(effect);
+            r.usedEffects.push(effect);
           }
         }
-        return score;
-      };
+        return r;
+      }.bind(this);
 
       let scoreTableChr = [];
       for (const chr of this.mainChrs) {
@@ -446,25 +529,103 @@ export default {
           continue;
 
         let skillScore = chr.skills.map(skill => getSkillScore(chr, skill));
-        skillScore = skillScore.sort((a, b) => b.total - a.total).slice(0, 3);
-        skillScore = [getSkillScore(chr, chr.talent), ...skillScore].filter(a => a.total > 0);
+        skillScore = skillScore.sort((a, b) => b.score - a.score).slice(0, 3);
+        skillScore = [getSkillScore(chr, chr.talent), ...skillScore].filter(a => a.score > 0);
 
         let score = {
           name: chr.name,
-          total: 0,
-          chr: chr,
-          skill: skillScore,
+          score: 0,
+          main: {
+            character: chr,
+            usedEffects: skillScore.reduce((total, current) => total.concat(current.usedEffects), []),
+            conflictedEffects: skillScore.reduce((total, current) => total.concat(current.conflictedEffects), []),
+            skills: skillScore.map(ss => ss.skill),
+          }
         };
-        score.total = skillScore.reduce((total, current) => total + current.total, 0);
+        score.score = skillScore.reduce((total, current) => total + current.score, 0);
         scoreTableChr.push(score);
       }
-      scoreTableChr.sort((a, b) => b.total - a.total);
+      scoreTableChr = scoreTableChr.sort((a, b) => b.score - a.score).slice(0, 20);
 
+      this.progress.result = scoreTableChr;
       console.log(scoreTableChr);
     },
 
     getParamClass(param) {
       return param.disabled() ? "disabled" : "";
+    },
+    getSkillClass(skill) {
+      return {
+        active: skill.isActive,
+        passive: skill.isPassive,
+      }
+    },
+    effectsToHtml(skill, ctx) {
+      let lines = [];
+      for (const v of this.enumerate(skill.buff, skill.debuff)) {
+        if (["ランダム"].includes(v.type)) {
+          continue;
+        }
+
+        let additionalClass = "";
+        let prefix = v.isDebuff ? "-" : "+";
+        let onBattle = v.ephemeral ? "(戦闘時)" : "";
+        let unit = "";
+        let title = "";
+        if (ctx.usedEffects.includes(v)) {
+          additionalClass += " caution";
+        }
+        if (ctx.conflictedEffects.includes(v)) {
+          additionalClass += " blue";
+          title = "アクティブ同士で競合、または既に上限に達している";
+        }
+        if (!["移動", "射程", "範囲"].includes(v.type)) {
+          unit = "%";
+        }
+        lines.push(`<div class="effect-box"><span class="effect ${additionalClass}" title="${title}">${v.type}${onBattle}${prefix}${this.getEffectValue(v)}${unit}</span></div>`);
+      }
+      return lines.length ? `<div class="effect-group">${lines.join("")}</div>` : "";
+    },
+    highlight(id, enabled) {
+      var element = document.getElementById(id);
+      if (enabled)
+        element.classList.add("param-highlighted");
+      else
+        element.classList.remove("param-highlighted");
+    },
+
+    getEffectValue(effect) {
+      let r = 0;
+      if (effect.value) {
+        r = effect.value;
+      }
+      if (effect.variable) {
+        if (Array.isArray(effect.variable.max)) {
+          r = effect.variable.max[effect.variable.max.length - 1];
+        }
+        else {
+          r = effect.variable.max;
+        }
+      }
+      if (effect.maxStack) {
+        r *= effect.maxStack;
+        console.log(effect);
+      }
+      return r;
+    },
+
+    chrEffectsToHtml(rec) {
+    },
+
+    *enumerate(...arrays) {
+      for (let array of arrays) {
+        if (array)
+          yield* array;
+      }
+    },
+
+    *enumerateEffects(skill) {
+      yield* this.enumerate(skill.buff, skill.debuff);
     },
 
     findItem(name) {

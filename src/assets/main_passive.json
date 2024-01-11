@@ -210,7 +210,7 @@
       },
       {
         "type": "アタック",
-        "value": 15,
+        "value": 10,
         "ephemeral": true,
         "target": "自身",
         "timing": "戦闘前",
@@ -221,7 +221,7 @@
       },
       {
         "type": "ディフェンス",
-        "value": 15,
+        "value": 10,
         "ephemeral": true,
         "target": "自身",
         "timing": "戦闘前",
