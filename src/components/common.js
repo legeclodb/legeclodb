@@ -840,6 +840,42 @@ export default {
     },
 
     effectParamsToTags(skill, params) {
+      let miscTags = [];
+
+      if (skill.summon) {
+        miscTags.push(`召喚`);
+      }
+
+      if (skill.doubleAttack) {
+        let postfix = "";
+        const cond = skill.doubleAttack.condition;
+        if (cond) {
+          if (cond.onEnemyTurn)
+            postfix = "(反撃)";
+        }
+        miscTags.push(`2回攻撃${postfix}`);
+      }
+
+      if (skill.multiAction) {
+        let postfix = "";
+        const cond = skill.multiAction.condition;
+        if (cond) {
+          if (cond.onKill)
+            postfix = "(敵撃破時)";
+          else if (cond.probability)
+            postfix = "(敵撃破時)";
+        }
+        if (skill.multiAction.target) {
+          postfix = "(味方)";
+        }
+
+        miscTags.push(`再行動${postfix}`);
+        if (!skill.isActive || (skill.isActive && skill.damageRate) || skill.multiAction.target) {
+          miscTags.push(`再攻撃${postfix}`);
+        }
+      }
+
+
       const buffToS = function (effectCategory, effect) {
         if (params.tagFilter && !params.tagFilter(skill, effectCategory, effect))
           return [];
@@ -883,6 +919,7 @@ export default {
 
       const map = (a, f) => a ? a.flatMap(f) : [];
       return [
+        ...miscTags,
         ...map(buff, a => buffToS("バフ", a)),
         ...map(skill.debuff, a => buffToS("デバフ", a)),
         ...map(skill.statusEffects, a => buffToS("デバフ", a)),

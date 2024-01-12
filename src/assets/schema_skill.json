@@ -233,9 +233,11 @@
         "onCloseCombat": { "type": "boolean" },
         "onRangedCombat": { "type": "boolean" },
         "onCriticalHit": { "type": "boolean" },
+        "onBattle": { "type": "boolean" },
         "onGuard": { "type": "boolean" },
         "onDamage": { "type": "boolean" },
         "onKill": { "type": "boolean" },
+        "onActiveSkill": { "type": "boolean" },
         "onSingleSkill": { "type": "boolean" },
         "onAreaSkill": { "type": "boolean" },
         "onOwnTurn": { "type": "boolean" },
@@ -354,6 +356,46 @@
       "statusEffects": {
         "type": "array",
         "items": { "$ref": "#/$defs/effect" }
+      },
+      "doubleAttack": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "coolDown": {
+            "anyOf": [
+              { "type": "number" },
+              {
+                "type": "array",
+                "items": { "type": "number" }
+              }
+            ]
+          },
+          "condition": { "$ref": "#/$defs/condition" }
+        }
+      },
+      "multiMove": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "condition": { "$ref": "#/$defs/condition" }
+        }
+      },
+      "multiAction": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "target": { "$ref": "#/$defs/targetEnum" },
+          "coolDown": {
+            "anyOf": [
+              { "type": "number" },
+              {
+                "type": "array",
+                "items": { "type": "number" }
+              }
+            ]
+          },
+          "condition": { "$ref": "#/$defs/condition" }
+        }
       },
       "tags": {
         "type": "array",

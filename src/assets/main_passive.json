@@ -1115,13 +1115,21 @@
         "area": [ 1, "周囲" ]
       }
     ],
-    "tags": [ "地形無視", "再行動", "再攻撃" ]
+    "multiAction": {
+      "coolDown": 2,
+      "condition": {
+        "onActiveSkill": true,
+        "onDamage": true
+      }
+    },
+    "tags": [ "地形無視" ]
   },
   {
     "uid": "1200181",
     "icon": "sk_p131",
     "name": "♥アイドル界の平定♥",
     "desc": "移動するとき、全ての通過可能な地形を「平地」マスとして扱う。\n[b]自ユニットの移動+1。[/b]\n自身を中心とした周囲[b]2マス[/b]以内の全ての味方ユニットのアタック/マジック[b]+20%[/b]。\nスキルを使用した戦闘前、敵ユニットに固定ダメージを与えて倒したとき、再行動できる(この再行動は発動してから2ターン毎に発動可能)。\n敵ユニットに自身がスキルでダメージを与えたとき、再行動できる(この再行動は発動してから2ターン毎に発動可能)。",
+    "cost": 2,
     "buff": [
       {
         "type": "アタック",
@@ -1134,8 +1142,14 @@
         "area": [ 2, "周囲" ]
       }
     ],
-    "tags": [ "移動+", "地形無視", "再行動", "再攻撃" ],
-    "cost": 2
+    "multiAction": {
+      "coolDown": 2,
+      "condition": {
+        "onActiveSkill": true,
+        "onDamage": true
+      }
+    },
+    "tags": [ "移動+", "地形無視" ]
   },
   {
     "uid": "1200084",
@@ -2504,7 +2518,13 @@
     "name": "波に乗ってこ♪",
     "desc": "全ての通過可能な地形を「平地」マスとして扱う。\n味方ターンでの戦闘中クリティカルが発生したとき、戦闘後、再行動できる(この再行動は発動してから3ターン毎に発動可能)。",
     "cost": 2,
-    "tags": [ "地形無視", "再行動", "再攻撃" ]
+    "multiAction": {
+      "coolDown": 3,
+      "condition": {
+        "onCriticalHit": true
+      }
+    },
+    "tags": [ "地形無視" ]
   },
   {
     "uid": "1200148",
@@ -2588,7 +2608,13 @@
         "target": "自身"
       }
     ],
-    "tags": [ "再行動", "再攻撃" ]
+    "multiAction": {
+      "coolDown": 3,
+      "condition": {
+        "onActiveSkill": true,
+        "onDamage": true
+      }
+    }
   },
   {
     "uid": "1200152",
@@ -2729,7 +2755,7 @@
         "value": 20,
         "target": "自身",
         "condition": {
-          "token": [ "==", 3 ]
+          "token": [ ">=", 3 ]
         }
       }
     ],
@@ -2882,7 +2908,12 @@
         "target": "自身"
       }
     ],
-    "tags": [ "2回攻撃" ]
+    "doubleAttack": {
+      "coolDown": 2,
+      "condition": {
+        "onOwnTurn": true
+      }
+    }
   },
   {
     "uid": "1200169",
@@ -2902,7 +2933,13 @@
         "target": "自身"
       }
     ],
-    "tags": [ "移動+", "再行動", "再攻撃" ]
+    "multiAction": {
+      "coolDown": 32,
+      "condition": {
+        "onCriticalHit": true
+      }
+    },
+    "tags": [ "移動+" ]
   },
   {
     "uid": "1200170",
