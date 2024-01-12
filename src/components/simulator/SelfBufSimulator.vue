@@ -104,8 +104,8 @@
       <template v-for="(r, ri) in progress.result">
         <div class="character" :key="ri">
           <div class="flex info">
-            <div><h6>合計スコア: {{r.score}}</h6></div>
-            <template v-for="(e, ei) in chrEffectsToHtml(r.main)">
+            <div><h6>合計 {{r.score}}:</h6></div>
+            <template v-for="(e, ei) in chrEffectsToHtml(r)">
               <div :key="ei" v-html="e" />
             </template>
           </div>
@@ -323,13 +323,6 @@ export default {
     this.setupCharacters(this.supChrs, this.supActive, this.supPassive);
     this.setupItems(this.items);
 
-    for (let s of this.mainActive) {
-      if (this.matchTags(s.tags, /^再行動$/))
-        s.hasReaction = true;
-      if (this.matchTags(s.tags, /^シンボルスキル$/))
-        s.isSymbolSkill = true;
-    }
-
     this.searchTable = new Map();
     for (let s of [...this.mainActive, ...this.mainPassive, ...this.mainTalents, ...this.supActive, ...this.supPassive, ...this.items])
       this.searchTable.set(s.name, s);
@@ -493,7 +486,7 @@ export default {
           const cond = effect.condition;
           const probability = cond?.probability;
           if ((!opt.allowOnBattle && effect.ephemeral) || (!opt.allowProbability && probability) ||
-            (!opt.allowNonReaction && skill.isActive && !skill.hasReaction && !skill.damageRate))
+            (!opt.allowNonReaction && skill.isActive && !skill.multiAction && !skill.damageRate))
             return false;
           return true;
         };
@@ -560,36 +553,71 @@ export default {
         passive: skill.isPassive,
       }
     },
-    effectsToHtml(skill, ctx) {
+    effectsToHtml(skills, ctx, flatten = false) {
+      let table = {};
       let lines = [];
-      for (const effect of this.enumerate(skill.buff, skill.debuff)) {
-        if (["ランダム"].includes(effect.type)) {
-          continue;
-        }
 
-        let value = this.getEffectValue(effect);
-        if (effect.add) {
-          value = `${effect.add.from}${effect.add.rate}`;
-        }
+      const handleSkill = function (skill) {
+        for (const effect of this.enumerate(skill.buff, skill.debuff)) {
+          if (["ランダム"].includes(effect.type)) {
+            continue;
+          }
 
-        let additionalClass = "";
-        let prefix = effect.isDebuff ? "-" : "+";
-        let onBattle = effect.ephemeral ? "(戦闘時)" : "";
-        let unit = "";
-        let title = "";
-        if (ctx.usedEffects.includes(effect)) {
-          additionalClass += " caution";
+          let value = this.getEffectValue(effect);
+          if (effect.add) {
+            value = `${effect.add.from}${effect.add.rate}`;
+          }
+
+          let additionalClass = "";
+          let prefix = effect.isDebuff ? "-" : "+";
+          let onBattle = effect.ephemeral ? "(戦闘時)" : "";
+          let unit = "";
+          let title = "";
+          let used = false;
+          if (ctx.usedEffects.includes(effect)) {
+            used = true;
+            additionalClass += " caution";
+          }
+          if (ctx.conflictedEffects.includes(effect)) {
+            additionalClass += " blue";
+            title = "アクティブ同士で競合、または既に上限に達している";
+          }
+          if (!["移動", "射程(通常攻撃)", "射程(スキル)", "範囲"].includes(effect.type)) {
+            unit = "%";
+          }
+
+          if (flatten) {
+            if (used) {
+              let key = `${effect.type}${prefix}`;
+              if (!(key in table))
+                table[key] = 0;
+              if (typeof (value) == "number")
+                table[key] += value;
+            }
+          }
+          else {
+            lines.push(`<div class="effect-box"><span class="effect ${additionalClass}" title="${title}">${effect.type}${onBattle}${prefix}${value}${unit}</span></div>`);
+          }
         }
-        if (ctx.conflictedEffects.includes(effect)) {
-          additionalClass += " blue";
-          title = "アクティブ同士で競合、または既に上限に達している";
-        }
-        if (!["移動", "射程(通常攻撃)", "射程(スキル)", "範囲"].includes(effect.type)) {
-          unit = "%";
-        }
-        lines.push(`<div class="effect-box"><span class="effect ${additionalClass}" title="${title}">${effect.type}${onBattle}${prefix}${value}${unit}</span></div>`);
+      }.bind(this);
+
+      if (Array.isArray(skills)) {
+        for (let skill of skills)
+          handleSkill(skill);
       }
-      return lines.length ? `<div class="effect-group">${lines.join("")}</div>` : "";
+      else {
+        handleSkill(skills);
+      }
+
+      if (flatten) {
+        for (let k in table) {
+          lines.push(`<div class="effect-box"><span class="effect caution">${k}${table[k]}</span></div>`);
+        }
+        return lines;
+      }
+      else {
+        return lines.length ? `<div class="effect-group">${lines.join("")}</div>` : "";
+      }
     },
     highlight(id, enabled) {
       var element = document.getElementById(id);
@@ -623,7 +651,8 @@ export default {
       return r;
     },
 
-    chrEffectsToHtml(rec) {
+    chrEffectsToHtml(r) {
+      return this.effectsToHtml(r.main.skills, r.main, true);
     },
 
     *enumerate(...arrays) {

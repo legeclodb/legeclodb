@@ -982,6 +982,9 @@ export default {
       if (params.includeSkillEffectTags)
         skill.tags = [...skill.tags, ...this.effectParamsToTags(skill, params)];
 
+      if (skill.isActive && this.matchTags(skill.tags, /^シンボルスキル$/))
+        skill.isSymbolSkill = true;
+
       if (!skill.icon)
         skill.icon = skill.uid;
     },

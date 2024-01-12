@@ -94,10 +94,17 @@ export default {
       supportEnabled: true,
       main: {
         atk: {
-          label: "アタック / マジック",
+          label: "攻撃力",
           type: "number",
           min: 0,
           value: 1000,
+          disabled: () => !this.mainEnabled,
+        },
+        atkBuf: {
+          label: "攻撃力バフ (%)",
+          type: "number",
+          min: -70,
+          value: 0,
           disabled: () => !this.mainEnabled,
         },
         skillDamageRate: {
@@ -106,7 +113,7 @@ export default {
           value: 1.0,
           disabled: () => !this.mainEnabled,
         },
-        damageBuff: {
+        damageBuf: {
           label: "与ダメージバフ (%)",
           type: "number",
           min: -70,
@@ -140,13 +147,20 @@ export default {
       },
       support: {
         atk: {
-          label: "アタック / マジック",
+          label: "攻撃力",
           type: "number",
           min: 0,
           value: 1000,
           disabled: () => !this.supportEnabled,
         },
-        damageBuff: {
+        atkBuf: {
+          label: "攻撃力バフ (%)",
+          type: "number",
+          min: -70,
+          value: 0,
+          disabled: () => !this.supportEnabled,
+        },
+        damageBuf: {
           label: "与ダメージバフ (%)",
           type: "number",
           min: -70,
@@ -162,9 +176,16 @@ export default {
       },
       attacked: {
         def: {
-          label: "ディフェンス / レジスト",
+          label: "防御力",
           type: "number",
           value: 100,
+          disabled: () => false,
+        },
+        defBuf: {
+          label: "防御力バフ (%)",
+          type: "number",
+          min: -70,
+          value: 0,
           disabled: () => false,
         },
         damageRate: {
@@ -201,18 +222,18 @@ export default {
       const main = this.main;
       const support = this.support;
 
-      const def = attacked.def.value;
+      const def = attacked.def.value * (1.0 + attacked.defBuf.value * 0.01);
       const damageResist = 1.0 - this.toNumber(attacked.damageRate.value) * 0.01;
       const shield = attacked.shield.value;
 
       let result = 0;
       if (this.mainEnabled) {
-        const atk = main.atk.value;
+        const atk = main.atk.value * (1.0 + main.atkBuf.value * 0.01);
         const skillDamageRate = this.toNumber(main.skillDamageRate.value);
-        const damageBuff = 1.0 + this.toNumber(main.damageBuff.value) * 0.01;
+        const damageBuf = 1.0 + this.toNumber(main.damageBuf.value) * 0.01;
         const criticalDamageRate = 1.0 + this.toNumber(main.criticalDamageRate.value) * 0.01;
 
-        let damage = (atk - def) * skillDamageRate * damageBuff * damageResist;
+        let damage = (atk - def) * skillDamageRate * damageBuf * damageResist;
         if (main.critical.value)
           damage *= criticalDamageRate;
         if (main.rangedPenalty.value)
@@ -221,10 +242,10 @@ export default {
         result += Math.max(Math.round(damage), 1) * (main.doubleAttack.value ? 20 : 10);
       }
       if (this.supportEnabled) {
-        const atk = support.atk.value;
-        const damageBuff = 1.0 + this.toNumber(support.damageBuff.value) * 0.01;
+        const atk = support.atk.value * (1.0 + support.atkBuf.value * 0.01);
+        const damageBuf = 1.0 + this.toNumber(support.damageBuf.value) * 0.01;
 
-        let damage = (atk - def) * damageBuff * damageResist;
+        let damage = (atk - def) * damageBuf * damageResist;
         if (support.rangedPenalty.value)
           damage *= 0.6;
 

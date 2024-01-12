@@ -542,13 +542,6 @@ export default {
     this.setupCharacters(this.supChrs, this.supActive, this.supPassive);
     this.setupItems(this.items);
 
-    for (let s of this.mainActive) {
-      if (this.matchTags(s.tags, /^再行動$/))
-        s.hasReaction = true;
-      if (this.matchTags(s.tags, /^シンボルスキル$/))
-        s.isSymbolSkill = true;
-    }
-
     let idx = 0;
     const setId = function (list, prefix) {
       for (let i = 0; i < list.length; ++i) {
@@ -682,13 +675,14 @@ export default {
     };
     this.options = makeOptions([
       { name: "maxPickup", label: "人を選出", value: 5, min: 1, max: 10 },
-      { name: "maxActiveCount", label: "アクティブ数制限 (再行動ありを除く)", value: 2, min: 0, max: 3 },
+      { name: "maxActiveCount", label: "アクティブ数制限 (再行動ありを除く)", value: 1, min: 0, max: 3 },
       { name: "allowEngageSkills", label: "エンゲージスキルを含める", value: true },
       { name: "allowOnBattle", label: "戦闘時発動効果を含める", value: true },
       { name: "allowProbability", label: "確率発動効果を含める", value: true },
       { name: "allowSingleUnitBuff", label: "単体バフを含める", value: false },
       { name: "allowSymbolSkill", label: "シンボルスキルを含める", value: false },
       { name: "allowSupportActive", label: "サポートのアクティブを含める", value: true },
+      { name: "prioritizeReaction", label: "再行動付きを優先する", value: true },
     ]);
 
     const makeParams = function (effectType, types) {
@@ -815,8 +809,7 @@ export default {
     effectsToHtml(skill, ctx) {
       let lines = [];
       for (const v of this.enumerate(skill.buff, skill.debuff)) {
-        if (["ランダム"].includes(v.type) ||
-          !this.isPublicTarget(v.target)) {
+        if (["ランダム"].includes(v.type)) {
           continue;
         }
 
@@ -1206,7 +1199,7 @@ export default {
           };
 
           let scoreBoost = 1;
-          if (skill.hasReaction) {
+          if (skill.multiAction && opt.prioritizeReaction) {
               // 再行動つきアクティブは優先的に選ぶ
               scoreBoost += 0.25;
           }
@@ -1265,7 +1258,7 @@ export default {
         const pickSkill = function (ctx, skills, ignoreActive) {
           let scoreList = [];
           for (const skill of skills) {
-            if (ignoreActive && skill.isActive && !skill.hasReaction)
+            if (ignoreActive && skill.isActive && !skill.multiAction)
               continue;
 
             const r = getSkillScore(ctx, skill);
@@ -1329,7 +1322,7 @@ export default {
             updateState(r);
             if (r.summon)
               summonScore = r.summon;
-            if (r.skill.isActive && !r.skill.hasReaction)
+            if (r.skill.isActive && !r.skill.multiAction)
               ++activeCount;
           }
         }
