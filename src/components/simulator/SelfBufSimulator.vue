@@ -49,8 +49,6 @@
                   <b-img-lazy :src="getImageURL(damageTypes[i])" width="20px" />
                 </b-button>
               </b-button-group>
-
-              <b-button @click="doSearch()">テスト</b-button>
             </div>
           </div>
         </b-container>
@@ -92,6 +90,55 @@
           </b-table>
         </b-container>
       </div>
+
+      <div class="menu-panel" id="cb-exclude-list">
+        <b-container>
+          <div>
+            <div class="flex">
+              <h3 style="margin: 5px 0px">優先リスト</h3>
+              <div class="right-align">
+                <b-button size="sm" @click="prioritized=[]" style="margin-left: 5px">クリア</b-button>
+              </div>
+            </div>
+            <div class="flex exclude-box">
+              <b-link v-for="(v, i) in prioritized" :key="i" @click="prioritized.splice(prioritized.indexOf(v), 1)">
+                <div v-if="!v.owner" :title="v.name">
+                  <b-img-lazy :src="getImageURL(v.icon)" :title="v.name" width="50" />
+                </div>
+                <div v-if="v.owner" style="width: 50px; height: 50px;" :title="v.owner.name + ' & ' + v.item.name">
+                  <b-img-lazy :src="getImageURL(v.owner.icon)" :title="v.name" width="35" style="position: relative; left: 0px; top: 0px; " />
+                  <b-img-lazy :src="getImageURL(v.item.icon)" :title="v.name" width="35" style="position: relative; left: -20px; top: 15px; " />
+                </div>
+              </b-link>
+            </div>
+          </div>
+          <div>
+            <div class="flex">
+              <h3 style="margin: 5px 0px">除外リスト</h3>
+              <div class="right-align">
+                <b-button size="sm" @click="excluded=[]" style="margin-left: 5px">クリア</b-button>
+              </div>
+            </div>
+            <div class="flex exclude-box">
+              <b-link v-for="(v, i) in excluded" :key="i" @click="excluded.splice(excluded.indexOf(v), 1)">
+                <div v-if="!v.owner" :title="v.name">
+                  <b-img-lazy :src="getImageURL(v.icon)" :title="v.name" width="50" />
+                </div>
+                <div v-if="v.owner" style="width: 50px; height: 50px; " :title="v.owner.name + ' & ' + v.item.name">
+                  <b-img-lazy :src="getImageURL(v.owner.icon)" :title="v.name" width="35" style="position: relative; left: 0px; top: 0px; " />
+                  <b-img-lazy :src="getImageURL(v.item.icon)" :title="v.name" width="35" style="position: relative; left: -20px; top: 15px; " />
+                </div>
+              </b-link>
+            </div>
+          </div>
+        </b-container>
+      </div>
+    </div>
+
+    <div v-if="!progress.completed" class="content">
+      <div class="menu-panel" style="padding: 10px">
+        <b-spinner small label="Spinning"></b-spinner>
+      </div>
     </div>
 
     <div class="content" :style="style">
@@ -123,9 +170,9 @@
                   <div class="param-box"><span class="param-name">実装日:</span><span class="param-value">{{r.main.character.date}}</span></div>
                 </div>
                 <div class="status flex">
-                  <template v-for="(skill, si) in r.main.character.skills">
-                    <b-img-lazy :src="getImageURL(skill.icon)" :title="skill.name" width="50" :key="si" />
-                  </template>
+                  <b-link v-for="(skill, si) in r.main.character.skills" :key="si" @click="addPrioritized(skill)">
+                    <b-img-lazy :src="getImageURL(skill.icon)" :title="skill.name" width="50" />
+                  </b-link>
                 </div>
               </b-popover>
             </div>
@@ -138,9 +185,19 @@
                       <b-popover :target="'skill_m_'+ri+'_'+si" :title="skill.name" triggers="hover click blur" :delay="{show:0, hide:250}" no-fade placement="top">
                         <div v-if="skill.owners" class="owners">
                           所持者:<br />
-                          <template v-for="(owner, oi) in skill.owners">
-                            <b-img-lazy :src="getImageURL(owner.icon)" :title="owner.name" width="50" :key="oi" />
-                          </template>
+                          <b-link v-for="(owner, oi) in skill.owners" :key="oi" @click="addPrioritized(owner)">
+                            <b-img-lazy :src="getImageURL(owner.icon)" :title="owner.name" width="50" />
+                          </b-link>
+                        </div>
+                        <div v-if="skill.skillType!='タレント'">
+                          <div class="flex exclude-menu">
+                            <b-button size="sm" @click="addPrioritized(skill)">このスキルを優先</b-button>
+                            <b-button size="sm" @click="addPrioritized(skill, r.main.character)">このキャラとスキルの組み合わせを優先</b-button>
+                          </div>
+                          <div class="flex exclude-menu">
+                            <b-button size="sm" @click="addExcluded(skill)">このスキルを除外</b-button>
+                            <b-button size="sm" @click="addExcluded(skill, r.main.character)">このキャラとスキルの組み合わせを除外</b-button>
+                          </div>
                         </div>
                       </b-popover>
                     </div>
@@ -239,6 +296,12 @@ export default {
         symbol: [],
         damageType: [],
       },
+
+      options: [],
+      buffs: [],
+      debuffs: [],
+      excluded: [],
+      prioritized: [],
 
       buffFields: [
         {
@@ -448,7 +511,7 @@ export default {
 
         for (let i = 0; i < effects.length;) {
           if (countEffect(effects[i]) > 1) {
-            console.log(effects[i]);
+            //console.log(effects[i]);
             effects.splice(i, 1);
           }
           else
@@ -471,11 +534,13 @@ export default {
       const getSkillScore = function (chr, skill) {
         let r = {
           score: 0,
+          prioritized: this.isPrioritized(skill, chr) ? 1 : 0,
+          excluded: this.isExcluded(skill, chr) ? 1 : 0,
           skill: skill,
           usedEffects: [],
           conflictedEffects: [],
         };
-        if ((!opt.allowTalent && skill.isTalent) || (!opt.allowPassive && skill.isPassive) || (!opt.allowActive && skill.isActive)) {
+        if (r.excluded || (!opt.allowTalent && skill.isTalent) || (!opt.allowPassive && skill.isPassive) || (!opt.allowActive && skill.isActive)) {
           return r;
         }
 
@@ -522,8 +587,8 @@ export default {
           continue;
 
         let skillScore = chr.skills.map(skill => getSkillScore(chr, skill));
-        skillScore = skillScore.sort((a, b) => b.score - a.score).slice(0, 3);
-        skillScore = [getSkillScore(chr, chr.talent), ...skillScore].filter(a => a.score > 0);
+        skillScore = skillScore.sort((a, b) => b.score - a.score).sort((a, b) => b.prioritized - a.prioritized).slice(0, 3);
+        skillScore = [getSkillScore(chr, chr.talent), ...skillScore].filter(a => a.score > 0 || a.prioritized);
 
         let score = {
           name: chr.name,
@@ -538,11 +603,29 @@ export default {
         score.score = skillScore.reduce((total, current) => total + current.score, 0);
         scoreTableChr.push(score);
       }
-      scoreTableChr = scoreTableChr.sort((a, b) => b.score - a.score).slice(0, 20);
 
-      this.progress.result = scoreTableChr;
-      console.log(scoreTableChr);
+      return scoreTableChr.filter(a => a.score > 0).sort((a, b) => b.score - a.score).slice(0, opt.maxPickup);
     },
+
+    beginSearch() {
+      if (!this.progress.completed) {
+        this.pending = true;
+        return false;
+      }
+
+      this.progress.completed = false;
+      const body = function () {
+        this.progress.result = this.doSearch(this.options.maxPickup.value);
+        this.progress.completed = true;
+      }.bind(this);
+      setTimeout(body, 300);
+      return true;
+    },
+
+    updateQuery() {
+      this.beginSearch();
+    },
+
 
     getParamClass(param) {
       return param.disabled() ? "disabled" : "";
@@ -627,13 +710,50 @@ export default {
         element.classList.remove("param-highlighted");
     },
 
+
+    addPriorityItem(list, item, owner) {
+      const cb = owner ?
+        a => a.owner == owner && a.item == item :
+        a => a == item;
+      let i = list.findIndex(cb);
+      if (i >= 0)
+        list.splice(i, 1);
+
+      list.splice(0, 0, owner ? { item: item, owner: owner } : item);
+    },
+    isInPrioritizeList(list, item, owner = null) {
+      if (list.includes(item))
+        return true;
+      else if (owner)
+        return list.find(a => a.owner == owner && a.item == item) != null;
+      return false;
+    },
+    addPrioritized(item, owner = null) {
+      this.addPriorityItem(this.prioritized, item, owner);
+    },
+    removePrioritized(item) {
+      this.prioritized.splice(this.prioritized.indexOf(item), 1);
+    },
+    isPrioritized(item, owner = null) {
+      return this.isInPrioritizeList(this.prioritized, item, owner);
+    },
+    addExcluded(item, owner = null) {
+      this.addPriorityItem(this.excluded, item, owner);
+    },
+    removeExcluded(item) {
+      this.excluded.splice(this.excluded.indexOf(item), 1);
+    },
+    isExcluded(item, owner = null) {
+      return this.isInPrioritizeList(this.excluded, item, owner);
+    },
+
+
     getEffectValue(effect) {
       let r = 0;
       if (effect.value) {
         r = effect.value;
         if (effect.maxStack) {
           r *= effect.maxStack;
-          console.log(effect);
         }
       }
       else if (effect.variable) {
@@ -813,7 +933,25 @@ export default {
         r[k] = opt[k].value;
       return r;
     },
-  }
+  },
+
+  watch: {
+    filter: { handler: function () { this.updateQuery(); }, deep: true },
+    options: { handler: function () { this.updateQuery(); }, deep: true },
+    buffs: { handler: function () { this.updateQuery(); }, deep: true },
+    debuffs: { handler: function () { this.updateQuery(); }, deep: true },
+    prioritized: function () { this.updateQuery(); },
+    excluded: function () { this.updateQuery(); },
+  },
+
+  updated: function () {
+    // ペンディングリクエストが残っていたら再検索
+    if (this.progress.pending && this.progress.completed) {
+      if (this.beginSearch()) {
+        this.progress.pending = false;
+      }
+    }
+  },
 };
 </script>
 
