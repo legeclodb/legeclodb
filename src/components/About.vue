@@ -361,13 +361,6 @@
           </ul>
         </p>
 
-        <!--
-        <h2><a name="self-buf" href="#self-buf"></a>自己バフシミュレータ(仮)</h2>
-        <SelfBufSimulator />
-        <p>
-        </p>
-        -->
-
       </div>
     </div>
 
@@ -392,7 +385,6 @@ import Navigation from './Navigation.vue'
 import DamageSimulator from './simulator/DamageSimulator.vue'
 import BattlePointSimulator from './simulator/BattlePointSimulator.vue'
 import StatusSimulator from './simulator/StatusSimulator.vue'
-import SelfBufSimulator from './simulator/SelfBufSimulator.vue'
 
 import jsonMainActive from '../assets/main_active.json'
 import jsonMainPassive from '../assets/main_passive.json'
@@ -411,7 +403,6 @@ export default {
     DamageSimulator,
     BattlePointSimulator,
     StatusSimulator,
-    //SelfBufSimulator,
   },
   mixins: [common],
 

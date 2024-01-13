@@ -1,5 +1,5 @@
 ﻿<template>
-  <div class="panel" style="padding: 10px 0px 0px 0px;">
+  <div class="root">
 
     <div class="menu-content" style="flex-wrap: nowrap">
       <div class="menu-panel">
@@ -36,17 +36,24 @@
             </div>
           </div>
           <div class="menu-widgets flex">
-            <div class="widget">
+            <div class="widget filter">
               <b-button-group size="sm" id="symbol_selector">
                 <b-button v-for="(c, i) in filter.symbol" :key="i" :pressed.sync="c.state" variant="outline-secondary">
                   <b-img-lazy :src="getImageURL(symbols[i])" width="20px" />
                 </b-button>
               </b-button-group>
             </div>
-            <div class="widget">
+            <div class="widget filter">
               <b-button-group size="sm" id="damage_type_selector">
                 <b-button v-for="(c, i) in filter.damageType" :key="i" :pressed.sync="c.state" variant="outline-secondary">
                   <b-img-lazy :src="getImageURL(damageTypes[i])" width="20px" />
+                </b-button>
+              </b-button-group>
+            </div>
+            <div class="widget rareiry-filter">
+              <b-button-group size="sm" id="rareiry_selector">
+                <b-button v-for="(c, i) in filter.rarity" :key="i" :pressed.sync="c.state" variant="outline-secondary">
+                  <b-img-lazy :src="getImageURL(rarities[i])" width="30px" />
                 </b-button>
               </b-button-group>
             </div>
@@ -135,16 +142,17 @@
       </div>
     </div>
 
-    <div v-if="!progress.completed" class="content">
-      <div class="menu-panel" style="padding: 10px">
+    <div class="content" :style="style">
+      <div v-if="!progress.completed" class="menu-panel" style="padding: 10px; position: absolute;">
         <b-spinner small label="Spinning"></b-spinner>
       </div>
-    </div>
-
-    <div class="content" :style="style">
       <div v-if="progress.result.length == 0" class="menu-panel" style="padding: 10px">
         <div class="about">
-          <h5 style="margin-bottom: 5px">ユニット単体バフ・デバフ検索</h5>
+          <h5 style="margin-bottom: 5px">自己バフ検索</h5>
+          こちらは自己バフを含むメインキャラ単身のタレント＋スキルのバフ・デバフの総合値を算出します。<br />
+          戦闘能力を図る指標にすることを目的としています。<br />
+          こちらもアクティブ同士の競合は考慮されています。<br />
+          特定のスキルを除外or優先採用したい場合、アイコンをマウスオーバーすると出てくるポップアップから可能です。
         </div>
       </div>
 
@@ -158,8 +166,8 @@
           </div>
           <div class="flex">
             <div v-if="r.main" class="portrait">
-              <b-img-lazy :src="getImageURL(r.main.character.icon)" :title="r.main.character.name" :id="'portrait_m_'+ri" width="100" rounded />
-              <b-popover v-if="displayType>=1" :target="'portrait_m_'+ri" :title="r.main.character.name" triggers="hover click blur" :delay="{show:0, hide:250}" no-fade placement="top">
+              <b-img-lazy :src="getImageURL(r.main.character.icon)" :title="r.main.character.name" :id="'portrait_sbm_'+ri" width="100" rounded />
+              <b-popover v-if="displayType>=1" :target="'portrait_sbm_'+ri" :title="r.main.character.name" triggers="hover click blur" :delay="{show:0, hide:250}" no-fade placement="top">
                 <div class="status flex">
                   <b-img-lazy :src="getImageURL(r.main.character.class)" :title="'クラス:'+r.main.character.class" height="25" />
                   <b-img-lazy :src="getImageURL(r.main.character.symbol)" :title="'シンボル:'+r.main.character.symbol" height="25" />
@@ -181,8 +189,8 @@
                 <div class="skill" v-for="(skill, si) in r.main.skills" :class="getSkillClass(skill)" :key="si">
                   <div class="flex">
                     <div class="icon">
-                      <b-img-lazy :src="getImageURL(skill.icon)" :title="skill.name" width="50" :id="'skill_m_'+ri+'_'+si" />
-                      <b-popover :target="'skill_m_'+ri+'_'+si" :title="skill.name" triggers="hover click blur" :delay="{show:0, hide:250}" no-fade placement="top">
+                      <b-img-lazy :src="getImageURL(skill.icon)" :title="skill.name" width="50" :id="'skill_sbm_'+ri+'_'+si" />
+                      <b-popover :target="'skill_sbm_'+ri+'_'+si" :title="skill.name" triggers="hover click blur" :delay="{show:0, hide:250}" no-fade placement="top">
                         <div v-if="skill.owners" class="owners">
                           所持者:<br />
                           <b-link v-for="(owner, oi) in skill.owners" :key="oi" @click="addPrioritized(owner)">
@@ -220,15 +228,15 @@
 
           <div class="flex">
             <div v-if="r.summon" class="portrait">
-              <b-img-lazy :src="getImageURL(r.summon.character.icon)" :title="`${r.summon.character.name} (召喚ユニット)`" :id="'portrait_m_'+ri" width="100" rounded />
+              <b-img-lazy :src="getImageURL(r.summon.character.icon)" :title="`${r.summon.character.name} (召喚ユニット)`" :id="'portrait_sbx_'+ri" width="100" rounded />
             </div>
             <div v-if="r.summon" class="detail" v-show="displayType >= 1">
               <div class="skills">
                 <div class="skill" v-for="(skill, si) in r.summon.skills" :class="getSkillClass(skill)" :key="si">
                   <div class="flex">
                     <div class="icon">
-                      <b-img-lazy :src="getImageURL(skill.icon)" :title="skill.name" width="50" :id="'skill_x_'+ri+'_'+si" />
-                      <b-popover :target="'skill_x_'+ri+'_'+si" :title="skill.name" triggers="hover click blur" :delay="{show:0, hide:250}" no-fade placement="top">
+                      <b-img-lazy :src="getImageURL(skill.icon)" :title="skill.name" width="50" :id="'skill_sbx_'+ri+'_'+si" />
+                      <b-popover :target="'skill_sbx_'+ri+'_'+si" :title="skill.name" triggers="hover click blur" :delay="{show:0, hide:250}" no-fade placement="top">
                         <div v-if="skill.owners" class="owners">
                           所持者:<br />
                           <b-link v-for="(owner, oi) in skill.owners" :key="oi" @click="addPrioritized(owner)">
@@ -323,16 +331,14 @@ export default {
       { name: "allowEngageSkills", label: "エンゲージスキルを含める", value: true },
       { name: "allowOnBattle", label: "戦闘時発動効果を含める", value: true },
       { name: "allowProbability", label: "確率発動効果を含める", value: true },
-      { name: "allowNonReaction", label: "再行動なしバフスキルを含める", value: false },
+      { name: "allowNonReaction", label: "再行動なしバフスキルを含める", value: true },
     ]);
 
     const makeParams = function (effectType, types) {
       const make = function (t) {
-        const valueType = `${t.label}${effectType}`;
         return {
           label: t.label,
           enabled: false,
-          valueType: valueType,
 
           reset() {
             this.enabled = false;
@@ -394,7 +400,7 @@ export default {
           this.activeCount = 0;
           this.usedEffects = [];
           this.conflictedEffects = [];
-          this.usedSlots = new Uint8Array(vue.effectTypeIndex);
+          this.usedSlots = new vue.BitFlags(vue.effectTypeIndex);
         }
       };
 
@@ -437,7 +443,7 @@ export default {
             if (!evalCondition(effect))
               continue;
 
-            if (effect.slotIndex && ctx.usedSlots[effect.slotIndex]) {
+            if (effect.slotIndex && ctx.usedSlots.get(effect.slotIndex)) {
               r.conflictedEffects.push(effect);
             }
             else {
@@ -453,7 +459,7 @@ export default {
             if (!evalCondition(effect))
               continue;
 
-            if (effect.slotIndex && ctx.usedSlots[effect.slotIndex]) {
+            if (effect.slotIndex && ctx.usedSlots.get(effect.slotIndex)) {
               r.conflictedEffects.push(effect);
             }
             else {
@@ -477,7 +483,7 @@ export default {
           skillScore.push(score);
           for (const effect of score.usedEffects) {
             if (effect.slotIndex) {
-              ctx.usedSlots[effect.slotIndex] = 1;
+              ctx.usedSlots.set(effect.slotIndex, true);
             }
           }
           ctx.usedEffects = ctx.usedEffects.concat(score.usedEffects);
@@ -533,10 +539,6 @@ export default {
       this.beginSearch();
     },
 
-
-    chrEffectsToHtml(r) {
-      return this.effectsToHtml(r.main.skills, r.main, true);
-    },
   },
 };
 </script>
@@ -554,5 +556,13 @@ export default {
 .about h3 {
   font-size: 1.5em;
   margin-left: 1em;
+}
+</style>
+<style>
+.filter .btn-outline-secondary {
+}
+
+.rareiry-filter .btn-outline-secondary {
+  padding: 4px 0px !important;
 }
 </style>

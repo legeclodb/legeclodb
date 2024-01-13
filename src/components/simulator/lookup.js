@@ -21,6 +21,7 @@ export default {
         class: [],
         symbol: [],
         damageType: [],
+        rarity: [],
       },
 
       options: [],
@@ -46,11 +47,26 @@ export default {
     this.supActive = structuredClone(jsonSupportActive);
     this.supPassive = structuredClone(jsonSupportPassive);
     this.supChrs = structuredClone(jsonSupportChrs).filter(a => !a.hidden);
+
     this.items = structuredClone(jsonItems).filter(a => !a.hidden || a.slot == "アミュレット");
+    this.weapons = this.items.filter(a => a.slot == "武器");
+    this.armors = this.items.filter(a => a.slot == "鎧");
+    this.helmets = this.items.filter(a => a.slot == "兜");
+    this.accessories = this.items.filter(a => a.slot == "アクセサリ");
 
     this.setupCharacters(this.mainChrs, this.mainActive, this.mainPassive, this.mainTalents);
     this.setupCharacters(this.supChrs, this.supActive, this.supPassive);
     this.setupItems(this.items);
+
+    let idx = 0;
+    for (let list of [this.mainChrs, this.mainActive, this.mainPassive,
+      this.mainTalents, this.supChrs, this.supActive, this.supPassive,
+      this.items])
+    {
+      for (let item of list)
+        item.index = ++idx;
+    }
+    this.itemCount = idx;
 
     this.searchTableWithId = new Map();
     this.searchTableWithName = new Map();
@@ -59,10 +75,53 @@ export default {
       this.searchTableWithName.set(s.name, s);
     }
 
-    let effectTypeIndex = 0;
+    let effectTypeIndex = 1;
+    let effectTypeNames = ["???"];
     let effectTypeTable = new Map();
-    let slotIndex = 0;
+    let slotIndex = 1;
     let slotTable = new Map();
+    const effectTypes = [
+      "最大HP",
+      "アタック",
+      "ディフェンス",
+      "マジック",
+      "レジスト",
+      "テクニック",
+      "ディフェンス無視",
+      "レジスト無視",
+      "与ダメージ",
+      "与ダメージ(物理)",
+      "与ダメージ(魔法)",
+      "与ダメージ(スキル)",
+      "与ダメージ(範囲スキル)",
+      "与ダメージ(通常攻撃)",
+      "ダメージ耐性",
+      "ダメージ耐性(物理)",
+      "ダメージ耐性(魔法)",
+      "ダメージ耐性(範囲)",
+      "クリティカル率",
+      "クリティカル率耐性",
+      "クリティカルダメージ倍率",
+      "治療効果",
+      "被治療効果",
+      "射程(通常攻撃)",
+      "射程(スキル)",
+      "範囲",
+      "移動",
+      "ランダム",
+    ];
+    for (const et of effectTypes) {
+      const key = `${et}+`;
+      effectTypeTable.set(key, effectTypeIndex);
+      effectTypeNames.push(key);
+      effectTypeIndex++;
+    }
+    for (const et of effectTypes) {
+      const key = `${et}-`;
+      effectTypeTable.set(key, effectTypeIndex);
+      effectTypeNames.push(key);
+      effectTypeIndex++;
+    }
     for (let skill of this.enumerate(this.mainActive, this.mainPassive, this.mainTalents, this.supActive, this.supPassive, this.items)) {
       for (let effect of this.enumerateEffects(skill)) {
         let effectType = effect.type;
@@ -79,6 +138,7 @@ export default {
         if (!effect.effectTypeIndex) {
           effectTypeTable.set(effectType, effectTypeIndex);
           effect.effectTypeIndex = effectTypeIndex++;
+          effectTypeNames.push(effectType);
         }
 
         if (skill.isActive) {
@@ -92,6 +152,7 @@ export default {
       }
     }
     this.effectTypeIndex = effectTypeIndex;
+    this.effectTypeNames = effectTypeNames;
     this.effectTypeTable = effectTypeTable;
     this.slotIndex = slotIndex;
     this.slotTable = slotTable;
@@ -100,28 +161,54 @@ export default {
     this.supChrs.sort((a, b) => b.date.localeCompare(a.date));
     this.items.sort((a, b) => b.date.localeCompare(a.date));
 
-    this.weapons = this.items.filter(a => a.slot == "武器");
-    this.armors = this.items.filter(a => a.slot == "鎧");
-    this.helmets = this.items.filter(a => a.slot == "兜");
-    this.accessories = this.items.filter(a => a.slot == "アクセサリ");
-    this.amulets1 = this.items.filter(a => a.slot == "月のアミュレット");
-    this.amulets2 = this.items.filter(a => a.slot == "太陽のアミュレット");
-
-    this.validWeapons = (() => this.weapons.filter(a => this.mainCanEquip(a))).bind(this);
-    this.validArmors = (() => this.armors.filter(a => this.mainCanEquip(a))).bind(this);
-    this.validHelmets = (() => this.helmets.filter(a => this.mainCanEquip(a))).bind(this);
-    this.validAccessories = (() => this.accessories.filter(a => this.mainCanEquip(a))).bind(this);
-
     this.fillFilter(this.filter.class, this.classes);
     this.fillFilter(this.filter.symbol, this.symbols);
     this.fillFilter(this.filter.damageType, this.damageTypes);
+    this.fillFilter(this.filter.rarity, this.rarities);
   },
 
   methods: {
+    BitFlags: class {
+      constructor(arg) {
+        if (typeof arg == "number") {
+          const size = arg;
+          // (size / 32) + (size % 32 ? 1 : 0)
+          // 整数のまま処理するためビット演算
+          const n = (size >> 5) + (size & 31 ? 1 : 0);
+          this.data_ = new Uint32Array(n);
+        }
+        else if (arg.constructor === this.constructor) {
+          const parent = arg;
+          this.data_ = new Uint32Array(parent.data_);
+        }
+        else {
+          throw "BitFlags(??????)";
+        }
+      }
+      get(i) {
+        const byte = i >> 5;
+        const bit = i & 31;
+        return (this.data_[byte] & (1 << bit)) != 0;
+      }
+      set(i, v) {
+        const byte = i >> 5;
+        const bit = i & 31;
+        if (v)
+          this.data_[byte] |= 1 << bit;
+        else
+          this.data_[byte] &= ~(1 << bit);
+      }
+    },
+
     filterMatchMainChr(chr, filter = this.filter) {
       return (!filter.class || this.filterMatch(filter.class, chr.classId)) &&
         (!filter.symbol || this.filterMatch(filter.symbol, chr.symbolId)) &&
-        (!filter.damageType || this.filterMatch(filter.damageType, chr.damageTypeId));
+        (!filter.damageType || this.filterMatch(filter.damageType, chr.damageTypeId)) &&
+        (!filter.rarity || this.filterMatch(filter.rarity, chr.rarityId));
+    },
+    filterMatchSupChr(chr, filter = this.filter) {
+      // チャレンジクエストはサポートのクラスは無制限なので、クラスフィルタは考慮しない
+      return (!filter.rarity || this.filterMatch(filter.rarity, chr.rarityId));
     },
 
     removeEffectsOfSameType(skill) {
@@ -164,74 +251,41 @@ export default {
         passive: skill.isPassive,
       }
     },
-    effectsToHtml(skills, ctx, flatten = false) {
-      let table = {};
+    effectsToHtml(skill, ctx) {
       let lines = [];
 
-      const handleSkill = function (skill) {
-        for (const effect of this.enumerate(skill.buff, skill.debuff)) {
-          if (["ランダム"].includes(effect.type)) {
-            continue;
-          }
-
-          let value = this.getEffectValue(effect);
-          if (effect.add) {
-            value = `${effect.add.from}${effect.add.rate}`;
-          }
-
-          let additionalClass = "";
-          let prefix = effect.isDebuff ? "-" : "+";
-          let onBattle = effect.ephemeral ? "(戦闘時)" : "";
-          let unit = "";
-          let title = "";
-          let used = false;
-          if (ctx.usedEffects.includes(effect)) {
-            used = true;
-            additionalClass += " caution";
-          }
-          if (ctx.conflictedEffects.includes(effect)) {
-            additionalClass += " blue";
-            title = "アクティブ同士で競合、または既に上限に達している";
-          }
-          if (!["移動", "射程(通常攻撃)", "射程(スキル)", "範囲"].includes(effect.type)) {
-            unit = "%";
-          }
-
-          if (flatten) {
-            if (used) {
-              let key = `${effect.type}${prefix}`;
-              if (!(key in table))
-                table[key] = 0;
-              if (typeof (value) == "number")
-                table[key] += value;
-            }
-          }
-          else {
-            lines.push(`<div class="effect-box"><span class="effect ${additionalClass}" title="${title}">${effect.type}${onBattle}${prefix}${value}${unit}</span></div>`);
-          }
+      if (skill.multiAction) {
+        lines.push(`<div class="effect-box"><span class="effect">再行動</span></div>`);
+      }
+      for (const effect of this.enumerate(skill.buff, skill.debuff)) {
+        if (["ランダム"].includes(effect.type)) {
+          continue;
         }
-      }.bind(this);
 
-      if (Array.isArray(skills)) {
-        for (let skill of skills)
-          handleSkill(skill);
-      }
-      else {
-        handleSkill(skills);
-      }
-
-      if (flatten) {
-        for (let k in table) {
-          lines.push(`<div class="effect-box"><span class="effect caution">${k}${table[k]}</span></div>`);
+        let value = this.getEffectValue(effect);
+        if (effect.add) {
+          value = `${effect.add.from}${effect.add.rate}`;
         }
-        return lines;
+
+        let additionalClass = "";
+        let prefix = effect.isDebuff ? "-" : "+";
+        let onBattle = effect.ephemeral ? "(戦闘時)" : "";
+        let unit = "";
+        let title = "";
+        if (ctx.usedEffects.includes(effect)) {
+          additionalClass += " caution";
+        }
+        if (ctx.conflictedEffects.includes(effect)) {
+          additionalClass += " blue";
+          title = "アクティブ同士で競合、または既に上限に達している";
+        }
+        if (!["移動", "射程(通常攻撃)", "射程(スキル)", "範囲"].includes(effect.type)) {
+          unit = "%";
+        }
+
+        lines.push(`<div class="effect-box"><span class="effect ${additionalClass}" title="${title}">${effect.type}${onBattle}${prefix}${value}${unit}</span></div>`);
       }
-      else {
-        return lines.length ? `<div class="effect-group">${lines.join("")}</div>` : "";
-      }
-    },
-    chrEffectsToHtml(r) {
-      return this.effectsToHtml(r.main.skills, r.main, true);
+      return lines.length ? `<div class="effect-group">${lines.join("")}</div>` : "";
     },
     highlight(id, enabled) {
       var element = document.getElementById(id);
@@ -239,6 +293,38 @@ export default {
         element.classList.add("param-highlighted");
       else
         element.classList.remove("param-highlighted");
+    },
+
+    getEffectValues(effectList, dst = null) {
+      if (!dst) {
+        dst = new Int32Array(this.effectTypeIndex);
+        dst.fill(0);
+      }
+      for (const e of effectList)
+        dst[e.effectTypeIndex] += this.getEffectValue(e);
+      return dst;
+    },
+    effectParamsToHtml(data) {
+      let lines = [];
+      for (let i = 0; i < this.effectTypeIndex; ++i) {
+        const name = this.effectTypeNames[i];
+        let v = data[i];
+        let unit = ["移動+"].includes(name) ? "" : "%";
+        if (v) {
+          lines.push(`<div class="effect-box"><span class="effect caution">${name}${v}${unit}</span></div>`);
+        }
+      }
+      return lines;
+    },
+    chrEffectsToHtml(r) {
+      const data = this.getEffectValues(r.main.usedEffects);
+      return this.effectParamsToHtml(data);
+    },
+    allEffectsToHtml(recs) {
+      let data = null;
+      for (let r of recs)
+        data = this.getEffectValues(r.usedEffects, data);
+      return this.effectParamsToHtml(data);
     },
 
 

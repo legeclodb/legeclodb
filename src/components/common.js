@@ -560,7 +560,7 @@ export default {
       if (modified || !['tag', 'free'].includes(name)) {
         if (['class', 'engage', 'rarity', 'symbol', 'supportType', 'damageType', 'skillType', 'itemType', 'any'].includes(name))
           this.updateTagCounts();
-        if (updateURL)
+        if (updateURL && this.updateURL)
           this.updateURL();
         this.preventShowHideHeaderOnScroll = 1;
       }
