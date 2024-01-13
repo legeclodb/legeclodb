@@ -256,7 +256,7 @@
                             <b-img-lazy :src="getImageURL(owner.icon)" :title="owner.name" width="50" />
                           </b-link>
                         </div>
-                        <div v-if="skill.skillType!='タレント'">
+                        <div v-if="!skill.isTalent">
                           <div class="flex exclude-menu">
                             <b-button size="sm" @click="addPrioritized(skill)">このスキルを優先</b-button>
                             <b-button size="sm" @click="addPrioritized(skill, r.main.character)">このキャラとスキルの組み合わせを優先</b-button>
@@ -332,7 +332,7 @@
                             <b-img-lazy :src="getImageURL(owner.icon)" :title="owner.name" width="50" height="50" />
                           </b-link>
                         </div>
-                        <div v-if="skill.skillType!='タレント'">
+                        <div v-if="!skill.isTalent">
                           <div class="flex exclude-menu">
                             <b-button size="sm" @click="addPrioritized(skill)">このスキルを優先</b-button>
                             <b-button size="sm" @click="addPrioritized(skill, r.main.character)">このキャラとスキルの組み合わせを優先</b-button>
@@ -467,11 +467,6 @@ export default {
         symbol: [],
         rarity: [],
       },
-      pickFilter: {
-        class: [],
-        symbol: [],
-      },
-
 
       options: [],
       buffs: [],
@@ -542,103 +537,73 @@ export default {
     this.setupCharacters(this.supChrs, this.supActive, this.supPassive);
     this.setupItems(this.items);
 
-    let idx = 0;
-    const setId = function (list, prefix) {
-      for (let i = 0; i < list.length; ++i) {
-        let obj = list[i];
-        obj.index = i + 1;
-        obj.id = `${prefix}${i + 1}`;
-        obj.index = ++idx;
-      }
-    };
-    setId(this.mainChrs, "m");
-    setId(this.mainActive, "ma");
-    setId(this.mainPassive, "mp");
-    setId(this.mainTalents, "mt");
-    setId(this.supChrs, "s");
-    setId(this.supActive, "sa");
-    setId(this.supPassive, "sp");
-    setId(this.items, "i");
-    this.itemCount = idx;
+    this.itemCount =
+      this.mainChrs.length + this.mainActive.length + this.mainPassive.length + this.mainTalents.length +
+      this.supChrs.length + this.supActive.length + this.supPassive.length +
+      this.items.length;
 
-    this.searchTable = new Map();
+    this.searchTableWithId = new Map();
     this.searchTableWithName = new Map();
     for (let s of this.enumerate(this.mainChrs, this.mainActive, this.mainPassive, this.mainTalents, this.supChrs, this.supActive, this.supPassive, this.items)) {{
-      this.searchTable.set(s.id, s);
+      this.searchTableWithId.set(s.uid, s);
       this.searchTableWithName.set(s.name, s);
     }}
 
-    const setupPropIndex = function (obj, typeName) {
-      if (typeName == "メイン")
-        obj.isMain = true;
-      else if (typeName == "サポート")
-        obj.isSupport = true;
-      else if (typeName == "アイテム")
-        obj.isItem = true;
-    }.bind(this);
-    for (let chr of this.mainChrs) {
-      setupPropIndex(chr, "メイン");
-    }
-    for (let chr of this.supChrs) {
-      setupPropIndex(chr, "サポート");
-    }
-    for (let item of this.items) {
-      setupPropIndex(item, "アイテム");
-      item.status = this.getItemStatus(item);
-    }
 
-    let valueTypeIndex = 0;
-    let valueTypeTable = new Map();
+    let effectTypeIndex = 0;
+    let effectTypeTable = new Map();
     let slotIndex = 0;
     let slotTable = new Map();
-    const setupSkill = function(skill) {
-      for (let v of this.enumerateEffects(skill)) {
-        const cond = v.condition;
-        if (!this.isPublicTarget(v.target) ||
-          (cond && (cond.onClass || cond.onSymbol)) ||
-          (v.isDebuff && v.ephemeral && !v.duration)
-        ) {
-          v.excluded = true;
-          continue;
-        }
+    for (let skill of this.enumerate(this.mainActive, this.mainPassive, this.mainTalents, this.supActive, this.supPassive, this.items)) {
+      for (let effect of this.enumerateEffects(skill)) {
+        let effectType = effect.type;
+        if (effect.isBuff)
+          effectType += "+";
+        else if (effect.isDebuff)
+          effectType += "-";
+        effect.effectType = effectType;
 
-        let valueType = v.type;
-        if (v.isBuff)
-          valueType += "+";
-        else if (v.isDebuff)
-          valueType += "-";
-        v.valueType = valueType;
+        if (effect.target == "単体")
+          effect.isSingleTarget = true;
 
-        if (v.target == "単体")
-          v.isSingleTarget = true;
-
-        v.valueTypeIndex = valueTypeTable.get(valueType);
-        if (!v.valueTypeIndex) {
-          valueTypeTable.set(valueType, valueTypeIndex);
-          v.valueTypeIndex = valueTypeIndex++;
+        effect.effectTypeIndex = effectTypeTable.get(effectType);
+        if (!effect.effectTypeIndex) {
+          effectTypeTable.set(effectType, effectTypeIndex);
+          effect.effectTypeIndex = ++effectTypeIndex;
         }
 
         if (skill.isActive) {
-          const slot = v.slot;
-          v.slotIndex = slotTable.get(slot);
-          if (!v.slotIndex) {
+          const slot = effect.slot;
+          effect.slotIndex = slotTable.get(slot);
+          if (!effect.slotIndex) {
             slotTable.set(slot, slotIndex);
-            v.slotIndex = slotIndex++;
+            effect.slotIndex = ++slotIndex;
           }
         }
       }
-      if(skill.buff)
-        skill.buff = skill.buff.filter(s => !s.excluded);
-      if(skill.debuff)
-        skill.debuff = skill.debuff.filter(s => !s.excluded);
-    }.bind(this);
-    for (let v of this.enumerate(this.mainActive, this.mainPassive, this.mainTalents, this.supActive, this.supPassive, this.items)) {
-      setupSkill(v);
     }
-    this.valueTypeIndex = valueTypeIndex;
-    this.valueTypeTable = valueTypeTable;
+    this.effectTypeIndex = effectTypeIndex;
+    this.effectTypeTable = effectTypeTable;
     this.slotIndex = slotIndex;
     this.slotTable = slotTable;
+
+
+    const excludeEffect = function (effect) {
+      const cond = effect.condition;
+      if (!this.isPublicTarget(effect.target) ||
+        (cond && (cond.onClass || cond.onSymbol)) ||
+        (effect.isDebuff && effect.ephemeral && !effect.duration)
+      ) {
+        return true;
+      }
+      return false;
+    }
+    for (let skill of this.enumerate(this.mainActive, this.mainPassive, this.mainTalents, this.supActive, this.supPassive, this.items)) {
+      if (skill.buff)
+        skill.buff = skill.buff.filter(s => !excludeEffect(s));
+      if (skill.debuff)
+        skill.debuff = skill.debuff.filter(s => !excludeEffect(s));
+    }
 
 
     this.mainChrs.sort((a, b) => b.date.localeCompare(a.date));
@@ -648,20 +613,7 @@ export default {
     this.fillFilter(this.filter.class, this.classes);
     this.fillFilter(this.filter.symbol, this.symbols);
     this.fillFilter(this.filter.rarity, this.rarities);
-    this.fillFilter(this.pickFilter.class, this.classes);
-    this.fillFilter(this.pickFilter.symbol, this.symbols);
 
-    for (let item of this.items) {
-      let flags = 0;
-      if (item.classes) {
-        for (const c of item.classes)
-          flags |= 1 << this.classes.findIndex(v => v == c);
-      }
-      else {
-        flags = 0xffff;
-      }
-      item.classFlags = flags;
-    }
 
     const makeOptions = function (params) {
       let r = {};
@@ -689,14 +641,14 @@ export default {
       const make = function (t) {
         const l = t.limit ? t.limit : null;
         const w = t.weight ? t.weight : 10;
-        const valueType = `${t.label}${effectType}`;
+        const effectType = `${t.label}${effectType}`;
         return {
           label: t.label,
           enabled: false,
           limit_: l,
           weight: w,
-          valueType: valueType,
-          valueTypeIndex: valueTypeTable.get(valueType),
+          effectType: effectType,
+          effectTypeIndex: effectTypeTable.get(effectType),
 
           get limit() {
             return this.parent ? this.parent.limit_ : this.limit_;
@@ -791,7 +743,7 @@ export default {
     },
 
     findItemById(id) {
-      const r = this.searchTable.get(id);
+      const r = this.searchTableWithId.get(id);
       if (!r)
         console.log(`${id} not found`);
       return r;
@@ -919,22 +871,22 @@ export default {
 
     getEffectValues(effectList, dst = null) {
       if (!dst) {
-        dst = new Array(this.valueTypeIndex);
+        dst = new Array(this.effectTypeIndex);
         dst.fill(0);
       }
       for (const e of effectList)
-        dst[e.valueTypeIndex] += this.getEffectValue(e);
+        dst[e.effectTypeIndex] += this.getEffectValue(e);
       return dst;
     },
     effectParamsToHtml(data) {
       let lines = [];
       for (let e of this.enumerate(this.buffs, this.debuffs)) {
-        let i = e.valueTypeIndex;
+        let i = e.effectTypeIndex;
         let v = data[i];
         if (v) {
           if (e.limit)
             v = Math.min(v, e.limit);
-          lines.push(`<div class="effect-box"><span class="effect caution">${e.valueType}${v}%</span></div>`);
+          lines.push(`<div class="effect-box"><span class="effect caution">${e.effectType}${v}%</span></div>`);
         }
       }
       return lines;
@@ -977,12 +929,12 @@ export default {
     doSearch(num) {
       // reactive getter 回避のためコピーを用意
       const opt = this.optionValues;
-      let targets = new Array(this.valueTypeIndex);
+      let targets = new Array(this.effectTypeIndex);
       for (let v of this.enabledEffects) {
-        targets[v.valueTypeIndex] = {
+        targets[v.effectTypeIndex] = {
           limit: v.limit,
           weight: v.weight,
-          valueTypeIndex: v.valueTypeIndex,
+          effectTypeIndex: v.effectTypeIndex,
         };
       }
       const excluded = [...this.excluded];
@@ -1041,7 +993,7 @@ export default {
         if (item.isSupport) {
           for (const skill of item.skills) {
             for (const v of this.enumerateEffects(skill)) {
-              let p = targets[v.valueTypeIndex];
+              let p = targets[v.effectTypeIndex];
               if (p && effectCondition(v))
                 return true;
             }
@@ -1049,7 +1001,7 @@ export default {
         }
         else {
           for (const v of this.enumerateEffects(item)) {
-            let p = targets[v.valueTypeIndex];
+            let p = targets[v.effectTypeIndex];
             if (p && effectCondition(v))
               return true;
           }
@@ -1073,7 +1025,7 @@ export default {
       const createContext = function (parent = null) {
         let vue = this;
         let ctx = {
-          totalAmount: new Int32Array(parent ? parent.totalAmount : vue.valueTypeIndex),
+          totalAmount: new Int32Array(parent ? parent.totalAmount : vue.effectTypeIndex),
           usedSlots: parent ? [...parent.usedSlots] : new Array(vue.slotIndex),
           usedSkills: this.createUsedFlags(parent ? parent.usedSkills : null),
 
@@ -1087,12 +1039,12 @@ export default {
           },
 
           getEffectValue(effect) {
-            let p = targets[effect.valueTypeIndex];
+            let p = targets[effect.effectTypeIndex];
             if (p && effectCondition(effect)) {
               if (effect.slotIndex && this.usedSlots[effect.slotIndex])
                 return [0, p, true];
 
-              const current = this.totalAmount[p.valueTypeIndex];
+              const current = this.totalAmount[p.effectTypeIndex];
               let v = vue.getEffectValue(effect);
               let hitLimit = false;
               if (p.limit > 0 && current + v >= p.limit) {
@@ -1105,7 +1057,7 @@ export default {
           },
           acceptEffects(effectList) {
             for (const effect of effectList) {
-              this.totalAmount[effect.valueTypeIndex] += vue.getEffectValue(effect);
+              this.totalAmount[effect.effectTypeIndex] += vue.getEffectValue(effect);
               if (effect.slotIndex)
                 this.usedSlots[effect.slotIndex] = effect;
             }
@@ -1656,10 +1608,6 @@ export default {
   },
 
   computed: {
-    mainChrPick() {
-      return this.mainChrs.filter(a => this.filterMatchMainChr(a, this.pickFilter));
-    },
-
     optionValues() {
       const opt = this.options;
       let r = {};

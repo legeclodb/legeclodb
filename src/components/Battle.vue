@@ -353,8 +353,8 @@ export default {
 
     getSkillClass(skill) {
       return {
-        active: skill.skillType == 'アクティブ',
-        passive: skill.skillType == 'パッシブ',
+        active: skill.isActive,
+        passive: skill.isPassive,
       }
     },
 

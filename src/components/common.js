@@ -997,15 +997,23 @@ export default {
         item.isItem = true;
         this.setupSkill(item, params);
 
-        if (item.classes)
+        if (item.classes) {
           item.classIds = item.classes.map(cls => consts.classes.findIndex(v => v == cls));
-        else
+          item.classFlags = 0;
+          for (const i of item.classIds)
+            item.classFlags |= 1 << i;
+        }
+        else {
           item.classIds = allClasses;
+          item.classFlags = 0xffff;
+        }
 
         if (item.rarity)
           item.rarityId = consts.rarities.findIndex(v => v == item.rarity);
         if (item.slot)
           item.slotId = consts.itemTypes.findIndex(v => v == item.slot);
+
+        item.status = this.getItemStatus(item);
       }
     },
 
@@ -1018,26 +1026,27 @@ export default {
     //   tagFilter: (skill, effectCategory, effect) => bool,
     // }
     setupCharacters(characters, activeSkills, passiveSkills, talents = [], params = {}) {
-      const isMain = talents.length > 0;
+      const isMain = characters[0].talent;
+      const isSupport = !isMain;
       const consts = jsonConstants;
 
-      for (let s of activeSkills) {
-        s.skillType = "アクティブ";
+      for (let s of activeSkills)
         s.isActive = true;
-      }
-      for (let s of passiveSkills) {
-        s.skillType = "パッシブ";
+      for (let s of passiveSkills)
         s.isPassive = true;
-      }
-      for (let s of talents) {
-        s.skillType = "タレント";
+      for (let s of talents)
         s.isTalent = true;
-      }
 
-      for (let s of [...activeSkills, ...passiveSkills, ...talents]) {
-        if (isMain)
+      if (isMain) {
+        for (let chr of characters)
+          chr.isMain = true;
+        for (let s of [...activeSkills, ...passiveSkills, ...talents])
           s.isMainSkill = true;
-        else
+      }
+      if (isSupport) {
+        for (let chr of characters)
+          chr.isSupport = true;
+        for (let s of [...activeSkills, ...passiveSkills])
           s.isSupportSkill = true;
       }
 
@@ -1055,12 +1064,20 @@ export default {
         }
         if (!skill.owners)
           skill.owners = [];
-        if (skill.owners.length == 0 || skill.owners[skill.owners.length - 1] != chr)
+        if (!skill.owners.includes(chr))
           skill.owners.push(chr);
 
         if (!skill.desc && skill.descs) {
           skill.current = "Lv 6";
           this.$set(skill, 'desc', skill.descs[skill.current]);
+
+          const arrayToScalar = function (obj, prop) {
+            const v = obj[prop];
+            if (Array.isArray(v)) {
+              obj[`${prop}_`] = v;
+              obj[prop] = v[v.length - 1];
+            }
+          };
 
           let effects = [
             ...(skill.buff ? skill.buff : []),
@@ -1068,27 +1085,14 @@ export default {
             ...(skill.immune ? skill.immune : []),
           ]
           for (let effect of effects) {
-            if (Array.isArray(effect.value)) {
-              effect.value_ = effect.value;
-              effect.value = effect.value_[effect.value_.length - 1];
-            }
-            if (Array.isArray(effect.duration)) {
-              effect.duration_ = effect.duration;
-              effect.duration = effect.duration_[effect.duration_.length - 1];
-            }
+            arrayToScalar(effect, "value");
+            arrayToScalar(effect, "duration");
             if (effect.add) {
-              if (Array.isArray(effect.add.rate)) {
-                effect.add.rate_ = effect.add.rate;
-                effect.add.rate = effect.add.rate_[effect.add.rate_.length - 1];
-              }
+              arrayToScalar(effect.add, "rate");
             }
-
             let cond = effect.condition;
             if (cond) {
-              if (Array.isArray(cond.probability)) {
-                cond.probability_ = cond.probability;
-                cond.probability = cond.probability_[cond.probability_.length - 1];
-              }
+              arrayToScalar(cond, "probability");
             }
           }
         }

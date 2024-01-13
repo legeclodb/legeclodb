@@ -846,8 +846,8 @@ export default {
     },
     applySkillTypeFilter(skill) {
       return !this.isFilterEnabled(this.skillTypeFilter) ||
-        (skill.skillType == "パッシブ" && this.skillTypeFilter[1].state) ||
-        (skill.skillType == "アクティブ" && this.skillTypeFilter[2].state);
+        (skill.isPassive && this.skillTypeFilter[1].state) ||
+        (skill.isActive && this.skillTypeFilter[2].state);
     },
     applyClassFilter(chr) {
       return (!this.engageFilter || chr.engage) && (
@@ -905,8 +905,8 @@ export default {
 
     getSkillClass(skill) {
       return {
-        active: skill.skillType == 'アクティブ',
-        passive: skill.skillType == 'パッシブ',
+        active: skill.isActive,
+        passive: skill.isPassive,
         highlighted: this.isSkillHighlighted(skill),
       }
     },

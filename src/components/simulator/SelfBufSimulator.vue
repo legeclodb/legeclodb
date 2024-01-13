@@ -189,7 +189,7 @@
                             <b-img-lazy :src="getImageURL(owner.icon)" :title="owner.name" width="50" />
                           </b-link>
                         </div>
-                        <div v-if="skill.skillType!='タレント'">
+                        <div v-if="!skill.isTalent">
                           <div class="flex exclude-menu">
                             <b-button size="sm" @click="addPrioritized(skill)">このスキルを優先</b-button>
                             <b-button size="sm" @click="addPrioritized(skill, r.main.character)">このキャラとスキルの組み合わせを優先</b-button>
@@ -263,18 +263,8 @@
 </template>
 
 <script>
-import ChrSelector from '../parts/ChrSelector.vue'
-import ItemSelector from '../parts/ItemSelector.vue'
-import jsonConstants from '../../assets/constants.json'
-import jsonMainActive from '../../assets/main_active.json'
-import jsonMainPassive from '../../assets/main_passive.json'
-import jsonMainTalents from '../../assets/main_talents.json'
-import jsonMainChrs from '../../assets/main_characters.json'
-import jsonSupportActive from '../../assets/support_active.json'
-import jsonSupportPassive from '../../assets/support_passive.json'
-import jsonSupportChrs from '../../assets/support_characters.json'
-import jsonItems from '../../assets/items.json'
-import common from "../common";
+import common from "../common.js";
+import lookup_common from "./lookup.js";
 
 export default {
   name: 'SelfBufSimulator',
@@ -282,27 +272,10 @@ export default {
   },
   props: {
   },
-  mixins: [common],
+  mixins: [common, lookup_common],
 
   data() {
     return {
-      classes: jsonConstants.classes,
-      symbols: jsonConstants.symbols,
-      damageTypes: jsonConstants.damageTypes,
-      rarities: jsonConstants.rarities,
-
-      filter: {
-        class: [],
-        symbol: [],
-        damageType: [],
-      },
-
-      options: [],
-      buffs: [],
-      debuffs: [],
-      excluded: [],
-      prioritized: [],
-
       buffFields: [
         {
           key: "enabled",
@@ -323,96 +296,13 @@ export default {
           label: "項目",
         },
       ],
-
-      buffTypes: [
-        "最大HP",
-        "アタック",
-        "ディフェンス",
-        "マジック",
-        "レジスト",
-        "テクニック",
-        "ディフェンス無視",
-        "レジスト無視",
-        "与ダメージ",
-        "与ダメージ(物理)",
-        "与ダメージ(魔法)",
-        "与ダメージ(スキル)",
-        "与ダメージ(範囲スキル)",
-        "与ダメージ(通常攻撃)",
-        "ダメージ耐性",
-        "ダメージ耐性(物理)",
-        "ダメージ耐性(魔法)",
-        "ダメージ耐性(範囲)",
-        "クリティカル率",
-        "クリティカル率耐性",
-        "クリティカルダメージ倍率",
-        "治療効果",
-        "被治療効果",
-      ],
-
-      progress: {
-        completed: true,
-        pending: false,
-        result: [],
-      },
     };
   },
 
   created() {
-    this.mainActive = structuredClone(jsonMainActive);
-    this.mainPassive = structuredClone(jsonMainPassive);
-    this.mainTalents = structuredClone(jsonMainTalents);
-    this.mainChrs = structuredClone(jsonMainChrs).filter(a => !a.hidden);
-    this.supActive = structuredClone(jsonSupportActive);
-    this.supPassive = structuredClone(jsonSupportPassive);
-    this.supChrs = structuredClone(jsonSupportChrs).filter(a => !a.hidden);
-    this.items = structuredClone(jsonItems).filter(a => !a.hidden || a.slot == "アミュレット");
-
-    for (let i = 0; i < this.mainChrs.length; ++i) {
-      let chr = this.mainChrs[i];
-      chr.index = i + 1;
-    }
-    for (let i = 0; i < this.supChrs.length; ++i) {
-      let chr = this.supChrs[i];
-      chr.index = i + 1;
-    }
-    for (let i = 0; i < this.items.length; ++i) {
-      let item = this.items[i];
-      item.index = i + 1;
-      item.status = this.getItemStatus(item);
-    }
-
-    this.setupCharacters(this.mainChrs, this.mainActive, this.mainPassive, this.mainTalents);
-    this.setupCharacters(this.supChrs, this.supActive, this.supPassive);
-    this.setupItems(this.items);
-
-    this.searchTable = new Map();
-    for (let s of [...this.mainActive, ...this.mainPassive, ...this.mainTalents, ...this.supActive, ...this.supPassive, ...this.items])
-      this.searchTable.set(s.name, s);
-
-    this.mainChrs.sort((a, b) => b.date.localeCompare(a.date));
-    this.supChrs.sort((a, b) => b.date.localeCompare(a.date));
-    this.items.sort((a, b) => b.date.localeCompare(a.date));
-
-    for (let s of [...this.mainActive, ...this.mainPassive, ...this.mainTalents])
+    for (let s of [...this.mainActive, ...this.mainPassive, ...this.mainTalents]) {
       this.removeEffectsOfSameType(s);
-
-    this.weapons = this.items.filter(a => a.slot == "武器");
-    this.armors = this.items.filter(a => a.slot == "鎧");
-    this.helmets = this.items.filter(a => a.slot == "兜");
-    this.accessories = this.items.filter(a => a.slot == "アクセサリ");
-    this.amulets1 = this.items.filter(a => a.slot == "月のアミュレット");
-    this.amulets2 = this.items.filter(a => a.slot == "太陽のアミュレット");
-
-    this.validWeapons = (() => this.weapons.filter(a => this.mainCanEquip(a))).bind(this);
-    this.validArmors = (() => this.armors.filter(a => this.mainCanEquip(a))).bind(this);
-    this.validHelmets = (() => this.helmets.filter(a => this.mainCanEquip(a))).bind(this);
-    this.validAccessories = (() => this.accessories.filter(a => this.mainCanEquip(a))).bind(this);
-
-    this.fillFilter(this.filter.class, this.classes);
-    this.fillFilter(this.filter.symbol, this.symbols);
-    this.fillFilter(this.filter.damageType, this.damageTypes);
-
+    }
 
     const makeOptions = function (params) {
       let r = {};
@@ -425,7 +315,7 @@ export default {
       return r;
     };
     this.options = makeOptions([
-      { name: "maxPickup", label: "人を選出", value: 10, min: 1, max: 50 },
+      { name: "maxPickup", label: "人まで表示", value: 20, min: 1, max: 200 },
       { name: "maxActiveCount", label: "アクティブ数制限 (再行動ありを除く)", value: 1, min: 0, max: 3 },
       { name: "allowTalent", label: "タレントを含める", value: true },
       { name: "allowPassive", label: "パッシブスキルを含める", value: true },
@@ -435,7 +325,6 @@ export default {
       { name: "allowProbability", label: "確率発動効果を含める", value: true },
       { name: "allowNonReaction", label: "再行動なしバフスキルを含める", value: false },
     ]);
-
 
     const makeParams = function (effectType, types) {
       const make = function (t) {
@@ -467,6 +356,8 @@ export default {
       { label: "ダメージ耐性" },
       { label: "ダメージ耐性(物理)" },
       { label: "ダメージ耐性(魔法)" },
+      { label: "最大HP" },
+      { label: "移動" },
     ]);
     this.debuffs = makeParams("-", [
       { label: "アタック", limit: 70 },
@@ -487,41 +378,8 @@ export default {
   },
 
   methods: {
-    filterMatchMainChr(chr, filter = this.filter) {
-      return (!filter.class || this.filterMatch(filter.class, chr.classId)) &&
-        (!filter.symbol || this.filterMatch(filter.symbol, chr.symbolId)) &&
-        (!filter.damageType || this.filterMatch(filter.damageType, chr.damageTypeId));
-    },
-
-    removeEffectsOfSameType(skill) {
-      const doRemove = function (effects) {
-        if (!effects)
-          return;
-
-        const countEffect = function (effect) {
-          let count = 0;
-          for (const e of effects) {
-            if (e.type == effect.type && e.target == effect.target && e.ephemeral == effect.ephemeral && e.slot == effect.slot &&
-              e.timing == effect.timing && Math.sign(e.value) == Math.sign(effect.value)) {
-              ++count;
-            }
-          }
-          return count;
-        }
-
-        for (let i = 0; i < effects.length;) {
-          if (countEffect(effects[i]) > 1) {
-            //console.log(effects[i]);
-            effects.splice(i, 1);
-          }
-          else
-            ++i;
-        }
-      };
-      doRemove(skill.buff);
-    },
-
     doSearch() {
+      let vue = this;
       const opt = this.optionValues;
       const enabledBuffEffects = this.buffs.filter(a => a.enabled).map(a => a.label);
       const enabledDebuffEffects = this.debuffs.filter(a => a.enabled).map(a => a.label);
@@ -530,6 +388,15 @@ export default {
           chr.skills = opt.allowEngageSkills ? chr.engage.skills : chr.skillsBase;
         }
       }
+
+      let ctx = {
+        reset() {
+          this.activeCount = 0;
+          this.usedEffects = [];
+          this.conflictedEffects = [];
+          this.usedSlots = new Uint8Array(vue.effectTypeIndex);
+        }
+      };
 
       const getSkillScore = function (chr, skill) {
         let r = {
@@ -540,17 +407,24 @@ export default {
           usedEffects: [],
           conflictedEffects: [],
         };
-        if (r.excluded || (!opt.allowTalent && skill.isTalent) || (!opt.allowPassive && skill.isPassive) || (!opt.allowActive && skill.isActive)) {
+        if (r.excluded ||
+          (!opt.allowTalent && skill.isTalent) ||
+          (!opt.allowPassive && skill.isPassive) ||
+          (!opt.allowActive && skill.isActive) ||
+          (skill.isActive && !skill.multiAction && ctx.activeCount >= opt.maxActiveCount))
+        {
           return r;
         }
 
         const evalCondition = function (effect) {
-          if ((!effect.value && !effect.variable && !effect.add) || (skill.isActive && effect.ephemeral && !effect.duration))
+          if ((!effect.value && !effect.variable && !effect.add) ||
+            (skill.isActive && effect.ephemeral && !effect.duration))
             return;
 
           const cond = effect.condition;
           const probability = cond?.probability;
-          if ((!opt.allowOnBattle && effect.ephemeral) || (!opt.allowProbability && probability) ||
+          if ((!opt.allowOnBattle && effect.ephemeral) ||
+            (!opt.allowProbability && probability) ||
             (!opt.allowNonReaction && skill.isActive && !skill.multiAction && !skill.damageRate))
             return false;
           return true;
@@ -563,8 +437,13 @@ export default {
             if (!evalCondition(effect))
               continue;
 
-            r.score += this.getEffectValue(effect);
-            r.usedEffects.push(effect);
+            if (effect.slotIndex && ctx.usedSlots[effect.slotIndex]) {
+              r.conflictedEffects.push(effect);
+            }
+            else {
+              r.score += this.getEffectValue(effect);
+              r.usedEffects.push(effect);
+            }
           }
         }
         if (skill.debuff) {
@@ -574,8 +453,13 @@ export default {
             if (!evalCondition(effect))
               continue;
 
-            r.score += this.getEffectValue(effect);
-            r.usedEffects.push(effect);
+            if (effect.slotIndex && ctx.usedSlots[effect.slotIndex]) {
+              r.conflictedEffects.push(effect);
+            }
+            else {
+              r.score += this.getEffectValue(effect);
+              r.usedEffects.push(effect);
+            }
           }
         }
         return r;
@@ -586,17 +470,40 @@ export default {
         if (!this.filterMatchMainChr(chr))
           continue;
 
-        let skillScore = chr.skills.map(skill => getSkillScore(chr, skill));
-        skillScore = skillScore.sort((a, b) => b.score - a.score).sort((a, b) => b.prioritized - a.prioritized).slice(0, 3);
-        skillScore = [getSkillScore(chr, chr.talent), ...skillScore].filter(a => a.score > 0 || a.prioritized);
+        ctx.reset();
+        let skillScore = [];
+
+        const addSkill = function (score) {
+          skillScore.push(score);
+          for (const effect of score.usedEffects) {
+            if (effect.slotIndex) {
+              ctx.usedSlots[effect.slotIndex] = 1;
+            }
+          }
+          ctx.usedEffects = ctx.usedEffects.concat(score.usedEffects);
+          ctx.conflictedEffects = ctx.conflictedEffects.concat(score.conflictedEffects);
+          if (score.skill.isActive && !score.skill.multiAction)
+            ++ctx.activeCount;
+        };
+
+        addSkill(getSkillScore(chr, chr.talent));
+        let skills = [...chr.skills];
+        for (let si = 0; si < 3; ++si) {
+          // スキルを選ぶ度に他のスキルのスコアが変動しうるので、再評価が必要
+          let tmp = skills.map(skill => getSkillScore(chr, skill));
+          tmp = tmp.sort((a, b) => b.score - a.score).sort((a, b) => b.prioritized - a.prioritized);
+          addSkill(tmp[0]);
+          skills.splice(skills.indexOf(tmp[0].skill), 1);
+        }
+        skillScore = skillScore.filter(a => a.score > 0 || a.prioritized);
 
         let score = {
           name: chr.name,
           score: 0,
           main: {
             character: chr,
-            usedEffects: skillScore.reduce((total, current) => total.concat(current.usedEffects), []),
-            conflictedEffects: skillScore.reduce((total, current) => total.concat(current.conflictedEffects), []),
+            usedEffects: ctx.usedEffects,
+            conflictedEffects: ctx.conflictedEffects,
             skills: skillScore.map(ss => ss.skill),
           }
         };
@@ -627,330 +534,9 @@ export default {
     },
 
 
-    getParamClass(param) {
-      return param.disabled() ? "disabled" : "";
-    },
-    getSkillClass(skill) {
-      return {
-        active: skill.isActive,
-        passive: skill.isPassive,
-      }
-    },
-    effectsToHtml(skills, ctx, flatten = false) {
-      let table = {};
-      let lines = [];
-
-      const handleSkill = function (skill) {
-        for (const effect of this.enumerate(skill.buff, skill.debuff)) {
-          if (["ランダム"].includes(effect.type)) {
-            continue;
-          }
-
-          let value = this.getEffectValue(effect);
-          if (effect.add) {
-            value = `${effect.add.from}${effect.add.rate}`;
-          }
-
-          let additionalClass = "";
-          let prefix = effect.isDebuff ? "-" : "+";
-          let onBattle = effect.ephemeral ? "(戦闘時)" : "";
-          let unit = "";
-          let title = "";
-          let used = false;
-          if (ctx.usedEffects.includes(effect)) {
-            used = true;
-            additionalClass += " caution";
-          }
-          if (ctx.conflictedEffects.includes(effect)) {
-            additionalClass += " blue";
-            title = "アクティブ同士で競合、または既に上限に達している";
-          }
-          if (!["移動", "射程(通常攻撃)", "射程(スキル)", "範囲"].includes(effect.type)) {
-            unit = "%";
-          }
-
-          if (flatten) {
-            if (used) {
-              let key = `${effect.type}${prefix}`;
-              if (!(key in table))
-                table[key] = 0;
-              if (typeof (value) == "number")
-                table[key] += value;
-            }
-          }
-          else {
-            lines.push(`<div class="effect-box"><span class="effect ${additionalClass}" title="${title}">${effect.type}${onBattle}${prefix}${value}${unit}</span></div>`);
-          }
-        }
-      }.bind(this);
-
-      if (Array.isArray(skills)) {
-        for (let skill of skills)
-          handleSkill(skill);
-      }
-      else {
-        handleSkill(skills);
-      }
-
-      if (flatten) {
-        for (let k in table) {
-          lines.push(`<div class="effect-box"><span class="effect caution">${k}${table[k]}</span></div>`);
-        }
-        return lines;
-      }
-      else {
-        return lines.length ? `<div class="effect-group">${lines.join("")}</div>` : "";
-      }
-    },
-    highlight(id, enabled) {
-      var element = document.getElementById(id);
-      if (enabled)
-        element.classList.add("param-highlighted");
-      else
-        element.classList.remove("param-highlighted");
-    },
-
-
-    addPriorityItem(list, item, owner) {
-      const cb = owner ?
-        a => a.owner == owner && a.item == item :
-        a => a == item;
-      let i = list.findIndex(cb);
-      if (i >= 0)
-        list.splice(i, 1);
-
-      list.splice(0, 0, owner ? { item: item, owner: owner } : item);
-    },
-    isInPrioritizeList(list, item, owner = null) {
-      if (list.includes(item))
-        return true;
-      else if (owner)
-        return list.find(a => a.owner == owner && a.item == item) != null;
-      return false;
-    },
-    addPrioritized(item, owner = null) {
-      this.addPriorityItem(this.prioritized, item, owner);
-    },
-    removePrioritized(item) {
-      this.prioritized.splice(this.prioritized.indexOf(item), 1);
-    },
-    isPrioritized(item, owner = null) {
-      return this.isInPrioritizeList(this.prioritized, item, owner);
-    },
-    addExcluded(item, owner = null) {
-      this.addPriorityItem(this.excluded, item, owner);
-    },
-    removeExcluded(item) {
-      this.excluded.splice(this.excluded.indexOf(item), 1);
-    },
-    isExcluded(item, owner = null) {
-      return this.isInPrioritizeList(this.excluded, item, owner);
-    },
-
-
-    getEffectValue(effect) {
-      let r = 0;
-      if (effect.value) {
-        r = effect.value;
-        if (effect.maxStack) {
-          r *= effect.maxStack;
-        }
-      }
-      else if (effect.variable) {
-        if (Array.isArray(effect.variable.max)) {
-          r = effect.variable.max[effect.variable.max.length - 1];
-        }
-        else {
-          r = effect.variable.max;
-        }
-      }
-      else if (effect.add) {
-        // 評価不能だが 0 にはしたくないので、とりあえず 1/4 したのをスコアにしておく…
-        r = effect.add.rate * 0.25;
-      }
-      return r;
-    },
-
     chrEffectsToHtml(r) {
       return this.effectsToHtml(r.main.skills, r.main, true);
     },
-
-    *enumerate(...arrays) {
-      for (let array of arrays) {
-        if (array)
-          yield* array;
-      }
-    },
-
-    *enumerateEffects(skill) {
-      yield* this.enumerate(skill.buff, skill.debuff);
-    },
-
-    findItem(name) {
-      const r = this.searchTable.get(name);
-      if (!r)
-        console.log(`${name} not found`);
-      return r;
-    },
-
-    matchClass(item, chr) {
-      if (item) {
-        if (!item.classes || item.classes.includes(chr.class))
-          return true;
-      }
-      return false;
-    },
-    mainCanEquip(item, slot = null) {
-      if (this.matchClass(item, this.main.character.value)) {
-        if (!slot || item.slot == slot)
-          return true;
-      }
-      return false;
-    },
-    supportCanEquip(item, slot, aux) {
-      if (item) {
-        if (!slot || item.slot == slot) {
-          if (slot == "アミュレット")
-            return !aux || item.amuletType == aux;
-          else
-            return true;
-        }
-      }
-      return false;
-    },
-
-    validateItems() {
-      var mainItems = this.mainItems;
-      var supItems = this.supportItems;
-      if (!this.mainCanEquip(mainItems.weapon.value, '武器'))
-        mainItems.weapon.value = null;
-      if (!this.mainCanEquip(mainItems.armor.value, '鎧'))
-        mainItems.armor.value = null;
-      if (!this.mainCanEquip(mainItems.helmet.value, '兜'))
-        mainItems.helmet.value = null;
-      if (!this.mainCanEquip(mainItems.accessory.value, 'アクセサリ'))
-        mainItems.accessory.value = null;
-
-      if (!this.supportCanEquip(supItems.amulet1.value, 'アミュレット', '月'))
-        supItems.amulet1.value = null;
-      if (!this.supportCanEquip(supItems.amulet2.value, 'アミュレット', '太陽'))
-        supItems.amulet2.value = null;
-    },
-
-
-    getParamsUrl() {
-      let params = [];
-
-      for (const v of Object.values(this.main)) {
-        if (v.type == "character")
-          params.push(v.value ? v.value.index : 0);
-        else
-          params.push(v.value);
-      }
-      for (const v of Object.values(this.mainBoosts))
-        params.push(v.value);
-      for (const v of Object.values(this.mainItems))
-        params.push(v.value ? v.value.index : 0);
-      for (const v of Object.values(this.mainEnchants)) {
-        params.push(v.valueP);
-        params.push(v.valueF);
-      }
-
-      for (const v of Object.values(this.support)) {
-        if (v.type == "character")
-          params.push(v.value ? v.value.index : 0);
-        else
-          params.push(v.value);
-      }
-      for (const v of Object.values(this.supportBoosts))
-        params.push(v.value);
-      for (const v of Object.values(this.supportItems))
-        params.push(v.value ? v.value.index : 0);
-      for (const v of Object.values(this.supportEnchants))
-        params.push(v.valueP);
-
-      let url = window.location.href.replace(/\?.+/, '').replace(/#.+/, '');
-      url += "?stat=" + params.join(',') + "#status";
-      //this.parseParamsUrl(url); // debug
-      return url;
-    },
-
-    parseParamsUrl(url) {
-      url = decodeURIComponent(url);
-      let q = url.match(/\?stat=(.+)$/);
-      if (q) {
-        let params = q[1].split(',').map(this.parseValue);
-
-        for (const v of Object.values(this.main)) {
-          if (v.type == "character") {
-            const idx = params.shift();
-            v.value = this.mainChrs.find(a => a.index == idx);
-          }
-          else {
-            v.value = params.shift();
-          }
-        }
-        for (const v of Object.values(this.mainBoosts))
-          v.value = params.shift();
-        for (const v of Object.values(this.mainItems)) {
-          const idx = params.shift();
-          v.value = this.items.find(a => a.index == idx);
-        }
-        for (const v of Object.values(this.mainEnchants)) {
-          v.valueP = params.shift();
-          v.valueF = params.shift();
-        }
-
-        for (const v of Object.values(this.support)) {
-          if (v.type == "character") {
-            const idx = params.shift();
-            v.value = this.supChrs.find(a => a.index == idx);
-          }
-          else {
-            v.value = params.shift();
-          }
-        }
-        for (const v of Object.values(this.supportBoosts))
-          v.value = params.shift();
-        for (const v of Object.values(this.supportItems)) {
-          const idx = params.shift();
-          v.value = this.items.find(a => a.index == idx);
-        }
-        for (const v of Object.values(this.supportEnchants))
-          v.valueP = params.shift();
-
-        return true;
-      }
-      return false;
-    },
-  },
-
-  computed: {
-    optionValues() {
-      const opt = this.options;
-      let r = {};
-      for (const k in opt)
-        r[k] = opt[k].value;
-      return r;
-    },
-  },
-
-  watch: {
-    filter: { handler: function () { this.updateQuery(); }, deep: true },
-    options: { handler: function () { this.updateQuery(); }, deep: true },
-    buffs: { handler: function () { this.updateQuery(); }, deep: true },
-    debuffs: { handler: function () { this.updateQuery(); }, deep: true },
-    prioritized: function () { this.updateQuery(); },
-    excluded: function () { this.updateQuery(); },
-  },
-
-  updated: function () {
-    // ペンディングリクエストが残っていたら再検索
-    if (this.progress.pending && this.progress.completed) {
-      if (this.beginSearch()) {
-        this.progress.pending = false;
-      }
-    }
   },
 };
 </script>

@@ -233,7 +233,7 @@
                 </div>
               </div>
               <div class="skills">
-                <div class="skill" v-for="(skill, si) in chr.skills" :class="{'active': skill.skillType == 'アクティブ', 'passive': skill.skillType == 'パッシブ', 'highlighted': isSkillHighlighted(skill) }" :key="si">
+                <div class="skill" v-for="(skill, si) in chr.skills" :class="getSkillClass(skill)" :key="si">
                   <div class="flex">
                     <div class="icon" :id="'chr_'+chr.id+'_skill'+si">
                       <b-img-lazy :src="getImageURL(skill.icon)" with="50" height="50" />
@@ -648,6 +648,14 @@ export default {
             }
           }
         }
+      }
+    },
+
+    getSkillClass(skill) {
+      return {
+        active: skill.isActive,
+        passive: skill.isPassive,
+        highlighted: this.isSkillHighlighted(skill),
       }
     },
 
