@@ -1,0 +1,72 @@
+div.root {
+    padding-top: 5px;
+}
+
+.root h2 {
+    font-size: 1.75em;
+    margin-left: 1em;
+}
+
+.root h3 {
+    font-size: 1.5em;
+    margin-left: 1em;
+}
+
+.root p {
+}
+
+.root ul {
+    list-style-type: disc;
+    margin: 0;
+}
+
+.root li {
+    display: list-item;
+    margin: 0 15px;
+}
+
+.note {
+    color: rgb(150, 150, 150);
+}
+
+label.disabled {
+    color: rgb(180, 180, 180);
+}
+
+.panel {
+    padding: 10px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 0.3rem;
+    display: inline-block;
+    background: white;
+}
+
+.panel h6 {
+    margin-bottom: 5px;
+}
+
+div.total-params {
+    padding: 3px;
+    margin: 5px;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 0.3rem;
+    background: rgb(245, 245, 245);
+    flex-grow: initial;
+    box-shadow: 0 3px 6px rgba(140,149,159,0.5);
+}
+
+div.character {
+    padding: 3px;
+    margin: 5px;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 0.3rem;
+    background: rgb(245, 245, 245);
+    flex-grow: initial;
+    box-shadow: 0 3px 6px rgba(140,149,159,0.5);
+}
+
+label {
+    margin: 0.2rem 0 !important;
+}

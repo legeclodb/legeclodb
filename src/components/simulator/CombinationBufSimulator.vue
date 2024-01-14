@@ -28,7 +28,7 @@
           </div>
           <div class="menu-widgets flex">
             <div class="widget">
-              <b-button-group size="sm" id="class_selector">
+              <b-button-group size="sm" id="cb-class-selector">
                 <b-button v-for="(c, i) in filter.class" :key="i" :pressed.sync="c.state" variant="outline-secondary">
                   <b-img-lazy :src="getImageURL(classes[i])" width="20px" />
                 </b-button>
@@ -37,21 +37,21 @@
           </div>
           <div class="menu-widgets flex">
             <div class="widget filter">
-              <b-button-group size="sm" id="symbol_selector">
+              <b-button-group size="sm" id="cb-symbol-selector">
                 <b-button v-for="(c, i) in filter.symbol" :key="i" :pressed.sync="c.state" variant="outline-secondary">
                   <b-img-lazy :src="getImageURL(symbols[i])" width="20px" />
                 </b-button>
               </b-button-group>
             </div>
             <div class="widget filter">
-              <b-button-group size="sm" id="damage_type_selector">
+              <b-button-group size="sm" id="cb-damage-type-selector">
                 <b-button v-for="(c, i) in filter.damageType" :key="i" :pressed.sync="c.state" variant="outline-secondary">
                   <b-img-lazy :src="getImageURL(damageTypes[i])" width="20px" />
                 </b-button>
               </b-button-group>
             </div>
             <div class="widget rareiry-filter">
-              <b-button-group size="sm" id="rareiry_selector">
+              <b-button-group size="sm" id="cb-rareiry-selector">
                 <b-button v-for="(c, i) in filter.rarity" :key="i" :pressed.sync="c.state" variant="outline-secondary">
                   <b-img-lazy :src="getImageURL(rarities[i])" width="30px" />
                 </b-button>
@@ -63,8 +63,8 @@
         <b-container>
           <div class="button-box">
             <div class="left-align">
-              <b-button size="sm" id="copy-url" @click="copyToClipboard(getParamsUrl())">パラメータを URL としてコピー</b-button>
-              <b-popover target="copy-url" triggers="click blur" placement="top" custom-class="url-popover">
+              <b-button size="sm" id="cb-copy-url" @click="copyToClipboard(getParamsUrl())">パラメータを URL としてコピー</b-button>
+              <b-popover target="cb-copy-url" triggers="click blur" placement="top" custom-class="url-popover">
                 コピーしました：<br />{{ getParamsUrl() }}
               </b-popover>
             </div>
@@ -89,7 +89,7 @@
               {{r.item.label}}
             </template>
             <template #cell(limit)="r">
-              <b-form-input v-if="!r.item.parent" style="width: 4.5em" v-model.number="r.item.limit_" size="sm" type="number" class="input-param" step="10" lazy placeholder="無制限"></b-form-input>
+              <b-form-input v-if="!r.item.parent" style="width: 4.5em" v-model.number="r.item.limit" size="sm" type="number" class="input-param" step="10" lazy placeholder="無制限"></b-form-input>
               <div v-if="r.item.parent" style="text-align:center; color: lightgray">〃</div>
             </template>
             <template #cell(weight)="r">
@@ -116,7 +116,7 @@
               {{r.item.label}}
             </template>
             <template #cell(limit)="r">
-              <b-form-input v-if="!r.item.parent" style="width: 4.5em" v-model.number="r.item.limit_" size="sm" type="number" class="input-param" step="10" lazy placeholder="無制限"></b-form-input>
+              <b-form-input v-if="!r.item.parent" style="width: 4.5em" v-model.number="r.item.limit" size="sm" type="number" class="input-param" step="10" lazy placeholder="無制限"></b-form-input>
               <div v-if="r.item.parent" style="text-align:center; color: lightgray">〃</div>
             </template>
             <template #cell(weight)="r">
@@ -132,9 +132,9 @@
             <div class="flex">
               <h3 style="margin: 5px 0px">優先リスト</h3>
               <div class="right-align">
-                <b-button size="sm" id="add-prioritized">追加</b-button>
+                <b-button size="sm" id="cb-add-prioritized">追加</b-button>
                 <b-button size="sm" @click="prioritized=[]" style="margin-left: 5px">クリア</b-button>
-                <ChrSelector target="add-prioritized" :chrs="mainChrs" @click="addPrioritized" classfilter symbolfilter />
+                <ChrSelector target="cb-add-prioritized" :chrs="mainChrs" @click="addPrioritized" classfilter symbolfilter />
               </div>
             </div>
             <div class="flex exclude-box">
@@ -153,9 +153,9 @@
             <div class="flex">
               <h3 style="margin: 5px 0px">除外リスト</h3>
               <div class="right-align">
-                <b-button size="sm" id="add-excluded">追加</b-button>
+                <b-button size="sm" id="cb-add-excluded">追加</b-button>
                 <b-button size="sm" @click="excluded=[]" style="margin-left: 5px">クリア</b-button>
-                <ChrSelector target="add-excluded" :chrs="mainChrs" @click="addExcluded" classfilter symbolfilter />
+                <ChrSelector target="cb-add-excluded" :chrs="mainChrs" @click="addExcluded" classfilter symbolfilter />
               </div>
             </div>
             <div class="flex exclude-box">
@@ -172,15 +172,14 @@
           </div>
         </b-container>
       </div>
-
     </div>
 
-    <div v-if="progress.result.length != 0" class="content">
-      <div class="total-params">
+    <div class="content">
+      <div v-if="!progress.completed" class="menu-panel" style="padding: 10px; position: absolute;">
+        <b-spinner small label="Spinning"></b-spinner>
+      </div>
+      <div v-if="progress.result.length != 0" class="total-params">
         <div class="flex info">
-          <div v-if="!progress.completed" style="margin-right: 5px">
-            <b-spinner small label="Spinning"></b-spinner>
-          </div>
           <div><h6>全ユニット合計:</h6></div>
           <template v-for="(e, ei) in allEffectsToHtml(progress.result)">
             <div :key="ei" v-html="e" />
@@ -190,6 +189,7 @@
     </div>
 
     <div class="content" :style="style">
+
       <div v-if="progress.result.length == 0" class="menu-panel" style="padding: 10px">
         <div class="about">
           <h5 style="margin-bottom: 5px">組み合わせ検索</h5>
@@ -483,6 +483,8 @@ export default {
   },
 
   created() {
+    this.setupDB();
+
     const excludeEffect = function (effect) {
       const cond = effect.condition;
       if (!this.isPublicTarget(effect.target) ||
@@ -583,8 +585,11 @@ export default {
       {label: "ダメージ耐性(魔法)"},
     ]);
 
-    const setParent = function (list, child, parent) {
-      list.find(a => a.label == child).parent = list.find(a => a.label == parent);
+    const setParent = function (list, childLabel, parentLabel) {
+      let c = list.find(a => a.label == childLabel);
+      let p = list.find(a => a.label == parentLabel);
+      c.parent = p;
+      delete c.limit_;
     };
     setParent(this.buffs, "与ダメージ(物理)", "与ダメージ");
     setParent(this.buffs, "与ダメージ(魔法)", "与ダメージ");
@@ -597,7 +602,6 @@ export default {
   },
 
   mounted() {
-    this.parseParamsUrl(window.location.href);
   },
 
   methods: {
@@ -619,13 +623,6 @@ export default {
           });
         }
       }
-    },
-
-    findItemById(id) {
-      const r = this.searchTableWithId.get(id);
-      if (!r)
-        console.log(`${id} not found`);
-      return r;
     },
 
 
@@ -1145,7 +1142,6 @@ export default {
       let ctx = createContext();
       let results = [];
       searchRecursive(ctx, results);
-      //console.log(results);
 
       return bestResult;
     },
@@ -1164,140 +1160,6 @@ export default {
     updateQuery() {
       this.beginSearch();
     },
-
-
-    serializeParams() {
-      const handleOptions = function (obj) {
-        return Object.values(obj).map(a => a.value);
-      };
-      const handleFilter = function (obj) {
-        return Object.values(obj).map(a => this.serializeFilter(a));
-      }.bind(this);
-      const handleBuffs = function (list) {
-        let r = [];
-        for (let v of list) {
-          if (v.parent)
-            r.push([v.enabled ? 1 : 0, v.weight]);
-          else
-            r.push([v.enabled ? 1 : 0, v.limit ? v.limit : 0, v.weight]);
-        }
-        return r;
-      };
-      const handleExcludes = function (list) {
-        let r = [];
-        for (let v of list) {
-          if (v.owner != undefined)
-            r.push([v.item.id, v.owner.id]);
-          else
-            r.push(v.id);
-        }
-        return r;
-      };
-
-      let r = {};
-      r.options = handleOptions(this.options);
-      r.filter = handleFilter(this.filter);
-      r.buffs = handleBuffs(this.buffs);
-      r.debuffs = handleBuffs(this.debuffs);
-      r.excluded = handleExcludes(this.excluded);
-      r.prioritized = handleExcludes(this.prioritized);
-      return r;
-    },
-    deserializeParams(obj) {
-      const handleOptions = function (dst, src) {
-        dst = Object.values(dst);
-        if (src && dst.length == src.length) {
-          for (let i = 0; i < dst.length; ++i) {
-            if (typeof dst[i].value == typeof src[i])
-              dst[i].value = src[i];
-          }
-        }
-      };
-      const handleFilter = function (dst, src) {
-        dst = Object.values(dst);
-        if (src && dst.length == src.length) {
-          for (let i = 0; i < dst.length; ++i) {
-            this.deserializeFilter(dst[i], src[i]);
-          }
-        }
-      }.bind(this);
-      const handleBuffs = function (dst, src) {
-        if (src && dst.length == src.length) {
-          for (let i = 0; i < dst.length; ++i) {
-            let d = dst[i];
-            let s = src[i];
-            if (d.parent && s.length == 2) {
-              d.enabled = s[0] != 0;
-              d.weight = s[1];
-            }
-            else if (s.length == 3) {
-              d.enabled = s[0] != 0;
-              d.limit = s[1] != 0 ? s[1] : null;
-              d.weight = s[2];
-            }
-          }
-        }
-      };
-      const handleExcludes = function (dst, src) {
-        if (src) {
-          dst.splice(0, dst.length);
-          for (let v of src) {
-            if (Array.isArray(v)) {
-              let t = {
-                item: this.findItemById(v[0]),
-                owner: this.findItemById(v[1]),
-              }
-              if (t.item && t.owner)
-                dst.push(t);
-            }
-            else {
-              let t = this.findItemById(v);
-              if (t)
-                dst.push(t);
-            }
-          }
-        }
-        return dst;
-      }.bind(this);
-
-      handleOptions(this.options, obj.options);
-      handleFilter(this.filter, obj.filter);
-      handleBuffs(this.buffs, obj.buffs);
-      handleBuffs(this.debuffs, obj.debuffs);
-      handleExcludes(this.excluded, obj.excluded);
-      handleExcludes(this.prioritized, obj.prioritized);
-    },
-
-    getParamsUrl() {
-      const base = this.initialState;
-      const r = this.serializeParams();
-
-      let params = {};
-      for (const k in base) {
-        if (!this.objectEqual(base[k], r[k])) {
-          params[k] = r[k];
-        }
-      }
-
-      let url = window.location.href.replace(/\?.+/, '').replace(/#.+/, '');
-      url += "?p=" + encodeURIComponent(JSON.stringify(params));
-      //console.log(url);
-      //this.parseParamsUrl(url);
-      return url;
-    },
-    parseParamsUrl(url) {
-      let params = {};
-
-      url = decodeURIComponent(url);
-      let q = url.match(/\?p=(.+)$/);
-      if (q) {
-        params = JSON.parse(q[1]);
-        this.deserializeParams(params);
-        this.pushHistory();
-        this.beginSearch();
-      }
-    },
-
   },
 
   computed: {
@@ -1315,155 +1177,5 @@ export default {
 }
 </script>
 
-<style scoped>
-  div.root {
-  }
-
-  .root h2 {
-    font-size: 1.75em;
-    margin-left: 1em;
-  }
-  .root h3 {
-    font-size: 1.5em;
-    margin-left: 1em;
-  }
-
-  .root p {
-    margin-bottom: 30px;
-  }
-
-  .root ul {
-    list-style-type: disc;
-    margin: 0;
-  }
-
-  .root li {
-    display: list-item;
-    margin: 0 15px;
-  }
-
-  .note {
-    color: rgb(150, 150, 150);
-  }
-
-  label.disabled {
-    color: rgb(180, 180, 180);
-  }
-
-  .panel {
-    padding: 10px;
-    margin-top: 10px;
-    margin-bottom: 10px;
-    border: 1px solid rgba(0, 0, 0, 0.2);
-    border-radius: 0.3rem;
-    display: inline-block;
-    background: white;
-  }
-
-  .panel h6 {
-    margin-bottom: 5px;
-  }
-
-  div.total-params {
-    padding: 3px;
-    margin: 5px;
-    border: 1px solid rgba(0, 0, 0, 0.2);
-    border-radius: 0.3rem;
-    background: rgb(245, 245, 245);
-    flex-grow: initial;
-    box-shadow: 0 3px 6px rgba(140,149,159,0.5);
-  }
-  div.character {
-    padding: 3px;
-    margin: 5px;
-    border: 1px solid rgba(0, 0, 0, 0.2);
-    border-radius: 0.3rem;
-    background: rgb(245, 245, 245);
-    flex-grow: initial;
-    box-shadow: 0 3px 6px rgba(140,149,159,0.5);
-  }
-
-  label {
-    margin: 0.2rem 0 !important;
-  }
-
-</style>
-<style>
-  .table {
-    margin-bottom: 1px;
-  }
-
-  .desc .table {
-    width: auto;
-    margin: 3px;
-  }
-
-  .input-dropdown button {
-    padding: 0.1em;
-  }
-
-  .table-sm td {
-    padding: 1px;
-    vertical-align: middle;
-  }
-
-  input::placeholder {
-    color: rgb(190, 190, 190) !important;
-    font-size: small !important;
-  }
-
-  .param-highlighted {
-    background-color: rgb(255, 190, 190) !important;
-  }
-
-  .effect-group {
-    display: flex;
-    flex-wrap: wrap;
-    margin-top: 5px;
-  }
-
-  .effect-box {
-    margin: 1px 2px;
-    padding: 0px 2px;
-    min-height: 21px;
-    border: 1px solid rgba(0, 0, 0, 0.2);
-    border-radius: 0.3rem;
-    background: white;
-    display: flex;
-    align-items: center;
-    white-space: nowrap;
-    font-size: 75%;
-  }
-
-  .exclude-menu {
-    margin-top: 5px;
-  }
-  .exclude-menu .btn {
-    margin-right: 4px;
-  }
-  .exclude-box {
-    flex-wrap: wrap;
-    align-items: flex-start;
-    align-content: flex-start;
-    width: 275px;
-    min-height: 150px;
-    max-height: 200px;
-    overflow-y: auto;
-    overflow-x: hidden;
-  }
-
-  .button-box {
-    display: flex;
-  }
-  .left-align {
-    margin: 2px auto 2px 0px;
-  }
-  .right-align {
-    margin: 2px 0px 2px auto;
-  }
-
-  .popover {
-    max-width: 450px;
-  }
-
+<style scoped src="./lookup.css">
 </style>

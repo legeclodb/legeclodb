@@ -47,7 +47,7 @@
 
     <div class="content" :style="style">
       <div class="main-panel">
-        <b-tabs nav-class="tab-index" v-model="phaseTabIndex">
+        <b-tabs v-model="phaseTabIndex">
           <b-tab v-for="phase in phaseList" :title="phase.desc" @click="selectPhase(phase.id, true); updateURL();" :key="phase.id"></b-tab>
         </b-tabs>
 

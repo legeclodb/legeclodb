@@ -4,7 +4,7 @@
       <Navigation />
       <div class="menu-content">
         <div class="menu-panel">
-          <b-tabs nav-class="tab-index" v-model="searchTabIndex">
+          <b-tabs v-model="searchTabIndex">
             <b-tab title="タグ検索">
               <div class="menu-widgets flex">
                 <div class="widget">
@@ -93,7 +93,7 @@
           </div>
         </div>
         <div class="menu-panel">
-          <b-tabs nav-class="tab-index" v-model="settingsTabIndex">
+          <b-tabs v-model="settingsTabIndex">
             <b-tab title="表示">
               <div class="menu-widgets flex">
                 <div class="widget">

@@ -8,7 +8,7 @@
       </b-row>
     </b-container>
 
-    <b-tabs nav-class="tab-index" v-model="tabIndex">
+    <b-tabs v-model="tabIndex">
       <b-tab title="メインキャラ" style="padding: 10px 10px 0px 10px">
         <div class="flex">
           <div>

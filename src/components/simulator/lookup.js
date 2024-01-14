@@ -7,7 +7,6 @@ import jsonSupportActive from '../../assets/support_active.json'
 import jsonSupportPassive from '../../assets/support_passive.json'
 import jsonSupportChrs from '../../assets/support_characters.json'
 import jsonItems from '../../assets/items.json'
-import common from "../common.js";
 
 export default {
   data() {
@@ -36,135 +35,6 @@ export default {
         result: [],
       },
     };
-  },
-
-  created() {
-    this.mainActive = structuredClone(jsonMainActive);
-    this.mainPassive = structuredClone(jsonMainPassive);
-    this.mainTalents = structuredClone(jsonMainTalents);
-    this.mainChrs = structuredClone(jsonMainChrs).filter(a => !a.hidden);
-
-    this.supActive = structuredClone(jsonSupportActive);
-    this.supPassive = structuredClone(jsonSupportPassive);
-    this.supChrs = structuredClone(jsonSupportChrs).filter(a => !a.hidden);
-
-    this.items = structuredClone(jsonItems).filter(a => !a.hidden || a.slot == "アミュレット");
-    this.weapons = this.items.filter(a => a.slot == "武器");
-    this.armors = this.items.filter(a => a.slot == "鎧");
-    this.helmets = this.items.filter(a => a.slot == "兜");
-    this.accessories = this.items.filter(a => a.slot == "アクセサリ");
-
-    this.setupCharacters(this.mainChrs, this.mainActive, this.mainPassive, this.mainTalents);
-    this.setupCharacters(this.supChrs, this.supActive, this.supPassive);
-    this.setupItems(this.items);
-
-    let idx = 0;
-    for (let list of [this.mainChrs, this.mainActive, this.mainPassive,
-      this.mainTalents, this.supChrs, this.supActive, this.supPassive,
-      this.items])
-    {
-      for (let item of list)
-        item.index = ++idx;
-    }
-    this.itemCount = idx;
-
-    this.searchTableWithId = new Map();
-    this.searchTableWithName = new Map();
-    for (let s of [...this.mainActive, ...this.mainPassive, ...this.mainTalents, ...this.supActive, ...this.supPassive, ...this.items]) {
-      this.searchTableWithId.set(s.uid, s);
-      this.searchTableWithName.set(s.name, s);
-    }
-
-    let effectTypeIndex = 1;
-    let effectTypeNames = ["???"];
-    let effectTypeTable = new Map();
-    let slotIndex = 1;
-    let slotTable = new Map();
-    const effectTypes = [
-      "最大HP",
-      "アタック",
-      "ディフェンス",
-      "マジック",
-      "レジスト",
-      "テクニック",
-      "ディフェンス無視",
-      "レジスト無視",
-      "与ダメージ",
-      "与ダメージ(物理)",
-      "与ダメージ(魔法)",
-      "与ダメージ(スキル)",
-      "与ダメージ(範囲スキル)",
-      "与ダメージ(通常攻撃)",
-      "ダメージ耐性",
-      "ダメージ耐性(物理)",
-      "ダメージ耐性(魔法)",
-      "ダメージ耐性(範囲)",
-      "クリティカル率",
-      "クリティカル率耐性",
-      "クリティカルダメージ倍率",
-      "治療効果",
-      "被治療効果",
-      "射程(通常攻撃)",
-      "射程(スキル)",
-      "範囲",
-      "移動",
-      "ランダム",
-    ];
-    for (const et of effectTypes) {
-      const key = `${et}+`;
-      effectTypeTable.set(key, effectTypeIndex);
-      effectTypeNames.push(key);
-      effectTypeIndex++;
-    }
-    for (const et of effectTypes) {
-      const key = `${et}-`;
-      effectTypeTable.set(key, effectTypeIndex);
-      effectTypeNames.push(key);
-      effectTypeIndex++;
-    }
-    for (let skill of this.enumerate(this.mainActive, this.mainPassive, this.mainTalents, this.supActive, this.supPassive, this.items)) {
-      for (let effect of this.enumerateEffects(skill)) {
-        let effectType = effect.type;
-        if (effect.isBuff)
-          effectType += "+";
-        else if (effect.isDebuff)
-          effectType += "-";
-        effect.effectType = effectType;
-
-        if (effect.target == "単体")
-          effect.isSingleTarget = true;
-
-        effect.effectTypeIndex = effectTypeTable.get(effectType);
-        if (!effect.effectTypeIndex) {
-          effectTypeTable.set(effectType, effectTypeIndex);
-          effect.effectTypeIndex = effectTypeIndex++;
-          effectTypeNames.push(effectType);
-        }
-
-        if (skill.isActive) {
-          const slot = effect.slot;
-          effect.slotIndex = slotTable.get(slot);
-          if (!effect.slotIndex) {
-            slotTable.set(slot, slotIndex);
-            effect.slotIndex = slotIndex++;
-          }
-        }
-      }
-    }
-    this.effectTypeIndex = effectTypeIndex;
-    this.effectTypeNames = effectTypeNames;
-    this.effectTypeTable = effectTypeTable;
-    this.slotIndex = slotIndex;
-    this.slotTable = slotTable;
-
-    this.mainChrs.sort((a, b) => b.date.localeCompare(a.date));
-    this.supChrs.sort((a, b) => b.date.localeCompare(a.date));
-    this.items.sort((a, b) => b.date.localeCompare(a.date));
-
-    this.fillFilter(this.filter.class, this.classes);
-    this.fillFilter(this.filter.symbol, this.symbols);
-    this.fillFilter(this.filter.damageType, this.damageTypes);
-    this.fillFilter(this.filter.rarity, this.rarities);
   },
 
   methods: {
@@ -199,6 +69,148 @@ export default {
           this.data_[byte] &= ~(1 << bit);
       }
     },
+
+    isGetSet(obj, name) {
+      const desc = Object.getOwnPropertyDescriptor(obj, name);
+      if (desc) {
+        if (desc.get)
+          return true;
+        if (desc.set)
+          return true;
+      }
+      return false;
+    },
+
+
+    setupDB() {
+      this.mainActive = structuredClone(jsonMainActive);
+      this.mainPassive = structuredClone(jsonMainPassive);
+      this.mainTalents = structuredClone(jsonMainTalents);
+      this.mainChrs = structuredClone(jsonMainChrs).filter(a => !a.hidden);
+
+      this.supActive = structuredClone(jsonSupportActive);
+      this.supPassive = structuredClone(jsonSupportPassive);
+      this.supChrs = structuredClone(jsonSupportChrs).filter(a => !a.hidden);
+
+      this.items = structuredClone(jsonItems).filter(a => !a.hidden || a.slot == "アミュレット");
+      this.weapons = this.items.filter(a => a.slot == "武器");
+      this.armors = this.items.filter(a => a.slot == "鎧");
+      this.helmets = this.items.filter(a => a.slot == "兜");
+      this.accessories = this.items.filter(a => a.slot == "アクセサリ");
+
+      this.setupCharacters(this.mainChrs, this.mainActive, this.mainPassive, this.mainTalents);
+      this.setupCharacters(this.supChrs, this.supActive, this.supPassive);
+      this.setupItems(this.items);
+
+      this.searchTableWithUid = new Map();
+      this.searchTableWithName = new Map();
+      let idx = 0;
+      for (let list of [
+        this.mainChrs, this.mainActive, this.mainPassive, this.mainTalents,
+        this.supChrs, this.supActive, this.supPassive,
+        this.items
+      ])
+      {
+        for (let item of list) {
+          item.index = ++idx;
+          this.searchTableWithUid.set(item.uid, item);
+          this.searchTableWithName.set(item.name, item);
+        }
+      }
+      this.itemCount = idx;
+
+      let effectTypeIndex = 1;
+      let effectTypeNames = ["???"];
+      let effectTypeTable = new Map();
+      let slotIndex = 1;
+      let slotTable = new Map();
+      const effectTypes = [
+        "最大HP",
+        "アタック",
+        "ディフェンス",
+        "マジック",
+        "レジスト",
+        "テクニック",
+        "ディフェンス無視",
+        "レジスト無視",
+        "与ダメージ",
+        "与ダメージ(物理)",
+        "与ダメージ(魔法)",
+        "与ダメージ(スキル)",
+        "与ダメージ(範囲スキル)",
+        "与ダメージ(通常攻撃)",
+        "ダメージ耐性",
+        "ダメージ耐性(物理)",
+        "ダメージ耐性(魔法)",
+        "ダメージ耐性(範囲)",
+        "クリティカル率",
+        "クリティカル率耐性",
+        "クリティカルダメージ倍率",
+        "治療効果",
+        "被治療効果",
+        "射程(通常攻撃)",
+        "射程(スキル)",
+        "範囲",
+        "移動",
+        "ランダム",
+      ];
+      for (const et of effectTypes) {
+        const key = `${et}+`;
+        effectTypeTable.set(key, effectTypeIndex);
+        effectTypeNames.push(key);
+        effectTypeIndex++;
+      }
+      for (const et of effectTypes) {
+        const key = `${et}-`;
+        effectTypeTable.set(key, effectTypeIndex);
+        effectTypeNames.push(key);
+        effectTypeIndex++;
+      }
+      for (let skill of this.enumerate(this.mainActive, this.mainPassive, this.mainTalents, this.supActive, this.supPassive, this.items)) {
+        for (let effect of this.enumerateEffects(skill)) {
+          let effectType = effect.type;
+          if (effect.isBuff)
+            effectType += "+";
+          else if (effect.isDebuff)
+            effectType += "-";
+          effect.effectType = effectType;
+
+          if (effect.target == "単体")
+            effect.isSingleTarget = true;
+
+          effect.effectTypeIndex = effectTypeTable.get(effectType);
+          if (!effect.effectTypeIndex) {
+            effectTypeTable.set(effectType, effectTypeIndex);
+            effect.effectTypeIndex = effectTypeIndex++;
+            effectTypeNames.push(effectType);
+          }
+
+          if (skill.isActive) {
+            const slot = effect.slot;
+            effect.slotIndex = slotTable.get(slot);
+            if (!effect.slotIndex) {
+              slotTable.set(slot, slotIndex);
+              effect.slotIndex = slotIndex++;
+            }
+          }
+        }
+      }
+      this.effectTypeIndex = effectTypeIndex;
+      this.effectTypeNames = effectTypeNames;
+      this.effectTypeTable = effectTypeTable;
+      this.slotIndex = slotIndex;
+      this.slotTable = slotTable;
+
+      this.mainChrs.sort((a, b) => b.date.localeCompare(a.date));
+      this.supChrs.sort((a, b) => b.date.localeCompare(a.date));
+      this.items.sort((a, b) => b.date.localeCompare(a.date));
+
+      this.fillFilter(this.filter.class, this.classes);
+      this.fillFilter(this.filter.symbol, this.symbols);
+      this.fillFilter(this.filter.damageType, this.damageTypes);
+      this.fillFilter(this.filter.rarity, this.rarities);
+    },
+
 
     filterMatchMainChr(chr, filter = this.filter) {
       return (!filter.class || this.filterMatch(filter.class, chr.classId)) &&
@@ -406,10 +418,10 @@ export default {
       yield* this.enumerate(skill.buff, skill.debuff);
     },
 
-    findItemById(id) {
-      const r = this.searchTableWithId.get(id);
+    findItemByUid(uid) {
+      const r = this.searchTableWithUid.get(uid);
       if (!r)
-        console.log(`id:${id} not found`);
+        console.log(`uid:${uid} not found`);
       return r;
     },
     findItemByName(name) {
@@ -464,90 +476,143 @@ export default {
     },
 
 
-    getParamsUrl() {
-      let params = [];
+    serializeParams() {
+      const isGetSet = this.isGetSet;
 
-      for (const v of Object.values(this.main)) {
-        if (v.type == "character")
-          params.push(v.value ? v.value.index : 0);
-        else
-          params.push(v.value);
-      }
-      for (const v of Object.values(this.mainBoosts))
-        params.push(v.value);
-      for (const v of Object.values(this.mainItems))
-        params.push(v.value ? v.value.index : 0);
-      for (const v of Object.values(this.mainEnchants)) {
-        params.push(v.valueP);
-        params.push(v.valueF);
-      }
+      const handleOptions = function (obj) {
+        return Object.values(obj).map(a => a.value);
+      };
+      const handleFilter = function (obj) {
+        return Object.values(obj).map(a => this.serializeFilter(a));
+      }.bind(this);
+      const handleBuffs = function (list) {
+        let r = [];
+        const props = ["enabled", "limit_", "weight"];
+        for (const obj of list) {
+          let tmp = [];
+          for (const prop of props) {
+            if (Object.hasOwn(obj, prop)) {
+              tmp.push(obj[prop]);
+            }
+          }
+          r.push(tmp);
+        }
+        return r;
+      };
+      const handleExcludes = function (list) {
+        let r = [];
+        for (let v of list) {
+          if (v.owner != undefined)
+            r.push([v.item.uid, v.owner.uid]);
+          else
+            r.push(v.uid);
+        }
+        return r;
+      };
 
-      for (const v of Object.values(this.support)) {
-        if (v.type == "character")
-          params.push(v.value ? v.value.index : 0);
-        else
-          params.push(v.value);
-      }
-      for (const v of Object.values(this.supportBoosts))
-        params.push(v.value);
-      for (const v of Object.values(this.supportItems))
-        params.push(v.value ? v.value.index : 0);
-      for (const v of Object.values(this.supportEnchants))
-        params.push(v.valueP);
+      let r = {};
+      r.options = handleOptions(this.options);
+      r.filter = handleFilter(this.filter);
+      r.buffs = handleBuffs(this.buffs);
+      r.debuffs = handleBuffs(this.debuffs);
+      r.excluded = handleExcludes(this.excluded);
+      r.prioritized = handleExcludes(this.prioritized);
+      return r;
+    },
+    deserializeParams(obj) {
+      const isGetSet = this.isGetSet;
+      const findItemByUid = this.findItemByUid;
 
-      let url = window.location.href.replace(/\?.+/, '').replace(/#.+/, '');
-      url += "?stat=" + params.join(',') + "#status";
-      //this.parseParamsUrl(url); // debug
-      return url;
+      const handleOptions = function (dst, src) {
+        dst = Object.values(dst);
+        if (src && dst.length == src.length) {
+          for (let i = 0; i < dst.length; ++i) {
+            if (typeof dst[i].value == typeof src[i])
+              dst[i].value = src[i];
+          }
+        }
+      };
+      const handleFilter = function (dst, src) {
+        dst = Object.values(dst);
+        if (src && dst.length == src.length) {
+          for (let i = 0; i < dst.length; ++i) {
+            this.deserializeFilter(dst[i], src[i]);
+          }
+        }
+      }.bind(this);
+      const handleBuffs = function (dst, src) {
+        if (src && dst.length == src.length) {
+          for (let i = 0; i < dst.length; ++i) {
+            let d = dst[i];
+            let s = src[i];
+            const props = ["enabled", "limit_", "weight"];
+            for (const prop of props) {
+              if (Object.hasOwn(d, prop)) {
+                d[prop] = s.shift();
+              }
+            }
+          }
+        }
+      };
+      const handleExcludes = function (dst, src) {
+        if (src) {
+          dst.splice(0, dst.length);
+          for (let v of src) {
+            if (Array.isArray(v)) {
+              let t = {
+                item: findItemByUid(v[0]),
+                owner: findItemByUid(v[1]),
+              }
+              if (t.item && t.owner)
+                dst.push(t);
+            }
+            else {
+              let t = findItemByUid(v);
+              if (t)
+                dst.push(t);
+            }
+          }
+        }
+        return dst;
+      };
+
+      handleOptions(this.options, obj.options);
+      handleFilter(this.filter, obj.filter);
+      handleBuffs(this.buffs, obj.buffs);
+      handleBuffs(this.debuffs, obj.debuffs);
+      handleExcludes(this.excluded, obj.excluded);
+      handleExcludes(this.prioritized, obj.prioritized);
     },
 
-    parseParamsUrl(url) {
-      url = decodeURIComponent(url);
-      let q = url.match(/\?stat=(.+)$/);
-      if (q) {
-        let params = q[1].split(',').map(this.parseValue);
+    getParamsUrl() {
+      let params = this.serializeParams();
+      let t = "";
 
-        for (const v of Object.values(this.main)) {
-          if (v.type == "character") {
-            const idx = params.shift();
-            v.value = this.mainChrs.find(a => a.index == idx);
-          }
-          else {
-            v.value = params.shift();
-          }
-        }
-        for (const v of Object.values(this.mainBoosts))
-          v.value = params.shift();
-        for (const v of Object.values(this.mainItems)) {
-          const idx = params.shift();
-          v.value = this.items.find(a => a.index == idx);
-        }
-        for (const v of Object.values(this.mainEnchants)) {
-          v.valueP = params.shift();
-          v.valueF = params.shift();
-        }
+      let url = window.location.href.replace(/\?.+/, '').replace(/#.+/, '');
+      url += "?";
 
-        for (const v of Object.values(this.support)) {
-          if (v.type == "character") {
-            const idx = params.shift();
-            v.value = this.supChrs.find(a => a.index == idx);
-          }
-          else {
-            v.value = params.shift();
-          }
-        }
-        for (const v of Object.values(this.supportBoosts))
-          v.value = params.shift();
-        for (const v of Object.values(this.supportItems)) {
-          const idx = params.shift();
-          v.value = this.items.find(a => a.index == idx);
-        }
-        for (const v of Object.values(this.supportEnchants))
-          v.valueP = params.shift();
-
-        return true;
+      let m = window.location.href.match(/(t=\d)/, '');
+      if (m) {
+        url += m[1];
+        url += "&";
       }
-      return false;
+      url += "p=" + encodeURIComponent(JSON.stringify(params));
+      return url;
+    },
+    parseParamsUrl(url) {
+      let params = {};
+
+      let q = url.match(/\bt=(\d)/);
+      if (q) {
+        params.t = parseInt(q[1]);
+      }
+
+      q = url.match(/\bp=(.+)$/);
+      if (q) {
+        params.p = JSON.parse(decodeURIComponent(q[1]));
+      }
+      //console.log(params);
+      return params;
     },
   },
 

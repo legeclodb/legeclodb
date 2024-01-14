@@ -3,19 +3,21 @@
     <div class="header" :class="{ 'hidden': !showHeader }">
       <Navigation />
     </div>
-    <div class="root" style="margin-top: 55px;">
-      <b-tabs nav-class="tab-index" v-model="tabIndex">
-        <b-tab>
+    <div style="padding-top: 60px; background: #d0d0d4; ">
+    </div>
+    <div class="root" style="">
+      <b-tabs nav-class="tab-index" active-nav-item-class="tab-title-active" v-model="tabIndex">
+        <b-tab title-link-class="tab-title">
           <template #title>
             <h2 style="margin: 0em 1em; font-size: 1.25em;">組み合わせ検索</h2>
           </template>
-          <CombinationBufSimulator />
+          <CombinationBufSimulator ref="cbSim" />
         </b-tab>
-        <b-tab>
+        <b-tab title-link-class="tab-title">
           <template #title>
             <h2 style="margin: 0em 1em; font-size: 1.25em;">自己バフ検索</h2>
           </template>
-          <SelfBufSimulator />
+          <SelfBufSimulator ref="sbSim" />
         </b-tab>
       </b-tabs>
     </div>
@@ -28,6 +30,7 @@ import Navigation from './Navigation.vue'
 import CombinationBufSimulator from './simulator/CombinationBufSimulator.vue'
 import SelfBufSimulator from './simulator/SelfBufSimulator.vue'
 import commonjs from "./common.js";
+import lookupjs from "./simulator/lookup.js";
 
 export default {
   name: 'Lookup',
@@ -36,7 +39,7 @@ export default {
     CombinationBufSimulator,
     SelfBufSimulator,
   },
-  mixins: [commonjs],
+  mixins: [commonjs, lookupjs],
 
   data() {
     return {
@@ -45,97 +48,83 @@ export default {
   },
 
   created() {
-    document.title = "れじぇくろDB: 逆引き";
+    document.title = "れじぇくろDB: 組み合わせ検索";
   },
 
   mounted() {
-    //this.parseParamsUrl(window.location.href);
+    const handleURLUpdate = function() {
+      this.$nextTick(function () {
+        this.enableUpdateURL = false;
+        this.decodeURL();
+        this.$nextTick(function () {
+          this.enableUpdateURL = true;
+        });
+      });
+    }.bind(this);
+
+    handleURLUpdate();
+    window.onpopstate = handleURLUpdate;
   },
 
   methods: {
+    decodeURL() {
+      const params = this.parseParamsUrl(window.location.href);
+      //console.log(params);
+      if (Object.hasOwn(params, "t")) {
+        this.tabIndex = params.t;
+      }
+      else {
+        this.tabIndex = 0;
+      }
+
+      if (Object.hasOwn(params, "p")) {
+        let target = [this.$refs.cbSim, this.$refs.sbSim][this.tabIndex];
+        target.deserializeParams(params.p);
+      }
+    },
+    updateURL() {
+      if (!this.enableUpdateURL)
+        return false;
+
+      let url = `?t=${this.tabIndex}`;
+      if (url != this.prevURL) {
+        window.history.pushState(null, null, url);
+        this.prevURL = url;
+        return true;
+      }
+      return false;
+    },
+  },
+
+  watch: {
+    tabIndex: function () {
+      this.updateURL();
+    },
   },
 }
 </script>
 
 <style scoped>
-  .tab-index {
-    font-size: 4.75em;
-    margin-left: 1em;
-  }
-
-  div.about {
-  }
-
-  .about h2 {
-    font-size: 1.75em;
-    margin-left: 1em;
-  }
-  .about h3 {
-    font-size: 1.5em;
-    margin-left: 1em;
-  }
-
-  .about p {
-    margin-bottom: 30px;
-  }
-
-  .about ul {
-    list-style-type: disc;
-    margin: 0;
-  }
-
-  .about li {
-    display: list-item;
-    margin: 0 15px;
-  }
-
-  .note {
-    color: rgb(150, 150, 150);
-  }
-
-  label.disabled {
-    color: rgb(180, 180, 180);
-  }
-
-  .panel {
-    padding: 10px;
-    margin-top: 10px;
-    margin-bottom: 10px;
-    border: 1px solid rgba(0, 0, 0, 0.2);
-    border-radius: 0.3rem;
-    display: inline-block;
-    background: white;
-  }
-
-  .panel h6 {
-    margin-bottom: 5px;
-  }
-
-  div.total-params {
-    padding: 3px;
-    margin: 5px;
-    border: 1px solid rgba(0, 0, 0, 0.2);
-    border-radius: 0.3rem;
-    background: rgb(245, 245, 245);
-    flex-grow: initial;
-    box-shadow: 0 3px 6px rgba(140,149,159,0.5);
-  }
-  div.character {
-    padding: 3px;
-    margin: 5px;
-    border: 1px solid rgba(0, 0, 0, 0.2);
-    border-radius: 0.3rem;
-    background: rgb(245, 245, 245);
-    flex-grow: initial;
-    box-shadow: 0 3px 6px rgba(140,149,159,0.5);
-  }
-
-  label {
-    margin: 0.2rem 0 !important;
-  }
-
 </style>
+
 <style>
+  .tab-index {
+    border-color: #c0c0c0 !important;
+    background: #d0d0d4;
+  }
+
+  .tab-title {
+  }
+
+    .tab-title:hover {
+      border-color: #c0c0c0 #c0c0c0 rgb(234, 234, 237) !important;
+    }
+
+  .tab-title-active {
+    background: rgb(234, 234, 237) !important;
+    border-color: #c0c0c0 #c0c0c0 rgb(234, 234, 237) !important;
+  }
+
   .table {
     margin-bottom: 1px;
   }
@@ -211,6 +200,14 @@ export default {
 
   .popover {
     max-width: 450px;
+  }
+
+
+  .filter .btn-outline-secondary {
+  }
+
+  .rareiry-filter .btn-outline-secondary {
+    padding: 4px 0px !important;
   }
 
 </style>

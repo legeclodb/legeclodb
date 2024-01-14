@@ -17,7 +17,7 @@
               </div>
             </template>
             <template #cell(label)="r">
-              <div :id="`cb-p-${r.item.name}`">{{r.item.label}}</div>
+              <div :id="`sb-p-${r.item.name}`">{{r.item.label}}</div>
             </template>
           </b-table>
         </b-container>
@@ -28,7 +28,7 @@
           </div>
           <div class="menu-widgets flex">
             <div class="widget">
-              <b-button-group size="sm" id="class_selector">
+              <b-button-group size="sm" id="sb-class-selector">
                 <b-button v-for="(c, i) in filter.class" :key="i" :pressed.sync="c.state" variant="outline-secondary">
                   <b-img-lazy :src="getImageURL(classes[i])" width="20px" />
                 </b-button>
@@ -37,25 +37,36 @@
           </div>
           <div class="menu-widgets flex">
             <div class="widget filter">
-              <b-button-group size="sm" id="symbol_selector">
+              <b-button-group size="sm" id="sb-symbol-selector">
                 <b-button v-for="(c, i) in filter.symbol" :key="i" :pressed.sync="c.state" variant="outline-secondary">
                   <b-img-lazy :src="getImageURL(symbols[i])" width="20px" />
                 </b-button>
               </b-button-group>
             </div>
             <div class="widget filter">
-              <b-button-group size="sm" id="damage_type_selector">
+              <b-button-group size="sm" id="sb-damage-type-selector">
                 <b-button v-for="(c, i) in filter.damageType" :key="i" :pressed.sync="c.state" variant="outline-secondary">
                   <b-img-lazy :src="getImageURL(damageTypes[i])" width="20px" />
                 </b-button>
               </b-button-group>
             </div>
             <div class="widget rareiry-filter">
-              <b-button-group size="sm" id="rareiry_selector">
+              <b-button-group size="sm" id="sb-rareiry-selector">
                 <b-button v-for="(c, i) in filter.rarity" :key="i" :pressed.sync="c.state" variant="outline-secondary">
                   <b-img-lazy :src="getImageURL(rarities[i])" width="30px" />
                 </b-button>
               </b-button-group>
+            </div>
+          </div>
+        </b-container>
+
+        <b-container>
+          <div class="button-box">
+            <div class="left-align">
+              <b-button size="sm" id="sb-copy-url" @click="copyToClipboard(getParamsUrl())">パラメータを URL としてコピー</b-button>
+              <b-popover target="sb-copy-url" triggers="click blur" placement="top" custom-class="url-popover">
+                コピーしました：<br />{{ getParamsUrl() }}
+              </b-popover>
             </div>
           </div>
         </b-container>
@@ -98,7 +109,7 @@
         </b-container>
       </div>
 
-      <div class="menu-panel" id="cb-exclude-list">
+      <div class="menu-panel" id="sb-exclude-list">
         <b-container>
           <div>
             <div class="flex">
@@ -150,7 +161,8 @@
         <div class="about">
           <h5 style="margin-bottom: 5px">自己バフ検索</h5>
           こちらは自己バフを含むメインキャラ単身のタレント＋スキルのバフ・デバフの総合値を算出します。<br />
-          戦闘能力を図る指標にすることを目的としています。<br />
+          キャラ性能を測る一つの指標になるでしょう。<br />
+          <br />
           こちらもアクティブ同士の競合は考慮されています。<br />
           特定のスキルを除外or優先採用したい場合、アイコンをマウスオーバーすると出てくるポップアップから可能です。
         </div>
@@ -308,6 +320,8 @@ export default {
   },
 
   created() {
+
+    this.setupDB();
     for (let s of [...this.mainActive, ...this.mainPassive, ...this.mainTalents]) {
       this.removeEffectsOfSameType(s);
     }
@@ -324,7 +338,7 @@ export default {
     };
     this.options = makeOptions([
       { name: "maxPickup", label: "人まで表示", value: 20, min: 1, max: 200 },
-      { name: "maxActiveCount", label: "アクティブ数制限 (再行動ありを除く)", value: 1, min: 0, max: 3 },
+      { name: "maxActiveCount", label: "アクティブ数制限 (再行動ありを除く)", value: 2, min: 0, max: 3 },
       { name: "allowTalent", label: "タレントを含める", value: true },
       { name: "allowPassive", label: "パッシブスキルを含める", value: true },
       { name: "allowActive", label: "アクティブスキルを含める", value: true },
@@ -375,9 +389,6 @@ export default {
       { label: "ダメージ耐性(物理)" },
       { label: "ダメージ耐性(魔法)" },
     ]);
-
-
-    this.parseParamsUrl(window.location.href);
   },
   
   mounted() {
@@ -543,26 +554,5 @@ export default {
 };
 </script>
 
-<style scoped>
-.input-dropdown {
-  padding: 0.1em;
-}
-
-.about h2 {
-  font-size: 1.75em;
-  margin-left: 1em;
-}
-
-.about h3 {
-  font-size: 1.5em;
-  margin-left: 1em;
-}
-</style>
-<style>
-.filter .btn-outline-secondary {
-}
-
-.rareiry-filter .btn-outline-secondary {
-  padding: 4px 0px !important;
-}
+<style scoped src="./lookup.css">
 </style>
