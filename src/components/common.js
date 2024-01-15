@@ -785,8 +785,10 @@ export default {
         return true;
       else if (s == 'false')
         return false;
-      else
+      else if (s.match(/^[\d.]+$/))
         return this.toNumber(s);
+      else
+        return s;
     },
 
     getBattlePower(status)

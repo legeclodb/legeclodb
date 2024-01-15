@@ -116,9 +116,9 @@ export default {
   .tab-title {
   }
 
-    .tab-title:hover {
-      border-color: #c0c0c0 #c0c0c0 rgb(234, 234, 237) !important;
-    }
+  .tab-title:focus .tab-title:hover {
+    border-color: #c0c0c0 #c0c0c0 rgb(234, 234, 237) !important;
+  }
 
   .tab-title-active {
     background: rgb(234, 234, 237) !important;

@@ -1,6 +1,6 @@
 <template>
   <div class="panel" style="padding: 10px 0px 0px 0px;">
-    <b-container>
+    <b-container v-if="!embed">
       <b-row>
         <b-col style="text-align:center">
           <h5 style="margin-bottom: 5px">ステータスシミュレータ</h5>
@@ -16,17 +16,16 @@
               <div style="text-align:center">
                 <h6 style="margin: 5px 0px">基本情報</h6>
               </div>
-              <b-form-row v-for="(param, name, index) in main" :key="index">
+              <b-form-row v-for="(param, name, i) in main" :key="i">
                 <b-col style="text-align: right" align-self="end">
-                  <label :for="`stat-main-${name}`" style="width: 12em">{{param.label}}</label>
+                  <label :for="`stat-main-${name}`" style="width: 8em">{{param.label}}</label>
                 </b-col>
                 <b-col>
-                  <b-form-input v-if="param.type == 'number'" style="width: 5em" :id="`stat-main-${name}`" v-model.number="param.value" size="sm" type="number" class="input-param" :min="param.min" :max="param.max"></b-form-input>
-                  <b-form-checkbox v-if="param.type == 'bool'" style="width: 5em" :id="`stat-main-${name}`" v-model="param.value" size="sm" plain></b-form-checkbox>
-                  <b-button v-if="param.type == 'character'" style="width: 15em" size="sm" class="input-dropdown" :id="`stat-main-${name}`" menu-class="long-dropdown">
+                  <b-form-input v-if="param.type == 'number'" style="width: 5em" :id="`stat-main${index}-${name}`" v-model.number="param.value" size="sm" type="number" class="input-param" :min="param.min" :max="param.max"></b-form-input>
+                  <b-form-checkbox v-if="param.type == 'bool'" style="width: 5em" :id="`stat-main${index}-${name}`" v-model="param.value" size="sm" plain></b-form-checkbox>
+                  <b-button v-if="param.type == 'character'" style="width: 15em" size="sm" class="input-dropdown" :id="`stat-main${index}-${name}`" menu-class="long-dropdown">
                     {{param.value ? param.value.name : '(なし)'}}
-                    <ChrSelector :target="`stat-main-${name}`" :chrs="mainChrs" classfilter symbolfilter closeonclick
-                                 @click="function(chr){param.value=chr; validateItems();}" />
+                    <ChrSelector :target="`stat-main${index}-${name}`" :chrs="mainChrs" classfilter symbolfilter closeonclick @click="setMainChr" />
                   </b-button>
                 </b-col>
               </b-form-row>
@@ -37,12 +36,12 @@
               <div style="text-align:center">
                 <h6 style="margin: 5px 0px">記憶の書＋強化ボード</h6>
               </div>
-              <b-form-row v-for="(param, name, index) in mainBoosts" :key="index">
+              <b-form-row v-for="(param, name, i) in mainBoosts" :key="i">
                 <b-col style="text-align: right" align-self="end">
-                  <label style="width: 9em" :for="`stat-main-${name}`">{{param.label}}</label>
+                  <label style="width: 9em" :for="`stat-main${index}-${name}`">{{param.label}}</label>
                 </b-col>
                 <b-col>
-                  <b-form-input v-if="param.type == 'number'" style="width: 4em" :id="`stat-main-${name}`" v-model.number="param.value" size="sm" type="number" class="input-param" :min="param.min" :max="param.max"></b-form-input>
+                  <b-form-input v-if="param.type == 'number'" style="width: 4em" :id="`stat-main${index}-${name}`" v-model.number="param.value" size="sm" type="number" class="input-param" :min="param.min" :max="param.max"></b-form-input>
                 </b-col>
               </b-form-row>
             </b-container>
@@ -52,29 +51,29 @@
               <div style="text-align:center">
                 <h6 style="margin: 5px 0px">装備</h6>
               </div>
-              <b-form-row v-for="(param, name, index) in mainItems" :key="index">
+              <b-form-row v-for="(param, name, i) in mainItems" :key="i">
                 <b-col cols="4" style="text-align: right">
                   <label style="width: 5em">{{param.label}}</label>
                 </b-col>
                 <b-col>
-                  <b-button v-if="param.type == 'weapon'" style="width: 14em" size="sm" class="input-dropdown" id="stat-main-weapon">
+                  <b-button v-if="param.type == 'weapon'" style="width: 14em" size="sm" class="input-dropdown" :id="`stat-main${index}-weapon`">
                     {{param.value ? param.value.name : '(なし)'}}
-                    <ItemSelector target="stat-main-weapon" :items="items" @click="v => param.value=v"
+                    <ItemSelector :target="`stat-main${index}-weapon`" :items="items" @click="v => param.value=v"
                                   slotfilter="武器" :classfilter="mainClass" nullable closeonclick />
                   </b-button>
-                  <b-button v-if="param.type == 'armor'" style="width: 14em" size="sm" class="input-dropdown" id="stat-main-armor">
+                  <b-button v-if="param.type == 'armor'" style="width: 14em" size="sm" class="input-dropdown" :id="`stat-main${index}-armor`">
                     {{param.value ? param.value.name : '(なし)'}}
-                    <ItemSelector target="stat-main-armor" :items="items" @click="v => param.value=v"
+                    <ItemSelector :target="`stat-main${index}-armor`" :items="items" @click="v => param.value=v"
                                   slotfilter="鎧" :classfilter="mainClass" nullable closeonclick />
                   </b-button>
-                  <b-button v-if="param.type == 'helmet'" style="width: 14em" size="sm" class="input-dropdown" id="stat-main-helmet">
+                  <b-button v-if="param.type == 'helmet'" style="width: 14em" size="sm" class="input-dropdown" :id="`stat-main${index}-helmet`">
                     {{param.value ? param.value.name : '(なし)'}}
-                    <ItemSelector target="stat-main-helmet" :items="items" @click="v => param.value=v"
+                    <ItemSelector :target="`stat-main${index}-helmet`" :items="items" @click="v => param.value=v"
                                   slotfilter="兜" :classfilter="mainClass" nullable closeonclick />
                   </b-button>
-                  <b-button v-if="param.type == 'accessory'" style="width: 14em" size="sm" class="input-dropdown" id="stat-main-accessory">
+                  <b-button v-if="param.type == 'accessory'" style="width: 14em" size="sm" class="input-dropdown" :id="`stat-main${index}-accessory`">
                     {{param.value ? param.value.name : '(なし)'}}
-                    <ItemSelector target="stat-main-accessory" :items="items" @click="v => param.value=v"
+                    <ItemSelector :target="`stat-main${index}-accessory`" :items="items" @click="v => param.value=v"
                                   slotfilter="アクセサリ" :classfilter="mainClass" nullable closeonclick />
                   </b-button>
                 </b-col>
@@ -83,18 +82,18 @@
               <div style="text-align:center">
                 <h6 style="margin: 5px 0px">エンチャント</h6>
               </div>
-              <b-form-row v-for="(param, name, index) in mainEnchants" :key="'enchant' + index">
+              <b-form-row v-for="(param, name, i) in mainEnchants" :key="'enchant' + i">
                 <b-col style="text-align: right" align-self="end">
-                  <label style="width: 10em" :for="`stat-main-enchant-${name}P`">{{param.label}} (%)</label>
+                  <label style="width: 10em" :for="`stat-main${index}-enchant-${name}P`">{{param.label}} (%)</label>
                 </b-col>
                 <b-col>
-                  <b-form-input style="width: 4em" :id="`stat-main-enchant-${name}P`" v-model.number="param.valueP" size="sm" type="number" class="input-param" :min="0"></b-form-input>
+                  <b-form-input style="width: 4em" :id="`stat-main${index}-enchant-${name}P`" v-model.number="param.valueP" size="sm" type="number" class="input-param" :min="0"></b-form-input>
                 </b-col>
                 <b-col style="text-align: right" align-self="end">
-                  <label style="width: 4em" :for="`stat-main-enchant-${name}F`"> (固定値)</label>
+                  <label style="width: 4em" :for="`stat-main${index}-enchant-${name}F`"> (固定値)</label>
                 </b-col>
                 <b-col>
-                  <b-form-input style="width: 4em" :id="`stat-main-enchant-${name}F`" v-model.number="param.valueF" size="sm" type="number" class="input-param" :min="0"></b-form-input>
+                  <b-form-input style="width: 4em" :id="`stat-main${index}-enchant-${name}F`" v-model.number="param.valueF" size="sm" type="number" class="input-param" :min="0"></b-form-input>
                 </b-col>
               </b-form-row>
             </b-container>
@@ -123,17 +122,16 @@
               <div style="text-align:center">
                 <h6 style="margin: 5px 0px">基本情報</h6>
               </div>
-              <b-form-row v-for="(param, name, index) in support" :key="index">
+              <b-form-row v-for="(param, name, i) in support" :key="i">
                 <b-col style="text-align: right" align-self="end">
-                  <label style="width: 12em" :for="`stat-sup-${name}`">{{param.label}}</label>
+                  <label style="width: 12em" :for="`stat-sup${index}-${name}`">{{param.label}}</label>
                 </b-col>
                 <b-col>
-                  <b-form-input v-if="param.type == 'number'" style="width: 5em" :id="`stat-sup-${name}`" v-model.number="param.value" size="sm" type="number" class="input-param" :min="param.min" :max="param.max"></b-form-input>
-                  <b-form-checkbox v-if="param.type == 'bool'" style="width: 5em" :id="`stat-sup-${name}`" v-model="param.value" size="sm" plain></b-form-checkbox>
-                  <b-button v-if="param.type == 'character'" style="width: 15em" size="sm" class="input-dropdown" :id="`stat-sup-${name}`" menu-class="long-dropdown">
+                  <b-form-input v-if="param.type == 'number'" style="width: 5em" :id="`stat-sup${index}-${name}`" v-model.number="param.value" size="sm" type="number" class="input-param" :min="param.min" :max="param.max"></b-form-input>
+                  <b-form-checkbox v-if="param.type == 'bool'" style="width: 5em" :id="`stat-sup${index}-${name}`" v-model="param.value" size="sm" plain></b-form-checkbox>
+                  <b-button v-if="param.type == 'character'" style="width: 15em" size="sm" class="input-dropdown" :id="`stat-sup${index}-${name}`" menu-class="long-dropdown">
                     {{param.value ? param.value.name : '(なし)'}}
-                    <ChrSelector :target="`stat-sup-${name}`" :chrs="supChrs" nullable classfilter closeonclick
-                                 @click="c => param.value=c" />
+                    <ChrSelector :target="`stat-sup${index}-${name}`" :chrs="supChrs" nullable classfilter closeonclick @click="setSupChr" />
                   </b-button>
                 </b-col>
               </b-form-row>
@@ -144,12 +142,12 @@
               <div style="text-align:center">
                 <h6 style="margin: 5px 0px">記憶の書＋強化ボード</h6>
               </div>
-              <b-form-row v-for="(param, name, index) in supportBoosts" :key="index">
+              <b-form-row v-for="(param, name, i) in supportBoosts" :key="i">
                 <b-col style="text-align: right" align-self="end">
-                  <label style="width: 9em" :for="`stat-sup-${name}`">{{param.label}}</label>
+                  <label style="width: 9em" :for="`stat-sup${index}-${name}`">{{param.label}}</label>
                 </b-col>
                 <b-col>
-                  <b-form-input v-if="param.type == 'number'" style="width: 4em" :id="`stat-sup-${name}`" v-model.number="param.value" size="sm" type="number" class="input-param" :min="param.min" :max="param.max"></b-form-input>
+                  <b-form-input v-if="param.type == 'number'" style="width: 4em" :id="`stat-sup${index}-${name}`" v-model.number="param.value" size="sm" type="number" class="input-param" :min="param.min" :max="param.max"></b-form-input>
                 </b-col>
               </b-form-row>
             </b-container>
@@ -159,19 +157,19 @@
               <div style="text-align:center">
                 <h6 style="margin: 5px 0px">装備</h6>
               </div>
-              <b-form-row v-for="(param, name, index) in supportItems" :key="index">
+              <b-form-row v-for="(param, name, i) in supportItems" :key="i">
                 <b-col style="text-align: right">
                   <label style="width: 10em">{{param.label}}</label>
                 </b-col>
                 <b-col>
-                  <b-button v-if="param.type == 'amulet1'" style="width: 14em" size="sm" class="input-dropdown" id="stat-sup-amulet1">
+                  <b-button v-if="param.type == 'amulet1'" style="width: 14em" size="sm" class="input-dropdown" :id="`stat-sup${index}-amulet1`">
                     {{param.value ? param.value.name : '(なし)'}}
-                    <ItemSelector target="stat-sup-amulet1" :items="items" @click="v => param.value=v"
+                    <ItemSelector :target="`stat-sup${index}-amulet1`" :items="items" @click="v => param.value=v"
                                   slotfilter="月のアミュレット" nullable closeonclick />
                   </b-button>
-                  <b-button v-if="param.type == 'amulet2'" style="width: 14em" size="sm" class="input-dropdown" id="stat-sup-amulet2">
+                  <b-button v-if="param.type == 'amulet2'" style="width: 14em" size="sm" class="input-dropdown" :id="`stat-sup${index}-amulet2`">
                     {{param.value ? param.value.name : '(なし)'}}
-                    <ItemSelector target="stat-sup-amulet2" :items="items" @click="v => param.value=v"
+                    <ItemSelector :target="`stat-sup${index}-amulet2`" :items="items" @click="v => param.value=v"
                                   slotfilter="太陽のアミュレット" nullable closeonclick />
                   </b-button>
                 </b-col>
@@ -180,12 +178,12 @@
               <div style="text-align:center">
                 <h6 style="margin: 5px 0px">アミュレットスキル</h6>
               </div>
-              <b-form-row v-for="(param, name, index) in supportEnchants" :key="'enchant' + index">
+              <b-form-row v-for="(param, name, i) in supportEnchants" :key="'enchant' + i">
                 <b-col style="text-align: right" align-self="end">
-                  <label style="width: 10em" :for="`stat-sup-enchant-${name}P`">{{param.label}} (%)</label>
+                  <label style="width: 10em" :for="`stat-sup${index}-enchant-${name}P`">{{param.label}} (%)</label>
                 </b-col>
                 <b-col>
-                  <b-form-input style="width: 4em" :id="`stat-sup-enchant-${name}P`" v-model.number="param.valueP" size="sm" type="number" class="input-param" :min="0" step="0.5"></b-form-input>
+                  <b-form-input style="width: 4em" :id="`stat-sup${index}-enchant-${name}P`" v-model.number="param.valueP" size="sm" type="number" class="input-param" :min="0" step="0.5"></b-form-input>
                 </b-col>
               </b-form-row>
             </b-container>
@@ -214,7 +212,7 @@
               {{ c }}
             </b-dropdown-item>
           </b-dropdown>
-          <b-button id="stat-highscore" @click="highscoreSearch()" style="margin-left: 5px">このレベルで戦闘力が高い組み合わせを探す</b-button>
+          <b-button v-if="!embed" id="stat-highscore" @click="highscoreSearch()" style="margin-left: 5px">このレベルで戦闘力が高い組み合わせを探す</b-button>
           <b-table v-if="highscoreData.length" small outlined sticky-header :items="highscoreData" :fields="highscoreFields">
             <template #cell(actions)="row">
               <b-button size="sm" @click="highscoreReplay(row.item)" style="padding: 1px 10px">
@@ -223,7 +221,7 @@
             </template>
           </b-table>
         </div>
-        <div>
+        <div v-if="!embed">
           <b-button id="stat-copy-url" @click="copyToClipboard(statUrl)">パラメータを URL としてコピー</b-button>
           <b-popover target="stat-copy-url" triggers="click blur" placement="top" custom-class="url-popover">
             コピーしました：<br />{{ statUrl }}
@@ -254,6 +252,14 @@ export default {
     ItemSelector,
   },
   props: {
+    embed: {
+      type: Boolean,
+      default: false,
+    },
+    index: {
+      type: Number,
+      default: 0,
+    },
   },
   mixins: [common],
 
@@ -276,7 +282,7 @@ export default {
           label: "レベル",
           type: "number",
           min: 1,
-          value: 110,
+          value: 113,
         },
         master: {
           label: "マスターレベル",
@@ -290,8 +296,8 @@ export default {
           type: "bool",
           value: true,
         },
-        engageSkillBonus: {
-          label: "エンゲージスキルボーナス",
+        engage: {
+          label: "エンゲージ",
           type: "bool",
           value: true,
         },
@@ -401,7 +407,7 @@ export default {
           label: "レベル",
           type: "number",
           min: 1,
-          value: 110,
+          value: 113,
         },
         master: {
           label: "マスターレベル",
@@ -527,69 +533,112 @@ export default {
   },
 
   created() {
-    this.mainActive = structuredClone(jsonMainActive);
-    this.mainPassive = structuredClone(jsonMainPassive);
-    this.mainTalents = structuredClone(jsonMainTalents);
-    this.mainChrs = structuredClone(jsonMainChrs).filter(a => !a.hidden);
-    this.supActive = structuredClone(jsonSupportActive);
-    this.supPassive = structuredClone(jsonSupportPassive);
-    this.supChrs = structuredClone(jsonSupportChrs).filter(a => !a.hidden);
-    this.items = structuredClone(jsonItems).filter(a => !a.hidden || a.slot == "アミュレット");
-
-    for (let i = 0; i < this.mainChrs.length; ++i) {
-      let chr = this.mainChrs[i];
-      chr.index = i + 1;
+    this.setupDB();
+    if (!this.embed) {
+      this.parseParamsUrl(window.location.href);
     }
-    for (let i = 0; i < this.supChrs.length; ++i) {
-      let chr = this.supChrs[i];
-      chr.index = i + 1;
-    }
-    for (let i = 0; i < this.items.length; ++i) {
-      let item = this.items[i];
-      item.index = i + 1;
-      item.status = this.getItemStatus(item);
-    }
-
-    this.setupCharacters(this.mainChrs, this.mainActive, this.mainPassive, this.mainTalents);
-    this.setupCharacters(this.supChrs, this.supActive, this.supPassive);
-    this.setupItems(this.items);
-
-    this.searchTable = new Map();
-    for (let s of [...this.mainActive, ...this.mainPassive, ...this.mainTalents, ...this.supActive, ...this.supPassive, ...this.items])
-      this.searchTable.set(s.name, s);
-
-    this.mainChrs.sort((a, b) => b.date.localeCompare(a.date));
-    this.supChrs.sort((a, b) => b.date.localeCompare(a.date));
-    this.items.sort((a, b) => b.date.localeCompare(a.date));
-
-    this.weapons = this.items.filter(a => a.slot == "武器");
-    this.armors = this.items.filter(a => a.slot == "鎧");
-    this.helmets = this.items.filter(a => a.slot == "兜");
-    this.accessories = this.items.filter(a => a.slot == "アクセサリ");
-    this.amulets1 = this.items.filter(a => a.slot == "月のアミュレット");
-    this.amulets2 = this.items.filter(a => a.slot == "太陽のアミュレット");
-
-    this.main.character.value = this.mainChrs[0];
-    //this.support.character.value = this.supChrs[0];
-
-    this.validWeapons = (() => this.weapons.filter(a => this.mainCanEquip(a))).bind(this);
-    this.validArmors = (() => this.armors.filter(a => this.mainCanEquip(a))).bind(this);
-    this.validHelmets = (() => this.helmets.filter(a => this.mainCanEquip(a))).bind(this);
-    this.validAccessories = (() => this.accessories.filter(a => this.mainCanEquip(a))).bind(this);
-
-    this.parseParamsUrl(window.location.href);
   },
   
   mounted() {
   },
 
   methods: {
+    setupDB(parent = null) {
+      if (parent) {
+        const props = [
+          "mainActive",
+          "mainPassive",
+          "mainTalents",
+          "mainChrs",
+          "supActive",
+          "supPassive",
+          "supChrs",
+          "items",
+          "searchTableWithUid",
+          "searchTableWithName",
+          "itemCount",
+        ];
+        for (const p of props) {
+          this[p] = parent[p];
+        }
+      }
+      else {
+        this.mainActive = structuredClone(jsonMainActive);
+        this.mainPassive = structuredClone(jsonMainPassive);
+        this.mainTalents = structuredClone(jsonMainTalents);
+        this.mainChrs = structuredClone(jsonMainChrs).filter(a => !a.hidden);
+        this.supActive = structuredClone(jsonSupportActive);
+        this.supPassive = structuredClone(jsonSupportPassive);
+        this.supChrs = structuredClone(jsonSupportChrs).filter(a => !a.hidden);
+        this.items = structuredClone(jsonItems).filter(a => !a.hidden || a.slot == "アミュレット");
+
+        this.setupCharacters(this.mainChrs, this.mainActive, this.mainPassive, this.mainTalents);
+        this.setupCharacters(this.supChrs, this.supActive, this.supPassive);
+        this.setupItems(this.items);
+
+        this.mainChrs.sort((a, b) => b.date.localeCompare(a.date));
+        this.supChrs.sort((a, b) => b.date.localeCompare(a.date));
+        this.items.sort((a, b) => b.date.localeCompare(a.date));
+
+        this.searchTableWithUid = new Map();
+        this.searchTableWithName = new Map();
+        let idx = 0;
+        for (let list of [
+          this.mainChrs, this.mainActive, this.mainPassive, this.mainTalents,
+          this.supChrs, this.supActive, this.supPassive,
+          this.items
+        ]) {
+          for (let item of list) {
+            item.index = ++idx;
+            this.searchTableWithUid.set(item.uid, item);
+            this.searchTableWithName.set(item.name, item);
+          }
+        }
+        this.itemCount = idx;
+      }
+
+      this.weapons = this.items.filter(a => a.slot == "武器");
+      this.armors = this.items.filter(a => a.slot == "鎧");
+      this.helmets = this.items.filter(a => a.slot == "兜");
+      this.accessories = this.items.filter(a => a.slot == "アクセサリ");
+      this.amulets1 = this.items.filter(a => a.slot == "月のアミュレット");
+      this.amulets2 = this.items.filter(a => a.slot == "太陽のアミュレット");
+
+      this.setMainChr(this.mainChrs[0]);
+    },
+
+    setMainChr(chr) {
+      this.main.character.value = chr;
+      this.validateItems();
+
+      for (let k in this.mainEnchants) {
+        let params = this.mainEnchants[k];
+        params.valueP = 0;
+        params.valueF = 0;
+        if (chr && chr.damageType == params.label) {
+          params.valueP = 35;
+        }
+      }
+    },
+    setSupChr(chr) {
+      this.support.character.value = chr;
+
+      for (let k in this.supportEnchants) {
+        let params = this.supportEnchants[k];
+        params.valueP = 0;
+        params.valueF = 0;
+        if (chr && chr.damageType == params.label) {
+          params.valueP = 15;
+        }
+      }
+    },
+
     getParamClass(param) {
       return param.disabled() ? "disabled" : "";
     },
 
     findItem(name) {
-      const r = this.searchTable.get(name);
+      const r = this.searchTableWithName.get(name);
       if (!r)
         console.log(`${name} not found`);
       return r;
@@ -1058,7 +1107,7 @@ export default {
         level: s.main.level.value,
         master: s.main.master.value,
         loveBonus: s.main.loveBonus.value,
-        engageSkillBonus: s.main.engageSkillBonus.value,
+        engage: s.main.engage.value,
         boosts: Object.values(s.mainBoosts).map(a => a.value),
         items: Object.values(s.mainItems).map(a => a.value),
         enchantsP: Object.values(s.mainEnchants).map(a => a.valueP),
@@ -1109,7 +1158,7 @@ export default {
       bpr += 0.02 * (5 * items.length); // アイテムの☆合計
       if (items.length == 4)
         bpr += 0.1; // エンチャント4セット
-      if (chr.engage && ma.engageSkillBonus)
+      if (chr.engage && ma.engage)
         bpr += 0.05 * Math.min(chr.engage.skills.length, 3);
       const bpMain = Math.round(this.getBattlePower(r) * bpr);
       const rMain = [...r, bpMain];
@@ -1165,37 +1214,82 @@ export default {
       return this.calcStatSupportImpl(this.getStatSupportArgs());
     },
 
-    getParamsUrl() {
+    serialize() {
       let params = [];
 
-      for (const v of Object.values(this.main)) {
+      for (let v of Object.values(this.main)) {
         if (v.type == "character")
-          params.push(v.value ? v.value.index : 0);
+          params.push(v.value ? v.value.uid : 0);
         else
           params.push(v.value);
       }
-      for (const v of Object.values(this.mainBoosts))
+      for (let v of Object.values(this.mainBoosts))
         params.push(v.value);
-      for (const v of Object.values(this.mainItems))
-        params.push(v.value ? v.value.index : 0);
-      for (const v of Object.values(this.mainEnchants)) {
+      for (let v of Object.values(this.mainItems))
+        params.push(v.value ? v.value.uid : 0);
+      for (let v of Object.values(this.mainEnchants)) {
         params.push(v.valueP);
         params.push(v.valueF);
       }
 
-      for (const v of Object.values(this.support)) {
+      for (let v of Object.values(this.support)) {
         if (v.type == "character")
-          params.push(v.value ? v.value.index : 0);
+          params.push(v.value ? v.value.uid : 0);
         else
           params.push(v.value);
       }
-      for (const v of Object.values(this.supportBoosts))
+      for (let v of Object.values(this.supportBoosts))
         params.push(v.value);
-      for (const v of Object.values(this.supportItems))
-        params.push(v.value ? v.value.index : 0);
-      for (const v of Object.values(this.supportEnchants))
+      for (let v of Object.values(this.supportItems))
+        params.push(v.value ? v.value.uid : 0);
+      for (let v of Object.values(this.supportEnchants))
         params.push(v.valueP);
 
+      return params;
+    },
+    deserialize(params) {
+      console.log(params);
+      for (let v of Object.values(this.main)) {
+        if (v.type == "character") {
+          const uid = params.shift();
+          v.value = this.searchTableWithUid.get(uid);
+        }
+        else {
+          v.value = params.shift();
+        }
+      }
+      for (let v of Object.values(this.mainBoosts))
+        v.value = params.shift();
+      for (let v of Object.values(this.mainItems)) {
+        const uid = params.shift();
+        v.value = this.searchTableWithUid.get(uid);
+      }
+      for (let v of Object.values(this.mainEnchants)) {
+        v.valueP = params.shift();
+        v.valueF = params.shift();
+      }
+
+      for (let v of Object.values(this.support)) {
+        if (v.type == "character") {
+          const uid = params.shift();
+          v.value = this.searchTableWithUid.get(uid);
+        }
+        else {
+          v.value = params.shift();
+        }
+      }
+      for (let v of Object.values(this.supportBoosts))
+        v.value = params.shift();
+      for (let v of Object.values(this.supportItems)) {
+        const uid = params.shift();
+        v.value = this.searchTableWithUid.get(uid);
+      }
+      for (let v of Object.values(this.supportEnchants))
+        v.valueP = params.shift();
+    },
+
+    getParamsUrl() {
+      let params = this.serialize();
       let url = window.location.href.replace(/\?.+/, '').replace(/#.+/, '');
       url += "?stat=" + params.join(',') + "#status";
       //this.parseParamsUrl(url); // debug
@@ -1204,48 +1298,10 @@ export default {
 
     parseParamsUrl(url) {
       url = decodeURIComponent(url);
-      let q = url.match(/\?stat=(.+)$/);
+      let q = url.match(/\?stat=([^#]+)/);
       if (q) {
         let params = q[1].split(',').map(this.parseValue);
-
-        for (const v of Object.values(this.main)) {
-          if (v.type == "character") {
-            const idx = params.shift();
-            v.value = this.mainChrs.find(a => a.index == idx);
-          }
-          else {
-            v.value = params.shift();
-          }
-        }
-        for (const v of Object.values(this.mainBoosts))
-          v.value = params.shift();
-        for (const v of Object.values(this.mainItems)) {
-          const idx = params.shift();
-          v.value = this.items.find(a => a.index == idx);
-        }
-        for (const v of Object.values(this.mainEnchants)) {
-          v.valueP = params.shift();
-          v.valueF = params.shift();
-        }
-
-        for (const v of Object.values(this.support)) {
-          if (v.type == "character") {
-            const idx = params.shift();
-            v.value = this.supChrs.find(a => a.index == idx);
-          }
-          else {
-            v.value = params.shift();
-          }
-        }
-        for (const v of Object.values(this.supportBoosts))
-          v.value = params.shift();
-        for (const v of Object.values(this.supportItems)) {
-          const idx = params.shift();
-          v.value = this.items.find(a => a.index == idx);
-        }
-        for (const v of Object.values(this.supportEnchants))
-          v.valueP = params.shift();
-
+        this.deserialize(params);
         return true;
       }
       return false;
