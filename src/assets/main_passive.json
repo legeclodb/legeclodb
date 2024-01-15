@@ -1,5 +1,834 @@
 [
   {
+    "uid": "クラス特性:ソルジャー",
+    "name": "クラス特性:ソルジャー",
+    "icon": "ソルジャー",
+    "buff": [
+      {
+        "type": "アタック",
+        "value": 75,
+        "ephemeral": true,
+        "target": "自身(メイン)",
+        "timing": "攻撃前",
+        "condition": {
+          "onEnemyClass": [ "ランサー" ]
+        }
+      },
+      {
+        "type": "マジック",
+        "value": 75,
+        "ephemeral": true,
+        "target": "自身(メイン)",
+        "timing": "攻撃前",
+        "condition": {
+          "onEnemyClass": [ "ランサー" ]
+        }
+      },
+      {
+        "type": "アタック",
+        "value": -35,
+        "ephemeral": true,
+        "target": "自身(メイン)",
+        "timing": "攻撃前",
+        "condition": {
+          "onEnemyClass": [ "ライダー" ]
+        }
+      },
+      {
+        "type": "マジック",
+        "value": -35,
+        "ephemeral": true,
+        "target": "自身(メイン)",
+        "timing": "攻撃前",
+        "condition": {
+          "onEnemyClass": [ "ライダー" ]
+        }
+      }
+    ]
+  },
+  {
+    "uid": "クラス特性:ランサー",
+    "name": "クラス特性:ランサー",
+    "icon": "ランサー",
+    "buff": [
+      {
+        "type": "アタック",
+        "value": 75,
+        "ephemeral": true,
+        "target": "自身(メイン)",
+        "timing": "攻撃前",
+        "condition": {
+          "onEnemyClass": [ "ライダー" ]
+        }
+      },
+      {
+        "type": "マジック",
+        "value": 75,
+        "ephemeral": true,
+        "target": "自身(メイン)",
+        "timing": "攻撃前",
+        "condition": {
+          "onEnemyClass": [ "ライダー" ]
+        }
+      },
+      {
+        "type": "アタック",
+        "value": -35,
+        "ephemeral": true,
+        "target": "自身(メイン)",
+        "timing": "攻撃前",
+        "condition": {
+          "onEnemyClass": [ "ソルジャー" ]
+        }
+      },
+      {
+        "type": "マジック",
+        "value": -35,
+        "ephemeral": true,
+        "target": "自身(メイン)",
+        "timing": "攻撃前",
+        "condition": {
+          "onEnemyClass": [ "ソルジャー" ]
+        }
+      }
+    ]
+  },
+  {
+    "uid": "クラス特性:ライダー",
+    "name": "クラス特性:ライダー",
+    "icon": "ライダー",
+    "buff": [
+      {
+        "type": "アタック",
+        "value": 75,
+        "ephemeral": true,
+        "target": "自身(メイン)",
+        "timing": "攻撃前",
+        "condition": {
+          "onEnemyClass": [ "ソルジャー" ]
+        }
+      },
+      {
+        "type": "マジック",
+        "value": 75,
+        "ephemeral": true,
+        "target": "自身(メイン)",
+        "timing": "攻撃前",
+        "condition": {
+          "onEnemyClass": [ "ソルジャー" ]
+        }
+      },
+      {
+        "type": "アタック",
+        "value": -35,
+        "ephemeral": true,
+        "target": "自身(メイン)",
+        "timing": "攻撃前",
+        "condition": {
+          "onEnemyClass": [ "ランサー" ]
+        }
+      },
+      {
+        "type": "マジック",
+        "value": -35,
+        "ephemeral": true,
+        "target": "自身(メイン)",
+        "timing": "攻撃前",
+        "condition": {
+          "onEnemyClass": [ "ランサー" ]
+        }
+      }
+    ]
+  },
+  {
+    "uid": "クラス特性:エアリアル",
+    "name": "クラス特性:エアリアル",
+    "icon": "エアリアル",
+    "buff": [
+      {
+        "type": "アタック",
+        "value": 75,
+        "ephemeral": true,
+        "target": "自身(メイン)",
+        "timing": "攻撃前",
+        "condition": {
+          "onEnemyClass": [ "アサシン" ]
+        }
+      },
+      {
+        "type": "マジック",
+        "value": 75,
+        "ephemeral": true,
+        "target": "自身(メイン)",
+        "timing": "攻撃前",
+        "condition": {
+          "onEnemyClass": [ "アサシン" ]
+        }
+      },
+      {
+        "type": "アタック",
+        "value": -35,
+        "ephemeral": true,
+        "target": "自身(メイン)",
+        "timing": "攻撃前",
+        "condition": {
+          "onEnemyClass": [ "シューター" ]
+        }
+      },
+      {
+        "type": "マジック",
+        "value": -35,
+        "ephemeral": true,
+        "target": "自身(メイン)",
+        "timing": "攻撃前",
+        "condition": {
+          "onEnemyClass": [ "シューター" ]
+        }
+      }
+    ]
+  },
+  {
+    "uid": "クラス特性:シューター",
+    "name": "クラス特性:シューター",
+    "icon": "シューター",
+    "buff": [
+      {
+        "type": "アタック",
+        "value": 75,
+        "ephemeral": true,
+        "target": "自身(メイン)",
+        "timing": "攻撃前",
+        "condition": {
+          "onEnemyClass": [ "エアリアル" ]
+        }
+      },
+      {
+        "type": "マジック",
+        "value": 75,
+        "ephemeral": true,
+        "target": "自身(メイン)",
+        "timing": "攻撃前",
+        "condition": {
+          "onEnemyClass": [ "エアリアル" ]
+        }
+      },
+      {
+        "type": "アタック",
+        "value": -35,
+        "ephemeral": true,
+        "target": "自身(メイン)",
+        "timing": "攻撃前",
+        "condition": {
+          "onEnemyClass": [ "アサシン" ]
+        }
+      },
+      {
+        "type": "マジック",
+        "value": -35,
+        "ephemeral": true,
+        "target": "自身(メイン)",
+        "timing": "攻撃前",
+        "condition": {
+          "onEnemyClass": [ "アサシン" ]
+        }
+      }
+    ]
+  },
+  {
+    "uid": "クラス特性:アサシン",
+    "name": "クラス特性:アサシン",
+    "icon": "アサシン",
+    "buff": [
+      {
+        "type": "アタック",
+        "value": 75,
+        "ephemeral": true,
+        "target": "自身(メイン)",
+        "timing": "攻撃前",
+        "condition": {
+          "onEnemyClass": [ "シューター" ]
+        }
+      },
+      {
+        "type": "マジック",
+        "value": 75,
+        "ephemeral": true,
+        "target": "自身(メイン)",
+        "timing": "攻撃前",
+        "condition": {
+          "onEnemyClass": [ "シューター" ]
+        }
+      },
+      {
+        "type": "アタック",
+        "value": -35,
+        "ephemeral": true,
+        "target": "自身(メイン)",
+        "timing": "攻撃前",
+        "condition": {
+          "onEnemyClass": [ "エアリアル" ]
+        }
+      },
+      {
+        "type": "マジック",
+        "value": -35,
+        "ephemeral": true,
+        "target": "自身(メイン)",
+        "timing": "攻撃前",
+        "condition": {
+          "onEnemyClass": [ "エアリアル" ]
+        }
+      }
+    ]
+  },
+  {
+    "uid": "クラス特性:ソーサラー",
+    "name": "クラス特性:ソーサラー",
+    "icon": "ソーサラー",
+    "buff": [
+      {
+        "type": "アタック",
+        "value": 35,
+        "ephemeral": true,
+        "target": "自身(メイン)",
+        "timing": "攻撃前",
+        "condition": {
+          "onEnemyClass": [ "ソルジャー", "ランサー", "ライダー" ]
+        }
+      },
+      {
+        "type": "マジック",
+        "value": 35,
+        "ephemeral": true,
+        "target": "自身(メイン)",
+        "timing": "攻撃前",
+        "condition": {
+          "onEnemyClass": [ "ソルジャー", "ランサー", "ライダー" ]
+        }
+      },
+      {
+        "type": "アタック",
+        "value": -15,
+        "ephemeral": true,
+        "target": "自身(メイン)",
+        "timing": "攻撃前",
+        "condition": {
+          "onEnemyClass": [ "エアリアル", "アサシン", "シューター" ]
+        }
+      },
+      {
+        "type": "マジック",
+        "value": -15,
+        "ephemeral": true,
+        "target": "自身(メイン)",
+        "timing": "攻撃前",
+        "condition": {
+          "onEnemyClass": [ "エアリアル", "アサシン", "シューター" ]
+        }
+      }
+    ]
+  },
+  {
+    "uid": "クラス特性:セイント",
+    "name": "クラス特性:セイント",
+    "icon": "セイント",
+    "buff": [
+      {
+        "type": "アタック",
+        "value": 35,
+        "ephemeral": true,
+        "target": "自身(メイン)",
+        "timing": "攻撃前",
+        "condition": {
+          "onEnemyClass": [ "エアリアル", "アサシン", "シューター" ]
+        }
+      },
+      {
+        "type": "マジック",
+        "value": 35,
+        "ephemeral": true,
+        "target": "自身(メイン)",
+        "timing": "攻撃前",
+        "condition": {
+          "onEnemyClass": [ "エアリアル", "アサシン", "シューター" ]
+        }
+      },
+      {
+        "type": "アタック",
+        "value": -15,
+        "ephemeral": true,
+        "target": "自身(メイン)",
+        "timing": "攻撃前",
+        "condition": {
+          "onEnemyClass": [ "ソルジャー", "ランサー", "ライダー" ]
+        }
+      },
+      {
+        "type": "マジック",
+        "value": -15,
+        "ephemeral": true,
+        "target": "自身(メイン)",
+        "timing": "攻撃前",
+        "condition": {
+          "onEnemyClass": [ "ソルジャー", "ランサー", "ライダー" ]
+        }
+      }
+    ]
+  },
+  {
+    "uid": "マスター特性:ソルジャー",
+    "name": "マスター特性:ソルジャー",
+    "icon": "sk_mc001",
+    "multiAction": {
+      "coolDown": 2
+    }
+  },
+  {
+    "uid": "マスター特性:ランサー",
+    "name": "マスター特性:ランサー",
+    "icon": "sk_mc002",
+    "buff": [
+      {
+        "type": "アタック",
+        "add": {
+          "from": "ディフェンス",
+          "rate": 30
+        },
+        "ephemeral": true,
+        "target": "自身(メイン)"
+      }
+    ],
+    "doubleAttack": {
+      "condition": {
+        "onEnemyTurn": true
+      }
+    }
+  },
+  {
+    "uid": "マスター特性:ライダー",
+    "name": "マスター特性:ライダー",
+    "icon": "sk_mc003",
+    "buff": [
+      {
+        "type": "アタック",
+        "value": 10,
+        "maxStack": 5,
+        "stackBy": "moveAmount",
+        "ephemeral": true,
+        "target": "自身(メイン)",
+        "timing": "戦闘前",
+        "condition": {
+          "onOwnTurn": true
+        }
+      }
+    ],
+    "fixedDamage": []
+  },
+  {
+    "uid": "マスター特性:エアリアル",
+    "name": "マスター特性:エアリアル",
+    "icon": "sk_mc004",
+    "buff": [
+      {
+        "type": "アタック",
+        "value": 20,
+        "target": "自身(メイン)",
+        "condition": {
+          "nearAllyCount": {
+            "area": 1,
+            "compare": [ "<=", 2 ]
+          }
+        }
+      },
+      {
+        "type": "ディフェンス",
+        "value": 20,
+        "target": "自身(メイン)",
+        "condition": {
+          "nearAllyCount": {
+            "area": 1,
+            "compare": [ "<=", 2 ]
+          }
+        }
+      },
+      {
+        "type": "マジック",
+        "value": 20,
+        "target": "自身(メイン)",
+        "condition": {
+          "nearAllyCount": {
+            "area": 1,
+            "compare": [ "<=", 2 ]
+          }
+        }
+      },
+      {
+        "type": "レジスト",
+        "value": 20,
+        "target": "自身(メイン)",
+        "condition": {
+          "nearAllyCount": {
+            "area": 1,
+            "compare": [ "<=", 2 ]
+          }
+        }
+      },
+      {
+        "type": "テクニック",
+        "value": 20,
+        "target": "自身(メイン)",
+        "condition": {
+          "nearAllyCount": {
+            "area": 1,
+            "compare": [ "<=", 2 ]
+          }
+        }
+      }
+    ]
+  },
+  {
+    "uid": "マスター特性:シューター",
+    "name": "マスター特性:シューター",
+    "icon": "sk_mc007",
+    "buff": [
+      {
+        "type": "ディフェンス無視",
+        "value": 30,
+        "target": "自身(メイン)"
+      }
+    ]
+  },
+  {
+    "uid": "マスター特性:アサシン",
+    "name": "マスター特性:アサシン",
+    "icon": "sk_mc008",
+    "doubleAttack": {
+      "condition": {
+        "onOwnTurn": true
+      }
+    }
+  },
+  {
+    "uid": "マスター特性:ソーサラー",
+    "name": "マスター特性:ソーサラー",
+    "icon": "sk_mc005",
+    "buff": [
+      {
+        "type": "レジスト無視",
+        "value": 30,
+        "target": "自身(メイン)"
+      }
+    ]
+  },
+  {
+    "uid": "マスター特性:セイント",
+    "name": "マスター特性:セイント",
+    "icon": "sk_mc006",
+    "tags": [ "死亡時復活" ]
+  },
+  {
+    "uid": "エンチャント特性:バスター",
+    "name": "エンチャント特性:バスター",
+    "icon": "バスター",
+    "buff": [
+      {
+        "type": "アタック",
+        "value": 5,
+        "target": "自身(メイン)"
+      },
+      {
+        "type": "マジック",
+        "value": 5,
+        "target": "自身(メイン)"
+      },
+      {
+        "type": "アタック",
+        "value": 15,
+        "ephemeral": true,
+        "target": "自身(メイン)",
+        "timing": "戦闘前",
+        "condition": {
+          "onOwnTurn": true
+        }
+      },
+      {
+        "type": "ダメージ耐性",
+        "value": 15,
+        "ephemeral": true,
+        "target": "自身(メイン)",
+        "timing": "戦闘前",
+        "condition": {
+          "onOwnTurn": true
+        }
+      }
+    ]
+  },
+  {
+    "uid": "エンチャント特性:チャージ",
+    "name": "エンチャント特性:チャージ",
+    "icon": "チャージ",
+    "buff": [
+      {
+        "type": "アタック",
+        "value": 5,
+        "target": "自身(メイン)"
+      },
+      {
+        "type": "マジック",
+        "value": 5,
+        "target": "自身(メイン)"
+      },
+      {
+        "type": "アタック",
+        "value": 10,
+        "target": "自身(メイン)",
+        "condition": {
+          "hp": [ ">=", 75 ]
+        }
+      },
+      {
+        "type": "ディフェンス",
+        "value": 10,
+        "target": "自身(メイン)",
+        "condition": {
+          "hp": [ ">=", 75 ]
+        }
+      },
+      {
+        "type": "マジック",
+        "value": 10,
+        "target": "自身(メイン)",
+        "condition": {
+          "hp": [ ">=", 75 ]
+        }
+      },
+      {
+        "type": "レジスト",
+        "value": 10,
+        "target": "自身(メイン)",
+        "condition": {
+          "hp": [ ">=", 75 ]
+        }
+      }
+    ]
+  },
+  {
+    "uid": "エンチャント特性:フェザー",
+    "name": "エンチャント特性:フェザー",
+    "icon": "フェザー",
+    "buff": [
+      {
+        "type": "アタック",
+        "value": 5,
+        "target": "自身(メイン)"
+      },
+      {
+        "type": "マジック",
+        "value": 5,
+        "target": "自身(メイン)"
+      },
+      {
+        "type": "与ダメージ",
+        "value": 10,
+        "target": "自身(メイン)"
+      }
+    ]
+  },
+  {
+    "uid": "エンチャント特性:クイック",
+    "name": "エンチャント特性:クイック",
+    "icon": "クイック",
+    "buff": [
+      {
+        "type": "アタック",
+        "value": 5,
+        "target": "自身(メイン)"
+      },
+      {
+        "type": "マジック",
+        "value": 5,
+        "target": "自身(メイン)"
+      }
+    ]
+  },
+  {
+    "uid": "エンチャント特性:ノヴァ",
+    "name": "エンチャント特性:ノヴァ",
+    "icon": "ノヴァ",
+    "buff": [
+      {
+        "type": "アタック",
+        "value": 5,
+        "target": "自身(メイン)"
+      },
+      {
+        "type": "マジック",
+        "value": 5,
+        "target": "自身(メイン)"
+      },
+      {
+        "type": "与ダメージ(スキル)",
+        "value": 10,
+        "target": "自身(メイン)"
+      },
+      {
+        "type": "与ダメージ(範囲スキル)",
+        "value": 10,
+        "target": "自身(メイン)"
+      }
+    ]
+  },
+  {
+    "uid": "エンチャント特性:アイアン",
+    "name": "エンチャント特性:アイアン",
+    "icon": "アイアン",
+    "buff": [
+      {
+        "type": "最大HP",
+        "value": 10,
+        "target": "自身(メイン)"
+      },
+      {
+        "type": "ダメージ耐性",
+        "value": 15,
+        "target": "自身(メイン)"
+      }
+    ]
+  },
+  {
+    "uid": "エンチャント特性:リフレクト",
+    "name": "エンチャント特性:リフレクト",
+    "icon": "リフレクト",
+    "buff": [
+      {
+        "type": "最大HP",
+        "value": 10,
+        "target": "自身(メイン)"
+      }
+    ]
+  },
+  {
+    "uid": "エンチャント特性:バックアップ",
+    "name": "エンチャント特性:バックアップ",
+    "icon": "バックアップ",
+    "buff": [
+      {
+        "type": "最大HP",
+        "value": 10,
+        "target": "自身(メイン)"
+      },
+      {
+        "type": "ディフェンス",
+        "value": 5,
+        "area": 3,
+        "target": "自身(メイン)"
+      },
+      {
+        "type": "レジスト",
+        "value": 5,
+        "area": 3,
+        "target": "自身(メイン)"
+      }
+    ]
+  },
+  {
+    "uid": "エンチャント特性:アイス",
+    "name": "エンチャント特性:アイス",
+    "icon": "アイス",
+    "buff": [
+      {
+        "type": "ディフェンス",
+        "value": 5,
+        "target": "自身(メイン)"
+      },
+      {
+        "type": "レジスト",
+        "value": 5,
+        "target": "自身(メイン)"
+      }
+    ]
+  },
+  {
+    "uid": "エンチャント特性:ブライト",
+    "name": "エンチャント特性:ブライト",
+    "icon": "ブライト",
+    "buff": [
+      {
+        "type": "ディフェンス",
+        "value": 5,
+        "target": "自身(メイン)"
+      },
+      {
+        "type": "レジスト",
+        "value": 5,
+        "target": "自身(メイン)"
+      },
+      {
+        "type": "治療効果",
+        "value": 25,
+        "target": "自身(メイン)"
+      }
+    ]
+  },
+  {
+    "uid": "エンチャント特性:クリスタル",
+    "name": "エンチャント特性:クリスタル",
+    "icon": "クリスタル",
+    "buff": [
+      {
+        "type": "ディフェンス",
+        "value": 5,
+        "target": "自身(メイン)"
+      },
+      {
+        "type": "レジスト",
+        "value": 5,
+        "target": "自身(メイン)"
+      }
+    ]
+  },
+  {
+    "uid": "エンチャント特性:ストライク",
+    "name": "エンチャント特性:ストライク",
+    "icon": "ストライク",
+    "buff": [
+      {
+        "type": "クリティカル率",
+        "value": 7,
+        "target": "自身(メイン)"
+      },
+      {
+        "type": "クリティカルダメージ倍率",
+        "value": 30,
+        "target": "自身(メイン)"
+      }
+    ]
+  },
+  {
+    "uid": "エンチャント特性:ブレイク",
+    "name": "エンチャント特性:ブレイク",
+    "icon": "ブレイク",
+    "buff": [
+      {
+        "type": "クリティカル率",
+        "value": 7,
+        "target": "自身(メイン)"
+      },
+      {
+        "type": "与ダメージ",
+        "value": 20,
+        "ephemeral": true,
+        "target": "自身(メイン)",
+        "timing": "戦闘前",
+        "condition": {
+          "onOwnTurn": true,
+          "targetHp": [ ">=", 50 ]
+        }
+      }
+    ]
+  },
+
+  {
     "uid": "1200001",
     "icon": "sk_p025",
     "name": "ラッキープライズ",

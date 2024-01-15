@@ -29,7 +29,7 @@
       "enum": [ "平地", "草原", "森", "水中", "荒地", "崖", "空", "山岳", "洞窟", "砂地", "砂丘", "積雪", "置物", "砦", "壁", "柵", "溶岩" ]
     },
     "targetEnum": {
-      "enum": [ "自身", "自ユニット", "単体", "複数", "スキル対象", "全体" ]
+      "enum": [ "自身", "自身(メイン)", "自身(サポート)", "単体", "複数", "スキル対象", "全体" ]
     },
     "targetType": {
       "anyOf": [
@@ -338,6 +338,10 @@
           "value": { "type": "number" },
           "condition": { "$ref": "#/$defs/condition" }
         }
+      },
+      "fixedDamage": {
+        "type": "array",
+        "items": { "type": "object" }
       },
       "healRate": { "type": [ "number", "object" ] },
       "summon": { "type": [ "array" ] },

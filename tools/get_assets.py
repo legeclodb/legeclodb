@@ -80,6 +80,20 @@ def downloadThumb():
     for f in files:
         download('https://asset.legend-clover.net/pcr/' + f, f"{dstDir}/thumb/")
 
+
+def downloadIcon():
+    files = []
+    def add(file, local):
+        if not os.path.exists(f"{dstDir}thumb/{local}"):
+            files.append(file)
+
+    for m in findFile("ui/icon/skillicon/([^.]+?\\.png)"):
+        add(m[0], m[1])
+    files.sort()
+    for f in files:
+        download('https://asset.legend-clover.net/pcr/' + f, f"{dstDir}/icon/")
+
 downloadThumb()
+downloadIcon()
 downloadChr()
 downloadUsm()
