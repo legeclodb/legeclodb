@@ -17,33 +17,19 @@
                 <h6 style="margin: 5px 0px">基本情報</h6>
               </div>
               <b-form-row v-for="(param, name, i) in main" :key="i">
-                <b-col style="text-align: right" align-self="end">
+                <b-col style="text-align: right; margin: auto 0 auto 0;" align-self="end">
                   <label :for="`stat-main-${name}`" style="width: 8em">{{param.label}}</label>
                 </b-col>
                 <b-col>
                   <b-form-input v-if="param.type == 'number'" style="width: 5em" :id="`stat-main${index}-${name}`" v-model.number="param.value" size="sm" type="number" class="input-param" :min="param.min" :max="param.max"></b-form-input>
                   <b-form-checkbox v-if="param.type == 'bool'" style="width: 5em" :id="`stat-main${index}-${name}`" v-model="param.value" size="sm" plain></b-form-checkbox>
-                  <b-button v-if="param.type == 'character'" style="width: 15em" size="sm" class="input-dropdown" :id="`stat-main${index}-${name}`" menu-class="long-dropdown">
-                    {{param.value ? param.value.name : '(なし)'}}
+                  <b-button v-if="param.type == 'character'" variant="outline-secondary" class="paddingless small-margin" :id="`stat-main${index}-${name}`">
+                    <b-img-lazy :src="getSkillIcon(param.value)" :title="descToTitle(param.value)" width="100" height="100" />
                     <ChrSelector :target="`stat-main${index}-${name}`" :chrs="mainChrs" classfilter symbolfilter closeonclick @click="setMainChr" />
                   </b-button>
                 </b-col>
               </b-form-row>
 
-              <div v-if="skills">
-                <div style="text-align:center">
-                  <h6 style="margin: 5px 0px">スキル</h6>
-                </div>
-                <b-form-row>
-                  <b-col style="text-align: center">
-                    <b-button v-for="(skill, si) in mainSkills" :key="si" class="paddingless">
-                      <b-img-lazy :src="getSkillIcon(skill)" :title="getSkillName(skill)" :id="`stat-main${index}-skill${si}`" width="50" height="50" />
-                      <SkillSelector :target="`stat-main${index}-skill${si}`" closeonclick
-                                     :skills="mainSkillList" :excludes="mainSkills" @click="setMainSkill($event, si)" />
-                    </b-button>
-                  </b-col>
-                </b-form-row>
-              </div>
             </b-container>
           </div>
           <div>
@@ -63,36 +49,50 @@
           </div>
           <div>
             <b-container>
+              <div v-if="skills">
+                <div style="text-align:center">
+                  <h6 style="margin: 5px 0px">スキル</h6>
+                </div>
+                <b-form-row>
+                  <b-col style="text-align: center">
+                    <b-button v-for="(skill, si) in mainSkills" :key="si" :id="`stat-main${index}-skill${si}`" variant="outline-secondary" class="paddingless small-margin">
+                      <b-img-lazy :src="getSkillIcon(skill)" :title="descToTitle(skill)" width="50" height="50" />
+                      <SkillSelector :target="`stat-main${index}-skill${si}`" nullable closeonclick
+                                     :skills="mainSkillList" :excludes="mainSkills" @click="setMainSkill($event, si)" />
+                    </b-button>
+                  </b-col>
+                </b-form-row>
+              </div>
+
               <div style="text-align:center">
                 <h6 style="margin: 5px 0px">装備</h6>
               </div>
-              <b-form-row v-for="(param, name, i) in mainItems" :key="i">
-                <b-col cols="4" style="text-align: right">
-                  <label style="width: 5em">{{param.label}}</label>
+              <b-row>
+                <b-col style="text-align:center">
+                  <span v-for="(param, name, i) in mainItems" :key="i">
+                    <b-button v-if="param.type == 'weapon'" variant="outline-secondary" class="paddingless small-margin" :id="`stat-main${index}-weapon`">
+                      <b-img-lazy :src="getSkillIcon(param.value)" :title="descToTitle(param.value)" width="50" height="50" />
+                      <ItemSelector :target="`stat-main${index}-weapon`" :items="items" @click="v => param.value=v"
+                                    slotfilter="武器" :classfilter="mainClass" nullable closeonclick />
+                    </b-button>
+                    <b-button v-if="param.type == 'armor'" variant="outline-secondary" class="paddingless small-margin" :id="`stat-main${index}-armor`">
+                      <b-img-lazy :src="getSkillIcon(param.value)" :title="descToTitle(param.value)" width="50" height="50" />
+                      <ItemSelector :target="`stat-main${index}-armor`" :items="items" @click="v => param.value=v"
+                                    slotfilter="鎧" :classfilter="mainClass" nullable closeonclick />
+                    </b-button>
+                    <b-button v-if="param.type == 'helmet'" variant="outline-secondary" class="paddingless small-margin" :id="`stat-main${index}-helmet`">
+                      <b-img-lazy :src="getSkillIcon(param.value)" :title="descToTitle(param.value)" width="50" height="50" />
+                      <ItemSelector :target="`stat-main${index}-helmet`" :items="items" @click="v => param.value=v"
+                                    slotfilter="兜" :classfilter="mainClass" nullable closeonclick />
+                    </b-button>
+                    <b-button v-if="param.type == 'accessory'" variant="outline-secondary" class="paddingless small-margin" :id="`stat-main${index}-accessory`">
+                      <b-img-lazy :src="getSkillIcon(param.value)" :title="descToTitle(param.value)" width="50" height="50" />
+                      <ItemSelector :target="`stat-main${index}-accessory`" :items="items" @click="v => param.value=v"
+                                    slotfilter="アクセサリ" :classfilter="mainClass" nullable closeonclick />
+                    </b-button>
+                  </span>
                 </b-col>
-                <b-col>
-                  <b-button v-if="param.type == 'weapon'" style="width: 14em" size="sm" class="input-dropdown" :id="`stat-main${index}-weapon`">
-                    {{param.value ? param.value.name : '(なし)'}}
-                    <ItemSelector :target="`stat-main${index}-weapon`" :items="items" @click="v => param.value=v"
-                                  slotfilter="武器" :classfilter="mainClass" nullable closeonclick />
-                  </b-button>
-                  <b-button v-if="param.type == 'armor'" style="width: 14em" size="sm" class="input-dropdown" :id="`stat-main${index}-armor`">
-                    {{param.value ? param.value.name : '(なし)'}}
-                    <ItemSelector :target="`stat-main${index}-armor`" :items="items" @click="v => param.value=v"
-                                  slotfilter="鎧" :classfilter="mainClass" nullable closeonclick />
-                  </b-button>
-                  <b-button v-if="param.type == 'helmet'" style="width: 14em" size="sm" class="input-dropdown" :id="`stat-main${index}-helmet`">
-                    {{param.value ? param.value.name : '(なし)'}}
-                    <ItemSelector :target="`stat-main${index}-helmet`" :items="items" @click="v => param.value=v"
-                                  slotfilter="兜" :classfilter="mainClass" nullable closeonclick />
-                  </b-button>
-                  <b-button v-if="param.type == 'accessory'" style="width: 14em" size="sm" class="input-dropdown" :id="`stat-main${index}-accessory`">
-                    {{param.value ? param.value.name : '(なし)'}}
-                    <ItemSelector :target="`stat-main${index}-accessory`" :items="items" @click="v => param.value=v"
-                                  slotfilter="アクセサリ" :classfilter="mainClass" nullable closeonclick />
-                  </b-button>
-                </b-col>
-              </b-form-row>
+              </b-row>
 
               <div style="text-align:center">
                 <h6 style="margin: 5px 0px">エンチャント</h6>
@@ -116,8 +116,7 @@
         </div>
         <div>
           <b-container>
-            <div class="status flex" style="margin-bottom: 10px">
-              <h5>基礎ステータス:</h5>
+            <div v-if="main.character.value" class="status flex" style="margin-bottom: 10px">
               <div class="param-box"><b-img-lazy :src="getImageURL('HP')" title="HP" width="18" height="18" /><span>{{statMainResult[0]}}</span></div>
               <div class="param-box"><b-img-lazy :src="getImageURL('アタック')" title="アタック" width="18" height="18" /><span>{{statMainResult[1]}}</span></div>
               <div class="param-box"><b-img-lazy :src="getImageURL('ディフェンス')" title="ディフェンス" width="18" height="18" /><span>{{statMainResult[2]}}</span></div>
@@ -138,14 +137,14 @@
                 <h6 style="margin: 5px 0px">基本情報</h6>
               </div>
               <b-form-row v-for="(param, name, i) in support" :key="i">
-                <b-col style="text-align: right" align-self="end">
-                  <label style="width: 12em" :for="`stat-sup${index}-${name}`">{{param.label}}</label>
+                <b-col style="text-align: right; margin: auto 0 auto 0;" align-self="end">
+                  <label style="width: 8em" :for="`stat-sup${index}-${name}`">{{param.label}}</label>
                 </b-col>
                 <b-col>
                   <b-form-input v-if="param.type == 'number'" style="width: 5em" :id="`stat-sup${index}-${name}`" v-model.number="param.value" size="sm" type="number" class="input-param" :min="param.min" :max="param.max"></b-form-input>
                   <b-form-checkbox v-if="param.type == 'bool'" style="width: 5em" :id="`stat-sup${index}-${name}`" v-model="param.value" size="sm" plain></b-form-checkbox>
-                  <b-button v-if="param.type == 'character'" style="width: 15em" size="sm" class="input-dropdown" :id="`stat-sup${index}-${name}`" menu-class="long-dropdown">
-                    {{param.value ? param.value.name : '(なし)'}}
+                  <b-button v-if="param.type == 'character'" variant="outline-secondary" class="paddingless small-margin" :id="`stat-sup${index}-${name}`">
+                    <b-img-lazy :src="getSkillIcon(param.value)" :title="descToTitle(param.value)" width="100" height="100" />
                     <ChrSelector :target="`stat-sup${index}-${name}`" :chrs="supChrs" nullable classfilter closeonclick @click="setSupChr" />
                   </b-button>
                 </b-col>
@@ -172,23 +171,22 @@
               <div style="text-align:center">
                 <h6 style="margin: 5px 0px">装備</h6>
               </div>
-              <b-form-row v-for="(param, name, i) in supportItems" :key="i">
-                <b-col style="text-align: right">
-                  <label style="width: 10em">{{param.label}}</label>
+              <b-row>
+                <b-col style="text-align:center">
+                  <span v-for="(param, name, i) in supportItems" :key="i">
+                    <b-button v-if="param.type == 'amulet1'" variant="outline-secondary" class="paddingless small-margin" :id="`stat-sup${index}-amulet1`">
+                      <b-img-lazy :src="getSkillIcon(param.value)" :title="descToTitle(param.value)" width="50" height="50" />
+                      <ItemSelector :target="`stat-sup${index}-amulet1`" :items="items" @click="v => param.value=v"
+                                    slotfilter="月のアミュレット" nullable closeonclick />
+                    </b-button>
+                    <b-button v-if="param.type == 'amulet2'" variant="outline-secondary" class="paddingless small-margin" :id="`stat-sup${index}-amulet2`">
+                      <b-img-lazy :src="getSkillIcon(param.value)" :title="descToTitle(param.value)" width="50" height="50" />
+                      <ItemSelector :target="`stat-sup${index}-amulet2`" :items="items" @click="v => param.value=v"
+                                    slotfilter="太陽のアミュレット" nullable closeonclick />
+                    </b-button>
+                  </span>
                 </b-col>
-                <b-col>
-                  <b-button v-if="param.type == 'amulet1'" style="width: 14em" size="sm" class="input-dropdown" :id="`stat-sup${index}-amulet1`">
-                    {{param.value ? param.value.name : '(なし)'}}
-                    <ItemSelector :target="`stat-sup${index}-amulet1`" :items="items" @click="v => param.value=v"
-                                  slotfilter="月のアミュレット" nullable closeonclick />
-                  </b-button>
-                  <b-button v-if="param.type == 'amulet2'" style="width: 14em" size="sm" class="input-dropdown" :id="`stat-sup${index}-amulet2`">
-                    {{param.value ? param.value.name : '(なし)'}}
-                    <ItemSelector :target="`stat-sup${index}-amulet2`" :items="items" @click="v => param.value=v"
-                                  slotfilter="太陽のアミュレット" nullable closeonclick />
-                  </b-button>
-                </b-col>
-              </b-form-row>
+              </b-row>
 
               <div style="text-align:center">
                 <h6 style="margin: 5px 0px">アミュレットスキル</h6>
@@ -207,7 +205,6 @@
         <div>
           <b-container>
             <div v-if="support.character.value" class="status flex" style="margin-bottom: 10px">
-              <h5>基礎ステータス:</h5>
               <div class="param-box"><b-img-lazy :src="getImageURL('HP')" title="HP" width="18" height="18" /><span>{{statSupportResult[0]}}</span></div>
               <div class="param-box" v-if="support.character.value.damageType=='アタック'"><b-img-lazy :src="getImageURL('アタック')" title="アタック" width="18" height="18" /><span>{{statSupportResult[1]}}</span></div>
               <div class="param-box" v-if="support.character.value.damageType=='マジック'"><b-img-lazy :src="getImageURL('マジック')" title="マジック" width="18" height="18" /><span>{{statSupportResult[3]}}</span></div>
@@ -691,9 +688,6 @@ export default {
     getSkillIcon(skill) {
       return this.getImageURL(skill ? skill.icon : null);
     },
-    getSkillName(skill) {
-      return skill ? `${skill.name}\n${this.removeMarkup(skill.desc)}` : "";
-    },
 
     matchClass(item, chr) {
       if (item) {
@@ -740,6 +734,8 @@ export default {
     },
 
     autoEquipImpl(ma, sa, type) {
+      if (!ma.character)
+        return;
       let result = {
         main: {
           items: [null, null, null, null],
@@ -750,7 +746,6 @@ export default {
           enchants: [0, 0, 0, 0, 0],
         },
       };
-
       const mapi = ma.character ? ma.character.damageType == "アタック" ? 1 : 3 : 0;
       const sapi = sa.character ? sa.character.damageType == "アタック" ? 1 : 3 : 0;
       const symbol = ma.character.symbol;
@@ -1001,7 +996,7 @@ export default {
       };
       const r = this.autoEquipImpl(ma, sa, type);
 
-      if (this.tabIndex == 0) {
+      if (this.tabIndex == 0 && ma.character) {
         for (const v of Object.values(this.mainItems))
           v.value = r.main.items.shift();
         for (const v of Object.values(this.mainEnchants)) {
@@ -1421,7 +1416,7 @@ export default {
 </script>
 
 <style>
-.input-dropdown {
-  padding: 0.1em;
+.small-margin {
+  margin: 3px;
 }
 </style>

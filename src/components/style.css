@@ -293,6 +293,10 @@ div.skill {
 .paddingless {
   padding: 0 !important;
 }
+.rounded-bordered {
+  border-radius: 0.25rem;
+  border: 1px solid #6c757d;
+}
 
 .popover {
   max-width: 430px;

@@ -476,6 +476,16 @@ export default {
       }
       return text;
     },
+    descToTitle(item) {
+      if (!item)
+        return "";
+      let text = item.name + "\n";
+      if (item.isItem) {
+        text += this.statusToText(item.status) + "\n";
+      }
+      text += this.removeMarkup(item.desc);
+      return text;
+    },
     removeMarkup(text) {
       if (!text) {
         return "";
@@ -529,6 +539,15 @@ export default {
         else if (damageType == "マジック")
           list.splice(1, 1, ...list.splice(3, 1));
       }
+      return list.join("");
+    },
+    statusToText(status) {
+      const conv = function (n, v, i) {
+        if (!v)
+          return [];
+        return `${n}+${v} `;
+      }.bind(this);
+      let list = ["HP", "アタック", "ディフェンス", "マジック", "レジスト", "テクニック", "戦闘力"].flatMap((n, i) => conv(n, status[i], i));
       return list.join("");
     },
 

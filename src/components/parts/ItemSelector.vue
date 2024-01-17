@@ -13,11 +13,11 @@
       </b-button-group>
     </div>
     <div class="chr-area">
-      <b-link v-if="nullable"  @mouseover="$emit('mouseover', null)" @mouseleave="$emit('mouseleave', null)" @click="onClick(null)">
-        <b-img-lazy :src="getImageURL('null')" title="(なし)" width="50" />
+      <b-link v-if="nullable" @mouseover="$emit('mouseover', null)" @mouseleave="$emit('mouseleave', null)" @click="onClick(null)">
+        <b-img-lazy :src="getImageURL('null')" title="(なし)" width="50" height="50" class="rounded-bordered" />
       </b-link>
       <b-link v-for="(v, i) in filteredItems" :key="i" @mouseover="$emit('mouseover', v)" @mouseleave="$emit('mouseleave', v)" @click="onClick(v)">
-        <b-img-lazy :src="getImageURL(v.icon)" :title="`${v.name}\n${removeMarkup(v.desc)}`" width="50" />
+        <b-img-lazy :src="getImageURL(v.icon)" :title="descToTitle(v)" width="50" />
       </b-link>
     </div>
   </b-popover>
