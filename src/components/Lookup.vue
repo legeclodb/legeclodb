@@ -116,7 +116,7 @@ export default {
   .tab-title {
   }
 
-  .tab-title:focus .tab-title:hover {
+  .tab-title:focus, .tab-title:hover {
     border-color: #c0c0c0 #c0c0c0 rgb(234, 234, 237) !important;
   }
 

@@ -320,8 +320,8 @@ export default {
   },
 
   created() {
-
     this.setupDB();
+    this.setupFilter();
     for (let s of [...this.mainActive, ...this.mainPassive, ...this.mainTalents]) {
       this.removeEffectsOfSameType(s);
     }

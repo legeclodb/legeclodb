@@ -290,6 +290,9 @@ div.skill {
   padding: 0.25em;
   width: 5.5em;
 }
+.paddingless {
+  padding: 0 !important;
+}
 
 .popover {
   max-width: 430px;

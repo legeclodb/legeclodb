@@ -484,6 +484,7 @@ export default {
 
   created() {
     this.setupDB();
+    this.setupFilter();
 
     const excludeEffect = function (effect) {
       const cond = effect.condition;

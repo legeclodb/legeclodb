@@ -83,41 +83,49 @@ export default {
 
 
     setupDB() {
-      this.mainActive = structuredClone(jsonMainActive);
-      this.mainPassive = structuredClone(jsonMainPassive);
-      this.mainTalents = structuredClone(jsonMainTalents);
-      this.mainChrs = structuredClone(jsonMainChrs).filter(a => !a.hidden);
+      let g = this;
 
-      this.supActive = structuredClone(jsonSupportActive);
-      this.supPassive = structuredClone(jsonSupportPassive);
-      this.supChrs = structuredClone(jsonSupportChrs).filter(a => !a.hidden);
+      g.mainActive = structuredClone(jsonMainActive);
+      g.mainPassive = structuredClone(jsonMainPassive);
+      g.mainTalents = structuredClone(jsonMainTalents);
+      g.mainChrs = structuredClone(jsonMainChrs).filter(a => !a.hidden);
 
-      this.items = structuredClone(jsonItems).filter(a => !a.hidden || a.slot == "アミュレット");
-      this.weapons = this.items.filter(a => a.slot == "武器");
-      this.armors = this.items.filter(a => a.slot == "鎧");
-      this.helmets = this.items.filter(a => a.slot == "兜");
-      this.accessories = this.items.filter(a => a.slot == "アクセサリ");
+      g.supActive = structuredClone(jsonSupportActive);
+      g.supPassive = structuredClone(jsonSupportPassive);
+      g.supChrs = structuredClone(jsonSupportChrs).filter(a => !a.hidden);
 
-      this.setupCharacters(this.mainChrs, this.mainActive, this.mainPassive, this.mainTalents);
-      this.setupCharacters(this.supChrs, this.supActive, this.supPassive);
-      this.setupItems(this.items);
+      g.items = structuredClone(jsonItems).filter(a => !a.hidden);
 
-      this.searchTableWithUid = new Map();
-      this.searchTableWithName = new Map();
+      this.setupCharacters(g.mainChrs, g.mainActive, g.mainPassive, g.mainTalents);
+      this.setupCharacters(g.supChrs, g.supActive, g.supPassive);
+      this.setupItems(g.items);
+
+      g.mainChrs.sort((a, b) => b.date.localeCompare(a.date));
+      g.supChrs.sort((a, b) => b.date.localeCompare(a.date));
+      g.items.sort((a, b) => b.date.localeCompare(a.date));
+
+      g.weapons = g.items.filter(a => a.slot == "武器");
+      g.armors = g.items.filter(a => a.slot == "鎧");
+      g.helmets = g.items.filter(a => a.slot == "兜");
+      g.accessories = g.items.filter(a => a.slot == "アクセサリ");
+      g.amulets1 = g.items.filter(a => a.slot == "月のアミュレット");
+      g.amulets2 = g.items.filter(a => a.slot == "太陽のアミュレット");
+
+      g.searchTableWithUid = new Map();
+      g.searchTableWithName = new Map();
       let idx = 0;
       for (let list of [
-        this.mainChrs, this.mainActive, this.mainPassive, this.mainTalents,
-        this.supChrs, this.supActive, this.supPassive,
-        this.items
-      ])
-      {
+        g.mainChrs, g.mainActive, g.mainPassive, g.mainTalents,
+        g.supChrs, g.supActive, g.supPassive,
+        g.items
+      ]) {
         for (let item of list) {
           item.index = ++idx;
-          this.searchTableWithUid.set(item.uid, item);
-          this.searchTableWithName.set(item.name, item);
+          g.searchTableWithUid.set(item.uid, item);
+          g.searchTableWithName.set(item.name, item);
         }
       }
-      this.itemCount = idx;
+      g.itemCount = idx;
 
       let effectTypeIndex = 1;
       let effectTypeNames = ["???"];
@@ -166,7 +174,7 @@ export default {
         effectTypeNames.push(key);
         effectTypeIndex++;
       }
-      for (let skill of this.enumerate(this.mainActive, this.mainPassive, this.mainTalents, this.supActive, this.supPassive, this.items)) {
+      for (let skill of this.enumerate(g.mainActive, g.mainPassive, g.mainTalents, g.supActive, g.supPassive, g.items)) {
         for (let effect of this.enumerateEffects(skill)) {
           let effectType = effect.type;
           if (effect.isBuff)
@@ -195,16 +203,13 @@ export default {
           }
         }
       }
-      this.effectTypeIndex = effectTypeIndex;
-      this.effectTypeNames = effectTypeNames;
-      this.effectTypeTable = effectTypeTable;
-      this.slotIndex = slotIndex;
-      this.slotTable = slotTable;
-
-      this.mainChrs.sort((a, b) => b.date.localeCompare(a.date));
-      this.supChrs.sort((a, b) => b.date.localeCompare(a.date));
-      this.items.sort((a, b) => b.date.localeCompare(a.date));
-
+      g.effectTypeIndex = effectTypeIndex;
+      g.effectTypeNames = effectTypeNames;
+      g.effectTypeTable = effectTypeTable;
+      g.slotIndex = slotIndex;
+      g.slotTable = slotTable;
+    },
+    setupFilter() {
       this.fillFilter(this.filter.class, this.classes);
       this.fillFilter(this.filter.symbol, this.symbols);
       this.fillFilter(this.filter.damageType, this.damageTypes);

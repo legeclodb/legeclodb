@@ -29,6 +29,21 @@
                   </b-button>
                 </b-col>
               </b-form-row>
+
+              <div v-if="skills">
+                <div style="text-align:center">
+                  <h6 style="margin: 5px 0px">スキル</h6>
+                </div>
+                <b-form-row>
+                  <b-col style="text-align: center">
+                    <b-button v-for="(skill, si) in mainSkills" :key="si" class="paddingless">
+                      <b-img-lazy :src="getSkillIcon(skill)" :title="getSkillName(skill)" :id="`stat-main${index}-skill${si}`" width="50" height="50" />
+                      <SkillSelector :target="`stat-main${index}-skill${si}`" closeonclick
+                                     :skills="main.character.value ? main.character.value.skills : []" :excludes="mainSkills" @click="setMainSkill($event, si)" />
+                    </b-button>
+                  </b-col>
+                </b-form-row>
+              </div>
             </b-container>
           </div>
           <div>
@@ -235,6 +250,8 @@
 <script>
 import ChrSelector from '../parts/ChrSelector.vue'
 import ItemSelector from '../parts/ItemSelector.vue'
+import SkillSelector from '../parts/SkillSelector.vue'
+
 import jsonMainActive from '../../assets/main_active.json'
 import jsonMainPassive from '../../assets/main_passive.json'
 import jsonMainTalents from '../../assets/main_talents.json'
@@ -250,9 +267,14 @@ export default {
   components: {
     ChrSelector,
     ItemSelector,
+    SkillSelector,
   },
   props: {
     embed: {
+      type: Boolean,
+      default: false,
+    },
+    skills: {
       type: Boolean,
       default: false,
     },
@@ -302,6 +324,7 @@ export default {
           value: true,
         },
       },
+      mainSkills: [null, null, null],
       mainBoosts: {
         hp: {
           label: "HP (%)",
@@ -570,7 +593,7 @@ export default {
         this.supActive = structuredClone(jsonSupportActive);
         this.supPassive = structuredClone(jsonSupportPassive);
         this.supChrs = structuredClone(jsonSupportChrs).filter(a => !a.hidden);
-        this.items = structuredClone(jsonItems).filter(a => !a.hidden || a.slot == "アミュレット");
+        this.items = structuredClone(jsonItems).filter(a => !a.hidden);
 
         this.setupCharacters(this.mainChrs, this.mainActive, this.mainPassive, this.mainTalents);
         this.setupCharacters(this.supChrs, this.supActive, this.supPassive);
@@ -604,7 +627,9 @@ export default {
       this.amulets1 = this.items.filter(a => a.slot == "月のアミュレット");
       this.amulets2 = this.items.filter(a => a.slot == "太陽のアミュレット");
 
-      this.setMainChr(this.mainChrs[0]);
+      if (!this.embed) {
+        this.setMainChr(this.mainChrs[0]);
+      }
     },
 
     setMainChr(chr) {
@@ -619,6 +644,17 @@ export default {
           params.valueP = 35;
         }
       }
+
+      this.mainSkills = [null, null, null];
+      if (chr) {
+        this.mainSkills = [chr.skills[0], chr.skills[1], chr.skills[2]];
+      }
+    },
+    setMainSkill(skill, idx) {
+      // 配列の要素の差し替えでは変更が検出されないので配列自体を更新する
+      let tmp = [...this.mainSkills];
+      tmp[idx] = skill;
+      this.mainSkills = tmp;
     },
     setSupChr(chr) {
       this.support.character.value = chr;
@@ -642,6 +678,13 @@ export default {
       if (!r)
         console.log(`${name} not found`);
       return r;
+    },
+
+    getSkillIcon(skill) {
+      return this.getImageURL(skill ? skill.icon : null);
+    },
+    getSkillName(skill) {
+      return skill ? `${skill.name}\n${skill.desc}` : "";
     },
 
     matchClass(item, chr) {
@@ -1223,6 +1266,10 @@ export default {
         else
           params.push(v.value);
       }
+      if (this.skills) {
+        for (let v of this.mainSkills)
+          params.push(v ? v.uid : "");
+      }
       for (let v of Object.values(this.mainBoosts))
         params.push(v.value);
       for (let v of Object.values(this.mainItems))
@@ -1257,6 +1304,13 @@ export default {
         else {
           v.value = params.shift();
         }
+      }
+      if (this.skills) {
+        this.mainSkills = [
+          this.searchTableWithUid.get(params.shift()),
+          this.searchTableWithUid.get(params.shift()),
+          this.searchTableWithUid.get(params.shift()),
+        ];
       }
       for (let v of Object.values(this.mainBoosts))
         v.value = params.shift();
@@ -1306,6 +1360,12 @@ export default {
       }
       return false;
     },
+
+    onChange() {
+      if (this.embed) {
+        this.$emit('change', this);
+      }
+    },
   },
 
   computed: {
@@ -1323,7 +1383,20 @@ export default {
     statUrl() {
       return this.getParamsUrl();
     }
-  }
+  },
+
+  watch: {
+    main: { handler: function () { this.onChange(); }, deep: true },
+    mainBoosts: { handler: function () { this.onChange(); }, deep: true },
+    mainItems: { handler: function () { this.onChange(); }, deep: true },
+    mainEnchants: { handler: function () { this.onChange(); }, deep: true },
+    mainSkills: { handler: function () { this.onChange(); }, deep: true },
+    support: { handler: function () { this.onChange(); }, deep: true },
+    supportBoosts: { handler: function () { this.onChange(); }, deep: true },
+    supportItems: { handler: function () { this.onChange(); }, deep: true },
+    supportEnchants: { handler: function () { this.onChange(); }, deep: true },
+  },
+
 };
 </script>
 
