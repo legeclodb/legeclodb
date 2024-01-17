@@ -1,5 +1,474 @@
 [
   {
+    "uid": "4100001",
+    "icon": "sk_ba001",
+    "name": "剣力",
+    "desc": "メインが「ランサー」の敵ユニットと戦闘する時、サポートのアタック/マジック+15%。",
+    "buff": [
+      {
+        "type": "アタック",
+        "value": 15,
+        "ephemeral": true,
+        "target": "自身(サポート)",
+        "timing": "戦闘前",
+        "condition": {
+          "onEnemyClass": [ "ランサー" ]
+        }
+      },
+      {
+        "type": "マジック",
+        "value": 15,
+        "ephemeral": true,
+        "target": "自身(サポート)",
+        "timing": "戦闘前",
+        "condition": {
+          "onEnemyClass": [ "ランサー" ]
+        }
+      }
+    ]
+  },
+  {
+    "uid": "4100002",
+    "icon": "sk_ba002",
+    "name": "守護",
+    "desc": "戦闘時、サポートのHPが80%以上の時、サポートのダメージ耐性+15%。",
+    "buff": [
+      {
+        "type": "ダメージ耐性",
+        "value": 15,
+        "ephemeral": true,
+        "target": "自身(サポート)",
+        "timing": "戦闘前",
+        "condition": {
+          "supportHp": [ ">=", 80 ]
+        }
+      }
+    ]
+  },
+  {
+    "uid": "4100003",
+    "icon": "sk_ba003",
+    "name": "強気",
+    "desc": "敵ターンで遠距離による戦闘時、サポートのディフェンス/レジスト+15%。",
+    "buff": [
+      {
+        "type": "ディフェンス",
+        "value": 15,
+        "ephemeral": true,
+        "target": "自身(サポート)",
+        "timing": "戦闘前",
+        "condition": {
+          "onEnemyTurn": true,
+          "onRangedCombat": true
+        }
+      },
+      {
+        "type": "レジスト",
+        "value": 15,
+        "ephemeral": true,
+        "target": "自身(サポート)",
+        "timing": "戦闘前",
+        "condition": {
+          "onEnemyTurn": true,
+          "onRangedCombat": true
+        }
+      }
+    ]
+  },
+  {
+    "uid": "4100004",
+    "icon": "sk_ba004",
+    "name": "槍力",
+    "desc": "メインが「ライダー」の敵ユニットと戦闘する時、サポートのアタック/マジック+15%。",
+    "buff": [
+      {
+        "type": "アタック",
+        "value": 15,
+        "ephemeral": true,
+        "target": "自身(サポート)",
+        "timing": "戦闘前",
+        "condition": {
+          "onEnemyClass": [ "ライダー" ]
+        }
+      },
+      {
+        "type": "マジック",
+        "value": 15,
+        "ephemeral": true,
+        "target": "自身(サポート)",
+        "timing": "戦闘前",
+        "condition": {
+          "onEnemyClass": [ "ライダー" ]
+        }
+      }
+    ]
+  },
+  {
+    "uid": "4100005",
+    "icon": "sk_ba005",
+    "name": "根性",
+    "desc": "戦闘時、サポートのHPが70%以下の時、サポートのダメージ耐性+15%。",
+    "buff": [
+      {
+        "type": "ダメージ耐性",
+        "value": 15,
+        "ephemeral": true,
+        "target": "自身(サポート)",
+        "timing": "戦闘前",
+        "condition": {
+          "supportHp": [ "<=", 70 ]
+        }
+      }
+    ]
+  },
+  {
+    "uid": "4100006",
+    "icon": "sk_ba006",
+    "name": "対抗",
+    "desc": "敵ターンでの戦闘時、戦闘前、サポートのアタック/マジック+15%。",
+    "buff": [
+      {
+        "type": "アタック",
+        "value": 15,
+        "ephemeral": true,
+        "target": "自身(サポート)",
+        "timing": "戦闘前",
+        "condition": {
+          "onEnemyTurn": true
+        }
+      },
+      {
+        "type": "マジック",
+        "value": 15,
+        "ephemeral": true,
+        "target": "自身(サポート)",
+        "timing": "戦闘前",
+        "condition": {
+          "onEnemyTurn": true
+        }
+      }
+    ]
+  },
+  {
+    "uid": "4100007",
+    "icon": "sk_ba007",
+    "name": "騎力",
+    "desc": "メインが「ソルジャー」の敵ユニットと戦闘する時、サポートのアタック/マジック+15%。",
+    "buff": [
+      {
+        "type": "アタック",
+        "value": 15,
+        "ephemeral": true,
+        "target": "自身(サポート)",
+        "timing": "戦闘前",
+        "condition": {
+          "onEnemyClass": [ "ソルジャー" ]
+        }
+      },
+      {
+        "type": "マジック",
+        "value": 15,
+        "ephemeral": true,
+        "target": "自身(サポート)",
+        "timing": "戦闘前",
+        "condition": {
+          "onEnemyClass": [ "ソルジャー" ]
+        }
+      }
+    ]
+  },
+  {
+    "uid": "4100008",
+    "icon": "sk_ba008",
+    "name": "護衛",
+    "desc": "自身を中心とした範囲2マス以内に味方ユニットがいる時、戦闘時、サポートのアタック/マジック+15%。",
+    "buff": [
+      {
+        "type": "アタック",
+        "value": 15,
+        "ephemeral": true,
+        "target": "自身(サポート)",
+        "timing": "戦闘前",
+        "condition": {
+          "nearAllyCount": {
+            "area": 2,
+            "compare": [ ">", 0 ]
+          }
+        }
+      },
+      {
+        "type": "マジック",
+        "value": 15,
+        "ephemeral": true,
+        "target": "自身(サポート)",
+        "timing": "戦闘前",
+        "condition": {
+          "nearAllyCount": {
+            "area": 2,
+            "compare": [ ">", 0 ]
+          }
+        }
+      }
+    ]
+  },
+  {
+    "uid": "4100009",
+    "icon": "sk_ba009",
+    "name": "突撃",
+    "desc": "味方ターンでの戦闘時、サポートのダメージ耐性+15%。",
+    "buff": [
+      {
+        "type": "ダメージ耐性",
+        "value": 15,
+        "ephemeral": true,
+        "target": "自身(サポート)",
+        "timing": "戦闘前",
+        "condition": {
+          "onOwnTurn": true
+        }
+      }
+    ]
+  },
+  {
+    "uid": "4100010",
+    "icon": "sk_ba010",
+    "name": "飛行",
+    "desc": "「DEF効果」がない地形での戦闘時、サポートのアタック/マジック+15%。",
+    "buff": [
+      {
+        "type": "アタック",
+        "value": 15,
+        "ephemeral": true,
+        "target": "自身(サポート)",
+        "timing": "戦闘前",
+        "condition": {
+          "onTerrain": [ "平地" ]
+        }
+      },
+      {
+        "type": "マジック",
+        "value": 15,
+        "ephemeral": true,
+        "target": "自身(サポート)",
+        "timing": "戦闘前",
+        "condition": {
+          "onTerrain": [ "平地" ]
+        }
+      }
+    ]
+  },
+  {
+    "uid": "4100011",
+    "icon": "sk_ba011",
+    "name": "万全",
+    "desc": "戦闘時、サポートのHPが80%以上の時、サポートのディフェンス/レジスト+15%。",
+    "buff": [
+      {
+        "type": "ディフェンス",
+        "value": 15,
+        "ephemeral": true,
+        "target": "自身(サポート)",
+        "timing": "戦闘前",
+        "condition": {
+          "supportHp": [ ">=", 80 ]
+        }
+      },
+      {
+        "type": "レジスト",
+        "value": 15,
+        "ephemeral": true,
+        "target": "自身(サポート)",
+        "timing": "戦闘前",
+        "condition": {
+          "supportHp": [ ">=", 80 ]
+        }
+      }
+    ]
+  },
+  {
+    "uid": "4100012",
+    "icon": "sk_ba012",
+    "name": "強襲",
+    "desc": "HPが100%の敵ユニットと戦闘時、サポートのアタック/マジック+15%。",
+    "buff": [
+      {
+        "type": "アタック",
+        "value": 15,
+        "ephemeral": true,
+        "target": "自身(サポート)",
+        "timing": "戦闘前",
+        "condition": {
+          "targetHp": [ ">=", 100 ]
+        }
+      },
+      {
+        "type": "マジック",
+        "value": 15,
+        "ephemeral": true,
+        "target": "自身(サポート)",
+        "timing": "戦闘前",
+        "condition": {
+          "targetHp": [ ">=", 100 ]
+        }
+      }
+    ]
+  },
+  {
+    "uid": "4100013",
+    "icon": "sk_ba013",
+    "name": "偵察",
+    "desc": "「DEF効果」がない地形での戦闘時、サポートのディフェンス/レジスト+15%。",
+    "buff": [
+      {
+        "type": "ディフェンス",
+        "value": 15,
+        "ephemeral": true,
+        "target": "自身(サポート)",
+        "timing": "戦闘前",
+        "condition": {
+          "onTerrain": [ "平地" ]
+        }
+      },
+      {
+        "type": "レジスト",
+        "value": 15,
+        "ephemeral": true,
+        "target": "自身(サポート)",
+        "timing": "戦闘前",
+        "condition": {
+          "onTerrain": [ "平地" ]
+        }
+      }
+    ]
+  },
+  {
+    "uid": "4100014",
+    "icon": "sk_ba014",
+    "name": "隠密",
+    "desc": "「DEF効果」がある地形での戦闘時、サポートのアタック/マジック+15%。",
+    "buff": [
+      {
+        "type": "アタック",
+        "value": 15,
+        "ephemeral": true,
+        "target": "自身(サポート)",
+        "timing": "戦闘前",
+        "condition": {
+          "onTerrain": [ "森" ]
+        }
+      },
+      {
+        "type": "マジック",
+        "value": 15,
+        "ephemeral": true,
+        "target": "自身(サポート)",
+        "timing": "戦闘前",
+        "condition": {
+          "onTerrain": [ "森" ]
+        }
+      }
+    ]
+  },
+  {
+    "uid": "4100015",
+    "icon": "sk_ba015",
+    "name": "狙撃",
+    "desc": "メインが「エアリアル」の敵ユニットと戦闘する時、サポートのアタック/マジック+15%。",
+    "buff": [
+      {
+        "type": "アタック",
+        "value": 15,
+        "ephemeral": true,
+        "target": "自身(サポート)",
+        "timing": "戦闘前",
+        "condition": {
+          "onEnemyClass": [ "エアリアル" ]
+        }
+      },
+      {
+        "type": "マジック",
+        "value": 15,
+        "ephemeral": true,
+        "target": "自身(サポート)",
+        "timing": "戦闘前",
+        "condition": {
+          "onEnemyClass": [ "エアリアル" ]
+        }
+      }
+    ]
+  },
+  {
+    "uid": "4100016",
+    "icon": "sk_ba016",
+    "name": "祈祷",
+    "desc": "戦闘時、サポートのHPが100%の時、サポートのダメージ耐性+15%。",
+    "buff": [
+      {
+        "type": "ダメージ耐性",
+        "value": 15,
+        "ephemeral": true,
+        "target": "自身(サポート)",
+        "timing": "戦闘前",
+        "condition": {
+          "supportHp": [ ">=", 100 ]
+        }
+      }
+    ]
+  },
+  {
+    "uid": "4100017",
+    "icon": "sk_ba017",
+    "name": "護符",
+    "desc": "HPが100%の敵ユニットと戦闘時、サポートの与ダメージ+22%。",
+    "buff": [
+      {
+        "type": "与ダメージ",
+        "value": 22,
+        "ephemeral": true,
+        "target": "自身(サポート)",
+        "timing": "戦闘前",
+        "condition": {
+          "targetHp": [ ">=", 100 ]
+        }
+      }
+    ]
+  },
+  {
+    "uid": "4100018",
+    "icon": "sk_ba018",
+    "name": "詠唱",
+    "desc": "隣接する味方ユニットがいる時、戦闘時、サポートのアタック/マジック+15%。",
+    "buff": [
+      {
+        "type": "アタック",
+        "value": 15,
+        "ephemeral": true,
+        "target": "自身(サポート)",
+        "timing": "戦闘前",
+        "condition": {
+          "nearAllyCount": {
+            "area": 1,
+            "compare": [ ">", 0 ]
+          }
+        }
+      },
+      {
+        "type": "マジック",
+        "value": 15,
+        "ephemeral": true,
+        "target": "自身(サポート)",
+        "timing": "戦闘前",
+        "condition": {
+          "nearAllyCount": {
+            "area": 1,
+            "compare": [ ">", 0 ]
+          }
+        }
+      }
+    ]
+  },
+
+  {
     "uid": "2200001",
     "icon": "sk_sp1001",
     "name": "剛気",

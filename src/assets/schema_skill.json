@@ -259,10 +259,16 @@
         },
         "onClassAdvantage": { "type": "boolean" },
         "onEffect": { "type": "string" },
-        "onTerrain": { "$ref": "#/$defs/terrainType" },
+        "onTerrain": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/terrainType" }
+        },
 
         "probability": { "type": [ "number", "array" ] },
         "hp": { "$ref": "#/$defs/numericCompare" },
+        "mainHp": { "$ref": "#/$defs/numericCompare" },
+        "supportHp": { "$ref": "#/$defs/numericCompare" },
         "targetHp": { "$ref": "#/$defs/numericCompare" },
         "turn": { "$ref": "#/$defs/numericCompare" },
         "token": { "$ref": "#/$defs/numericCompare" },

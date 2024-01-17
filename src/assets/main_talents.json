@@ -850,7 +850,7 @@
         "target": "自身",
         "timing": "戦闘前",
         "condition": {
-          "onTerrain": "水中"
+          "onTerrain": [ "水中" ]
         }
       },
       {
@@ -860,7 +860,7 @@
         "target": "自身",
         "timing": "戦闘前",
         "condition": {
-          "onTerrain": "水中"
+          "onTerrain": [ "水中" ]
         }
       }
     ],

@@ -11,7 +11,7 @@ import Battle from './components/Battle.vue'
 Vue.use(Router)
 
 export default new Router({
-  mode: process.env.IS_ELECTRON ? 'hash' : 'history',
+  mode: 'history',
   base: '/' ,
   routes: [
     {
