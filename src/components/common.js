@@ -476,6 +476,18 @@ export default {
       }
       return text;
     },
+    removeMarkup(text) {
+      if (!text) {
+        return "";
+      }
+      while (true) {
+        let tmp = text.replaceAll(/\[([^\]]+?)\](.+?)\[\/\1\]/g, "$2");
+        if (tmp == text)
+          break;
+        text = tmp;
+      }
+      return text;
+    },
     noteToHtml(item) {
       let text = item.note;
       while (true) {

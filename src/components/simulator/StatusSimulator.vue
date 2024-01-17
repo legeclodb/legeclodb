@@ -39,7 +39,7 @@
                     <b-button v-for="(skill, si) in mainSkills" :key="si" class="paddingless">
                       <b-img-lazy :src="getSkillIcon(skill)" :title="getSkillName(skill)" :id="`stat-main${index}-skill${si}`" width="50" height="50" />
                       <SkillSelector :target="`stat-main${index}-skill${si}`" closeonclick
-                                     :skills="main.character.value ? main.character.value.skills : []" :excludes="mainSkills" @click="setMainSkill($event, si)" />
+                                     :skills="mainSkillList" :excludes="mainSkills" @click="setMainSkill($event, si)" />
                     </b-button>
                   </b-col>
                 </b-form-row>
@@ -281,6 +281,9 @@ export default {
     index: {
       type: Number,
       default: 0,
+    },
+    data: {
+      type: Array
     },
   },
   mixins: [common],
@@ -560,6 +563,10 @@ export default {
     if (!this.embed) {
       this.parseParamsUrl(window.location.href);
     }
+
+    if (Array.isArray(this.data) && Array.isArray(this.data[this.index])) {
+      this.deserialize(this.data[this.index]);
+    }
   },
   
   mounted() {
@@ -647,7 +654,8 @@ export default {
 
       this.mainSkills = [null, null, null];
       if (chr) {
-        this.mainSkills = [chr.skills[0], chr.skills[1], chr.skills[2]];
+        const skills = this.mainSkillList;
+        this.mainSkills = [skills[0], skills[1], skills[2]];
       }
     },
     setMainSkill(skill, idx) {
@@ -684,7 +692,7 @@ export default {
       return this.getImageURL(skill ? skill.icon : null);
     },
     getSkillName(skill) {
-      return skill ? `${skill.name}\n${skill.desc}` : "";
+      return skill ? `${skill.name}\n${this.removeMarkup(skill.desc)}` : "";
     },
 
     matchClass(item, chr) {
@@ -1295,7 +1303,7 @@ export default {
       return params;
     },
     deserialize(params) {
-      console.log(params);
+      //console.log(params);
       for (let v of Object.values(this.main)) {
         if (v.type == "character") {
           const uid = params.shift();
@@ -1372,6 +1380,18 @@ export default {
     mainClass() {
       const chr = this.main.character.value;
       return chr ? chr.class : true;
+    },
+    mainSkillList() {
+      let chr = this.main.character.value;
+      if (chr) {
+        if (chr.engage && this.main.engage.value) {
+          return chr.engage.skills;
+        }
+        else {
+          return chr.skillsBase;
+        }
+      }
+      return [];
     },
 
     statMainResult() {
