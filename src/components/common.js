@@ -1203,6 +1203,12 @@ export default {
           }
           chr.skillsBase = chr.skills;
           this.$set(chr.engage, 'enabled', false);
+
+          for (let i = 0; i < chr.skills.length; ++i) {
+            if (chr.engage.skills[i] !== chr.skills[i]) {
+              chr.engage.skills[i].isEngageSkill = true;
+            }
+          }
         }
       }
     },

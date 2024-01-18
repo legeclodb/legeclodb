@@ -49,7 +49,7 @@
           </div>
           <div>
             <b-container>
-              <div v-if="skills">
+              <div>
                 <div style="text-align:center">
                   <h6 style="margin: 5px 0px">スキル</h6>
                 </div>
@@ -268,10 +268,6 @@ export default {
   },
   props: {
     embed: {
-      type: Boolean,
-      default: false,
-    },
-    skills: {
       type: Boolean,
       default: false,
     },
@@ -549,6 +545,8 @@ export default {
           label: "アクション",
         }
       ],
+
+      prevMainEngage: true,
     };
   },
 
@@ -645,12 +643,22 @@ export default {
           params.valueP = 35;
         }
       }
-
-      this.mainSkills = [null, null, null];
-      if (chr) {
-        const skills = this.mainSkillList;
-        this.mainSkills = [skills[0], skills[1], skills[2]];
+      this.autoMainSkill();
+    },
+    autoMainSkill() {
+      this.mainSkills = this.autoMainSkillImpl(this.main.character.value);
+    },
+    autoMainSkillImpl(chr) {
+      if (!chr) {
+        return [null, null, null];
       }
+      let skills = null;
+      if (chr.engage && this.main.engage.value)
+        skills = [...chr.engage.skills];
+      else
+        skills = [...chr.skills];
+      skills = skills.sort((a, b) => this.getSkillBPRate(b) - this.getSkillBPRate(a));
+      return skills.slice(0, 3);
     },
     setMainSkill(skill, idx) {
       // 配列の要素の差し替えでは変更が検出されないので配列自体を更新する
@@ -684,6 +692,15 @@ export default {
 
     getSkillIcon(skill) {
       return this.getImageURL(skill ? skill.icon : null);
+    },
+    getSkillBPRate(skill) {
+      let score = 0;
+      if (skill) {
+        score += skill.cost * 0.03;
+        if (skill.isEngageSkill)
+          score += 0.05;
+      }
+      return score;
     },
 
     matchClass(item, chr) {
@@ -1040,6 +1057,7 @@ export default {
           msa.items = [];
           msa.enchantsP = [];
           msa.enchantsF = [];
+          msa.skills = [];
           ssa.items = [];
           ssa.enchantsP = [];
 
@@ -1056,6 +1074,8 @@ export default {
           msa.items = r.main.items;
           msa.enchantsP = getPEnchants(r.main.enchants);
           msa.enchantsF = getFEnchants(r.main.enchants);
+          r.main.skills = msa.skills = this.autoMainSkillImpl(mchr);
+
           ssa.items = r.support.items;
           ssa.enchantsP = r.support.enchants;
           const bp = this.calcStatMainImpl(msa, ssa)[7]
@@ -1119,6 +1139,8 @@ export default {
           v.valueP = enchants.shift();
           v.valueF = enchants.shift();
         }
+
+        s.mainSkills = r.main.skills;
       }
       {
         s.support.character.value = rec.data.support;
@@ -1155,6 +1177,7 @@ export default {
         items: Object.values(s.mainItems).map(a => a.value),
         enchantsP: Object.values(s.mainEnchants).map(a => a.valueP),
         enchantsF: Object.values(s.mainEnchants).map(a => a.valueF),
+        skills: [...s.mainSkills],
       };
       return r;
     },
@@ -1197,12 +1220,13 @@ export default {
       let bpr = 1.0;
       bpr += 0.1 * ma.star;
       bpr += 0.1 * ma.master;
-      bpr += 0.03 * 6; // スキルコスト
+      for (let skill of ma.skills) {
+        // スキルコスト & エンゲージスキルボーナス
+        bpr += this.getSkillBPRate(skill);
+      }
       bpr += 0.02 * (5 * items.length); // アイテムの☆合計
       if (items.length == 4)
         bpr += 0.1; // エンチャント4セット
-      if (chr.engage && ma.engage)
-        bpr += 0.05 * Math.min(chr.engage.skills.length, 3);
       const bpMain = Math.round(this.getBattlePower(r) * bpr);
       const rMain = [...r, bpMain];
       if (!sa || !sa.character)
@@ -1266,10 +1290,8 @@ export default {
         else
           params.push(v.value);
       }
-      if (this.skills) {
-        for (let v of this.mainSkills)
-          params.push(v ? v.uid : "");
-      }
+      for (let v of this.mainSkills)
+        params.push(v ? v.uid : "");
       for (let v of Object.values(this.mainBoosts))
         params.push(v.value);
       for (let v of Object.values(this.mainItems))
@@ -1305,13 +1327,11 @@ export default {
           v.value = params.shift();
         }
       }
-      if (this.skills) {
-        this.mainSkills = [
-          this.searchTableWithUid.get(params.shift()),
-          this.searchTableWithUid.get(params.shift()),
-          this.searchTableWithUid.get(params.shift()),
-        ];
-      }
+      this.mainSkills = [
+        this.searchTableWithUid.get(params.shift()),
+        this.searchTableWithUid.get(params.shift()),
+        this.searchTableWithUid.get(params.shift()),
+      ];
       for (let v of Object.values(this.mainBoosts))
         v.value = params.shift();
       for (let v of Object.values(this.mainItems)) {
@@ -1364,6 +1384,10 @@ export default {
     onChange() {
       if (this.embed) {
         this.$emit('change', this);
+      }
+      if (this.prevMainEngage != this.main.engage.value) {
+        this.prevMainEngage = this.main.engage.value;
+        this.autoMainSkill();
       }
     },
   },
