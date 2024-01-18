@@ -9,6 +9,11 @@ import router from './router'
 Vue.use(BootstrapVue)
 Vue.config.productionTip = false
 
+Vue.prototype.$idSeed = 0;
+Vue.prototype.$genUniqueId = function () {
+  return ++Vue.prototype.$idSeed;
+};
+
 new Vue({
   router,
   render: h => h(App),

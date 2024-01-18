@@ -21,11 +21,11 @@
                   <label :for="`stat-main-${name}`" style="width: 8em">{{param.label}}</label>
                 </b-col>
                 <b-col>
-                  <b-form-input v-if="param.type == 'number'" style="width: 5em" :id="`stat-main${index}-${name}`" v-model.number="param.value" size="sm" type="number" class="input-param" :min="param.min" :max="param.max"></b-form-input>
-                  <b-form-checkbox v-if="param.type == 'bool'" style="width: 5em" :id="`stat-main${index}-${name}`" v-model="param.value" size="sm" plain></b-form-checkbox>
-                  <b-button v-if="param.type == 'character'" variant="outline-secondary" class="paddingless small-margin" :id="`stat-main${index}-${name}`">
+                  <b-form-input v-if="param.type == 'number'" style="width: 5em" :id="`ss${uid}-main-${name}`" v-model.number="param.value" size="sm" type="number" class="input-param" :min="param.min" :max="param.max"></b-form-input>
+                  <b-form-checkbox v-if="param.type == 'bool'" style="width: 5em" :id="`ss${uid}-main-${name}`" v-model="param.value" size="sm" plain></b-form-checkbox>
+                  <b-button v-if="param.type == 'character'" variant="outline-secondary" class="paddingless small-margin" :id="`ss${uid}-main-${name}`">
                     <b-img-lazy :src="getSkillIcon(param.value)" :title="descToTitle(param.value)" width="100" height="100" />
-                    <ChrSelector :target="`stat-main${index}-${name}`" :chrs="mainChrs" classfilter symbolfilter closeonclick @click="setMainChr" />
+                    <ChrSelector :target="`ss${uid}-main-${name}`" :chrs="mainChrs" classfilter symbolfilter closeonclick @click="setMainChr" />
                   </b-button>
                 </b-col>
               </b-form-row>
@@ -39,10 +39,10 @@
               </div>
               <b-form-row v-for="(param, name, i) in mainBoosts" :key="i">
                 <b-col style="text-align: right" align-self="end">
-                  <label style="width: 9em" :for="`stat-main${index}-${name}`">{{param.label}}</label>
+                  <label style="width: 9em" :for="`ss${uid}-main-${name}`">{{param.label}}</label>
                 </b-col>
                 <b-col>
-                  <b-form-input v-if="param.type == 'number'" style="width: 4em" :id="`stat-main${index}-${name}`" v-model.number="param.value" size="sm" type="number" class="input-param" :min="param.min" :max="param.max"></b-form-input>
+                  <b-form-input v-if="param.type == 'number'" style="width: 4em" :id="`ss${uid}-main-${name}`" v-model.number="param.value" size="sm" type="number" class="input-param" :min="param.min" :max="param.max"></b-form-input>
                 </b-col>
               </b-form-row>
             </b-container>
@@ -55,9 +55,9 @@
                 </div>
                 <b-form-row>
                   <b-col style="text-align: center">
-                    <b-button v-for="(skill, si) in mainSkills" :key="si" :id="`stat-main${index}-skill${si}`" variant="outline-secondary" class="paddingless small-margin">
+                    <b-button v-for="(skill, si) in mainSkills" :key="si" :id="`ss${uid}-main-skill${si}`" variant="outline-secondary" class="paddingless small-margin">
                       <b-img-lazy :src="getSkillIcon(skill)" :title="descToTitle(skill)" width="50" height="50" />
-                      <SkillSelector :target="`stat-main${index}-skill${si}`" nullable closeonclick
+                      <SkillSelector :target="`ss${uid}-main-skill${si}`" nullable closeonclick
                                      :skills="mainSkillList" :excludes="mainSkills" @click="setMainSkill($event, si)" />
                     </b-button>
                   </b-col>
@@ -70,24 +70,24 @@
               <b-row>
                 <b-col style="text-align:center">
                   <span v-for="(param, name, i) in mainItems" :key="i">
-                    <b-button v-if="param.type == 'weapon'" variant="outline-secondary" class="paddingless small-margin" :id="`stat-main${index}-weapon`">
+                    <b-button v-if="param.type == 'weapon'" variant="outline-secondary" class="paddingless small-margin" :id="`ss${uid}-main-weapon`">
                       <b-img-lazy :src="getSkillIcon(param.value)" :title="descToTitle(param.value)" width="50" height="50" />
-                      <ItemSelector :target="`stat-main${index}-weapon`" :items="items" @click="v => param.value=v"
+                      <ItemSelector :target="`ss${uid}-main-weapon`" :items="items" @click="v => param.value=v"
                                     slotfilter="武器" :classfilter="mainClass" nullable closeonclick />
                     </b-button>
-                    <b-button v-if="param.type == 'armor'" variant="outline-secondary" class="paddingless small-margin" :id="`stat-main${index}-armor`">
+                    <b-button v-if="param.type == 'armor'" variant="outline-secondary" class="paddingless small-margin" :id="`ss${uid}-main-armor`">
                       <b-img-lazy :src="getSkillIcon(param.value)" :title="descToTitle(param.value)" width="50" height="50" />
-                      <ItemSelector :target="`stat-main${index}-armor`" :items="items" @click="v => param.value=v"
+                      <ItemSelector :target="`ss${uid}-main-armor`" :items="items" @click="v => param.value=v"
                                     slotfilter="鎧" :classfilter="mainClass" nullable closeonclick />
                     </b-button>
-                    <b-button v-if="param.type == 'helmet'" variant="outline-secondary" class="paddingless small-margin" :id="`stat-main${index}-helmet`">
+                    <b-button v-if="param.type == 'helmet'" variant="outline-secondary" class="paddingless small-margin" :id="`ss${uid}-main-helmet`">
                       <b-img-lazy :src="getSkillIcon(param.value)" :title="descToTitle(param.value)" width="50" height="50" />
-                      <ItemSelector :target="`stat-main${index}-helmet`" :items="items" @click="v => param.value=v"
+                      <ItemSelector :target="`ss${uid}-main-helmet`" :items="items" @click="v => param.value=v"
                                     slotfilter="兜" :classfilter="mainClass" nullable closeonclick />
                     </b-button>
-                    <b-button v-if="param.type == 'accessory'" variant="outline-secondary" class="paddingless small-margin" :id="`stat-main${index}-accessory`">
+                    <b-button v-if="param.type == 'accessory'" variant="outline-secondary" class="paddingless small-margin" :id="`ss${uid}-main-accessory`">
                       <b-img-lazy :src="getSkillIcon(param.value)" :title="descToTitle(param.value)" width="50" height="50" />
-                      <ItemSelector :target="`stat-main${index}-accessory`" :items="items" @click="v => param.value=v"
+                      <ItemSelector :target="`ss${uid}-main-accessory`" :items="items" @click="v => param.value=v"
                                     slotfilter="アクセサリ" :classfilter="mainClass" nullable closeonclick />
                     </b-button>
                   </span>
@@ -99,16 +99,16 @@
               </div>
               <b-form-row v-for="(param, name, i) in mainEnchants" :key="'enchant' + i">
                 <b-col style="text-align: right" align-self="end">
-                  <label style="width: 10em" :for="`stat-main${index}-enchant-${name}P`">{{param.label}} (%)</label>
+                  <label style="width: 10em" :for="`ss${uid}-main-enchant-${name}P`">{{param.label}} (%)</label>
                 </b-col>
                 <b-col>
-                  <b-form-input style="width: 4em" :id="`stat-main${index}-enchant-${name}P`" v-model.number="param.valueP" size="sm" type="number" class="input-param" :min="0"></b-form-input>
+                  <b-form-input style="width: 4em" :id="`ss${uid}-main-enchant-${name}P`" v-model.number="param.valueP" size="sm" type="number" class="input-param" :min="0"></b-form-input>
                 </b-col>
                 <b-col style="text-align: right" align-self="end">
-                  <label style="width: 4em" :for="`stat-main${index}-enchant-${name}F`"> (固定値)</label>
+                  <label style="width: 4em" :for="`ss${uid}-main-enchant-${name}F`"> (固定値)</label>
                 </b-col>
                 <b-col>
-                  <b-form-input style="width: 4em" :id="`stat-main${index}-enchant-${name}F`" v-model.number="param.valueF" size="sm" type="number" class="input-param" :min="0"></b-form-input>
+                  <b-form-input style="width: 4em" :id="`ss${uid}-main-enchant-${name}F`" v-model.number="param.valueF" size="sm" type="number" class="input-param" :min="0"></b-form-input>
                 </b-col>
               </b-form-row>
             </b-container>
@@ -138,14 +138,14 @@
               </div>
               <b-form-row v-for="(param, name, i) in support" :key="i">
                 <b-col style="text-align: right; margin: auto 0 auto 0;" align-self="end">
-                  <label style="width: 8em" :for="`stat-sup${index}-${name}`">{{param.label}}</label>
+                  <label style="width: 8em" :for="`ss${uid}-sup-${name}`">{{param.label}}</label>
                 </b-col>
                 <b-col>
-                  <b-form-input v-if="param.type == 'number'" style="width: 5em" :id="`stat-sup${index}-${name}`" v-model.number="param.value" size="sm" type="number" class="input-param" :min="param.min" :max="param.max"></b-form-input>
-                  <b-form-checkbox v-if="param.type == 'bool'" style="width: 5em" :id="`stat-sup${index}-${name}`" v-model="param.value" size="sm" plain></b-form-checkbox>
-                  <b-button v-if="param.type == 'character'" variant="outline-secondary" class="paddingless small-margin" :id="`stat-sup${index}-${name}`">
+                  <b-form-input v-if="param.type == 'number'" style="width: 5em" :id="`ss${uid}-sup-${name}`" v-model.number="param.value" size="sm" type="number" class="input-param" :min="param.min" :max="param.max"></b-form-input>
+                  <b-form-checkbox v-if="param.type == 'bool'" style="width: 5em" :id="`ss${uid}-sup-${name}`" v-model="param.value" size="sm" plain></b-form-checkbox>
+                  <b-button v-if="param.type == 'character'" variant="outline-secondary" class="paddingless small-margin" :id="`ss${uid}-sup-${name}`">
                     <b-img-lazy :src="getSkillIcon(param.value)" :title="descToTitle(param.value)" width="100" height="100" />
-                    <ChrSelector :target="`stat-sup${index}-${name}`" :chrs="supChrs" nullable classfilter closeonclick @click="setSupChr" />
+                    <ChrSelector :target="`ss${uid}-sup-${name}`" :chrs="supChrs" nullable classfilter closeonclick @click="setSupChr" />
                   </b-button>
                 </b-col>
               </b-form-row>
@@ -158,10 +158,10 @@
               </div>
               <b-form-row v-for="(param, name, i) in supportBoosts" :key="i">
                 <b-col style="text-align: right" align-self="end">
-                  <label style="width: 9em" :for="`stat-sup${index}-${name}`">{{param.label}}</label>
+                  <label style="width: 9em" :for="`ss${uid}-sup-${name}`">{{param.label}}</label>
                 </b-col>
                 <b-col>
-                  <b-form-input v-if="param.type == 'number'" style="width: 4em" :id="`stat-sup${index}-${name}`" v-model.number="param.value" size="sm" type="number" class="input-param" :min="param.min" :max="param.max"></b-form-input>
+                  <b-form-input v-if="param.type == 'number'" style="width: 4em" :id="`ss${uid}-sup-${name}`" v-model.number="param.value" size="sm" type="number" class="input-param" :min="param.min" :max="param.max"></b-form-input>
                 </b-col>
               </b-form-row>
             </b-container>
@@ -174,14 +174,14 @@
               <b-row>
                 <b-col style="text-align:center">
                   <span v-for="(param, name, i) in supportItems" :key="i">
-                    <b-button v-if="param.type == 'amulet1'" variant="outline-secondary" class="paddingless small-margin" :id="`stat-sup${index}-amulet1`">
+                    <b-button v-if="param.type == 'amulet1'" variant="outline-secondary" class="paddingless small-margin" :id="`ss${uid}-sup-amulet1`">
                       <b-img-lazy :src="getSkillIcon(param.value)" :title="descToTitle(param.value)" width="50" height="50" />
-                      <ItemSelector :target="`stat-sup${index}-amulet1`" :items="items" @click="v => param.value=v"
+                      <ItemSelector :target="`ss${uid}-sup-amulet1`" :items="items" @click="v => param.value=v"
                                     slotfilter="月のアミュレット" nullable closeonclick />
                     </b-button>
-                    <b-button v-if="param.type == 'amulet2'" variant="outline-secondary" class="paddingless small-margin" :id="`stat-sup${index}-amulet2`">
+                    <b-button v-if="param.type == 'amulet2'" variant="outline-secondary" class="paddingless small-margin" :id="`ss${uid}-sup-amulet2`">
                       <b-img-lazy :src="getSkillIcon(param.value)" :title="descToTitle(param.value)" width="50" height="50" />
-                      <ItemSelector :target="`stat-sup${index}-amulet2`" :items="items" @click="v => param.value=v"
+                      <ItemSelector :target="`ss${uid}-sup-amulet2`" :items="items" @click="v => param.value=v"
                                     slotfilter="太陽のアミュレット" nullable closeonclick />
                     </b-button>
                   </span>
@@ -193,10 +193,10 @@
               </div>
               <b-form-row v-for="(param, name, i) in supportEnchants" :key="'enchant' + i">
                 <b-col style="text-align: right" align-self="end">
-                  <label style="width: 10em" :for="`stat-sup${index}-enchant-${name}P`">{{param.label}} (%)</label>
+                  <label style="width: 10em" :for="`ss${uid}-sup-enchant-${name}P`">{{param.label}} (%)</label>
                 </b-col>
                 <b-col>
-                  <b-form-input style="width: 4em" :id="`stat-sup${index}-enchant-${name}P`" v-model.number="param.valueP" size="sm" type="number" class="input-param" :min="0" step="0.5"></b-form-input>
+                  <b-form-input style="width: 4em" :id="`ss${uid}-sup-enchant-${name}P`" v-model.number="param.valueP" size="sm" type="number" class="input-param" :min="0" step="0.5"></b-form-input>
                 </b-col>
               </b-form-row>
             </b-container>
@@ -219,12 +219,12 @@
     <div style="padding: 0px 10px 10px 10px">
       <b-container>
         <div style="margin-bottom: 10px">
-          <b-dropdown text="自動装備＆エンチャント" size="sm" id="stat-auto-equip">
+          <b-dropdown text="自動装備＆エンチャント" size="sm">
             <b-dropdown-item class="d-flex flex-column" v-for="(c, i) in autoEquipTypes" :key="i" @click="autoEquip(i)">
               {{ c }}
             </b-dropdown-item>
           </b-dropdown>
-          <b-button v-if="!embed" id="stat-highscore" @click="highscoreSearch()" style="margin-left: 5px">このレベルで戦闘力が高い組み合わせを探す</b-button>
+          <b-button v-if="!embed" @click="highscoreSearch()" style="margin-left: 5px">このレベルで戦闘力が高い組み合わせを探す</b-button>
           <b-table v-if="highscoreData.length" small outlined sticky-header :items="highscoreData" :fields="highscoreFields">
             <template #cell(actions)="row">
               <b-button size="sm" @click="highscoreReplay(row.item)" style="padding: 1px 10px">
@@ -234,8 +234,8 @@
           </b-table>
         </div>
         <div v-if="!embed">
-          <b-button id="stat-copy-url" @click="copyToClipboard(statUrl)">パラメータを URL としてコピー</b-button>
-          <b-popover target="stat-copy-url" triggers="click blur" placement="top" custom-class="url-popover">
+          <b-button :id="`ss${uid}-copy-url`" @click="copyToClipboard(statUrl)">パラメータを URL としてコピー</b-button>
+          <b-popover :target="`ss${uid}-copy-url`" triggers="click blur" placement="top" custom-class="url-popover">
             コピーしました：<br />{{ statUrl }}
           </b-popover>
         </div>
@@ -275,10 +275,6 @@ export default {
       type: Boolean,
       default: false,
     },
-    index: {
-      type: Number,
-      default: 0,
-    },
     data: {
       type: Array
     },
@@ -287,6 +283,7 @@ export default {
 
   data() {
     return {
+      uid: this.$genUniqueId(),
       main: {
         character: {
           label: "キャラ",
@@ -1379,11 +1376,11 @@ export default {
     mainSkillList() {
       let chr = this.main.character.value;
       if (chr) {
-        if (chr.engage && this.main.engage.value) {
-          return chr.engage.skills;
+        if (chr.engage) {
+          return this.main.engage.value ? chr.engage.skills : chr.skillsBase;
         }
         else {
-          return chr.skillsBase;
+          return chr.skills;
         }
       }
       return [];

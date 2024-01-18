@@ -483,6 +483,16 @@ export default {
       if (item.isItem) {
         text += this.statusToText(item.status) + "\n";
       }
+      if (item.isActive || item.isPassive) {
+        text += [
+          ["CT", item.ct],
+          ["範囲", item.area],
+          ["射程", item.range],
+          ["コスト", item.cost],
+        ].filter(a => a[1])
+          .map((a) => `${a[0]}: ${a[1]}`)
+          .join(" ") + "\n";
+      }
       text += this.removeMarkup(item.desc);
       return text;
     },
@@ -978,34 +988,36 @@ export default {
           effect.slot = slot;
         }
       };
+      const setParent = function (effect) {
+        Object.defineProperty(effect, 'parent', {
+          value: skill,
+          writable: false,
+        });
+      };
 
       if (skill.buff) {
         for (let v of skill.buff) {
-          v.parent = skill;
-          v.effectType = "バフ";
+          setParent(v);
           v.isBuff = true;
           setupSlot(v);
         }
       }
       if (skill.debuff) {
         for (let v of skill.debuff) {
-          v.parent = skill;
-          v.effectType = "デバフ";
+          setParent(v);
           v.isDebuff = true;
           setupSlot(v);
         }
       }
       if (skill.statusEffects) {
         for (let v of skill.statusEffects) {
-          v.parent = skill;
-          v.effectType = "状態異常";
+          setParent(v);
           v.isStatusEffect = true;
         }
       }
       if (skill.immune) {
         for (let v of skill.immune) {
-          v.parent = skill;
-          v.effectType = "無効化";
+          setParent(v);
           v.isImmune = true;
         }
       }
@@ -1090,13 +1102,20 @@ export default {
       }
 
       const grabSkill = function (id, chr) {
+        if (typeof (id) == "object") {
+          return id;
+        }
+
         let skill = skillTable.get(id);
         if (!skill) {
           console.error(`skill not found: ${id}`);
           return null;
         }
         if (!skill.owners)
-          skill.owners = [];
+          Object.defineProperty(skill, 'owners', {
+            value: [],
+            writable: false,
+          });
         if (!skill.owners.includes(chr))
           skill.owners.push(chr);
 
@@ -1133,7 +1152,7 @@ export default {
       }.bind(this);
 
       for (let chr of characters) {
-        if (typeof chr.talent === "string") {
+        if (chr.talent) {
           chr.isMain = true;
           chr.talent = grabSkill(chr.talent, chr);
         }
@@ -1157,7 +1176,7 @@ export default {
 
         const handleSummons = function (skills) {
           for (let s of skills) {
-            if (Array.isArray(s.summon) && typeof (s.summon[0]) == "string") {
+            if (Array.isArray(s.summon) && (typeof s.summon[0]) == "string") {
               s.summon = s.summon.map(uid => chr.summon.find(sch => sch.uid == uid));
             }
           }
@@ -1167,8 +1186,7 @@ export default {
           chr.skills = chr.skills.flatMap(id => grabSkill(id, chr));
           if (chr.summon) {
             for (let s of chr.summon) {
-              if (typeof s.talent === "string")
-                s.talent = grabSkill(s.talent, chr);
+              s.talent = grabSkill(s.talent, chr);
               s.skills = s.skills.flatMap(id => grabSkill(id, chr));
               if (!s.icon) {
                 s.icon = s.uid;
@@ -1178,15 +1196,13 @@ export default {
           }
         }
 
-        if (chr.engage) {
+        if (chr.engage && chr.engage.skills) {
           chr.engage.skills = chr.engage.skills.flatMap(id => grabSkill(id, chr));
           if (chr.summon) {
             handleSummons(chr.engage.skills);
           }
           chr.skillsBase = chr.skills;
           this.$set(chr.engage, 'enabled', false);
-        //  chr.skills = chr.engage.skills;
-        //  this.$set(chr.engage, 'enabled', true);
         }
       }
     },

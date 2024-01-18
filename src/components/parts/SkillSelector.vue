@@ -29,28 +29,29 @@ export default {
     excludes: {
       type: Array,
       default: () => [],
-      required: false,
+    },
+    characters: {
+      type: Array,
+      default: () => [],
     },
 
     nullable: {
       type: Boolean,
       default: false,
     },
-
     closeonclick: {
+      type: Boolean,
+      default: false,
+    },
+    chrSelector: {
       type: Boolean,
       default: false,
     },
   },
   data() {
     return {
+      currentChr: null,
     }
-  },
-
-  computed: {
-    filteredItems() {
-      return this.skills.filter(a => !this.excludes.includes(a));
-    },
   },
 
   created() {
@@ -63,7 +64,13 @@ export default {
         this.$root.$emit('bv::hide::popover', this.target)
       }
     }
-  }
+  },
+
+  computed: {
+    filteredItems() {
+      return this.skills.filter(a => !this.excludes.includes(a));
+    },
+  },
 }
 </script>
 
