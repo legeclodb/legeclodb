@@ -272,7 +272,8 @@ export default {
       default: false,
     },
     data: {
-      type: Array
+      type: Array,
+      default: () => [],
     },
   },
   mixins: [common],
@@ -556,9 +557,7 @@ export default {
       this.parseParamsUrl(window.location.href);
     }
 
-    if (Array.isArray(this.data) && Array.isArray(this.data[this.index])) {
-      this.deserialize(this.data[this.index]);
-    }
+    this.deserialize(structuredClone(this.data));
   },
   
   mounted() {
@@ -1317,7 +1316,11 @@ export default {
       return params;
     },
     deserialize(params) {
+      if (!Array.isArray(params) || params.length == 0) {
+        return;
+      }
       //console.log(params);
+
       for (let v of Object.values(this.main)) {
         if (v.type == "character") {
           const uid = params.shift();
