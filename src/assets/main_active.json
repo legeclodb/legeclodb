@@ -217,14 +217,14 @@
       {
         "type": "ディフェンス",
         "value": 30,
-        "ephemeral": true,
+        "duration": 0,
         "target": "自身",
         "timing": "戦闘前"
       },
       {
         "type": "レジスト",
         "value": 30,
-        "ephemeral": true,
+        "duration": 0,
         "target": "自身",
         "timing": "戦闘前"
       }
@@ -344,7 +344,7 @@
       {
         "type": "ダメージ耐性",
         "value": 10,
-        "ephemeral": true,
+        "duration": 0,
         "timing": "戦闘前"
       }
     ],
@@ -420,7 +420,7 @@
       {
         "type": "与ダメージ(物理)",
         "value": 10,
-        "ephemeral": true,
+        "duration": 0,
         "target": "自身",
         "timing": "戦闘前"
       }
@@ -429,7 +429,7 @@
       {
         "type": "与ダメージ(物理)",
         "value": 10,
-        "ephemeral": true,
+        "duration": 0,
         "target": "自身",
         "timing": "戦闘前"
       }
@@ -563,7 +563,7 @@
       {
         "type": "アタック",
         "value": 15,
-        "ephemeral": true,
+        "duration": 0,
         "target": "自身",
         "timing": "戦闘前"
       }
@@ -1131,7 +1131,7 @@
       {
         "type": "クリティカル率",
         "value": 50,
-        "ephemeral": true,
+        "duration": 0,
         "target": "自身",
         "timing": "攻撃前"
       }
@@ -1159,7 +1159,7 @@
       {
         "type": "クリティカル率",
         "value": 60,
-        "ephemeral": true,
+        "duration": 0,
         "target": "自身",
         "timing": "攻撃前"
       }
@@ -1269,7 +1269,7 @@
       {
         "type": "クリティカル率",
         "value": 20,
-        "ephemeral": true,
+        "duration": 0,
         "target": "自身",
         "timing": "戦闘前"
       }
@@ -1329,7 +1329,7 @@
       {
         "type": "クリティカル率",
         "value": 20,
-        "ephemeral": true,
+        "duration": 0,
         "target": "自身",
         "timing": "戦闘前"
       }
@@ -3040,7 +3040,7 @@
       {
         "type": "クリティカル率",
         "value": 50,
-        "ephemeral": true,
+        "duration": 0,
         "target": "自身",
         "timing": "攻撃前"
       }
@@ -4617,7 +4617,7 @@
       {
         "type": "与ダメージ(物理)",
         "value": 10,
-        "ephemeral": true,
+        "duration": 0,
         "target": "自身",
         "timing": "戦闘前"
       }
@@ -5136,7 +5136,7 @@
       {
         "type": "与ダメージ",
         "value": 30,
-        "ephemeral": true,
+        "duration": 0,
         "target": "自身",
         "timing": "戦闘前"
       }
@@ -5278,7 +5278,7 @@
       {
         "type": "クリティカル率",
         "value": 50,
-        "ephemeral": true,
+        "duration": 0,
         "target": "自身",
         "timing": "攻撃前"
       }
@@ -5691,7 +5691,7 @@
       {
         "type": "ディフェンス無視",
         "value": 20,
-        "ephemeral": true,
+        "duration": 0,
         "target": "自身",
         "timing": "攻撃前"
       }
@@ -6164,7 +6164,7 @@
       {
         "type": "ダメージ耐性(魔法)",
         "value": 20,
-        "ephemeral": true,
+        "duration": 0,
         "timing": "戦闘前"
       }
     ],
@@ -6503,7 +6503,7 @@
       {
         "type": "クリティカルダメージ倍率",
         "value": 30,
-        "ephemeral": true,
+        "duration": 0,
         "target": "自身",
         "timing": "攻撃前"
       }
@@ -6544,7 +6544,7 @@
       {
         "type": "与ダメージ(範囲スキル)",
         "value": 30,
-        "ephemeral": true,
+        "duration": 0,
         "target": "自身",
         "timing": "攻撃前"
       }
@@ -6950,7 +6950,8 @@
         "target": "自身"
       }
     ],
-    "tags": [ "単体攻撃", "CT減(味方)" ]
+    "tags": [ "単体攻撃", "CT減(味方)" ],
+    "note": "「範囲3マス以内の味方ユニット」は自分自身は含まない。"
   },
   {
     "uid": "1100392",
@@ -8870,14 +8871,14 @@
       {
         "type": "アタック",
         "value": 25,
-        "ephemeral": true,
+        "duration": 0,
         "target": "自身",
         "timing": "戦闘前"
       },
       {
         "type": "ディフェンス",
         "value": 25,
-        "ephemeral": true,
+        "duration": 0,
         "target": "自身",
         "timing": "戦闘前"
       }

@@ -922,7 +922,7 @@ export default {
       const buffToS = function (effectCategory, effect) {
         if (params.tagFilter && !params.tagFilter(skill, effectCategory, effect))
           return [];
-        if (effect.isDebuff && effect.ephemeral)
+        if (effect.isDebuff && !effect.duration)
           return [];
 
         // マイナスバフをデメリットタグとして登録するか

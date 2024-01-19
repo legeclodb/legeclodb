@@ -435,7 +435,7 @@ export default {
 
         const evalCondition = function (effect) {
           if ((!effect.value && !effect.variable && !effect.add) ||
-            (skill.isActive && effect.ephemeral && !effect.duration))
+            (skill.isActive && !effect.duration))
             return;
 
           const cond = effect.condition;
