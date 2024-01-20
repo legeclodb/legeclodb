@@ -283,8 +283,8 @@
 </template>
 
 <script>
-import common from "../common.js";
-import lookup_common from "./lookup.js";
+import commonjs from "../common.js";
+import lookupjs from "./lookup.js";
 
 export default {
   name: 'SelfBufSimulator',
@@ -292,7 +292,7 @@ export default {
   },
   props: {
   },
-  mixins: [common, lookup_common],
+  mixins: [commonjs, lookupjs],
 
   data() {
     return {

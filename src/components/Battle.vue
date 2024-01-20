@@ -155,7 +155,7 @@
           <div v-if="unit.mainChr" class="character">
             <div class="flex">
               <div class="portrait">
-                <b-img-lazy :src="getImageURL(unit.mainChr.icon)" :title="unit.mainChr.name" width="80" height="80" rounded />
+                <b-img-lazy :src="getImageURL(unit.mainChr.icon)" :title="unit.mainChr.name" width="100" height="100" rounded />
               </div>
               <div class="detail" v-show="displayType >= 1">
                 <div class="info">
@@ -165,7 +165,6 @@
                     <div class="param-box"><b-img-lazy :src="getImageURL(unit.mainChr.damageType)" :title="'攻撃タイプ:'+unit.mainChr.damageType" width="20" height="20" /></div>
                     <div class="param-box"><b-img-lazy :src="getImageURL('射程')" title="射程" width="18" height="18" /><span>{{unit.mainChr.range}}</span></div>
                     <div class="param-box"><b-img-lazy :src="getImageURL('移動')" title="移動" width="18" height="18" /><span>{{unit.mainChr.move}}</span></div>
-                    <div class="param-box"><span class="param-name">レベル:</span><span class="param-value">{{unit.mainChr.level}}</span></div>
                   </div>
                   <div v-if="unit.mainStat" class="status2" v-html="statusToHtml(unit.mainStat)" />
                 </div>
@@ -204,7 +203,7 @@
                       <div class="desc" v-show="displayType >= 2">
                         <div class="flex">
                           <h6>
-                            <b-img-lazy :src="getImageURL(skill.slot)" :title="'部位:'+skill.slot" height="25" />
+                            <b-img-lazy :src="getImageURL(skill.slot)" :title="'部位:'+skill.slot" height="20" />
                             {{ skill.name }}
                           </h6>
                         </div>
@@ -218,7 +217,7 @@
 
             <div v-if="unit.supChr" class="flex">
               <div class="portrait">
-                <b-img-lazy :src="getImageURL(unit.supChr.icon)" :title="unit.supChr.name" width="80" height="80" rounded />
+                <b-img-lazy :src="getImageURL(unit.supChr.icon)" :title="unit.supChr.name" width="100" height="100" rounded />
               </div>
               <div class="detail" v-show="displayType >= 1">
                 <div class="info">
@@ -227,7 +226,6 @@
                     <b-img-lazy :src="getImageURL(unit.supChr.class)" :title="'クラス:'+unit.supChr.class" height="25" />
                     <div class="param-box"><b-img-lazy :src="getImageURL(unit.supChr.damageType)" :title="'攻撃タイプ:'+unit.supChr.damageType" width="20" height="20" /></div>
                     <div class="param-box"><b-img-lazy :src="getImageURL('射程')" title="射程" width="18" height="18" /><span>{{unit.supChr.range}}</span></div>
-                    <div class="param-box"><span class="param-name">レベル:</span><span class="param-value">{{unit.supChr.level}}</span></div>
                   </div>
                   <div v-if="unit.supStat" class="status2" v-html="statusToHtml(unit.supStat)" />
                 </div>
@@ -266,8 +264,10 @@
                       </div>
                       <div class="desc" v-show="displayType >= 2">
                         <div class="flex">
-                          <h6>{{ skill.name }}</h6>
-                          <div class="param-group" v-html="skillParamsToHtml(skill)"></div>
+                          <h6>
+                            <b-img-lazy :src="getImageURL(skill.slot)" :title="'部位:'+skill.slot" height="20" />
+                            {{ skill.name }}
+                          </h6>
                         </div>
                         <p><span v-html="descToHtml(skill)"></span><span v-if="skill.note" class="note" v-html="noteToHtml(skill)"></span></p>
                       </div>
@@ -289,22 +289,20 @@
       <div class="unit-panel">
         <b-button size="sm" @click="loadUnits()">編成をロード</b-button>
       </div>
+      <div class="unit-panel">
+        <b-button size="sm" @click="clearUnits()">編成をクリア</b-button>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 import Navigation from './Navigation.vue'
-import jsonMainActive from '../assets/main_active.json'
-import jsonMainPassive from '../assets/main_passive.json'
-import jsonMainTalents from '../assets/main_talents.json'
-import jsonMainChrs from '../assets/enemy_main_characters.json'
-import jsonSupportActive from '../assets/support_active.json'
-import jsonSupportPassive from '../assets/support_passive.json'
-import jsonSupportChrs from '../assets/enemy_support_characters.json'
-import jsonConstants from '../assets/constants.json'
+import jsonEnemyMainChrs from '../assets/enemy_main_characters.json'
+import jsonEnemySupportChrs from '../assets/enemy_support_characters.json'
 import jsonBattle from '../assets/battle.json'
 import commonjs from "./common.js";
+import lookupjs from "./simulator/lookup.js";
 import StatusSimulator from './simulator/StatusSimulator.vue'
 
 export default {
@@ -313,15 +311,10 @@ export default {
     Navigation,
     StatusSimulator,
   },
-  mixins: [commonjs],
+  mixins: [commonjs,lookupjs],
 
   data() {
     return {
-      classes: jsonConstants.classes,
-      symbols: jsonConstants.symbols,
-      damageTypes: jsonConstants.damageTypes,
-      rarities: jsonConstants.rarities,
-
       displayTypes: [
         "アイコン",
         "シンプル",
@@ -363,22 +356,12 @@ export default {
   created() {
     document.title = "れじぇくろDB: 戦闘データ";
 
-    this.mainActive = structuredClone(jsonMainActive);
-    this.mainPassive = structuredClone(jsonMainPassive);
-    this.mainTalents = structuredClone(jsonMainTalents);
-    this.mainChrs = structuredClone(jsonMainChrs).filter(a => !a.hidden);
+    this.setupDB();
 
-    this.supActive = structuredClone(jsonSupportActive);
-    this.supPassive = structuredClone(jsonSupportPassive);
-    this.supChrs = structuredClone(jsonSupportChrs).filter(a => !a.hidden);
-
-    this.setupCharacters(this.mainChrs, this.mainActive, this.mainPassive, this.mainTalents);
-    this.setupCharacters(this.supChrs, this.supActive, this.supPassive);
-
-    let skillTable = new Map();
-    for (let s of [...this.mainActive, ...this.mainPassive, ...this.mainTalents]) {
-      skillTable.set(s.uid, s);
-    }
+    this.enemyMainChrs = structuredClone(jsonEnemyMainChrs).filter(a => !a.hidden);
+    this.enemySupChrs = structuredClone(jsonEnemySupportChrs).filter(a => !a.hidden);
+    this.setupCharacters(this.enemyMainChrs, this.mainActive, this.mainPassive, this.mainTalents);
+    this.setupCharacters(this.enemySupChrs, this.supActive, this.supPassive);
 
     const mergeChrData = function (dst, src) {
       dst.name = src.name;
@@ -394,18 +377,22 @@ export default {
       for (let enemy of battle.enemies) {
         enemy.cellID = `c${this.zeroPad(enemy.coord[0])}${this.zeroPad(enemy.coord[1])}`;
         {
-          const chr = this.mainChrs.find(c => c.uid == enemy.main.cid);
+          const chr = this.enemyMainChrs.find(c => c.uid == enemy.main.cid);
           mergeChrData(enemy.main, chr);
           enemy.main.status = this.getNPCChrStatus(chr, enemy.main.level, enemy.main.statusRate);
-          enemy.main.talent = skillTable.get(enemy.main.talent);
-          enemy.main.skills = enemy.main.skills.map(id => skillTable.get(id));
+          enemy.main.talent = this.searchTableWithUid.get(enemy.main.talent);
+          enemy.main.skills = enemy.main.skills.map(id => this.searchTableWithUid.get(id));
         }
         if (enemy.support) {
-          const chr = this.supChrs.find(c => c.uid == enemy.support.cid);
+          const chr = this.enemySupChrs.find(c => c.uid == enemy.support.cid);
           mergeChrData(enemy.support, chr);
           enemy.support.status = this.getNPCChrStatus(chr, enemy.support.level, enemy.support.statusRate);
         }
       }
+    }
+
+    for (let unit of this.units) {
+      unit.vue = this;
     }
   },
 
@@ -643,7 +630,10 @@ export default {
     },
     BattleUnit: class {
       constructor() {
-        this.showEditor = false;
+        this.vue = null;
+        this.initialize();
+      }
+      initialize() {
         this.mainChr = null;
         this.mainSkills = [];
         this.mainItems = [];
@@ -660,6 +650,7 @@ export default {
         this.mainEffects = {}; // 
         this.supEffects = {}; // evaluateEffects() で設定
 
+        this.showEditor = false;
         this.editorData = [];
       }
       setup() {
@@ -671,35 +662,67 @@ export default {
       evaluateEffects(battleCtx) {
 
       }
+      actionEnd() {
+
+      }
       passTurn() {
 
       }
+
       serialize() {
+        let r = {};
+        r.mainChr = this.mainChr?.uid;
+        r.mainSkills = this.mainSkills.map(a => a.uid);
+        r.mainItems = this.mainItems.map(a => a.uid);
+        r.mainStat = [...this.mainStat];
 
+        r.supChr = this.supChr?.uid;
+        r.supSkills = this.supSkills.map(a => a.uid);
+        r.supItems = this.supItems.map(a => a.uid);
+        r.supStat = [...this.supStat];
+
+        r.editorData = [...this.editorData];
+        return r;
       }
-      deserialize(params) {
+      deserialize(r) {
+        const uidToObject = this.vue.uidToObject;
+        this.mainChr = uidToObject(r.mainChr);
+        this.mainSkills = r.mainSkills.map(uidToObject);
+        this.mainItems = r.mainItems.map(uidToObject);
+        this.mainStat = [...r.mainStat];
 
+        this.supChr = uidToObject(r.supChr);
+        this.supSkills = r.supSkills.map(uidToObject);
+        this.supItems = r.supItems.map(uidToObject);
+        this.supStat = [...r.supStat];
+
+        this.editorData = [...r.editorData];
       }
     },
+
     onEditUnit(ss, unit) {
-      unit.mainChr = ss.main.character.value;
-      unit.mainItems = ss.mainItems.toArray();
-      unit.mainSkills = ss.mainSkills;
+      unit.mainChr = this.uidToObject(ss.main.character.value?.uid);
+      unit.mainItems = ss.mainItems.toArray().map(a => this.uidToObject(a.uid));
+      unit.mainSkills = [];
       if (unit.mainChr) {
-        unit.mainSkills = [unit.mainChr.talent, ...unit.mainSkills];
+        unit.mainSkills = [unit.mainChr.talent, ...ss.mainSkills].map(a => this.uidToObject(a.uid));
       }
       unit.mainStat = ss.statMainResult.slice(0, 6);
 
-      unit.supChr = ss.support.character.value;
+      unit.supChr = this.uidToObject(ss.support.character.value?.uid);
       unit.supSkills = [];
       if (unit.supChr) {
-        unit.supSkills = [...unit.supChr.skills];
+        unit.supSkills = [...unit.supChr.skills].map(a => this.uidToObject(a.uid));
       }
-      unit.supItems = ss.supportItems.toArray();
+      unit.supItems = ss.supportItems.toArray().map(a => this.uidToObject(a.uid));
       unit.supStat = ss.statSupportResult.slice(0, 6);
 
       this.copyArray(unit.editorData, ss.serialize());
-      console.log(unit);
+      //console.log(unit);
+    },
+
+    uidToObject(uid) {
+      return this.searchTableWithUid.get(uid);
     },
 
     // in-place array copy
@@ -709,12 +732,24 @@ export default {
         dst[i] = src[i];
     },
 
+    clearUnits() {
+      for (let unit of this.units) {
+        unit.initialize();
+      }
+    },
     saveUnits(slot = 0) {
-      console.log(`saveUnits(${slot})`);
-
+      let data = {
+        units: this.units.map(a => a.serialize())
+      };
+      localStorage.setItem(`battle.slot${slot}`, JSON.stringify(data));
     },
     loadUnits(slot = 0) {
-      console.log(`loadUnits(${slot})`);
+      let data = JSON.parse(localStorage.getItem(`battle.slot${slot}`));
+      if (data && data.units) {
+        for (let i = 0; i < this.units.length; ++i) {
+          this.units[i].deserialize(data.units[i]);
+        }
+      }
     },
 
     dbgTest() {
