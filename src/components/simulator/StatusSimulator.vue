@@ -378,6 +378,14 @@ export default {
           type: "accessory",
           value: null,
         },
+        toArray() {
+          return [
+            this.weapon.value,
+            this.armor.value,
+            this.helmet.value,
+            this.accessory.value
+          ].filter(a => a != null);
+        }
       },
       mainEnchants: {
         hp: {
@@ -482,6 +490,12 @@ export default {
           type: "amulet2",
           value: null,
         },
+        toArray() {
+          return [
+            this.amulet1.value,
+            this.amulet2.value,
+          ].filter(a => a != null);
+        }
       },
       supportEnchants: {
         hp: {

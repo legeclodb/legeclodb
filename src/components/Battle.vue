@@ -4,7 +4,6 @@
       <Navigation />
     </div>
     <div class="about" style="margin-top: 55px;">
-
       <div class="menu-content" style="flex-wrap: nowrap">
         <div class="menu-panel" id="cb-settings">
           <div class="menu-widgets flex">
@@ -18,7 +17,6 @@
             </div>
           </div>
         </div>
-
         <div class="menu-panel" id="cb-settings">
           <div class="menu-widgets flex">
             <div class="widget">
@@ -31,17 +29,6 @@
             </div>
           </div>
         </div>
-
-        <!--
-        <div class="menu-panel" id="cb-settings">
-          <div class="menu-widgets flex">
-            <div class="widget">
-              <b-button @click="dbgTest()">テスト</b-button>
-            </div>
-          </div>
-        </div>
-        -->
-
       </div>
     </div>
 
@@ -69,7 +56,7 @@
 
           <div class="enemy-list">
             <template v-for="ene in enemies">
-              <div class="character" :class="{ 'highlighted': isUnitHighlighted(ene) }" :id="'unit_'+ene.fid" :key="ene.fid">
+              <div class="character" :class="{ 'highlighted': isUnitHighlighted(ene) }" :id="'enemy_'+ene.fid" :key="ene.fid">
                 <div class="flex">
                   <div class="portrait">
                     <b-img-lazy :src="getImageURL(ene.main.icon)" :title="ene.main.name" width="80" height="80" rounded />
@@ -89,9 +76,9 @@
                     <div class="skills">
                       <div class="talent">
                         <div class="flex">
-                          <div class="icon" :id="'unit_'+ene.fid+'_talent'">
+                          <div class="icon" :id="'enemy_'+ene.fid+'_talent'">
                             <b-img-lazy :src="getImageURL(ene.main.talent.icon)" with="50" height="50" />
-                            <b-popover v-if="displayType==1" :target="'unit_'+ene.fid+'_talent'" triggers="hover focus" :delay="{show:0, hide:250}" no-fade :title="ene.main.talent.name" placement="top">
+                            <b-popover v-if="displayType==1" :target="'enemy_'+ene.fid+'_talent'" triggers="hover focus" :delay="{show:0, hide:250}" no-fade :title="ene.main.talent.name" placement="top">
                               <div class="flex">
                                 <div v-html="descToHtml(ene.main.talent)"></div>
                               </div>
@@ -107,9 +94,9 @@
                       </div>
                       <div class="skill" v-for="(skill, si) in ene.main.skills" :class="getSkillClass(skill)" :key="si">
                         <div class="flex">
-                          <div class="icon" :id="'unit_'+ene.fid+'_skill'+si">
+                          <div class="icon" :id="'enemy_'+ene.fid+'_skill'+si">
                             <b-img-lazy :src="getImageURL(skill.icon)" with="50" height="50" />
-                            <b-popover v-if="displayType==1" :target="'unit_'+ene.fid+'_skill'+si" triggers="hover focus" :delay="{show:0, hide:250}" no-fade :title="skill.name" placement="top">
+                            <b-popover v-if="displayType==1" :target="'enemy_'+ene.fid+'_skill'+si" triggers="hover focus" :delay="{show:0, hide:250}" no-fade :title="skill.name" placement="top">
                               <div class="flex">
                                 <div v-html="descToHtml(skill)"></div>
                               </div>
@@ -152,13 +139,162 @@
 
         </div>
       </div>
-
     </div>
 
+    <div class="content" style="margin-top: 20px" :style="style">
+      <div>
+        <div v-for="(unit, ui) in units" class="unit-panel" style="padding: 10px; margin: 5px;" :key="ui">
+          <b-button :id="`btn-edit-unit${ui}`" @click="unit.showEditor=!unit.showEditor">ユニット{{ui+1}}</b-button>
+          <b-popover :target="`btn-edit-unit${ui}`" custom-class="status-simulator-popover" :show.sync="unit.showEditor" :delay="{show:0, hide:250}" no-fade>
+            <StatusSimulator embed :data="unit.editorData" @change="onEditUnit($event, unit)" />
+            <div class="flex">
+              <b-button size="sm" @click="unit.showEditor=false">閉じる</b-button>
+            </div>
+          </b-popover>
+
+          <div v-if="unit.mainChr" class="character">
+            <div class="flex">
+              <div class="portrait">
+                <b-img-lazy :src="getImageURL(unit.mainChr.icon)" :title="unit.mainChr.name" width="80" height="80" rounded />
+              </div>
+              <div class="detail" v-show="displayType >= 1">
+                <div class="info">
+                  <h5 v-html="chrNameToHtml(unit.mainChr.name)"></h5>
+                  <div class="status">
+                    <b-img-lazy :src="getImageURL(unit.mainChr.class)" :title="'クラス:'+unit.mainChr.class" height="25" />
+                    <div class="param-box"><b-img-lazy :src="getImageURL(unit.mainChr.damageType)" :title="'攻撃タイプ:'+unit.mainChr.damageType" width="20" height="20" /></div>
+                    <div class="param-box"><b-img-lazy :src="getImageURL('射程')" title="射程" width="18" height="18" /><span>{{unit.mainChr.range}}</span></div>
+                    <div class="param-box"><b-img-lazy :src="getImageURL('移動')" title="移動" width="18" height="18" /><span>{{unit.mainChr.move}}</span></div>
+                    <div class="param-box"><span class="param-name">レベル:</span><span class="param-value">{{unit.mainChr.level}}</span></div>
+                  </div>
+                  <div v-if="unit.mainStat" class="status2" v-html="statusToHtml(unit.mainStat)" />
+                </div>
+                <div class="skills">
+                  <div class="skill" v-for="(skill, si) in unit.mainSkills" :class="getSkillClass(skill)" :key="`skill${si}`">
+                    <div class="flex">
+                      <div class="icon" :id="`unit${ui}_main_skill${si}`">
+                        <b-img-lazy :src="getImageURL(skill.icon)" with="50" height="50" />
+                        <b-popover v-if="displayType==1" :target="`unit${ui}_main_skill${si}`" triggers="hover focus" :delay="{show:0, hide:250}" no-fade :title="skill.name" placement="top">
+                          <div class="flex">
+                            <div v-html="descToHtml(skill)"></div>
+                          </div>
+                        </b-popover>
+                      </div>
+                      <div class="desc" v-show="displayType >= 2">
+                        <div class="flex">
+                          <h6>{{ skill.name }}</h6>
+                          <div class="param-group" v-html="skillParamsToHtml(skill)"></div>
+                        </div>
+                        <p><span v-html="descToHtml(skill)"></span><span v-if="skill.note" class="note" v-html="noteToHtml(skill)"></span></p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="skills">
+                  <div class="skill" v-for="(skill, si) in unit.mainItems" :class="getSkillClass(skill)" :key="`item${si}`">
+                    <div class="flex">
+                      <div class="icon" :id="`unit${ui}_main_item${si}`">
+                        <b-img-lazy :src="getImageURL(skill.icon)" with="50" height="50" />
+                        <b-popover v-if="displayType==1" :target="`unit${ui}_main_item${si}`" triggers="hover focus" :delay="{show:0, hide:250}" no-fade :title="skill.name" placement="top">
+                          <div class="flex">
+                            <div v-html="descToHtml(skill)"></div>
+                          </div>
+                        </b-popover>
+                      </div>
+                      <div class="desc" v-show="displayType >= 2">
+                        <div class="flex">
+                          <h6>
+                            <b-img-lazy :src="getImageURL(skill.slot)" :title="'部位:'+skill.slot" height="25" />
+                            {{ skill.name }}
+                          </h6>
+                        </div>
+                        <p><span v-html="descToHtml(skill)"></span><span v-if="skill.note" class="note" v-html="noteToHtml(skill)"></span></p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div v-if="unit.supChr" class="flex">
+              <div class="portrait">
+                <b-img-lazy :src="getImageURL(unit.supChr.icon)" :title="unit.supChr.name" width="80" height="80" rounded />
+              </div>
+              <div class="detail" v-show="displayType >= 1">
+                <div class="info">
+                  <h5 v-html="chrNameToHtml(unit.supChr.name)"></h5>
+                  <div class="status">
+                    <b-img-lazy :src="getImageURL(unit.supChr.class)" :title="'クラス:'+unit.supChr.class" height="25" />
+                    <div class="param-box"><b-img-lazy :src="getImageURL(unit.supChr.damageType)" :title="'攻撃タイプ:'+unit.supChr.damageType" width="20" height="20" /></div>
+                    <div class="param-box"><b-img-lazy :src="getImageURL('射程')" title="射程" width="18" height="18" /><span>{{unit.supChr.range}}</span></div>
+                    <div class="param-box"><span class="param-name">レベル:</span><span class="param-value">{{unit.supChr.level}}</span></div>
+                  </div>
+                  <div v-if="unit.supStat" class="status2" v-html="statusToHtml(unit.supStat)" />
+                </div>
+
+                <div class="skills">
+                  <div class="skill" v-for="(skill, si) in unit.supSkills" :class="getSkillClass(skill)" :key="`skill${si}`">
+                    <div class="flex">
+                      <div class="icon" :id="`unit${ui}_sup_skill${si}`">
+                        <b-img-lazy :src="getImageURL(skill.icon)" with="50" height="50" />
+                        <b-popover v-if="displayType==1" :target="`unit${ui}_sup_skill${si}`" triggers="hover focus" :delay="{show:0, hide:250}" no-fade :title="skill.name" placement="top">
+                          <div class="flex">
+                            <div v-html="descToHtml(skill)"></div>
+                          </div>
+                        </b-popover>
+                      </div>
+                      <div class="desc" v-show="displayType >= 2">
+                        <div class="flex">
+                          <h6>{{ skill.name }}</h6>
+                          <div class="param-group" v-html="skillParamsToHtml(skill)"></div>
+                        </div>
+                        <p><span v-html="descToHtml(skill)"></span><span v-if="skill.note" class="note" v-html="noteToHtml(skill)"></span></p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="skills">
+                  <div class="skill" v-for="(skill, si) in unit.supItems" :class="getSkillClass(skill)" :key="`item${si}`">
+                    <div class="flex">
+                      <div class="icon" :id="`unit${ui}_sup_item${si}`">
+                        <b-img-lazy :src="getImageURL(skill.icon)" with="50" height="50" />
+                        <b-popover v-if="displayType==1" :target="`unit${ui}_sup_item${si}`" triggers="hover focus" :delay="{show:0, hide:250}" no-fade :title="skill.name" placement="top">
+                          <div class="flex">
+                            <div v-html="descToHtml(skill)"></div>
+                          </div>
+                        </b-popover>
+                      </div>
+                      <div class="desc" v-show="displayType >= 2">
+                        <div class="flex">
+                          <h6>{{ skill.name }}</h6>
+                          <div class="param-group" v-html="skillParamsToHtml(skill)"></div>
+                        </div>
+                        <p><span v-html="descToHtml(skill)"></span><span v-if="skill.note" class="note" v-html="noteToHtml(skill)"></span></p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="content">
+      <div class="unit-panel">
+        <b-button size="sm" @click="saveUnits()">編成をセーブ</b-button>
+      </div>
+      <div class="unit-panel">
+        <b-button size="sm" @click="loadUnits()">編成をロード</b-button>
+      </div>
+    </div>
   </div>
 </template>
 
-<script>import Navigation from './Navigation.vue'
+<script>
+import Navigation from './Navigation.vue'
 import jsonMainActive from '../assets/main_active.json'
 import jsonMainPassive from '../assets/main_passive.json'
 import jsonMainTalents from '../assets/main_talents.json'
@@ -168,14 +304,16 @@ import jsonSupportPassive from '../assets/support_passive.json'
 import jsonSupportChrs from '../assets/enemy_support_characters.json'
 import jsonConstants from '../assets/constants.json'
 import jsonBattle from '../assets/battle.json'
-import common from "./common";
+import commonjs from "./common.js";
+import StatusSimulator from './simulator/StatusSimulator.vue'
 
 export default {
   name: 'Battle',
   components: {
     Navigation,
+    StatusSimulator,
   },
-  mixins: [common],
+  mixins: [commonjs],
 
   data() {
     return {
@@ -211,6 +349,14 @@ export default {
 
       phaseTabIndex: 0,
       prevURL: "",
+
+      units: [
+        new this.BattleUnit(),
+        new this.BattleUnit(),
+        new this.BattleUnit(),
+        new this.BattleUnit(),
+        new this.BattleUnit(),
+      ],
     };
   },
 
@@ -400,7 +546,7 @@ export default {
     onCellEnter(cell) {
       this.hovered = cell.enemy ? cell.enemy.fid : null;
       if (cell.enemy)
-        this.scrollTo(`unit_${cell.enemy.fid}`);
+        this.scrollTo(`enemy_${cell.enemy.fid}`);
     },
     onCellLeave(cell) {
       if (cell.enemy && this.hovered == cell.enemy.fid) {
@@ -447,8 +593,131 @@ export default {
       }
     },
 
+    BattleContext: class {
+      constructor() {
+        this.turn = 0;
+        this.isPlayerTurn = true;
+        this.moveAmount = 0;
+        this.range = 1;
+        this.terrain = null;
+      }
+    },
+    BattleEffect: class {
+      constructor(effect) {
+        this.effect = effect;
+        this.stack = 0;
+        this.duration = 0;
+        this.enabled = true;
+      }
+      evaluate(battleCtx, baseStat) {
+        let r = 0;
+        const effect = this.effect;
+        if (effect.value) {
+          r = effect.value;
+          if (effect.maxStack) {
+            // 効果が重複するタイプ
+            // フルスペック時の効果を返す
+            r *= this.stack;
+          }
+        }
+        else if (effect.variable) {
+          // HP 割合などに応じて効果が上下するタイプ
+          // フルスペック時の効果を返す
+          if (Array.isArray(effect.variable.max)) {
+            r = effect.variable.max[effect.variable.max.length - 1];
+          }
+          else {
+            r = effect.variable.max;
+          }
+        }
+        else if (effect.add) {
+          // "アタックの n% をマジックに加算" など
+          // 正確な評価は困難だが 0 にはしたくないので、とりあえず 1/4 したのをスコアにしておく
+          r = effect.add.rate * 0.25;
+        }
+        return r;
+      }
+      passTurn() {
+
+      }
+    },
+    BattleUnit: class {
+      constructor() {
+        this.showEditor = false;
+        this.mainChr = null;
+        this.mainSkills = [];
+        this.mainItems = [];
+        this.supChr = null;
+        this.supSkills = [];
+        this.supItems = [];
+
+        this.mainHiddenSkills = [];
+        this.supHiddenSkills = [];
+        this.mainStat = [0, 0, 0, 0, 0, 0]; // 基礎ステ
+        this.supStat = [0, 0, 0, 0, 0, 0];
+
+        this.appliedSkills = [];
+        this.mainEffects = {}; // 
+        this.supEffects = {}; // evaluateEffects() で設定
+
+        this.editorData = [];
+      }
+      setup() {
+        // mainHiddenSkills や supHiddenSkills などを設定
+      }
+      applySkill(skill, self=false) {
+
+      }
+      evaluateEffects(battleCtx) {
+
+      }
+      passTurn() {
+
+      }
+      serialize() {
+
+      }
+      deserialize(params) {
+
+      }
+    },
+    onEditUnit(ss, unit) {
+      unit.mainChr = ss.main.character.value;
+      unit.mainItems = ss.mainItems.toArray();
+      unit.mainSkills = ss.mainSkills;
+      if (unit.mainChr) {
+        unit.mainSkills = [unit.mainChr.talent, ...unit.mainSkills];
+      }
+      unit.mainStat = ss.statMainResult.slice(0, 6);
+
+      unit.supChr = ss.support.character.value;
+      unit.supSkills = [];
+      if (unit.supChr) {
+        unit.supSkills = [...unit.supChr.skills];
+      }
+      unit.supItems = ss.supportItems.toArray();
+      unit.supStat = ss.statSupportResult.slice(0, 6);
+
+      this.copyArray(unit.editorData, ss.serialize());
+      console.log(unit);
+    },
+
+    // in-place array copy
+    copyArray(dst, src) {
+      dst.length = src.length;
+      for (let i = 0; i < dst.length; ++i)
+        dst[i] = src[i];
+    },
+
+    saveUnits(slot = 0) {
+      console.log(`saveUnits(${slot})`);
+
+    },
+    loadUnits(slot = 0) {
+      console.log(`loadUnits(${slot})`);
+    },
+
     dbgTest() {
-      this.decodeURL();
     },
   },
 }
@@ -505,6 +774,19 @@ export default {
     margin: auto;
   }
 
+  .unit-panel {
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 0.3rem;
+    display: inline-block;
+    background: rgb(245, 245, 245);
+    box-shadow: 0 3px 6px rgba(140,149,159,0.5);
+    padding: 10px;
+    margin: 5px;
+  }
+  .status-simulator-popover {
+    max-width: 880px !important;
+    width: 880px !important;
+  }
 </style>
 <style>
   .table {
