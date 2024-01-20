@@ -1,5 +1,382 @@
 [
   {
+    "uid": "クラス特性:ソルジャー(サポート)",
+    "name": "クラス特性:ソルジャー(サポート)",
+    "icon": "ソルジャー",
+    "buff": [
+      {
+        "type": "アタック",
+        "value": 75,
+        "ephemeral": true,
+        "target": "自身(サポート)",
+        "timing": "攻撃前",
+        "condition": {
+          "onEnemyClass": [ "ランサー" ]
+        }
+      },
+      {
+        "type": "マジック",
+        "value": 75,
+        "ephemeral": true,
+        "target": "自身(サポート)",
+        "timing": "攻撃前",
+        "condition": {
+          "onEnemyClass": [ "ランサー" ]
+        }
+      },
+      {
+        "type": "アタック",
+        "value": -35,
+        "ephemeral": true,
+        "target": "自身(サポート)",
+        "timing": "攻撃前",
+        "condition": {
+          "onEnemyClass": [ "ライダー" ]
+        }
+      },
+      {
+        "type": "マジック",
+        "value": -35,
+        "ephemeral": true,
+        "target": "自身(サポート)",
+        "timing": "攻撃前",
+        "condition": {
+          "onEnemyClass": [ "ライダー" ]
+        }
+      }
+    ]
+  },
+  {
+    "uid": "クラス特性:ランサー(サポート)",
+    "name": "クラス特性:ランサー(サポート)",
+    "icon": "ランサー",
+    "buff": [
+      {
+        "type": "アタック",
+        "value": 75,
+        "ephemeral": true,
+        "target": "自身(サポート)",
+        "timing": "攻撃前",
+        "condition": {
+          "onEnemyClass": [ "ライダー" ]
+        }
+      },
+      {
+        "type": "マジック",
+        "value": 75,
+        "ephemeral": true,
+        "target": "自身(サポート)",
+        "timing": "攻撃前",
+        "condition": {
+          "onEnemyClass": [ "ライダー" ]
+        }
+      },
+      {
+        "type": "アタック",
+        "value": -35,
+        "ephemeral": true,
+        "target": "自身(サポート)",
+        "timing": "攻撃前",
+        "condition": {
+          "onEnemyClass": [ "ソルジャー" ]
+        }
+      },
+      {
+        "type": "マジック",
+        "value": -35,
+        "ephemeral": true,
+        "target": "自身(サポート)",
+        "timing": "攻撃前",
+        "condition": {
+          "onEnemyClass": [ "ソルジャー" ]
+        }
+      }
+    ]
+  },
+  {
+    "uid": "クラス特性:ライダー(サポート)",
+    "name": "クラス特性:ライダー(サポート)",
+    "icon": "ライダー",
+    "buff": [
+      {
+        "type": "アタック",
+        "value": 75,
+        "ephemeral": true,
+        "target": "自身(サポート)",
+        "timing": "攻撃前",
+        "condition": {
+          "onEnemyClass": [ "ソルジャー" ]
+        }
+      },
+      {
+        "type": "マジック",
+        "value": 75,
+        "ephemeral": true,
+        "target": "自身(サポート)",
+        "timing": "攻撃前",
+        "condition": {
+          "onEnemyClass": [ "ソルジャー" ]
+        }
+      },
+      {
+        "type": "アタック",
+        "value": -35,
+        "ephemeral": true,
+        "target": "自身(サポート)",
+        "timing": "攻撃前",
+        "condition": {
+          "onEnemyClass": [ "ランサー" ]
+        }
+      },
+      {
+        "type": "マジック",
+        "value": -35,
+        "ephemeral": true,
+        "target": "自身(サポート)",
+        "timing": "攻撃前",
+        "condition": {
+          "onEnemyClass": [ "ランサー" ]
+        }
+      }
+    ]
+  },
+  {
+    "uid": "クラス特性:エアリアル(サポート)",
+    "name": "クラス特性:エアリアル(サポート)",
+    "icon": "エアリアル",
+    "buff": [
+      {
+        "type": "アタック",
+        "value": 75,
+        "ephemeral": true,
+        "target": "自身(サポート)",
+        "timing": "攻撃前",
+        "condition": {
+          "onEnemyClass": [ "アサシン" ]
+        }
+      },
+      {
+        "type": "マジック",
+        "value": 75,
+        "ephemeral": true,
+        "target": "自身(サポート)",
+        "timing": "攻撃前",
+        "condition": {
+          "onEnemyClass": [ "アサシン" ]
+        }
+      },
+      {
+        "type": "アタック",
+        "value": -35,
+        "ephemeral": true,
+        "target": "自身(サポート)",
+        "timing": "攻撃前",
+        "condition": {
+          "onEnemyClass": [ "シューター" ]
+        }
+      },
+      {
+        "type": "マジック",
+        "value": -35,
+        "ephemeral": true,
+        "target": "自身(サポート)",
+        "timing": "攻撃前",
+        "condition": {
+          "onEnemyClass": [ "シューター" ]
+        }
+      }
+    ]
+  },
+  {
+    "uid": "クラス特性:シューター(サポート)",
+    "name": "クラス特性:シューター(サポート)",
+    "icon": "シューター",
+    "buff": [
+      {
+        "type": "アタック",
+        "value": 75,
+        "ephemeral": true,
+        "target": "自身(サポート)",
+        "timing": "攻撃前",
+        "condition": {
+          "onEnemyClass": [ "エアリアル" ]
+        }
+      },
+      {
+        "type": "マジック",
+        "value": 75,
+        "ephemeral": true,
+        "target": "自身(サポート)",
+        "timing": "攻撃前",
+        "condition": {
+          "onEnemyClass": [ "エアリアル" ]
+        }
+      },
+      {
+        "type": "アタック",
+        "value": -35,
+        "ephemeral": true,
+        "target": "自身(サポート)",
+        "timing": "攻撃前",
+        "condition": {
+          "onEnemyClass": [ "アサシン" ]
+        }
+      },
+      {
+        "type": "マジック",
+        "value": -35,
+        "ephemeral": true,
+        "target": "自身(サポート)",
+        "timing": "攻撃前",
+        "condition": {
+          "onEnemyClass": [ "アサシン" ]
+        }
+      }
+    ]
+  },
+  {
+    "uid": "クラス特性:アサシン(サポート)",
+    "name": "クラス特性:アサシン(サポート)",
+    "icon": "アサシン",
+    "buff": [
+      {
+        "type": "アタック",
+        "value": 75,
+        "ephemeral": true,
+        "target": "自身(サポート)",
+        "timing": "攻撃前",
+        "condition": {
+          "onEnemyClass": [ "シューター" ]
+        }
+      },
+      {
+        "type": "マジック",
+        "value": 75,
+        "ephemeral": true,
+        "target": "自身(サポート)",
+        "timing": "攻撃前",
+        "condition": {
+          "onEnemyClass": [ "シューター" ]
+        }
+      },
+      {
+        "type": "アタック",
+        "value": -35,
+        "ephemeral": true,
+        "target": "自身(サポート)",
+        "timing": "攻撃前",
+        "condition": {
+          "onEnemyClass": [ "エアリアル" ]
+        }
+      },
+      {
+        "type": "マジック",
+        "value": -35,
+        "ephemeral": true,
+        "target": "自身(サポート)",
+        "timing": "攻撃前",
+        "condition": {
+          "onEnemyClass": [ "エアリアル" ]
+        }
+      }
+    ]
+  },
+  {
+    "uid": "クラス特性:ソーサラー(サポート)",
+    "name": "クラス特性:ソーサラー(サポート)",
+    "icon": "ソーサラー",
+    "buff": [
+      {
+        "type": "アタック",
+        "value": 35,
+        "ephemeral": true,
+        "target": "自身(サポート)",
+        "timing": "攻撃前",
+        "condition": {
+          "onEnemyClass": [ "ソルジャー", "ランサー", "ライダー" ]
+        }
+      },
+      {
+        "type": "マジック",
+        "value": 35,
+        "ephemeral": true,
+        "target": "自身(サポート)",
+        "timing": "攻撃前",
+        "condition": {
+          "onEnemyClass": [ "ソルジャー", "ランサー", "ライダー" ]
+        }
+      },
+      {
+        "type": "アタック",
+        "value": -15,
+        "ephemeral": true,
+        "target": "自身(サポート)",
+        "timing": "攻撃前",
+        "condition": {
+          "onEnemyClass": [ "エアリアル", "アサシン", "シューター" ]
+        }
+      },
+      {
+        "type": "マジック",
+        "value": -15,
+        "ephemeral": true,
+        "target": "自身(サポート)",
+        "timing": "攻撃前",
+        "condition": {
+          "onEnemyClass": [ "エアリアル", "アサシン", "シューター" ]
+        }
+      }
+    ]
+  },
+  {
+    "uid": "クラス特性:セイント(サポート)",
+    "name": "クラス特性:セイント(サポート)",
+    "icon": "セイント",
+    "buff": [
+      {
+        "type": "アタック",
+        "value": 35,
+        "ephemeral": true,
+        "target": "自身(サポート)",
+        "timing": "攻撃前",
+        "condition": {
+          "onEnemyClass": [ "エアリアル", "アサシン", "シューター" ]
+        }
+      },
+      {
+        "type": "マジック",
+        "value": 35,
+        "ephemeral": true,
+        "target": "自身(サポート)",
+        "timing": "攻撃前",
+        "condition": {
+          "onEnemyClass": [ "エアリアル", "アサシン", "シューター" ]
+        }
+      },
+      {
+        "type": "アタック",
+        "value": -15,
+        "ephemeral": true,
+        "target": "自身(サポート)",
+        "timing": "攻撃前",
+        "condition": {
+          "onEnemyClass": [ "ソルジャー", "ランサー", "ライダー" ]
+        }
+      },
+      {
+        "type": "マジック",
+        "value": -15,
+        "ephemeral": true,
+        "target": "自身(サポート)",
+        "timing": "攻撃前",
+        "condition": {
+          "onEnemyClass": [ "ソルジャー", "ランサー", "ライダー" ]
+        }
+      }
+    ]
+  },
+
+  {
     "uid": "4100001",
     "icon": "sk_ba001",
     "name": "剣力",

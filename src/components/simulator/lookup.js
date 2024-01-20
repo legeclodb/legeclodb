@@ -216,6 +216,53 @@ export default {
       this.fillFilter(this.filter.rarity, this.rarities);
     },
 
+    getClassPassiveMain(className) {
+      const find = (uid) => this.searchTableWithUid.get(uid);
+      const table = {
+        "ソルジャー": [find("クラス特性:ソルジャー(メイン)"), find("マスター特性:ソルジャー")],
+        "ランサー": [find("クラス特性:ランサー(メイン)"), find("マスター特性:ランサー")],
+        "ライダー": [find("クラス特性:ライダー(メイン)"), find("マスター特性:ライダー")],
+        "エアリアル": [find("クラス特性:エアリアル(メイン)"), find("マスター特性:エアリアル")],
+        "ソーサラー": [find("クラス特性:ソーサラー(メイン)"), find("マスター特性:ソーサラー")],
+        "セイント": [find("クラス特性:セイント(メイン)"), find("マスター特性:セイント")],
+        "シューター": [find("クラス特性:シューター(メイン)"), find("マスター特性:シューター")],
+        "アサシン": [find("クラス特性:アサシン(メイン)"), find("マスター特性:アサシン")],
+      };
+      return className in table ? table[className] : [];
+    },
+    getClassPassiveSupport(className) {
+      const find = (uid) => this.searchTableWithUid.get(uid);
+      const table = {
+        "ソルジャー": [find("クラス特性:ソルジャー(サポート)"), find("4100001"), find("4100002"), find("4100003")],
+        "ランサー": [find("クラス特性:ランサー(サポート)"), find("4100004"), find("4100005"), find("4100006")],
+        "ライダー": [find("クラス特性:ライダー(サポート)"), find("4100007"), find("4100008"), find("4100009")],
+        "エアリアル": [find("クラス特性:エアリアル(サポート)"), find("4100010"), find("4100011"), find("4100012")],
+        "ソーサラー": [find("クラス特性:ソーサラー(サポート)"), find("4100016"), find("4100018"), find("4100017")],
+        "セイント": [find("クラス特性:セイント(サポート)"), find("4100016"), find("4100008"), find("4100017")],
+        "シューター": [find("クラス特性:シューター(サポート)"), find("4100015"), find("4100014"), find("4100012")],
+        "アサシン": [find("クラス特性:アサシン(サポート)"), find("4100013"), find("4100014"), find("4100012")],
+      };
+      return className in table ? table[className] : [];
+    },
+    getEnchantPassive(enchantName) {
+      const find = (uid) => this.searchTableWithUid.get(uid);
+      const table = {
+        "バスター": [find("100")],
+        "チャージ": [find("101")],
+        "フェザー": [find("102")],
+        "クイック": [find("103")],
+        "ノヴァ": [find("104")],
+        "アイアン": [find("105")],
+        "リフレクト": [find("106")],
+        "バックアップ": [find("107")],
+        "アイス": [find("108")],
+        "ブライト": [find("109")],
+        "クリスタル": [find("110")],
+        "ストライク": [find("111")],
+        "ブレイク": [find("112")],
+      };
+      return enchantName in table ? table[enchantName] : [];
+    },
 
     filterMatchMainChr(chr, filter = this.filter) {
       return (!filter.class || this.filterMatch(filter.class, chr.classId)) &&
