@@ -141,12 +141,28 @@
       </div>
     </div>
 
-    <div class="content" style="margin-top: 20px" :style="style">
+    <div class="content" style="margin-top: 20px">
+      <div class="unit-panel">
+        <b-dropdown size="sm" text="編成をセーブ">
+          <b-dropdown-item v-for="i in 10" :key=i @click="saveUnits(i)">スロット{{i}}</b-dropdown-item>
+        </b-dropdown>
+      </div>
+      <div class="unit-panel">
+        <b-dropdown size="sm" text="編成をロード">
+          <b-dropdown-item v-for="i in 10" :key=i @click="loadUnits(i)">スロット{{i}}</b-dropdown-item>
+        </b-dropdown>
+      </div>
+      <div class="unit-panel">
+        <b-button size="sm" @click="clearUnits()">編成をクリア</b-button>
+      </div>
+    </div>
+
+    <div class="content" :style="style">
       <div>
         <div v-for="(unit, ui) in units" class="unit-panel" style="padding: 10px; margin: 5px;" :key="ui">
           <b-button :id="`btn-edit-unit${ui}`" @click="unit.showEditor=!unit.showEditor">ユニット{{ui+1}}</b-button>
           <b-popover :target="`btn-edit-unit${ui}`" custom-class="status-simulator-popover" :show.sync="unit.showEditor" :delay="{show:0, hide:250}" no-fade>
-            <StatusSimulator embed :data="unit.editorData" @change="onEditUnit($event, unit)" />
+            <StatusSimulator embed :data="unit.editorData" @change="unit.edit($event)" />
             <div class="flex">
               <b-button size="sm" @click="unit.showEditor=false">閉じる</b-button>
             </div>
@@ -282,17 +298,6 @@
       </div>
     </div>
 
-    <div class="content">
-      <div class="unit-panel">
-        <b-button size="sm" @click="saveUnits()">編成をセーブ</b-button>
-      </div>
-      <div class="unit-panel">
-        <b-button size="sm" @click="loadUnits()">編成をロード</b-button>
-      </div>
-      <div class="unit-panel">
-        <b-button size="sm" @click="clearUnits()">編成をクリア</b-button>
-      </div>
-    </div>
   </div>
 </template>
 
@@ -344,11 +349,11 @@ export default {
       prevURL: "",
 
       units: [
-        new this.BattleUnit(),
-        new this.BattleUnit(),
-        new this.BattleUnit(),
-        new this.BattleUnit(),
-        new this.BattleUnit(),
+        new this.BaseUnit(0),
+        new this.BaseUnit(1),
+        new this.BaseUnit(2),
+        new this.BaseUnit(3),
+        new this.BaseUnit(4),
       ],
     };
   },
@@ -580,6 +585,86 @@ export default {
       }
     },
 
+    BaseUnit: class {
+      constructor(i) {
+        this.vue = null;
+        this.index = i;
+        this.initialize();
+      }
+      initialize() {
+        this.mainChr = null;
+        this.mainSkills = [];
+        this.mainItems = [];
+        this.mainEnchantPassive = [];
+        this.mainStat = [0, 0, 0, 0, 0, 0]; // 基礎ステ
+
+        this.supChr = null;
+        this.supSkills = [];
+        this.supItems = [];
+        this.supStat = [0, 0, 0, 0, 0, 0];
+
+        this.showEditor = false;
+        this.editorData = [];
+      }
+      serialize() {
+        let r = {};
+        r.mainChr = this.mainChr?.uid;
+        r.mainSkills = this.mainSkills.map(a => a.uid);
+        r.mainItems = this.mainItems.map(a => a.uid);
+        r.mainEnchantPassive = this.mainEnchantPassive.map(a => a.uid)
+        r.mainStat = [...this.mainStat];
+
+        r.supChr = this.supChr?.uid;
+        r.supSkills = this.supSkills.map(a => a.uid);
+        r.supItems = this.supItems.map(a => a.uid);
+        r.supStat = [...this.supStat];
+
+        r.editorData = [...this.editorData];
+        return r;
+      }
+      deserialize(r) {
+        const uidToObject = this.vue.uidToObject;
+
+        this.mainChr = uidToObject(r.mainChr);
+        this.mainSkills = r.mainSkills.map(uidToObject);
+        this.mainItems = r.mainItems.map(uidToObject);
+        this.mainEnchantPassive = r.mainEnchantPassive.map(uidToObject);
+        this.mainStat = [...r.mainStat];
+
+        this.supChr = uidToObject(r.supChr);
+        this.supSkills = r.supSkills.map(uidToObject);
+        this.supItems = r.supItems.map(uidToObject);
+        this.supStat = [...r.supStat];
+
+        this.editorData = [...r.editorData];
+      }
+      edit(ss) {
+        const uidToObject = this.vue.uidToObject;
+        const copyArray = this.vue.copyArray;
+        // エディタ側のオブジェクトとこちら側のオブジェクトは別個体なため、uid を元にこちら側のオブジェクトに差し替える。
+
+        this.mainChr = uidToObject(ss.main.character.value?.uid);
+        this.mainItems = ss.mainItems.filter(a => a).map(a => uidToObject(a.uid));
+        this.mainSkills = [];
+        if (this.mainChr) {
+          this.mainSkills = [this.mainChr.talent, ...ss.mainSkills].map(a => uidToObject(a.uid));
+        }
+        this.mainEnchantPassive = ss.mainEnchantPassive.filter(a => a).map(a => uidToObject(a.uid));
+        this.mainStat = ss.statMainResult.slice(0, 6);
+
+        this.supChr = uidToObject(ss.support.character.value?.uid);
+        this.supSkills = [];
+        if (this.supChr) {
+          this.supSkills = [...this.supChr.skills].map(a => uidToObject(a.uid));
+        }
+        this.supItems = ss.supportItems.filter(a => a).map(a => uidToObject(a.uid));
+        this.supStat = ss.statSupportResult.slice(0, 6);
+
+        copyArray(this.editorData, ss.serialize());
+        //console.log(this);
+      }
+    },
+
     BattleContext: class {
       constructor() {
         this.turn = 0;
@@ -628,35 +713,39 @@ export default {
 
       }
     },
+
     BattleUnit: class {
       constructor() {
         this.vue = null;
+        this.unit = null;
         this.initialize();
       }
-      initialize() {
-        this.mainChr = null;
-        this.mainSkills = [];
-        this.mainItems = [];
-        this.supChr = null;
-        this.supSkills = [];
-        this.supItems = [];
+      initialize(unit) {
+        this.unit = unit;
 
-        this.mainHiddenSkills = [];
-        this.supHiddenSkills = [];
-        this.mainStat = [0, 0, 0, 0, 0, 0]; // 基礎ステ
-        this.supStat = [0, 0, 0, 0, 0, 0];
-
-        this.appliedSkills = [];
-        this.mainEffects = {}; // 
-        this.supEffects = {}; // evaluateEffects() で設定
-
-        this.showEditor = false;
-        this.editorData = [];
+        this.skills = [];
+        if (unit) {
+          // パッシブ/タレントを収集
+          for (let skill of [...unit.mainSkills, ...unit.supSkills]) {
+            if (skill.isTalent || skill.isPassive) {
+              this.skills.push(skill);
+            }
+          }
+          const appendSkills = a => this.vue.appendArray(this.skills, a);
+          if (unit.mainChr) {
+            appendSkills(this.vue.getClassPassiveMain(unit.mainChr.class));
+            appendSkills(this.vue.getEnchantPassive("ストライク"));
+          }
+          if (unit.supChr) {
+            appendSkills(this.vue.getClassPassiveSupport(unit.supChr.class));
+          }
+        }
       }
+
       setup() {
         // mainHiddenSkills や supHiddenSkills などを設定
       }
-      applySkill(skill, self=false) {
+      applySkill(skill, self = false) {
 
       }
       evaluateEffects(battleCtx) {
@@ -670,55 +759,10 @@ export default {
       }
 
       serialize() {
-        let r = {};
-        r.mainChr = this.mainChr?.uid;
-        r.mainSkills = this.mainSkills.map(a => a.uid);
-        r.mainItems = this.mainItems.map(a => a.uid);
-        r.mainStat = [...this.mainStat];
 
-        r.supChr = this.supChr?.uid;
-        r.supSkills = this.supSkills.map(a => a.uid);
-        r.supItems = this.supItems.map(a => a.uid);
-        r.supStat = [...this.supStat];
-
-        r.editorData = [...this.editorData];
-        return r;
       }
       deserialize(r) {
-        const uidToObject = this.vue.uidToObject;
-        this.mainChr = uidToObject(r.mainChr);
-        this.mainSkills = r.mainSkills.map(uidToObject);
-        this.mainItems = r.mainItems.map(uidToObject);
-        this.mainStat = [...r.mainStat];
-
-        this.supChr = uidToObject(r.supChr);
-        this.supSkills = r.supSkills.map(uidToObject);
-        this.supItems = r.supItems.map(uidToObject);
-        this.supStat = [...r.supStat];
-
-        this.editorData = [...r.editorData];
       }
-    },
-
-    onEditUnit(ss, unit) {
-      unit.mainChr = this.uidToObject(ss.main.character.value?.uid);
-      unit.mainItems = ss.mainItems.toArray().map(a => this.uidToObject(a.uid));
-      unit.mainSkills = [];
-      if (unit.mainChr) {
-        unit.mainSkills = [unit.mainChr.talent, ...ss.mainSkills].map(a => this.uidToObject(a.uid));
-      }
-      unit.mainStat = ss.statMainResult.slice(0, 6);
-
-      unit.supChr = this.uidToObject(ss.support.character.value?.uid);
-      unit.supSkills = [];
-      if (unit.supChr) {
-        unit.supSkills = [...unit.supChr.skills].map(a => this.uidToObject(a.uid));
-      }
-      unit.supItems = ss.supportItems.toArray().map(a => this.uidToObject(a.uid));
-      unit.supStat = ss.statSupportResult.slice(0, 6);
-
-      this.copyArray(unit.editorData, ss.serialize());
-      //console.log(unit);
     },
 
     uidToObject(uid) {
@@ -728,8 +772,14 @@ export default {
     // in-place array copy
     copyArray(dst, src) {
       dst.length = src.length;
-      for (let i = 0; i < dst.length; ++i)
+      for (let i = 0; i < src.length; ++i)
         dst[i] = src[i];
+    },
+    appendArray(dst, src) {
+      let pos = dst.length;
+      dst.length = dst.length + src.length;
+      for (let i = 0; i < src.length; ++i)
+        dst[pos++] = src[i];
     },
 
     clearUnits() {
