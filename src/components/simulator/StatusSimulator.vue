@@ -58,7 +58,7 @@
                     <b-button v-for="(skill, si) in mainSkills" :key="si" :id="`ss${uid}-main-skill${si}`" variant="outline-secondary" class="paddingless small-margin">
                       <b-img-lazy :src="getSkillIcon(skill)" :title="descToTitle(skill)" width="50" height="50" />
                       <SkillSelector :target="`ss${uid}-main-skill${si}`" nullable closeonclick
-                                     :skills="mainSkillList" :excludes="mainSkills" @click="setMainSkill($event, si)" />
+                                     :skills="mainSkillList" :excludes="mainSkills" @click="setArrayElement('mainSkills', $event, si)" />
                     </b-button>
                   </b-col>
                 </b-form-row>
@@ -69,26 +69,11 @@
               </div>
               <b-row>
                 <b-col style="text-align:center">
-                  <span v-for="(param, name, i) in mainItems" :key="i">
-                    <b-button v-if="param.type == 'weapon'" variant="outline-secondary" class="paddingless small-margin" :id="`ss${uid}-main-weapon`">
-                      <b-img-lazy :src="getSkillIcon(param.value)" :title="descToTitle(param.value)" width="50" height="50" />
-                      <ItemSelector :target="`ss${uid}-main-weapon`" :items="items" @click="v => param.value=v"
-                                    slotfilter="武器" :classfilter="mainClass" nullable closeonclick />
-                    </b-button>
-                    <b-button v-if="param.type == 'armor'" variant="outline-secondary" class="paddingless small-margin" :id="`ss${uid}-main-armor`">
-                      <b-img-lazy :src="getSkillIcon(param.value)" :title="descToTitle(param.value)" width="50" height="50" />
-                      <ItemSelector :target="`ss${uid}-main-armor`" :items="items" @click="v => param.value=v"
-                                    slotfilter="鎧" :classfilter="mainClass" nullable closeonclick />
-                    </b-button>
-                    <b-button v-if="param.type == 'helmet'" variant="outline-secondary" class="paddingless small-margin" :id="`ss${uid}-main-helmet`">
-                      <b-img-lazy :src="getSkillIcon(param.value)" :title="descToTitle(param.value)" width="50" height="50" />
-                      <ItemSelector :target="`ss${uid}-main-helmet`" :items="items" @click="v => param.value=v"
-                                    slotfilter="兜" :classfilter="mainClass" nullable closeonclick />
-                    </b-button>
-                    <b-button v-if="param.type == 'accessory'" variant="outline-secondary" class="paddingless small-margin" :id="`ss${uid}-main-accessory`">
-                      <b-img-lazy :src="getSkillIcon(param.value)" :title="descToTitle(param.value)" width="50" height="50" />
-                      <ItemSelector :target="`ss${uid}-main-accessory`" :items="items" @click="v => param.value=v"
-                                    slotfilter="アクセサリ" :classfilter="mainClass" nullable closeonclick />
+                  <span v-for="(item, i) in mainItems" :key="i">
+                    <b-button variant="outline-secondary" class="paddingless small-margin" :id="`ss${uid}-main-item${i}`">
+                      <b-img-lazy :src="getSkillIcon(item)" :title="descToTitle(item)" width="50" height="50" />
+                      <ItemSelector :target="`ss${uid}-main-item${i}`" :items="items" @click="setArrayElement('mainItems', $event, i)"
+                                    :slotfilter="mainItemSlots[i]" :classfilter="mainClass" nullable closeonclick />
                     </b-button>
                   </span>
                 </b-col>
@@ -99,11 +84,13 @@
               </div>
               <b-form-row>
                 <b-col style="text-align: center">
-                  <b-button :id="`ss${uid}-main-enchant`" variant="outline-secondary" class="paddingless small-margin">
-                    <b-img-lazy :src="getSkillIcon(mainEnchantPassive)" :title="descToTitle(mainEnchantPassive)" width="50" height="50" />
-                    <SkillSelector :target="`ss${uid}-main-enchant`" nullable closeonclick
-                                   :skills="getEnchantPassiveList()" @click="setEnchantPassive($event)" />
-                  </b-button>
+                  <span v-for="(item, i) in mainEnchantPassive" :key="i">
+                    <b-button variant="outline-secondary" class="paddingless small-margin" :id="`ss${uid}-main-enchant${i}`">
+                      <b-img-lazy :src="getSkillIcon(item)" :title="descToTitle(item)" width="50" height="50" />
+                      <SkillSelector :target="`ss${uid}-main-enchant${i}`" nullable closeonclick
+                                     :skills="getEnchantPassiveList()" @click="setArrayElement('mainEnchantPassive', $event, i)" />
+                    </b-button>
+                  </span>
                 </b-col>
               </b-form-row>
               <b-form-row v-for="(param, name, i) in mainEnchants" :key="'enchant' + i">
@@ -154,7 +141,7 @@
                   <b-form-checkbox v-if="param.type == 'bool'" style="width: 5em" :id="`ss${uid}-sup-${name}`" v-model="param.value" size="sm" plain></b-form-checkbox>
                   <b-button v-if="param.type == 'character'" variant="outline-secondary" class="paddingless small-margin" :id="`ss${uid}-sup-${name}`">
                     <b-img-lazy :src="getSkillIcon(param.value)" :title="descToTitle(param.value)" width="100" height="100" />
-                    <ChrSelector :target="`ss${uid}-sup-${name}`" :chrs="supChrs" nullable classfilter closeonclick @click="setSupChr" />
+                    <ChrSelector :target="`ss${uid}-sup-${name}`" :chrs="supChrs" nullable classfilter closeonclick @click="setSupChr($event)" />
                   </b-button>
                 </b-col>
               </b-form-row>
@@ -182,16 +169,11 @@
               </div>
               <b-row>
                 <b-col style="text-align:center">
-                  <span v-for="(param, name, i) in supportItems" :key="i">
-                    <b-button v-if="param.type == 'amulet1'" variant="outline-secondary" class="paddingless small-margin" :id="`ss${uid}-sup-amulet1`">
-                      <b-img-lazy :src="getSkillIcon(param.value)" :title="descToTitle(param.value)" width="50" height="50" />
-                      <ItemSelector :target="`ss${uid}-sup-amulet1`" :items="items" @click="v => param.value=v"
-                                    slotfilter="月のアミュレット" nullable closeonclick />
-                    </b-button>
-                    <b-button v-if="param.type == 'amulet2'" variant="outline-secondary" class="paddingless small-margin" :id="`ss${uid}-sup-amulet2`">
-                      <b-img-lazy :src="getSkillIcon(param.value)" :title="descToTitle(param.value)" width="50" height="50" />
-                      <ItemSelector :target="`ss${uid}-sup-amulet2`" :items="items" @click="v => param.value=v"
-                                    slotfilter="太陽のアミュレット" nullable closeonclick />
+                  <span v-for="(item, i) in supportItems" :key="i">
+                    <b-button variant="outline-secondary" class="paddingless small-margin" :id="`ss${uid}-sup-item${i}`">
+                      <b-img-lazy :src="getSkillIcon(item)" :title="descToTitle(item)" width="50" height="50" />
+                      <ItemSelector :target="`ss${uid}-sup-item${i}`" :items="items" @click="setArrayElement('supportItems', $event, i)"
+                                    :slotfilter="supItemSlots[i]" nullable closeonclick />
                     </b-button>
                   </span>
                 </b-col>
@@ -282,6 +264,10 @@ export default {
   data() {
     return {
       uid: this.$genUniqueId(),
+
+      mainItemSlots: ["武器", "鎧", "兜", "アクセサリ"],
+      supItemSlots: ["月のアミュレット", "太陽のアミュレット"],
+
       main: {
         character: {
           label: "キャラ",
@@ -319,7 +305,6 @@ export default {
           value: true,
         },
       },
-      mainSkills: [null, null, null],
       mainBoosts: {
         hp: {
           label: "HP (%)",
@@ -358,37 +343,6 @@ export default {
           value: 50,
         },
       },
-      mainItems: {
-        weapon: {
-          label: "武器",
-          type: "weapon",
-          value: null,
-        },
-        armor: {
-          label: "鎧",
-          type: "armor",
-          value: null,
-        },
-        helmet: {
-          label: "兜",
-          type: "helmet",
-          value: null,
-        },
-        accessory: {
-          label: "アクセサリ",
-          type: "accessory",
-          value: null,
-        },
-        toArray() {
-          return [
-            this.weapon.value,
-            this.armor.value,
-            this.helmet.value,
-            this.accessory.value
-          ].filter(a => a != null);
-        }
-      },
-      mainEnchantPassive: null,
       mainEnchants: {
         hp: {
           label: "HP",
@@ -416,6 +370,9 @@ export default {
           valueF: 0,
         },
       },
+      mainSkills: [null, null, null],
+      mainItems: [null, null, null, null],
+      mainEnchantPassive: [null],
 
       support: {
         character: {
@@ -481,24 +438,6 @@ export default {
           value: 110,
         },
       },
-      supportItems: {
-        amulet1: {
-          label: "月のアミュレット",
-          type: "amulet1",
-          value: null,
-        },
-        amulet2: {
-          label: "太陽のアミュレット",
-          type: "amulet2",
-          value: null,
-        },
-        toArray() {
-          return [
-            this.amulet1.value,
-            this.amulet2.value,
-          ].filter(a => a != null);
-        }
-      },
       supportEnchants: {
         hp: {
           label: "HP",
@@ -526,6 +465,7 @@ export default {
           valueF: 0,
         },
       },
+      supportItems: [null, null],
 
       autoEquipTypes: [
         "戦闘力優先",
@@ -609,15 +549,6 @@ export default {
       skills = skills.sort((a, b) => this.getSkillBPRate(b) - this.getSkillBPRate(a));
       return skills.slice(0, 3);
     },
-    setMainSkill(skill, idx) {
-      // 配列の要素の差し替えでは変更が検出されないので配列自体を更新する
-      let tmp = [...this.mainSkills];
-      tmp[idx] = skill;
-      this.mainSkills = tmp;
-    },
-    setEnchantPassive(skill) {
-      this.mainEnchantPassive = skill;
-    },
     setSupChr(chr) {
       this.support.character.value = chr;
 
@@ -629,6 +560,12 @@ export default {
           params.valueP = 15;
         }
       }
+    },
+    setArrayElement(name, item, idx) {
+      // 配列の要素の差し替えでは変更が検出されないので配列自体を更新する
+      let tmp = [...this[name]];
+      tmp[idx] = item;
+      this[name] = tmp;
     },
 
     getParamClass(param) {
@@ -669,34 +606,26 @@ export default {
       }
       return false;
     },
-    supportCanEquip(item, slot, aux) {
+    supportCanEquip(item, slot) {
       if (item) {
-        if (!slot || item.slot == slot) {
-          if (slot == "アミュレット")
-            return !aux || item.amuletType == aux;
-          else
-            return true;
-        }
+        if (!slot || item.slot == slot)
+          return true;
       }
       return false;
     },
 
     validateItems() {
-      var mainItems = this.mainItems;
-      var supItems = this.supportItems;
-      if (!this.mainCanEquip(mainItems.weapon.value, '武器'))
-        mainItems.weapon.value = null;
-      if (!this.mainCanEquip(mainItems.armor.value, '鎧'))
-        mainItems.armor.value = null;
-      if (!this.mainCanEquip(mainItems.helmet.value, '兜'))
-        mainItems.helmet.value = null;
-      if (!this.mainCanEquip(mainItems.accessory.value, 'アクセサリ'))
-        mainItems.accessory.value = null;
+      let mainItems = this.mainItems;
+      for (let i = 0; i < mainItems.length; ++i) {
+        if (!this.mainCanEquip(mainItems[i], this.mainItemSlots[i]))
+          mainItems[i] = null;
+      }
 
-      if (!this.supportCanEquip(supItems.amulet1.value, 'アミュレット', '月'))
-        supItems.amulet1.value = null;
-      if (!this.supportCanEquip(supItems.amulet2.value, 'アミュレット', '太陽'))
-        supItems.amulet2.value = null;
+      var supItems = this.supportItems;
+      for (let i = 0; i < supItems.length; ++i) {
+        if (!this.supportCanEquip(supItems[i], this.supItemSlots[i]))
+          supItems[i] = null;
+      }
     },
 
     autoEquipImpl(ma, sa, type) {
@@ -706,7 +635,7 @@ export default {
         main: {
           items: [null, null, null, null],
           enchants: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-          enchantPassive: this.getEnchantPassiveList()[0],
+          enchantPassive: [this.getEnchantPassiveList()[0]],
         },
         support: {
           items: [null, null],
@@ -964,21 +893,17 @@ export default {
       const r = this.autoEquipImpl(ma, sa, type);
 
       if (this.tabIndex == 0 && ma.character) {
-        for (const v of Object.values(this.mainItems))
-          v.value = r.main.items.shift();
         for (const v of Object.values(this.mainEnchants)) {
           v.valueP = r.main.enchants.shift();
           v.valueF = r.main.enchants.shift();
         }
-        if (!this.mainEnchantPassive) {
-          this.mainEnchantPassive = r.main.enchantPassive;
-        }
+        this.mainItems = [...r.main.items];
+        this.mainEnchantPassive = [...r.main.enchantPassive];
       }
       if (this.tabIndex == 1 && sa.character) {
-        for (const v of Object.values(this.supportItems))
-          v.value = r.support.items.shift();
         for (const v of Object.values(this.supportEnchants))
           v.valueP = r.support.enchants.shift();
+        this.supportItems = [...r.support.items];
       }
     },
 
@@ -1087,18 +1012,15 @@ export default {
         for (const v of Object.values(s.mainBoosts))
           v.value = boosts.shift();
 
-        let items = [...r.main.items];
-        for (const v of Object.values(s.mainItems))
-          v.value = items.shift();
-
         let enchants = [...r.main.enchants];
         for (const v of Object.values(s.mainEnchants)) {
           v.valueP = enchants.shift();
           v.valueF = enchants.shift();
         }
 
-        s.mainEnchantPassive = r.main.enchantPassive;
-        s.mainSkills = r.main.skills;
+        s.mainItems = [...r.main.items];
+        s.mainEnchantPassive = [...r.main.enchantPassive];
+        s.mainSkills = [...r.main.skills];
       }
       {
         s.support.character.value = rec.data.support;
@@ -1132,10 +1054,10 @@ export default {
         loveBonus: s.main.loveBonus.value,
         engage: s.main.engage.value,
         boosts: Object.values(s.mainBoosts).map(a => a.value),
-        items: Object.values(s.mainItems).map(a => a.value),
-        enchantPassive: s.mainEnchantPassive,
         enchantsP: Object.values(s.mainEnchants).map(a => a.valueP),
         enchantsF: Object.values(s.mainEnchants).map(a => a.valueF),
+        items: [...s.mainItems],
+        enchantPassive: [...s.mainEnchantPassive],
         skills: [...s.mainSkills],
       };
       return r;
@@ -1149,8 +1071,8 @@ export default {
         master: s.support.master.value,
         loveBonus: s.support.loveBonus.value,
         boosts: Object.values(s.supportBoosts).map(a => a.value),
-        items: Object.values(s.supportItems).map(a => a.value),
         enchantsP: Object.values(s.supportEnchants).map(a => a.valueP),
+        items: [...s.supportItems],
       };
       return r;
     },
@@ -1163,15 +1085,20 @@ export default {
       let r = this.getMainChrStatus(chr, ma.level, ma.star, ma.master, ma.loveBonus, ma.boosts);
 
       let enchantP = [...ma.enchantsP];
-      if (enchantP.length && ma.enchantPassive) {
-        const ep = ma.enchantPassive.baseStatusBoost;
-        if (ep.hp) enchantP[0] += ep.hp;
-        if (ep.atk) enchantP[1] += ep.atk;
-        if (ep.def) enchantP[2] += ep.def;
-        if (ep.mag) enchantP[3] += ep.mag;
-        if (ep.res) enchantP[4] += ep.res;
-        if (ep.tec) enchantP[5] += ep.tec;
+      if (enchantP.length) {
+        for (const eps of ma.enchantPassive) {
+          if (!eps)
+            continue;
+          const ep = eps.baseStatusBoost;
+          if (ep.hp) enchantP[0] += ep.hp;
+          if (ep.atk) enchantP[1] += ep.atk;
+          if (ep.def) enchantP[2] += ep.def;
+          if (ep.mag) enchantP[3] += ep.mag;
+          if (ep.res) enchantP[4] += ep.res;
+          if (ep.tec) enchantP[5] += ep.tec;
+        }
       }
+
       for (let i = 0; i < enchantP.length; ++i) {
         r[i] = Math.round(r[i] * (1.0 + enchantP[i] * 0.01));
       }
@@ -1263,18 +1190,18 @@ export default {
         else
           params.push(v.value);
       }
-      for (let v of this.mainSkills)
-        params.push(getUid(v));
       for (let v of Object.values(this.mainBoosts))
         params.push(v.value);
-      for (let v of Object.values(this.mainItems))
-        params.push(getUid(v.value));
-
-      params.push(getUid(this.mainEnchantPassive));
       for (let v of Object.values(this.mainEnchants)) {
         params.push(v.valueP);
         params.push(v.valueF);
       }
+      for (let v of this.mainSkills)
+        params.push(getUid(v));
+      for (let v of this.mainItems)
+        params.push(getUid(v));
+      for (let v of this.mainEnchantPassive)
+        params.push(getUid(v));
 
       for (let v of Object.values(this.support)) {
         if (v.type == "character")
@@ -1284,10 +1211,11 @@ export default {
       }
       for (let v of Object.values(this.supportBoosts))
         params.push(v.value);
-      for (let v of Object.values(this.supportItems))
-        params.push(getUid(v.value));
       for (let v of Object.values(this.supportEnchants))
         params.push(v.valueP);
+
+      for (let v of this.supportItems)
+        params.push(getUid(v));
 
       return params;
     },
@@ -1297,7 +1225,7 @@ export default {
       }
       //console.log(params);
 
-      const find = uid => this.searchTableWithUid.get(uid);
+      const find = uid => this.searchTableWithUid.get(uid.toString());
 
       for (let v of Object.values(this.main)) {
         if (v.type == "character")
@@ -1305,21 +1233,27 @@ export default {
         else
           v.value = params.shift();
       }
+      for (let v of Object.values(this.mainBoosts))
+        v.value = params.shift();
+      for (let v of Object.values(this.mainEnchants)) {
+        v.valueP = params.shift();
+        v.valueF = params.shift();
+      }
+
       this.mainSkills = [
         find(params.shift()),
         find(params.shift()),
         find(params.shift()),
       ];
-      for (let v of Object.values(this.mainBoosts))
-        v.value = params.shift();
-      for (let v of Object.values(this.mainItems))
-        v.value = find(params.shift());
-
-      this.mainEnchantPassive = find(params.shift());
-      for (let v of Object.values(this.mainEnchants)) {
-        v.valueP = params.shift();
-        v.valueF = params.shift();
-      }
+      this.mainItems = [
+        find(params.shift()),
+        find(params.shift()),
+        find(params.shift()),
+        find(params.shift()),
+      ];
+      this.mainEnchantPassive = [
+        find(params.shift()),
+      ];
 
       for (let v of Object.values(this.support)) {
         if (v.type == "character")
@@ -1329,10 +1263,13 @@ export default {
       }
       for (let v of Object.values(this.supportBoosts))
         v.value = params.shift();
-      for (let v of Object.values(this.supportItems))
-        v.value = find(params.shift());
       for (let v of Object.values(this.supportEnchants))
         v.valueP = params.shift();
+
+      this.supportItems = [
+        find(params.shift()),
+        find(params.shift()),
+      ];
     },
 
     getParamsUrl() {
