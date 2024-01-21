@@ -97,6 +97,15 @@
               <div style="text-align:center">
                 <h6 style="margin: 5px 0px">エンチャント</h6>
               </div>
+              <b-form-row>
+                <b-col style="text-align: center">
+                  <b-button :id="`ss${uid}-main-enchant`" variant="outline-secondary" class="paddingless small-margin">
+                    <b-img-lazy :src="getSkillIcon(mainEnchantPassive)" :title="descToTitle(mainEnchantPassive)" width="50" height="50" />
+                    <SkillSelector :target="`ss${uid}-main-enchant`" nullable closeonclick
+                                   :skills="getEnchantPassiveList()" @click="setEnchantPassive($event)" />
+                  </b-button>
+                </b-col>
+              </b-form-row>
               <b-form-row v-for="(param, name, i) in mainEnchants" :key="'enchant' + i">
                 <b-col style="text-align: right" align-self="end">
                   <label style="width: 10em" :for="`ss${uid}-main-enchant-${name}P`">{{param.label}} (%)</label>
@@ -248,16 +257,8 @@
 import ChrSelector from '../parts/ChrSelector.vue'
 import ItemSelector from '../parts/ItemSelector.vue'
 import SkillSelector from '../parts/SkillSelector.vue'
-
-import jsonMainActive from '../../assets/main_active.json'
-import jsonMainPassive from '../../assets/main_passive.json'
-import jsonMainTalents from '../../assets/main_talents.json'
-import jsonMainChrs from '../../assets/main_characters.json'
-import jsonSupportActive from '../../assets/support_active.json'
-import jsonSupportPassive from '../../assets/support_passive.json'
-import jsonSupportChrs from '../../assets/support_characters.json'
-import jsonItems from '../../assets/items.json'
-import common from "../common";
+import commonjs from "../common.js";
+import lookupjs from "./lookup.js";
 
 export default {
   name: 'StatusSimulator',
@@ -276,7 +277,7 @@ export default {
       default: () => [],
     },
   },
-  mixins: [common],
+  mixins: [commonjs, lookupjs],
 
   data() {
     return {
@@ -387,6 +388,7 @@ export default {
           ].filter(a => a != null);
         }
       },
+      mainEnchantPassive: null,
       mainEnchants: {
         hp: {
           label: "HP",
@@ -567,83 +569,17 @@ export default {
 
   created() {
     this.setupDB();
+    this.deserialize(structuredClone(this.data));
     if (!this.embed) {
+      this.setMainChr(this.mainChrs[0]);
       this.parseParamsUrl(window.location.href);
     }
-
-    this.deserialize(structuredClone(this.data));
   },
   
   mounted() {
   },
 
   methods: {
-    setupDB(parent = null) {
-      if (parent) {
-        const props = [
-          "mainActive",
-          "mainPassive",
-          "mainTalents",
-          "mainChrs",
-          "supActive",
-          "supPassive",
-          "supChrs",
-          "items",
-          "searchTableWithUid",
-          "searchTableWithName",
-          "itemCount",
-        ];
-        for (const p of props) {
-          this[p] = parent[p];
-        }
-      }
-      else {
-        this.mainActive = structuredClone(jsonMainActive);
-        this.mainPassive = structuredClone(jsonMainPassive);
-        this.mainTalents = structuredClone(jsonMainTalents);
-        this.mainChrs = structuredClone(jsonMainChrs).filter(a => !a.hidden);
-        this.supActive = structuredClone(jsonSupportActive);
-        this.supPassive = structuredClone(jsonSupportPassive);
-        this.supChrs = structuredClone(jsonSupportChrs).filter(a => !a.hidden);
-        this.items = structuredClone(jsonItems).filter(a => !a.hidden);
-
-        this.setupCharacters(this.mainChrs, this.mainActive, this.mainPassive, this.mainTalents);
-        this.setupCharacters(this.supChrs, this.supActive, this.supPassive);
-        this.setupItems(this.items);
-
-        this.mainChrs.sort((a, b) => b.date.localeCompare(a.date));
-        this.supChrs.sort((a, b) => b.date.localeCompare(a.date));
-        this.items.sort((a, b) => b.date.localeCompare(a.date));
-
-        this.searchTableWithUid = new Map();
-        this.searchTableWithName = new Map();
-        let idx = 0;
-        for (let list of [
-          this.mainChrs, this.mainActive, this.mainPassive, this.mainTalents,
-          this.supChrs, this.supActive, this.supPassive,
-          this.items
-        ]) {
-          for (let item of list) {
-            item.index = ++idx;
-            this.searchTableWithUid.set(item.uid, item);
-            this.searchTableWithName.set(item.name, item);
-          }
-        }
-        this.itemCount = idx;
-      }
-
-      this.weapons = this.items.filter(a => a.slot == "武器");
-      this.armors = this.items.filter(a => a.slot == "鎧");
-      this.helmets = this.items.filter(a => a.slot == "兜");
-      this.accessories = this.items.filter(a => a.slot == "アクセサリ");
-      this.amulets1 = this.items.filter(a => a.slot == "月のアミュレット");
-      this.amulets2 = this.items.filter(a => a.slot == "太陽のアミュレット");
-
-      if (!this.embed) {
-        this.setMainChr(this.mainChrs[0]);
-      }
-    },
-
     setMainChr(chr) {
       this.main.character.value = chr;
       this.validateItems();
@@ -678,6 +614,9 @@ export default {
       let tmp = [...this.mainSkills];
       tmp[idx] = skill;
       this.mainSkills = tmp;
+    },
+    setEnchantPassive(skill) {
+      this.mainEnchantPassive = skill;
     },
     setSupChr(chr) {
       this.support.character.value = chr;
@@ -767,6 +706,7 @@ export default {
         main: {
           items: [null, null, null, null],
           enchants: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+          enchantPassive: this.getEnchantPassiveList()[0],
         },
         support: {
           items: [null, null],
@@ -1030,6 +970,9 @@ export default {
           v.valueP = r.main.enchants.shift();
           v.valueF = r.main.enchants.shift();
         }
+        if (!this.mainEnchantPassive) {
+          this.mainEnchantPassive = r.main.enchantPassive;
+        }
       }
       if (this.tabIndex == 1 && sa.character) {
         for (const v of Object.values(this.supportItems))
@@ -1087,6 +1030,7 @@ export default {
           msa.items = r.main.items;
           msa.enchantsP = getPEnchants(r.main.enchants);
           msa.enchantsF = getFEnchants(r.main.enchants);
+          msa.enchantPassive = r.main.enchantPassive;
           r.main.skills = msa.skills = this.autoMainSkillImpl(mchr);
 
           ssa.items = r.support.items;
@@ -1153,6 +1097,7 @@ export default {
           v.valueF = enchants.shift();
         }
 
+        s.mainEnchantPassive = r.main.enchantPassive;
         s.mainSkills = r.main.skills;
       }
       {
@@ -1188,6 +1133,7 @@ export default {
         engage: s.main.engage.value,
         boosts: Object.values(s.mainBoosts).map(a => a.value),
         items: Object.values(s.mainItems).map(a => a.value),
+        enchantPassive: s.mainEnchantPassive,
         enchantsP: Object.values(s.mainEnchants).map(a => a.valueP),
         enchantsF: Object.values(s.mainEnchants).map(a => a.valueF),
         skills: [...s.mainSkills],
@@ -1215,8 +1161,20 @@ export default {
         return empty;
 
       let r = this.getMainChrStatus(chr, ma.level, ma.star, ma.master, ma.loveBonus, ma.boosts);
-      for (let i = 0; i < ma.enchantsP.length; ++i)
-        r[i] = Math.round(r[i] * (1.0 + ma.enchantsP[i] * 0.01));
+
+      let enchantP = [...ma.enchantsP];
+      if (enchantP.length && ma.enchantPassive) {
+        const ep = ma.enchantPassive.baseStatusBoost;
+        if (ep.hp) enchantP[0] += ep.hp;
+        if (ep.atk) enchantP[1] += ep.atk;
+        if (ep.def) enchantP[2] += ep.def;
+        if (ep.mag) enchantP[3] += ep.mag;
+        if (ep.res) enchantP[4] += ep.res;
+        if (ep.tec) enchantP[5] += ep.tec;
+      }
+      for (let i = 0; i < enchantP.length; ++i) {
+        r[i] = Math.round(r[i] * (1.0 + enchantP[i] * 0.01));
+      }
 
       const items = ma.items.filter(a => a != null);
       for (const item of items) {
@@ -1297,18 +1255,22 @@ export default {
     serialize() {
       let params = [];
 
+      const getUid = obj => obj ? obj.uid : "none";
+
       for (let v of Object.values(this.main)) {
         if (v.type == "character")
-          params.push(v.value ? v.value.uid : 0);
+          params.push(getUid(v.value));
         else
           params.push(v.value);
       }
       for (let v of this.mainSkills)
-        params.push(v ? v.uid : "");
+        params.push(getUid(v));
       for (let v of Object.values(this.mainBoosts))
         params.push(v.value);
       for (let v of Object.values(this.mainItems))
-        params.push(v.value ? v.value.uid : 0);
+        params.push(getUid(v.value));
+
+      params.push(getUid(this.mainEnchantPassive));
       for (let v of Object.values(this.mainEnchants)) {
         params.push(v.valueP);
         params.push(v.valueF);
@@ -1316,14 +1278,14 @@ export default {
 
       for (let v of Object.values(this.support)) {
         if (v.type == "character")
-          params.push(v.value ? v.value.uid : 0);
+          params.push(getUid(v.value));
         else
           params.push(v.value);
       }
       for (let v of Object.values(this.supportBoosts))
         params.push(v.value);
       for (let v of Object.values(this.supportItems))
-        params.push(v.value ? v.value.uid : 0);
+        params.push(getUid(v.value));
       for (let v of Object.values(this.supportEnchants))
         params.push(v.valueP);
 
@@ -1335,46 +1297,40 @@ export default {
       }
       //console.log(params);
 
+      const find = uid => this.searchTableWithUid.get(uid);
+
       for (let v of Object.values(this.main)) {
-        if (v.type == "character") {
-          const uid = params.shift();
-          v.value = this.searchTableWithUid.get(uid);
-        }
-        else {
+        if (v.type == "character")
+          v.value = find(params.shift());
+        else
           v.value = params.shift();
-        }
       }
       this.mainSkills = [
-        this.searchTableWithUid.get(params.shift()),
-        this.searchTableWithUid.get(params.shift()),
-        this.searchTableWithUid.get(params.shift()),
+        find(params.shift()),
+        find(params.shift()),
+        find(params.shift()),
       ];
       for (let v of Object.values(this.mainBoosts))
         v.value = params.shift();
-      for (let v of Object.values(this.mainItems)) {
-        const uid = params.shift();
-        v.value = this.searchTableWithUid.get(uid);
-      }
+      for (let v of Object.values(this.mainItems))
+        v.value = find(params.shift());
+
+      this.mainEnchantPassive = find(params.shift());
       for (let v of Object.values(this.mainEnchants)) {
         v.valueP = params.shift();
         v.valueF = params.shift();
       }
 
       for (let v of Object.values(this.support)) {
-        if (v.type == "character") {
-          const uid = params.shift();
-          v.value = this.searchTableWithUid.get(uid);
-        }
-        else {
+        if (v.type == "character")
+          v.value = find(params.shift());
+        else
           v.value = params.shift();
-        }
       }
       for (let v of Object.values(this.supportBoosts))
         v.value = params.shift();
-      for (let v of Object.values(this.supportItems)) {
-        const uid = params.shift();
-        v.value = this.searchTableWithUid.get(uid);
-      }
+      for (let v of Object.values(this.supportItems))
+        v.value = find(params.shift());
       for (let v of Object.values(this.supportEnchants))
         v.valueP = params.shift();
     },
@@ -1442,6 +1398,7 @@ export default {
     main: { handler: function () { this.onChange(); }, deep: true },
     mainBoosts: { handler: function () { this.onChange(); }, deep: true },
     mainItems: { handler: function () { this.onChange(); }, deep: true },
+    mainEnchantPassive: { handler: function () { this.onChange(); }, deep: true },
     mainEnchants: { handler: function () { this.onChange(); }, deep: true },
     mainSkills: { handler: function () { this.onChange(); }, deep: true },
     support: { handler: function () { this.onChange(); }, deep: true },

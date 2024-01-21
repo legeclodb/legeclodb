@@ -244,6 +244,15 @@ export default {
       };
       return className in table ? table[className] : [];
     },
+
+    getEnchantPassiveList() {
+      const find = (uid) => this.searchTableWithUid.get(uid);
+      const list = [
+        find("100"), find("101"), find("102"), find("103"), find("104"), find("105"),
+        find("106"), find("107"), find("108"), find("109"), find("110"), find("111"), find("112")
+      ];
+      return list;
+    },
     getEnchantPassive(enchantName) {
       const find = (uid) => this.searchTableWithUid.get(uid);
       const table = {

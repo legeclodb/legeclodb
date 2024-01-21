@@ -351,6 +351,19 @@
       },
       "healRate": { "type": [ "number", "object" ] },
       "summon": { "type": [ "array" ] },
+      "baseStatusBoost": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "hp": { "type": "number" },
+          "atk": { "type": "number" },
+          "def": { "type": "number" },
+          "mag": { "type": "number" },
+          "res": { "type": "number" },
+          "tec": { "type": "number" },
+          "cri": { "type": "number" }
+        }
+      },
       "buff": {
         "type": "array",
         "items": { "$ref": "#/$defs/effect" }
