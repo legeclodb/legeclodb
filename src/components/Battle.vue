@@ -284,6 +284,27 @@
       </div>
     </div>
 
+    <div class="content" style="margin-top: 20px">
+      <div class="unit-panel">
+        <b-button size="sm" id="btl-unit-player">
+          ユニットセレクタ(味方)
+          <UnitSelector target="btl-unit-player" :units="playerUnits" closeonclick />
+        </b-button>
+      </div>
+      <div class="unit-panel">
+        <b-button size="sm" id="btl-unit-enemy">
+          ユニットセレクタ(敵)
+          <UnitSelector target="btl-unit-enemy" :units="enemyUnits" closeonclick />
+        </b-button>
+      </div>
+      <div class="unit-panel">
+        <b-button size="sm" id="btl-unit-enemy" @click="render()">
+          ForceUpdate
+        </b-button>
+      </div>
+    </div>
+
+
   </div>
 </template>
 
@@ -295,12 +316,14 @@ import jsonBattle from '../assets/battle.json'
 import commonjs from "./common.js";
 import lookupjs from "./simulator/lookup.js";
 import StatusSimulator from './simulator/StatusSimulator.vue'
+import UnitSelector from './parts/UnitSelector.vue'
 
 export default {
   name: 'Battle',
   components: {
     Navigation,
     StatusSimulator,
+    UnitSelector,
   },
   mixins: [commonjs,lookupjs],
 
@@ -341,6 +364,7 @@ export default {
         new this.BaseUnit(3),
         new this.BaseUnit(4),
       ],
+      battle: null,
     };
   },
 
@@ -411,6 +435,21 @@ export default {
     window.onpopstate = function () {
       this.decodeURL(true);
     }.bind(this);
+    },
+
+  computed: {
+    playerUnits() {
+      let r = [];
+      for (let u of this.units) {
+        if (u.main.cid)
+          r.push(u);
+      }
+      return r;
+    },
+    enemyUnits() {
+      const battle = this.battleList.find(a => a.uid == this.battleId);
+      return battle ? battle.enemies : [];
+    },
   },
 
   methods: {
@@ -578,6 +617,13 @@ export default {
     },
 
     BaseUnit: class {
+      vue;
+      index;
+      main;
+      support;
+      showEditor;
+      editorData;
+
       constructor(i) {
         this.vue = null;
         this.index = i;
@@ -661,6 +707,12 @@ export default {
     },
 
     BattleContext: class {
+      turn;
+      isPlayerTurn;
+      moveAmount;
+      range;
+      terrain;
+
       constructor() {
         this.turn = 0;
         this.isPlayerTurn = true;
@@ -671,6 +723,11 @@ export default {
     },
 
     BattleEffect: class {
+      effect;
+      stack;
+      duration;
+      enabled;
+
       constructor(effect) {
         this.effect = effect;
         this.stack = 0;
@@ -711,6 +768,11 @@ export default {
     },
 
     SkillHolder: class {
+      vue;
+      skill;
+      self;
+      effects;
+
       constructor() {
         this.vue = null;
       }
@@ -731,6 +793,9 @@ export default {
     },
 
     CustomEffect: class {
+      effectType = "";
+      value = 0;
+
       constructor() {
         this.effectType = null;
         this.value = 0;
@@ -744,10 +809,14 @@ export default {
     },
 
     BattleUnit: class {
+      vue;
+      unit;
+      skills;
+      customEffects;
+
       constructor() {
         this.vue = null;
         this.unit = null;
-        this.initialize();
       }
       initialize(unit) {
         this.unit = unit;
@@ -809,6 +878,9 @@ export default {
     },
 
     CombatResult: class {
+      attacker;
+      defender;
+
       constructor() {
         this.attacker = {
           unit: null,
