@@ -125,17 +125,32 @@
 
     <div class="content" style="margin-top: 20px">
       <div class="unit-panel">
-        <b-dropdown size="sm" text="編成をセーブ">
-          <b-dropdown-item v-for="i in 10" :key=i @click="saveUnits(i)">スロット{{i}}</b-dropdown-item>
-        </b-dropdown>
-      </div>
-      <div class="unit-panel">
-        <b-dropdown size="sm" text="編成をロード">
-          <b-dropdown-item v-for="i in 10" :key=i @click="loadUnits(i)">スロット{{i}}</b-dropdown-item>
-        </b-dropdown>
-      </div>
-      <div class="unit-panel">
-        <b-button size="sm" @click="clearUnits()">編成をクリア</b-button>
+        <div class="flex">
+          <b-form-input v-model="slotName" placeholder="編成名" style="width: 12em"></b-form-input>
+          <b-dropdown size="sm" text="編成をセーブ" style="width: 10em; margin-left: 0.5em;">
+            <b-dropdown-item v-for="(name, i) in slotNames" :key=i @click="saveUnits(i)">スロット{{i}}: {{name}}</b-dropdown-item>
+          </b-dropdown>
+          <b-dropdown size="sm" text="編成をロード" style="width: 10em; margin-left: 0.5em;">
+            <b-dropdown-item v-for="(name, i) in slotNames" :key=i @click="loadUnits(i)">スロット{{i}}: {{name}}</b-dropdown-item>
+          </b-dropdown>
+          <b-button size="sm" @click="clearUnits()" style="width: 10em; margin-left: 2em;">
+            編成をクリア
+          </b-button>
+          <b-button size="sm" style="width: 10em; margin-left: 4em;" @click="beginBattle()">
+            ダメージ計算開始
+          </b-button>
+          <b-button size="sm" style="width: 10em; margin-left: 0.5em;" @click="endBattle()">
+            ダメージ計算終了
+          </b-button>
+          <b-button size="sm" id="btl-unit-player" style="width: 13em; margin-left: 4em;">
+            ユニットセレクタ(味方)
+            <UnitSelector target="btl-unit-player" :units="playerUnits" closeonclick />
+          </b-button>
+          <b-button size="sm" id="btl-unit-enemy" style="width: 13em; margin-left: 0.5em;">
+            ユニットセレクタ(敵)
+            <UnitSelector target="btl-unit-enemy" :units="enemyUnits" closeonclick />
+          </b-button>
+        </div>
       </div>
     </div>
 
@@ -284,27 +299,6 @@
       </div>
     </div>
 
-    <div class="content" style="margin-top: 20px">
-      <div class="unit-panel">
-        <b-button size="sm" id="btl-unit-player">
-          ユニットセレクタ(味方)
-          <UnitSelector target="btl-unit-player" :units="playerUnits" closeonclick />
-        </b-button>
-      </div>
-      <div class="unit-panel">
-        <b-button size="sm" id="btl-unit-enemy">
-          ユニットセレクタ(敵)
-          <UnitSelector target="btl-unit-enemy" :units="enemyUnits" closeonclick />
-        </b-button>
-      </div>
-      <div class="unit-panel">
-        <b-button size="sm" id="btl-unit-enemy" @click="render()">
-          ForceUpdate
-        </b-button>
-      </div>
-    </div>
-
-
   </div>
 </template>
 
@@ -357,6 +351,8 @@ export default {
       phaseTabIndex: 0,
       prevURL: "",
 
+      slotNames: ["", "", "", "", "", "", "", "", "", ""],
+      slotName: "",
       units: [
         new this.BaseUnit(0),
         new this.BaseUnit(1),
@@ -370,6 +366,7 @@ export default {
 
   created() {
     document.title = "れじぇくろDB: 戦闘データ";
+    window.$vue = this;
 
     this.setupDB();
 
@@ -403,9 +400,13 @@ export default {
       }
     }
 
-    for (let unit of this.units) {
-      unit.vue = this;
+    for (let i = 0; i <= 9; ++i) {
+      let data = JSON.parse(localStorage.getItem(`battle.slot${i}`));
+      if (data?.name) {
+        this.setArrayElement(this.slotNames, i, data.name);
+      }
     }
+
   },
 
   mounted() {
@@ -617,7 +618,6 @@ export default {
     },
 
     BaseUnit: class {
-      vue;
       index;
       main;
       support;
@@ -625,7 +625,6 @@ export default {
       editorData;
 
       constructor(i) {
-        this.vue = null;
         this.index = i;
         this.initialize();
       }
@@ -661,8 +660,8 @@ export default {
         };
       }
       deserialize(r) {
-        const uidToObject = this.vue.uidToObject;
-        const mergeChrData = this.vue.mergeChrData;
+        const uidToObject = window.$vue.uidToObject;
+        const mergeChrData = window.$vue.mergeChrData;
         const deserializeChr = function (dst, src) {
           const chr = uidToObject(src.cid);
           mergeChrData(dst, chr);
@@ -676,9 +675,9 @@ export default {
         this.editorData = [...r.editorData];
       }
       edit(ss) {
-        const uidToObject = this.vue.uidToObject;
-        const copyArray = this.vue.copyArray;
-        const mergeChrData = this.vue.mergeChrData;
+        const uidToObject = window.$vue.uidToObject;
+        const copyArray = window.$vue.copyArray;
+        const mergeChrData = window.$vue.mergeChrData;
         // エディタ側のオブジェクトとこちら側のオブジェクトは別個体なため、uid を元にこちら側のオブジェクトに差し替える。
 
         const mainChr = uidToObject(ss.main.character.value?.uid);
@@ -706,35 +705,52 @@ export default {
       }
     },
 
-    BattleContext: class {
-      turn;
-      isPlayerTurn;
-      moveAmount;
-      range;
-      terrain;
-
-      constructor() {
-        this.turn = 0;
-        this.isPlayerTurn = true;
-        this.moveAmount = 0;
-        this.range = 1;
-        this.terrain = null;
-      }
-    },
-
-    BattleEffect: class {
-      effect;
-      stack;
-      duration;
-      enabled;
+    EffectHolder: class {
+      effect = null;
+      stack = 1;
+      duration = Infinity;
+      passDuration = true;
+      enabled = true;
 
       constructor(effect) {
         this.effect = effect;
-        this.stack = 0;
-        this.duration = 0;
-        this.enabled = true;
       }
-      evaluate(battleCtx, baseStat) {
+      activate(bySelf) {
+        if (this.effect.duration) {
+          this.duration = this.effect.duration;
+          if (bySelf) {
+            this.passDuration = false;
+          }
+        }
+      }
+      evaluateBuff(battleCtx, baseStat) {
+      }
+      evaluateDebuff(battleCtx, baseStat) {
+      }
+
+      onTurnBegin() {
+        this.passDuration = true;
+      }
+      onBattleBegin() {
+      }
+      onBattleEnd() {
+      }
+      onAttackBegin() {
+      }
+      onAttackEnd() {
+      }
+      onActionEnd() {
+        if (this.passDuration && this.duration > 0) {
+          if (--this.duration == 0) {
+            this.enabled = false;
+          }
+        }
+      }
+      onTurnEnd() {
+        this.passDuration = true;
+      }
+
+      _getValue(battleCtx, baseStat) {
         let r = 0;
         const effect = this.effect;
         if (effect.value) {
@@ -762,33 +778,76 @@ export default {
         }
         return r;
       }
-      passTurn() {
 
+      serialize() {
+      }
+      deserialize(r) {
       }
     },
 
     SkillHolder: class {
-      vue;
-      skill;
-      self;
-      effects;
+      skill = null;
+      self = false;
+      effects = []; // EffectHolder
 
-      constructor() {
-        this.vue = null;
-      }
-      initialize(skill, self) {
+      constructor(skill) {
         this.skill = skill;
-        this.self = self;
-        this.effects = [];
         for (let effect of [...(this.skill.buff ?? []), ...(this.skill.debuff ?? [])]) {
-          this.effects.push(new this.vue.BattleEffect(effect));
+          this.effects.push(new window.$vue.EffectHolder(effect));
         }
       }
-      serialize() {
+      activate(bySelf) {
+        this.self = bySelf;
+        for (let e of this.effects) {
+          e.activate(bySelf);
+        }
+      }
 
+      onTurnBegin() {
+        for (let e of this.effects) {
+          e.onTurnBegin();
+        }
+      }
+      onBattleBegin() {
+        for (let e of this.effects) {
+          e.onBattleBegin();
+        }
+      }
+      onBattleEnd() {
+        for (let e of this.effects) {
+          e.onBattleEnd();
+        }
+      }
+      onAttackBegin() {
+        for (let e of this.effects) {
+          e.onAttackBegin();
+        }
+      }
+      onAttackEnd() {
+        for (let e of this.effects) {
+          e.onAttackEnd();
+        }
+      }
+      onActionEnd() {
+        for (let e of this.effects) {
+          e.onActionEnd();
+        }
+      }
+      onTurnEnd() {
+        for (let e of this.effects) {
+          e.onTurnEnd();
+        }
+      }
+
+      serialize() {
+      //  for (let e of this.effects) {
+      //    e.serialize();
+      //  }
       }
       deserialize(r) {
-
+      //  for (let e of this.effects) {
+      //    e.deserialize();
+      //  }
       }
     },
 
@@ -809,39 +868,52 @@ export default {
     },
 
     BattleUnit: class {
-      vue;
-      unit;
-      skills;
-      customEffects;
+      unit = null;
+      affectedSkills = []; // SkillHolder
+      activeSkills = [];
+      customEffects = [];
+      main = {
+        bufP: [],
+        bufF: [],
+        status: [0, 0, 0, 0, 0, 0],
+      };
+      support = {
+        bufP: [],
+        bufF: [],
+        status: [0, 0, 0, 0, 0, 0],
+      };
 
-      constructor() {
-        this.vue = null;
-        this.unit = null;
-      }
-      initialize(unit) {
+      constructor(unit) {
         this.unit = unit;
-        this.skills = [];
-        this.customEffects = [];
 
+        let vue = window.$vue;
         if (unit) {
           // パッシブ/タレントを収集
-          const skills = [...unit.main.skills, ...unit.main.items, ...unit.support.skills,
-            ...this.vue.getClassPassiveMain(unit.main.chr.class),
-            ...this.vue.getClassPassiveSupport(unit.support.chr.class),
+          const skills = [...(unit.main.skills ?? []), ...(unit.main.items ?? []), ...(unit.support?.skills ?? []),
+            ...(unit.main ? vue.getClassPassiveMain(unit.main.class) : []),
+            ...(unit.support ? vue.getClassPassiveSupport(unit.support.class) : []),
           ];
           for (let skill of skills) {
             if (skill.isTalent || skill.isPassive || skill.isItem) {
               this.applySkill(skill, true);
+            }
+            if (skill.isActive) {
+              this.activeSkills.push(skill);
             }
           }
         }
       }
 
       applySkill(skill, self = false) {
-        this.skills.push(new this.vue.SkillHolder(skill, self));
+        let s = this.affectedSkills.find(a => a.skill === skill);
+        if (!s) {
+          s = new window.$vue.SkillHolder(skill, self);
+          this.affectedSkills.push(s);
+        }
+        s.activate(self);
       }
       applyCustomEffect(effectType, value) {
-        this.customEffects.push(new this.vue.CustomEffect(effectType, value));
+        this.customEffects.push(new window.$vue.CustomEffect(effectType, value));
       }
 
       evaluateEffects(battleCtx) {
@@ -864,9 +936,7 @@ export default {
       }
 
       clone() {
-        const vue = this.vue;
-        let r = new vue.BattleUnit();
-        r.vue = vue;
+        let r = new window.$vue.BattleUnit();
         r.unit = this.unit;
         return r;
       }
@@ -876,24 +946,64 @@ export default {
       deserialize(r) {
       }
     },
+    
+    BattleContext: class {
+      playerUnits = []; // BattleUnit
+      enemyUnits = []; // BattleUnit
+      turn = 1;
+      isPlayerTurn = true;
 
-    CombatResult: class {
-      attacker;
-      defender;
+      attacker = null;
+      defender = null;
+      results = []; // CombatResult
 
-      constructor() {
-        this.attacker = {
-          unit: null,
-          damageMain: 0,
-          damageSupport: 0,
-        };
-        this.defender = {
-          unit: null,
-          damageMain: 0,
-          damageSupport: 0,
-        };
+      constructor(playerUnits, enemyUnits) {
+        const vue = window.$vue;
+        this.playerUnits = playerUnits.map(a => new vue.BattleUnit(a));
+        this.enemyUnits = enemyUnits.map(a => new vue.BattleUnit(a));
+      }
+      findUnit(u) {
+        let r = this.playerUnits.find(a => a.unit === u);
+        if (!r)
+          r = this.enemyUnits.find(a => a.unit === u);
+        return r;
       }
     },
+
+    CombatResult: class {
+      attacker = {
+        unit: null,
+        damageMain: 0,
+        damageSupport: 0,
+      };
+      defender = {
+        unit: null,
+        damageMain: 0,
+        damageSupport: 0,
+      };
+
+      constructor() {
+      }
+    },
+
+    beginBattle() {
+      this.battle = new this.BattleContext(this.playerUnits, this.enemyUnits);
+    },
+    endBattle() {
+      this.battle = null;
+    },
+    onSelectUnit(unit, idx) {
+      if (this.battle) {
+        let u = this.battle.findUnit(unit);
+        if (u) {
+          if (idx == 0)
+            this.battle.attacker = u;
+          else
+            this.battle.defender = u;
+        }
+      }
+    },
+
 
     uidToObject(uid) {
       return this.searchTableWithUid.get(uid);
@@ -918,16 +1028,21 @@ export default {
       }
     },
     saveUnits(slot = 0) {
+      this.setArrayElement(this.slotNames, slot, this.slotName);
       let data = {
-        units: this.units.map(a => a.serialize())
+        name: this.slotName,
+        units: this.units.map(a => a.serialize()),
       };
       localStorage.setItem(`battle.slot${slot}`, JSON.stringify(data));
     },
     loadUnits(slot = 0) {
       let data = JSON.parse(localStorage.getItem(`battle.slot${slot}`));
-      if (data && data.units) {
-        for (let i = 0; i < this.units.length; ++i) {
-          this.units[i].deserialize(data.units[i]);
+      if (data) {
+        this.slotName = data.name ?? "";
+        if (data.units) {
+          for (let i = 0; i < this.units.length; ++i) {
+            this.units[i].deserialize(data.units[i]);
+          }
         }
       }
     },

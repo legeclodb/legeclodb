@@ -116,7 +116,7 @@ export default {
 
   methods: {
     onScroll() {
-      const pos = window.pageYOffset || document.documentElement.scrollTop;
+      const pos = window.scrollY || document.documentElement.scrollTop;
       if (pos < 0 || Math.abs(pos - this.lastScrollPosition) < 30) {
         return;
       }
@@ -1213,6 +1213,9 @@ export default {
       }
     },
 
+    setArrayElement(ary, idx, item) {
+      this.$set(ary, idx, item);
+    },
     objectEqual(obj1, obj2) {
       if (obj1 === obj2) {
         return true;

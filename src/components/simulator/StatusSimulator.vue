@@ -58,7 +58,7 @@
                     <b-button v-for="(skill, si) in mainSkills" :key="si" :id="`ss${uid}-main-skill${si}`" variant="outline-secondary" class="paddingless small-margin">
                       <b-img-lazy :src="getSkillIcon(skill)" :title="descToTitle(skill)" width="50" height="50" />
                       <SkillSelector :target="`ss${uid}-main-skill${si}`" nullable closeonclick
-                                     :skills="mainSkillList" :excludes="mainSkills" @click="setArrayElement('mainSkills', $event, si)" />
+                                     :skills="mainSkillList" :excludes="mainSkills" @click="setArrayElement(mainSkills, si, $event)" />
                     </b-button>
                   </b-col>
                 </b-form-row>
@@ -72,7 +72,7 @@
                   <span v-for="(item, i) in mainItems" :key="i">
                     <b-button variant="outline-secondary" class="paddingless small-margin" :id="`ss${uid}-main-item${i}`">
                       <b-img-lazy :src="getSkillIcon(item)" :title="descToTitle(item)" width="50" height="50" />
-                      <ItemSelector :target="`ss${uid}-main-item${i}`" :items="items" @click="setArrayElement('mainItems', $event, i)"
+                      <ItemSelector :target="`ss${uid}-main-item${i}`" :items="items" @click="setArrayElement(mainItems, i, $event)"
                                     :slotfilter="mainItemSlots[i]" :classfilter="mainClass" nullable closeonclick />
                     </b-button>
                   </span>
@@ -88,7 +88,7 @@
                     <b-button variant="outline-secondary" class="paddingless small-margin" :id="`ss${uid}-main-enchant${i}`">
                       <b-img-lazy :src="getSkillIcon(item)" :title="descToTitle(item)" width="50" height="50" />
                       <SkillSelector :target="`ss${uid}-main-enchant${i}`" nullable closeonclick
-                                     :skills="getEnchantPassiveList()" @click="setArrayElement('mainEnchantPassive', $event, i)" />
+                                     :skills="getEnchantPassiveList()" @click="setArrayElement(mainEnchantPassive, i, $event)" />
                     </b-button>
                   </span>
                 </b-col>
@@ -172,7 +172,7 @@
                   <span v-for="(item, i) in supportItems" :key="i">
                     <b-button variant="outline-secondary" class="paddingless small-margin" :id="`ss${uid}-sup-item${i}`">
                       <b-img-lazy :src="getSkillIcon(item)" :title="descToTitle(item)" width="50" height="50" />
-                      <ItemSelector :target="`ss${uid}-sup-item${i}`" :items="items" @click="setArrayElement('supportItems', $event, i)"
+                      <ItemSelector :target="`ss${uid}-sup-item${i}`" :items="items" @click="setArrayElement(supportItems, i, $event)"
                                     :slotfilter="supItemSlots[i]" nullable closeonclick />
                     </b-button>
                   </span>
@@ -560,12 +560,6 @@ export default {
           params.valueP = 15;
         }
       }
-    },
-    setArrayElement(name, item, idx) {
-      // 配列の要素の差し替えでは変更が検出されないので配列自体を更新する
-      let tmp = [...this[name]];
-      tmp[idx] = item;
-      this[name] = tmp;
     },
 
     getParamClass(param) {
