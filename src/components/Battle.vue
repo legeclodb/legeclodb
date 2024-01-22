@@ -74,24 +74,6 @@
                       <div v-if="ene.main.status" class="status2" v-html="statusToHtml(ene.main.status)" />
                     </div>
                     <div class="skills">
-                      <div class="talent">
-                        <div class="flex">
-                          <div class="icon" :id="'enemy_'+ene.fid+'_talent'">
-                            <b-img-lazy :src="getImageURL(ene.main.talent.icon)" with="50" height="50" />
-                            <b-popover v-if="displayType==1" :target="'enemy_'+ene.fid+'_talent'" triggers="hover focus" :delay="{show:0, hide:250}" no-fade :title="ene.main.talent.name" placement="top">
-                              <div class="flex">
-                                <div v-html="descToHtml(ene.main.talent)"></div>
-                              </div>
-                            </b-popover>
-                          </div>
-                          <div class="desc" v-show="displayType >= 2">
-                            <h5>
-                              {{ ene.main.talent.name }}
-                            </h5>
-                            <p><span v-html="descToHtml(ene.main.talent)"></span><span v-if="ene.main.talent.note" class="note" v-html="noteToHtml(ene.main.talent)"></span></p>
-                          </div>
-                        </div>
-                      </div>
                       <div class="skill" v-for="(skill, si) in ene.main.skills" :class="getSkillClass(skill)" :key="si">
                         <div class="flex">
                           <div class="icon" :id="'enemy_'+ene.fid+'_skill'+si">
@@ -168,24 +150,26 @@
             </div>
           </b-popover>
 
-          <div v-if="unit.mainChr" class="character">
+          <div v-if="unit.main.cid" class="character">
             <div class="flex">
               <div class="portrait">
-                <b-img-lazy :src="getImageURL(unit.mainChr.icon)" :title="unit.mainChr.name" width="100" height="100" rounded />
+                <b-img-lazy :src="getImageURL(unit.main.icon)" :title="unit.main.name" width="100" height="100" rounded />
               </div>
               <div class="detail" v-show="displayType >= 1">
                 <div class="info">
-                  <h5 v-html="chrNameToHtml(unit.mainChr.name)"></h5>
+                  <h5 v-html="chrNameToHtml(unit.main.name)"></h5>
                   <div class="status">
-                    <b-img-lazy :src="getImageURL(unit.mainChr.class)" :title="'クラス:'+unit.mainChr.class" height="25" />
-                    <div class="param-box"><b-img-lazy :src="getImageURL(unit.mainChr.damageType)" :title="'攻撃タイプ:'+unit.mainChr.damageType" width="20" height="20" /></div>
-                    <div class="param-box"><b-img-lazy :src="getImageURL('射程')" title="射程" width="18" height="18" /><span>{{unit.mainChr.range}}</span></div>
-                    <div class="param-box"><b-img-lazy :src="getImageURL('移動')" title="移動" width="18" height="18" /><span>{{unit.mainChr.move}}</span></div>
+                    <b-img-lazy :src="getImageURL(unit.main.class)" :title="'クラス:'+unit.main.class" height="25" />
+                    <b-img-lazy :src="getImageURL(unit.main.symbol)" :title="'シンボル:'+unit.main.symbol" height="25" />
+                    <b-img-lazy :src="getImageURL(unit.main.rarity)" :title="'レアリティ:'+unit.main.rarity" height="20" />
+                    <div class="param-box"><b-img-lazy :src="getImageURL(unit.main.damageType)" :title="'攻撃タイプ:'+unit.main.damageType" width="20" height="20" /></div>
+                    <div class="param-box"><b-img-lazy :src="getImageURL('射程')" title="射程" width="18" height="18" /><span>{{unit.main.range}}</span></div>
+                    <div class="param-box"><b-img-lazy :src="getImageURL('移動')" title="移動" width="18" height="18" /><span>{{unit.main.move}}</span></div>
                   </div>
-                  <div v-if="unit.mainStat" class="status2" v-html="statusToHtml(unit.mainStat)" />
+                  <div class="status2" v-html="statusToHtml(unit.main.status)" />
                 </div>
                 <div class="skills">
-                  <div class="skill" v-for="(skill, si) in unit.mainSkills" :class="getSkillClass(skill)" :key="`skill${si}`">
+                  <div class="skill" v-for="(skill, si) in unit.main.skills" :class="getSkillClass(skill)" :key="`skill${si}`">
                     <div class="flex">
                       <div class="icon" :id="`unit${ui}_main_skill${si}`">
                         <b-img-lazy :src="getImageURL(skill.icon)" with="50" height="50" />
@@ -206,7 +190,7 @@
                   </div>
                 </div>
                 <div class="skills">
-                  <div class="skill" v-for="(skill, si) in unit.mainItems" :class="getSkillClass(skill)" :key="`item${si}`">
+                  <div class="skill" v-for="(skill, si) in unit.main.items" :class="getSkillClass(skill)" :key="`item${si}`">
                     <div class="flex">
                       <div class="icon" :id="`unit${ui}_main_item${si}`">
                         <b-img-lazy :src="getImageURL(skill.icon)" with="50" height="50" />
@@ -219,7 +203,7 @@
                       <div class="desc" v-show="displayType >= 2">
                         <div class="flex">
                           <h6>
-                            <b-img-lazy :src="getImageURL(skill.slot)" :title="'部位:'+skill.slot" height="20" />
+                            <b-img-lazy v-if="skill.slot" :src="getImageURL(skill.slot)" :title="'部位:'+skill.slot" height="20" />
                             {{ skill.name }}
                           </h6>
                         </div>
@@ -231,23 +215,25 @@
               </div>
             </div>
 
-            <div v-if="unit.supChr" class="flex">
+            <div v-if="unit.support.cid" class="flex">
               <div class="portrait">
-                <b-img-lazy :src="getImageURL(unit.supChr.icon)" :title="unit.supChr.name" width="100" height="100" rounded />
+                <b-img-lazy :src="getImageURL(unit.support.icon)" :title="unit.support.name" width="100" height="100" rounded />
               </div>
               <div class="detail" v-show="displayType >= 1">
                 <div class="info">
-                  <h5 v-html="chrNameToHtml(unit.supChr.name)"></h5>
+                  <h5 v-html="chrNameToHtml(unit.support.name)"></h5>
                   <div class="status">
-                    <b-img-lazy :src="getImageURL(unit.supChr.class)" :title="'クラス:'+unit.supChr.class" height="25" />
-                    <div class="param-box"><b-img-lazy :src="getImageURL(unit.supChr.damageType)" :title="'攻撃タイプ:'+unit.supChr.damageType" width="20" height="20" /></div>
-                    <div class="param-box"><b-img-lazy :src="getImageURL('射程')" title="射程" width="18" height="18" /><span>{{unit.supChr.range}}</span></div>
+                    <b-img-lazy :src="getImageURL(unit.support.class)" :title="'クラス:'+unit.support.class" height="25" />
+                    <b-img-lazy :src="getImageURL(unit.support.supportType)" :title="'サポートタイプ:'+unit.support.supportType" height="25" />
+                    <b-img-lazy :src="getImageURL(unit.support.rarity)" :title="'レアリティ:'+unit.support.rarity" height="20" />
+                    <div class="param-box"><b-img-lazy :src="getImageURL(unit.support.damageType)" :title="'攻撃タイプ:'+unit.support.damageType" width="20" height="20" /></div>
+                    <div class="param-box"><b-img-lazy :src="getImageURL('射程')" title="射程" width="18" height="18" /><span>{{unit.support.range}}</span></div>
                   </div>
-                  <div v-if="unit.supStat" class="status2" v-html="statusToHtml(unit.supStat)" />
+                  <div class="status2" v-html="statusToHtml(unit.support.status)" />
                 </div>
 
                 <div class="skills">
-                  <div class="skill" v-for="(skill, si) in unit.supSkills" :class="getSkillClass(skill)" :key="`skill${si}`">
+                  <div class="skill" v-for="(skill, si) in unit.support.skills" :class="getSkillClass(skill)" :key="`skill${si}`">
                     <div class="flex">
                       <div class="icon" :id="`unit${ui}_sup_skill${si}`">
                         <b-img-lazy :src="getImageURL(skill.icon)" with="50" height="50" />
@@ -268,7 +254,7 @@
                   </div>
                 </div>
                 <div class="skills">
-                  <div class="skill" v-for="(skill, si) in unit.supItems" :class="getSkillClass(skill)" :key="`item${si}`">
+                  <div class="skill" v-for="(skill, si) in unit.support.items" :class="getSkillClass(skill)" :key="`item${si}`">
                     <div class="flex">
                       <div class="icon" :id="`unit${ui}_sup_item${si}`">
                         <b-img-lazy :src="getImageURL(skill.icon)" with="50" height="50" />
@@ -368,29 +354,26 @@ export default {
     this.setupCharacters(this.enemyMainChrs, this.mainActive, this.mainPassive, this.mainTalents);
     this.setupCharacters(this.enemySupChrs, this.supActive, this.supPassive);
 
-    const mergeChrData = function (dst, src) {
-      dst.name = src.name;
-      dst.class = src.class;
-      dst.damageType = src.damageType;
-      dst.range = src.range;
-      dst.move = src.move;
-      dst.icon = src.icon;
-    };
-
+    this.battleTable = new Map();
     this.battleList = structuredClone(jsonBattle);
     for (let battle of this.battleList) {
+      this.battleTable.set(battle.uid, battle);
+      battle.enemyTable = new Map();
       for (let enemy of battle.enemies) {
+        battle.enemyTable.set(enemy.fid, enemy);
         enemy.cellID = `c${this.zeroPad(enemy.coord[0])}${this.zeroPad(enemy.coord[1])}`;
         {
           const chr = this.enemyMainChrs.find(c => c.uid == enemy.main.cid);
-          mergeChrData(enemy.main, chr);
+          this.mergeChrData(enemy.main, chr);
+          enemy.main.skills = [
+            this.searchTableWithUid.get(enemy.main.talent),
+            ...enemy.main.skills.map(id => this.searchTableWithUid.get(id)),
+          ];
           enemy.main.status = this.getNPCChrStatus(chr, enemy.main.level, enemy.main.statusRate);
-          enemy.main.talent = this.searchTableWithUid.get(enemy.main.talent);
-          enemy.main.skills = enemy.main.skills.map(id => this.searchTableWithUid.get(id));
         }
         if (enemy.support) {
           const chr = this.enemySupChrs.find(c => c.uid == enemy.support.cid);
-          mergeChrData(enemy.support, chr);
+          this.mergeChrData(enemy.support, chr);
           enemy.support.status = this.getNPCChrStatus(chr, enemy.support.level, enemy.support.statusRate);
         }
       }
@@ -486,6 +469,15 @@ export default {
       }
       else {
         this.selected = null;
+      }
+    },
+
+    mergeChrData(dst, src) {
+      if (!src)
+        return;
+      const props = ["name", "icon", "class", "rarity", "symbol", "supportType", "damageType", "range", "move"];
+      for (const prop of props) {
+        dst[prop] = src[prop];
       }
     },
 
@@ -592,73 +584,76 @@ export default {
         this.initialize();
       }
       initialize() {
-        this.mainChr = null;
-        this.mainSkills = [];
-        this.mainItems = [];
-        this.mainEnchantPassive = [];
-        this.mainStat = [0, 0, 0, 0, 0, 0]; // 基礎ステ
-
-        this.supChr = null;
-        this.supSkills = [];
-        this.supItems = [];
-        this.supStat = [0, 0, 0, 0, 0, 0];
-
+        this.main = {
+          cid: "",
+          skills: [],
+          items: [],
+          status: [0, 0, 0, 0, 0, 0], // 基礎ステ
+        };
+        this.support = {
+          cid: "",
+          skills: [],
+          items: [],
+          status: [0, 0, 0, 0, 0, 0], // 基礎ステ
+        };
         this.showEditor = false;
         this.editorData = [];
       }
       serialize() {
-        let r = {};
-        r.mainChr = this.mainChr?.uid;
-        r.mainSkills = this.mainSkills.map(a => a.uid);
-        r.mainItems = this.mainItems.map(a => a.uid);
-        r.mainEnchantPassive = this.mainEnchantPassive.map(a => a.uid)
-        r.mainStat = [...this.mainStat];
-
-        r.supChr = this.supChr?.uid;
-        r.supSkills = this.supSkills.map(a => a.uid);
-        r.supItems = this.supItems.map(a => a.uid);
-        r.supStat = [...this.supStat];
-
-        r.editorData = [...this.editorData];
-        return r;
+        const serializeChr = function (src) {
+          return {
+            cid: src.cid,
+            skills: src.skills.map(a => a.uid),
+            items: src.items.map(a => a.uid),
+            status: src.status,
+          };
+        };
+        return {
+          main: serializeChr(this.main),
+          support: serializeChr(this.support),
+          editorData: [...this.editorData],
+        };
       }
       deserialize(r) {
         const uidToObject = this.vue.uidToObject;
-
-        this.mainChr = uidToObject(r.mainChr);
-        this.mainSkills = r.mainSkills.map(uidToObject);
-        this.mainItems = r.mainItems.map(uidToObject);
-        this.mainEnchantPassive = r.mainEnchantPassive.map(uidToObject);
-        this.mainStat = [...r.mainStat];
-
-        this.supChr = uidToObject(r.supChr);
-        this.supSkills = r.supSkills.map(uidToObject);
-        this.supItems = r.supItems.map(uidToObject);
-        this.supStat = [...r.supStat];
-
+        const mergeChrData = this.vue.mergeChrData;
+        const deserializeChr = function (dst, src) {
+          const chr = uidToObject(src.cid);
+          mergeChrData(dst, chr);
+          dst.cid = src.cid;
+          dst.skills = src.skills.map(uidToObject);
+          dst.items = src.items.map(uidToObject);
+          dst.status = [...src.status];
+        };
+        deserializeChr(this.main, r.main);
+        deserializeChr(this.support, r.support);
         this.editorData = [...r.editorData];
       }
       edit(ss) {
         const uidToObject = this.vue.uidToObject;
         const copyArray = this.vue.copyArray;
+        const mergeChrData = this.vue.mergeChrData;
         // エディタ側のオブジェクトとこちら側のオブジェクトは別個体なため、uid を元にこちら側のオブジェクトに差し替える。
 
-        this.mainChr = uidToObject(ss.main.character.value?.uid);
-        this.mainItems = ss.mainItems.filter(a => a).map(a => uidToObject(a.uid));
-        this.mainSkills = [];
-        if (this.mainChr) {
-          this.mainSkills = [this.mainChr.talent, ...ss.mainSkills].map(a => uidToObject(a.uid));
+        const mainChr = uidToObject(ss.main.character.value?.uid);
+        mergeChrData(this.main, mainChr);
+        this.main.cid = mainChr?.uid ?? "";
+        this.main.skills = [];
+        if (mainChr) {
+          this.main.skills = [mainChr.talent, ...ss.mainSkills].filter(a => a).map(a => uidToObject(a.uid));
         }
-        this.mainEnchantPassive = ss.mainEnchantPassive.filter(a => a).map(a => uidToObject(a.uid));
-        this.mainStat = ss.statMainResult.slice(0, 6);
+        this.main.items = [...ss.mainEnchantPassive, ...ss.mainItems].filter(a => a).map(a => uidToObject(a.uid));
+        this.main.status = ss.statMainResult.slice(0, 6);
 
-        this.supChr = uidToObject(ss.support.character.value?.uid);
-        this.supSkills = [];
-        if (this.supChr) {
-          this.supSkills = [...this.supChr.skills].map(a => uidToObject(a.uid));
+        const supChr = uidToObject(ss.support.character.value?.uid);
+        mergeChrData(this.support, supChr);
+        this.support.cid = supChr?.uid ?? "";
+        this.support.skills = [];
+        if (supChr) {
+          this.support.skills = [...supChr.skills].filter(a => a).map(a => uidToObject(a.uid));
         }
-        this.supItems = ss.supportItems.filter(a => a).map(a => uidToObject(a.uid));
-        this.supStat = ss.statSupportResult.slice(0, 6);
+        this.support.items = ss.supportItems.filter(a => a).map(a => uidToObject(a.uid));
+        this.support.status = ss.statSupportResult.slice(0, 6);
 
         copyArray(this.editorData, ss.serialize());
         //console.log(this);
@@ -674,6 +669,7 @@ export default {
         this.terrain = null;
       }
     },
+
     BattleEffect: class {
       constructor(effect) {
         this.effect = effect;
@@ -714,6 +710,39 @@ export default {
       }
     },
 
+    SkillHolder: class {
+      constructor() {
+        this.vue = null;
+      }
+      initialize(skill, self) {
+        this.skill = skill;
+        this.self = self;
+        this.effects = [];
+        for (let effect of [...(this.skill.buff ?? []), ...(this.skill.debuff ?? [])]) {
+          this.effects.push(new this.vue.BattleEffect(effect));
+        }
+      }
+      serialize() {
+
+      }
+      deserialize(r) {
+
+      }
+    },
+
+    CustomEffect: class {
+      constructor() {
+        this.effectType = null;
+        this.value = 0;
+      }
+      serialize() {
+
+      }
+      deserialize(r) {
+
+      }
+    },
+
     BattleUnit: class {
       constructor() {
         this.vue = null;
@@ -722,46 +751,75 @@ export default {
       }
       initialize(unit) {
         this.unit = unit;
-
         this.skills = [];
+        this.customEffects = [];
+
         if (unit) {
           // パッシブ/タレントを収集
-          for (let skill of [...unit.mainSkills, ...unit.supSkills]) {
-            if (skill.isTalent || skill.isPassive) {
-              this.skills.push(skill);
+          const skills = [...unit.main.skills, ...unit.main.items, ...unit.support.skills,
+            ...this.vue.getClassPassiveMain(unit.main.chr.class),
+            ...this.vue.getClassPassiveSupport(unit.support.chr.class),
+          ];
+          for (let skill of skills) {
+            if (skill.isTalent || skill.isPassive || skill.isItem) {
+              this.applySkill(skill, true);
             }
-          }
-          const appendSkills = a => this.vue.appendArray(this.skills, a);
-          if (unit.mainChr) {
-            appendSkills(this.vue.getClassPassiveMain(unit.mainChr.class));
-            appendSkills(this.vue.getEnchantPassive("ストライク"));
-          }
-          if (unit.supChr) {
-            appendSkills(this.vue.getClassPassiveSupport(unit.supChr.class));
           }
         }
       }
 
-      setup() {
-        // mainHiddenSkills や supHiddenSkills などを設定
-      }
       applySkill(skill, self = false) {
-
+        this.skills.push(new this.vue.SkillHolder(skill, self));
       }
+      applyCustomEffect(effectType, value) {
+        this.customEffects.push(new this.vue.CustomEffect(effectType, value));
+      }
+
       evaluateEffects(battleCtx) {
 
       }
-      actionEnd() {
+      onTurnBegin() {
 
       }
-      passTurn() {
+      beforeAttack() {
+
+      }
+      afterAttack() {
+
+      }
+      onActionEnd() {
+
+      }
+      onTurnEnd() {
 
       }
 
+      clone() {
+        const vue = this.vue;
+        let r = new vue.BattleUnit();
+        r.vue = vue;
+        r.unit = this.unit;
+        return r;
+      }
       serialize() {
 
       }
       deserialize(r) {
+      }
+    },
+
+    CombatResult: class {
+      constructor() {
+        this.attacker = {
+          unit: null,
+          damageMain: 0,
+          damageSupport: 0,
+        };
+        this.defender = {
+          unit: null,
+          damageMain: 0,
+          damageSupport: 0,
+        };
       }
     },
 
