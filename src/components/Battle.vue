@@ -9,7 +9,7 @@
           <div class="menu-widgets flex">
             <div class="widget">
               <span>マップデータ：</span>
-              <b-dropdown :text="battleData ? battleData.uid : ''" size="sm" id="battle_selector">
+              <b-dropdown :text="battleData ? battleData.uid : ''" size="sm" id="battle_selector" :disabled="battle!=null">
                 <b-dropdown-item v-for="(battle, i) in battleList" class="d-flex flex-column" :key="i" @click="selectBattle(battle.uid, true); updateURL();">
                   {{ battle.uid }}
                 </b-dropdown-item>
@@ -126,22 +126,19 @@
     <div class="content" style="margin-top: 40px">
       <div class="unit-panel">
         <div class="flex">
-          <b-form-input v-model="slotName" placeholder="編成名" style="width: 12em"></b-form-input>
-          <b-dropdown size="sm" text="編成をセーブ" style="width: 10em; margin-left: 0.5em;">
+          <b-form-input v-model="slotName" placeholder="編成名" :disabled="battle!=null" style="width: 12em"></b-form-input>
+          <b-dropdown size="sm" text="編成をセーブ" :disabled="battle!=null" style="width: 10em; margin-left: 0.5em;">
             <b-dropdown-item v-for="(name, i) in slotNames" :key=i @click="saveUnits(i)">スロット{{i}}: {{name}}</b-dropdown-item>
           </b-dropdown>
-          <b-dropdown size="sm" text="編成をロード" style="width: 10em; margin-left: 0.5em;">
+          <b-dropdown size="sm" text="編成をロード" :disabled="battle!=null" style="width: 10em; margin-left: 0.5em;">
             <b-dropdown-item v-for="(name, i) in slotNames" :key=i @click="loadUnits(i)">スロット{{i}}: {{name}}</b-dropdown-item>
             <b-dropdown-item @click="loadUnits(99)">バックアップ</b-dropdown-item>
           </b-dropdown>
-          <b-button size="sm" @click="clearUnits()" style="width: 10em; margin-left: 1em;">
+          <b-button size="sm" @click="clearUnits()" :disabled="battle!=null" style="width: 10em; margin-left: 1em;">
             編成をクリア
           </b-button>
-          <b-button size="sm" style="width: 10em; margin-left: 4em;" @click="beginBattle()">
-            ダメージ計算開始
-          </b-button>
-          <b-button size="sm" style="width: 10em; margin-left: 0.5em;" @click="endBattle()">
-            ダメージ計算終了
+          <b-button size="sm" style="width: 10em; margin-left: 4em;" @click="battle ? endBattle() : beginBattle()">
+            {{battle ? 'ダメージ計算終了' : 'ダメージ計算開始'}}
           </b-button>
           <b-button size="sm" id="btl-unit-player" style="width: 13em; margin-left: 4em;">
             ユニットセレクタ(味方)
@@ -166,7 +163,7 @@
                 <b-img-lazy :src="getImageURL(unit.support?.icon)" width="30" />
               </h2>
             </template>
-            <div style="padding: 10px;">
+            <div v-if="!battle" style="padding: 10px;">
               <b-button :id="`btn-edit-unit${ui}`" @click="unit.showEditor=!unit.showEditor" style="width: 10em;">編集</b-button>
               <b-popover :target="`btn-edit-unit${ui}`" custom-class="status-simulator-popover" :show.sync="unit.showEditor" :delay="{show:0, hide:250}" no-fade>
                 <StatusSimulator embed :data="unit.editorData" @change="unit.edit($event)" />
@@ -395,13 +392,9 @@ export default {
     this.setupCharacters(this.enemyMainChrs, this.mainActive, this.mainPassive, this.mainTalents);
     this.setupCharacters(this.enemySupChrs, this.supActive, this.supPassive);
 
-    this.battleTable = new Map();
     this.battleList = structuredClone(jsonBattle);
     for (let battle of this.battleList) {
-      this.battleTable.set(battle.uid, battle);
-      battle.enemyTable = new Map();
       for (let enemy of battle.enemies) {
-        battle.enemyTable.set(enemy.fid, enemy);
         enemy.cellID = `c${this.zeroPad(enemy.coord[0])}${this.zeroPad(enemy.coord[1])}`;
         {
           const chr = this.enemyMainChrs.find(c => c.uid == enemy.main.cid);
@@ -426,7 +419,6 @@ export default {
         this.setArrayElement(this.slotNames, i, data.name);
       }
     }
-
   },
 
   mounted() {
