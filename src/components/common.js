@@ -1002,6 +1002,12 @@ export default {
           setParent(v);
           v.isBuff = true;
           setupSlot(v);
+
+          if (typeof (v.value) === 'number' && v.value < 0) {
+            if (!skill.negativeEffects)
+              skill.negativeEffects = [];
+            skill.negativeEffects.push(v);
+          }
         }
       }
       if (skill.debuff) {

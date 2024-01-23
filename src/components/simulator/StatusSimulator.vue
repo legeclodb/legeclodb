@@ -654,10 +654,9 @@ export default {
           return cmp(bpa, bpb);
         }
         else {
-          // 戦闘力が同じなら デメリットなしを優先
-          const re1 = /^デメリット:/;
-          const ac1 = !this.matchTags(a.tags, re1) ? 1 : 0;
-          const bc1 = !this.matchTags(b.tags, re1) ? 1 : 0;
+          // 戦闘力が同じならデメリットなしを優先
+          const ac1 = !a.negativeEffects ? 1 : 0;
+          const bc1 = !b.negativeEffects ? 1 : 0;
           return cmp(ac1, bc1);
         }
       }.bind(this);
