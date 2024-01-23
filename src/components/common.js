@@ -168,7 +168,9 @@ export default {
         return this.imageTable[name];
       }
       else {
-        console.log(`getImageURL(): ${name} not found`);
+        if (name) {
+          console.log(`getImageURL(): ${name} not found`);
+        }
         return "./empty.png";
       }
     },

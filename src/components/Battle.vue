@@ -123,7 +123,7 @@
       </div>
     </div>
 
-    <div class="content" style="margin-top: 20px">
+    <div class="content" style="margin-top: 40px">
       <div class="unit-panel">
         <div class="flex">
           <b-form-input v-model="slotName" placeholder="編成名" style="width: 12em"></b-form-input>
@@ -132,8 +132,9 @@
           </b-dropdown>
           <b-dropdown size="sm" text="編成をロード" style="width: 10em; margin-left: 0.5em;">
             <b-dropdown-item v-for="(name, i) in slotNames" :key=i @click="loadUnits(i)">スロット{{i}}: {{name}}</b-dropdown-item>
+            <b-dropdown-item @click="loadUnits(99)">バックアップ</b-dropdown-item>
           </b-dropdown>
-          <b-button size="sm" @click="clearUnits()" style="width: 10em; margin-left: 2em;">
+          <b-button size="sm" @click="clearUnits()" style="width: 10em; margin-left: 1em;">
             編成をクリア
           </b-button>
           <b-button size="sm" style="width: 10em; margin-left: 4em;" @click="beginBattle()">
@@ -155,147 +156,162 @@
     </div>
 
     <div class="content" :style="style">
-      <div>
-        <div v-for="(unit, ui) in units" class="unit-panel" style="padding: 10px; margin: 5px;" :key="ui">
-          <b-button :id="`btn-edit-unit${ui}`" @click="unit.showEditor=!unit.showEditor">ユニット{{ui+1}}</b-button>
-          <b-popover :target="`btn-edit-unit${ui}`" custom-class="status-simulator-popover" :show.sync="unit.showEditor" :delay="{show:0, hide:250}" no-fade>
-            <StatusSimulator embed :data="unit.editorData" @change="unit.edit($event)" />
-            <div class="flex">
-              <b-button size="sm" @click="unit.showEditor=false">閉じる</b-button>
-            </div>
-          </b-popover>
-
-          <div v-if="unit.main.cid" class="character">
-            <div class="flex">
-              <div class="portrait">
-                <b-img-lazy :src="getImageURL(unit.main.icon)" :title="unit.main.name" width="100" height="100" rounded />
-              </div>
-              <div class="detail" v-show="displayType >= 1">
-                <div class="info">
-                  <h5 v-html="chrNameToHtml(unit.main.name)"></h5>
-                  <div class="status">
-                    <b-img-lazy :src="getImageURL(unit.main.class)" :title="'クラス:'+unit.main.class" height="25" />
-                    <b-img-lazy :src="getImageURL(unit.main.symbol)" :title="'シンボル:'+unit.main.symbol" height="25" />
-                    <b-img-lazy :src="getImageURL(unit.main.rarity)" :title="'レアリティ:'+unit.main.rarity" height="20" />
-                    <div class="param-box"><b-img-lazy :src="getImageURL(unit.main.damageType)" :title="'攻撃タイプ:'+unit.main.damageType" width="20" height="20" /></div>
-                    <div class="param-box"><b-img-lazy :src="getImageURL('射程')" title="射程" width="18" height="18" /><span>{{unit.main.range}}</span></div>
-                    <div class="param-box"><b-img-lazy :src="getImageURL('移動')" title="移動" width="18" height="18" /><span>{{unit.main.move}}</span></div>
-                  </div>
-                  <div class="status2" v-html="statusToHtml(unit.main.status)" />
+      <div class="main-panel" style="margin-top: 10px; margin-bottom: 20px;">
+        <b-tabs v-model="unitTabIndex">
+          <b-tab v-for="(unit, ui) in units" :key="ui" style="background-color: white; min-width: 1520px; min-height: 500px;">
+            <template #title>
+              <h2 style="font-size: 1em;">
+                ユニット{{ui+1}}
+                <b-img-lazy :src="getImageURL(unit.main?.icon)" width="30" />
+                <b-img-lazy :src="getImageURL(unit.support?.icon)" width="30" />
+              </h2>
+            </template>
+            <div style="padding: 10px;">
+              <b-button :id="`btn-edit-unit${ui}`" @click="unit.showEditor=!unit.showEditor" style="width: 10em;">編集</b-button>
+              <b-popover :target="`btn-edit-unit${ui}`" custom-class="status-simulator-popover" :show.sync="unit.showEditor" :delay="{show:0, hide:250}" no-fade>
+                <StatusSimulator embed :data="unit.editorData" @change="unit.edit($event)" />
+                <div class="flex">
+                  <b-button size="sm" @click="unit.showEditor=false">閉じる</b-button>
                 </div>
-                <div class="skills">
-                  <div class="skill" v-for="(skill, si) in unit.main.skills" :class="getSkillClass(skill)" :key="`skill${si}`">
-                    <div class="flex">
-                      <div class="icon" :id="`unit${ui}_main_skill${si}`">
-                        <b-img-lazy :src="getImageURL(skill.icon)" with="50" height="50" />
-                        <b-popover v-if="displayType==1" :target="`unit${ui}_main_skill${si}`" triggers="hover focus" :delay="{show:0, hide:250}" no-fade :title="skill.name" placement="top">
-                          <div class="flex">
-                            <div v-html="descToHtml(skill)"></div>
-                          </div>
-                        </b-popover>
-                      </div>
-                      <div class="desc" v-show="displayType >= 2">
-                        <div class="flex">
-                          <h6>{{ skill.name }}</h6>
-                          <div class="param-group" v-html="skillParamsToHtml(skill)"></div>
-                        </div>
-                        <p><span v-html="descToHtml(skill)"></span><span v-if="skill.note" class="note" v-html="noteToHtml(skill)"></span></p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="skills">
-                  <div class="skill" v-for="(skill, si) in unit.main.items" :class="getSkillClass(skill)" :key="`item${si}`">
-                    <div class="flex">
-                      <div class="icon" :id="`unit${ui}_main_item${si}`">
-                        <b-img-lazy :src="getImageURL(skill.icon)" with="50" height="50" />
-                        <b-popover v-if="displayType==1" :target="`unit${ui}_main_item${si}`" triggers="hover focus" :delay="{show:0, hide:250}" no-fade :title="skill.name" placement="top">
-                          <div class="flex">
-                            <div v-html="descToHtml(skill)"></div>
-                          </div>
-                        </b-popover>
-                      </div>
-                      <div class="desc" v-show="displayType >= 2">
-                        <div class="flex">
-                          <h6>
-                            <b-img-lazy v-if="skill.slot" :src="getImageURL(skill.slot)" :title="'部位:'+skill.slot" height="20" />
-                            {{ skill.name }}
-                          </h6>
-                        </div>
-                        <p><span v-html="descToHtml(skill)"></span><span v-if="skill.note" class="note" v-html="noteToHtml(skill)"></span></p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              </b-popover>
             </div>
 
-            <div v-if="unit.support.cid" class="flex">
-              <div class="portrait">
-                <b-img-lazy :src="getImageURL(unit.support.icon)" :title="unit.support.name" width="100" height="100" rounded />
+            <div class="flex" style="align-items: flex-start;">
+              <div v-if="unit.main.cid" class="character">
+                <div class="flex">
+                  <div class="portrait">
+                    <b-img-lazy :src="getImageURL(unit.main.icon)" :title="unit.main.name" width="100" height="100" rounded />
+                  </div>
+                  <div class="detail" v-show="displayType >= 1">
+                    <div class="info">
+                      <h5 v-html="chrNameToHtml(unit.main.name)"></h5>
+                      <div class="status">
+                        <b-img-lazy :src="getImageURL(unit.main.class)" :title="'クラス:'+unit.main.class" height="25" />
+                        <b-img-lazy :src="getImageURL(unit.main.symbol)" :title="'シンボル:'+unit.main.symbol" height="25" />
+                        <b-img-lazy :src="getImageURL(unit.main.rarity)" :title="'レアリティ:'+unit.main.rarity" height="20" />
+                        <div class="param-box"><b-img-lazy :src="getImageURL(unit.main.damageType)" :title="'攻撃タイプ:'+unit.main.damageType" width="20" height="20" /></div>
+                        <div class="param-box"><b-img-lazy :src="getImageURL('射程')" title="射程" width="18" height="18" /><span>{{unit.main.range}}</span></div>
+                        <div class="param-box"><b-img-lazy :src="getImageURL('移動')" title="移動" width="18" height="18" /><span>{{unit.main.move}}</span></div>
+                      </div>
+                      <div class="status2" v-html="statusToHtml(unit.main.status)" />
+                    </div>
+                    <div class="skills">
+                      <div class="skill" v-for="(skill, si) in unit.main.skills" :class="getSkillClass(skill)" :key="`skill${si}`">
+                        <div class="flex">
+                          <div class="icon" :id="`unit${ui}_main_skill${si}`">
+                            <b-img-lazy :src="getImageURL(skill.icon)" with="50" height="50" />
+                            <b-popover v-if="displayType==1" :target="`unit${ui}_main_skill${si}`" triggers="hover focus" :delay="{show:0, hide:250}" no-fade :title="skill.name" placement="top">
+                              <div class="flex">
+                                <div v-html="descToHtml(skill)"></div>
+                              </div>
+                            </b-popover>
+                          </div>
+                          <div class="desc" v-show="displayType >= 2">
+                            <div class="flex">
+                              <h6>{{ skill.name }}</h6>
+                              <div class="param-group" v-html="skillParamsToHtml(skill)"></div>
+                            </div>
+                            <p><span v-html="descToHtml(skill)"></span><span v-if="skill.note" class="note" v-html="noteToHtml(skill)"></span></p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="skills">
+                      <div class="skill" v-for="(skill, si) in unit.main.items" :class="getSkillClass(skill)" :key="`item${si}`">
+                        <div class="flex">
+                          <div class="icon" :id="`unit${ui}_main_item${si}`">
+                            <b-img-lazy :src="getImageURL(skill.icon)" with="50" height="50" />
+                            <b-popover v-if="displayType==1" :target="`unit${ui}_main_item${si}`" triggers="hover focus" :delay="{show:0, hide:250}" no-fade :title="skill.name" placement="top">
+                              <div class="flex">
+                                <div v-html="descToHtml(skill)"></div>
+                              </div>
+                            </b-popover>
+                          </div>
+                          <div class="desc" v-show="displayType >= 2">
+                            <div class="flex">
+                              <h6>
+                                <b-img-lazy v-if="skill.slot" :src="getImageURL(skill.slot)" :title="'部位:'+skill.slot" height="20" />
+                                {{ skill.name }}
+                              </h6>
+                            </div>
+                            <p><span v-html="descToHtml(skill)"></span><span v-if="skill.note" class="note" v-html="noteToHtml(skill)"></span></p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div class="detail" v-show="displayType >= 1">
-                <div class="info">
-                  <h5 v-html="chrNameToHtml(unit.support.name)"></h5>
-                  <div class="status">
-                    <b-img-lazy :src="getImageURL(unit.support.class)" :title="'クラス:'+unit.support.class" height="25" />
-                    <b-img-lazy :src="getImageURL(unit.support.supportType)" :title="'サポートタイプ:'+unit.support.supportType" height="25" />
-                    <b-img-lazy :src="getImageURL(unit.support.rarity)" :title="'レアリティ:'+unit.support.rarity" height="20" />
-                    <div class="param-box"><b-img-lazy :src="getImageURL(unit.support.damageType)" :title="'攻撃タイプ:'+unit.support.damageType" width="20" height="20" /></div>
-                    <div class="param-box"><b-img-lazy :src="getImageURL('射程')" title="射程" width="18" height="18" /><span>{{unit.support.range}}</span></div>
-                  </div>
-                  <div class="status2" v-html="statusToHtml(unit.support.status)" />
-                </div>
 
-                <div class="skills">
-                  <div class="skill" v-for="(skill, si) in unit.support.skills" :class="getSkillClass(skill)" :key="`skill${si}`">
-                    <div class="flex">
-                      <div class="icon" :id="`unit${ui}_sup_skill${si}`">
-                        <b-img-lazy :src="getImageURL(skill.icon)" with="50" height="50" />
-                        <b-popover v-if="displayType==1" :target="`unit${ui}_sup_skill${si}`" triggers="hover focus" :delay="{show:0, hide:250}" no-fade :title="skill.name" placement="top">
-                          <div class="flex">
-                            <div v-html="descToHtml(skill)"></div>
-                          </div>
-                        </b-popover>
+              <div v-if="unit.support.cid" class="character">
+                <div class="flex">
+                  <div class="portrait">
+                    <b-img-lazy :src="getImageURL(unit.support.icon)" :title="unit.support.name" width="100" height="100" rounded />
+                  </div>
+                  <div class="detail" v-show="displayType >= 1">
+                    <div class="info">
+                      <h5 v-html="chrNameToHtml(unit.support.name)"></h5>
+                      <div class="status">
+                        <b-img-lazy :src="getImageURL(unit.support.class)" :title="'クラス:'+unit.support.class" height="25" />
+                        <b-img-lazy :src="getImageURL(unit.support.supportType)" :title="'サポートタイプ:'+unit.support.supportType" height="25" />
+                        <b-img-lazy :src="getImageURL(unit.support.rarity)" :title="'レアリティ:'+unit.support.rarity" height="20" />
+                        <div class="param-box"><b-img-lazy :src="getImageURL(unit.support.damageType)" :title="'攻撃タイプ:'+unit.support.damageType" width="20" height="20" /></div>
+                        <div class="param-box"><b-img-lazy :src="getImageURL('射程')" title="射程" width="18" height="18" /><span>{{unit.support.range}}</span></div>
                       </div>
-                      <div class="desc" v-show="displayType >= 2">
+                      <div class="status2" v-html="statusToHtml(unit.support.status)" />
+                    </div>
+                    <div class="skills">
+                      <div class="skill" v-for="(skill, si) in unit.support.skills" :class="getSkillClass(skill)" :key="`skill${si}`">
                         <div class="flex">
-                          <h6>{{ skill.name }}</h6>
-                          <div class="param-group" v-html="skillParamsToHtml(skill)"></div>
+                          <div class="icon" :id="`unit${ui}_sup_skill${si}`">
+                            <b-img-lazy :src="getImageURL(skill.icon)" with="50" height="50" />
+                            <b-popover v-if="displayType==1" :target="`unit${ui}_sup_skill${si}`" triggers="hover focus" :delay="{show:0, hide:250}" no-fade :title="skill.name" placement="top">
+                              <div class="flex">
+                                <div v-html="descToHtml(skill)"></div>
+                              </div>
+                            </b-popover>
+                          </div>
+                          <div class="desc" v-show="displayType >= 2">
+                            <div class="flex">
+                              <h6>{{ skill.name }}</h6>
+                              <div class="param-group" v-html="skillParamsToHtml(skill)"></div>
+                            </div>
+                            <p><span v-html="descToHtml(skill)"></span><span v-if="skill.note" class="note" v-html="noteToHtml(skill)"></span></p>
+                          </div>
                         </div>
-                        <p><span v-html="descToHtml(skill)"></span><span v-if="skill.note" class="note" v-html="noteToHtml(skill)"></span></p>
+                      </div>
+                    </div>
+                    <div class="skills">
+                      <div class="skill" v-for="(skill, si) in unit.support.items" :class="getSkillClass(skill)" :key="`item${si}`">
+                        <div class="flex">
+                          <div class="icon" :id="`unit${ui}_sup_item${si}`">
+                            <b-img-lazy :src="getImageURL(skill.icon)" with="50" height="50" />
+                            <b-popover v-if="displayType==1" :target="`unit${ui}_sup_item${si}`" triggers="hover focus" :delay="{show:0, hide:250}" no-fade :title="skill.name" placement="top">
+                              <div class="flex">
+                                <div v-html="descToHtml(skill)"></div>
+                              </div>
+                            </b-popover>
+                          </div>
+                          <div class="desc" v-show="displayType >= 2">
+                            <div class="flex">
+                              <h6>
+                                <b-img-lazy :src="getImageURL(skill.slot)" :title="'部位:'+skill.slot" height="20" />
+                                {{ skill.name }}
+                              </h6>
+                            </div>
+                            <p><span v-html="descToHtml(skill)"></span><span v-if="skill.note" class="note" v-html="noteToHtml(skill)"></span></p>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
-                <div class="skills">
-                  <div class="skill" v-for="(skill, si) in unit.support.items" :class="getSkillClass(skill)" :key="`item${si}`">
-                    <div class="flex">
-                      <div class="icon" :id="`unit${ui}_sup_item${si}`">
-                        <b-img-lazy :src="getImageURL(skill.icon)" with="50" height="50" />
-                        <b-popover v-if="displayType==1" :target="`unit${ui}_sup_item${si}`" triggers="hover focus" :delay="{show:0, hide:250}" no-fade :title="skill.name" placement="top">
-                          <div class="flex">
-                            <div v-html="descToHtml(skill)"></div>
-                          </div>
-                        </b-popover>
-                      </div>
-                      <div class="desc" v-show="displayType >= 2">
-                        <div class="flex">
-                          <h6>
-                            <b-img-lazy :src="getImageURL(skill.slot)" :title="'部位:'+skill.slot" height="20" />
-                            {{ skill.name }}
-                          </h6>
-                        </div>
-                        <p><span v-html="descToHtml(skill)"></span><span v-if="skill.note" class="note" v-html="noteToHtml(skill)"></span></p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
               </div>
             </div>
-          </div>
-        </div>
+
+          </b-tab>
+        </b-tabs>
+
       </div>
     </div>
 
@@ -360,6 +376,7 @@ export default {
         new this.BaseUnit(3),
         new this.BaseUnit(4),
       ],
+      unitTabIndex: 0,
       battle: null,
     };
   },
@@ -513,11 +530,16 @@ export default {
     },
 
     mergeChrData(dst, src) {
-      if (!src)
-        return;
       const props = ["name", "icon", "class", "rarity", "symbol", "supportType", "damageType", "range", "move"];
-      for (const prop of props) {
-        dst[prop] = src[prop];
+      if (src) {
+        for (const prop of props) {
+          dst[prop] = src[prop];
+        }
+      }
+      else {
+        for (const prop of props) {
+          delete dst[prop];
+        }
       }
     },
 
@@ -643,6 +665,10 @@ export default {
         };
         this.showEditor = false;
         this.editorData = [];
+
+        const mergeChrData = window.$vue.mergeChrData;
+        mergeChrData(this.main, null);
+        mergeChrData(this.support, null);
       }
       serialize() {
         const serializeChr = function (src) {
@@ -1028,6 +1054,11 @@ export default {
       }
     },
     saveUnits(slot = 0) {
+      let old = JSON.parse(localStorage.getItem(`battle.slot${slot}`));
+      if (old.units) {
+        localStorage.setItem(`battle.slot99`, JSON.stringify(old));
+      }
+
       this.setArrayElement(this.slotNames, slot, this.slotName);
       let data = {
         name: this.slotName,
@@ -1039,10 +1070,13 @@ export default {
       let data = JSON.parse(localStorage.getItem(`battle.slot${slot}`));
       if (data) {
         this.slotName = data.name ?? "";
-        if (data.units) {
-          for (let i = 0; i < this.units.length; ++i) {
-            this.units[i].deserialize(data.units[i]);
-          }
+        for (let i = 0; i < this.units.length; ++i) {
+          this.units[i].deserialize(data.units[i]);
+        }
+      }
+      else {
+        for (let unit of this.units) {
+          unit.initialize();
         }
       }
     },
@@ -1113,10 +1147,6 @@ export default {
     padding: 10px;
     margin: 5px;
   }
-  .status-simulator-popover {
-    max-width: 880px !important;
-    width: 880px !important;
-  }
 </style>
 <style>
   .table {
@@ -1144,6 +1174,10 @@ export default {
 
   .popover {
     max-width: 450px;
+  }
+  .status-simulator-popover {
+    max-width: 880px !important;
+    width: 880px !important;
   }
 
 </style>
