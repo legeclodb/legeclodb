@@ -381,9 +381,12 @@ export default {
     };
   },
 
+  beforeCreate() {
+    window.$vue = this;
+  },
+
   created() {
     document.title = "れじぇくろDB: 戦闘データ";
-    window.$vue = this;
 
     this.setupDB();
 
@@ -1055,7 +1058,7 @@ export default {
     },
     saveUnits(slot = 0) {
       let old = JSON.parse(localStorage.getItem(`battle.slot${slot}`));
-      if (old.units) {
+      if (old?.units) {
         localStorage.setItem(`battle.slot99`, JSON.stringify(old));
       }
 

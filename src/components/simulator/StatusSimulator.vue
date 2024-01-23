@@ -1027,14 +1027,12 @@ export default {
         for (const v of Object.values(s.supportBoosts))
           v.value = boosts.shift();
 
-        let items = [...r.support.items];
-        for (const v of Object.values(s.supportItems))
-          v.value = items.shift();
-
         let enchants = [...r.support.enchants];
         for (const v of Object.values(s.supportEnchants)) {
           v.valueP = enchants.shift();
         }
+
+        s.supportItems = [...r.support.items];
       }
     },
 

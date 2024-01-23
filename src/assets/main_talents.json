@@ -8576,6 +8576,7 @@
       {
         "type": "ダメージ耐性",
         "value": [ 8, 10, 12, 15 ],
+        "duration": 2,
         "timing": "戦闘後",
         "condition": {
           "onActiveSkill": true,
