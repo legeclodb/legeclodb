@@ -395,7 +395,7 @@ def processCharacters(args):
         icon = l["ThumbnailResourceID"]
         ch["icon"] = icon
         if not icon in imageTable:
-            imageTable[icon] = f"Default_{re.sub(r'^Ch', '', icon)}.png"
+            imageTable[icon] = f"{icon}.png"
 
         ch["class"] = classTable[int(l["SoldierType"])]
         if l["ForceType"]:

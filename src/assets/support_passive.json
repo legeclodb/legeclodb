@@ -413,7 +413,6 @@
       }
     ]
   },
-
   {
     "uid": "4100001",
     "icon": "sk_ba001",
@@ -882,7 +881,6 @@
       }
     ]
   },
-
   {
     "uid": "2200001",
     "icon": "sk_sp1001",
@@ -2860,6 +2858,58 @@
         "target": "自身",
         "condition": {
           "hp": [ ">=", 100 ]
+        }
+      }
+    ]
+  },
+  {
+    "uid": "2300097",
+    "icon": "sk_sp2097",
+    "name": "材料、技術、そして愛情",
+    "desc": "自ユニットのHPが80%以上のとき、自ユニットの魔法与ダメージ+20%/範囲スキル与ダメージ+10%。",
+    "buff": [
+      {
+        "type": "与ダメージ(魔法)",
+        "value": 20,
+        "target": "自身",
+        "condition": {
+          "hp": [ ">=", 80 ]
+        }
+      },
+      {
+        "type": "与ダメージ(範囲スキル)",
+        "value": 10,
+        "target": "自身",
+        "condition": {
+          "hp": [ ">=", 80 ]
+        }
+      }
+    ]
+  },
+  {
+    "uid": "2300098",
+    "icon": "sk_sp2098",
+    "name": "妖精の恋人",
+    "desc": "味方ターンでの戦闘時、その戦闘前、自ユニットのマジック+10%/クリティカル率+5%。",
+    "buff": [
+      {
+        "type": "マジック",
+        "value": 10,
+        "ephemeral": true,
+        "target": "自身",
+        "timing": "戦闘前",
+        "condition": {
+          "onOwnTurn": true
+        }
+      },
+      {
+        "type": "クリティカル率",
+        "value": 5,
+        "ephemeral": true,
+        "target": "自身",
+        "timing": "戦闘前",
+        "condition": {
+          "onOwnTurn": true
         }
       }
     ]
