@@ -387,7 +387,7 @@ def processCharacters(args):
         l = findByCid(chrCsv, cid)
 
         if not l:
-            raise Exception("マスターデータ更新忘れ？")
+            raise Exception("ID に対応するキャラがいない。マスターデータ更新忘れ？")
 
         name = l["CharacterName"].replace('（', '(').replace('）', ')')
         if not "name" in ch:

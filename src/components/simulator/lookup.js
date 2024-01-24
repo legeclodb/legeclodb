@@ -15,6 +15,7 @@ export default {
       symbols: jsonConstants.symbols,
       damageTypes: jsonConstants.damageTypes,
       rarities: jsonConstants.rarities,
+      effectTypes: jsonConstants.effectTypes,
 
       filter: {
         class: [],
@@ -132,43 +133,13 @@ export default {
       let effectTypeTable = new Map();
       let slotIndex = 1;
       let slotTable = new Map();
-      const effectTypes = [
-        "最大HP",
-        "アタック",
-        "ディフェンス",
-        "マジック",
-        "レジスト",
-        "テクニック",
-        "ディフェンス無視",
-        "レジスト無視",
-        "与ダメージ",
-        "与ダメージ(物理)",
-        "与ダメージ(魔法)",
-        "与ダメージ(スキル)",
-        "与ダメージ(範囲スキル)",
-        "与ダメージ(通常攻撃)",
-        "ダメージ耐性",
-        "ダメージ耐性(物理)",
-        "ダメージ耐性(魔法)",
-        "ダメージ耐性(範囲)",
-        "クリティカル率",
-        "クリティカル率耐性",
-        "クリティカルダメージ倍率",
-        "治療効果",
-        "被治療効果",
-        "射程(通常攻撃)",
-        "射程(スキル)",
-        "範囲",
-        "移動",
-        "ランダム",
-      ];
-      for (const et of effectTypes) {
+      for (const et of this.effectTypes) {
         const key = `${et}+`;
         effectTypeTable.set(key, effectTypeIndex);
         effectTypeNames.push(key);
         effectTypeIndex++;
       }
-      for (const et of effectTypes) {
+      for (const et of this.effectTypes) {
         const key = `${et}-`;
         effectTypeTable.set(key, effectTypeIndex);
         effectTypeNames.push(key);
@@ -256,19 +227,19 @@ export default {
     getEnchantPassive(enchantName) {
       const find = (uid) => this.searchTableWithUid.get(uid);
       const table = {
-        "バスター": [find("100")],
-        "チャージ": [find("101")],
-        "フェザー": [find("102")],
-        "クイック": [find("103")],
-        "ノヴァ": [find("104")],
-        "アイアン": [find("105")],
-        "リフレクト": [find("106")],
-        "バックアップ": [find("107")],
-        "アイス": [find("108")],
-        "ブライト": [find("109")],
-        "クリスタル": [find("110")],
-        "ストライク": [find("111")],
-        "ブレイク": [find("112")],
+        "バスター": find("100"),
+        "チャージ": find("101"),
+        "フェザー": find("102"),
+        "クイック": find("103"),
+        "ノヴァ": find("104"),
+        "アイアン": find("105"),
+        "リフレクト": find("106"),
+        "バックアップ": find("107"),
+        "アイス": find("108"),
+        "ブライト": find("109"),
+        "クリスタル": find("110"),
+        "ストライク": find("111"),
+        "ブレイク": find("112"),
       };
       return enchantName in table ? table[enchantName] : [];
     },

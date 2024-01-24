@@ -469,14 +469,26 @@ export default {
 
       autoEquipTypes: [
         "戦闘力優先",
+        "ダメージ優先",
+        "デバフ優先",
         "HP 優先",
         "アタック優先",
         "ディフェンス優先",
         "マジック優先",
         "レジスト優先",
-        "テクニック優先",
         "リセット",
       ],
+      AUTO_EQUIP_TYPE: {
+        BATTLE_POWER: 0,
+        DMG: 1,
+        DEBUF: 2,
+        HP: 3,
+        ATK: 4,
+        DEF: 5,
+        MAG: 6,
+        RES: 7,
+        RESET: 8,
+      },
 
       tabIndex: 0,
       highscoreData: [],
@@ -533,7 +545,50 @@ export default {
         }
       }
       this.autoMainSkill();
+
+      this.updateItemScore();
+      this.autoEquip(this.embed ? 1 : 0);
     },
+    updateItemScore() {
+      const atkDmgTypes = ["アタック", "与ダメージ", "与ダメージ(物理)", "与ダメージ(スキル)", "クリティカルダメージ倍率"];
+      const magDmgTypes = ["マジック", "与ダメージ", "与ダメージ(魔法)", "与ダメージ(スキル)", "クリティカルダメージ倍率"];
+      const debufDmgTypes = ["ダメージ耐性", "ダメージ耐性(物理)", "ダメージ耐性(魔法)"];
+
+      const chr = this.main.character.value;
+      const condMatch = function (effect) {
+        if (effect.condition) {
+          if (effect.condition.onClass) {
+            if (!effect.condition.onClass.includes(chr?.class)) {
+              return false;
+            }
+          }
+        }
+        return true;
+      };
+
+      for (let item of this.items) {
+        let atkDmgEffects = new Array(this.effectTypes.length);
+        let magDmgEffects = new Array(this.effectTypes.length);
+        let debufDmgEffects = new Array(this.effectTypes.length);
+        for (let effect of (item.buff ?? [])) {
+          if (atkDmgTypes.includes(effect.type) && condMatch(effect)) {
+            atkDmgEffects[effect.typeId] = effect.value; // += ではなく = 、ブループラネット等対策。
+          }
+          if (magDmgTypes.includes(effect.type) && condMatch(effect)) {
+            magDmgEffects[effect.typeId] = effect.value;
+          }
+        }
+        for (let effect of (item.debuff ?? [])) {
+          if (debufDmgTypes.includes(effect.type)) {
+            debufDmgEffects[effect.typeId] = effect.value;
+          }
+        }
+        item.atkDmgScore = atkDmgEffects.reduce((t, v) => v ? t + v : t, 0);
+        item.magDmgScore = magDmgEffects.reduce((t, v) => v ? t + v : t, 0);
+        item.debufDmgScore = debufDmgEffects.reduce((t, v) => v ? t + v : t, 0);
+      }
+    },
+
     autoMainSkill() {
       this.mainSkills = this.autoMainSkillImpl(this.main.character.value);
     },
@@ -560,6 +615,7 @@ export default {
           params.valueP = 15;
         }
       }
+      this.autoEquip(this.embed ? 1 : 0);
     },
 
     getParamClass(param) {
@@ -629,7 +685,7 @@ export default {
         main: {
           items: [null, null, null, null],
           enchants: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-          enchantPassive: [this.getEnchantPassiveList()[0]],
+          enchantPassive: [null],
         },
         support: {
           items: [null, null],
@@ -661,19 +717,13 @@ export default {
         }
       }.bind(this);
 
-      const pickItem = function (items, idx, api, tag) {
-        if (idx >= 0) {
-          let filtered = items.filter(a => a.status[idx]);
+      const pickItem = function (items, filter, sortf) {
+        if (filter) {
+          let filtered = items.filter(filter);
           if (filtered.length)
             items = filtered;
         }
-        items.sort((a, b) => cmpPow(a, b, api));
-
-        if (tag) {
-          const found = items.find((a) => this.matchTags(a.tags, tag));
-          if (found)
-            return found;
-        }
+        items.sort(sortf);
         return items[0];
       }.bind(this);
 
@@ -686,21 +736,24 @@ export default {
         return item;
       }.bind(this);
 
-      const pickItemsMain = function (idx = -1, tag = null) {
+      const pickItemsMain = function (filter = null, sortf = null) {
         const cond = a => this.matchClass(a, ma.character);
-        let weapon = pickItem(this.weapons.filter(cond), idx, mapi, tag);
-        let armor = pickItem(this.armors.filter(cond), idx, mapi, tag);
-        let helmet = pickItem(this.helmets.filter(cond), idx, mapi, tag);
-        let accessory = pickItem(this.accessories.filter(cond), idx, mapi, tag);
+        if (!sortf)
+          sortf = (a, b) => cmpPow(a, b, mapi);
+        let weapon = pickItem(this.weapons.filter(cond), filter, sortf);
+        let armor = pickItem(this.armors.filter(cond), filter, sortf);
+        let helmet = pickItem(this.helmets.filter(cond), filter, sortf);
+        let accessory = pickItem(this.accessories.filter(cond), filter, sortf);
         armor = adjustSymbol(armor);
         helmet = adjustSymbol(helmet);
         accessory = adjustSymbol(accessory);
         result.main.items = [weapon, armor, helmet, accessory];
       }.bind(this);
 
-      const pickItemsSupport = function (idx = -1, tag = null) {
-        let amulet1 = pickItem(this.amulets1, idx, sapi, tag);
-        let amulet2 = pickItem(this.amulets2, idx, sapi, tag);
+      const pickItemsSupport = function (filter = null) {
+        const sortf = (a, b) => cmpPow(a, b, sapi);
+        let amulet1 = pickItem(this.amulets1, filter, sortf);
+        let amulet2 = pickItem(this.amulets2, filter, sortf);
         result.support.items = [amulet1, amulet2];
       }.bind(this);
 
@@ -717,7 +770,11 @@ export default {
 
         let cmdlists = [[], [], [], []];
         const cmd = function (i, name, score, exec) {
-          cmdlists[i].push({ name: name, score: score, exec: exec });
+          cmdlists[i].push({
+            name: name,
+            score: score,
+            exec: exec,
+          });
         };
         const hpP = (i, v) => cmd(i, "hpP", s[0] * (v / 100) * r[0], () => dst[0] += v);
         const hpF = (i, v) => cmd(i, "hpF", v * r[0], () => dst[1] += v);
@@ -823,48 +880,93 @@ export default {
         result.support.enchants = dst;
       }.bind(this);
 
-      if (type == 0) { // 戦闘力優先
+
+      const getHp = item => item.status[0];
+      const getAtk = item => item.status[1];
+      const getDef = item => item.status[2];
+      const getMag = item => item.status[3];
+      const getRes = item => item.status[4];
+      const getAPMain = item => item.status[mapi];
+      const getAPSup = item => item.status[sapi];
+      const getDmg = mapi == 1 ?
+        item => item.atkDmgScore :
+        item => item.magDmgScore;
+      const getDebuf = item => item.debufDmgScore;
+
+      const enAPMain = mapi == 1 ?
+        c => c.name.match(/^atk/) :
+        c => c.name.match(/^mag/);
+      const enAPSup = sapi == 1 ?
+        c => c.name.match(/^atk/) :
+        c => c.name.match(/^mag/);
+
+      const AUTO_EQUIP_TYPE = this.AUTO_EQUIP_TYPE;
+      if (type == AUTO_EQUIP_TYPE.BATTLE_POWER) { // 戦闘力優先
         pickItemsMain();
         pickOptimalEnchants();
         pickItemsSupport();
         pickOptialAmuletSkills();
       }
-      else if (type == 1) { // HP 優先
-        pickItemsMain(0);
+      else if (type == AUTO_EQUIP_TYPE.DMG) { // ダメージ優先
+        const sortf = function (a, b) {
+          const sa = getDmg(a);
+          const sb = getDmg(b);
+          return sa != sb ? cmp(sa, sb) : cmpPow(a, b, mapi);
+        };
+        pickItemsMain(getAPMain, sortf);
+        pickOptimalEnchants(enAPMain);
+        pickItemsSupport(getAPSup);
+        pickOptialAmuletSkills(enAPSup);
+        result.main.enchantPassive = [this.getEnchantPassive("ストライク")];
+      }
+      else if (type == AUTO_EQUIP_TYPE.DEBUF) { // デバフ優先
+        const sortf = function (a, b) {
+          const sa = getDebuf(a);
+          const sb = getDebuf(b);
+          return sa != sb ? cmp(sa, sb) : cmpPow(a, b, mapi);
+        };
+        pickItemsMain(null, sortf);
+        pickOptimalEnchants(enAPMain);
+        pickItemsSupport(getAPSup);
+        pickOptialAmuletSkills(enAPSup);
+        result.main.enchantPassive = [this.getEnchantPassive("ストライク")];
+      }
+      else if (type == AUTO_EQUIP_TYPE.HP) { // HP 優先
+        pickItemsMain(getHp);
         pickOptimalEnchants(c => c.name.match(/^hp/));
-        pickItemsSupport(0);
+        pickItemsSupport(getHp);
         pickOptialAmuletSkills(c => c.name.match(/^hp/));
       }
-      else if (type == 2) { // アタック優先
-        pickItemsMain(1, /^バフ:アタック/);
+      else if (type == AUTO_EQUIP_TYPE.ATK) { // アタック優先
+        pickItemsMain(getAtk);
         pickOptimalEnchants(c => c.name.match(/^atk/));
-        pickItemsSupport(1, /^バフ:アタック/);
+        pickItemsSupport(getAtk);
         pickOptialAmuletSkills(c => c.name.match(/^atk/));
       }
-      else if (type == 3) { // ディフェンス優先
-        pickItemsMain(2, /^バフ:ディフェンス/);
+      else if (type == AUTO_EQUIP_TYPE.DEF) { // ディフェンス優先
+        pickItemsMain(getDef);
         pickOptimalEnchants(c => c.name.match(/^def/));
-        pickItemsSupport(2, /^バフ:ディフェンス/);
+        pickItemsSupport(getDef);
         pickOptialAmuletSkills(c => c.name.match(/^def/));
       }
-      else if (type == 4) { // マジック優先
-        pickItemsMain(3, /^バフ:マジック/);
+      else if (type == AUTO_EQUIP_TYPE.MAG) { // マジック優先
+        pickItemsMain(getMag);
         pickOptimalEnchants(c => c.name.match(/^mag/));
-        pickItemsSupport(3, /^バフ:マジック/);
+        pickItemsSupport(getMag);
         pickOptialAmuletSkills(c => c.name.match(/^mag/));
       }
-      else if (type == 5) { // レジスト優先
-        pickItemsMain(4, /^バフ:レジスト/);
+      else if (type == AUTO_EQUIP_TYPE.RES) { // レジスト優先
+        pickItemsMain(getRes);
         pickOptimalEnchants(c => c.name.match(/^res/));
-        pickItemsSupport(4, /^バフ:レジスト/);
+        pickItemsSupport(getRes);
         pickOptialAmuletSkills(c => c.name.match(/^res/));
       }
-      else if (type == 6) { // テクニック優先
-        pickItemsMain(5, /^バフ:テクニック/);
-        pickOptimalEnchants();
-        pickItemsSupport(5, /^バフ:テクニック/);
-        pickOptialAmuletSkills();
+      if (type != AUTO_EQUIP_TYPE.RESET) {
+        if (!result.main.enchantPassive[0]) {
+          result.main.enchantPassive = [this.getEnchantPassive("バスター")];
+        }
       }
+
       return result;
     },
 
@@ -1081,12 +1183,14 @@ export default {
           if (!eps)
             continue;
           const ep = eps.baseStatusBoost;
-          if (ep.hp) enchantP[0] += ep.hp;
-          if (ep.atk) enchantP[1] += ep.atk;
-          if (ep.def) enchantP[2] += ep.def;
-          if (ep.mag) enchantP[3] += ep.mag;
-          if (ep.res) enchantP[4] += ep.res;
-          if (ep.tec) enchantP[5] += ep.tec;
+          if (ep) {
+            if (ep.hp) enchantP[0] += ep.hp;
+            if (ep.atk) enchantP[1] += ep.atk;
+            if (ep.def) enchantP[2] += ep.def;
+            if (ep.mag) enchantP[3] += ep.mag;
+            if (ep.res) enchantP[4] += ep.res;
+            if (ep.tec) enchantP[5] += ep.tec;
+          }
         }
       }
 

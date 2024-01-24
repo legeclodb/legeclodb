@@ -875,6 +875,11 @@ export default {
     },
 
 
+    getEffectIndex(effectType) {
+      const effectTypes = jsonConstants.effectTypes;
+      return effectTypes.findIndex(a => a == effectType);
+    },
+
     isPublicTarget(target) {
       return !target ||
         (typeof (target) == "string" && target != "自身");
@@ -974,7 +979,21 @@ export default {
     },
 
     setupSkill(skill, params) {
+      const self = this;
+      if (skill.isActive) {
+        if (skill.target == "単体") {
+          skill.isSingleTarget = true;
+        }
+        else {
+          skill.isAreaTarget = true;
+        }
+        if (skill.damageRate) {
+          skill.isDamageSkill = true;
+        }
+      }
+
       const setupSlot = function (effect) {
+        effect.typeId = self.getEffectIndex(effect.type);
         if (skill.isActive && !effect.slot) {
           let slot = effect.type;
           if (effect.isBuff)
