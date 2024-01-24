@@ -548,15 +548,23 @@ export default {
       this.autoEquip(this.embed ? 1 : 0);
     },
     updateItemScore() {
-      let atkDmgTypes = ["アタック", "与ダメージ", "与ダメージ(物理)", "与ダメージ(スキル)", "クリティカルダメージ倍率"];
-      let magDmgTypes = ["マジック", "与ダメージ", "与ダメージ(魔法)", "与ダメージ(スキル)", "クリティカルダメージ倍率"];
-      let debufDmgTypes = ["ダメージ耐性", "ダメージ耐性(物理)", "ダメージ耐性(魔法)"];
+      let dmgTypes = [];
+      let debufTypes = [];
 
       const chr = this.main.character.value;
       if (chr) {
+        if (chr.damageType == "アタック") {
+          dmgTypes = ["アタック", "与ダメージ", "与ダメージ(物理)", "与ダメージ(スキル)", "クリティカルダメージ倍率"];
+          debufTypes = ["ダメージ耐性", "ダメージ耐性(物理)"];
+        }
+        else {
+          dmgTypes = ["マジック", "与ダメージ", "与ダメージ(魔法)", "与ダメージ(スキル)", "クリティカルダメージ倍率"];
+          debufTypes = ["ダメージ耐性", "ダメージ耐性(魔法)"];
+        }
+
         // アサシンかタレントの2回攻撃持ちは通常攻撃与ダメージを考慮
         if (chr.class == "アサシン" || chr.talent?.doubleAttack) {
-          atkDmgTypes.push("与ダメージ(通常攻撃)");
+          dmgTypes.push("与ダメージ(通常攻撃)");
         }
       }
 
@@ -577,25 +585,20 @@ export default {
       };
 
       for (let item of this.items) {
-        let atkDmgEffects = new Array(this.effectTypes.length);
-        let magDmgEffects = new Array(this.effectTypes.length);
-        let debufDmgEffects = new Array(this.effectTypes.length);
+        let dmgEffects = new Array(this.effectTypes.length);
+        let debufEffects = new Array(this.effectTypes.length);
         for (let effect of (item.buff ?? [])) {
-          if (atkDmgTypes.includes(effect.type) && condMatch(effect)) {
-            atkDmgEffects[effect.typeId] = effect.value; // += ではなく = 、ブループラネット等対策。
-          }
-          if (magDmgTypes.includes(effect.type) && condMatch(effect)) {
-            magDmgEffects[effect.typeId] = effect.value;
+          if (dmgTypes.includes(effect.type) && condMatch(effect)) {
+            dmgEffects[effect.typeId] = effect.value; // += ではなく = 、ブループラネット等対策。
           }
         }
         for (let effect of (item.debuff ?? [])) {
-          if (debufDmgTypes.includes(effect.type)) {
-            debufDmgEffects[effect.typeId] = effect.value;
+          if (debufTypes.includes(effect.type)) {
+            debufEffects[effect.typeId] = effect.value;
           }
         }
-        item.atkDmgScore = atkDmgEffects.reduce((t, v) => v ? t + v : t, 0);
-        item.magDmgScore = magDmgEffects.reduce((t, v) => v ? t + v : t, 0);
-        item.debufDmgScore = debufDmgEffects.reduce((t, v) => v ? t + v : t, 0);
+        item.dmgScore = dmgEffects.reduce((t, v) => v ? t + v : t, 0);
+        item.debufScore = debufEffects.reduce((t, v) => v ? t + v : t, 0);
       }
     },
 
@@ -900,10 +903,8 @@ export default {
       const getRes = item => item.status[4];
       const getAPMain = item => item.status[mapi];
       const getAPSup = item => item.status[sapi];
-      const getDmg = mapi == 1 ?
-        item => item.atkDmgScore :
-        item => item.magDmgScore;
-      const getDebuf = item => item.debufDmgScore;
+      const getDmg = item => item.dmgScore;
+      const getDebuf = item => item.debufScore;
 
       const enAPMain = mapi == 1 ?
         c => c.name.match(/^atk/) :
