@@ -17,7 +17,7 @@
         <b-img-lazy :src="getImageURL('null')" title="(なし)" width="50" height="50" class="rounded-bordered" />
       </b-link>
       <b-link v-for="(v, i) in filteredChrs" :key="i" @mouseover="$emit('mouseover', v)" @mouseleave="$emit('mouseleave', v)" @click="onClick(v)">
-        <b-img-lazy :src="getImageURL(v.icon)" :title="v.name" width="50" />
+        <b-img-lazy :src="getImageURL(v.icon)" :title="descToTitle(v)" width="50" />
       </b-link>
     </div>
   </b-popover>

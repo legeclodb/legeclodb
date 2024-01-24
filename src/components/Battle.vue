@@ -123,6 +123,21 @@
       </div>
     </div>
 
+    <div v-if="battle" class="content" style="margin-top: 40px">
+      <div class="unit-panel">
+        <div class="flex">
+          <b-button size="sm" id="btl-unit-player" style="width: 13em;">
+            ユニットセレクタ(味方)
+            <UnitSelector target="btl-unit-player" :units="playerUnits" closeonclick />
+          </b-button>
+          <b-button size="sm" id="btl-unit-enemy" style="width: 13em; margin-left: 0.5em;">
+            ユニットセレクタ(敵)
+            <UnitSelector target="btl-unit-enemy" :units="enemyUnits" closeonclick />
+          </b-button>
+        </div>
+      </div>
+    </div>
+
     <div class="content" style="margin-top: 40px">
       <div class="unit-panel">
         <div class="flex">
@@ -139,14 +154,6 @@
           </b-button>
           <b-button size="sm" style="width: 10em; margin-left: 4em;" @click="battle ? endBattle() : beginBattle()">
             {{battle ? 'ダメージ計算終了' : 'ダメージ計算開始'}}
-          </b-button>
-          <b-button size="sm" id="btl-unit-player" style="width: 13em; margin-left: 4em;">
-            ユニットセレクタ(味方)
-            <UnitSelector target="btl-unit-player" :units="playerUnits" closeonclick />
-          </b-button>
-          <b-button size="sm" id="btl-unit-enemy" style="width: 13em; margin-left: 0.5em;">
-            ユニットセレクタ(敵)
-            <UnitSelector target="btl-unit-enemy" :units="enemyUnits" closeonclick />
           </b-button>
         </div>
       </div>
@@ -374,6 +381,19 @@ export default {
         new this.BaseUnit(4),
       ],
       unitTabIndex: 0,
+
+      btlPhaseList: [
+        { index: 0, id: "1P", desc: "1Tプレイヤー" },
+        { index: 1, id: "1E", desc: "1T敵" },
+        { index: 2, id: "2P", desc: "2Tプレイヤー" },
+        { index: 3, id: "2E", desc: "2T敵" },
+        { index: 4, id: "3P", desc: "3Tプレイヤー" },
+        { index: 5, id: "3E", desc: "3T敵" },
+        { index: 6, id: "4P", desc: "4Tプレイヤー" },
+        { index: 7, id: "4E", desc: "4T敵" },
+        { index: 8, id: "5P", desc: "5Tプレイヤー" },
+        { index: 9, id: "5E", desc: "5T敵" },
+      ],
       battle: null,
     };
   },
@@ -410,6 +430,7 @@ export default {
           this.mergeChrData(enemy.support, chr);
           enemy.support.status = this.getNPCChrStatus(chr, enemy.support.level, enemy.support.statusRate);
         }
+        enemy.btl = null;
       }
     }
 
@@ -635,11 +656,12 @@ export default {
     },
 
     BaseUnit: class {
-      index;
-      main;
-      support;
-      showEditor;
-      editorData;
+      index = 0;
+      main = null;
+      support = null;
+      showEditor = false;
+      editorData = [];
+      btl = null
 
       constructor(i) {
         this.index = i;
@@ -660,6 +682,7 @@ export default {
         };
         this.showEditor = false;
         this.editorData = [];
+        this.btl = null;
 
         const mergeChrData = window.$vue.mergeChrData;
         mergeChrData(this.main, null);
@@ -674,11 +697,12 @@ export default {
             status: src.status,
           };
         };
-        return {
+        let r = {
           main: serializeChr(this.main),
           support: serializeChr(this.support),
           editorData: [...this.editorData],
         };
+        return r;
       }
       deserialize(r) {
         const uidToObject = window.$vue.uidToObject;
@@ -873,56 +897,71 @@ export default {
     },
 
     CustomEffect: class {
-      effectType = "";
+      effectType = 0;
       value = 0;
 
-      constructor() {
-        this.effectType = null;
+      constructor(type) {
+        this.effectType = typeof (type) === 'string' ? window.$vue.getEffectIndex(type) : type;
         this.value = 0;
       }
       serialize() {
-
+        return {
+          effectType: this.effectType,
+          value: this.value,
+        };
       }
       deserialize(r) {
-
+        this.effectType = r.effectType;
+        this.value = r.value;
       }
     },
 
     BattleUnit: class {
       unit = null;
       affectedSkills = []; // SkillHolder
-      activeSkills = [];
       customEffects = [];
       main = {
         bufP: [],
         bufF: [],
         status: [0, 0, 0, 0, 0, 0],
+        hp: 0,
       };
       support = {
         bufP: [],
         bufF: [],
         status: [0, 0, 0, 0, 0, 0],
+        hp: 0,
       };
 
       constructor(unit) {
         this.unit = unit;
+        unit.btl = this;
 
         let vue = window.$vue;
         if (unit) {
           // パッシブ/タレントを収集
-          const skills = [...(unit.main.skills ?? []), ...(unit.main.items ?? []), ...(unit.support?.skills ?? []),
+          const skills = [...(unit.main.skills ?? []), ...(unit.support?.skills ?? []),
             ...(unit.main ? vue.getClassPassiveMain(unit.main.class) : []),
             ...(unit.support ? vue.getClassPassiveSupport(unit.support.class) : []),
+            ...(unit.main.items ?? []),
           ];
           for (let skill of skills) {
             if (skill.isTalent || skill.isPassive || skill.isItem) {
               this.applySkill(skill, true);
             }
-            if (skill.isActive) {
-              this.activeSkills.push(skill);
-            }
           }
         }
+      }
+
+      get actions() {
+        let r = [];
+        const skills = [...(this.unit.main.skills ?? []), ...(this.unit.support?.skills ?? [])];
+        for (let skill of skills) {
+          if (skill.isActive) {
+            r.push(skill);
+          }
+        }
+        return r;
       }
 
       applySkill(skill, self = false) {
@@ -938,6 +977,9 @@ export default {
       }
 
       evaluateEffects(battleCtx) {
+
+      }
+      onBattleBegin() {
 
       }
       onTurnBegin() {
@@ -969,6 +1011,7 @@ export default {
     },
     
     BattleContext: class {
+      battleId = "";
       playerUnits = []; // BattleUnit
       enemyUnits = []; // BattleUnit
       turn = 1;
@@ -983,11 +1026,55 @@ export default {
         this.playerUnits = playerUnits.map(a => new vue.BattleUnit(a));
         this.enemyUnits = enemyUnits.map(a => new vue.BattleUnit(a));
       }
+      finalize() {
+        for (let u of [...this.playerUnits, ...this.enemyUnits]) {
+          u.btl = null;
+        }
+      }
       findUnit(u) {
         let r = this.playerUnits.find(a => a.unit === u);
         if (!r)
           r = this.enemyUnits.find(a => a.unit === u);
         return r;
+      }
+      passTurn() {
+        if (this.isPlayerTurn) {
+          this.isPlayerTurn = false;
+          this.onPlayerTurnEnd();
+          this.onEnemyTurnBegin();
+        }
+        else {
+          ++this.turn;
+          this.isPlayerTurn = true;
+          this.onEnemyTurnEnd();
+          this.onPlayerTurnBegin();
+        }
+      }
+
+      onBattleBegin() {
+        this.onPlayerTurnBegin();
+      }
+
+      onPlayerTurnBegin() {
+        for (let u of this.playerUnits) {
+          u.onTurnBegin();
+        }
+      }
+      onPlayerTurnEnd() {
+        for (let u of this.playerUnits) {
+          u.onTurnEnd();
+        }
+      }
+
+      onEnemyTurnBegin() {
+        for (let u of this.enemyUnits) {
+          u.onTurnBegin();
+        }
+      }
+      onEnemyTurnEnd() {
+        for (let u of this.enemyUnits) {
+          u.onTurnEnd();
+        }
       }
     },
 
@@ -1008,10 +1095,15 @@ export default {
     },
 
     beginBattle() {
-      this.battle = new this.BattleContext(this.playerUnits, this.enemyUnits);
+      if (!this.battle) {
+        this.battle = new this.BattleContext(this.playerUnits, this.enemyUnits);
+      }
     },
     endBattle() {
-      this.battle = null;
+      if (this.battle) {
+        this.battle.finalize();
+        this.battle = null;
+      }
     },
     onSelectUnit(unit, idx) {
       if (this.battle) {

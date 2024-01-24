@@ -545,19 +545,29 @@ export default {
         }
       }
       this.autoMainSkill();
-
-      this.updateItemScore();
       this.autoEquip(this.embed ? 1 : 0);
     },
     updateItemScore() {
-      const atkDmgTypes = ["アタック", "与ダメージ", "与ダメージ(物理)", "与ダメージ(スキル)", "クリティカルダメージ倍率"];
-      const magDmgTypes = ["マジック", "与ダメージ", "与ダメージ(魔法)", "与ダメージ(スキル)", "クリティカルダメージ倍率"];
-      const debufDmgTypes = ["ダメージ耐性", "ダメージ耐性(物理)", "ダメージ耐性(魔法)"];
+      let atkDmgTypes = ["アタック", "与ダメージ", "与ダメージ(物理)", "与ダメージ(スキル)", "クリティカルダメージ倍率"];
+      let magDmgTypes = ["マジック", "与ダメージ", "与ダメージ(魔法)", "与ダメージ(スキル)", "クリティカルダメージ倍率"];
+      let debufDmgTypes = ["ダメージ耐性", "ダメージ耐性(物理)", "ダメージ耐性(魔法)"];
 
       const chr = this.main.character.value;
+      if (chr) {
+        // アサシンかタレントの2回攻撃持ちは通常攻撃与ダメージを考慮
+        if (chr.class == "アサシン" || chr.talent?.doubleAttack) {
+          atkDmgTypes.push("与ダメージ(通常攻撃)");
+        }
+      }
+
       const condMatch = function (effect) {
         if (effect.condition) {
+          if (effect.value > 0 && effect.condition.turn) {
+            // ターン経過が必要なバフは除外
+            return false;
+          }
           if (effect.condition.onClass) {
+            // 特定クラスに対してのみ有効な効果は重要なのでちゃんと考慮
             if (!effect.condition.onClass.includes(chr?.class)) {
               return false;
             }
@@ -681,6 +691,8 @@ export default {
     autoEquipImpl(ma, sa, type) {
       if (!ma.character)
         return;
+
+      this.updateItemScore();
       let result = {
         main: {
           items: [null, null, null, null],

@@ -482,6 +482,12 @@ export default {
       if (!item)
         return "";
       let text = item.name + "\n";
+      if (item.isMain) {
+        text += `クラス:${item.class} シンボル:${item.symbol} 攻撃タイプ:${item.damageType}\n`;
+      }
+      if (item.isSupport) {
+        text += `クラス:${item.class} 攻撃タイプ:${item.damageType}\n`;
+      }
       if (item.isItem) {
         text += this.statusToText(item.status) + "\n";
       }
