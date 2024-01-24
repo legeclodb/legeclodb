@@ -471,23 +471,21 @@ export default {
         "戦闘力優先",
         "ダメージ優先",
         "デバフ優先",
+        "攻撃力優先",
         "HP 優先",
-        "アタック優先",
         "ディフェンス優先",
-        "マジック優先",
         "レジスト優先",
         "リセット",
       ],
       AUTO_EQUIP_TYPE: {
         BATTLE_POWER: 0,
-        DMG: 1,
+        DAMAGE: 1,
         DEBUF: 2,
-        HP: 3,
-        ATK: 4,
+        ATTACK_POWER: 3,
+        HP: 4,
         DEF: 5,
-        MAG: 6,
-        RES: 7,
-        RESET: 8,
+        RES: 6,
+        RESET: 7,
       },
 
       tabIndex: 0,
@@ -897,9 +895,7 @@ export default {
 
 
       const getHp = item => item.status[0];
-      const getAtk = item => item.status[1];
       const getDef = item => item.status[2];
-      const getMag = item => item.status[3];
       const getRes = item => item.status[4];
       const getAPMain = item => item.status[mapi];
       const getAPSup = item => item.status[sapi];
@@ -912,6 +908,7 @@ export default {
       const enAPSup = sapi == 1 ?
         c => c.name.match(/^atk/) :
         c => c.name.match(/^mag/);
+      let enchant = "バスター";
 
       const AUTO_EQUIP_TYPE = this.AUTO_EQUIP_TYPE;
       if (type == AUTO_EQUIP_TYPE.BATTLE_POWER) { // 戦闘力優先
@@ -920,7 +917,7 @@ export default {
         pickItemsSupport();
         pickOptialAmuletSkills();
       }
-      else if (type == AUTO_EQUIP_TYPE.DMG) { // ダメージ優先
+      else if (type == AUTO_EQUIP_TYPE.DAMAGE) { // ダメージ優先
         const sortf = function (a, b) {
           const sa = getDmg(a);
           const sb = getDmg(b);
@@ -930,7 +927,8 @@ export default {
         pickOptimalEnchants(enAPMain);
         pickItemsSupport(getAPSup);
         pickOptialAmuletSkills(enAPSup);
-        result.main.enchantPassive = [this.getEnchantPassive("ストライク")];
+        enchant = "ストライク";
+
       }
       else if (type == AUTO_EQUIP_TYPE.DEBUF) { // デバフ優先
         const sortf = function (a, b) {
@@ -942,7 +940,13 @@ export default {
         pickOptimalEnchants(enAPMain);
         pickItemsSupport(getAPSup);
         pickOptialAmuletSkills(enAPSup);
-        result.main.enchantPassive = [this.getEnchantPassive("ストライク")];
+        enchant = "ストライク";
+      }
+      else if (type == AUTO_EQUIP_TYPE.ATTACK_POWER) { // 攻撃力優先
+        pickItemsMain(getAPMain);
+        pickOptimalEnchants(enAPMain);
+        pickItemsSupport(getAPSup);
+        pickOptialAmuletSkills(enAPSup);
       }
       else if (type == AUTO_EQUIP_TYPE.HP) { // HP 優先
         pickItemsMain(getHp);
@@ -950,23 +954,11 @@ export default {
         pickItemsSupport(getHp);
         pickOptialAmuletSkills(c => c.name.match(/^hp/));
       }
-      else if (type == AUTO_EQUIP_TYPE.ATK) { // アタック優先
-        pickItemsMain(getAtk);
-        pickOptimalEnchants(c => c.name.match(/^atk/));
-        pickItemsSupport(getAtk);
-        pickOptialAmuletSkills(c => c.name.match(/^atk/));
-      }
       else if (type == AUTO_EQUIP_TYPE.DEF) { // ディフェンス優先
         pickItemsMain(getDef);
         pickOptimalEnchants(c => c.name.match(/^def/));
         pickItemsSupport(getDef);
         pickOptialAmuletSkills(c => c.name.match(/^def/));
-      }
-      else if (type == AUTO_EQUIP_TYPE.MAG) { // マジック優先
-        pickItemsMain(getMag);
-        pickOptimalEnchants(c => c.name.match(/^mag/));
-        pickItemsSupport(getMag);
-        pickOptialAmuletSkills(c => c.name.match(/^mag/));
       }
       else if (type == AUTO_EQUIP_TYPE.RES) { // レジスト優先
         pickItemsMain(getRes);
@@ -975,9 +967,7 @@ export default {
         pickOptialAmuletSkills(c => c.name.match(/^res/));
       }
       if (type != AUTO_EQUIP_TYPE.RESET) {
-        if (!result.main.enchantPassive[0]) {
-          result.main.enchantPassive = [this.getEnchantPassive("バスター")];
-        }
+        result.main.enchantPassive = [this.getEnchantPassive(enchant)];
       }
 
       return result;
