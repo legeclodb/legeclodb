@@ -40,45 +40,50 @@
 
         <div style="padding: 10px; background-color: white; display: flex;">
           <div class="grid-container">
-            <div v-for="(cell, i) in cells" :key="i" class="grid-cell" :class="getCellClass(cell)" :id="cell.id"
+            <div v-for="(cell, i) in cells" :key="i" :set="unit=cell.enemy?.unit" class="grid-cell" :class="getCellClass(cell)" :id="cell.id"
                  @click="onCellClick(cell)" v-on:mouseover="onCellEnter(cell)" v-on:mouseleave="onCellLeave(cell)">
-              <template v-if="cell.enemy && cell.enemy.support">
-                <b-img-lazy :src="getImageURL(cell.enemy.main.class)" class="center"
+              <template v-if="unit?.support">
+                <b-img-lazy :src="getImageURL(unit.main.class)" class="center"
                             width="30" height="30" style="position: relative; left: 8px; top: -8px; z-index: 1;" />
-                <b-img-lazy :src="getImageURL(cell.enemy.support.class)" class="center"
+                <b-img-lazy :src="getImageURL(unit.support.class)" class="center"
                             width="30" height="30" style="position: relative; left: -8px; top: 8px; z-index: 0;" />
               </template>
-              <template v-else-if="cell.enemy && !cell.enemy.support">
-                <b-img-lazy :src="getImageURL(cell.enemy.main.class)" class="center" width="40" height="40" />
+              <template v-else-if="unit?.main">
+                <b-img-lazy :src="getImageURL(unit.main.class)" class="center" width="40" height="40" />
+              </template>
+              <template v-else-if="cell.ally">
+                <div draggable @dragstart="onUnitDrag($event, cell.ally.unit)" @drop="onUnitDrop($event, cell.ally.unit)" @dragover="onDragOver">
+                  <b-img-lazy :src="getImageURL(cell.ally.unit.main.icon)" class="center" width="50" height="50" />
+                </div>
               </template>
             </div>
           </div>
 
           <div class="enemy-list">
-            <template v-for="ene in enemies">
-              <div class="character" :class="{ 'highlighted': isUnitHighlighted(ene) }" :id="'enemy_'+ene.fid" :key="ene.fid">
+            <template v-for="enemy in enemies">
+              <div class="character" :class="{ 'highlighted': isUnitHighlighted(enemy) }" :id="'enemy_'+enemy.fid" :key="enemy.fid" :set="unit=enemy.unit">
                 <div class="flex">
                   <div class="portrait">
-                    <b-img-lazy :src="getImageURL(ene.main.icon)" :title="ene.main.name" width="80" height="80" rounded />
+                    <b-img-lazy :src="getImageURL(unit.main.icon)" :title="unit.main.name" width="80" height="80" rounded />
                   </div>
                   <div class="detail" v-show="displayType >= 1">
                     <div class="info">
-                      <h5 v-html="chrNameToHtml(ene.main.name+' (メイン)')"></h5>
+                      <h5 v-html="chrNameToHtml(unit.main.name+' (メイン)')"></h5>
                       <div class="status">
-                        <b-img-lazy :src="getImageURL(ene.main.class)" :title="'クラス:'+ene.main.class" height="25" />
-                        <div class="param-box"><b-img-lazy :src="getImageURL(ene.main.damageType)" :title="'攻撃タイプ:'+ene.main.damageType" width="20" height="20" /></div>
-                        <div class="param-box"><b-img-lazy :src="getImageURL('射程')" title="射程" width="18" height="18" /><span>{{ene.main.range}}</span></div>
-                        <div class="param-box"><b-img-lazy :src="getImageURL('移動')" title="移動" width="18" height="18" /><span>{{ene.main.move}}</span></div>
-                        <div class="param-box"><span class="param-name">レベル:</span><span class="param-value">{{ene.main.level}}</span></div>
+                        <b-img-lazy :src="getImageURL(unit.main.class)" :title="'クラス:'+unit.main.class" height="25" />
+                        <div class="param-box"><b-img-lazy :src="getImageURL(unit.main.damageType)" :title="'攻撃タイプ:'+unit.main.damageType" width="20" height="20" /></div>
+                        <div class="param-box"><b-img-lazy :src="getImageURL('射程')" title="射程" width="18" height="18" /><span>{{unit.main.range}}</span></div>
+                        <div class="param-box"><b-img-lazy :src="getImageURL('移動')" title="移動" width="18" height="18" /><span>{{unit.main.move}}</span></div>
+                        <div class="param-box"><span class="param-name">レベル:</span><span class="param-value">{{unit.main.level}}</span></div>
                       </div>
-                      <div v-if="ene.main.status" class="status2" v-html="statusToHtml(ene.main.status)" />
+                      <div v-if="unit.main.status" class="status2" v-html="statusToHtml(unit.main.status)" />
                     </div>
                     <div class="skills">
-                      <div class="skill" v-for="(skill, si) in ene.main.skills" :class="getSkillClass(skill)" :key="si">
+                      <div class="skill" v-for="(skill, si) in unit.main.skills" :class="getSkillClass(skill)" :key="si">
                         <div class="flex">
-                          <div class="icon" :id="'enemy_'+ene.fid+'_skill'+si">
+                          <div class="icon" :id="'enemy_'+enemy.fid+'_skill'+si">
                             <b-img-lazy :src="getImageURL(skill.icon)" with="50" height="50" />
-                            <b-popover v-if="displayType==1" :target="'enemy_'+ene.fid+'_skill'+si" triggers="hover focus" :delay="{show:0, hide:250}" no-fade :title="skill.name" placement="top">
+                            <b-popover v-if="displayType==1" :target="'enemy_'+enemy.fid+'_skill'+si" triggers="hover focus" :delay="{show:0, hide:250}" no-fade :title="skill.name" placement="top">
                               <div class="flex">
                                 <div v-html="descToHtml(skill)"></div>
                               </div>
@@ -97,20 +102,20 @@
                   </div>
                 </div>
 
-                <div v-if="ene.support && displayType >= 2" class="flex">
+                <div v-if="unit.support && displayType >= 2" class="flex">
                   <div class="portrait">
-                    <b-img-lazy :src="getImageURL(ene.support.icon)" :title="ene.support.name" width="80" height="80" rounded />
+                    <b-img-lazy :src="getImageURL(unit.support.icon)" :title="unit.support.name" width="80" height="80" rounded />
                   </div>
                   <div class="detail" v-show="displayType >= 1">
                     <div class="info">
-                      <h5 v-html="chrNameToHtml(ene.support.name+' (サポート)')"></h5>
+                      <h5 v-html="chrNameToHtml(unit.support.name+' (サポート)')"></h5>
                       <div class="status">
-                        <b-img-lazy :src="getImageURL(ene.support.class)" :title="'クラス:'+ene.support.class" height="25" />
-                        <div class="param-box"><b-img-lazy :src="getImageURL(ene.support.damageType)" :title="'攻撃タイプ:'+ene.support.damageType" width="20" height="20" /></div>
-                        <div class="param-box"><b-img-lazy :src="getImageURL('射程')" title="射程" width="18" height="18" /><span>{{ene.support.range}}</span></div>
-                        <div class="param-box"><span class="param-name">レベル:</span><span class="param-value">{{ene.support.level}}</span></div>
+                        <b-img-lazy :src="getImageURL(unit.support.class)" :title="'クラス:'+unit.support.class" height="25" />
+                        <div class="param-box"><b-img-lazy :src="getImageURL(unit.support.damageType)" :title="'攻撃タイプ:'+unit.support.damageType" width="20" height="20" /></div>
+                        <div class="param-box"><b-img-lazy :src="getImageURL('射程')" title="射程" width="18" height="18" /><span>{{unit.support.range}}</span></div>
+                        <div class="param-box"><span class="param-name">レベル:</span><span class="param-value">{{unit.support.level}}</span></div>
                       </div>
-                      <div v-if="ene.support.status" class="status2" v-html="statusToHtml(ene.support.status)" />
+                      <div v-if="unit.support.status" class="status2" v-html="statusToHtml(unit.support.status)" />
                     </div>
                   </div>
                 </div>
@@ -164,7 +169,7 @@
         <b-tabs v-model="unitTabIndex">
           <b-tab v-for="(unit, ui) in units" :key="ui" style="background-color: white; min-width: 1520px; min-height: 500px;">
             <template #title>
-              <h2 style="font-size: 1em;">
+              <h2 style="font-size: 1em;" draggable @dragstart="onUnitDrag($event, unit)" @drop="onUnitDrop($event, unit)" @dragover="onDragOver">
                 ユニット{{ui+1}}
                 <b-img-lazy :src="getImageURL(unit.main?.icon)" width="30" />
                 <b-img-lazy :src="getImageURL(unit.support?.icon)" width="30" />
@@ -430,7 +435,18 @@ export default {
           this.mergeChrData(enemy.support, chr);
           enemy.support.status = this.getNPCChrStatus(chr, enemy.support.level, enemy.support.statusRate);
         }
-        enemy.btl = null;
+
+        let unit = {
+          main: enemy.main,
+          support: null,
+          btl: null,
+        };
+        delete enemy.main;
+        if (enemy.support) {
+          unit.support = enemy.support;
+          delete enemy.support;
+        }
+        enemy.unit = unit;
       }
     }
 
@@ -482,7 +498,7 @@ export default {
     },
     enemyUnits() {
       const battle = this.battleList.find(a => a.uid == this.battleId);
-      return battle ? battle.enemies : [];
+      return battle ? battle.enemies.map(a => a.unit) : [];
     },
   },
 
@@ -500,6 +516,11 @@ export default {
 
       if (clear) {
         this.selectPhase("0", clear);
+      }
+
+      for (let i = 0; i < battle.allies.length; ++i) {
+        let ally = battle.allies[i];
+        ally.unit = this.units[i];
       }
     },
 
@@ -585,10 +606,11 @@ export default {
         const u = this.battleData.enemies.find(u => u.fid == this.selected);
         if (u) {
           let d = Math.abs(u.coord[0] - cell.coord[0]) + Math.abs(u.coord[1] - cell.coord[1]);
-          if (d <= u.main.move) {
+          const unit = u.unit;
+          if (d <= unit.main.move) {
             r.push("in-move-range");
           }
-          else if (d <= u.main.move + u.main.range) {
+          else if (d <= unit.main.move + unit.main.range) {
             r.push("in-attack-range");
           }
         }
@@ -600,7 +622,7 @@ export default {
       this.$nextTick(function () {
         let e = document.getElementById(id);
         if (e) {
-          e.scrollIntoView();
+          e.scrollIntoView({block: "nearest"});
         }
       });
     },
@@ -659,8 +681,8 @@ export default {
       index = 0;
       main = null;
       support = null;
-      showEditor = false;
       editorData = [];
+      showEditor = false;
       btl = null
 
       constructor(i) {
@@ -688,6 +710,17 @@ export default {
         mergeChrData(this.main, null);
         mergeChrData(this.support, null);
       }
+      swap(v) {
+        const doSwap = function (obj1, obj2, field) {
+          const tmp = obj1[field];
+          obj1[field] = obj2[field];
+          obj2[field] = tmp;
+        };
+        doSwap(this, v, "main");
+        doSwap(this, v, "support");
+        doSwap(this, v, "editorData");
+      }
+
       serialize() {
         const serializeChr = function (src) {
           return {
@@ -1116,6 +1149,20 @@ export default {
         }
       }
     },
+    onUnitDrag(e, unit) {
+      this.draggingUnit = unit;
+    },
+    onUnitDrop(e, unit) {
+      if (this.draggingUnit && !this.battle) {
+        if (this.draggingUnit && unit) {
+          this.draggingUnit.swap(unit);
+        }
+      }
+      this.draggingUnit = null;
+    },
+    onDragOver(e) {
+      e.preventDefault();
+    },
 
 
     uidToObject(uid) {
@@ -1199,9 +1246,11 @@ export default {
   }
   .enemy-cell {
     background: rgb(255, 160, 160);
+    cursor: pointer;
   }
   .ally-cell {
     background: rgb(140, 160, 255);
+    cursor: grab;
   }
   .selected {
     border-color: rgb(255, 40, 40);
