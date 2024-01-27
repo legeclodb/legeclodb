@@ -902,6 +902,18 @@ export default {
         miscTags.push(`召喚`);
       }
 
+      if (skill.fixedDamage) {
+        let add = false;
+        for (const fd of skill.fixedDamage) {
+          if (fd.target != "自身") {
+            add = true;
+          }
+        }
+        if (add) {
+          miscTags.push(`固定ダメージ`);
+        }
+      }
+
       if (skill.doubleAttack) {
         let postfix = "";
         const cond = skill.doubleAttack.condition;
@@ -910,6 +922,10 @@ export default {
             postfix = "(反撃)";
         }
         miscTags.push(`2回攻撃${postfix}`);
+      }
+
+      if (skill.multiMove) {
+        miscTags.push(`再移動`);
       }
 
       if (skill.multiAction) {

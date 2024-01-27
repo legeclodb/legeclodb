@@ -413,6 +413,392 @@
       }
     ]
   },
+
+  {
+    "uid": "クラス特性:ソルジャー(敵メイン)",
+    "name": "クラス特性:ソルジャー(敵メイン)",
+    "icon": "ソルジャー",
+    "desc": "メインが「ランサー」の敵ユニットに攻撃時、メインのアタック/マジック+35%。メインが「ライダー」の敵ユニットに攻撃時、メインのアタック/マジック-35%",
+    "buff": [
+      {
+        "type": "アタック",
+        "value": 35,
+        "ephemeral": true,
+        "target": "自身(メイン)",
+        "timing": "攻撃前",
+        "condition": {
+          "onEnemyClass": [ "ランサー" ]
+        }
+      },
+      {
+        "type": "マジック",
+        "value": 35,
+        "ephemeral": true,
+        "target": "自身(メイン)",
+        "timing": "攻撃前",
+        "condition": {
+          "onEnemyClass": [ "ランサー" ]
+        }
+      },
+      {
+        "type": "アタック",
+        "value": -35,
+        "ephemeral": true,
+        "target": "自身(メイン)",
+        "timing": "攻撃前",
+        "condition": {
+          "onEnemyClass": [ "ライダー" ]
+        }
+      },
+      {
+        "type": "マジック",
+        "value": -35,
+        "ephemeral": true,
+        "target": "自身(メイン)",
+        "timing": "攻撃前",
+        "condition": {
+          "onEnemyClass": [ "ライダー" ]
+        }
+      }
+    ]
+  },
+  {
+    "uid": "クラス特性:ランサー(敵メイン)",
+    "name": "クラス特性:ランサー(敵メイン)",
+    "icon": "ランサー",
+    "desc": "メインが「ライダー」の敵ユニットに攻撃時、メインのアタック/マジック+35%。メインが「ソルジャー」の敵ユニットに攻撃時、メインのアタック/マジック-35%",
+    "buff": [
+      {
+        "type": "アタック",
+        "value": 35,
+        "ephemeral": true,
+        "target": "自身(メイン)",
+        "timing": "攻撃前",
+        "condition": {
+          "onEnemyClass": [ "ライダー" ]
+        }
+      },
+      {
+        "type": "マジック",
+        "value": 35,
+        "ephemeral": true,
+        "target": "自身(メイン)",
+        "timing": "攻撃前",
+        "condition": {
+          "onEnemyClass": [ "ライダー" ]
+        }
+      },
+      {
+        "type": "アタック",
+        "value": -35,
+        "ephemeral": true,
+        "target": "自身(メイン)",
+        "timing": "攻撃前",
+        "condition": {
+          "onEnemyClass": [ "ソルジャー" ]
+        }
+      },
+      {
+        "type": "マジック",
+        "value": -35,
+        "ephemeral": true,
+        "target": "自身(メイン)",
+        "timing": "攻撃前",
+        "condition": {
+          "onEnemyClass": [ "ソルジャー" ]
+        }
+      }
+    ]
+  },
+  {
+    "uid": "クラス特性:ライダー(敵メイン)",
+    "name": "クラス特性:ライダー(敵メイン)",
+    "icon": "ライダー",
+    "desc": "メインが「ソルジャー」の敵ユニットに攻撃時、メインのアタック/マジック+35%。メインが「ランサー」の敵ユニットに攻撃時、メインのアタック/マジック-35%",
+    "buff": [
+      {
+        "type": "アタック",
+        "value": 35,
+        "ephemeral": true,
+        "target": "自身(メイン)",
+        "timing": "攻撃前",
+        "condition": {
+          "onEnemyClass": [ "ソルジャー" ]
+        }
+      },
+      {
+        "type": "マジック",
+        "value": 35,
+        "ephemeral": true,
+        "target": "自身(メイン)",
+        "timing": "攻撃前",
+        "condition": {
+          "onEnemyClass": [ "ソルジャー" ]
+        }
+      },
+      {
+        "type": "アタック",
+        "value": -35,
+        "ephemeral": true,
+        "target": "自身(メイン)",
+        "timing": "攻撃前",
+        "condition": {
+          "onEnemyClass": [ "ランサー" ]
+        }
+      },
+      {
+        "type": "マジック",
+        "value": -35,
+        "ephemeral": true,
+        "target": "自身(メイン)",
+        "timing": "攻撃前",
+        "condition": {
+          "onEnemyClass": [ "ランサー" ]
+        }
+      }
+    ]
+  },
+  {
+    "uid": "クラス特性:エアリアル(敵メイン)",
+    "name": "クラス特性:エアリアル(敵メイン)",
+    "icon": "エアリアル",
+    "desc": "メインが「アサシン」の敵ユニットに攻撃時、メインのアタック/マジック+35%。メインが「シューター」の敵ユニットに攻撃時、メインのアタック/マジック-35%",
+    "buff": [
+      {
+        "type": "アタック",
+        "value": 35,
+        "ephemeral": true,
+        "target": "自身(メイン)",
+        "timing": "攻撃前",
+        "condition": {
+          "onEnemyClass": [ "アサシン" ]
+        }
+      },
+      {
+        "type": "マジック",
+        "value": 35,
+        "ephemeral": true,
+        "target": "自身(メイン)",
+        "timing": "攻撃前",
+        "condition": {
+          "onEnemyClass": [ "アサシン" ]
+        }
+      },
+      {
+        "type": "アタック",
+        "value": -35,
+        "ephemeral": true,
+        "target": "自身(メイン)",
+        "timing": "攻撃前",
+        "condition": {
+          "onEnemyClass": [ "シューター" ]
+        }
+      },
+      {
+        "type": "マジック",
+        "value": -35,
+        "ephemeral": true,
+        "target": "自身(メイン)",
+        "timing": "攻撃前",
+        "condition": {
+          "onEnemyClass": [ "シューター" ]
+        }
+      }
+    ]
+  },
+  {
+    "uid": "クラス特性:ソーサラー(敵メイン)",
+    "name": "クラス特性:ソーサラー(敵メイン)",
+    "icon": "ソーサラー",
+    "desc": "メインが「ソルジャー/ランサー/ライダー」の敵ユニットに攻撃時、メインのアタック/マジック+20%。メインが「エアリアル/アサシン/シューター」の敵ユニットに攻撃時、メインのアタック/マジック-15%",
+    "buff": [
+      {
+        "type": "アタック",
+        "value": 20,
+        "ephemeral": true,
+        "target": "自身(メイン)",
+        "timing": "攻撃前",
+        "condition": {
+          "onEnemyClass": [ "ソルジャー", "ランサー", "ライダー" ]
+        }
+      },
+      {
+        "type": "マジック",
+        "value": 20,
+        "ephemeral": true,
+        "target": "自身(メイン)",
+        "timing": "攻撃前",
+        "condition": {
+          "onEnemyClass": [ "ソルジャー", "ランサー", "ライダー" ]
+        }
+      },
+      {
+        "type": "アタック",
+        "value": -15,
+        "ephemeral": true,
+        "target": "自身(メイン)",
+        "timing": "攻撃前",
+        "condition": {
+          "onEnemyClass": [ "エアリアル", "アサシン", "シューター" ]
+        }
+      },
+      {
+        "type": "マジック",
+        "value": -15,
+        "ephemeral": true,
+        "target": "自身(メイン)",
+        "timing": "攻撃前",
+        "condition": {
+          "onEnemyClass": [ "エアリアル", "アサシン", "シューター" ]
+        }
+      }
+    ]
+  },
+  {
+    "uid": "クラス特性:セイント(敵メイン)",
+    "name": "クラス特性:セイント(敵メイン)",
+    "icon": "セイント",
+    "desc": "メインが「エアリアル/アサシン/シューター」の敵ユニットに攻撃時、メインのアタック/マジック+20%。メインが「ソルジャー/ランサー/ライダー」の敵ユニットに攻撃時、メインのアタック/マジック-15%",
+    "buff": [
+      {
+        "type": "アタック",
+        "value": 20,
+        "ephemeral": true,
+        "target": "自身(メイン)",
+        "timing": "攻撃前",
+        "condition": {
+          "onEnemyClass": [ "エアリアル", "アサシン", "シューター" ]
+        }
+      },
+      {
+        "type": "マジック",
+        "value": 20,
+        "ephemeral": true,
+        "target": "自身(メイン)",
+        "timing": "攻撃前",
+        "condition": {
+          "onEnemyClass": [ "エアリアル", "アサシン", "シューター" ]
+        }
+      },
+      {
+        "type": "アタック",
+        "value": -15,
+        "ephemeral": true,
+        "target": "自身(メイン)",
+        "timing": "攻撃前",
+        "condition": {
+          "onEnemyClass": [ "ソルジャー", "ランサー", "ライダー" ]
+        }
+      },
+      {
+        "type": "マジック",
+        "value": -15,
+        "ephemeral": true,
+        "target": "自身(メイン)",
+        "timing": "攻撃前",
+        "condition": {
+          "onEnemyClass": [ "ソルジャー", "ランサー", "ライダー" ]
+        }
+      }
+    ]
+  },
+  {
+    "uid": "クラス特性:シューター(敵メイン)",
+    "name": "クラス特性:シューター(敵メイン)",
+    "icon": "シューター",
+    "desc": "メインが「エアリアル」の敵ユニットに攻撃時、メインのアタック/マジック+35%。メインが「アサシン」の敵ユニットに攻撃時、メインのアタック/マジック-35%",
+    "buff": [
+      {
+        "type": "アタック",
+        "value": 35,
+        "ephemeral": true,
+        "target": "自身(メイン)",
+        "timing": "攻撃前",
+        "condition": {
+          "onEnemyClass": [ "エアリアル" ]
+        }
+      },
+      {
+        "type": "マジック",
+        "value": 35,
+        "ephemeral": true,
+        "target": "自身(メイン)",
+        "timing": "攻撃前",
+        "condition": {
+          "onEnemyClass": [ "エアリアル" ]
+        }
+      },
+      {
+        "type": "アタック",
+        "value": -35,
+        "ephemeral": true,
+        "target": "自身(メイン)",
+        "timing": "攻撃前",
+        "condition": {
+          "onEnemyClass": [ "アサシン" ]
+        }
+      },
+      {
+        "type": "マジック",
+        "value": -35,
+        "ephemeral": true,
+        "target": "自身(メイン)",
+        "timing": "攻撃前",
+        "condition": {
+          "onEnemyClass": [ "アサシン" ]
+        }
+      }
+    ]
+  },
+  {
+    "uid": "クラス特性:アサシン(敵メイン)",
+    "name": "クラス特性:アサシン(敵メイン)",
+    "icon": "アサシン",
+    "desc": "メインが「シューター」の敵ユニットに攻撃時、メインのアタック/マジック+35%。メインが「エアリアル」の敵ユニットに攻撃時、メインのアタック/マジック-35%",
+    "buff": [
+      {
+        "type": "アタック",
+        "value": 35,
+        "ephemeral": true,
+        "target": "自身(メイン)",
+        "timing": "攻撃前",
+        "condition": {
+          "onEnemyClass": [ "シューター" ]
+        }
+      },
+      {
+        "type": "マジック",
+        "value": 35,
+        "ephemeral": true,
+        "target": "自身(メイン)",
+        "timing": "攻撃前",
+        "condition": {
+          "onEnemyClass": [ "シューター" ]
+        }
+      },
+      {
+        "type": "アタック",
+        "value": -35,
+        "ephemeral": true,
+        "target": "自身(メイン)",
+        "timing": "攻撃前",
+        "condition": {
+          "onEnemyClass": [ "エアリアル" ]
+        }
+      },
+      {
+        "type": "マジック",
+        "value": -35,
+        "ephemeral": true,
+        "target": "自身(メイン)",
+        "timing": "攻撃前",
+        "condition": {
+          "onEnemyClass": [ "エアリアル" ]
+        }
+      }
+    ]
+  },
+
   {
     "uid": "マスター特性:ソルジャー",
     "name": "マスター特性:ソルジャー",
@@ -463,7 +849,26 @@
         }
       }
     ],
-    "fixedDamage": []
+    "fixedDamage": [
+      {
+        "base": "アタック",
+        "rate": 0.7,
+        "maxStack": 5,
+        "stackBy": "moveAmount",
+        "timing": "戦闘前",
+        "condition": {
+          "onOwnTurn": true
+        }
+      },
+      {
+        "base": "アタック",
+        "rate": 3.0,
+        "timing": "戦闘前",
+        "condition": {
+          "onEnemyTurn": true
+        }
+      }
+    ]
   },
   {
     "uid": "マスター特性:エアリアル",

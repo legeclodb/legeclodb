@@ -43,6 +43,13 @@
         "type": "array",
         "items": { "$ref": "schema_skill.json#/$defs/effect" }
       },
+      "fixedDamage": {
+        "type": "array",
+        "items": { "$ref": "schema_skill.json#/$defs/fixedDamage" }
+      },
+      "multiMove": {
+        "$ref": "schema_skill.json#/$defs/multiMove"
+      },
       "tags": {
         "type": "array",
         "items": { "type": "string" }

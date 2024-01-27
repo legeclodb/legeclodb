@@ -572,6 +572,12 @@ export default {
             // ターン経過が必要なバフは除外
             return false;
           }
+          if (effect.condition.onCloseCombat && chr.range > 1) {
+            return false;
+          }
+          if (effect.condition.onRangedCombat && chr.range == 1) {
+            return false;
+          }
           if (effect.condition.onClass) {
             // 特定クラスに対してのみ有効な効果は重要なのでちゃんと考慮
             if (!effect.condition.onClass.includes(chr?.class)) {

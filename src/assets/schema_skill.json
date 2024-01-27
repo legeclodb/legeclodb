@@ -318,7 +318,52 @@
         "timing": { "$ref": "#/$defs/timingType" },
         "condition": { "$ref": "#/$defs/condition" }
       }
+    },
+
+    "fixedDamage": {
+      "type": "object",
+      "required": [ "base", "value" ],
+      "additionalProperties": false,
+      "properties": {
+        "base": {
+          "anyOf": [
+            { "$ref": "#/$defs/statusType" },
+            { "enum": [ "与ダメージ" ] }
+          ]
+        },
+        "rate": { "type": [ "number", "array" ] },
+        "maxStack": { "type": "number" },
+        "stackBy": {
+          "anyOf": [
+            { "$ref": "#/$defs/conditionVariable" },
+            {
+              "type": "array",
+              "items": {
+                "anyOf": [
+                  { "$ref": "#/$defs/conditionVariable" },
+                  { "$ref": "#/$defs/areaType" }
+                ]
+              }
+            }
+          ]
+        },
+        "target": { "$ref": "#/$defs/targetType" },
+        "area": { "$ref": "#/$defs/areaType" },
+        "timing": { "$ref": "#/$defs/timingType" },
+        "condition": { "$ref": "#/$defs/condition" }
+      }
+    },
+
+    "multiMove": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "type": { "enum": [ "基本移動力", "残移動力", "固定値移動力" ] },
+        "value": { "type": "number" },
+        "condition": { "$ref": "#/$defs/condition" }
+      }
     }
+
   },
   "type": "array",
   "items": {
@@ -348,7 +393,7 @@
       },
       "fixedDamage": {
         "type": "array",
-        "items": { "type": "object" }
+        "items": { "$ref": "#/$defs/fixedDamage" }
       },
       "healRate": { "type": [ "number", "object" ] },
       "summon": { "type": [ "array" ] },
@@ -398,11 +443,7 @@
         }
       },
       "multiMove": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "condition": { "$ref": "#/$defs/condition" }
-        }
+        "$ref": "#/$defs/multiMove"
       },
       "multiAction": {
         "type": "object",

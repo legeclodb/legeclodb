@@ -156,7 +156,13 @@
         "target": "自身"
       }
     ],
-    "tags": [ "固定ダメージ" ]
+    "fixedDamage": [
+      {
+        "base": "アタック",
+        "rate": 1.0,
+        "timing": "戦闘後"
+      }
+    ]
   },
   {
     "uid": "Item_Equipment_SSR_0007",
@@ -314,7 +320,16 @@
         "target": "自身"
       }
     ],
-    "tags": [ "固定ダメージ" ]
+    "fixedDamage": [
+      {
+        "base": "アタック",
+        "rate": 1.0,
+        "timing": "攻撃後",
+        "condition": {
+          "onOwnTurn": true
+        }
+      }
+    ]
   },
   {
     "uid": "Item_Equipment_SSR_0013",
@@ -389,7 +404,16 @@
         "target": "自身"
       }
     ],
-    "tags": [ "固定ダメージ" ]
+    "fixedDamage": [
+      {
+        "base": "アタック",
+        "rate": 1.0,
+        "timing": "戦闘前",
+        "condition": {
+          "onOwnTurn": true
+        }
+      }
+    ]
   },
   {
     "uid": "Item_Equipment_SSR_0016",
@@ -1666,7 +1690,16 @@
         "target": "自身"
       }
     ],
-    "tags": [ "固定ダメージ" ]
+    "fixedDamage": [
+      {
+        "base": "レジスト",
+        "rate": 3.0,
+        "timing": "戦闘後",
+        "condition": {
+          "onOwnTurn": true
+        }
+      }
+    ]
   },
   {
     "uid": "Item_Equipment_SSR_0043",
@@ -1685,7 +1718,16 @@
         "target": "自身"
       }
     ],
-    "tags": [ "固定ダメージ" ]
+    "fixedDamage": [
+      {
+        "base": "ディフェンス",
+        "rate": 3.0,
+        "timing": "戦闘後",
+        "condition": {
+          "onOwnTurn": true
+        }
+      }
+    ]
   },
   {
     "uid": "Item_Equipment_SSR_0135",
@@ -1872,7 +1914,17 @@
         "target": "自身"
       }
     ],
-    "tags": [ "固定ダメージ" ]
+    "fixedDamage": [
+      {
+        "base": "レジスト",
+        "rate": 2.5,
+        "area": 2,
+        "timing": "攻撃後",
+        "condition": {
+          "onKill": true
+        }
+      }
+    ]
   },
   {
     "uid": "Item_Equipment_SSR_0137",
@@ -1997,7 +2049,17 @@
         "target": "自身"
       }
     ],
-    "tags": [ "固定ダメージ" ]
+    "fixedDamage": [
+      {
+        "base": "レジスト",
+        "rate": 3.0,
+        "timing": "戦闘後",
+        "condition": {
+          "onEnemyTurn": true,
+          "onRangedCombat": true
+        }
+      }
+    ]
   },
   {
     "uid": "Item_Equipment_SSR_0055",
@@ -2600,7 +2662,14 @@
         "target": "自身"
       }
     ],
-    "tags": [ "固定ダメージ" ]
+    "fixedDamage": [
+      {
+        "base": "アタック",
+        "rate": 1.0,
+        "area": [ 1, "周囲" ],
+        "timing": "行動後"
+      }
+    ]
   },
   {
     "uid": "Item_Equipment_SSR_0064",
@@ -2750,7 +2819,17 @@
         "target": "自身"
       }
     ],
-    "tags": [ "固定ダメージ" ]
+    "fixedDamage": [
+      {
+        "base": "ディフェンス",
+        "rate": 2.5,
+        "area": 2,
+        "timing": "攻撃後",
+        "condition": {
+          "onKill": true
+        }
+      }
+    ]
   },
   {
     "uid": "Item_Equipment_SSR_0138",
@@ -2769,7 +2848,14 @@
         "target": "自身"
       }
     ],
-    "tags": [ "固定ダメージ" ]
+    "fixedDamage": [
+      {
+        "base": "アタック",
+        "rate": 1.5,
+        "area": [ 1, "周囲", 1 ],
+        "timing": "行動後"
+      }
+    ]
   },
   {
     "uid": "Item_Equipment_SSR_0073",
@@ -2862,7 +2948,14 @@
         "target": "自身"
       }
     ],
-    "tags": [ "固定ダメージ" ]
+    "fixedDamage": [
+      {
+        "base": "レジスト",
+        "rate": 2.5,
+        "area": [ 2, "範囲", 1 ],
+        "timing": "行動後"
+      }
+    ]
   },
   {
     "uid": "Item_Equipment_SSR_0075",
@@ -3280,7 +3373,16 @@
         "target": "自身"
       }
     ],
-    "tags": [ "固定ダメージ" ]
+    "fixedDamage": [
+      {
+        "base": "アタック",
+        "rate": 1.0,
+        "timing": "戦闘後",
+        "condition": {
+          "onOwnTurn": true
+        }
+      }
+    ]
   },
   {
     "uid": "Item_Equipment_SSR_0078",
@@ -3944,7 +4046,10 @@
         "target": "自身"
       }
     ],
-    "tags": [ "再移動" ]
+    "multiMove": {
+      "type": "固定値移動力",
+      "value": 2
+    }
   },
   {
     "uid": "Item_Equipment_SR_0068",
@@ -4556,7 +4661,23 @@
         "target": "自身"
       }
     ],
-    "tags": [ "分類:マスター装備", "固定ダメージ" ]
+    "fixedDamage": [
+      {
+        "base": "アタック",
+        "rate": 1.0,
+        "timing": "戦闘後",
+        "condition": {
+          "onOwnTurn": true,
+          "onDamage": true
+        }
+      },
+      {
+        "base": "アタック",
+        "rate": 1.0,
+        "timing": "戦闘後"
+      }
+    ],
+    "tags": [ "分類:マスター装備" ]
   },
   {
     "uid": "Item_Equipment_SSR_0108",
@@ -4903,7 +5024,14 @@
         "target": "自身"
       }
     ],
-    "tags": [ "分類:マスター装備", "固定ダメージ" ]
+    "fixedDamage": [
+      {
+        "base": "マジック",
+        "rate": 1.5,
+        "timing": "戦闘前"
+      }
+    ],
+    "tags": [ "分類:マスター装備" ]
   },
   {
     "uid": "Item_Equipment_SSR_0121",
@@ -4959,7 +5087,18 @@
         "target": "自身"
       }
     ],
-    "tags": [ "分類:マスター装備", "固定ダメージ" ]
+    "fixedDamage": [
+      {
+        "base": "与ダメージ",
+        "rate": 0.1,
+        "timing": "攻撃後",
+        "condition": {
+          "onActiveSkill": true,
+          "onDamage": true
+        }
+      }
+    ],
+    "tags": [ "分類:マスター装備" ]
   },
   {
     "uid": "Item_Equipment_SSR_0117",
@@ -5156,7 +5295,18 @@
         "target": "自身"
       }
     ],
-    "tags": [ "分類:マスター装備", "固定ダメージ" ]
+    "fixedDamage": [
+      {
+        "base": "与ダメージ",
+        "rate": 0.1,
+        "timing": "攻撃後",
+        "condition": {
+          "onActiveSkill": true,
+          "onDamage": true
+        }
+      }
+    ],
+    "tags": [ "分類:マスター装備" ]
   },
   {
     "uid": "Item_Equipment_SSR_0125",
@@ -5500,6 +5650,15 @@
         "target": "自身"
       }
     ],
+    "fixedDamage": [
+      {
+        "base": "最大HP",
+        "rate": 0.15,
+        "stackBy": "moveAmount",
+        "target": "自身",
+        "timing": "行動後"
+      }
+    ],
     "tags": [ "分類:遺跡装備", "デメリット:自傷効果" ]
   },
   {
@@ -5516,6 +5675,7 @@
       {
         "type": "与ダメージ",
         "value": 60,
+        "duration": 0,
         "target": "自身",
         "timing": "戦闘前",
         "condition": {
@@ -5525,6 +5685,7 @@
       {
         "type": "与ダメージ",
         "value": -40,
+        "duration": 0,
         "target": "自身",
         "timing": "戦闘前",
         "condition": {
@@ -6786,6 +6947,17 @@
         "target": "自身"
       }
     ],
+    "fixedDamage": [
+      {
+        "base": "最大HP",
+        "rate": 0.25,
+        "target": "自身",
+        "timing": "行動後",
+        "condition": {
+          "probability": 50
+        }
+      }
+    ],
     "tags": [ "分類:遺跡装備", "デメリット:自傷効果" ]
   },
   {
@@ -7353,6 +7525,17 @@
         "type": "マジック",
         "value": 20,
         "target": "自身"
+      }
+    ],
+    "fixedDamage": [
+      {
+        "base": "最大HP",
+        "rate": 0.25,
+        "target": "自身",
+        "timing": "行動後",
+        "condition": {
+          "probability": 50
+        }
       }
     ],
     "tags": [ "分類:遺跡装備", "デメリット:自傷効果" ]
