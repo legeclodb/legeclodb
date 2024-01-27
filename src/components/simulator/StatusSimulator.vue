@@ -953,18 +953,21 @@ export default {
         pickOptimalEnchants(c => c.name.match(/^hp/));
         pickItemsSupport(getHp);
         pickOptialAmuletSkills(c => c.name.match(/^hp/));
+        enchant = "アイアン";
       }
       else if (type == AUTO_EQUIP_TYPE.DEF) { // ディフェンス優先
         pickItemsMain(getDef);
         pickOptimalEnchants(c => c.name.match(/^def/));
         pickItemsSupport(getDef);
         pickOptialAmuletSkills(c => c.name.match(/^def/));
+        enchant = "アイス";
       }
       else if (type == AUTO_EQUIP_TYPE.RES) { // レジスト優先
         pickItemsMain(getRes);
         pickOptimalEnchants(c => c.name.match(/^res/));
         pickItemsSupport(getRes);
         pickOptialAmuletSkills(c => c.name.match(/^res/));
+        enchant = "アイス";
       }
       if (type != AUTO_EQUIP_TYPE.RESET) {
         result.main.enchantPassive = [this.getEnchantPassive(enchant)];

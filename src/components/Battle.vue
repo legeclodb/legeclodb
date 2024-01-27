@@ -336,6 +336,7 @@ import commonjs from "./common.js";
 import lookupjs from "./simulator/lookup.js";
 import StatusSimulator from './simulator/StatusSimulator.vue'
 import UnitSelector from './parts/UnitSelector.vue'
+import * as ldb from "./simulator/battle.js";
 
 export default {
   name: 'Battle',
@@ -369,6 +370,7 @@ export default {
 
       enemies: [],
       allies: [],
+      path: null,
 
       selected: null,
       hovered: null,
@@ -379,11 +381,11 @@ export default {
       slotNames: ["", "", "", "", "", "", "", "", "", ""],
       slotName: "",
       units: [
-        new this.BaseUnit(0),
-        new this.BaseUnit(1),
-        new this.BaseUnit(2),
-        new this.BaseUnit(3),
-        new this.BaseUnit(4),
+        new ldb.BaseUnit(0),
+        new ldb.BaseUnit(1),
+        new ldb.BaseUnit(2),
+        new ldb.BaseUnit(3),
+        new ldb.BaseUnit(4),
       ],
       unitTabIndex: 0,
 
@@ -420,6 +422,7 @@ export default {
     this.battleList = structuredClone(jsonBattle);
     for (let battle of this.battleList) {
       for (let enemy of battle.enemies) {
+        enemy.isEnemy = true;
         enemy.cellID = `c${this.zeroPad(enemy.coord[0])}${this.zeroPad(enemy.coord[1])}`;
         {
           const chr = this.enemyMainChrs.find(c => c.uid == enemy.main.cid);
@@ -447,6 +450,9 @@ export default {
           delete enemy.support;
         }
         enemy.unit = unit;
+      }
+      for (let ally of battle.allies) {
+        ally.isAlly = true;
       }
     }
 
@@ -521,6 +527,7 @@ export default {
       for (let i = 0; i < battle.allies.length; ++i) {
         let ally = battle.allies[i];
         ally.unit = this.units[i];
+        ally.unit.coord = ally.coord;
       }
     },
 
@@ -556,13 +563,25 @@ export default {
     },
 
     selectUnit(fid) {
-      const unit = this.enemies.find(u => u.fid == fid);
-      if (unit) {
+      const e = this.enemies.find(u => u.fid == fid) ?? this.allies.find(u => u.fid == fid);
+      if (e) {
         this.selected = fid;
         this.scrollTo(`unit_${fid}`);
+
+        let pf = new ldb.PathFinder(15, 15);
+        if (e.isEnemy) {
+          pf.setObstacles(this.allies);
+        }
+        if (e.isAlly) {
+          pf.setObstacles(this.enemies);
+        }
+        pf.setStart(e.coord[0], e.coord[1]);
+        pf.build(e.unit.main.move, e.unit.main.range);
+        this.path = pf;
       }
       else {
         this.selected = null;
+        this.path = null;
       }
     },
 
@@ -602,17 +621,12 @@ export default {
       else if (cell.ally) {
         r.push("ally-cell");
       }
-      else {
-        const u = this.battleData.enemies.find(u => u.fid == this.selected);
-        if (u) {
-          let d = Math.abs(u.coord[0] - cell.coord[0]) + Math.abs(u.coord[1] - cell.coord[1]);
-          const unit = u.unit;
-          if (d <= unit.main.move) {
-            r.push("in-move-range");
-          }
-          else if (d <= unit.main.move + unit.main.range) {
-            r.push("in-attack-range");
-          }
+      else if (this.path) {
+        if (this.path.isReachable(cell.coord[0], cell.coord[1])) {
+          r.push("in-move-range");
+        }
+        else if (this.path.isShootable(cell.coord[0], cell.coord[1])) {
+          r.push("in-attack-range");
         }
       }
       return r;
@@ -638,8 +652,16 @@ export default {
       }
     },
     onCellClick(cell) {
-      this.selectUnit(cell.enemy ? cell.enemy.fid : null);
-      this.updateURL();
+      if (cell.enemy) {
+        this.selectUnit(cell.enemy.fid);
+      }
+      else if (cell.ally) {
+        this.selectUnit(cell.ally.fid);
+      }
+      else {
+        this.selectUnit(null);
+      }
+      //this.updateURL();
     },
 
     updateURL() {
@@ -677,459 +699,10 @@ export default {
       }
     },
 
-    BaseUnit: class {
-      index = 0;
-      main = null;
-      support = null;
-      editorData = [];
-      showEditor = false;
-      btl = null
-
-      constructor(i) {
-        this.index = i;
-        this.initialize();
-      }
-      initialize() {
-        this.main = {
-          cid: "",
-          skills: [],
-          items: [],
-          status: [0, 0, 0, 0, 0, 0], // 基礎ステ
-        };
-        this.support = {
-          cid: "",
-          skills: [],
-          items: [],
-          status: [0, 0, 0, 0, 0, 0], // 基礎ステ
-        };
-        this.showEditor = false;
-        this.editorData = [];
-        this.btl = null;
-
-        const mergeChrData = window.$vue.mergeChrData;
-        mergeChrData(this.main, null);
-        mergeChrData(this.support, null);
-      }
-      swap(v) {
-        const doSwap = function (obj1, obj2, field) {
-          const tmp = obj1[field];
-          obj1[field] = obj2[field];
-          obj2[field] = tmp;
-        };
-        doSwap(this, v, "main");
-        doSwap(this, v, "support");
-        doSwap(this, v, "editorData");
-      }
-
-      serialize() {
-        const serializeChr = function (src) {
-          return {
-            cid: src.cid,
-            skills: src.skills.map(a => a.uid),
-            items: src.items.map(a => a.uid),
-            status: src.status,
-          };
-        };
-        let r = {
-          main: serializeChr(this.main),
-          support: serializeChr(this.support),
-          editorData: [...this.editorData],
-        };
-        return r;
-      }
-      deserialize(r) {
-        const uidToObject = window.$vue.uidToObject;
-        const mergeChrData = window.$vue.mergeChrData;
-        const deserializeChr = function (dst, src) {
-          const chr = uidToObject(src.cid);
-          mergeChrData(dst, chr);
-          dst.cid = src.cid;
-          dst.skills = src.skills.map(uidToObject);
-          dst.items = src.items.map(uidToObject);
-          dst.status = [...src.status];
-        };
-        deserializeChr(this.main, r.main);
-        deserializeChr(this.support, r.support);
-        this.editorData = [...r.editorData];
-      }
-      edit(ss) {
-        const uidToObject = window.$vue.uidToObject;
-        const copyArray = window.$vue.copyArray;
-        const mergeChrData = window.$vue.mergeChrData;
-        // エディタ側のオブジェクトとこちら側のオブジェクトは別個体なため、uid を元にこちら側のオブジェクトに差し替える。
-
-        const mainChr = uidToObject(ss.main.character.value?.uid);
-        mergeChrData(this.main, mainChr);
-        this.main.cid = mainChr?.uid ?? "";
-        this.main.skills = [];
-        if (mainChr) {
-          this.main.skills = [mainChr.talent, ...ss.mainSkills].filter(a => a).map(a => uidToObject(a.uid));
-        }
-        this.main.items = [...ss.mainEnchantPassive, ...ss.mainItems].filter(a => a).map(a => uidToObject(a.uid));
-        this.main.status = ss.statMainResult.slice(0, 6);
-
-        const supChr = uidToObject(ss.support.character.value?.uid);
-        mergeChrData(this.support, supChr);
-        this.support.cid = supChr?.uid ?? "";
-        this.support.skills = [];
-        if (supChr) {
-          this.support.skills = [...supChr.skills].filter(a => a).map(a => uidToObject(a.uid));
-        }
-        this.support.items = ss.supportItems.filter(a => a).map(a => uidToObject(a.uid));
-        this.support.status = ss.statSupportResult.slice(0, 6);
-
-        copyArray(this.editorData, ss.serialize());
-        //console.log(this);
-      }
-    },
-
-    EffectHolder: class {
-      effect = null;
-      stack = 1;
-      duration = Infinity;
-      passDuration = true;
-      enabled = true;
-
-      constructor(effect) {
-        this.effect = effect;
-      }
-      activate(bySelf) {
-        if (this.effect.duration) {
-          this.duration = this.effect.duration;
-          if (bySelf) {
-            this.passDuration = false;
-          }
-        }
-      }
-      evaluateBuff(battleCtx, baseStat) {
-      }
-      evaluateDebuff(battleCtx, baseStat) {
-      }
-
-      onTurnBegin() {
-        this.passDuration = true;
-      }
-      onBattleBegin() {
-      }
-      onBattleEnd() {
-      }
-      onAttackBegin() {
-      }
-      onAttackEnd() {
-      }
-      onActionEnd() {
-        if (this.passDuration && this.duration > 0) {
-          if (--this.duration == 0) {
-            this.enabled = false;
-          }
-        }
-      }
-      onTurnEnd() {
-        this.passDuration = true;
-      }
-
-      _getValue(battleCtx, baseStat) {
-        let r = 0;
-        const effect = this.effect;
-        if (effect.value) {
-          r = effect.value;
-          if (effect.maxStack) {
-            // 効果が重複するタイプ
-            // フルスペック時の効果を返す
-            r *= this.stack;
-          }
-        }
-        else if (effect.variable) {
-          // HP 割合などに応じて効果が上下するタイプ
-          // フルスペック時の効果を返す
-          if (Array.isArray(effect.variable.max)) {
-            r = effect.variable.max[effect.variable.max.length - 1];
-          }
-          else {
-            r = effect.variable.max;
-          }
-        }
-        else if (effect.add) {
-          // "アタックの n% をマジックに加算" など
-          // 正確な評価は困難だが 0 にはしたくないので、とりあえず 1/4 したのをスコアにしておく
-          r = effect.add.rate * 0.25;
-        }
-        return r;
-      }
-
-      serialize() {
-      }
-      deserialize(r) {
-      }
-    },
-
-    SkillHolder: class {
-      skill = null;
-      self = false;
-      effects = []; // EffectHolder
-
-      constructor(skill) {
-        this.skill = skill;
-        for (let effect of [...(this.skill.buff ?? []), ...(this.skill.debuff ?? [])]) {
-          this.effects.push(new window.$vue.EffectHolder(effect));
-        }
-      }
-      activate(bySelf) {
-        this.self = bySelf;
-        for (let e of this.effects) {
-          e.activate(bySelf);
-        }
-      }
-
-      onTurnBegin() {
-        for (let e of this.effects) {
-          e.onTurnBegin();
-        }
-      }
-      onBattleBegin() {
-        for (let e of this.effects) {
-          e.onBattleBegin();
-        }
-      }
-      onBattleEnd() {
-        for (let e of this.effects) {
-          e.onBattleEnd();
-        }
-      }
-      onAttackBegin() {
-        for (let e of this.effects) {
-          e.onAttackBegin();
-        }
-      }
-      onAttackEnd() {
-        for (let e of this.effects) {
-          e.onAttackEnd();
-        }
-      }
-      onActionEnd() {
-        for (let e of this.effects) {
-          e.onActionEnd();
-        }
-      }
-      onTurnEnd() {
-        for (let e of this.effects) {
-          e.onTurnEnd();
-        }
-      }
-
-      serialize() {
-      //  for (let e of this.effects) {
-      //    e.serialize();
-      //  }
-      }
-      deserialize(r) {
-      //  for (let e of this.effects) {
-      //    e.deserialize();
-      //  }
-      }
-    },
-
-    CustomEffect: class {
-      effectType = 0;
-      value = 0;
-
-      constructor(type) {
-        this.effectType = typeof (type) === 'string' ? window.$vue.getEffectIndex(type) : type;
-        this.value = 0;
-      }
-      serialize() {
-        return {
-          effectType: this.effectType,
-          value: this.value,
-        };
-      }
-      deserialize(r) {
-        this.effectType = r.effectType;
-        this.value = r.value;
-      }
-    },
-
-    BattleUnit: class {
-      unit = null;
-      affectedSkills = []; // SkillHolder
-      customEffects = [];
-      main = {
-        bufP: [],
-        bufF: [],
-        status: [0, 0, 0, 0, 0, 0],
-        hp: 0,
-      };
-      support = {
-        bufP: [],
-        bufF: [],
-        status: [0, 0, 0, 0, 0, 0],
-        hp: 0,
-      };
-
-      constructor(unit) {
-        this.unit = unit;
-        unit.btl = this;
-
-        let vue = window.$vue;
-        if (unit) {
-          // パッシブ/タレントを収集
-          const skills = [...(unit.main.skills ?? []), ...(unit.support?.skills ?? []),
-            ...(unit.main ? vue.getClassPassiveMain(unit.main.class) : []),
-            ...(unit.support ? vue.getClassPassiveSupport(unit.support.class) : []),
-            ...(unit.main.items ?? []),
-          ];
-          for (let skill of skills) {
-            if (skill.isTalent || skill.isPassive || skill.isItem) {
-              this.applySkill(skill, true);
-            }
-          }
-        }
-      }
-
-      get actions() {
-        let r = [];
-        const skills = [...(this.unit.main.skills ?? []), ...(this.unit.support?.skills ?? [])];
-        for (let skill of skills) {
-          if (skill.isActive) {
-            r.push(skill);
-          }
-        }
-        return r;
-      }
-
-      applySkill(skill, self = false) {
-        let s = this.affectedSkills.find(a => a.skill === skill);
-        if (!s) {
-          s = new window.$vue.SkillHolder(skill, self);
-          this.affectedSkills.push(s);
-        }
-        s.activate(self);
-      }
-      applyCustomEffect(effectType, value) {
-        this.customEffects.push(new window.$vue.CustomEffect(effectType, value));
-      }
-
-      evaluateEffects(battleCtx) {
-
-      }
-      onBattleBegin() {
-
-      }
-      onTurnBegin() {
-
-      }
-      beforeAttack() {
-
-      }
-      afterAttack() {
-
-      }
-      onActionEnd() {
-
-      }
-      onTurnEnd() {
-
-      }
-
-      clone() {
-        let r = new window.$vue.BattleUnit();
-        r.unit = this.unit;
-        return r;
-      }
-      serialize() {
-
-      }
-      deserialize(r) {
-      }
-    },
-    
-    BattleContext: class {
-      battleId = "";
-      playerUnits = []; // BattleUnit
-      enemyUnits = []; // BattleUnit
-      turn = 1;
-      isPlayerTurn = true;
-
-      attacker = null;
-      defender = null;
-      results = []; // CombatResult
-
-      constructor(playerUnits, enemyUnits) {
-        const vue = window.$vue;
-        this.playerUnits = playerUnits.map(a => new vue.BattleUnit(a));
-        this.enemyUnits = enemyUnits.map(a => new vue.BattleUnit(a));
-      }
-      finalize() {
-        for (let u of [...this.playerUnits, ...this.enemyUnits]) {
-          u.btl = null;
-        }
-      }
-      findUnit(u) {
-        let r = this.playerUnits.find(a => a.unit === u);
-        if (!r)
-          r = this.enemyUnits.find(a => a.unit === u);
-        return r;
-      }
-      passTurn() {
-        if (this.isPlayerTurn) {
-          this.isPlayerTurn = false;
-          this.onPlayerTurnEnd();
-          this.onEnemyTurnBegin();
-        }
-        else {
-          ++this.turn;
-          this.isPlayerTurn = true;
-          this.onEnemyTurnEnd();
-          this.onPlayerTurnBegin();
-        }
-      }
-
-      onBattleBegin() {
-        this.onPlayerTurnBegin();
-      }
-
-      onPlayerTurnBegin() {
-        for (let u of this.playerUnits) {
-          u.onTurnBegin();
-        }
-      }
-      onPlayerTurnEnd() {
-        for (let u of this.playerUnits) {
-          u.onTurnEnd();
-        }
-      }
-
-      onEnemyTurnBegin() {
-        for (let u of this.enemyUnits) {
-          u.onTurnBegin();
-        }
-      }
-      onEnemyTurnEnd() {
-        for (let u of this.enemyUnits) {
-          u.onTurnEnd();
-        }
-      }
-    },
-
-    CombatResult: class {
-      attacker = {
-        unit: null,
-        damageMain: 0,
-        damageSupport: 0,
-      };
-      defender = {
-        unit: null,
-        damageMain: 0,
-        damageSupport: 0,
-      };
-
-      constructor() {
-      }
-    },
 
     beginBattle() {
       if (!this.battle) {
-        this.battle = new this.BattleContext(this.playerUnits, this.enemyUnits);
+        this.battle = new ldb.BattleContext(this.playerUnits, this.enemyUnits);
       }
     },
     endBattle() {
