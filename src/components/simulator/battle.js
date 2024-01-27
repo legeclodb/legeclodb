@@ -125,9 +125,120 @@ export class EffectHolder
       }
     }
   }
-  evaluateBuff(battleCtx, baseStat) {
+  evaluateCondition(target, caster, battleCtx) {
+    const condExp = function(val1, cmp, val2) {
+      const table = {
+        "==": () => val1 == val2,
+        ">": () => val1 > val2,
+        "<": () => val1 < val2,
+        ">=": () => val1 >= val2,
+        "<=": () => val1 <= val2,
+        "!=": () => val1 != val2,
+      };
+      return table[cmp];
+    }
+
+    const cond = this.effect.condition;
+    let ok = true;
+    if (cond) {
+      if (cond.turn) {
+        const params = cond.turn;
+        if (!condExp(battleCtx.turn, params[0], params[1])) {
+          ok = false;
+        }
+      }
+      if (cond.hp || cond.targetHp) {
+        const params = cond.hp ?? cond.targetHp;
+        if (!condExp(target.hpRate, params[0], params[1])) {
+          ok = false;
+        }
+      }
+      if (cond.mainHp) {
+        const params = cond.mainHp;
+        if (!condExp(target.hpRateMain, params[0], params[1])) {
+          ok = false;
+        }
+      }
+      if (cond.supportHp) {
+        const params = cond.supportHp;
+        if (!condExp(target.hpRateSupport, params[0], params[1])) {
+          ok = false;
+        }
+      }
+      if (cond.nearAllyCount) {
+        const params = cond.nearAllyCount.condition;
+        if (!condExp(target.getNearAllyCount(cond.nearAllyCount.area), params[0], params[1])) {
+          ok = false;
+        }
+      }
+      if (cond.nearEnemyCount) {
+        const params = cond.nearEnemyCount.condition;
+        if (!condExp(target.getNearEnemyCount(cond.nearAllyCount.area), params[0], params[1])) {
+          ok = false;
+        }
+      }
+      if (cond.activeBuffCount || cond.targetActiveBuffCount) {
+        const params = cond.activeBuffCount ?? cond.targetActiveBuffCount;
+        if (!condExp(target.activeBuffCount, params[0], params[1])) {
+          ok = false;
+        }
+      }
+      if (cond.activeDebuffCount || cond.targetActiveDebuffCount) {
+        const params = cond.activeDebuffCount ?? cond.targetActiveDebuffCount;
+        if (!condExp(target.activeDebuffCount, params[0], params[1])) {
+          ok = false;
+        }
+      }
+      if (cond.token || cond.targetToken) {
+        const params = cond.token ?? cond.targetToken;
+        // todo
+      }
+
+      if (cond.onClass || cond.onEnemyClass) {
+        if (!cond.onClass.includes(target.main.class)) {
+          ok = false;
+        }
+      }
+      if (cond.onSymbol) {
+        if (!cond.onSymbol.includes(target.main.symbol)) {
+          ok = false;
+        }
+      }
+      if (cond.onOwnTurn) {
+        if ((battleCtx.isPlayerTurn && !target.isPlayer) || (battleCtx.isEnemyTurn && !target.isEnemy)) {
+          ok = false;
+        }
+      }
+      if (cond.onEnemyTurn) {
+        if ((battleCtx.isPlayerTurn && target.isPlayer) || (battleCtx.isEnemyTurn && target.isEnemy)) {
+          ok = false;
+        }
+      }
+      if (cond.onCloseCombat) {
+        if (battleCtx.range > 1) {
+          ok = false;
+        }
+      }
+      if (cond.onRangedCombat) {
+        if (battleCtx.range == 1) {
+          ok = false;
+        }
+      }
+      if (cond.onDamage) {
+        // todo
+      }
+      if (cond.onCriticalit) {
+        // todo
+      }
+      if (cond.onKill) {
+        // todo
+      }
+    }
+    return ok;
   }
-  evaluateDebuff(battleCtx, baseStat) {
+  evaluateBuff(target, caster, battleCtx) {
+  }
+  evaluateDebuff(target, caster, battleCtx) {
   }
 
   onTurnBegin() {
@@ -311,6 +422,19 @@ export class BattleUnit
         }
       }
     }
+  }
+
+  get hpRate() { return 0; }
+  get hpRateMain() { return 0; }
+  get hpRateSupport() { return 0; }
+  get activeBuffCount() { return 0; }
+  get activeDebuffCount() { return 0; }
+
+  getNearAllyCount(args) {
+    return 0;
+  }
+  getNearEnemyCount(args) {
+    return 0;
   }
 
   get actions() {

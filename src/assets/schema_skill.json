@@ -335,6 +335,7 @@
       "area": { "type": [ "integer", "string" ] },
       "range": { "type": [ "integer", "string" ] },
       "cost": { "type": "integer" },
+      "isNormalAttack": { "type": "boolean" },
       "damageRate": { "type": "number" },
       "damageRateSp": {
         "type": "object",
