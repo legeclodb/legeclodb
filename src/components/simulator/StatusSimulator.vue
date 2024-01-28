@@ -466,6 +466,44 @@ export default {
         },
       },
       supportItems: [null, null],
+      supportAmulet1Skill: null,
+      supportAmulet2Skill: null,
+
+      amulet1Skills: [
+        {
+          desc: "アタック→アタック 15%"
+        },
+        {
+          desc: "マジック→マジック 15%"
+        },
+        {
+          desc: "アタック→マジック 15%"
+        },
+        {
+          desc: "マジック→アタック 15%"
+        }
+      ],
+
+      amulet2Skills: [
+        {
+          desc: "シールド 1500"
+        },
+        {
+          desc: "最大HP→シールド 12%"
+        },
+        {
+          desc: "ダメージ耐性 12%"
+        },
+        {
+          desc: "最大HP→最大HP 15%"
+        },
+        {
+          desc: "アタック→最大HP 150%"
+        },
+        {
+          desc: "マジック→最大HP 150%"
+        },
+      ],
 
       autoEquipTypes: [
         "戦闘力優先",
@@ -552,15 +590,23 @@ export default {
       const chr = this.main.character.value;
       if (chr) {
         if (chr.damageType == "アタック") {
-          dmgTypes = ["アタック", "与ダメージ", "与ダメージ(物理)", "与ダメージ(スキル)", "クリティカルダメージ倍率"];
+          dmgTypes = ["アタック", "与ダメージ", "与ダメージ(物理)", "クリティカルダメージ倍率"];
           debufTypes = ["ダメージ耐性", "ダメージ耐性(物理)"];
         }
         else {
-          dmgTypes = ["マジック", "与ダメージ", "与ダメージ(魔法)", "与ダメージ(スキル)", "クリティカルダメージ倍率"];
+          dmgTypes = ["マジック", "与ダメージ", "与ダメージ(魔法)", "クリティカルダメージ倍率"];
           debufTypes = ["ダメージ耐性", "ダメージ耐性(魔法)"];
         }
 
-        // アサシンかタレントの2回攻撃持ちは通常攻撃与ダメージを考慮
+        // 攻撃スキルがセットされていたら 与ダメージ(スキル) を考慮
+        for (const skill of this.mainSkills) {
+          if (skill && skill.isActive && skill.damageRate) {
+            dmgTypes.push("与ダメージ(スキル)");
+            break;
+          }
+        }
+
+        // アサシンかタレントの2回攻撃持ちは 与ダメージ(通常攻撃) を考慮
         if (chr.class == "アサシン" || chr.talent?.doubleAttack) {
           dmgTypes.push("与ダメージ(通常攻撃)");
         }
@@ -720,6 +766,21 @@ export default {
         ap += sa.status[sapi];
       //console.log(`ap: ${ap}`);
 
+      const getHp = item => item.status[0];
+      const getDef = item => item.status[2];
+      const getRes = item => item.status[4];
+      const getAPMain = item => item.status[mapi];
+      const getAPSup = item => item.status[sapi];
+      const getDmg = item => item.dmgScore;
+      const getDebuf = item => item.debufScore;
+
+      const enAPMain = mapi == 1 ?
+        c => c.name.match(/^atk/) :
+        c => c.name.match(/^mag/);
+      const enAPSup = sapi == 1 ?
+        c => c.name.match(/^atk/) :
+        c => c.name.match(/^mag/);
+
       const cmp = this.compare;
       const getItemBattlePower = (item, api) => this.getEstimatedItemBattlePower(item.status, api, ap, tec);
       const cmpPow = function (a, b, api) {
@@ -729,10 +790,11 @@ export default {
           return cmp(bpa, bpb);
         }
         else {
-          // 戦闘力が同じならデメリットなしを優先
-          const ac1 = !a.negativeEffects ? 1 : 0;
-          const bc1 = !b.negativeEffects ? 1 : 0;
-          return cmp(ac1, bc1);
+          // 戦闘力が同じならデメリットなしを優先。
+          // どちらもデメリット無しならダメージが出る方を優先。
+          const na = !a.negativeEffects ? 1 : 0;
+          const nb = !b.negativeEffects ? 1 : 0;
+          return na != nb ? cmp(na, nb) : cmp(getDmg(a), getDmg(b));
         }
       }.bind(this);
 
@@ -900,20 +962,6 @@ export default {
       }.bind(this);
 
 
-      const getHp = item => item.status[0];
-      const getDef = item => item.status[2];
-      const getRes = item => item.status[4];
-      const getAPMain = item => item.status[mapi];
-      const getAPSup = item => item.status[sapi];
-      const getDmg = item => item.dmgScore;
-      const getDebuf = item => item.debufScore;
-
-      const enAPMain = mapi == 1 ?
-        c => c.name.match(/^atk/) :
-        c => c.name.match(/^mag/);
-      const enAPSup = sapi == 1 ?
-        c => c.name.match(/^atk/) :
-        c => c.name.match(/^mag/);
       let enchant = "バスター";
 
       const AUTO_EQUIP_TYPE = this.AUTO_EQUIP_TYPE;
