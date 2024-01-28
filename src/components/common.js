@@ -898,22 +898,17 @@ export default {
     effectParamsToTags(skill, params) {
       let miscTags = [];
 
+      if (skill.isSymbolSkill) {
+        miscTags.push(`シンボルスキル`);
+      }
       if (skill.summon) {
         miscTags.push(`召喚`);
       }
-
       if (skill.fixedDamage) {
-        let add = false;
-        for (const fd of skill.fixedDamage) {
-          if (fd.target != "自身") {
-            add = true;
-          }
-        }
-        if (add) {
+        if (skill.fixedDamage.find(a => a.target != "自身")) {
           miscTags.push(`固定ダメージ`);
         }
       }
-
       if (skill.doubleAttack) {
         let postfix = "";
         const cond = skill.doubleAttack.condition;
@@ -923,11 +918,9 @@ export default {
         }
         miscTags.push(`2回攻撃${postfix}`);
       }
-
       if (skill.multiMove) {
         miscTags.push(`再移動`);
       }
-
       if (skill.multiAction) {
         let postfix = "";
         const cond = skill.multiAction.condition;
@@ -935,7 +928,7 @@ export default {
           if (cond.onKill)
             postfix = "(敵撃破時)";
           else if (cond.probability)
-            postfix = "(敵撃破時)";
+            postfix = "(確率)";
         }
         if (skill.multiAction.target) {
           postfix = "(味方)";
@@ -946,7 +939,6 @@ export default {
           miscTags.push(`再攻撃${postfix}`);
         }
       }
-
 
       const buffToS = function (effectCategory, effect) {
         if (params.tagFilter && !params.tagFilter(skill, effectCategory, effect))
@@ -986,8 +978,9 @@ export default {
       }.bind(this);
 
       let buff = skill.buff;
-      if (this.matchTags(skill.tags, /シンボルスキル/))
+      if (skill.isSymbolSkill) {
         buff = buff?.slice(6, buff.length); // シンボルスキル共通バフは除外
+      }
 
       const map = (a, f) => a ? a.flatMap(f) : [];
       return [
@@ -1029,6 +1022,9 @@ export default {
           if (effect.ephemeral)
             slot += "(戦闘時)";
           effect.slot = slot;
+        }
+        else if (skill.isActive && effect.slot) {
+          effect.hasSpecialSlot = true;
         }
       };
       const setParent = function (effect) {
@@ -1075,9 +1071,6 @@ export default {
         skill.tags = [];
       if (params.includeSkillEffectTags)
         skill.tags = [...skill.tags, ...this.effectParamsToTags(skill, params)];
-
-      if (skill.isActive && this.matchTags(skill.tags, /^シンボルスキル$/))
-        skill.isSymbolSkill = true;
 
       if (!skill.icon)
         skill.icon = skill.uid;

@@ -381,6 +381,7 @@
       "range": { "type": [ "integer", "string" ] },
       "cost": { "type": "integer" },
       "isNormalAttack": { "type": "boolean" },
+      "isSymbolSkill": { "type": "boolean" },
       "damageRate": { "type": "number" },
       "damageRateSp": {
         "type": "object",
