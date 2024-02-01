@@ -599,15 +599,17 @@ export default {
         }
 
         // 攻撃スキルがセットされていたら 与ダメージ(スキル) を考慮
+        let isAttackSkillSet = false;
         for (const skill of this.mainSkills) {
           if (skill && skill.isActive && skill.damageRate) {
+            isAttackSkillSet = true;
             dmgTypes.push("与ダメージ(スキル)");
             break;
           }
         }
 
-        // アサシンかタレントの2回攻撃持ちは 与ダメージ(通常攻撃) を考慮
-        if (chr.class == "アサシン" || chr.talent?.doubleAttack) {
+        // アサシン、2回攻撃持ち、攻撃スキルなしの場合 与ダメージ(通常攻撃) を考慮
+        if (chr.class == "アサシン" || chr.talent?.doubleAttack || !isAttackSkillSet) {
           dmgTypes.push("与ダメージ(通常攻撃)");
         }
       }
@@ -616,16 +618,20 @@ export default {
         if (effect.condition) {
           if (effect.value > 0 && effect.condition.turn) {
             // ターン経過が必要なバフは除外
+            // (マイナス効果は考慮)
             return false;
           }
+
+          // 近接攻撃時/遠距離攻撃時バフを考慮
           if (effect.condition.onCloseCombat && chr.range > 1) {
             return false;
           }
           if (effect.condition.onRangedCombat && chr.range == 1) {
             return false;
           }
+
           if (effect.condition.onClass) {
-            // 特定クラスに対してのみ有効な効果は重要なのでちゃんと考慮
+            // 特定クラスに対してのみ有効な効果を考慮
             if (!effect.condition.onClass.includes(chr?.class)) {
               return false;
             }

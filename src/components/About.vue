@@ -44,20 +44,30 @@
           と覚えておいてよいでしょう。<br />
           <br />
           しかし、アクティブ同士の関係は厳密にはもっと複雑です。<br />
-          バフ・デバフには効果ターン中常時発動しているものと、戦闘時のみ発動するものがありますが、<br />
-          この 2 種は別枠であるらしく、アクティブ同士でも加算になることが確認されています。<br />
-          <span class="note">例: ダメージ耐性デバフの <b-link :ref="po">綺麗な花には毒がある</b-link> と <b-link :ref="po">精一杯の誘惑</b-link> は加算。<b-link :ref="po">精一杯の誘惑</b-link> と <b-link :ref="po">聖なる夜の啓示</b-link> は戦闘前デバフ同士で競合。<br /></span>
-          また、一部のスキルは固有枠であるらしく、無条件で他のアクティブと加算になるとみられます。<br />
-          <span class="note">シンボルスキルに付随する加護、<b-link :ref="po">ロサ・センティフォリア</b-link>、<b-link :ref="po">オーヴァーリザーブ</b-link>のダメージ耐性などが該当。</span><br />
+          一部特殊なアクティブスキルがあり、これらのバフは無条件で他のアクティブと加算になります。<br />
+          これらは「一時的にパッシブスキルを付与する」という扱いになっているようです。<br />
+          シンボルスキルに付随する加護 (アタック～レジスト以外のバフ) はこちらに分類されます。<br />
+          それ以外の該当スキルを全て以下に列挙します。いずれも条件付きバフのみが特殊枠で、他は通常のアクティブ枠です。<br />
+          単体or自己バフスキル：
+          <span v-for="(skill, si) of specialBuffSkillsSingle" :key="`sbss${si}`" style="margin: 4px">
+            <b-link :ref="po">{{skill.name}}</b-link>
+          </span><br />
+          範囲or全体バフスキル：
+          <span v-for="(skill, si) of specialBuffSkillsMulti" :key="`sbsm${si}`" style="margin: 4px">
+            <b-link :ref="po">{{skill.name}}</b-link>
+          </span><br />
+
           <br />
           加えて、与ダメージとダメージ耐性にはまた別のルールがあります。<br />
           これらには物理与ダメージ、魔法与ダメージ、スキル与ダメージといったバリエーションがありますが、<br />
           異なるバリエーションであればアクティブ同士でも効果が加算になることが確認されています。<br />
           <ul>
-            <li>例1: <b-link :ref="po">お届け物です！</b-link>＋<b-link :ref="po">総員、突撃用意</b-link>＋<b-link :ref="po">テスト勉強のお手伝い</b-link>＋<b-link :ref="po">ロサ・センティフォリア</b-link>＝戦闘時物理通常攻撃与ダメージ +100%</li>
+            <li>例1: <b-link :ref="po">お届け物です！</b-link>＋<b-link :ref="po">総員、突撃用意</b-link>＋<b-link :ref="po">テスト勉強のお手伝い</b-link>＋<b-link :ref="po">道教式チアリーディング</b-link>＝物理通常攻撃与ダメージ +95%</li>
             <li>例2: <b-link :ref="po">お届け物です！</b-link>＋<b-link :ref="po">総員、突撃用意</b-link>＋<b-link :ref="po">リトルマロース</b-link>＋<b-link :ref="po">発明官女</b-link>＝物理範囲スキル与ダメージ +100% & 魔法範囲スキル与ダメージ +110%</li>
           </ul>
           <br />
+          与ダメージのバリエーションは 無印、物理、魔法、スキル、範囲スキル、通常攻撃 の 6 種<br />
+          ダメージ耐性のバリエーションは 無印、物理、魔法、範囲スキル (敵専用) の 4 種になります。<br />
           <s>なお、通常攻撃与ダメージバフは反撃には乗らないことが確認されています。(2023/04 現在。バグか仕様かは不明)</s><br />
           2023//05 のアップデートにて通常攻撃与ダメージバフは反撃にも乗るように変更されました。<br />
           <br />
@@ -372,11 +382,11 @@
       <b-popover :target="e.element" :key="i" triggers="hover focus" custom-class="item_po" :title="e.name" placement="top">
         <div class="flex">
           <div><b-img-lazy :src="getImageURL(e.item.icon)" width="50" height="50" /></div>
-          <div v-html="descToHtml(e.item)"></div>
+          <div><span v-html="descToHtml(e.item)"></span><span v-if="e.item.note" class="note" v-html="noteToHtml(e.item)"></span></div>
         </div>
         <div v-if="e.item.owners" class="owners">
           所持者:<br />
-          <b-img-lazy v-for="(owner, oi) in e.item.owners" :key="oi" :src="getImageURL(owner.icon)" :title="owner.name" width="50" height="50" />
+          <b-img-lazy v-for="(owner, oi) in e.item.owners" :key="oi" :src="getImageURL(owner.icon)" :title="descToTitle(owner)" width="50" height="50" />
         </div>
       </b-popover>
     </template>
@@ -479,6 +489,22 @@ export default {
     this.searchTable = new Map();
     for (let s of [...this.mainActive, ...this.mainPassive, ...this.mainTalents, ...this.supActive, ...this.supPassive, ...this.items])
       this.searchTable.set(s.name, s);
+
+    this.specialBuffSkillsSingle = [];
+    this.specialBuffSkillsMulti = [];
+    for (const skill of this.mainActive) {
+      if (!skill.isSymbolSkill) {
+        for (const effect of skill.buff ?? []) {
+          if (effect.hasSpecialSlot) {
+            if (effect.target == "自身" || effect.target == "単体")
+              this.specialBuffSkillsSingle.push(skill);
+            else
+              this.specialBuffSkillsMulti.push(skill);
+            break;
+          }
+        }
+      }
+    }
   },
 
   mounted() {
