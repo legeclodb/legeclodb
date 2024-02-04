@@ -40,20 +40,20 @@
 
         <div style="padding: 10px; background-color: white; display: flex;">
           <div class="grid-container">
-            <div v-for="(cell, i) in cells" :key="i" :set="unit=cell.enemy?.unit" class="grid-cell" :class="getCellClass(cell)" :id="cell.id"
+            <div v-for="(cell, i) in cells" :key="i" :set="unit=findUnitByCoord(cell.coord)" class="grid-cell" :class="getCellClass(cell)" :id="cell.id"
                  @click="onCellClick(cell)" v-on:mouseover="onCellEnter(cell)" v-on:mouseleave="onCellLeave(cell)">
-              <template v-if="unit?.support">
+              <template v-if="unit?.isEnemy && unit?.hasSupport">
                 <b-img-lazy :src="getImageURL(unit.main.class)" class="center"
                             width="30" height="30" style="position: relative; left: 8px; top: -8px; z-index: 1;" />
                 <b-img-lazy :src="getImageURL(unit.support.class)" class="center"
                             width="30" height="30" style="position: relative; left: -8px; top: 8px; z-index: 0;" />
               </template>
-              <template v-else-if="unit?.main">
+              <template v-else-if="unit?.isEnemy && unit?.main">
                 <b-img-lazy :src="getImageURL(unit.main.class)" class="center" width="40" height="40" />
               </template>
-              <template v-else-if="cell.ally">
-                <div draggable @dragstart="onUnitDrag($event, cell.ally.unit)" @drop="onUnitDrop($event, cell.ally.unit)" @dragover="onDragOver">
-                  <b-img-lazy :src="getImageURL(cell.ally.unit.main.icon)" class="center" width="50" height="50" />
+              <template v-else-if="unit?.isAlly">
+                <div draggable @dragstart="onCellDrag(cell)" @drop="onCellDrop(cell)" @dragover="onDragOver">
+                  <b-img-lazy :src="getImageURL(unit.main.icon)" class="center" width="50" height="50" />
                 </div>
               </template>
             </div>
@@ -102,7 +102,7 @@
                   </div>
                 </div>
 
-                <div v-if="unit.support && displayType >= 2" class="flex">
+                <div v-if="unit.hasSupport && displayType >= 2" class="flex">
                   <div class="portrait">
                     <b-img-lazy :src="getImageURL(unit.support.icon)" :title="unit.support.name" width="80" height="80" rounded />
                   </div>
@@ -128,7 +128,7 @@
       </div>
     </div>
 
-    <div v-if="battle" class="content" style="margin-top: 40px">
+    <div v-if="false" class="content" style="margin-top: 40px">
       <div class="unit-panel">
         <div class="flex">
           <b-button size="sm" id="btl-unit-player" style="width: 13em;">
@@ -157,8 +157,8 @@
           <b-button size="sm" @click="clearUnits()" :disabled="battle!=null" style="width: 10em; margin-left: 1em;">
             編成をクリア
           </b-button>
-          <b-button size="sm" style="width: 10em; margin-left: 4em;" @click="battle ? endBattle() : beginBattle()">
-            {{battle ? 'ダメージ計算終了' : 'ダメージ計算開始'}}
+          <b-button size="sm" style="width: 14em; margin-left: 4em;" @click="battle ? endSimulation() : beginSimulation()">
+            {{battle ? 'シミュレーション終了' : 'シミュレーション開始'}}
           </b-button>
         </div>
       </div>
@@ -167,9 +167,9 @@
     <div class="content" :style="style">
       <div class="main-panel" style="margin-top: 10px; margin-bottom: 20px;">
         <b-tabs v-model="unitTabIndex">
-          <b-tab v-for="(unit, ui) in units" :key="ui" style="background-color: white; min-width: 1520px; min-height: 500px;">
+          <b-tab v-for="(unit, ui) in playerUnits" :key="ui" style="background-color: white; min-width: 1520px; min-height: 500px;">
             <template #title>
-              <h2 style="font-size: 1em;" draggable @dragstart="onUnitDrag($event, unit)" @drop="onUnitDrop($event, unit)" @dragover="onDragOver">
+              <h2 style="font-size: 1em;" draggable @dragstart="onUnitDrag(unit)" @drop="onUnitDrop(unit)" @dragover="onDragOver">
                 ユニット{{ui+1}}
                 <b-img-lazy :src="getImageURL(unit.main?.icon)" width="30" />
                 <b-img-lazy :src="getImageURL(unit.support?.icon)" width="30" />
@@ -362,6 +362,9 @@ export default {
         { index: 4, id: "4E", desc: "4T敵フェイズ" },
       ],
 
+      divX: 15,
+      divY: 15,
+
       battleList: [],
       battleId: "",
       battleData: null,
@@ -380,12 +383,13 @@ export default {
 
       slotNames: ["", "", "", "", "", "", "", "", "", ""],
       slotName: "",
-      units: [
-        new ldb.BaseUnit(0),
-        new ldb.BaseUnit(1),
-        new ldb.BaseUnit(2),
-        new ldb.BaseUnit(3),
-        new ldb.BaseUnit(4),
+      enemyUnits: [],
+      playerUnits: [
+        new ldb.BaseUnit(),
+        new ldb.BaseUnit(),
+        new ldb.BaseUnit(),
+        new ldb.BaseUnit(),
+        new ldb.BaseUnit(),
       ],
       unitTabIndex: 0,
 
@@ -422,8 +426,6 @@ export default {
     this.battleList = structuredClone(jsonBattle);
     for (let battle of this.battleList) {
       for (let enemy of battle.enemies) {
-        enemy.isEnemy = true;
-        enemy.cellID = `c${this.zeroPad(enemy.coord[0])}${this.zeroPad(enemy.coord[1])}`;
         {
           const chr = this.enemyMainChrs.find(c => c.uid == enemy.main.cid);
           this.mergeChrData(enemy.main, chr);
@@ -439,20 +441,13 @@ export default {
           enemy.support.status = this.getNPCChrStatus(chr, enemy.support.level, enemy.support.statusRate);
         }
 
-        let unit = {
-          main: enemy.main,
-          support: null,
-          btl: null,
-        };
-        delete enemy.main;
-        if (enemy.support) {
-          unit.support = enemy.support;
-          delete enemy.support;
-        }
+        let unit = new ldb.BaseUnit(false);
+        unit.fid = enemy.fid;
+        unit.phase = enemy.phase;
+        unit.coord = enemy.coord;
+        this.moveProperty(unit.base, enemy, "main");
+        this.moveProperty(unit.base, enemy, "support");
         enemy.unit = unit;
-      }
-      for (let ally of battle.allies) {
-        ally.isAlly = true;
       }
     }
 
@@ -465,17 +460,15 @@ export default {
   },
 
   mounted() {
-    const div_x = 15;
-    const div_y = 15;
-    let cells = new Array(div_x * div_y);
-    for (let y = 0; y < div_y; ++y) {
-      for (let x = 0; x < div_x; ++x) {
-        let i = y * div_x + x;
+    const divX = this.divX;
+    const divY = this.divY;
+    let cells = new Array(divX * divY);
+    for (let y = 0; y < divY; ++y) {
+      for (let x = 0; x < divX; ++x) {
+        let i = y * divX + x;
         cells[i] = {
           id: `c${this.zeroPad(x)}${this.zeroPad(y)}`,
           coord: [x, y],
-          enemy: null,
-          ally: null,
         };
       }
     }
@@ -494,17 +487,14 @@ export default {
     },
 
   computed: {
-    playerUnits() {
-      let r = [];
-      for (let u of this.units) {
-        if (u.main.cid)
-          r.push(u);
-      }
-      return r;
+    validPlayerUnits() {
+      return this.playerUnits.flatMap(a => a.main.cid ? [a] : []);
     },
-    enemyUnits() {
-      const battle = this.battleList.find(a => a.uid == this.battleId);
-      return battle ? battle.enemies.map(a => a.unit) : [];
+    allUnits() {
+      return [...this.playerUnits, ...this.enemyUnits];
+    },
+    allActiveUnits() {
+      return this.allUnits.filter(a => a.phase == this.phase || a.fid == "E01");
     },
   },
 
@@ -514,11 +504,13 @@ export default {
     },
 
     selectBattle(bid, clear = false) {
+      this.enemyUnits = [];
       const battle = this.battleList.find(a => a.uid == bid);
       if (!battle)
         return;
       this.battleId = bid;
       this.battleData = battle;
+      this.enemyUnits = battle.enemies.map(a => a.unit);
 
       if (clear) {
         this.selectPhase("0", clear);
@@ -526,7 +518,9 @@ export default {
 
       for (let i = 0; i < battle.allies.length; ++i) {
         let ally = battle.allies[i];
-        ally.unit = this.units[i];
+        ally.unit = this.playerUnits[i];
+        ally.unit.fid = ally.fid;
+        ally.unit.phase = ally.phase;
         ally.unit.coord = ally.coord;
       }
     },
@@ -562,21 +556,31 @@ export default {
       }
     },
 
+    findUnitByCoord(coord) {
+      for (const u of this.allActiveUnits) {
+        if (u.coord[0] == coord[0] && u.coord[1] == coord[1])
+          return u;
+      }
+      return null;
+    },
+
     selectUnit(fid) {
-      const e = this.enemies.find(u => u.fid == fid) ?? this.allies.find(u => u.fid == fid);
+      const e = this.allActiveUnits.find(u => u.fid == fid);
       if (e) {
         this.selected = fid;
-        this.scrollTo(`unit_${fid}`);
+        if (e.isEnemy) {
+          this.scrollTo(`unit_${fid}`);
+        }
 
         let pf = new ldb.PathFinder(15, 15);
         if (e.isEnemy) {
-          pf.setObstacles(this.allies);
+          pf.setObstacles(this.allActiveUnits.filter(a => a.isAlly));
         }
         if (e.isAlly) {
-          pf.setObstacles(this.enemies);
+          pf.setObstacles(this.allActiveUnits.filter(a => a.isEnemy));
         }
         pf.setStart(e.coord[0], e.coord[1]);
-        pf.build(e.unit.main.move, e.unit.main.range);
+        pf.build(e.main.move, e.main.range);
         this.path = pf;
       }
       else {
@@ -611,21 +615,22 @@ export default {
     },
 
     getCellClass(cell) {
+      const unit = this.findUnitByCoord(cell.coord);
+
       let r = [];
-      if (cell.enemy) {
-        r.push("enemy-cell");
-        if (cell.enemy.fid == this.selected) {
+      if (unit) {
+        if (unit.isEnemy)
+          r.push("enemy-cell");
+        if (unit.isAlly)
+          r.push("ally-cell");
+        if (unit.fid == this.selected)
           r.push("selected");
-        }
-      }
-      else if (cell.ally) {
-        r.push("ally-cell");
       }
       else if (this.path) {
-        if (this.path.isReachable(cell.coord[0], cell.coord[1])) {
+        if (this.path.isReachable(cell.coord)) {
           r.push("in-move-range");
         }
-        else if (this.path.isShootable(cell.coord[0], cell.coord[1])) {
+        else if (this.path.isShootable(cell.coord)) {
           r.push("in-attack-range");
         }
       }
@@ -700,38 +705,37 @@ export default {
     },
 
 
-    beginBattle() {
+    beginSimulation() {
+      this.selectUnit(null);
       if (!this.battle) {
         this.battle = new ldb.BattleContext(this.playerUnits, this.enemyUnits);
       }
     },
-    endBattle() {
+    endSimulation() {
+      this.selectUnit(null);
       if (this.battle) {
         this.battle.finalize();
         this.battle = null;
       }
     },
-    onSelectUnit(unit, idx) {
-      if (this.battle) {
-        let u = this.battle.findUnit(unit);
-        if (u) {
-          if (idx == 0)
-            this.battle.attacker = u;
-          else
-            this.battle.defender = u;
-        }
-      }
-    },
-    onUnitDrag(e, unit) {
+
+    onUnitDrag(unit) {
       this.draggingUnit = unit;
     },
-    onUnitDrop(e, unit) {
+    onUnitDrop(unit) {
       if (this.draggingUnit && !this.battle) {
         if (this.draggingUnit && unit) {
           this.draggingUnit.swap(unit);
         }
       }
       this.draggingUnit = null;
+      this.selectUnit(null);
+    },
+    onCellDrag(cell) {
+      this.onUnitDrag(this.findUnitByCoord(cell.coord));
+    },
+    onCellDrop(cell) {
+      this.onUnitDrop(this.findUnitByCoord(cell.coord));
     },
     onDragOver(e) {
       e.preventDefault();
@@ -756,7 +760,7 @@ export default {
     },
 
     clearUnits() {
-      for (let unit of this.units) {
+      for (let unit of this.playerUnits) {
         unit.initialize();
       }
     },
@@ -769,7 +773,7 @@ export default {
       this.setArrayElement(this.slotNames, slot, this.slotName);
       let data = {
         name: this.slotName,
-        units: this.units.map(a => a.serialize()),
+        units: this.playerUnits.map(a => a.serialize()),
       };
       localStorage.setItem(`battle.slot${slot}`, JSON.stringify(data));
     },
@@ -777,15 +781,16 @@ export default {
       let data = JSON.parse(localStorage.getItem(`battle.slot${slot}`));
       if (data) {
         this.slotName = data.name ?? "";
-        for (let i = 0; i < this.units.length; ++i) {
-          this.units[i].deserialize(data.units[i]);
+        for (let i = 0; i < this.playerUnits.length; ++i) {
+          this.playerUnits[i].deserialize(data.units[i]);
         }
       }
       else {
-        for (let unit of this.units) {
+        for (let unit of this.playerUnits) {
           unit.initialize();
         }
       }
+      this.selectUnit(null);
     },
 
     dbgTest() {
@@ -817,18 +822,25 @@ export default {
     display: flex;
     justify-content: center;
   }
+
   .enemy-cell {
     background: rgb(255, 160, 160);
     cursor: pointer;
   }
+  .enemy-cell.selected {
+    border-color: rgb(255, 40, 40);
+    background: rgb(255, 80, 80);
+  }
+
   .ally-cell {
     background: rgb(140, 160, 255);
     cursor: grab;
   }
-  .selected {
-    border-color: rgb(255, 40, 40);
-    background: rgb(255, 80, 80);
+  .ally-cell.selected {
+    border-color: rgb(40, 40, 255);
+    background: rgb(80, 80, 255);
   }
+
   .in-move-range {
     background: rgb(255, 230, 215);
   }

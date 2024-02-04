@@ -1258,6 +1258,17 @@ export default {
     setArrayElement(ary, idx, item) {
       this.$set(ary, idx, item);
     },
+    moveProperty(dst, src, name) {
+      if (name in src) {
+        dst[name] = src[name];
+        delete src[name];
+      }
+    },
+    swapProperty(dst, src, field) {
+      const tmp = dst[field];
+      dst[field] = src[field];
+      src[field] = tmp;
+    },
     objectEqual(obj1, obj2) {
       if (obj1 === obj2) {
         return true;

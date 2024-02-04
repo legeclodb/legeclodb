@@ -1,47 +1,74 @@
 export class BaseUnit
 {
-  index = 0;
-  coord = [0, 0];
-  main = null;
-  support = null;
+  isEnemy = false;
+  isAlly = false;
+
+  base = BaseUnit.emptyUnit;
+  battle = null;
   editorData = [];
   showEditor = false;
-  btl = null
 
-  constructor(i) {
-    this.index = i;
+  static get emptyUnit() {
+    return {
+      coord: [0, 0],
+      main: {
+        cid: "",
+        skills: [],
+        items: [],
+        status: [0, 0, 0, 0, 0, 0], // 基礎ステ
+      },
+      support: {
+        cid: "",
+        skills: [],
+        items: [],
+        status: [0, 0, 0, 0, 0, 0], // 基礎ステ
+      },
+    };
+  }
+
+  get coord() {
+    //return this.base.coord;
+    return this.battle ? this.battle.coord : this.base.coord;
+  }
+  set coord(v) {
+    if (this.battle)
+      this.battle.coord = v;
+    else
+      this.base.coord = v;
+  }
+  get main() {
+    return this.battle ? this.battle.main : this.base.main;
+  }
+  get support() {
+    return this.battle ? this.battle.support : this.base.support;
+  }
+  get hasSupport() {
+    return this.base.support.cid;
+  }
+
+  constructor(isAlly = true) {
+    if (isAlly)
+      this.isAlly = true;
+    else
+      this.isEnemy = true;
     this.initialize();
   }
   initialize() {
-    this.main = {
-      cid: "",
-      skills: [],
-      items: [],
-      status: [0, 0, 0, 0, 0, 0], // 基礎ステ
-    };
-    this.support = {
-      cid: "",
-      skills: [],
-      items: [],
-      status: [0, 0, 0, 0, 0, 0], // 基礎ステ
-    };
+    const emp = BaseUnit.emptyUnit;
+    Object.assign(this.base.main, emp.main);
+    Object.assign(this.base.support, emp.support);
     this.showEditor = false;
     this.editorData = [];
-    this.btl = null;
 
     const mergeChrData = window.$vue.mergeChrData;
-    mergeChrData(this.main, null);
-    mergeChrData(this.support, null);
+    mergeChrData(this.base.main, null);
+    mergeChrData(this.base.support, null);
   }
   swap(v) {
-    const doSwap = function (obj1, obj2, field) {
-      const tmp = obj1[field];
-      obj1[field] = obj2[field];
-      obj2[field] = tmp;
-    };
-    doSwap(this, v, "main");
-    doSwap(this, v, "support");
-    doSwap(this, v, "editorData");
+    const swapProperty = window.$vue.swapProperty;
+    swapProperty(this.base, v.base, "main");
+    swapProperty(this.base, v.base, "support");
+    swapProperty(this, v, "editorData");
   }
 
   serialize() {
@@ -54,8 +81,8 @@ export class BaseUnit
       };
     };
     let r = {
-      main: serializeChr(this.main),
-      support: serializeChr(this.support),
+      main: serializeChr(this.base.main),
+      support: serializeChr(this.base.support),
       editorData: [...this.editorData],
     };
     return r;
@@ -71,8 +98,8 @@ export class BaseUnit
       dst.items = src.items.map(uidToObject);
       dst.status = [...src.status];
     };
-    deserializeChr(this.main, r.main);
-    deserializeChr(this.support, r.support);
+    deserializeChr(this.base.main, r.main);
+    deserializeChr(this.base.support, r.support);
     this.editorData = [...r.editorData];
   }
   edit(ss) {
@@ -81,25 +108,27 @@ export class BaseUnit
     const mergeChrData = window.$vue.mergeChrData;
     // エディタ側のオブジェクトとこちら側のオブジェクトは別個体なため、uid を元にこちら側のオブジェクトに差し替える。
 
+    let main = this.base.main;
     const mainChr = uidToObject(ss.main.character.value?.uid);
-    mergeChrData(this.main, mainChr);
-    this.main.cid = mainChr?.uid ?? "";
-    this.main.skills = [];
+    mergeChrData(main, mainChr);
+    main.cid = mainChr?.uid ?? "";
+    main.skills = [];
     if (mainChr) {
-      this.main.skills = [mainChr.talent, ...ss.mainSkills].filter(a => a).map(a => uidToObject(a.uid));
+      main.skills = [mainChr.talent, ...ss.mainSkills].filter(a => a).map(a => uidToObject(a.uid));
     }
-    this.main.items = [...ss.mainEnchantPassive, ...ss.mainItems].filter(a => a).map(a => uidToObject(a.uid));
-    this.main.status = ss.statMainResult.slice(0, 6);
+    main.items = [...ss.mainEnchantPassive, ...ss.mainItems].filter(a => a).map(a => uidToObject(a.uid));
+    main.status = ss.statMainResult.slice(0, 6);
 
+    let support = this.base.support;
     const supChr = uidToObject(ss.support.character.value?.uid);
-    mergeChrData(this.support, supChr);
-    this.support.cid = supChr?.uid ?? "";
-    this.support.skills = [];
+    mergeChrData(support, supChr);
+    support.cid = supChr?.uid ?? "";
+    support.skills = [];
     if (supChr) {
-      this.support.skills = [...supChr.skills].filter(a => a).map(a => uidToObject(a.uid));
+      support.skills = [...supChr.skills].filter(a => a).map(a => uidToObject(a.uid));
     }
-    this.support.items = ss.supportItems.filter(a => a).map(a => uidToObject(a.uid));
-    this.support.status = ss.statSupportResult.slice(0, 6);
+    support.items = ss.supportItems.filter(a => a).map(a => uidToObject(a.uid));
+    support.status = ss.statSupportResult.slice(0, 6);
 
     copyArray(this.editorData, ss.serialize());
     //console.log(this);
@@ -388,7 +417,8 @@ export class CustomEffect
 
 export class BattleUnit
 {
-  unit = null;
+  base = null;
+  coord = [0, 0];
   affectedSkills = []; // SkillHolder
   customEffects = [];
   main = {
@@ -405,8 +435,30 @@ export class BattleUnit
   };
 
   constructor(unit) {
-    this.unit = unit;
-    unit.btl = this;
+    unit.battle = this;
+    this.base = unit;
+    this.fid = unit.fid;
+    this.coord = [...unit.base.coord];
+
+    const addBattleProps = function (u, base) {
+      u.bufP = [];
+      u.bufF = [];
+      u.status = [...base.status];
+      u.hp = u.status[0];
+
+      Object.defineProperty(u, 'statusBase', {
+        value: base.status,
+        writable: false,
+      });
+    };
+    {
+      this.main = Object.create(unit.base.main);
+      addBattleProps(this.main, unit.base.main);
+    }
+    if (unit.base.support) {
+      this.support = Object.create(unit.base.support);
+      addBattleProps(this.support, unit.base.support);
+    }
 
     let vue = window.$vue;
     if (unit) {
@@ -423,6 +475,9 @@ export class BattleUnit
       }
     }
   }
+  finalize() {
+    this.base.battle = null;
+  }
 
   get hpRate() { return 0; }
   get hpRateMain() { return 0; }
@@ -438,14 +493,7 @@ export class BattleUnit
   }
 
   get actions() {
-    let r = [];
-    const skills = [...(this.unit.main.skills ?? []), ...(this.unit.support?.skills ?? [])];
-    for (let skill of skills) {
-      if (skill.isActive) {
-        r.push(skill);
-      }
-    }
-    return r;
+    return [...(this.base.main?.skills ?? []), ...(this.base.support?.skills ?? [])].filter(a => a.isActive);
   }
 
   applySkill(skill, self = false) {
@@ -512,7 +560,7 @@ export class BattleContext
   }
   finalize() {
     for (let u of [...this.playerUnits, ...this.enemyUnits]) {
-      u.btl = null;
+      u.finalize();
     }
   }
   findUnit(u) {
@@ -604,11 +652,11 @@ export class PathFinder
       }
     }
   }
-  isReachable(x, y) {
-    return (this.getCell(x, y)?.moveDistance ?? -1) >= 0;
+  isReachable(c) {
+    return (this.getCell(c[0], c[1])?.moveDistance ?? -1) >= 0;
   }
-  isShootable(x, y) {
-    return (this.getCell(x, y)?.shootDistance ?? -1) >= 0;
+  isShootable(c) {
+    return (this.getCell(c[0], c[1])?.shootDistance ?? -1) >= 0;
   }
   getCell(x, y) {
     if ((x >= 0 && x < this.xdiv) && (y >= 0 && y < this.ydiv)) {
