@@ -1,5 +1,5 @@
 <template>
-  <div class="root" @mousemove="onMouseMove">
+  <div class="root" @mousemove="onMouseMove" @click="onCellRClick(null)">
     <div class="header" :class="{ 'hidden': !showHeader }">
       <Navigation />
     </div>
@@ -41,7 +41,10 @@
         <div style="padding: 10px; background-color: white; display: flex;">
           <div class="grid-container">
             <div v-for="(cell, i) in cells" :key="i" :set="unit=findUnitByCoord(cell.coord)" class="grid-cell" :class="getCellClass(cell)" :id="cell.id"
-                 @click="onCellClick(cell)" v-on:mouseover="onCellEnter(cell)" v-on:mouseleave="onCellLeave(cell)">
+                 @click.stop="onCellClick(cell)"
+                 @click.middle.prevent.stop="onCellRClick(cell)" @mousedown.middle.prevent.stop="dummyHandler()"
+                 @click.right.prevent.stop="onCellRClick(cell)"
+                 @mouseover="onCellEnter(cell)" @mouseleave="onCellLeave(cell)">
               <template v-if="unit?.isEnemy && unit?.hasSupport">
                 <b-img-lazy :src="getImageURL(unit.main.class)" class="center"
                             width="30" height="30" style="position: relative; left: 8px; top: -8px; z-index: 1;" />
@@ -52,7 +55,7 @@
                 <b-img-lazy :src="getImageURL(unit.main.class)" class="center" width="40" height="40" />
               </template>
               <template v-else-if="unit?.isAlly">
-                <div draggable @dragstart="onCellDrag(cell)" @drop="onCellDrop(cell)" @dragover="onDragOver">
+                <div draggable @dragstart="onCellDrag(cell)" @drop="onCellDrop(cell)" @dragover.prevent="dummyHandler()">
                   <b-img-lazy :src="getImageURL(unit.main.icon)" class="center" width="50" height="50" />
                 </div>
               </template>
@@ -61,7 +64,7 @@
 
           <div class="enemy-list">
             <template v-for="enemy in enemies">
-              <div class="character" :class="{ 'highlighted': isUnitHighlighted(enemy) }" :id="'enemy_'+enemy.fid" :key="enemy.fid" :set="unit=enemy.unit">
+              <div class="character" :class="{ 'highlighted': isUnitHighlighted(enemy.unit) }" :id="'enemy_'+enemy.fid" :key="enemy.fid" :set="unit=enemy.unit">
                 <div class="flex">
                   <div class="portrait">
                     <b-img-lazy :src="getImageURL(unit.main.icon)" :title="unit.main.name" width="80" height="80" rounded />
@@ -128,8 +131,16 @@
       </div>
     </div>
 
-    <div v-if="false" class="content" style="margin-top: 40px">
+    <div v-if="battle" class="content" style="margin-top: 40px">
       <div class="unit-panel">
+        シミュレーションモードではゲーム中のようにユニットを操作できます。<br />
+        しかし、あくまで検証用であるため、異なる点も多数あります。大きな違いを以下に挙げます。<br />
+        <ul>
+          <li>移動可能範囲は表示されますが、それを無視して無限に移動できます</li>
+          <li>無限に再行動できます</li>
+          <li>敵フェーズでは敵ユニットも手動で操作します (敵の挙動の正確な再現が困難であるため)</li>
+        </ul>
+        
         <div class="flex">
           <b-button size="sm" id="btl-unit-player" style="width: 13em;">
             ユニットセレクタ(味方)
@@ -169,7 +180,7 @@
         <b-tabs v-model="unitTabIndex">
           <b-tab v-for="(unit, ui) in playerUnits" :key="ui" style="background-color: white; min-width: 1520px; min-height: 500px;">
             <template #title>
-              <h2 style="font-size: 1em;" draggable @dragstart="onUnitDrag(unit)" @drop="onUnitDrop(unit)" @dragover="onDragOver">
+              <h2 style="font-size: 1em;" draggable @dragstart="onUnitDrag(unit)" @drop="onUnitDrop(unit)" @dragover.prevent="dummyHandler()">
                 ユニット{{ui+1}}
                 <b-img-lazy :src="getImageURL(unit.main?.icon)" width="30" />
                 <b-img-lazy :src="getImageURL(unit.support?.icon)" width="30" />
@@ -375,8 +386,8 @@ export default {
       allies: [],
       path: null,
 
-      selected: null,
-      hovered: null,
+      selectedUnit: null,
+      hoveredUnit: null,
 
       phaseTabIndex: 0,
       prevURL: "",
@@ -564,27 +575,36 @@ export default {
       return null;
     },
 
-    selectUnit(fid) {
-      const e = this.allActiveUnits.find(u => u.fid == fid);
-      if (e) {
-        this.selected = fid;
-        if (e.isEnemy) {
-          this.scrollTo(`unit_${fid}`);
+    selectUnit(id) {
+      let unit = null;
+      if (id != null) {
+        if (typeof (id) === 'string') {
+          this.allActiveUnits.find(u => u.fid == id);
+        }
+        else {
+          unit = id;
+        }
+      }
+
+      if (unit) {
+        this.selectedUnit = unit;
+        if (unit.isEnemy) {
+          this.scrollTo(`unit_${unit.fid}`);
         }
 
         let pf = new ldb.PathFinder(15, 15);
-        if (e.isEnemy) {
+        if (unit.isEnemy) {
           pf.setObstacles(this.allActiveUnits.filter(a => a.isAlly));
         }
-        if (e.isAlly) {
+        if (unit.isAlly) {
           pf.setObstacles(this.allActiveUnits.filter(a => a.isEnemy));
         }
-        pf.setStart(e.coord[0], e.coord[1]);
-        pf.build(e.main.move, e.main.range);
+        pf.setStart(unit.coord);
+        pf.build(unit.main.move, unit.main.range);
         this.path = pf;
       }
       else {
-        this.selected = null;
+        this.selectedUnit = null;
         this.path = null;
       }
     },
@@ -611,7 +631,7 @@ export default {
     },
 
     isUnitHighlighted(unit) {
-      return unit.fid == this.selected || unit.fid == this.hovered;
+      return unit && (unit === this.selectedUnit || unit === this.hoveredUnit);
     },
 
     getCellClass(cell) {
@@ -623,7 +643,7 @@ export default {
           r.push("enemy-cell");
         if (unit.isAlly)
           r.push("ally-cell");
-        if (unit.fid == this.selected)
+        if (unit === this.selectedUnit)
           r.push("selected");
       }
       else if (this.path) {
@@ -647,26 +667,40 @@ export default {
     },
 
     onCellEnter(cell) {
-      this.hovered = cell.enemy ? cell.enemy.fid : null;
-      if (cell.enemy)
-        this.scrollTo(`enemy_${cell.enemy.fid}`);
+      const unit = this.findUnitByCoord(cell.coord);
+      this.hoveredUnit = unit;
+      if (unit?.isEnemy) {
+        this.scrollTo(`enemy_${unit.fid}`);
+      }
     },
     onCellLeave(cell) {
-      if (cell.enemy && this.hovered == cell.enemy.fid) {
-        this.hovered = null;
+      const unit = this.findUnitByCoord(cell.coord);
+      if (unit && this.hoveredUnit === unit) {
+        this.hoveredUnit = null;
       }
     },
     onCellClick(cell) {
-      if (cell.enemy) {
-        this.selectUnit(cell.enemy.fid);
-      }
-      else if (cell.ally) {
-        this.selectUnit(cell.ally.fid);
+      const unit = this.findUnitByCoord(cell.coord);
+      if (unit) {
+        this.selectUnit(this.selectedUnit === unit ? null : unit);
       }
       else {
-        this.selectUnit(null);
+        if (this.battle) {
+          if (this.selectedUnit) {
+            this.selectedUnit.coord = cell.coord;
+          }
+          else {
+
+          }
+        }
+        else {
+          this.selectUnit(null);
+        }
       }
       //this.updateURL();
+    },
+    onCellRClick(cell) {
+      this.selectUnit(null);
     },
 
     updateURL() {
@@ -674,8 +708,8 @@ export default {
       seri.b = this.battleId;
       if (this.phase != "0")
         seri.p = this.phase;
-      if (this.selected)
-        seri.u = this.selected;
+      if (this.selectedUnit)
+        seri.u = this.selectedUnit.fid;
 
       let url = seri.serialize();
       if (url != this.prevURL) {
@@ -737,8 +771,7 @@ export default {
     onCellDrop(cell) {
       this.onUnitDrop(this.findUnitByCoord(cell.coord));
     },
-    onDragOver(e) {
-      e.preventDefault();
+    dummyHandler() {
     },
 
 
@@ -868,6 +901,16 @@ export default {
     padding: 10px;
     margin: 5px;
   }
+
+  .content ul {
+    list-style-type: disc;
+    margin: 0;
+  }
+  .content li {
+    display: list-item;
+    margin: 0 15px;
+  }
+
 </style>
 <style>
   .table {

@@ -652,20 +652,21 @@ export class PathFinder
       }
     }
   }
-  isReachable(c) {
-    return (this.getCell(c[0], c[1])?.moveDistance ?? -1) >= 0;
-  }
-  isShootable(c) {
-    return (this.getCell(c[0], c[1])?.shootDistance ?? -1) >= 0;
-  }
   getCell(x, y) {
     if ((x >= 0 && x < this.xdiv) && (y >= 0 && y < this.ydiv)) {
       return this.cells[this.ydiv * y + x];
     }
     return null;
   }
-  setStart(x, y) {
-    let c = this.getCell(x, y);
+
+  isReachable(pos) {
+    return (this.getCell(pos[0], pos[1])?.moveDistance ?? -1) >= 0;
+  }
+  isShootable(pos) {
+    return (this.getCell(pos[0], pos[1])?.shootDistance ?? -1) >= 0;
+  }
+  setStart(pos) {
+    let c = this.getCell(pos[0], pos[1]);
     if (c) {
       c.moveDistance = 0;
     }
