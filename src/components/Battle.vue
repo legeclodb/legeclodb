@@ -54,7 +54,7 @@
               <template v-else-if="unit?.isEnemy && unit?.main">
                 <b-img-lazy :src="getImageURL(unit.main.class)" class="center" width="40" height="40" />
               </template>
-              <template v-else-if="unit?.isAlly">
+              <template v-else-if="unit?.isPlayer">
                 <div draggable @dragstart="onCellDrag(cell)" @drop="onCellDrop(cell)" @dragover.prevent="dummyHandler()">
                   <b-img-lazy :src="getImageURL(unit.main.icon)" class="center" width="50" height="50" />
                 </div>
@@ -131,30 +131,19 @@
       </div>
     </div>
 
-    <div v-if="simulation" class="content" style="margin-top: 40px">
+    <div v-if="simulation" class="content" style="margin-top: 20px">
       <div class="unit-panel">
-        シミュレーションモードではゲーム中のようにユニットを操作できます。<br />
-        しかし、あくまで検証用であるため、異なる点も多数あります。大きな違いを以下に挙げます。<br />
+        シミュレーションモードでは実際のゲームのようにユニットを操作できます。<br />
+        しかし、あくまで検証用であるため、異なる点も多々あります。大きな違いを以下に挙げます。<br />
         <ul>
           <li>移動可能範囲は表示されますが、それを無視して無限に移動できます</li>
           <li>無限に再行動できます</li>
           <li>敵フェーズでは敵ユニットも手動で操作します (敵の挙動の正確な再現が困難であるため)</li>
         </ul>
-        
-        <div class="flex">
-          <b-button size="sm" id="btl-unit-player" style="width: 13em;">
-            ユニットセレクタ(味方)
-            <UnitSelector target="btl-unit-player" :units="playerUnits" closeonclick />
-          </b-button>
-          <b-button size="sm" id="btl-unit-enemy" style="width: 13em; margin-left: 0.5em;">
-            ユニットセレクタ(敵)
-            <UnitSelector target="btl-unit-enemy" :units="enemyUnits" closeonclick />
-          </b-button>
-        </div>
       </div>
     </div>
 
-    <div class="content" style="margin-top: 40px">
+    <div class="content" style="margin-top: 30px">
       <div class="unit-panel">
         <div class="flex">
           <b-form-input v-model="slotName" placeholder="編成名" :disabled="simulation!=null" style="width: 12em"></b-form-input>
@@ -346,7 +335,6 @@ import jsonBattle from '../assets/battle.json'
 import commonjs from "./common.js";
 import lookupjs from "./simulator/lookup.js";
 import StatusSimulator from './simulator/StatusSimulator.vue'
-import UnitSelector from './parts/UnitSelector.vue'
 import * as ldb from "./simulator/simulation.js";
 
 export default {
@@ -354,7 +342,6 @@ export default {
   components: {
     Navigation,
     StatusSimulator,
-    UnitSelector,
   },
   mixins: [commonjs,lookupjs],
 
@@ -592,12 +579,16 @@ export default {
         if (unit.isEnemy) {
           this.scrollTo(`unit_${unit.fid}`);
         }
+        if (unit.isPlayer) {
+          const idx = this.playerUnits.findIndex(a => a === unit);
+          this.unitTabIndex = idx;
+        }
 
         let pf = new ldb.PathFinder(15, 15);
         if (unit.isEnemy) {
-          pf.setObstacles(this.allActiveUnits.filter(a => a.isAlly));
+          pf.setObstacles(this.allActiveUnits.filter(a => a.isPlayer));
         }
-        if (unit.isAlly) {
+        if (unit.isPlayer) {
           pf.setObstacles(this.allActiveUnits.filter(a => a.isEnemy));
         }
         pf.setStart(unit.coord);
@@ -643,8 +634,8 @@ export default {
       if (unit) {
         if (unit.isEnemy)
           r.push("enemy-cell");
-        if (unit.isAlly)
-          r.push("ally-cell");
+        if (unit.isPlayer)
+          r.push("player-cell");
         if (unit === this.selectedUnit)
           r.push("selected");
       }
@@ -655,6 +646,9 @@ export default {
         else if (this.path.isShootable(cell.coord)) {
           r.push("in-attack-range");
         }
+      }
+      if (this.simulation?.isOwnTurn(this.selectedUnit) && !unit) {
+        r.push("click-to-move");
       }
       return r;
     },
@@ -684,11 +678,14 @@ export default {
     onCellClick(cell) {
       const unit = this.findUnitByCoord(cell.coord);
       if (unit) {
+        // ユニット選択処理
         this.selectUnit(this.selectedUnit === unit ? null : unit);
       }
       else {
+        // ユニット移動処理
         if (this.simulation) {
-          if (this.selectedUnit) {
+          // プレイヤーターンならプレイヤー側、敵ターンなら敵側のユニットだけ移動を許可
+          if (this.simulation.isOwnTurn(this.selectedUnit)) {
             this.selectedUnit.coord = cell.coord;
           }
           else {
@@ -868,11 +865,11 @@ export default {
     background: rgb(255, 80, 80);
   }
 
-  .ally-cell {
+  .player-cell {
     background: rgb(140, 160, 255);
     cursor: grab;
   }
-  .ally-cell.selected {
+  .player-cell.selected {
     border-color: rgb(40, 40, 255);
     background: rgb(80, 80, 255);
   }
@@ -882,6 +879,12 @@ export default {
   }
   .in-attack-range {
     background: rgb(255, 245, 230);
+  }
+  .click-to-move {
+    cursor: move;
+  }
+  .click-to-attack {
+    cursor: grabbing;
   }
 
   .enemy-list {

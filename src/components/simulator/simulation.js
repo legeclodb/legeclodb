@@ -1,7 +1,7 @@
 export class BaseUnit
 {
   isEnemy = false;
-  isAlly = false;
+  isPlayer = false;
 
   base = BaseUnit.emptyUnit;
   sim = null;
@@ -46,9 +46,9 @@ export class BaseUnit
     return this.base.support.cid;
   }
 
-  constructor(isAlly = true) {
-    if (isAlly)
-      this.isAlly = true;
+  constructor(isPlayer = true) {
+    if (isPlayer)
+      this.isPlayer = true;
     else
       this.isEnemy = true;
     this.initialize();
@@ -588,6 +588,10 @@ export class SimContext
 
   get isEnemyTurn() { return !this.isPlayerTurn; }
   set isEnemyTurn(v) { this.isPlayerTurn = !v; }
+
+  isOwnTurn(unit) {
+    return unit && ((unit.isPlayer && this.isPlayerTurn) || (unit.isEnemy && this.isEnemyTurn));
+  }
 
   passTurn() {
     if (this.isPlayerTurn) {
