@@ -9,7 +9,7 @@
           <div class="menu-widgets flex">
             <div class="widget">
               <span>マップデータ：</span>
-              <b-dropdown :text="battleData ? battleData.uid : ''" size="sm" id="battle_selector" :disabled="battle!=null">
+              <b-dropdown :text="battleData ? battleData.uid : ''" size="sm" id="battle_selector" :disabled="simulation!=null">
                 <b-dropdown-item v-for="(battle, i) in battleList" class="d-flex flex-column" :key="i" @click="selectBattle(battle.uid, true); updateURL();">
                   {{ battle.uid }}
                 </b-dropdown-item>
@@ -131,7 +131,7 @@
       </div>
     </div>
 
-    <div v-if="battle" class="content" style="margin-top: 40px">
+    <div v-if="simulation" class="content" style="margin-top: 40px">
       <div class="unit-panel">
         シミュレーションモードではゲーム中のようにユニットを操作できます。<br />
         しかし、あくまで検証用であるため、異なる点も多数あります。大きな違いを以下に挙げます。<br />
@@ -157,19 +157,19 @@
     <div class="content" style="margin-top: 40px">
       <div class="unit-panel">
         <div class="flex">
-          <b-form-input v-model="slotName" placeholder="編成名" :disabled="battle!=null" style="width: 12em"></b-form-input>
-          <b-dropdown size="sm" text="編成をセーブ" :disabled="battle!=null" style="width: 10em; margin-left: 0.5em;">
+          <b-form-input v-model="slotName" placeholder="編成名" :disabled="simulation!=null" style="width: 12em"></b-form-input>
+          <b-dropdown size="sm" text="編成をセーブ" :disabled="simulation!=null" style="width: 10em; margin-left: 0.5em;">
             <b-dropdown-item v-for="(name, i) in slotNames" :key=i @click="saveUnits(i)">スロット{{i}}: {{name}}</b-dropdown-item>
           </b-dropdown>
-          <b-dropdown size="sm" text="編成をロード" :disabled="battle!=null" style="width: 10em; margin-left: 0.5em;">
+          <b-dropdown size="sm" text="編成をロード" :disabled="simulation!=null" style="width: 10em; margin-left: 0.5em;">
             <b-dropdown-item v-for="(name, i) in slotNames" :key=i @click="loadUnits(i)">スロット{{i}}: {{name}}</b-dropdown-item>
             <b-dropdown-item @click="loadUnits(99)">バックアップ</b-dropdown-item>
           </b-dropdown>
-          <b-button size="sm" @click="clearUnits()" :disabled="battle!=null" style="width: 10em; margin-left: 1em;">
+          <b-button size="sm" @click="clearUnits()" :disabled="simulation!=null" style="width: 10em; margin-left: 1em;">
             編成をクリア
           </b-button>
-          <b-button size="sm" style="width: 14em; margin-left: 4em;" @click="battle ? endSimulation() : beginSimulation()">
-            {{battle ? 'シミュレーション終了' : 'シミュレーション開始'}}
+          <b-button size="sm" style="width: 14em; margin-left: 4em;" @click="simulation ? endSimulation() : beginSimulation()">
+            {{simulation ? 'シミュレーション終了' : 'シミュレーション開始'}}
           </b-button>
         </div>
       </div>
@@ -186,7 +186,7 @@
                 <b-img-lazy :src="getImageURL(unit.support?.icon)" width="30" />
               </h2>
             </template>
-            <div v-if="!battle" style="padding: 10px;">
+            <div v-if="!simulation" style="padding: 10px;">
               <b-button :id="`btn-edit-unit${ui}`" @click="unit.showEditor=!unit.showEditor" style="width: 10em;">編集</b-button>
               <b-popover :target="`btn-edit-unit${ui}`" custom-class="status-simulator-popover" :show.sync="unit.showEditor" :delay="{show:0, hide:250}" no-fade>
                 <StatusSimulator embed :data="unit.editorData" @change="unit.edit($event)" />
@@ -347,7 +347,7 @@ import commonjs from "./common.js";
 import lookupjs from "./simulator/lookup.js";
 import StatusSimulator from './simulator/StatusSimulator.vue'
 import UnitSelector from './parts/UnitSelector.vue'
-import * as ldb from "./simulator/battle.js";
+import * as ldb from "./simulator/simulation.js";
 
 export default {
   name: 'Battle',
@@ -387,6 +387,7 @@ export default {
       path: null,
 
       selectedUnit: null,
+      selectedSkill: null,
       hoveredUnit: null,
 
       phaseTabIndex: 0,
@@ -404,7 +405,7 @@ export default {
       ],
       unitTabIndex: 0,
 
-      btlPhaseList: [
+      simPhaseList: [
         { index: 0, id: "1P", desc: "1Tプレイヤー" },
         { index: 1, id: "1E", desc: "1T敵" },
         { index: 2, id: "2P", desc: "2Tプレイヤー" },
@@ -416,7 +417,7 @@ export default {
         { index: 8, id: "5P", desc: "5Tプレイヤー" },
         { index: 9, id: "5E", desc: "5T敵" },
       ],
-      battle: null,
+      simulation: null,
     };
   },
 
@@ -605,6 +606,7 @@ export default {
       }
       else {
         this.selectedUnit = null;
+        this.selectedSkill = null;
         this.path = null;
       }
     },
@@ -685,7 +687,7 @@ export default {
         this.selectUnit(this.selectedUnit === unit ? null : unit);
       }
       else {
-        if (this.battle) {
+        if (this.simulation) {
           if (this.selectedUnit) {
             this.selectedUnit.coord = cell.coord;
           }
@@ -741,15 +743,16 @@ export default {
 
     beginSimulation() {
       this.selectUnit(null);
-      if (!this.battle) {
-        this.battle = new ldb.BattleContext(this.playerUnits, this.enemyUnits);
+      if (!this.simulation) {
+        this.simulation = new ldb.SimContext(this.playerUnits, this.enemyUnits);
+        this.simulation.onSimulationBegin();
       }
     },
     endSimulation() {
       this.selectUnit(null);
-      if (this.battle) {
-        this.battle.finalize();
-        this.battle = null;
+      if (this.simulation) {
+        this.simulation.onSimulationEnd();
+        this.simulation = null;
       }
     },
 
@@ -757,7 +760,7 @@ export default {
       this.draggingUnit = unit;
     },
     onUnitDrop(unit) {
-      if (this.draggingUnit && !this.battle) {
+      if (this.draggingUnit && !this.simulation) {
         if (this.draggingUnit && unit) {
           this.draggingUnit.swap(unit);
         }

@@ -4,7 +4,7 @@ export class BaseUnit
   isAlly = false;
 
   base = BaseUnit.emptyUnit;
-  battle = null;
+  sim = null;
   editorData = [];
   showEditor = false;
 
@@ -28,19 +28,19 @@ export class BaseUnit
 
   get coord() {
     //return this.base.coord;
-    return this.battle ? this.battle.coord : this.base.coord;
+    return this.sim ? this.sim.coord : this.base.coord;
   }
   set coord(v) {
-    if (this.battle)
-      this.battle.coord = v;
+    if (this.sim)
+      this.sim.coord = v;
     else
       this.base.coord = v;
   }
   get main() {
-    return this.battle ? this.battle.main : this.base.main;
+    return this.sim ? this.sim.main : this.base.main;
   }
   get support() {
-    return this.battle ? this.battle.support : this.base.support;
+    return this.sim ? this.sim.support : this.base.support;
   }
   get hasSupport() {
     return this.base.support.cid;
@@ -69,6 +69,13 @@ export class BaseUnit
     swapProperty(this.base, v.base, "main");
     swapProperty(this.base, v.base, "support");
     swapProperty(this, v, "editorData");
+  }
+
+  saveState() {
+    this.sim?.saveState();
+  }
+  loadState() {
+    this.sim?.loadState();
   }
 
   serialize() {
@@ -273,9 +280,9 @@ export class EffectHolder
   onTurnBegin() {
     this.passDuration = true;
   }
-  onBattleBegin() {
+  onSimulationBegin() {
   }
-  onBattleEnd() {
+  onSimulationEnd() {
   }
   onAttackBegin() {
   }
@@ -351,14 +358,14 @@ export class SkillHolder
       e.onTurnBegin();
     }
   }
-  onBattleBegin() {
+  onSimulationBegin() {
     for (let e of this.effects) {
-      e.onBattleBegin();
+      e.onSimulationBegin();
     }
   }
-  onBattleEnd() {
+  onSimulationEnd() {
     for (let e of this.effects) {
-      e.onBattleEnd();
+      e.onSimulationEnd();
     }
   }
   onAttackBegin() {
@@ -415,7 +422,7 @@ export class CustomEffect
   }
 }
 
-export class BattleUnit
+export class SimUnit
 {
   base = null;
   coord = [0, 0];
@@ -435,7 +442,7 @@ export class BattleUnit
   };
 
   constructor(unit) {
-    unit.battle = this;
+    unit.sim = this;
     this.base = unit;
     this.fid = unit.fid;
     this.coord = [...unit.base.coord];
@@ -475,8 +482,11 @@ export class BattleUnit
       }
     }
   }
-  finalize() {
-    this.base.battle = null;
+
+  onSimulationBegin() {
+  }
+  onSimulationEnd() {
+    this.base.sim = null;
   }
 
   get hpRate() { return 0; }
@@ -511,42 +521,53 @@ export class BattleUnit
   evaluateEffects(battleCtx) {
 
   }
-  onBattleBegin() {
 
-  }
   onTurnBegin() {
-
   }
   beforeAttack() {
-
   }
   afterAttack() {
-
   }
   onActionEnd() {
-
   }
   onTurnEnd() {
-
   }
 
-  clone() {
-    let r = new BattleUnit();
-    r.unit = this.unit;
+  static copyProps(dst, src) {
+    if (!src)
+      return;
+    for (const k in src) {
+      if (Object.hasOwn(src, k)) {
+        const v = src[k];
+        if (Array.isArray(v)) {
+          dst[k] = [...v];
+        }
+        else {
+          dst[k] = v;
+        }
+      }
+    }
+  }
+
+  serialize() {
+    let r = {};
+    r.coord = [...this.coord];
+    SimUnit.copyProps(r.main, this.main);
+    SimUnit.copyProps(r.support, this.support);
     return r;
   }
-  serialize() {
-
-  }
   deserialize(r) {
+    this.coord = [...r.coord];
+    SimUnit.copyProps(this.main, r.main);
+    SimUnit.copyProps(this.support, r.support);
   }
 }
 
-export class BattleContext
+export class SimContext
 {
   battleId = "";
-  playerUnits = []; // BattleUnit
-  enemyUnits = []; // BattleUnit
+  playerUnits = []; // SimUnit
+  enemyUnits = []; // SimUnit
   turn = 1;
   isPlayerTurn = true;
 
@@ -555,13 +576,8 @@ export class BattleContext
   results = []; // CombatResult
 
   constructor(playerUnits, enemyUnits) {
-    this.playerUnits = playerUnits.map(a => new BattleUnit(a));
-    this.enemyUnits = enemyUnits.map(a => new BattleUnit(a));
-  }
-  finalize() {
-    for (let u of [...this.playerUnits, ...this.enemyUnits]) {
-      u.finalize();
-    }
+    this.playerUnits = playerUnits.map(a => new SimUnit(a));
+    this.enemyUnits = enemyUnits.map(a => new SimUnit(a));
   }
   findUnit(u) {
     let r = this.playerUnits.find(a => a.unit === u);
@@ -587,8 +603,16 @@ export class BattleContext
     }
   }
 
-  onBattleBegin() {
+  onSimulationBegin() {
+    for (let u of [...this.playerUnits, ...this.enemyUnits]) {
+      u.onSimulationBegin();
+    }
     this.onPlayerTurnBegin();
+  }
+  onSimulationEnd() {
+    for (let u of [...this.playerUnits, ...this.enemyUnits]) {
+      u.onSimulationEnd();
+    }
   }
 
   onPlayerTurnBegin() {
