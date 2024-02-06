@@ -285,7 +285,7 @@ export default {
           label: "レベル",
           type: "number",
           min: 1,
-          value: 113,
+          value: 114,
         },
         master: {
           label: "マスターレベル",
