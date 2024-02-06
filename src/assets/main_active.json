@@ -10380,7 +10380,7 @@
         "value": 10,
         "duration": 2,
         "condition": {
-          "token": ["==", 1]
+          "token": [ "==", 1 ]
         }
       },
       {
