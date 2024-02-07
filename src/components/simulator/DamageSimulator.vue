@@ -275,7 +275,7 @@ export default {
 
     parseParamsUrl(url) {
       url = decodeURIComponent(url);
-      let q = url.match(/\?dmg=(.+)$/);
+      let q = url.match(/\?dmg=([^#]+)/);
       if (q) {
         let params = q[1].split(',').map(this.parseValue);
 

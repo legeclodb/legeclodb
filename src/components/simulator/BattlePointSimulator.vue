@@ -272,7 +272,7 @@ export default {
 
     parseParamsUrl(url) {
       url = decodeURIComponent(url);
-      let q = url.match(/\?bp=(.+)$/);
+      let q = url.match(/\?bp=([^#]+)/);
       if (q) {
         let params = q[1].split(',').map(this.parseValue);
 
