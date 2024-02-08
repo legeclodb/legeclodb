@@ -55,7 +55,8 @@
                 </div>
                 <b-form-row>
                   <b-col style="text-align: center">
-                    <b-button v-for="(skill, si) in mainSkills" :key="si" :id="`ss${uid}-main-skill${si}`" variant="outline-secondary" class="paddingless small-margin">
+                    <b-button v-for="(skill, si) in mainSkills" :key="si" :id="`ss${uid}-main-skill${si}`" variant="outline-secondary" class="paddingless small-margin"
+                              draggable @dragstart="onSkillDrag(si)" @drop="onSkillDrop(si)" @dragover.prevent="dummyHandler()">
                       <b-img-lazy :src="getSkillIcon(skill)" :title="descToTitle(skill)" width="50" height="50" />
                       <SkillSelector :target="`ss${uid}-main-skill${si}`" nullable closeonclick
                                      :skills="mainSkillList" :excludes="mainSkills" @click="setArrayElement(mainSkills, si, $event)" />
@@ -391,7 +392,7 @@ export default {
           label: "レベル",
           type: "number",
           min: 1,
-          value: 113,
+          value: 114,
         },
         master: {
           label: "マスターレベル",
@@ -552,6 +553,7 @@ export default {
       ],
 
       prevMainEngage: true,
+      draggingSkillIdx: -1,
     };
   },
 
@@ -1460,6 +1462,21 @@ export default {
         this.prevMainEngage = this.main.engage.value;
         this.autoMainSkill();
       }
+    },
+
+    onSkillDrag(idx) {
+      this.draggingSkillIdx = idx;
+    },
+    onSkillDrop(idx) {
+      if (this.draggingSkillIdx >= 0) {
+        let tmp = [...this.mainSkills];
+        tmp[this.draggingSkillIdx] = this.mainSkills[idx];
+        tmp[idx] = this.mainSkills[this.draggingSkillIdx];
+        this.mainSkills = tmp;
+      }
+      this.draggingSkillIdx = -1;
+    },
+    dummyHandler() {
     },
   },
 
