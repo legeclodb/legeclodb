@@ -909,6 +909,12 @@ export default {
           miscTags.push(`固定ダメージ`);
         }
       }
+      if (skill.buffCancel) {
+        miscTags.push(`バフ解除`);
+      }
+      if (skill.buffSteal) {
+        miscTags.push(`バフ奪取`);
+      }
       if (skill.doubleAttack) {
         let postfix = "";
         const cond = skill.doubleAttack.condition;
@@ -918,8 +924,15 @@ export default {
         }
         miscTags.push(`2回攻撃${postfix}`);
       }
+
       if (skill.multiMove) {
-        miscTags.push(`再移動`);
+        let postfix = "";
+        const cond = skill.multiMove.condition;
+        if (cond) {
+          if (cond.onKill)
+            postfix = "(敵撃破時)";
+        }
+        miscTags.push(`再移動${postfix}`);
       }
       if (skill.multiAction) {
         let postfix = "";

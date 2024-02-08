@@ -382,13 +382,29 @@
       "cost": { "type": "integer" },
       "isNormalAttack": { "type": "boolean" },
       "isSymbolSkill": { "type": "boolean" },
-      "damageRate": { "type": "number" },
+      "damageRate": {
+        "anyOf": [
+          { "type": "number" },
+          {
+            "type": "array",
+            "items": { "type": "number" }
+          }
+        ]
+      },
       "damageRateSp": {
         "type": "object",
         "required": [ "value", "condition" ],
         "additionalProperties": false,
         "properties": {
-          "value": { "type": "number" },
+          "value": {
+            "anyOf": [
+              { "type": "number" },
+              {
+                "type": "array",
+                "items": { "type": "number" }
+              }
+            ]
+          },
           "condition": { "$ref": "#/$defs/condition" }
         }
       },
@@ -426,6 +442,40 @@
       "statusEffects": {
         "type": "array",
         "items": { "$ref": "#/$defs/effect" }
+      },
+      "buffCancel": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "value": {
+            "anyOf": [
+              { "type": "number" },
+              {
+                "type": "array",
+                "items": { "type": "number" }
+              }
+            ]
+          },
+          "timing": { "$ref": "#/$defs/timingType" },
+          "condition": { "$ref": "#/$defs/condition" }
+        }
+      },
+      "buffSteal": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "value": {
+            "anyOf": [
+              { "type": "number" },
+              {
+                "type": "array",
+                "items": { "type": "number" }
+              }
+            ]
+          },
+          "timing": { "$ref": "#/$defs/timingType" },
+          "condition": { "$ref": "#/$defs/condition" }
+        }
       },
       "doubleAttack": {
         "type": "object",
