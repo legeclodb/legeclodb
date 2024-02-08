@@ -63,6 +63,14 @@
         <b-container>
           <div class="button-box">
             <div class="left-align">
+              <b-button size="sm" @click="presetPAtk()" style="margin-right: 3px">物攻系</b-button>
+              <b-button size="sm" @click="presetMAtk()" style="margin-right: 3px">魔攻系</b-button>
+              <b-button size="sm" @click="presetPDef()" style="margin-right: 3px">物防系</b-button>
+              <b-button size="sm" @click="presetMDef()" style="margin-right: 3px">魔防系</b-button>
+            </div>
+          </div>
+          <div class="button-box">
+            <div class="left-align">
               <b-button size="sm" id="cb-copy-url" @click="copyToClipboard(getParamsUrl())">パラメータを URL としてコピー</b-button>
               <b-popover target="cb-copy-url" triggers="click blur" placement="top" custom-class="url-popover">
                 コピーしました：<br />{{ getParamsUrl() }}
@@ -543,9 +551,7 @@ export default {
             return this.parent ? this.parent.limit_ : this.limit_;
           },
           set limit(v) {
-            if (this.parent)
-              this.parent.limit_ = v;
-            else
+            if (!this.parent)
               this.limit_ = v;
           },
           reset() {
@@ -1160,6 +1166,64 @@ export default {
 
     updateQuery() {
       this.beginSearch();
+    },
+
+    enableBuf(label) {
+      for (let e of this.buffs) {
+        if (e.label == label) {
+          e.enabled = true;
+          break;
+        }
+      }
+    },
+    enableDebuf(label) {
+      for (let e of this.debuffs) {
+        if (e.label == label) {
+          e.enabled = true;
+          break;
+        }
+      }
+    },
+
+    presetAll() {
+      for (let e of this.buffs) {
+        e.enabled = true;
+      }
+      for (let e of this.debuffs) {
+        e.enabled = true;
+      }
+    },
+    presetPAtk() {
+      for (const l of ["アタック", "クリティカルダメージ倍率", "与ダメージ", "与ダメージ(物理)", "与ダメージ(スキル)", "与ダメージ(範囲スキル)", "与ダメージ(通常攻撃)"]) {
+        this.enableBuf(l);
+      }
+      for (const l of ["ダメージ耐性", "ダメージ耐性(物理)"]) {
+        this.enableDebuf(l);
+      }
+    },
+    presetMAtk() {
+      for (const l of ["マジック", "クリティカルダメージ倍率", "与ダメージ", "与ダメージ(魔法)", "与ダメージ(スキル)", "与ダメージ(範囲スキル)"]) {
+        this.enableBuf(l);
+      }
+      for (const l of ["ダメージ耐性", "ダメージ耐性(魔法)"]) {
+        this.enableDebuf(l);
+      }
+    },
+    presetPDef() {
+      for (const l of ["ディフェンス", "ダメージ耐性", "ダメージ耐性(物理)"]) {
+        this.enableBuf(l);
+      }
+      for (const l of ["アタック", "与ダメージ"]) {
+        this.enableDebuf(l);
+      }
+    },
+    presetMDef() {
+      for (const l of ["レジスト", "ダメージ耐性", "ダメージ耐性(魔法)"]) {
+        this.enableBuf(l);
+      }
+      for (const l of ["マジック", "与ダメージ"]) {
+        this.enableDebuf(l);
+      }
     },
   },
 
