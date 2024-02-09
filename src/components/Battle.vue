@@ -559,6 +559,11 @@ export default {
       }
     },
 
+    isValidCoord(coord) {
+      return (coord[0] >= 0 && coord[0] < this.divX) &&
+             (coord[1] >= 0 && coord[1] < this.divY);
+    },
+
     findUnitByCoord(coord) {
       for (const u of this.allActiveUnits) {
         if (u.coord[0] == coord[0] && u.coord[1] == coord[1])
@@ -604,6 +609,23 @@ export default {
         this.selectedSkill = null;
         this.path = null;
       }
+    },
+
+    placeEnemyUnit(unit, coord) {
+      // 指定座標が専有されていた場合はずらす
+      const subCoord = [
+        [0, 0],
+        [0, -1], [1, 0], [0, 1], [-1, 0],
+        [0, -2], [1, -1], [2, 0], [1, 1], [0, 2], [-1, 1], [-2, 0], [-1, -1]
+      ];
+      for (const sc of subCoord) {
+        let c = [coord[0] + sc[0], coord[1] + sc[1]];
+        if (this.isValidCoord(c) && !this.findUnitByCoord(c)) {
+          unit.coord = c;
+          return true;
+        }
+      }
+      return false;
     },
 
     mergeChrData(dst, src) {
