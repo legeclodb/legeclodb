@@ -39,8 +39,8 @@
         </b-tabs>
 
         <div style="padding: 10px; background-color: white; display: flex;">
-          <div class="grid-container">
-            <div v-for="(cell, i) in cells" :key="i" :set="unit=findUnitByCoord(cell.coord)" class="grid-cell" :class="getCellClass(cell)" :id="cell.id"
+          <div ref="cells" class="grid-container">
+            <div v-for="(cell, i) in cells" :key="i" :set="unit=findUnitByCoord(cell.coord)" :class="getCellClass(cell)" :id="cell.id"
                  @click.stop="onCellClick(cell)"
                  @click.middle.prevent.stop="onCellRClick(cell)" @mousedown.middle.prevent.stop="dummyHandler()"
                  @click.right.prevent.stop="onCellRClick(cell)"
@@ -413,7 +413,7 @@ export default {
   },
 
   created() {
-    document.title = "れじぇくろDB: 戦闘データ";
+    document.title = "れじぇくろDB: ギルドクエストEX";
 
     this.setupDB();
 
@@ -472,6 +472,10 @@ export default {
       }
     }
     this.cells = cells;
+
+    let cellStyle = this.$refs.cells.style;
+    cellStyle.gridTemplateColumns = Array(divX).fill("50px").join(" ");
+    cellStyle.gridTemplateRows = Array(divY).fill("50px").join(" ");
 
     this.selectBattle(this.battleList.slice(-1)[0].uid);
     this.selectPhase("0");
@@ -630,7 +634,14 @@ export default {
     getCellClass(cell) {
       const unit = this.findUnitByCoord(cell.coord);
 
-      let r = [];
+      let r = ["grid-cell", "border-l", "border-t"];
+      if (cell.coord[0] == this.divX - 1) {
+        r.push("border-r");
+      }
+      if (cell.coord[1] == this.divY - 1) {
+        r.push("border-b");
+      }
+
       if (unit) {
         if (unit.isEnemy)
           r.push("enemy-cell");
@@ -641,10 +652,10 @@ export default {
       }
       else if (this.path) {
         if (this.path.isReachable(cell.coord)) {
-          r.push("in-move-range");
+          r.push("move-range");
         }
         else if (this.path.isShootable(cell.coord)) {
-          r.push("in-attack-range");
+          r.push("attack-range");
         }
       }
       if (this.simulation?.isOwnTurn(this.selectedUnit) && !unit) {
@@ -844,16 +855,35 @@ export default {
 
   .grid-container {
     display: grid;
-    grid-template-columns: 50px 50px 50px 50px 50px 50px 50px 50px 50px 50px 50px 50px 50px 50px 50px;
-    grid-template-rows: 50px 50px 50px 50px 50px 50px 50px 50px 50px 50px 50px 50px 50px 50px 50px;
+    /*
+      grid-gap によるボーダーの描画は、どうも画面のスケールが 100% でないときにムラができるっぽいので、
+      旧来の border-(left|right|top|bottom) でなんとかする。
+
+      grid-gap: 1px;
+      padding: 1px;
+      background: rgb(180,185,195);
+    */
     margin-right: 20px;
   }
   .grid-cell {
-    border: 1px solid rgba(140,149,159,0.5);
-    width: 50px;
-    height: 50px;
     display: flex;
     justify-content: center;
+    background: white;
+  }
+  .bordered {
+    border: 1px solid rgb(180,185,195);
+  }
+  .border-l {
+    border-left: 1px solid rgb(180,185,195);
+  }
+  .border-r {
+    border-right: 1px solid rgb(180,185,195);
+  }
+  .border-t {
+    border-top: 1px solid rgb(180,185,195);
+  }
+  .border-b {
+    border-bottom: 1px solid rgb(180,185,195);
   }
 
   .enemy-cell {
@@ -861,7 +891,6 @@ export default {
     cursor: pointer;
   }
   .enemy-cell.selected {
-    border-color: rgb(255, 40, 40);
     background: rgb(255, 80, 80);
   }
 
@@ -870,14 +899,13 @@ export default {
     cursor: grab;
   }
   .player-cell.selected {
-    border-color: rgb(40, 40, 255);
     background: rgb(80, 80, 255);
   }
 
-  .in-move-range {
+  .move-range {
     background: rgb(255, 230, 215);
   }
-  .in-attack-range {
+  .attack-range {
     background: rgb(255, 245, 230);
   }
   .click-to-move {
