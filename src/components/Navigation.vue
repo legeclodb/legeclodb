@@ -7,7 +7,7 @@
       <b-nav-item to="/item.html">アイテム</b-nav-item>
       <b-nav-item to="/lookup.html">組み合わせ検索</b-nav-item>
       <b-nav-item to="/about.html">解説</b-nav-item>
-      <b-nav-item v-if="devmode" to="/battle.html">戦闘</b-nav-item>
+      <b-nav-item v-if="devmode" to="/battle.html">ギルドクエストEX</b-nav-item>
       <b-nav-item v-if="devmode" to="/misc.html">その他</b-nav-item>
     </b-navbar-nav>
     <b-navbar-nav class="ml-auto">

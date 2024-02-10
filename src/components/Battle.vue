@@ -135,7 +135,7 @@
       <div class="unit-panel">
         <div v-if="selectedUnit" style="margin-bottom: 10px">
           <b-link v-for="(skill, si) of selectedUnit.actions" :key="si" @click="selectAction(skill)">
-            <b-img :src="getImageURL(skill.icon)" :title="descToTitle(skill)" width="50" />
+            <b-img :src="getImageURL(skill.icon)" :title="descToTitle(skill)" :class="skill.available ? '' : 'grayscale'" width="50" />
           </b-link>
           <b-button size="sm" style="width:50px; height:50px;">
             待機
@@ -143,6 +143,9 @@
         </div>
         <b-button v-if="selectedUnit" size="sm" @click="confirmAction()" style="width: 10em; margin-right: 1em;">
           行動を確定
+        </b-button>
+        <b-button v-if="selectedUnit" size="sm" @click="calcelAction()" style="width: 10em; margin-right: 1em;">
+          行動をキャンセル
         </b-button>
         <b-button size="sm" @click="endTurn()" style="width: 10em; margin-right: 1em;">
           ターン終了
@@ -816,8 +819,16 @@ export default {
     confirmAction() {
     },
 
+    cancelAction() {
+    },
+
     selectAction(skill) {
       this.selectedSkill = skill;
+
+      // debug
+      if (skill) {
+        skill.fire();
+      }
     },
 
     onUnitDrag(unit) {
@@ -999,6 +1010,10 @@ export default {
   .content li {
     display: list-item;
     margin: 0 15px;
+  }
+
+  .grayscale {
+    filter: grayscale(100%);
   }
 
 </style>

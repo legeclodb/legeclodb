@@ -370,8 +370,12 @@ function makeSimCustomEffect(type) {
   return self;
 }
 
-function makeSimSkill(skill) {
+function makeSimSkill(skill, ownerUnit) {
   let self = Object.create(skill);
+  self.owner = ownerUnit;
+  if (self.isActive) {
+    self.coolTime = 0;
+  }
   self.effects = []; // SimEffect
 
   for (let effect of [...(self.buff ?? []), ...(self.debuff ?? [])]) {
@@ -379,11 +383,18 @@ function makeSimSkill(skill) {
   }
 
   self.serialize = function () {
-    return {
+    let r = {
       effects: self.effects.map(a => a.serialize()),
     };
+    if (self.isActive) {
+      r.coolTime = self.coolTime;
+    }
+    return r;
   }
   self.deserialize = function (r) {
+    if (self.isActive) {
+      self.coolTime = r.coolTime;
+    }
     self.effects = r.effects.map(function (data) {
       let tmp = makeSimEffect();
       tmp.deserialize(data);
@@ -391,10 +402,19 @@ function makeSimSkill(skill) {
     });
   }
 
+  Object.defineProperty(self, 'available', {
+    get: function () { return !self.isActive || self.coolTime <= 0; },
+  });
+
   self.activate = function (bySelf) {
-    self.bySelf = bySelf;
     for (let e of self.effects) {
       e.activate(bySelf);
+    }
+  }
+  self.fire = function () {
+    console.log(self);
+    if (self.isActive) {
+      self.coolTime = self.ct ?? Infinity;
     }
   }
   self.onTurnBegin = function () {
@@ -423,6 +443,9 @@ function makeSimSkill(skill) {
     }
   }
   self.onActionEnd = function () {
+    if (self.coolTime > 0) {
+      --self.coolTime;
+    }
     for (let e of self.effects) {
       e.onActionEnd();
     }
@@ -464,6 +487,9 @@ class SimUnit {
       u.bufF = [];
       u.status = [...base.status];
       u.hp = u.status[0];
+      if (base.skills) {
+        u.skills = base.skills.map(skill => makeSimSkill(skill, u));
+      }
 
       Object.defineProperty(u, 'statusBase', {
         value: base.status,
@@ -577,6 +603,7 @@ class SimUnit {
 
 export class SimContext
 {
+  static instance = null;
   battleId = "";
   units = [];
   turn = 1;
@@ -587,6 +614,7 @@ export class SimContext
   results = []; // CombatResult
 
   constructor(baseUnits) {
+    SimContext.instance = this;
     this.units = baseUnits.map(a => new SimUnit(a));
   }
   findUnitByBase(baseUnit) {
@@ -599,6 +627,8 @@ export class SimContext
   isOwnTurn(unit) {
     return unit && ((unit.isPlayer && this.isPlayerTurn) || (unit.isEnemy && this.isEnemyTurn));
   }
+
+
 
   passTurn() {
     if (this.isPlayerTurn) {
@@ -624,6 +654,7 @@ export class SimContext
     for (let u of this.units) {
       u.onSimulationEnd();
     }
+    SimContext.instance = null;
   }
 
   onPlayerTurnBegin() {
