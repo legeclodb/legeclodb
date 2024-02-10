@@ -615,12 +615,14 @@ export default {
         let pf = new ldb.PathFinder(15, 15);
         if (unit.isEnemy) {
           pf.setObstacles(this.allActiveUnits.filter(a => a.isPlayer));
+          pf.setOccupied(this.allActiveUnits.filter(a => a.isEnemy && a !== unit));
         }
         if (unit.isPlayer) {
           pf.setObstacles(this.allActiveUnits.filter(a => a.isEnemy));
+          pf.setOccupied(this.allActiveUnits.filter(a => a.isPlayer && a !== unit));
         }
         pf.setStart(unit.coord);
-        pf.build(unit.move, unit.range);
+        pf.buildPath(unit.move, unit.range);
         this.path = pf;
       }
       else {

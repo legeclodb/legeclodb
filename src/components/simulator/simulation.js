@@ -691,6 +691,7 @@ export class PathFinder
           moveDistance: -1,
           shootDistance: -1,
           isObstacle: false,
+          isOccupied: false,
         };
       }
     }
@@ -722,53 +723,88 @@ export class PathFinder
       }
     }
   }
-  build(move, range) {
-    const chartCell = function (x, y, m) {
-      let c = this.getCell(x, y);
-      if (c.isObstacle || c.moveDistance > -1) {
-        return;
+  setOccupied(units) {
+    for (const u of units) {
+      let c = this.getCell(u.coord[0], u.coord[1]);
+      if (c) {
+        c.isOccupied = true;
       }
-      const neighbors = [
-        this.getCell(x + 1, y + 0),
-        this.getCell(x + 0, y + 1),
-        this.getCell(x - 1, y + 0),
-        this.getCell(x + 0, y - 1),
-      ];
-      for (let n of neighbors) {
-        if (n && n.moveDistance == m) {
-          c.moveDistance = m + 1;
-        }
-      }
-    }.bind(this);
-
-    const shootCell = function (x, y) {
-      let c = this.getCell(x, y);
-      if (c.moveDistance < 0) {
-        return;
-      }
-      for (let rx = -range; rx <= range; ++rx) {
-        for (let ry = -range; ry <= range; ++ry) {
-          let d = Math.abs(rx) + Math.abs(ry);
-          if (d <= range) {
-            let c = this.getCell(x + rx, y + ry);
-            if (c && (c.shootDistance < 0 || (c.shootDistance > -1 &&  d < c.shootDistance))) {
-              c.shootDistance = d;
-            }
-          }
-        }
-      }
-    }.bind(this);
-
+    }
+  }
+  buildPath(move, range) {
     for (let m = 0; m < move; ++m) {
       for (let y = 0; y < this.ydiv; ++y) {
         for (let x = 0; x < this.xdiv; ++x) {
-          chartCell(x, y, m);
+          this._chartCell(x, y, m);
         }
       }
     }
     for (let y = 0; y < this.ydiv; ++y) {
       for (let x = 0; x < this.xdiv; ++x) {
-        shootCell(x, y);
+        this._shootCell(x, y, range);
+      }
+    }
+  }
+
+  _chartCell(x, y, distance) {
+    let c = this.getCell(x, y);
+    if (c.isObstacle || c.moveDistance > -1) {
+      return;
+    }
+    const neighbors = [
+      this.getCell(x + 1, y + 0),
+      this.getCell(x + 0, y + 1),
+      this.getCell(x - 1, y + 0),
+      this.getCell(x + 0, y - 1),
+    ];
+    for (let n of neighbors) {
+      if (n && n.moveDistance == distance) {
+        c.moveDistance = distance + 1;
+      }
+    }
+  }
+  _shootCell(x, y, range, shape) {
+    let c = this.getCell(x, y);
+    if (c.moveDistance < 0 || c.isOccupied) {
+      return;
+    }
+
+    const fillCell = function (rx, ry, distance) {
+      let c = this.getCell(x + rx, y + ry);
+      if (c && (c.shootDistance < 0 || distance < c.shootDistance)) {
+        c.shootDistance = distance;
+      }
+    }.bind(this);
+
+    let df = null;
+    if (shape == "周囲") {
+      df = function (rx, ry) {
+        let d = Math.max(Math.abs(rx), Math.abs(ry));
+        if (d <= range) {
+          fillCell(rx, ry, d);
+        }
+      };
+    }
+    else if (shape == "直線") {
+      df = function (rx, ry) {
+        let d = Math.abs(rx) + Math.abs(ry);
+        if (d <= range && (rx == 0 || ry == 0)) {
+          fillCell(rx, ry, d);
+        }
+      };
+    }
+    else {
+      df = function (rx, ry) {
+        let d = Math.abs(rx) + Math.abs(ry);
+        if (d <= range) {
+          fillCell(rx, ry, d);
+        }
+      };
+    }
+
+    for (let rx = -range; rx <= range; ++rx) {
+      for (let ry = -range; ry <= range; ++ry) {
+        df(rx, ry);
       }
     }
   }
