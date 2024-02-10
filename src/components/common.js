@@ -494,7 +494,7 @@ export default {
       if (item.isActive || item.isPassive) {
         text += [
           ["CT", item.ct],
-          ["範囲", item.area],
+          ["範囲", this.areaToText(item)],
           ["射程", item.range],
           ["コスト", item.cost],
         ].filter(a => a[1])
@@ -503,6 +503,14 @@ export default {
       }
       text += this.removeMarkup(item.desc);
       return text;
+    },
+    areaToText(item) {
+      if (item.areaShape == "直線") {
+        return `直線${item.area}マス`
+      }
+      else {
+        return item.area;
+      }
     },
     removeMarkup(text) {
       if (!text) {
@@ -532,7 +540,7 @@ export default {
     skillParamsToHtml(skill) {
       return [
         ["CT", skill.ct],
-        ["範囲", skill.area],
+        ["範囲", this.areaToText(skill)],
         ["射程", skill.range],
         ["コスト", skill.cost],
       ].filter(a => a[1])

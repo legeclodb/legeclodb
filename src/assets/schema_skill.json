@@ -143,6 +143,12 @@
       "minItems": 2,
       "maxItems": 2
     },
+    "areaShape": {
+      "enum": [ "範囲", "周囲", "直線" ]
+    },
+    "areaCenter": {
+      "enum": [ "自分中心", "中心指定" ]
+    },
     "areaType": {
       "anyOf": [
         { "type": "number" },
@@ -163,7 +169,8 @@
                   }
                 ]
               },
-              { "enum": [ "範囲", "周囲" ] },
+              { "$ref": "#/$defs/areaShape" },
+              { "$ref": "#/$defs/areaCenter" },
               { "enum": [ "自身を含む", "自身を除く" ] }
             ]
           }
@@ -378,6 +385,7 @@
       "descs": { "type": "object" },
       "ct": { "type": [ "integer", "string" ] },
       "area": { "type": [ "integer", "string" ] },
+      "areaShape": { "$ref": "#/$defs/areaShape" },
       "range": { "type": [ "integer", "string" ] },
       "cost": { "type": "integer" },
       "isNormalAttack": { "type": "boolean" },
