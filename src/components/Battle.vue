@@ -34,7 +34,7 @@
 
     <div class="content" :style="style">
       <div class="main-panel">
-        <b-tabs v-model="phaseTabIndex">
+        <b-tabs v-if="!simulation" v-model="phaseTabIndex">
           <b-tab v-for="phase in phaseList" :title="phase.desc" @click="selectPhase(phase.id, true); updateURL();" :key="phase.id"></b-tab>
         </b-tabs>
 
@@ -46,17 +46,17 @@
                  @click.right.prevent.stop="onCellRClick(cell)"
                  @mouseover="onCellEnter(cell)" @mouseleave="onCellLeave(cell)">
               <template v-if="unit?.isEnemy && unit?.hasSupport">
-                <b-img-lazy :src="getImageURL(unit.main.class)" class="center"
+                <b-img :src="getImageURL(unit.main.class)" class="center"
                             width="30" height="30" style="position: relative; left: 8px; top: -8px; z-index: 1;" />
-                <b-img-lazy :src="getImageURL(unit.support.class)" class="center"
+                <b-img :src="getImageURL(unit.support.class)" class="center"
                             width="30" height="30" style="position: relative; left: -8px; top: 8px; z-index: 0;" />
               </template>
               <template v-else-if="unit?.isEnemy && unit?.main">
-                <b-img-lazy :src="getImageURL(unit.main.class)" class="center" width="40" height="40" />
+                <b-img :src="getImageURL(unit.main.class)" class="center" width="40" height="40" />
               </template>
               <template v-else-if="unit?.isPlayer">
                 <div draggable @dragstart="onCellDrag(cell)" @drop="onCellDrop(cell)" @dragover.prevent="dummyHandler()">
-                  <b-img-lazy :src="getImageURL(unit.main.icon)" class="center" width="50" height="50" />
+                  <b-img :src="getImageURL(unit.main.icon)" class="center" width="50" height="50" />
                 </div>
               </template>
             </div>
@@ -131,19 +131,41 @@
       </div>
     </div>
 
-    <div v-if="simulation" class="content" style="margin-top: 20px">
+    <div v-if="simulation" class="content" style="margin-top: 20px" @click.stop="">
+      <div class="unit-panel">
+        <div v-if="selectedUnit" style="margin-bottom: 10px">
+          <b-link v-for="(skill, si) of selectedUnit.actions" :key="si" @click="selectAction(skill)">
+            <b-img :src="getImageURL(skill.icon)" :title="descToTitle(skill)" width="50" />
+          </b-link>
+          <b-button size="sm" style="width:50px; height:50px;">
+            待機
+          </b-button>
+        </div>
+        <b-button v-if="selectedUnit" size="sm" @click="confirmAction()" style="width: 10em; margin-right: 1em;">
+          行動を確定
+        </b-button>
+        <b-button size="sm" @click="endTurn()" style="width: 10em; margin-right: 1em;">
+          ターン終了
+        </b-button>
+        <b-button size="sm" @click="endSimulation()" style="width: 14em;">
+          シミュレーション終了
+        </b-button>
+      </div>
+
       <div class="unit-panel">
         シミュレーションモードでは実際のゲームのようにユニットを操作できます。<br />
-        しかし、あくまで検証用であるため、異なる点も多々あります。大きな違いを以下に挙げます。<br />
+        しかし、あくまで検証用であるため、異なる点もあります。大きな違いを以下に挙げます。<br />
         <ul>
-          <li>移動可能範囲は表示されますが、それを無視して無限に移動できます</li>
-          <li>無限に再行動できます</li>
-          <li>敵フェーズでは敵ユニットも手動で操作します (敵の挙動の正確な再現が困難であるため)</li>
+          <li>移動可能範囲は表示されますが、それを無視して無限に移動できます。</li>
+          <li>無限に再行動できます。</li>
+          <li>CT 中のアクティブや使用済みサポートアクティブも使用可能です。<br />
+          (本来使用不能なスキルはアイコンが灰色になるので区別できます)</li>
+          <li>敵ユニットは自動行動しません。敵フェーズでは敵ユニットを手動で操作する必要があります。<br />
+          (敵の挙動の正確な再現が困難であるため)</li>
         </ul>
       </div>
     </div>
-
-    <div class="content" style="margin-top: 30px">
+    <div v-else class="content" style="margin-top: 30px">
       <div class="unit-panel">
         <div class="flex">
           <b-form-input v-model="slotName" placeholder="編成名" :disabled="simulation!=null" style="width: 12em"></b-form-input>
@@ -157,8 +179,8 @@
           <b-button size="sm" @click="clearUnits()" :disabled="simulation!=null" style="width: 10em; margin-left: 1em;">
             編成をクリア
           </b-button>
-          <b-button size="sm" style="width: 14em; margin-left: 4em;" @click="simulation ? endSimulation() : beginSimulation()">
-            {{simulation ? 'シミュレーション終了' : 'シミュレーション開始'}}
+          <b-button size="sm" style="width: 14em; margin-left: 4em;" @click="beginSimulation()">
+            シミュレーション開始
           </b-button>
         </div>
       </div>
@@ -493,11 +515,8 @@ export default {
     validPlayerUnits() {
       return this.playerUnits.flatMap(a => a.main.cid ? [a] : []);
     },
-    allUnits() {
-      return [...this.playerUnits, ...this.enemyUnits];
-    },
     allActiveUnits() {
-      return this.allUnits.filter(a => a.phase == this.phase || a.fid == "E01");
+      return [...this.playerUnits, ...this.enemyUnits].filter(a => a.phase == this.phase || a.fid == "E01");
     },
   },
 
@@ -601,7 +620,7 @@ export default {
           pf.setObstacles(this.allActiveUnits.filter(a => a.isEnemy));
         }
         pf.setStart(unit.coord);
-        pf.build(unit.main.move, unit.main.range);
+        pf.build(unit.move, unit.range);
         this.path = pf;
       }
       else {
@@ -699,7 +718,7 @@ export default {
       const unit = this.findUnitByCoord(cell.coord);
       this.hoveredUnit = unit;
       if (unit?.isEnemy) {
-        this.scrollTo(`enemy_${unit.fid}`);
+        //this.scrollTo(`enemy_${unit.fid}`);
       }
     },
     onCellLeave(cell) {
@@ -713,6 +732,9 @@ export default {
       if (unit) {
         // ユニット選択処理
         this.selectUnit(this.selectedUnit === unit ? null : unit);
+      if (unit.isEnemy) {
+        this.scrollTo(`enemy_${unit.fid}`);
+      }
       }
       else {
         // ユニット移動処理
@@ -774,7 +796,7 @@ export default {
     beginSimulation() {
       this.selectUnit(null);
       if (!this.simulation) {
-        this.simulation = new ldb.SimContext(this.playerUnits, this.enemyUnits);
+        this.simulation = new ldb.SimContext([...this.playerUnits, ...this.enemyUnits]);
         this.simulation.onSimulationBegin();
       }
     },
@@ -784,6 +806,16 @@ export default {
         this.simulation.onSimulationEnd();
         this.simulation = null;
       }
+    },
+
+    endTurn() {
+    },
+
+    confirmAction() {
+    },
+
+    selectAction(skill) {
+      this.selectedSkill = skill;
     },
 
     onUnitDrag(unit) {

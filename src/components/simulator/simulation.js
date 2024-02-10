@@ -1,5 +1,4 @@
-export class BaseUnit
-{
+export class BaseUnit {
   isEnemy = false;
   isPlayer = false;
 
@@ -44,6 +43,16 @@ export class BaseUnit
   }
   get hasSupport() {
     return this.base.support.cid;
+  }
+  get actions() {
+    return this.sim ? this.sim.actions : [];
+  }
+
+  get move() {
+    return this.sim ? this.sim.main.move : this.main.move;
+  }
+  get range() {
+    return this.sim ? this.sim.main.range : this.main.range;
   }
 
   constructor(isPlayer = true) {
@@ -142,26 +151,37 @@ export class BaseUnit
   }
 }
 
-export class EffectHolder
-{
-  effect = null;
-  stack = 1;
-  duration = Infinity;
-  passDuration = true;
-  enabled = true;
+function makeSimEffect(effect) {
+  let self = Object.create(effect);
+  self.stack = 1;
+  self.time = Infinity; // 残有効時間
+  self.isStopped = true; // 自己バフはかけたターンは時間経過しない。そのためのフラグ。
+  self.enabled = true; // 有効か。基本的には time > 0 なら有効、そうでなければ無効だが、ユーザーが強制的に有効にすることもある。
 
-  constructor(effect) {
-    this.effect = effect;
+  self.serialize = function () {
+    return {
+      stack: self.stack,
+      time: self.time,
+      isStopped: self.isStopped,
+      enabled: self.enabled,
+    };
   }
-  activate(bySelf) {
-    if (this.effect.duration) {
-      this.duration = this.effect.duration;
+  self.deserialize = function (r) {
+    self.stack = r.stack;
+    self.time = r.time;
+    self.isStopped = r.isStopped;
+    self.enabled = r.enabled;
+  }
+
+  self.activate = function (bySelf) {
+    if (self.duration) {
+      self.time = self.duration;
       if (bySelf) {
-        this.passDuration = false;
+        self.isStopped = false;
       }
     }
   }
-  evaluateCondition(target, caster, battleCtx) {
+  self.evaluateCondition = function (target, caster, battleCtx) {
     const condExp = function(val1, cmp, val2) {
       const table = {
         "==": () => val1 == val2,
@@ -174,7 +194,7 @@ export class EffectHolder
       return table[cmp];
     }
 
-    const cond = this.effect.condition;
+    const cond = self.condition;
     let ok = true;
     if (cond) {
       if (cond.turn) {
@@ -272,42 +292,41 @@ export class EffectHolder
     }
     return ok;
   }
-  evaluateBuff(target, caster, battleCtx) {
+  self.evaluateBuff = function (target, caster, battleCtx) {
   }
-  evaluateDebuff(target, caster, battleCtx) {
+  self.evaluateDebuff = function (target, caster, battleCtx) {
   }
 
-  onTurnBegin() {
-    this.passDuration = true;
+  self.onTurnBegin = function () {
   }
-  onSimulationBegin() {
+  self.onSimulationBegin = function () {
   }
-  onSimulationEnd() {
+  self.onSimulationEnd = function () {
   }
-  onAttackBegin() {
+  self.onAttackBegin = function () {
   }
-  onAttackEnd() {
+  self.onAttackEnd = function () {
   }
-  onActionEnd() {
-    if (this.passDuration && this.duration > 0) {
-      if (--this.duration == 0) {
-        this.enabled = false;
+  self.onActionEnd = function () {
+    if (!self.isStopped && self.time > 0) {
+      if (--self.time == 0) {
+        self.enabled = false;
       }
     }
   }
-  onTurnEnd() {
-    this.passDuration = true;
+  self.onTurnEnd = function () {
+    self.isStopped = false;
   }
 
-  _getValue(battleCtx, baseStat) {
+  self._getValue = function (battleCtx, baseStat) {
     let r = 0;
-    const effect = this.effect;
+    const effect = self;
     if (effect.value) {
       r = effect.value;
       if (effect.maxStack) {
         // 効果が重複するタイプ
         // フルスペック時の効果を返す
-        r *= this.stack;
+        r *= self.stack;
       }
     }
     else if (effect.variable) {
@@ -327,106 +346,99 @@ export class EffectHolder
     }
     return r;
   }
-
-  serialize() {
-  }
-  deserialize(r) {
-  }
+  return self;
 }
 
-export class SkillHolder
-{
-  skill = null;
-  self = false;
-  effects = []; // EffectHolder
+function makeSimCustomEffect(type) {
+  let self = {
+    effectType: 0,
+    value: 0,
+  };
+  let vue = window.$vue;
+  self.effectType = typeof (type) === 'string' ? vue.getEffectIndex(type) : type;
 
-  constructor(skill) {
-    this.skill = skill;
-    for (let effect of [...(this.skill.buff ?? []), ...(this.skill.debuff ?? [])]) {
-      this.effects.push(new EffectHolder(effect));
-    }
-  }
-  activate(bySelf) {
-    this.self = bySelf;
-    for (let e of this.effects) {
-      e.activate(bySelf);
-    }
-  }
-
-  onTurnBegin() {
-    for (let e of this.effects) {
-      e.onTurnBegin();
-    }
-  }
-  onSimulationBegin() {
-    for (let e of this.effects) {
-      e.onSimulationBegin();
-    }
-  }
-  onSimulationEnd() {
-    for (let e of this.effects) {
-      e.onSimulationEnd();
-    }
-  }
-  onAttackBegin() {
-    for (let e of this.effects) {
-      e.onAttackBegin();
-    }
-  }
-  onAttackEnd() {
-    for (let e of this.effects) {
-      e.onAttackEnd();
-    }
-  }
-  onActionEnd() {
-    for (let e of this.effects) {
-      e.onActionEnd();
-    }
-  }
-  onTurnEnd() {
-    for (let e of this.effects) {
-      e.onTurnEnd();
-    }
-  }
-
-  serialize() {
-    //  for (let e of this.effects) {
-    //    e.serialize();
-    //  }
-  }
-  deserialize(r) {
-    //  for (let e of this.effects) {
-    //    e.deserialize();
-    //  }
-  }
-}
-
-export class CustomEffect
-{
-  effectType = 0;
-  value = 0;
-
-  constructor(type) {
-    this.effectType = typeof (type) === 'string' ? window.$vue.getEffectIndex(type) : type;
-    this.value = 0;
-  }
-  serialize() {
+  self.serialize = function () {
     return {
       effectType: this.effectType,
       value: this.value,
     };
   }
-  deserialize(r) {
+  self.deserialize = function (r) {
     this.effectType = r.effectType;
     this.value = r.value;
   }
+  return self;
 }
 
-export class SimUnit
-{
+function makeSimSkill(skill) {
+  let self = Object.create(skill);
+  self.effects = []; // SimEffect
+
+  for (let effect of [...(self.buff ?? []), ...(self.debuff ?? [])]) {
+    self.effects.push(makeSimEffect(effect));
+  }
+
+  self.serialize = function () {
+    return {
+      effects: self.effects.map(a => a.serialize()),
+    };
+  }
+  self.deserialize = function (r) {
+    self.effects = r.effects.map(function (data) {
+      let tmp = makeSimEffect();
+      tmp.deserialize(data);
+      return tmp;
+    });
+  }
+
+  self.activate = function (bySelf) {
+    self.bySelf = bySelf;
+    for (let e of self.effects) {
+      e.activate(bySelf);
+    }
+  }
+  self.onTurnBegin = function () {
+    for (let e of self.effects) {
+      e.onTurnBegin();
+    }
+  }
+  self.onSimulationBegin = function () {
+    for (let e of self.effects) {
+      e.onSimulationBegin();
+    }
+  }
+  self.onSimulationEnd = function () {
+    for (let e of self.effects) {
+      e.onSimulationEnd();
+    }
+  }
+  self.onAttackBegin = function () {
+    for (let e of self.effects) {
+      e.onAttackBegin();
+    }
+  }
+  self.onAttackEnd = function () {
+    for (let e of self.effects) {
+      e.onAttackEnd();
+    }
+  }
+  self.onActionEnd = function () {
+    for (let e of self.effects) {
+      e.onActionEnd();
+    }
+  }
+  self.onTurnEnd = function () {
+    for (let e of self.effects) {
+      e.onTurnEnd();
+    }
+  }
+  return self;
+}
+
+class SimUnit {
   base = null;
   coord = [0, 0];
-  affectedSkills = []; // SkillHolder
+  affectedSkills = []; // SimSkill
   customEffects = [];
   main = {
     bufP: [],
@@ -483,6 +495,19 @@ export class SimUnit
     }
   }
 
+  serialize() {
+    let r = {};
+    r.coord = [...this.coord];
+    SimUnit.copyProps(r.main, this.main);
+    SimUnit.copyProps(r.support, this.support);
+    return r;
+  }
+  deserialize(r) {
+    this.coord = [...r.coord];
+    SimUnit.copyProps(this.main, r.main);
+    SimUnit.copyProps(this.support, r.support);
+  }
+
   onSimulationBegin() {
   }
   onSimulationEnd() {
@@ -509,13 +534,13 @@ export class SimUnit
   applySkill(skill, self = false) {
     let s = this.affectedSkills.find(a => a.skill === skill);
     if (!s) {
-      s = new SkillHolder(skill, self);
+      s = makeSimSkill(skill, self);
       this.affectedSkills.push(s);
     }
     s.activate(self);
   }
   applyCustomEffect(effectType, value) {
-    this.customEffects.push(new CustomEffect(effectType, value));
+    this.customEffects.push(makeSimCustomEffect(effectType, value));
   }
 
   evaluateEffects(battleCtx) {
@@ -548,26 +573,12 @@ export class SimUnit
       }
     }
   }
-
-  serialize() {
-    let r = {};
-    r.coord = [...this.coord];
-    SimUnit.copyProps(r.main, this.main);
-    SimUnit.copyProps(r.support, this.support);
-    return r;
-  }
-  deserialize(r) {
-    this.coord = [...r.coord];
-    SimUnit.copyProps(this.main, r.main);
-    SimUnit.copyProps(this.support, r.support);
-  }
 }
 
 export class SimContext
 {
   battleId = "";
-  playerUnits = []; // SimUnit
-  enemyUnits = []; // SimUnit
+  units = [];
   turn = 1;
   isPlayerTurn = true;
 
@@ -575,15 +586,11 @@ export class SimContext
   defender = null;
   results = []; // CombatResult
 
-  constructor(playerUnits, enemyUnits) {
-    this.playerUnits = playerUnits.map(a => new SimUnit(a));
-    this.enemyUnits = enemyUnits.map(a => new SimUnit(a));
+  constructor(baseUnits) {
+    this.units = baseUnits.map(a => new SimUnit(a));
   }
-  findUnit(u) {
-    let r = this.playerUnits.find(a => a.unit === u);
-    if (!r)
-      r = this.enemyUnits.find(a => a.unit === u);
-    return r;
+  findUnitByBase(baseUnit) {
+    return this.units.find(a => a.base === baseUnit);
   }
 
   get isEnemyTurn() { return !this.isPlayerTurn; }
@@ -608,36 +615,44 @@ export class SimContext
   }
 
   onSimulationBegin() {
-    for (let u of [...this.playerUnits, ...this.enemyUnits]) {
+    for (let u of this.units) {
       u.onSimulationBegin();
     }
     this.onPlayerTurnBegin();
   }
   onSimulationEnd() {
-    for (let u of [...this.playerUnits, ...this.enemyUnits]) {
+    for (let u of this.units) {
       u.onSimulationEnd();
     }
   }
 
   onPlayerTurnBegin() {
-    for (let u of this.playerUnits) {
-      u.onTurnBegin();
+    for (let u of this.units) {
+      if (u.isPlayer) {
+        u.onTurnBegin();
+      }
     }
   }
   onPlayerTurnEnd() {
-    for (let u of this.playerUnits) {
-      u.onTurnEnd();
+    for (let u of this.units) {
+      if (u.isPlayer) {
+        u.onTurnEnd();
+      }
     }
   }
 
   onEnemyTurnBegin() {
-    for (let u of this.enemyUnits) {
-      u.onTurnBegin();
+    for (let u of this.units) {
+      if (u.isEnemy) {
+        u.onTurnBegin();
+      }
     }
   }
   onEnemyTurnEnd() {
-    for (let u of this.enemyUnits) {
-      u.onTurnEnd();
+    for (let u of this.units) {
+      if (u.isEnemy) {
+        u.onTurnEnd();
+      }
     }
   }
 }
