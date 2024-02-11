@@ -143,12 +143,17 @@
             <b-img :src="getImageURL(skill.icon)" :title="descToTitle(skill)" :class="skill.available ? '' : 'grayscale'" width="50" />
           </b-link>
         </div>
-        <b-button size="sm" @click="endTurn()" style="width: 10em; margin-right: 1em;">
-          ターン終了
-        </b-button>
-        <b-button size="sm" @click="endSimulation()" style="width: 14em;">
-          シミュレーション終了
-        </b-button>
+        <div>
+          <h5>
+            ターン{{ simulation.turn }} : {{ simulation.isPlayerTurn ? 'プレイヤー': 'エネミー' }}フェイズ
+          </h5>
+          <b-button size="sm" @click="endTurn()" style="width: 10em; margin-right: 1em;">
+            ターン終了
+          </b-button>
+          <b-button size="sm" @click="endSimulation()" style="width: 14em;">
+            シミュレーション終了
+          </b-button>
+        </div>
       </div>
 
       <div class="unit-panel">
@@ -513,11 +518,13 @@ export default {
     },
 
   computed: {
-    validPlayerUnits() {
-      return this.playerUnits.flatMap(a => a.main.cid ? [a] : []);
-    },
     allActiveUnits() {
-      return [...this.playerUnits, ...this.enemyUnits].filter(a => a.phase == this.phase || a.fid == "E01");
+      if (this.simulation) {
+        return [...this.playerUnits, ...this.enemyUnits].filter(a => !a.isDormant);
+      }
+      else {
+        return [...this.playerUnits, ...this.enemyUnits].filter(a => a.phase == this.phase || a.fid == "E01");
+      }
     },
   },
 
@@ -579,11 +586,6 @@ export default {
       }
     },
 
-    isValidCoord(coord) {
-      return (coord[0] >= 0 && coord[0] < this.divX) &&
-             (coord[1] >= 0 && coord[1] < this.divY);
-    },
-
     findUnitByCoord(coord) {
       for (const u of this.allActiveUnits) {
         if (u.coord[0] == coord[0] && u.coord[1] == coord[1])
@@ -592,24 +594,14 @@ export default {
       return null;
     },
 
-    selectUnit(id) {
-      let unit = null;
-      if (id != null) {
-        if (typeof (id) === 'string') {
-          this.allActiveUnits.find(u => u.fid == id);
-        }
-        else {
-          unit = id;
-        }
-      }
-
+    selectUnit(unit) {
       if (unit) {
         this.selectedUnit = unit;
         if (unit.isEnemy) {
           this.scrollTo(`unit_${unit.fid}`);
         }
         if (unit.isPlayer) {
-          const idx = this.playerUnits.findIndex(a => a === unit);
+          const idx = this.playerUnits.findIndex(a => a.fid == unit.fid);
           this.unitTabIndex = idx;
         }
 
@@ -631,23 +623,6 @@ export default {
         this.selectedSkill = null;
         this.path = null;
       }
-    },
-
-    placeEnemyUnit(unit, coord) {
-      // 指定座標が専有されていた場合はずらす
-      const subCoord = [
-        [0, 0],
-        [0, -1], [1, 0], [0, 1], [-1, 0],
-        [0, -2], [1, -1], [2, 0], [1, 1], [0, 2], [-1, 1], [-2, 0], [-1, -1]
-      ];
-      for (const sc of subCoord) {
-        let c = [coord[0] + sc[0], coord[1] + sc[1]];
-        if (this.isValidCoord(c) && !this.findUnitByCoord(c)) {
-          unit.coord = c;
-          return true;
-        }
-      }
-      return false;
     },
 
     mergeChrData(dst, src) {
@@ -826,6 +801,7 @@ export default {
     },
 
     endTurn() {
+      this.simulation?.passTurn();
     },
 
     confirmAction() {

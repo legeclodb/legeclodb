@@ -54,6 +54,9 @@ export class BaseUnit {
   get range() {
     return this.sim ? this.sim.main.range : this.main.range;
   }
+  get isDormant() {
+    return this.sim ? this.sim.isDormant : false;
+  }
 
   constructor(isPlayer = true) {
     if (isPlayer)
@@ -459,7 +462,8 @@ function makeSimSkill(skill, ownerChr) {
 }
 
 class SimUnit {
-  base = null;
+  base = null; // BaseUnit
+  isDormant = false; // 配置前 (出現ターン前) のユニットは true
   coord = [0, 0];
   affectedSkills = []; // SimSkill
   customEffects = [];
@@ -476,11 +480,17 @@ class SimUnit {
     hp: 0,
   };
 
+  get fid() { return this.base.fid; }
+  get phase() { return this.base.phase; }
+
   constructor(unit) {
     unit.sim = this;
     this.base = unit;
-    this.fid = unit.fid;
     this.coord = [...unit.base.coord];
+
+    if (this.phase != "0") {
+      this.isDormant = true;
+    }
 
     const addBattleProps = function (chr, base) {
       chr.unit = this;
@@ -512,7 +522,6 @@ class SimUnit {
     {
       this.main = Object.create(unit.base.main);
       addBattleProps(this.main, unit.base.main);
-      console.log(this.main);
     }
     if (unit.base.support) {
       this.support = Object.create(unit.base.support);
@@ -639,6 +648,11 @@ export class SimContext
     return this.units.find(a => a.base === baseUnit);
   }
 
+  get currentPhase() {
+    return `${this.turn}${this.isPlayerTurn ? 'P' : 'E'}`;
+  }
+  get activeUnits() { return this.units.filter(u => !u.isDormant); }
+
   get isEnemyTurn() { return !this.isPlayerTurn; }
   set isEnemyTurn(v) { this.isPlayerTurn = !v; }
 
@@ -676,14 +690,14 @@ export class SimContext
   }
 
   onPlayerTurnBegin() {
-    for (let u of this.units) {
+    for (let u of this.activeUnits) {
       if (u.isPlayer) {
         u.onTurnBegin();
       }
     }
   }
   onPlayerTurnEnd() {
-    for (let u of this.units) {
+    for (let u of this.activeUnits) {
       if (u.isPlayer) {
         u.onTurnEnd();
       }
@@ -691,18 +705,54 @@ export class SimContext
   }
 
   onEnemyTurnBegin() {
+    const phase = this.currentPhase;
     for (let u of this.units) {
+      if (u.isDormant && u.phase == phase) {
+        this.placeUnit(u, u.coord);
+      }
+    }
+    for (let u of this.activeUnits) {
       if (u.isEnemy) {
         u.onTurnBegin();
       }
     }
   }
   onEnemyTurnEnd() {
-    for (let u of this.units) {
+    for (let u of this.activeUnits) {
       if (u.isEnemy) {
         u.onTurnEnd();
       }
     }
+  }
+
+
+  findUnitByCoord(coord) {
+    for (const u of this.activeUnits) {
+      if (u.coord[0] == coord[0] && u.coord[1] == coord[1])
+        return u;
+    }
+    return null;
+  }
+  isValidCoord(coord) {
+    return (coord[0] >= 0 && coord[0] < this.divX) &&
+      (coord[1] >= 0 && coord[1] < this.divY);
+  }
+  placeUnit(unit, coord) {
+    // 指定座標が専有されていた場合はずらす
+    const subCoord = [
+      [0, 0],
+      [0, -1], [1, 0], [0, 1], [-1, 0],
+      [0, -2], [1, -1], [2, 0], [1, 1], [0, 2], [-1, 1], [-2, 0], [-1, -1]
+    ];
+    for (const sc of subCoord) {
+      let c = [coord[0] + sc[0], coord[1] + sc[1]];
+      if (this.isValidCoord(c) && !this.findUnitByCoord(c)) {
+        unit.coord = c;
+        unit.isDormant = false;
+        return true;
+      }
+    }
+    return false;
   }
 }
 
