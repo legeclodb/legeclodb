@@ -683,6 +683,7 @@ export default {
 
     getCellClass(cell) {
       const unit = this.findUnitByCoord(cell.coord);
+      const selected = this.selectedUnit;
 
       let r = ["grid-cell", "border-l", "border-t"];
       if (cell.coord[0] == this.divX - 1) {
@@ -697,7 +698,7 @@ export default {
           r.push("enemy-cell");
         if (unit.isPlayer)
           r.push("player-cell");
-        if (unit === this.selectedUnit)
+        if (unit === selected)
           r.push("selected");
       }
       if (this.path) {
@@ -711,12 +712,12 @@ export default {
         }
         else if (this.path.isShootable(cell.coord)) {
           r.push("attack-range");
-          if (unit && cell === this.hoveredCell) {
+          if (cell === this.hoveredCell && unit && selected && unit.isPlayer != selected.isPlayer) {
             r.push("hovered");
           }
         }
       }
-      if (this.simulation?.isOwnTurn(this.selectedUnit) && !unit) {
+      if (this.simulation?.isOwnTurn(selected) && !unit) {
         r.push("click-to-move");
       }
       return r;
@@ -812,7 +813,7 @@ export default {
     beginSimulation() {
       this.selectUnit(null);
       if (!this.simulation) {
-        this.simulation = new ldb.SimContext([...this.playerUnits, ...this.enemyUnits]);
+        this.simulation = new ldb.SimContext(this.divX, this.divY, [...this.playerUnits, ...this.enemyUnits]);
         this.simulation.onSimulationBegin();
       }
     },

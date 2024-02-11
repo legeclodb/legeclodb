@@ -619,6 +619,8 @@ export class SimContext
 {
   static instance = null;
   battleId = "";
+  divX = 15;
+  divY = 15;
   units = [];
   turn = 1;
   isPlayerTurn = true;
@@ -627,8 +629,10 @@ export class SimContext
   defender = null;
   results = []; // CombatResult
 
-  constructor(baseUnits) {
+  constructor(xd, yd, baseUnits) {
     SimContext.instance = this;
+    this.divX = xd;
+    this.divY = yd;
     this.units = baseUnits.map(a => new SimUnit(a));
   }
   findUnitByBase(baseUnit) {
@@ -857,6 +861,9 @@ export class PathFinder
 
 function $vue() {
   return window.$vue;
+}
+function $sim() {
+  return SimContext.instance;
 }
 function $findObjectByUid(uid) {
   return $vue().findObjectByUid(uid);
