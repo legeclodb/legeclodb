@@ -2,16 +2,18 @@
   {
     "uid": "9999999",
     "icon": "アタック",
-    "name": "通常攻撃(物理),",
+    "name": "通常攻撃(物理)",
     "desc": "敵単体に1倍の物理ダメージを与える",
+    "ct": 0,
     "damageRate": 1.0,
     "isNormalAttack": true
   },
   {
     "uid": "9999998",
     "icon": "マジック",
-    "name": "通常攻撃(魔法),",
+    "name": "通常攻撃(魔法)",
     "desc": "敵単体に1倍の魔法ダメージを与える",
+    "ct": 0,
     "damageRate": 1.0,
     "isNormalAttack": true
   },

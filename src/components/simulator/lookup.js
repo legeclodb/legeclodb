@@ -452,14 +452,16 @@ export default {
 
     findItemByUid(uid) {
       const r = this.searchTableWithUid.get(uid);
-      if (!r)
-        console.log(`uid:${uid} not found`);
+      //if (!r) {
+      //  console.log(`uid:${uid} not found`);
+      //}
       return r;
     },
     findItemByName(name) {
       const r = this.searchTableWithName.get(name);
-      if (!r)
+      if (!r) {
         console.log(`${name} not found`);
+      }
       return r;
     },
 

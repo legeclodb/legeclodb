@@ -133,20 +133,14 @@
 
     <div v-if="simulation" class="content" style="margin-top: 20px" @click.stop="">
       <div class="unit-panel">
-        <div v-if="selectedUnit" style="margin-bottom: 10px">
+        <div v-if="selectedUnit" style="margin-bottom: 20px">
+          <b-button size="sm" style="width: 45px; height: 45px; margin-right: 5px;">
+            待機
+          </b-button>
           <b-link v-for="(skill, si) of selectedUnit.actions" :key="si" @click="selectAction(skill)">
             <b-img :src="getImageURL(skill.icon)" :title="descToTitle(skill)" :class="skill.available ? '' : 'grayscale'" width="50" />
           </b-link>
-          <b-button size="sm" style="width:50px; height:50px;">
-            待機
-          </b-button>
         </div>
-        <b-button v-if="selectedUnit" size="sm" @click="confirmAction()" style="width: 10em; margin-right: 1em;">
-          行動を確定
-        </b-button>
-        <b-button v-if="selectedUnit" size="sm" @click="calcelAction()" style="width: 10em; margin-right: 1em;">
-          行動をキャンセル
-        </b-button>
         <b-button size="sm" @click="endTurn()" style="width: 10em; margin-right: 1em;">
           ターン終了
         </b-button>
@@ -230,25 +224,27 @@
                       <div class="status2" v-html="statusToHtml(unit.main.status)" />
                     </div>
                     <div class="skills">
-                      <div class="skill" v-for="(skill, si) in unit.main.skills" :class="getSkillClass(skill)" :key="`skill${si}`">
-                        <div class="flex">
-                          <div class="icon" :id="`unit${ui}_main_skill${si}`">
-                            <b-img-lazy :src="getImageURL(skill.icon)" with="50" height="50" />
-                            <b-popover v-if="displayType==1" :target="`unit${ui}_main_skill${si}`" triggers="hover focus" :delay="{show:0, hide:250}" no-fade :title="skill.name" placement="top">
-                              <div class="flex">
-                                <div v-html="descToHtml(skill)"></div>
-                              </div>
-                            </b-popover>
-                          </div>
-                          <div class="desc" v-show="displayType >= 2">
-                            <div class="flex">
-                              <h6>{{ skill.name }}</h6>
-                              <div class="param-group" v-html="skillParamsToHtml(skill)"></div>
+                      <template v-for="(skill, si) in unit.main.skills">
+                        <div class="skill" v-if="!skill.isNormalAttack" :class="getSkillClass(skill)" :key="`skill${si}`">
+                          <div class="flex">
+                            <div class="icon" :id="`unit${ui}_main_skill${si}`">
+                              <b-img-lazy :src="getImageURL(skill.icon)" with="50" height="50" />
+                              <b-popover v-if="displayType==1" :target="`unit${ui}_main_skill${si}`" triggers="hover focus" :delay="{show:0, hide:250}" no-fade :title="skill.name" placement="top">
+                                <div class="flex">
+                                  <div v-html="descToHtml(skill)"></div>
+                                </div>
+                              </b-popover>
                             </div>
-                            <p><span v-html="descToHtml(skill)"></span><span v-if="skill.note" class="note" v-html="noteToHtml(skill)"></span></p>
+                            <div class="desc" v-show="displayType >= 2">
+                              <div class="flex">
+                                <h6>{{ skill.name }}</h6>
+                                <div class="param-group" v-html="skillParamsToHtml(skill)"></div>
+                              </div>
+                              <p><span v-html="descToHtml(skill)"></span><span v-if="skill.note" class="note" v-html="noteToHtml(skill)"></span></p>
+                            </div>
                           </div>
                         </div>
-                      </div>
+                      </template>
                     </div>
                     <div class="skills">
                       <div class="skill" v-for="(skill, si) in unit.main.items" :class="getSkillClass(skill)" :key="`item${si}`">
@@ -653,10 +649,16 @@ export default {
     },
 
     mergeChrData(dst, src) {
-      const props = ["name", "icon", "class", "rarity", "symbol", "supportType", "damageType", "range", "move"];
+      const props = [
+        "isMain", "isSupport",
+        "name", "icon", "class", "rarity", "symbol", "supportType", "damageType", "range", "move",
+      ];
       if (src) {
         for (const prop of props) {
-          dst[prop] = src[prop];
+          if (prop in src)
+            dst[prop] = src[prop];
+          else
+            delete dst[prop];
         }
       }
       else {
@@ -852,10 +854,6 @@ export default {
     dummyHandler() {
     },
 
-
-    uidToObject(uid) {
-      return this.searchTableWithUid.get(uid);
-    },
 
     // in-place array copy
     copyArray(dst, src) {

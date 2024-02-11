@@ -69,12 +69,12 @@ export class BaseUnit {
     this.showEditor = false;
     this.editorData = [];
 
-    const mergeChrData = window.$vue.mergeChrData;
+    const mergeChrData = $vue().mergeChrData;
     mergeChrData(this.base.main, null);
     mergeChrData(this.base.support, null);
   }
   swap(v) {
-    const swapProperty = window.$vue.swapProperty;
+    const swapProperty = $vue().swapProperty;
     swapProperty(this.base, v.base, "main");
     swapProperty(this.base, v.base, "support");
     swapProperty(this, v, "editorData");
@@ -104,14 +104,14 @@ export class BaseUnit {
     return r;
   }
   deserialize(r) {
-    const uidToObject = window.$vue.uidToObject;
-    const mergeChrData = window.$vue.mergeChrData;
+    const findItemByUid = $vue().findItemByUid;
+    const mergeChrData = $vue().mergeChrData;
     const deserializeChr = function (dst, src) {
-      const chr = uidToObject(src.cid);
+      const chr = findItemByUid(src.cid);
       mergeChrData(dst, chr);
       dst.cid = src.cid;
-      dst.skills = src.skills.map(uidToObject);
-      dst.items = src.items.map(uidToObject);
+      dst.skills = src.skills.map(findItemByUid);
+      dst.items = src.items.map(findItemByUid);
       dst.status = [...src.status];
     };
     deserializeChr(this.base.main, r.main);
@@ -119,31 +119,31 @@ export class BaseUnit {
     this.editorData = [...r.editorData];
   }
   edit(ss) {
-    const uidToObject = window.$vue.uidToObject;
-    const copyArray = window.$vue.copyArray;
-    const mergeChrData = window.$vue.mergeChrData;
+    const findItemByUid = $vue().findItemByUid;
+    const copyArray = $vue().copyArray;
+    const mergeChrData = $vue().mergeChrData;
     // エディタ側のオブジェクトとこちら側のオブジェクトは別個体なため、uid を元にこちら側のオブジェクトに差し替える。
 
     let main = this.base.main;
-    const mainChr = uidToObject(ss.main.character.value?.uid);
+    const mainChr = findItemByUid(ss.main.character.value?.uid);
     mergeChrData(main, mainChr);
     main.cid = mainChr?.uid ?? "";
     main.skills = [];
     if (mainChr) {
-      main.skills = [mainChr.talent, ...ss.mainSkills].filter(a => a).map(a => uidToObject(a.uid));
+      main.skills = [mainChr.talent, ...ss.mainSkills].filter(a => a).map(a => findItemByUid(a.uid));
     }
-    main.items = [...ss.mainEnchantPassive, ...ss.mainItems].filter(a => a).map(a => uidToObject(a.uid));
+    main.items = [...ss.mainEnchantPassive, ...ss.mainItems].filter(a => a).map(a => findItemByUid(a.uid));
     main.status = ss.statMainResult.slice(0, 6);
 
     let support = this.base.support;
-    const supChr = uidToObject(ss.support.character.value?.uid);
+    const supChr = findItemByUid(ss.support.character.value?.uid);
     mergeChrData(support, supChr);
     support.cid = supChr?.uid ?? "";
     support.skills = [];
     if (supChr) {
-      support.skills = [...supChr.skills].filter(a => a).map(a => uidToObject(a.uid));
+      support.skills = [...supChr.skills].filter(a => a).map(a => findItemByUid(a.uid));
     }
-    support.items = ss.supportItems.filter(a => a).map(a => uidToObject(a.uid));
+    support.items = ss.supportItems.filter(a => a).map(a => findItemByUid(a.uid));
     support.status = ss.statSupportResult.slice(0, 6);
 
     copyArray(this.editorData, ss.serialize());
@@ -354,7 +354,7 @@ function makeSimCustomEffect(type) {
     effectType: 0,
     value: 0,
   };
-  let vue = window.$vue;
+  let vue = $vue();
   self.effectType = typeof (type) === 'string' ? vue.getEffectIndex(type) : type;
 
   self.serialize = function () {
@@ -370,9 +370,9 @@ function makeSimCustomEffect(type) {
   return self;
 }
 
-function makeSimSkill(skill, ownerUnit) {
+function makeSimSkill(skill, ownerChr) {
   let self = Object.create(skill);
-  self.owner = ownerUnit;
+  self.owner = ownerChr;
   if (self.isActive) {
     self.coolTime = 0;
   }
@@ -403,7 +403,7 @@ function makeSimSkill(skill, ownerUnit) {
   }
 
   Object.defineProperty(self, 'available', {
-    get: function () { return !self.isActive || self.coolTime <= 0; },
+    get: () => { return !self.isActive || self.coolTime <= 0; },
   });
 
   self.activate = function (bySelf) {
@@ -482,20 +482,31 @@ class SimUnit {
     this.fid = unit.fid;
     this.coord = [...unit.base.coord];
 
-    const addBattleProps = function (u, base) {
-      u.bufP = [];
-      u.bufF = [];
-      u.status = [...base.status];
-      u.hp = u.status[0];
-      if (base.skills) {
-        u.skills = base.skills.map(skill => makeSimSkill(skill, u));
+    const addBattleProps = function (chr, base) {
+      chr.unit = this;
+      chr.bufP = [];
+      chr.bufF = [];
+      chr.status = [...base.status];
+      chr.hp = chr.status[0];
+
+      let skills = base.skills ? base.skills.map(skill => makeSimSkill(skill, chr)) : [];
+      if (chr.isMain) {
+        // メインのスキルリストに通常攻撃を追加
+        let atk = makeSimSkill($vue().findItemByUid(chr.damageType == "アタック" ? "9999999" : "9999998"));
+        Object.defineProperty(atk, 'range', {
+          get: () => { return chr.range; },
+        });
+        skills = [atk, ...skills];
+      }
+      if (skills.length) {
+        chr.skills = skills;
       }
 
-      Object.defineProperty(u, 'statusBase', {
+      Object.defineProperty(chr, 'statusBase', {
         value: base.status,
         writable: false,
       });
-    };
+    }.bind(this);
     {
       this.main = Object.create(unit.base.main);
       addBattleProps(this.main, unit.base.main);
@@ -505,7 +516,7 @@ class SimUnit {
       addBattleProps(this.support, unit.base.support);
     }
 
-    let vue = window.$vue;
+    let vue = $vue();
     if (unit) {
       // パッシブ/タレントを収集
       const skills = [...(unit.main.skills ?? []), ...(unit.support?.skills ?? []),
@@ -839,4 +850,8 @@ export class PathFinder
       }
     }
   }
+}
+
+function $vue() {
+  return window.$vue;
 }
