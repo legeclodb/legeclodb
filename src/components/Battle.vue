@@ -399,9 +399,18 @@ export default {
       phase: "",
       path: null,
 
-      selectedUnit: null,
-      selectedSkill: null,
-      hoveredCell: null,
+      OP_TYPE: {
+        SELECT_UNIT: 0,
+        SELECT_ACTION: 1,
+        SELECT_TARGET: 2,
+        SELECT_AREA_CENTER: 3,
+        SELECT_AREA_RADIAL: 4,
+      },
+      opMode: 0,
+      selectedUnit: null, // unit
+      selectedSkill: null, // skill
+      selectedTarget: null, // unit
+      hoveredCell: null, // cell
 
       phaseTabIndex: 0,
       prevURL: "",
@@ -420,15 +429,15 @@ export default {
 
       simPhaseList: [
         { index: 0, id: "1P", desc: "1Tプレイヤー" },
-        { index: 1, id: "1E", desc: "1T敵" },
+        { index: 1, id: "1E", desc: "1Tエネミー" },
         { index: 2, id: "2P", desc: "2Tプレイヤー" },
-        { index: 3, id: "2E", desc: "2T敵" },
+        { index: 3, id: "2E", desc: "2Tエネミー" },
         { index: 4, id: "3P", desc: "3Tプレイヤー" },
-        { index: 5, id: "3E", desc: "3T敵" },
+        { index: 5, id: "3E", desc: "3Tエネミー" },
         { index: 6, id: "4P", desc: "4Tプレイヤー" },
-        { index: 7, id: "4E", desc: "4T敵" },
+        { index: 7, id: "4E", desc: "4Tエネミー" },
         { index: 8, id: "5P", desc: "5Tプレイヤー" },
-        { index: 9, id: "5E", desc: "5T敵" },
+        { index: 9, id: "5E", desc: "5Tエネミー" },
       ],
       simulation: null,
     };
@@ -595,12 +604,12 @@ export default {
 
         let pf = new ldb.PathFinder(15, 15);
         if (unit.isEnemy) {
-          pf.setObstacles(this.allActiveUnits.filter(a => a.isPlayer));
+          pf.setObstacles(this.allActiveUnits.filter(a => a.isPlayer && a.main.cid));
           pf.setOccupied(this.allActiveUnits.filter(a => a.isEnemy && a !== unit));
         }
         if (unit.isPlayer) {
           pf.setObstacles(this.allActiveUnits.filter(a => a.isEnemy));
-          pf.setOccupied(this.allActiveUnits.filter(a => a.isPlayer && a !== unit));
+          pf.setOccupied(this.allActiveUnits.filter(a => a.isPlayer && a.main.cid && a !== unit));
         }
         pf.setStart(unit.coord);
         pf.buildPath(unit.move, unit.range);
@@ -668,14 +677,14 @@ export default {
         if (this.path.isReachable(cell.coord)) {
           if (!unit) {
             r.push("move-range");
-            if (cell === this.hoveredCell) {
+            if (cell === this.hoveredCell && this.simulation?.isOwnTurn(selected)) {
               r.push("hovered");
             }
           }
         }
         else if (this.path.isShootable(cell.coord)) {
           r.push("attack-range");
-          if (cell === this.hoveredCell && unit && selected && unit.isPlayer != selected.isPlayer) {
+          if (cell === this.hoveredCell && unit && selected && this.simulation?.isOwnTurn(selected) && unit.isPlayer != selected.isPlayer) {
             r.push("hovered");
           }
         }
