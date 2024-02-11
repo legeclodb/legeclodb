@@ -63,8 +63,8 @@
           </div>
 
           <div class="enemy-list">
-            <template v-for="enemy in enemies">
-              <div class="character" :class="{ 'highlighted': isUnitHighlighted(enemy.unit) }" :id="'enemy_'+enemy.fid" :key="enemy.fid" :set="unit=enemy.unit">
+            <template v-for="unit in activeEnemyUnits">
+              <div class="character" :class="{ 'highlighted': isUnitHighlighted(unit) }" :id="'enemy_'+unit.fid" :key="unit.fid">
                 <div class="flex">
                   <div class="portrait">
                     <b-img-lazy :src="getImageURL(unit.main.icon)" :title="unit.main.name" width="80" height="80" rounded />
@@ -85,9 +85,9 @@
                       <template v-for="(skill, si) in unit.main.skills">
                         <div v-if="!skill.isNormalAttack" class="skill" :class="getSkillClass(skill)" :key="si">
                           <div class="flex">
-                            <div class="icon" :id="'enemy_'+enemy.fid+'_skill'+si">
+                            <div class="icon" :id="'enemy_'+unit.fid+'_skill'+si">
                               <b-img-lazy :src="getImageURL(skill.icon)" with="50" height="50" />
-                              <b-popover v-if="displayType==1" :target="'enemy_'+enemy.fid+'_skill'+si" triggers="hover focus" :delay="{show:0, hide:250}" no-fade :title="skill.name" placement="top">
+                              <b-popover v-if="displayType==1" :target="'enemy_'+unit.fid+'_skill'+si" triggers="hover focus" :delay="{show:0, hide:250}" no-fade :title="skill.name" placement="top">
                                 <div class="flex">
                                   <div v-html="descToHtml(skill)"></div>
                                 </div>
@@ -396,9 +396,6 @@ export default {
       battleData: null,
       cells: [],
       phase: "",
-
-      enemies: [],
-      allies: [],
       path: null,
 
       selectedUnit: null,
@@ -518,6 +515,14 @@ export default {
     },
 
   computed: {
+    activeEnemyUnits() {
+      if (this.simulation) {
+        return this.enemyUnits.filter(a => !a.isDormant);
+      }
+      else {
+        return this.enemyUnits.filter(a => a.phase == this.phase || a.fid == "E01");
+      }
+    },
     allActiveUnits() {
       if (this.simulation) {
         return [...this.playerUnits, ...this.enemyUnits].filter(a => !a.isDormant);
@@ -562,24 +567,6 @@ export default {
 
       this.phaseTabIndex = phase.index;
       this.phase = pid;
-      this.enemies = this.battleData.enemies.filter(e => e.phase == pid || e.fid == "E01");
-      this.allies = this.battleData.allies.filter(e => e.phase == pid);
-
-      for (let cell of this.cells) {
-        cell.enemy = null;
-        cell.ally = null;
-
-        for (let enemy of this.enemies) {
-          if (enemy.coord[0] == cell.coord[0] && enemy.coord[1] == cell.coord[1]) {
-            cell.enemy = enemy;
-          }
-        }
-        for (let ally of this.allies) {
-          if (ally.coord[0] == cell.coord[0] && ally.coord[1] == cell.coord[1]) {
-            cell.ally = ally;
-          }
-        }
-      }
 
       if (clear) {
         this.selectUnit(null);
