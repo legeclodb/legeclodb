@@ -147,7 +147,8 @@
           <h5>
             ターン{{ simulation.turn }} : {{ simulation.isPlayerTurn ? 'プレイヤー': 'エネミー' }}フェイズ
           </h5>
-          <b-button size="sm" @click="endTurn()" style="width: 10em; margin-right: 1em;">
+          <b-button size="sm" @click="endTurn()" style="width: 10em; margin-right: 1em;"
+                    :disabled="simulation.turn == simulation.maxTurn && simulation.isEnemyTurn">
             ターン終了
           </b-button>
           <b-button size="sm" @click="endSimulation()" style="width: 14em;">
@@ -164,7 +165,7 @@
           <li>無限に再行動できます。</li>
           <li>CT 中のアクティブや使用済みサポートアクティブも使用可能です。<br />
           (本来使用不能なスキルはアイコンが灰色になるので区別できます)</li>
-          <li>敵ユニットは自動行動しません。<b>敵フェーズでは敵ユニットを手動で操作する必要があります</b>。<br />
+          <li>敵ユニットは自動では行動しません。<b>敵フェイズでは敵ユニットを手動で操作する必要があります</b>。<br />
           (敵の挙動の正確な再現が困難であるため)</li>
         </ul>
       </div>
@@ -517,7 +518,7 @@ export default {
   computed: {
     activeEnemyUnits() {
       if (this.simulation) {
-        return this.enemyUnits.filter(a => !a.isDormant);
+        return this.enemyUnits.filter(a => a.isActive);
       }
       else {
         return this.enemyUnits.filter(a => a.phase == this.phase || a.fid == "E01");
@@ -525,7 +526,7 @@ export default {
     },
     allActiveUnits() {
       if (this.simulation) {
-        return [...this.playerUnits, ...this.enemyUnits].filter(a => !a.isDormant);
+        return [...this.playerUnits, ...this.enemyUnits].filter(a => a.isActive);
       }
       else {
         return [...this.playerUnits, ...this.enemyUnits].filter(a => a.phase == this.phase || a.fid == "E01");

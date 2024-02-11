@@ -54,8 +54,8 @@ export class BaseUnit {
   get range() {
     return this.sim ? this.sim.main.range : this.main.range;
   }
-  get isDormant() {
-    return this.sim ? this.sim.isDormant : false;
+  get isActive() {
+    return this.sim ? this.sim.isActive : false;
   }
 
   constructor(isPlayer = true) {
@@ -482,6 +482,7 @@ class SimUnit {
 
   get fid() { return this.base.fid; }
   get phase() { return this.base.phase; }
+  get isActive() { return !this.isDormant && this.main.hp > 0; }
 
   constructor(unit) {
     unit.sim = this;
@@ -628,8 +629,11 @@ export class SimContext
 {
   static instance = null;
   battleId = "";
+
   divX = 15;
   divY = 15;
+  maxTurn = 5;
+
   units = [];
   turn = 1;
   isPlayerTurn = true;
@@ -668,11 +672,14 @@ export class SimContext
       this.onPlayerTurnEnd();
       this.onEnemyTurnBegin();
     }
-    else {
+    else if (this.turn < this.maxTurn) {
       ++this.turn;
       this.isPlayerTurn = true;
       this.onEnemyTurnEnd();
       this.onPlayerTurnBegin();
+    }
+    else {
+      console.log("End of Battle");
     }
   }
 
