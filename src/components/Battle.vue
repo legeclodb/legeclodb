@@ -82,25 +82,27 @@
                       <div v-if="unit.main.status" class="status2" v-html="statusToHtml(unit.main.status)" />
                     </div>
                     <div class="skills">
-                      <div class="skill" v-for="(skill, si) in unit.main.skills" :class="getSkillClass(skill)" :key="si">
-                        <div class="flex">
-                          <div class="icon" :id="'enemy_'+enemy.fid+'_skill'+si">
-                            <b-img-lazy :src="getImageURL(skill.icon)" with="50" height="50" />
-                            <b-popover v-if="displayType==1" :target="'enemy_'+enemy.fid+'_skill'+si" triggers="hover focus" :delay="{show:0, hide:250}" no-fade :title="skill.name" placement="top">
-                              <div class="flex">
-                                <div v-html="descToHtml(skill)"></div>
-                              </div>
-                            </b-popover>
-                          </div>
-                          <div class="desc" v-show="displayType >= 2">
-                            <div class="flex">
-                              <h6>{{ skill.name }}</h6>
-                              <div class="param-group" v-html="skillParamsToHtml(skill)"></div>
+                      <template v-for="(skill, si) in unit.main.skills">
+                        <div v-if="!skill.isNormalAttack" class="skill" :class="getSkillClass(skill)" :key="si">
+                          <div class="flex">
+                            <div class="icon" :id="'enemy_'+enemy.fid+'_skill'+si">
+                              <b-img-lazy :src="getImageURL(skill.icon)" with="50" height="50" />
+                              <b-popover v-if="displayType==1" :target="'enemy_'+enemy.fid+'_skill'+si" triggers="hover focus" :delay="{show:0, hide:250}" no-fade :title="skill.name" placement="top">
+                                <div class="flex">
+                                  <div v-html="descToHtml(skill)"></div>
+                                </div>
+                              </b-popover>
                             </div>
-                            <p><span v-html="descToHtml(skill)"></span><span v-if="skill.note" class="note" v-html="noteToHtml(skill)"></span></p>
+                            <div class="desc" v-show="displayType >= 2">
+                              <div class="flex">
+                                <h6>{{ skill.name }}</h6>
+                                <div class="param-group" v-html="skillParamsToHtml(skill)"></div>
+                              </div>
+                              <p><span v-html="descToHtml(skill)"></span><span v-if="skill.note" class="note" v-html="noteToHtml(skill)"></span></p>
+                            </div>
                           </div>
                         </div>
-                      </div>
+                      </template>
                     </div>
                   </div>
                 </div>
@@ -157,7 +159,7 @@
           <li>無限に再行動できます。</li>
           <li>CT 中のアクティブや使用済みサポートアクティブも使用可能です。<br />
           (本来使用不能なスキルはアイコンが灰色になるので区別できます)</li>
-          <li>敵ユニットは自動行動しません。敵フェーズでは敵ユニットを手動で操作する必要があります。<br />
+          <li>敵ユニットは自動行動しません。<b>敵フェーズでは敵ユニットを手動で操作する必要があります</b>。<br />
           (敵の挙動の正確な再現が困難であるため)</li>
         </ul>
       </div>
@@ -396,7 +398,7 @@ export default {
 
       selectedUnit: null,
       selectedSkill: null,
-      hoveredUnit: null,
+      hoveredCell: null,
 
       phaseTabIndex: 0,
       prevURL: "",
@@ -676,7 +678,7 @@ export default {
     },
 
     isUnitHighlighted(unit) {
-      return unit && (unit === this.selectedUnit || unit === this.hoveredUnit);
+      return unit && (unit === this.selectedUnit);
     },
 
     getCellClass(cell) {
@@ -698,12 +700,20 @@ export default {
         if (unit === this.selectedUnit)
           r.push("selected");
       }
-      else if (this.path) {
+      if (this.path) {
         if (this.path.isReachable(cell.coord)) {
-          r.push("move-range");
+          if (!unit) {
+            r.push("move-range");
+            if (cell === this.hoveredCell) {
+              r.push("hovered");
+            }
+          }
         }
         else if (this.path.isShootable(cell.coord)) {
           r.push("attack-range");
+          if (unit && cell === this.hoveredCell) {
+            r.push("hovered");
+          }
         }
       }
       if (this.simulation?.isOwnTurn(this.selectedUnit) && !unit) {
@@ -722,16 +732,15 @@ export default {
     },
 
     onCellEnter(cell) {
+      this.hoveredCell = cell;
       const unit = this.findUnitByCoord(cell.coord);
-      this.hoveredUnit = unit;
       if (unit?.isEnemy) {
         //this.scrollTo(`enemy_${unit.fid}`);
       }
     },
     onCellLeave(cell) {
-      const unit = this.findUnitByCoord(cell.coord);
-      if (unit && this.hoveredUnit === unit) {
-        this.hoveredUnit = null;
+      if (this.hoveredCell === cell) {
+        this.hoveredCell = null;
       }
     },
     onCellClick(cell) {
@@ -968,10 +977,16 @@ export default {
   }
 
   .move-range {
-    background: rgb(255, 230, 215);
+    background: rgb(200, 220, 255);
+  }
+  .move-range.hovered {
+    background: rgb(140, 160, 255);
   }
   .attack-range {
-    background: rgb(255, 245, 230);
+    background: rgb(255, 230, 210);
+  }
+  .attack-range.hovered {
+    background: rgb(255, 120, 90);
   }
   .click-to-move {
     cursor: move;

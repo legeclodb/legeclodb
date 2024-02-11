@@ -1134,7 +1134,7 @@ export default {
     //   tagFilter: (skill, effectCategory, effect) => bool,
     // }
     setupCharacters(characters, activeSkills, passiveSkills, talents = [], params = {}) {
-      const isMain = characters[0].talent;
+      const isMain = talents.length != 0;
       const isSupport = !isMain;
       const consts = jsonConstants;
 

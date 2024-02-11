@@ -494,12 +494,14 @@ class SimUnit {
         // メインのスキルリストに通常攻撃を追加
         let atk = makeSimSkill($vue().findItemByUid(chr.damageType == "アタック" ? "9999999" : "9999998"));
         Object.defineProperty(atk, 'range', {
-          get: () => { return chr.range; },
+          get: () => chr.range,
         });
         skills = [atk, ...skills];
       }
       if (skills.length) {
-        chr.skills = skills;
+        Object.defineProperty(chr, 'skills', {
+          get: () => skills,
+        });
       }
 
       Object.defineProperty(chr, 'statusBase', {
@@ -510,6 +512,7 @@ class SimUnit {
     {
       this.main = Object.create(unit.base.main);
       addBattleProps(this.main, unit.base.main);
+      console.log(this.main);
     }
     if (unit.base.support) {
       this.support = Object.create(unit.base.support);
@@ -854,4 +857,7 @@ export class PathFinder
 
 function $vue() {
   return window.$vue;
+}
+function $findObjectByUid(uid) {
+  return $vue().findObjectByUid(uid);
 }
