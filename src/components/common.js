@@ -493,9 +493,9 @@ export default {
       }
       if (item.isActive || item.isPassive) {
         text += [
-          ["CT", item.ct],
+          ["CT", this.ctToText(item)],
           ["範囲", this.areaToText(item)],
-          ["射程", item.range],
+          ["射程", this.rangeToText(item)],
           ["コスト", item.cost],
         ].filter(a => a[1])
           .map((a) => `${a[0]}: ${a[1]}`)
@@ -504,6 +504,10 @@ export default {
       text += this.removeMarkup(item.desc);
       return text;
     },
+
+    ctToText(item) {
+      return item.ct == 0 ? "-" : item.ct;
+    },
     areaToText(item) {
       if (item.areaShape == "直線") {
         return `直線${item.area}マス`
@@ -511,6 +515,9 @@ export default {
       else {
         return item.area;
       }
+    },
+    rangeToText(item) {
+      return item.range;
     },
     removeMarkup(text) {
       if (!text) {
@@ -539,9 +546,9 @@ export default {
     },
     skillParamsToHtml(skill) {
       return [
-        ["CT", skill.ct],
+        ["CT", this.ctToText(skill)],
         ["範囲", this.areaToText(skill)],
-        ["射程", skill.range],
+        ["射程", this.rangeToText(skill)],
         ["コスト", skill.cost],
       ].filter(a => a[1])
         .map((a) => `<div class="param-box"><span class="param-name">${a[0]}:</span><span class="param-value">${a[1]}</span></div>`)

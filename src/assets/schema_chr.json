@@ -52,7 +52,7 @@
               "items": { "type": "string" }
             }
           }
-        },
+        }
       },
       "engage": {
         "type": "object",

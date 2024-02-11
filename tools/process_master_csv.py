@@ -199,6 +199,8 @@ def cleanupDesc(desc):
         [r'。 +', '。'],
     ]:
         desc = re.sub(pattern[0], pattern[1], desc)
+    desc = re.sub(r'<color=[^>]+>[＿]+</color>', '', desc, flags=(re.MULTILINE | re.DOTALL))
+    desc = re.sub(r'<color=[^>]+>(.+?)</color>', '[b]\\1[/b]', desc, flags=(re.MULTILINE | re.DOTALL))
     return desc
 
 def compareDesc(desc1, desc2):
@@ -354,9 +356,7 @@ def processEngageData():
         after = e["AfterSkillGroupID"]
 
         desc = e["EffectDescription"]
-        desc = re.sub(r'<color=[^>]+>＿+</color>', '', desc)
-        desc = re.sub(r'<color=[^>]+>(.+?)</color>', '[b]\\1[/b]', desc, flags=(re.MULTILINE | re.DOTALL))
-        skillTable[after]["desc"] = desc
+        skillTable[after]["desc"] = cleanupDesc(desc)
 
         if not cid in engageSkillTable:
             engageSkillTable[cid] = {}
@@ -565,7 +565,7 @@ def addSkills(args, skillIds):
 
             if "ct" in skill:
                 ct = int(skill["ct"])
-                js["ct"] = ct if ct != 0 else "-"
+                js["ct"] = ct
             if True:
                 areaType = int(skill["areaType"])
                 if areaType == 1:
@@ -575,7 +575,8 @@ def addSkills(args, skillIds):
                 elif areaType == 3:
                     js["area"] = int(skill["area"])
                 elif areaType == 4:
-                    js["area"] = f"直線{skill['area']}マス"
+                    js["area"] = int(skill["area"])
+                    js["areaShape"] = "直線"
             if True:
                 rangeType = int(skill["rangeType"])
                 if rangeType == 1:
