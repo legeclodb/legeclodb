@@ -4079,10 +4079,12 @@
         "target": "自身"
       }
     ],
-    "multiMove": {
-      "type": "固定値移動力",
-      "value": 2
-    }
+    "multiMove": [
+      {
+        "type": "固定値移動力",
+        "value": 2
+      }
+    ]
   },
   {
     "uid": "Item_Equipment_SR_0068",

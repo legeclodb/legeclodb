@@ -932,38 +932,50 @@ export default {
       }
       if (skill.doubleAttack) {
         let postfix = "";
-        const cond = skill.doubleAttack.condition;
-        if (cond) {
-          if (cond.onEnemyTurn)
-            postfix = "(反撃)";
+        for (const da of skill.doubleAttack) {
+          const cond = da.condition;
+          if (cond) {
+            if (cond.onEnemyTurn)
+              postfix = "(反撃)";
+            else
+              postfix = "";
+          }
         }
         miscTags.push(`2回攻撃${postfix}`);
       }
 
       if (skill.multiMove) {
         let postfix = "";
-        const cond = skill.multiMove.condition;
-        if (cond) {
-          if (cond.onKill)
-            postfix = "(敵撃破時)";
+        for (const mm of skill.multiMove) {
+          const cond = mm.condition;
+          if (cond) {
+            if (cond.onKill)
+              postfix = "(敵撃破時)";
+            else
+              postfix = "";
+          }
         }
         miscTags.push(`再移動${postfix}`);
       }
       if (skill.multiAction) {
         let postfix = "";
-        const cond = skill.multiAction.condition;
-        if (cond) {
-          if (cond.onKill)
-            postfix = "(敵撃破時)";
-          else if (cond.probability)
-            postfix = "(確率)";
-        }
-        if (skill.multiAction.target) {
-          postfix = "(味方)";
+        for (const ma of skill.multiAction) {
+          const cond = ma.condition;
+          if (cond) {
+            if (cond.onKill)
+              postfix = "(敵撃破時)";
+            else if (cond.probability)
+              postfix = "(確率)";
+            else
+              postfix = "";
+          }
+          if (ma.target) {
+            postfix = "(味方)";
+          }
         }
 
         miscTags.push(`再行動${postfix}`);
-        if (!skill.isActive || (skill.isActive && skill.damageRate) || skill.multiAction.target) {
+        if (!skill.isActive || (skill.isActive && skill.damageRate) || postfix == "(味方)") {
           miscTags.push(`再攻撃${postfix}`);
         }
       }
@@ -1038,8 +1050,12 @@ export default {
         if (skill.area && skill.area != "単体") {
           skill.isAreaTarget = true;
         }
-        if (skill.damageRate) {
-          skill.isDamageSkill = true;
+
+        if (skill.damageRate || skill.debuff) {
+          skill.isTargetEnemy = true;
+        }
+        if (skill.healRate || skill.buff) {
+          skill.isTargetAlly = true;
         }
       }
 

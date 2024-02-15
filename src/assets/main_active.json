@@ -253,7 +253,7 @@
         "target": "自身"
       }
     ],
-    "multiAction": {}
+    "multiAction": [ {} ]
   },
   {
     "uid": "1100024",
@@ -286,10 +286,12 @@
     "range": 2,
     "cost": 2,
     "damageRate": 1.3,
-    "buffSteal": {
-      "value": 2,
-      "timing": "戦闘前"
-    },
+    "buffSteal": [
+      {
+        "value": 2,
+        "timing": "戦闘前"
+      }
+    ],
     "tags": [ "単体攻撃", "ガード不可攻撃" ]
   },
   {
@@ -324,7 +326,7 @@
     "area": "単体",
     "range": "自ユニット",
     "cost": 2,
-    "multiAction": {},
+    "multiAction": [ {} ],
     "tags": [ "ステータス変換" ]
   },
   {
@@ -337,10 +339,12 @@
     "range": 3,
     "cost": 2,
     "damageRate": 0.45,
-    "multiMove": {
-      "type": "固定値移動力",
-      "value": 3
-    },
+    "multiMove": [
+      {
+        "type": "固定値移動力",
+        "value": 3
+      }
+    ],
     "tags": [ "範囲攻撃(中心指定)", "特効(エアリアル)" ],
     "note": "対象がエアリアルの場合、0.8倍のダメージ"
   },
@@ -400,12 +404,14 @@
         }
       }
     ],
-    "multiAction": {
-      "condition": {
-        "hp": [ ">=", 50 ],
-        "probability": 20
+    "multiAction": [
+      {
+        "condition": {
+          "hp": [ ">=", 50 ],
+          "probability": 20
+        }
       }
-    },
+    ],
     "tags": [ "単体攻撃" ],
     "note": "ダメージ耐性バフは他のアクティブと競合せず加算になる。"
   },
@@ -661,7 +667,7 @@
         "target": "自身"
       }
     ],
-    "multiAction": {},
+    "multiAction": [ {} ],
     "note": "ダメージ耐性バフは他のアクティブと競合せず加算になる。"
   },
   {
@@ -801,7 +807,7 @@
         "target": "自身"
       }
     ],
-    "multiAction": {},
+    "multiAction": [ {} ],
     "tags": [ "移動+", "射程+(反撃)", "ステータス変換", "ガード" ]
   },
   {
@@ -1859,7 +1865,7 @@
         "target": "自身"
       }
     ],
-    "multiAction": {}
+    "multiAction": [ {} ]
   },
   {
     "uid": "1100070",
@@ -1883,9 +1889,11 @@
         "timing": "攻撃後"
       }
     ],
-    "multiMove": {
-      "type": "基本移動力"
-    },
+    "multiMove": [
+      {
+        "type": "基本移動力"
+      }
+    ],
     "tags": [ "範囲攻撃(中心指定)", "特効(エアリアル)" ],
     "note": "対象がエアリアルの場合、0.8倍のダメージ"
   },
@@ -2077,7 +2085,7 @@
         "target": "自身"
       }
     ],
-    "multiAction": {}
+    "multiAction": [ {} ]
   },
   {
     "uid": "1100642",
@@ -2100,7 +2108,7 @@
         "duration": 2
       }
     ],
-    "multiAction": {}
+    "multiAction": [ {} ]
   },
   {
     "uid": "1100003",
@@ -2203,7 +2211,7 @@
         "duration": 3
       }
     ],
-    "multiAction": {},
+    "multiAction": [ {} ],
     "tags": [ "ガード(物理攻撃)", "移動+" ]
   },
   {
@@ -2239,7 +2247,7 @@
     "area": "単体",
     "range": "自ユニット",
     "cost": 2,
-    "multiAction": {}
+    "multiAction": [ {} ]
   },
   {
     "uid": "1100076",
@@ -2356,10 +2364,12 @@
     "range": 2,
     "cost": 2,
     "damageRate": 1.1,
-    "buffSteal": {
-      "value": 3,
-      "timing": "戦闘後"
-    },
+    "buffSteal": [
+      {
+        "value": 3,
+        "timing": "戦闘後"
+      }
+    ],
     "tags": [ "単体攻撃", "ガード不可攻撃" ]
   },
   {
@@ -2602,9 +2612,11 @@
     "area": "単体",
     "range": 2,
     "cost": 2,
-    "multiAction": {
-      "target": "単体"
-    },
+    "multiAction": [
+      {
+        "target": "単体"
+      }
+    ],
     "tags": [ "単体回復" ]
   },
   {
@@ -2624,9 +2636,11 @@
         "target": "単体"
       }
     ],
-    "multiAction": {
-      "target": "単体"
-    },
+    "multiAction": [
+      {
+        "target": "単体"
+      }
+    ],
     "tags": [ "単体回復" ]
   },
   {
@@ -3407,7 +3421,7 @@
         }
       }
     ],
-    "multiAction": {},
+    "multiAction": [ {} ],
     "tags": [ "ガード", "デバフ:DoT" ],
     "note": "ガード時のダメージ耐性バフは他のアクティブと競合せず加算になる。"
   },
@@ -3791,7 +3805,7 @@
         "target": "自身"
       }
     ],
-    "multiAction": {},
+    "multiAction": [ {} ],
     "tags": [ "自己回復" ]
   },
   {
@@ -3956,12 +3970,14 @@
         }
       }
     ],
-    "multiAction": {
-      "condition": {
-        "token": [ ">=", 2 ],
-        "onKill": true
+    "multiAction": [
+      {
+        "condition": {
+          "token": [ ">=", 2 ],
+          "onKill": true
+        }
       }
-    },
+    ],
     "tags": [ "単体攻撃", "サポート同時攻撃" ]
   },
   {
@@ -3993,12 +4009,14 @@
         }
       }
     ],
-    "multiAction": {
-      "condition": {
-        "token": [ ">=", 1 ],
-        "onKill": true
+    "multiAction": [
+      {
+        "condition": {
+          "token": [ ">=", 1 ],
+          "onKill": true
+        }
       }
-    },
+    ],
     "tags": [ "単体攻撃", "サポート同時攻撃" ]
   },
   {
@@ -4064,7 +4082,7 @@
         "target": "自身"
       }
     ],
-    "multiAction": {},
+    "multiAction": [ {} ],
     "tags": [ "移動+" ]
   },
   {
@@ -4109,7 +4127,7 @@
         "target": "自身"
       }
     ],
-    "multiAction": {},
+    "multiAction": [ {} ],
     "tags": [ "射程+(スキル)" ]
   },
   {
@@ -4186,7 +4204,7 @@
         "timing": "戦闘後"
       }
     ],
-    "multiAction": {},
+    "multiAction": [ {} ],
     "tags": [ "範囲攻撃(自分中心)", "超広範囲攻撃(自分中心)" ]
   },
   {
@@ -4265,7 +4283,7 @@
         "target": "自身"
       }
     ],
-    "multiAction": {},
+    "multiAction": [ {} ],
     "tags": [ "地形無視", "射程+", "固定ダメージ" ]
   },
   {
@@ -4341,7 +4359,7 @@
         "target": "自身"
       }
     ],
-    "multiAction": {},
+    "multiAction": [ {} ],
     "tags": [ "移動+" ]
   },
   {
@@ -4354,11 +4372,13 @@
     "range": 1,
     "cost": 2,
     "damageRate": 1.5,
-    "multiAction": {
-      "condition": {
-        "onKill": true
+    "multiAction": [
+      {
+        "condition": {
+          "onKill": true
+        }
       }
-    },
+    ],
     "tags": [ "単体攻撃" ]
   },
   {
@@ -4599,12 +4619,14 @@
         "timing": "戦闘前"
       }
     ],
-    "multiMove": {
-      "type": "残移動力",
-      "condition": {
-        "token": [ ">=", 2 ]
+    "multiMove": [
+      {
+        "type": "残移動力",
+        "condition": {
+          "token": [ ">=", 2 ]
+        }
       }
-    },
+    ],
     "tags": [ "単体攻撃" ]
   },
   {
@@ -4628,7 +4650,7 @@
         "duration": 3
       }
     ],
-    "multiAction": {}
+    "multiAction": [ {} ]
   },
   {
     "uid": "1100697",
@@ -4661,7 +4683,7 @@
         "duration": 2
       }
     ],
-    "multiAction": {}
+    "multiAction": [ {} ]
   },
   {
     "uid": "1100206",
@@ -4764,7 +4786,7 @@
         "target": "自身"
       }
     ],
-    "multiAction": {},
+    "multiAction": [ {} ],
     "tags": [ "移動+" ]
   },
   {
@@ -4839,7 +4861,7 @@
         "duration": 3
       }
     ],
-    "multiAction": {}
+    "multiAction": [ {} ]
   },
   {
     "uid": "1100214",
@@ -4882,7 +4904,7 @@
         "target": "自身"
       }
     ],
-    "multiAction": {},
+    "multiAction": [ {} ],
     "tags": [ "自己回復" ]
   },
   {
@@ -4987,7 +5009,7 @@
     "range": 4,
     "cost": 2,
     "damageRate": 1.5,
-    "multiAction": {},
+    "multiAction": [ {} ],
     "tags": [ "単体攻撃", "長射程攻撃" ]
   },
   {
@@ -5030,7 +5052,7 @@
         "duration": 3
       }
     ],
-    "multiAction": {}
+    "multiAction": [ {} ]
   },
   {
     "uid": "1100699",
@@ -5053,7 +5075,7 @@
         "duration": 3
       }
     ],
-    "multiAction": {}
+    "multiAction": [ {} ]
   },
   {
     "uid": "1100228",
@@ -5117,7 +5139,7 @@
     "range": 3,
     "cost": 2,
     "damageRate": 0.2,
-    "multiAction": {},
+    "multiAction": [ {} ],
     "tags": [ "単体攻撃(非戦闘)", "位置移動(敵)" ]
   },
   {
@@ -5130,7 +5152,7 @@
     "range": 3,
     "cost": 1,
     "summon": [ "Ch508500499summon" ],
-    "multiAction": {}
+    "multiAction": [ {} ]
   },
   {
     "uid": "1100244",
@@ -5255,7 +5277,7 @@
         "duration": 3
       }
     ],
-    "multiAction": {}
+    "multiAction": [ {} ]
   },
   {
     "uid": "1100238",
@@ -5594,7 +5616,7 @@
         "duration": 3
       }
     ],
-    "multiAction": {}
+    "multiAction": [ {} ]
   },
   {
     "uid": "1100250",
@@ -5669,7 +5691,7 @@
     "range": 3,
     "cost": 2,
     "summon": [ "Ch905200303" ],
-    "multiAction": {}
+    "multiAction": [ {} ]
   },
   {
     "uid": "1100256",
@@ -5790,7 +5812,7 @@
         "duration": 3
       }
     ],
-    "multiAction": {}
+    "multiAction": [ {} ]
   },
   {
     "uid": "1100261",
@@ -5886,7 +5908,7 @@
     "range": 2,
     "cost": 2,
     "summon": [ "Ch905300301", "Ch905400301" ],
-    "multiAction": {}
+    "multiAction": [ {} ]
   },
   {
     "uid": "1100263",
@@ -5917,7 +5939,7 @@
         "target": "自身"
       }
     ],
-    "multiAction": {},
+    "multiAction": [ {} ],
     "tags": [ "移動+", "射程+(スキル)" ]
   },
   {
@@ -6006,7 +6028,7 @@
         "duration": 3
       }
     ],
-    "multiAction": {}
+    "multiAction": [ {} ]
   },
   {
     "uid": "1100270",
@@ -6096,11 +6118,13 @@
         "timing": "戦闘前"
       }
     ],
-    "multiAction": {
-      "condition": {
-        "onKill": true
+    "multiAction": [
+      {
+        "condition": {
+          "onKill": true
+        }
       }
-    },
+    ],
     "tags": [ "単体攻撃" ]
   },
   {
@@ -6205,7 +6229,7 @@
         "duration": 3
       }
     ],
-    "multiAction": {}
+    "multiAction": [ {} ]
   },
   {
     "uid": "1100281",
@@ -6262,9 +6286,11 @@
         "target": "自身"
       }
     ],
-    "multiAction": {
-      "target": "単体"
-    }
+    "multiAction": [
+      {
+        "target": "単体"
+      }
+    ]
   },
   {
     "uid": "1100688",
@@ -6283,9 +6309,11 @@
         "target": "自身"
       }
     ],
-    "multiAction": {
-      "target": "単体"
-    }
+    "multiAction": [
+      {
+        "target": "単体"
+      }
+    ]
   },
   {
     "uid": "1100282",
@@ -6610,7 +6638,7 @@
         "duration": 4
       }
     ],
-    "multiAction": {}
+    "multiAction": [ {} ]
   },
   {
     "uid": "1100288",
@@ -6732,11 +6760,13 @@
         "duration": 1
       }
     ],
-    "multiAction": {
-      "condition": {
-        "onKill": true
+    "multiAction": [
+      {
+        "condition": {
+          "onKill": true
+        }
       }
-    },
+    ],
     "tags": [ "単体攻撃" ]
   },
   {
@@ -6851,7 +6881,7 @@
         "target": "自身"
       }
     ],
-    "multiAction": {},
+    "multiAction": [ {} ],
     "tags": [ "ガード", "自己回復" ]
   },
   {
@@ -7000,11 +7030,13 @@
         "timing": "戦闘前"
       }
     ],
-    "multiAction": {
-      "condition": {
-        "onKill": true
+    "multiAction": [
+      {
+        "condition": {
+          "onKill": true
+        }
       }
-    },
+    ],
     "tags": [ "単体攻撃" ]
   },
   {
@@ -7028,7 +7060,7 @@
         "duration": 4
       }
     ],
-    "multiAction": {}
+    "multiAction": [ {} ]
   },
   {
     "uid": "1100356",
@@ -7122,7 +7154,7 @@
         "duration": 4
       }
     ],
-    "multiAction": {}
+    "multiAction": [ {} ]
   },
   {
     "uid": "1100378",
@@ -7143,7 +7175,7 @@
         "timing": "戦闘前"
       }
     ],
-    "multiAction": {},
+    "multiAction": [ {} ],
     "tags": [ "単体攻撃" ]
   },
   {
@@ -7235,7 +7267,7 @@
       }
     ],
     "summon": [ "Ch516200499" ],
-    "multiAction": {}
+    "multiAction": [ {} ]
   },
   {
     "uid": "1100375",
@@ -7328,7 +7360,7 @@
         "duration": 4
       }
     ],
-    "multiAction": {}
+    "multiAction": [ {} ]
   },
   {
     "uid": "1100390",
@@ -7405,7 +7437,7 @@
         "target": "自身"
       }
     ],
-    "multiAction": {}
+    "multiAction": [ {} ]
   },
   {
     "uid": "1100413",
@@ -7773,7 +7805,7 @@
         "timing": "戦闘前"
       }
     ],
-    "multiAction": {},
+    "multiAction": [ {} ],
     "tags": [ "単体攻撃", "サポート同時攻撃" ]
   },
   {
@@ -7846,7 +7878,7 @@
         "duration": 3
       }
     ],
-    "multiAction": {}
+    "multiAction": [ {} ]
   },
   {
     "uid": "1100427",
@@ -8122,11 +8154,13 @@
         "timing": "戦闘前"
       }
     ],
-    "multiAction": {
-      "condition": {
-        "onKill": true
+    "multiAction": [
+      {
+        "condition": {
+          "onKill": true
+        }
       }
-    },
+    ],
     "tags": [ "単体攻撃" ]
   },
   {
@@ -8148,11 +8182,13 @@
         "timing": "戦闘前"
       }
     ],
-    "multiAction": {
-      "condition": {
-        "onKill": true
+    "multiAction": [
+      {
+        "condition": {
+          "onKill": true
+        }
       }
-    },
+    ],
     "tags": [ "単体攻撃" ]
   },
   {
@@ -8184,7 +8220,7 @@
         }
       }
     ],
-    "multiAction": {}
+    "multiAction": [ {} ]
   },
   {
     "uid": "1100754",
@@ -8223,7 +8259,7 @@
         }
       }
     ],
-    "multiAction": {}
+    "multiAction": [ {} ]
   },
   {
     "uid": "1100453",
@@ -8331,7 +8367,7 @@
         }
       }
     ],
-    "multiAction": {}
+    "multiAction": [ {} ]
   },
   {
     "uid": "1100473",
@@ -8391,10 +8427,12 @@
     "range": "自ユニット",
     "cost": 2,
     "damageRate": 0.6,
-    "multiMove": {
-      "type": "固定値移動力",
-      "value": 4
-    },
+    "multiMove": [
+      {
+        "type": "固定値移動力",
+        "value": 4
+      }
+    ],
     "tags": [ "超広範囲攻撃(自分中心)", "範囲攻撃(自分中心)", "デバフ:回復不可" ]
   },
   {
@@ -8420,7 +8458,7 @@
         "target": "単体"
       }
     ],
-    "multiAction": {}
+    "multiAction": [ {} ]
   },
   {
     "uid": "1100489",
@@ -8713,7 +8751,7 @@
         "duration": 4
       }
     ],
-    "multiAction": {},
+    "multiAction": [ {} ],
     "tags": [ "バフ:リジェネ" ]
   },
   {
@@ -8737,7 +8775,7 @@
         "duration": 4
       }
     ],
-    "multiAction": {},
+    "multiAction": [ {} ],
     "tags": [ "バフ:リジェネ" ]
   },
   {
@@ -8756,7 +8794,7 @@
         "duration": 4
       }
     ],
-    "multiAction": {}
+    "multiAction": [ {} ]
   },
   {
     "uid": "1100539",
@@ -8882,7 +8920,7 @@
       }
     ],
     "summon": [ "Ch906000300" ],
-    "multiAction": {}
+    "multiAction": [ {} ]
   },
   {
     "uid": "1100553",
@@ -8894,11 +8932,13 @@
     "range": 2,
     "cost": 2,
     "damageRate": 1.8,
-    "multiAction": {
-      "condition": {
-        "targetHp": [ ">=", 50 ]
+    "multiAction": [
+      {
+        "condition": {
+          "targetHp": [ ">=", 50 ]
+        }
       }
-    }
+    ]
   },
   {
     "uid": "1100554",
@@ -8944,7 +8984,7 @@
         "target": "自身"
       }
     ],
-    "multiAction": {}
+    "multiAction": [ {} ]
   },
   {
     "uid": "1100738",
@@ -8969,7 +9009,7 @@
         "target": "自身"
       }
     ],
-    "multiAction": {}
+    "multiAction": [ {} ]
   },
   {
     "uid": "1100556",
@@ -9057,7 +9097,7 @@
       }
     ],
     "summon": [ "Ch906200300" ],
-    "multiAction": {}
+    "multiAction": [ {} ]
   },
   {
     "uid": "1100566",
@@ -9187,7 +9227,7 @@
         "target": "自身"
       }
     ],
-    "multiAction": {}
+    "multiAction": [ {} ]
   },
   {
     "uid": "1100583",
@@ -9415,9 +9455,11 @@
         "timing": "戦闘前"
       }
     ],
-    "multiMove": {
-      "type": "残移動力"
-    },
+    "multiMove": [
+      {
+        "type": "残移動力"
+      }
+    ],
     "tags": [ "単体攻撃", "自己回復" ]
   },
   {
@@ -9447,7 +9489,7 @@
         "duration": 3
       }
     ],
-    "multiAction": {},
+    "multiAction": [ {} ],
     "tags": [ "超広範囲攻撃(自分中心)", "範囲攻撃(自分中心)", "範囲回復(自分中心)" ]
   },
   {
@@ -9483,7 +9525,7 @@
         "duration": 3
       }
     ],
-    "multiAction": {},
+    "multiAction": [ {} ],
     "tags": [ "超高範囲攻撃(自分中心)", "範囲攻撃(自分中心)", "範囲回復" ]
   },
   {
@@ -9648,7 +9690,7 @@
         "duration": 4
       }
     ],
-    "multiAction": {}
+    "multiAction": [ {} ]
   },
   {
     "uid": "1100626",
@@ -9667,7 +9709,7 @@
         "duration": 4
       }
     ],
-    "multiAction": {},
+    "multiAction": [ {} ],
     "tags": [ "超広範囲攻撃(自分中心)", "範囲攻撃(自分中心)" ]
   },
   {
@@ -9865,7 +9907,7 @@
         "target": "自身"
       }
     ],
-    "multiAction": {},
+    "multiAction": [ {} ],
     "tags": [ "デメリット付き" ]
   },
   {
@@ -9903,7 +9945,7 @@
         "target": "自身"
       }
     ],
-    "multiAction": {},
+    "multiAction": [ {} ],
     "tags": [ "デメリット付き" ]
   },
   {
@@ -10044,7 +10086,7 @@
         "duration": 2
       }
     ],
-    "multiAction": {},
+    "multiAction": [ {} ],
     "tags": [ "超広範囲攻撃(自分中心)", "範囲攻撃(自分中心)" ]
   },
   {
@@ -10078,7 +10120,7 @@
         }
       }
     ],
-    "multiAction": {},
+    "multiAction": [ {} ],
     "tags": [ "超広範囲攻撃(自分中心)", "範囲攻撃(自分中心)" ]
   },
   {
@@ -10118,10 +10160,12 @@
         "target": "自身"
       }
     ],
-    "multiMove": {
-      "type": "固定値移動力",
-      "value": 3
-    }
+    "multiMove": [
+      {
+        "type": "固定値移動力",
+        "value": 3
+      }
+    ]
   },
   {
     "uid": "1100722",
@@ -10140,10 +10184,12 @@
         "target": "自身"
       }
     ],
-    "multiMove": {
-      "type": "固定値移動力",
-      "value": 3
-    },
+    "multiMove": [
+      {
+        "type": "固定値移動力",
+        "value": 3
+      }
+    ],
     "tags": [ "ガード" ]
   },
   {
@@ -10279,7 +10325,7 @@
         "target": "自身"
       }
     ],
-    "multiAction": {},
+    "multiAction": [ {} ],
     "tags": [ "移動+" ]
   },
   {
@@ -10311,7 +10357,7 @@
         "target": "自身"
       }
     ],
-    "multiAction": {},
+    "multiAction": [ {} ],
     "tags": [ "移動+" ]
   },
   {
@@ -10605,10 +10651,12 @@
     "range": 1,
     "cost": 2,
     "damageRate": 2.0,
-    "buffSteal": {
-      "value": 2,
-      "timing": "戦闘前"
-    }
+    "buffSteal": [
+      {
+        "value": 2,
+        "timing": "戦闘前"
+      }
+    ]
   },
   {
     "uid": "1100730",
@@ -10620,10 +10668,12 @@
     "range": 1,
     "cost": 2,
     "damageRate": 2.1,
-    "buffSteal": {
-      "value": 3,
-      "timing": "戦闘前"
-    },
+    "buffSteal": [
+      {
+        "value": 3,
+        "timing": "戦闘前"
+      }
+    ],
     "tags": [ "デバフ解除" ]
   },
   {
@@ -10647,7 +10697,7 @@
         "duration": 4
       }
     ],
-    "multiAction": {}
+    "multiAction": [ {} ]
   },
   {
     "uid": "1100729",
@@ -10675,7 +10725,7 @@
         "duration": 4
       }
     ],
-    "multiAction": {},
+    "multiAction": [ {} ],
     "tags": [ "デバフ解除" ]
   },
   {
@@ -10822,7 +10872,7 @@
         "duration": 3
       }
     ],
-    "multiAction": {}
+    "multiAction": [ {} ]
   },
   {
     "uid": "1100751",
@@ -10874,7 +10924,7 @@
         "duration": 3
       }
     ],
-    "multiAction": {}
+    "multiAction": [ {} ]
   },
   {
     "uid": "1100745",
@@ -10934,10 +10984,12 @@
     "range": 2,
     "cost": 2,
     "damageRate": 2.0,
-    "buffSteal": {
-      "value": 2,
-      "timing": "戦闘前"
-    }
+    "buffSteal": [
+      {
+        "value": 2,
+        "timing": "戦闘前"
+      }
+    ]
   },
   {
     "uid": "1100767",
@@ -10966,10 +11018,12 @@
         "duration": 2
       }
     ],
-    "buffSteal": {
-      "value": 3,
-      "timing": "戦闘前"
-    }
+    "buffSteal": [
+      {
+        "value": 3,
+        "timing": "戦闘前"
+      }
+    ]
   },
   {
     "uid": "1100764",
@@ -11099,7 +11153,7 @@
     "area": "単体",
     "range": "自ユニット",
     "cost": 2,
-    "multiAction": {},
+    "multiAction": [ {} ],
     "buff": [
       {
         "type": "クリティカルダメージ倍率",
@@ -11130,7 +11184,7 @@
     "area": "単体",
     "range": "自ユニット",
     "cost": 2,
-    "multiAction": {},
+    "multiAction": [ {} ],
     "buff": [
       {
         "type": "クリティカルダメージ倍率",

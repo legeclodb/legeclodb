@@ -190,9 +190,11 @@
         "timing": "戦闘前"
       }
     ],
-    "multiMove": {
-      "type": "基本移動力"
-    },
+    "multiMove": [
+      {
+        "type": "基本移動力"
+      }
+    ],
     "tags": [ "移動時強化" ]
   },
   {
@@ -235,15 +237,17 @@
         "target": "自身"
       }
     ],
-    "doubleAttack": {
-      "condition": {
-        "onEnemyTurn": true,
-        "hp": [
-          ">=",
-          [ 80, 70, 60, 50 ]
-        ]
+    "doubleAttack": [
+      {
+        "condition": {
+          "onEnemyTurn": true,
+          "hp": [
+            ">=",
+            [ 80, 70, 60, 50 ]
+          ]
+        }
       }
-    }
+    ]
   },
   {
     "uid": "3100013",
@@ -382,12 +386,14 @@
         "target": "自身"
       }
     ],
-    "multiAction": {
-      "coolDown": [ 4, 3, 3, 2 ],
-      "condition": {
-        "onKill": true
+    "multiAction": [
+      {
+        "coolDown": [ 4, 3, 3, 2 ],
+        "condition": {
+          "onKill": true
+        }
       }
-    }
+    ]
   },
   {
     "uid": "3100020",
@@ -434,12 +440,14 @@
         "timing": "敵撃破時"
       }
     ],
-    "multiMove": {
-      "type": "基本移動力",
-      "condition": {
-        "onKill": true
+    "multiMove": [
+      {
+        "type": "基本移動力",
+        "condition": {
+          "onKill": true
+        }
       }
-    },
+    ],
     "tags": [ "蓄積バフ" ]
   },
   {
@@ -471,12 +479,14 @@
         "timing": "戦闘前"
       }
     ],
-    "multiMove": {
-      "type": "基本移動力",
-      "condition": {
-        "onKill": true
+    "multiMove": [
+      {
+        "type": "基本移動力",
+        "condition": {
+          "onKill": true
+        }
       }
-    },
+    ],
     "tags": [ "デメリット付き", "蓄積バフ" ]
   },
   {
@@ -780,13 +790,15 @@
         "target": "自身"
       }
     ],
-    "buffSteal": {
-      "value": [ 1, 1, 2, 2, 2 ],
-      "condition": {
-        "onCriticalHit": true
-      },
-      "timing": "戦闘後"
-    },
+    "buffSteal": [
+      {
+        "value": [ 1, 1, 2, 2, 2 ],
+        "condition": {
+          "onCriticalHit": true
+        },
+        "timing": "戦闘後"
+      }
+    ],
     "tags": [ "蓄積バフ" ]
   },
   {
@@ -1773,9 +1785,11 @@
         "target": "自身"
       }
     ],
-    "multiMove": {
-      "type": "基本移動力"
-    },
+    "multiMove": [
+      {
+        "type": "基本移動力"
+      }
+    ],
     "tags": [ "与ダメ回復" ]
   },
   {
@@ -2190,12 +2204,14 @@
         "target": "自身"
       }
     ],
-    "doubleAttack": {
-      "condition": {
-        "onOwnTurn": true,
-        "token": [ ">=", 1 ]
+    "doubleAttack": [
+      {
+        "condition": {
+          "onOwnTurn": true,
+          "token": [ ">=", 1 ]
+        }
       }
-    },
+    ],
     "tags": [ "地形無視" ]
   },
   {
@@ -3032,12 +3048,14 @@
         }
       }
     ],
-    "multiAction": {
-      "coolDown": [ 2, 2, 2, 1 ],
-      "condition": {
-        "targetHp": [ ">=", 50 ]
+    "multiAction": [
+      {
+        "coolDown": [ 2, 2, 2, 1 ],
+        "condition": {
+          "targetHp": [ ">=", 50 ]
+        }
       }
-    },
+    ],
     "tags": [ "移動+" ]
   },
   {
@@ -3408,12 +3426,14 @@
         }
       }
     ],
-    "doubleAttack": {
-      "condition": {
-        "onEnemyTurn": true,
-        "onCloseCombat": true
+    "doubleAttack": [
+      {
+        "condition": {
+          "onEnemyTurn": true,
+          "onCloseCombat": true
+        }
       }
-    },
+    ],
     "tags": [ "単体回復(低HP)" ]
   },
   {
@@ -3717,13 +3737,15 @@
         }
       }
     ],
-    "multiAction": {
-      "coolDown": 2,
-      "condition": {
-        "onActiveSkill": true,
-        "onDamage": true
+    "multiAction": [
+      {
+        "coolDown": 2,
+        "condition": {
+          "onActiveSkill": true,
+          "onDamage": true
+        }
       }
-    }
+    ]
   },
   {
     "uid": "3100331",
@@ -3814,12 +3836,14 @@
         }
       }
     ],
-    "multiAction": {
-      "coolDown": [ 3, 3, 2, 2 ],
-      "condition": {
-        "onKill": true
+    "multiAction": [
+      {
+        "coolDown": [ 3, 3, 2, 2 ],
+        "condition": {
+          "onKill": true
+        }
       }
-    }
+    ]
   },
   {
     "uid": "3100338",
@@ -3864,9 +3888,11 @@
         }
       }
     ],
-    "multiMove": {
-      "type": "基本移動力"
-    },
+    "multiMove": [
+      {
+        "type": "基本移動力"
+      }
+    ],
     "tags": [ "CT減(自身)", "蓄積バフ" ]
   },
   {
@@ -4061,13 +4087,15 @@
         }
       }
     ],
-    "multiAction": {
-      "coolDown": 3,
-      "condition": {
-        "onActiveSkill": true,
-        "onDamage": true
+    "multiAction": [
+      {
+        "coolDown": 3,
+        "condition": {
+          "onActiveSkill": true,
+          "onDamage": true
+        }
       }
-    }
+    ]
   },
   {
     "uid": "3100360",
@@ -4165,12 +4193,14 @@
         "timing": "敵撃破時"
       }
     ],
-    "multiAction": {
-      "coolDown": [ 3, 3, 2, 2 ],
-      "condition": {
-        "onCriticalHit": true
+    "multiAction": [
+      {
+        "coolDown": [ 3, 3, 2, 2 ],
+        "condition": {
+          "onCriticalHit": true
+        }
       }
-    },
+    ],
     "tags": [ "移動+" ]
   },
   {
@@ -4205,12 +4235,14 @@
         }
       }
     ],
-    "doubleAttack": {
-      "condition": {
-        "onOwnTurn": true,
-        "probability": [ 30, 50, 70, 100 ]
+    "doubleAttack": [
+      {
+        "condition": {
+          "onOwnTurn": true,
+          "probability": [ 30, 50, 70, 100 ]
+        }
       }
-    },
+    ],
     "tags": [ "射程+(反撃)", "死亡時復活" ]
   },
   {
@@ -4368,13 +4400,15 @@
         }
       }
     ],
-    "multiAction": {
-      "coolDown": 3,
-      "condition": {
-        "onKill": true,
-        "token": [ ">=", 2 ]
+    "multiAction": [
+      {
+        "coolDown": 3,
+        "condition": {
+          "onKill": true,
+          "token": [ ">=", 2 ]
+        }
       }
-    }
+    ]
   },
   {
     "uid": "3100380",
@@ -4423,18 +4457,22 @@
         }
       }
     ],
-    "doubleAttack": {
-      "condition": {
-        "onEnemyTurn": true,
-        "onRangedCombat": true
+    "doubleAttack": [
+      {
+        "condition": {
+          "onEnemyTurn": true,
+          "onRangedCombat": true
+        }
       }
-    },
-    "multiAction": {
-      "coolDown": [ 4, 4, 3, 3 ],
-      "condition": {
-        "activeBuffCount": [ ">=", 6 ]
+    ],
+    "multiAction": [
+      {
+        "coolDown": [ 4, 4, 3, 3 ],
+        "condition": {
+          "activeBuffCount": [ ">=", 6 ]
+        }
       }
-    },
+    ],
     "note": "タレントとスキル「逃れられぬ幻惑」の再行動の条件を同時に満たした場合、1回しか再行動できないまま両方クールダウンに入る。注意。"
   },
   {
@@ -4565,9 +4603,11 @@
         "area": 3
       }
     ],
-    "multiMove": {
-      "type": "基本移動力"
-    }
+    "multiMove": [
+      {
+        "type": "基本移動力"
+      }
+    ]
   },
   {
     "uid": "3100382",
@@ -4687,9 +4727,11 @@
         "timing": "行動後"
       }
     ],
-    "multiMove": {
-      "type": "基本移動力"
-    },
+    "multiMove": [
+      {
+        "type": "基本移動力"
+      }
+    ],
     "tags": [ "死亡時復活" ],
     "note": "ランダムデバフ内訳: アタック-10%(2ターン)、ディフェンス-10%(2ターン)、マジック-10%(2ターン)、レジスト-20%(2ターン)、与ダメージ-10%(2ターン)、ダメージ耐性-10%(2ターン)"
   },
@@ -4730,12 +4772,14 @@
         }
       }
     ],
-    "multiAction": {
-      "coolDown": [ 4, 4, 3, 3 ],
-      "condition": {
-        "onActiveSkill": true
+    "multiAction": [
+      {
+        "coolDown": [ 4, 4, 3, 3 ],
+        "condition": {
+          "onActiveSkill": true
+        }
       }
-    },
+    ],
     "tags": [ "射程+(反撃)" ]
   },
   {
@@ -4873,12 +4917,14 @@
         "duration": 3
       }
     ],
-    "doubleAttack": {
-      "condition": {
-        "onOwnTurn": true,
-        "probability": [ 30, 50, 70, 100 ]
+    "doubleAttack": [
+      {
+        "condition": {
+          "onOwnTurn": true,
+          "probability": [ 30, 50, 70, 100 ]
+        }
       }
-    }
+    ]
   },
   {
     "uid": "3100409",
@@ -4929,13 +4975,15 @@
         }
       }
     ],
-    "multiAction": {
-      "coolDown": 3,
-      "condition": {
-        "onActiveSkill": true,
-        "onDamage": true
+    "multiAction": [
+      {
+        "coolDown": 3,
+        "condition": {
+          "onActiveSkill": true,
+          "onDamage": true
+        }
       }
-    },
+    ],
     "tags": [ "移動+" ]
   },
   {
@@ -5539,18 +5587,22 @@
         "timing": "戦闘前"
       }
     ],
-    "multiAction": {
-      "coolDown": 3,
-      "condition": {
-        "onKill": true
+    "multiAction": [
+      {
+        "coolDown": 3,
+        "condition": {
+          "onKill": true
+        }
       }
-    },
-    "doubleAttack": {
-      "condition": {
-        "hp": [ ">=", 50 ],
-        "probability": [ 50, 65, 80, 100 ]
+    ],
+    "doubleAttack": [
+      {
+        "condition": {
+          "hp": [ ">=", 50 ],
+          "probability": [ 50, 65, 80, 100 ]
+        }
       }
-    },
+    ],
     "tags": [ "与ダメ回復", "移動時強化" ]
   },
   {
@@ -5607,14 +5659,16 @@
         }
       }
     ],
-    "multiAction": {
-      "coolDown": 3,
-      "condition": {
-        "onActiveSkill": true,
-        "onDamage": true,
-        "token": [ ">=", 3 ]
+    "multiAction": [
+      {
+        "coolDown": 3,
+        "condition": {
+          "onActiveSkill": true,
+          "onDamage": true,
+          "token": [ ">=", 3 ]
+        }
       }
-    }
+    ]
   },
   {
     "uid": "3100439",
@@ -5721,11 +5775,13 @@
         }
       }
     ],
-    "doubleAttack": {
-      "condition": {
-        "hp": [ ">=", 100 ]
+    "doubleAttack": [
+      {
+        "condition": {
+          "hp": [ ">=", 100 ]
+        }
       }
-    },
+    ],
     "tags": [ "射程+(反撃)", "死亡時復活" ]
   },
   {
@@ -5999,12 +6055,14 @@
         }
       }
     ],
-    "multiAction": {
-      "coolDown": 2,
-      "condition": {
-        "onDamage": true
+    "multiAction": [
+      {
+        "coolDown": 2,
+        "condition": {
+          "onDamage": true
+        }
       }
-    },
+    ],
     "tags": [ "ガード" ]
   },
   {
@@ -6043,9 +6101,11 @@
         "target": "自身"
       }
     ],
-    "multiMove": {
-      "type": "基本移動力"
-    },
+    "multiMove": [
+      {
+        "type": "基本移動力"
+      }
+    ],
     "tags": [ "蓄積バフ" ]
   },
   {
@@ -6097,12 +6157,14 @@
         "area": 4
       }
     ],
-    "multiAction": {
-      "coolDown": 2,
-      "condition": {
-        "onBattle": true
+    "multiAction": [
+      {
+        "coolDown": 2,
+        "condition": {
+          "onBattle": true
+        }
       }
-    },
+    ],
     "tags": [ "移動時強化", "固定ダメージ" ]
   },
   {
@@ -6404,12 +6466,14 @@
         }
       }
     ],
-    "multiAction": {
-      "coolDown": 2,
-      "condition": {
-        "onCriticalHit": true
+    "multiAction": [
+      {
+        "coolDown": 2,
+        "condition": {
+          "onCriticalHit": true
+        }
       }
-    },
+    ],
     "tags": [ "地形無視", "CT減(自身)", "移動+" ]
   },
   {
@@ -6536,12 +6600,14 @@
         }
       }
     ],
-    "multiAction": {
-      "coolDown": 3,
-      "condition": {
-        "token": [ ">=", 1 ]
+    "multiAction": [
+      {
+        "coolDown": 3,
+        "condition": {
+          "token": [ ">=", 1 ]
+        }
       }
-    },
+    ],
     "tags": [ "移動+" ]
   },
   {
@@ -7231,13 +7297,15 @@
         }
       }
     ],
-    "multiAction": {
-      "coolDown": 3,
-      "condition": {
-        "onDamage": true,
-        "onSingleSkill": true
+    "multiAction": [
+      {
+        "coolDown": 3,
+        "condition": {
+          "onDamage": true,
+          "onSingleSkill": true
+        }
       }
-    },
+    ],
     "tags": [ "CT減(自身)" ]
   },
   {
@@ -7287,12 +7355,14 @@
         }
       }
     ],
-    "doubleAttack": {
-      "condition": {
-        "onEnemyTurn": true,
-        "probability": [ 30, 50, 70, 100 ]
+    "doubleAttack": [
+      {
+        "condition": {
+          "onEnemyTurn": true,
+          "probability": [ 30, 50, 70, 100 ]
+        }
       }
-    },
+    ],
     "tags": [ "射程+(反撃)", "自己回復" ]
   },
   {
@@ -7607,12 +7677,14 @@
         }
       }
     ],
-    "multiAction": {
-      "coolDown": 2,
-      "condition": {
-        "onCriticalHit": true
+    "multiAction": [
+      {
+        "coolDown": 2,
+        "condition": {
+          "onCriticalHit": true
+        }
       }
-    },
+    ],
     "tags": [ "移動+", "ターン経過時強化" ]
   },
   {
@@ -8008,13 +8080,15 @@
         }
       }
     ],
-    "multiAction": {
-      "coolDown": 4,
-      "condition": {
-        "onActiveSkill": true,
-        "onDamage": true
+    "multiAction": [
+      {
+        "coolDown": 4,
+        "condition": {
+          "onActiveSkill": true,
+          "onDamage": true
+        }
       }
-    }
+    ]
   },
   {
     "uid": "3100493",
@@ -8108,12 +8182,14 @@
         "timing": "敵撃破時"
       }
     ],
-    "doubleAttack": {
-      "condition": {
-        "token": [ ">", 0 ],
-        "probability": [ 30, 50, 70, 100 ]
+    "doubleAttack": [
+      {
+        "condition": {
+          "token": [ ">", 0 ],
+          "probability": [ 30, 50, 70, 100 ]
+        }
       }
-    },
+    ],
     "tags": [ "CT減(自身)" ]
   },
   {
@@ -8161,12 +8237,14 @@
         }
       }
     ],
-    "multiAction": {
-      "coolDown": 3,
-      "condition": {
-        "onCriticalHit": true
+    "multiAction": [
+      {
+        "coolDown": 3,
+        "condition": {
+          "onCriticalHit": true
+        }
       }
-    }
+    ]
   },
   {
     "uid": "3100500",
@@ -8557,12 +8635,14 @@
         }
       }
     ],
-    "multiAction": {
-      "coolDown": 3,
-      "condition": {
-        "onAreaSkill": true
+    "multiAction": [
+      {
+        "coolDown": 3,
+        "condition": {
+          "onAreaSkill": true
+        }
       }
-    }
+    ]
   },
   {
     "uid": "3100506",
@@ -8697,13 +8777,15 @@
         }
       }
     ],
-    "multiAction": {
-      "coolDown": 3,
-      "condition": {
-        "onDamage": true,
-        "onSingleSkill": true
+    "multiAction": [
+      {
+        "coolDown": 3,
+        "condition": {
+          "onDamage": true,
+          "onSingleSkill": true
+        }
       }
-    },
+    ],
     "tags": [ "CT減(自身)" ]
   },
   {

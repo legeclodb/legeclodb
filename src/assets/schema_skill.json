@@ -400,6 +400,24 @@
       }
     },
 
+    "buffSteal": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "value": {
+          "anyOf": [
+            { "type": "number" },
+            {
+              "type": "array",
+              "items": { "type": "number" }
+            }
+          ]
+        },
+        "timing": { "$ref": "#/$defs/timingType" },
+        "condition": { "$ref": "#/$defs/condition" }
+      }
+    },
+
     "ctReduction": {
       "type": "object",
       "additionalProperties": false,
@@ -422,12 +440,47 @@
       }
     },
 
+    "doubleAttack": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "coolDown": {
+          "anyOf": [
+            { "type": "number" },
+            {
+              "type": "array",
+              "items": { "type": "number" }
+            }
+          ]
+        },
+        "condition": { "$ref": "#/$defs/condition" }
+      }
+    },
+
     "multiMove": {
       "type": "object",
       "additionalProperties": false,
       "properties": {
         "type": { "enum": [ "基本移動力", "残移動力", "固定値移動力" ] },
         "value": { "type": "number" },
+        "condition": { "$ref": "#/$defs/condition" }
+      }
+    },
+
+    "multiAction": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "target": { "$ref": "#/$defs/targetEnum" },
+        "coolDown": {
+          "anyOf": [
+            { "type": "number" },
+            {
+              "type": "array",
+              "items": { "type": "number" }
+            }
+          ]
+        },
         "condition": { "$ref": "#/$defs/condition" }
       }
     }
@@ -520,57 +573,20 @@
         "items": { "$ref": "#/$defs/buffCancel" }
       },
       "buffSteal": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "value": {
-            "anyOf": [
-              { "type": "number" },
-              {
-                "type": "array",
-                "items": { "type": "number" }
-              }
-            ]
-          },
-          "timing": { "$ref": "#/$defs/timingType" },
-          "condition": { "$ref": "#/$defs/condition" }
-        }
+        "type": "array",
+        "items": { "$ref": "#/$defs/buffSteal" }
       },
       "doubleAttack": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "coolDown": {
-            "anyOf": [
-              { "type": "number" },
-              {
-                "type": "array",
-                "items": { "type": "number" }
-              }
-            ]
-          },
-          "condition": { "$ref": "#/$defs/condition" }
-        }
+        "type": "array",
+        "items": { "$ref": "#/$defs/doubleAttack" }
       },
       "multiMove": {
-        "$ref": "#/$defs/multiMove"
+        "type": "array",
+        "items": { "$ref": "#/$defs/multiMove" },
       },
       "multiAction": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "target": { "$ref": "#/$defs/targetEnum" },
-          "coolDown": {
-            "anyOf": [
-              { "type": "number" },
-              {
-                "type": "array",
-                "items": { "type": "number" }
-              }
-            ]
-          },
-          "condition": { "$ref": "#/$defs/condition" }
-        }
+        "type": "array",
+        "items": { "$ref": "#/$defs/multiAction" }
       },
       "ctReduction": {
         "type": "array",

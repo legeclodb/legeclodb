@@ -52,7 +52,8 @@
         "items": { "$ref": "schema_skill.json#/$defs/heal" }
       },
       "multiMove": {
-        "$ref": "schema_skill.json#/$defs/multiMove"
+        "type": "array",
+        "items": { "$ref": "schema_skill.json#/$defs/multiMove" },
       },
       "buffCancel": {
         "type": "array",

@@ -802,9 +802,11 @@
     "name": "マスター特性:ソルジャー",
     "icon": "sk_mc001",
     "desc": "同一クラスまたは対応するクラスのアディショナルリンクを解放したサポートとリンクしたとき、1ターン中に1回、追加で行動できる(この特性は発動してから2ターン毎に発動可能)。",
-    "multiAction": {
-      "coolDown": 2
-    }
+    "multiAction": [
+      {
+        "coolDown": 2
+      }
+    ]
   },
   {
     "uid": "マスター特性:ランサー",
@@ -822,11 +824,13 @@
         "target": "自身(メイン)"
       }
     ],
-    "doubleAttack": {
-      "condition": {
-        "onEnemyTurn": true
+    "doubleAttack": [
+      {
+        "condition": {
+          "onEnemyTurn": true
+        }
       }
-    }
+    ]
   },
   {
     "uid": "マスター特性:ライダー",
@@ -969,11 +973,13 @@
     "name": "マスター特性:アサシン",
     "icon": "sk_mc008",
     "desc": "同一クラスまたは対応するクラスのアディショナルリンクを解放したサポートとリンクしたとき、味方ターンでの戦闘時、通常攻撃した場合、確率(100%)で2回攻撃できる。",
-    "doubleAttack": {
-      "condition": {
-        "onOwnTurn": true
+    "doubleAttack": [
+      {
+        "condition": {
+          "onOwnTurn": true
+        }
       }
-    }
+    ]
   },
   {
     "uid": "100",
@@ -1294,9 +1300,11 @@
     "name": "ヒット&アウェイ",
     "desc": "味方ターンでの戦闘時、自ユニットの与ダメージ+10%。\n戦闘前、敵ユニットに固定ダメージを与えて倒したとき、残りの移動可能なマス分、再び移動することができる。\n戦闘後、残りの移動可能なマス分、再び移動することができる。",
     "cost": 1,
-    "multiMove": {
-      "type": "残移動力"
-    }
+    "multiMove": [
+      {
+        "type": "残移動力"
+      }
+    ]
   },
   {
     "uid": "1200039",
@@ -2084,13 +2092,15 @@
         "target": "自身"
       }
     ],
-    "multiMove": {
-      "type": "固定値移動力",
-      "value": 3,
-      "condition": {
-        "onKill": true
+    "multiMove": [
+      {
+        "type": "固定値移動力",
+        "value": 3,
+        "condition": {
+          "onKill": true
+        }
       }
-    }
+    ]
   },
   {
     "uid": "1200007",
@@ -2383,13 +2393,15 @@
         "area": [ 1, "周囲" ]
       }
     ],
-    "multiAction": {
-      "coolDown": 2,
-      "condition": {
-        "onActiveSkill": true,
-        "onDamage": true
+    "multiAction": [
+      {
+        "coolDown": 2,
+        "condition": {
+          "onActiveSkill": true,
+          "onDamage": true
+        }
       }
-    },
+    ],
     "tags": [ "地形無視" ]
   },
   {
@@ -2410,13 +2422,15 @@
         "area": [ 2, "周囲" ]
       }
     ],
-    "multiAction": {
-      "coolDown": 2,
-      "condition": {
-        "onActiveSkill": true,
-        "onDamage": true
+    "multiAction": [
+      {
+        "coolDown": 2,
+        "condition": {
+          "onActiveSkill": true,
+          "onDamage": true
+        }
       }
-    },
+    ],
     "tags": [ "移動+", "地形無視" ]
   },
   {
@@ -2538,10 +2552,12 @@
         }
       }
     ],
-    "multiMove": {
-      "type": "固定値移動力",
-      "value": 3
-    }
+    "multiMove": [
+      {
+        "type": "固定値移動力",
+        "value": 3
+      }
+    ]
   },
   {
     "uid": "1200093",
@@ -3513,13 +3529,15 @@
         "target": "自身"
       }
     ],
-    "multiMove": {
-      "type": "固定値移動力",
-      "value": 3,
-      "condition": {
-        "onKill": true
+    "multiMove": [
+      {
+        "type": "固定値移動力",
+        "value": 3,
+        "condition": {
+          "onKill": true
+        }
       }
-    },
+    ],
     "tags": [ "範囲回復(自分中心)" ]
   },
   {
@@ -3558,13 +3576,15 @@
         }
       }
     ],
-    "buffSteal": {
-      "value": 1,
-      "condition": {
-        "hp": [ ">=", 50 ]
-      },
-      "timing": "戦闘後"
-    },
+    "buffSteal": [
+      {
+        "value": 1,
+        "condition": {
+          "hp": [ ">=", 50 ]
+        },
+        "timing": "戦闘後"
+      }
+    ],
     "tags": [ "移動+" ]
   },
   {
@@ -3821,12 +3841,14 @@
     "name": "波に乗ってこ♪",
     "desc": "全ての通過可能な地形を「平地」マスとして扱う。\n味方ターンでの戦闘中クリティカルが発生したとき、戦闘後、再行動できる(この再行動は発動してから3ターン毎に発動可能)。",
     "cost": 2,
-    "multiAction": {
-      "coolDown": 3,
-      "condition": {
-        "onCriticalHit": true
+    "multiAction": [
+      {
+        "coolDown": 3,
+        "condition": {
+          "onCriticalHit": true
+        }
       }
-    },
+    ],
     "tags": [ "地形無視" ]
   },
   {
@@ -3835,12 +3857,14 @@
     "name": "♥波に乗ってこ♪♥",
     "desc": "[b]自ユニットのアタック/レジスト+10%。[/b]\n全ての通過可能な地形を「平地」マスとして扱う。\n味方ターンでの戦闘中、クリティカルが発生したとき、その戦闘後、再行動できる(この再行動は発動してから3ターン毎に発動可能)。",
     "cost": 2,
-    "multiAction": {
-      "coolDown": 3,
-      "condition": {
-        "onCriticalHit": true
+    "multiAction": [
+      {
+        "coolDown": 3,
+        "condition": {
+          "onCriticalHit": true
+        }
       }
-    },
+    ],
     "buff": [
       {
         "type": "アタック",
@@ -3931,9 +3955,11 @@
         "timing": "戦闘前"
       }
     ],
-    "multiMove": {
-      "type": "残移動力"
-    },
+    "multiMove": [
+      {
+        "type": "残移動力"
+      }
+    ],
     "tags": [ "移動時強化" ]
   },
   {
@@ -3969,13 +3995,15 @@
         "target": "自身"
       }
     ],
-    "multiAction": {
-      "coolDown": 3,
-      "condition": {
-        "onActiveSkill": true,
-        "onDamage": true
+    "multiAction": [
+      {
+        "coolDown": 3,
+        "condition": {
+          "onActiveSkill": true,
+          "onDamage": true
+        }
       }
-    }
+    ]
   },
   {
     "uid": "1200152",
@@ -4269,12 +4297,14 @@
         "target": "自身"
       }
     ],
-    "doubleAttack": {
-      "coolDown": 2,
-      "condition": {
-        "onOwnTurn": true
+    "doubleAttack": [
+      {
+        "coolDown": 2,
+        "condition": {
+          "onOwnTurn": true
+        }
       }
-    }
+    ]
   },
   {
     "uid": "1200169",
@@ -4294,12 +4324,14 @@
         "target": "自身"
       }
     ],
-    "multiAction": {
-      "coolDown": 32,
-      "condition": {
-        "onCriticalHit": true
+    "multiAction": [
+      {
+        "coolDown": 3,
+        "condition": {
+          "onCriticalHit": true
+        }
       }
-    },
+    ],
     "tags": [ "移動+" ]
   },
   {
@@ -4833,9 +4865,11 @@
         }
       }
     ],
-    "multiMove": {
-      "type": "残移動力"
-    }
+    "multiMove": [
+      {
+        "type": "残移動力"
+      }
+    ]
   },
   {
     "uid": "1200191",
@@ -4860,13 +4894,15 @@
         }
       }
     ],
-    "multiMove": {
-      "type": "固定値移動力",
-      "value": 3,
-      "condition": {
-        "onKill": true
+    "multiMove": [
+      {
+        "type": "固定値移動力",
+        "value": 3,
+        "condition": {
+          "onKill": true
+        }
       }
-    }
+    ]
   },
   {
     "uid": "1200196",
@@ -4896,13 +4932,15 @@
         }
       }
     ],
-    "multiMove": {
-      "type": "固定値移動力",
-      "value": 3,
-      "condition": {
-        "onKill": true
+    "multiMove": [
+      {
+        "type": "固定値移動力",
+        "value": 3,
+        "condition": {
+          "onKill": true
+        }
       }
-    }
+    ]
   },
   {
     "uid": "1200192",
@@ -4922,9 +4960,11 @@
         "target": "自身"
       }
     ],
-    "multiMove": {
-      "type": "残移動力"
-    }
+    "multiMove": [
+      {
+        "type": "残移動力"
+      }
+    ]
   },
   {
     "uid": "1200195",
@@ -4944,9 +4984,11 @@
         "target": "自身"
       }
     ],
-    "multiMove": {
-      "type": "残移動力"
-    }
+    "multiMove": [
+      {
+        "type": "残移動力"
+      }
+    ]
   },
   {
     "uid": "1200057",
