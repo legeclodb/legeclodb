@@ -64,7 +64,7 @@
 
           <div class="enemy-list">
             <template v-for="unit in activeEnemyUnits">
-              <div class="character" :class="{ 'highlighted': isUnitHighlighted(unit) }" :id="'enemy_'+unit.fid" :key="unit.fid">
+              <div class="character" :class="{ 'highlighted': isUnitHighlighted(unit) }" :id="'unit_'+unit.fid" :key="unit.fid">
                 <div class="flex">
                   <div class="portrait">
                     <b-img-lazy :src="getImageURL(unit.main.icon)" :title="unit.main.name" width="80" height="80" rounded />
@@ -553,6 +553,8 @@ export default {
 
       let self = this;
       this.tools = {
+        // 非シミュレーション時
+        // ユニット選択処理
         nonSimulation: {
           onClickCell(cell) {
             const unit = self.findUnitByCoord(cell.coord);
@@ -565,9 +567,6 @@ export default {
               self.selectUnit(unit);
               if (unit) {
                 self.tools.moveUnit.buildPath(unit);
-                if (unit.isEnemy) {
-                  self.scrollTo(`enemy_${unit.fid}`);
-                }
               }
             }
           },
@@ -580,27 +579,22 @@ export default {
           },
         },
 
+        // 以下は全てシミュレーション時
+        // ユニット選択処理
         selectUnit: {
           onClickCell(cell) {
             const unit = self.findUnitByCoord(cell.coord);
-            // ユニット選択処理
             self.selectUnit(unit);
-            if (unit?.isEnemy) {
-              self.scrollTo(`enemy_${unit.fid}`);
-            }
-
             if (unit) {
               self.pushTool(self.tools.moveUnit);
             }
           },
-          onClickAction(skill) {
-          },
-          onCancel() {
-          },
           onRenderCell(cell, r) {
+            self.tools.moveUnit.onRenderCell(cell, r);
           },
         },
 
+        // ユニット移動＆スキル選択処理
         moveUnit: {
           buildPath(unit) {
             let pf = new ldb.PathFinder(self.divX, self.divY);
@@ -618,6 +612,7 @@ export default {
           },
 
           onEnable() {
+            this.baseCoord = self.selectedUnit.coord;
             this.buildPath(self.selectedUnit);
             if (self.simulation.isOwnTurn(self.selectedUnit)) {
               self.actionsToSelect = self.selectedUnit.actions;
@@ -638,9 +633,9 @@ export default {
               }
               else {
                 // 別のユニットが選択されたらそちらに切り替え
-                this.onDisable();
+                this.onCancel();
                 self.selectUnit(unit);
-                this.onEnable();
+                self.pushTool(self.tools.moveUnit);
               }
             }
             else {
@@ -665,6 +660,7 @@ export default {
             }
           },
           onCancel() {
+            self.selectedUnit.coord = this.baseCoord;
             self.popTool();
           },
           onRenderCell(cell, r) {
@@ -700,6 +696,7 @@ export default {
           },
         },
 
+        // スキル射程表示＆ターゲット選択処理
         selectTarget: {
           onEnable() {
             let skill = self.selectedSkill;
@@ -716,14 +713,16 @@ export default {
           onClickCell(cell) {
             if (self.skillRange.isShootable(cell.coord)) {
               let skill = self.selectedSkill;
-              const unit = self.findUnitByCoord(cell.coord);
-              if (unit) {
-                self.targetUnit = unit;
+              let target = self.findUnitByCoord(cell.coord);
+              if (target) {
+                self.targetUnit = target;
                 if (skill.isAreaTarget) {
+                  // 範囲スキルの場合範囲確認モードに遷移
                   self.pushTool(self.tools.previewArea);
                 }
                 else {
-                  // fireSkill
+                  // 単体スキルならスキル発動
+                  self.fireSkill(skill, target);
                 }
               }
             }
@@ -746,6 +745,7 @@ export default {
           },
         },
 
+        // 範囲スキルの範囲表示＆使用確認
         previewArea: {
           onEnable() {
             let skill = self.selectedSkill;
@@ -763,14 +763,19 @@ export default {
           onClickCell(cell) {
             if (self.skillArea.isShootable(cell.coord)) {
               let skill = self.selectedSkill;
-              const unit = self.findUnitByCoord(cell.coord);
-              if (unit) {
-                if (!self.targetUnit || unit === self.targetUnit) {
-                  // fireSkill
+              let target = self.findUnitByCoord(cell.coord);
+              if (target) {
+                // 射程があるスキルの場合中心となるユニットが self.targetUnit に設定されている
+                // 自分中心スキルでは self.targetUnit は null になっている
+                if (!self.targetUnit || target === self.targetUnit) {
+                  // 射程があるスキルで対象ユニットを再度クリックした場合、
+                  // もしくは自分中心スキルで何らかのユニットをクリックした場合、スキル発動
+                  self.fireSkill(skill, target);
                 }
                 else {
+                  // 射程があるスキルの場合、中心以外のユニットが選択されたらそちらを中心に再設定
                   this.onDisable();
-                  self.targetUnit = unit;
+                  self.targetUnit = target;
                   this.onEnable();
                 }
               }
@@ -795,11 +800,19 @@ export default {
         },
       };
 
-      this.toolStack = [this.tools.nonSimulation];
+      this.resetTools(this.tools.nonSimulation);
     },
 
-    clearTools() {
-      while (this.popTool()) {}
+    resetTools(tool = null) {
+      if (tool) {
+        while (this.popTool()) { }
+        this.pushTool(tool);
+      }
+      else {
+        while (this.toolStack.length > 1) {
+          this.popTool();
+        }
+      }
     },
     pushTool(tool) {
       if (tool.onEnable) {
@@ -901,11 +914,16 @@ export default {
       }
     },
 
-    fireAction(targetUnit) {
+    fireSkill(skill, targetUnit) {
+      this.simulation.fireSkill(skill, targetUnit);
+      this.resetTools();
     },
 
     cancelAction() {
-      this.toolStack.at(-1)?.onCancel();
+      let tool = this.toolStack.at(-1);
+      if (tool?.onCancel) {
+        tool.onCancel();
+      }
     },
 
     mergeChrData(dst, src) {
@@ -1041,9 +1059,7 @@ export default {
       if (!this.simulation) {
         this.simulation = new ldb.SimContext(this.divX, this.divY, [...this.playerUnits, ...this.enemyUnits]);
         this.simulation.onSimulationBegin();
-
-        this.clearTools();
-        this.pushTool(this.tools.selectUnit);
+        this.resetTools(this.tools.selectUnit);
       }
     },
     endSimulation() {
@@ -1051,9 +1067,7 @@ export default {
       if (this.simulation) {
         this.simulation.onSimulationEnd();
         this.simulation = null;
-
-        this.clearTools();
-        this.pushTool(this.tools.nonSimulation);
+        this.resetTools(this.tools.nonSimulation);
       }
     },
 

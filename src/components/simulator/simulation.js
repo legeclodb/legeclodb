@@ -414,7 +414,7 @@ function makeSimSkill(skill, ownerChr) {
       e.activate(bySelf);
     }
   }
-  self.fire = function () {
+  self.onFire = function () {
     console.log(self);
     if (self.isActive) {
       self.coolTime = self.ct ?? Infinity;
@@ -665,6 +665,9 @@ export class SimContext
   }
 
 
+  fireSkill(skill, target) {
+    skill.onFire();
+  }
 
   passTurn() {
     if (this.isPlayerTurn) {
