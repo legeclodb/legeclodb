@@ -47,8 +47,20 @@
         "type": "array",
         "items": { "$ref": "schema_skill.json#/$defs/fixedDamage" }
       },
+      "heal": {
+        "type": "array",
+        "items": { "$ref": "schema_skill.json#/$defs/heal" }
+      },
       "multiMove": {
         "$ref": "schema_skill.json#/$defs/multiMove"
+      },
+      "buffCancel": {
+        "type": "array",
+        "items": { "$ref": "schema_skill.json#/$defs/buffCancel" }
+      },
+      "ctReduction": {
+        "type": "array",
+        "items": { "$ref": "schema_skill.json#/$defs/ctReduction" }
       },
       "tags": {
         "type": "array",

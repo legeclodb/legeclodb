@@ -29,7 +29,7 @@
       "enum": [ "平地", "草原", "森", "水中", "荒地", "崖", "空", "山岳", "洞窟", "砂地", "砂丘", "積雪", "置物", "砦", "壁", "柵", "溶岩" ]
     },
     "targetEnum": {
-      "enum": [ "自身", "自身(メイン)", "自身(サポート)", "単体", "複数", "スキル対象", "全体" ]
+      "enum": [ "自身", "自身(メイン)", "自身(サポート)", "味方(低HP)", "単体", "複数", "スキル対象", "全体" ]
     },
     "targetType": {
       "anyOf": [
@@ -329,7 +329,7 @@
 
     "fixedDamage": {
       "type": "object",
-      "required": [ "base", "value" ],
+      "required": [ "base", "rate" ],
       "additionalProperties": false,
       "properties": {
         "base": {
@@ -356,6 +356,67 @@
         },
         "target": { "$ref": "#/$defs/targetType" },
         "area": { "$ref": "#/$defs/areaType" },
+        "timing": { "$ref": "#/$defs/timingType" },
+        "condition": { "$ref": "#/$defs/condition" }
+      }
+    },
+
+    "heal": {
+      "type": "object",
+      "required": [ "type", "rate" ],
+      "additionalProperties": false,
+      "properties": {
+        "type": { "enum": [ "マジック", "HP割合", "ダメージ割合" ] },
+        "rate": {
+          "anyOf": [
+            { "type": "number" },
+            {
+              "type": "array",
+              "items": { "type": "number" }
+            }
+          ]
+        },
+        "target": { "$ref": "#/$defs/targetEnum" },
+        "timing": { "$ref": "#/$defs/timingType" },
+        "condition": { "$ref": "#/$defs/condition" }
+      }
+    },
+
+    "buffCancel": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "value": {
+          "anyOf": [
+            { "type": "number" },
+            {
+              "type": "array",
+              "items": { "type": "number" }
+            }
+          ]
+        },
+        "timing": { "$ref": "#/$defs/timingType" },
+        "condition": { "$ref": "#/$defs/condition" }
+      }
+    },
+
+    "ctReduction": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "value": {
+          "anyOf": [
+            { "type": "number" },
+            {
+              "type": "array",
+              "items": { "type": "number" }
+            }
+          ]
+        },
+        "target": { "$ref": "#/$defs/targetEnum" },
+        "targetSkill": {
+          "enum": [ "全スキル", "全スキル(このスキル以外)", "このスキル" ]
+        },
         "timing": { "$ref": "#/$defs/timingType" },
         "condition": { "$ref": "#/$defs/condition" }
       }
@@ -420,7 +481,10 @@
         "type": "array",
         "items": { "$ref": "#/$defs/fixedDamage" }
       },
-      "healRate": { "type": [ "number", "object" ] },
+      "heal": {
+        "type": "array",
+        "items": { "$ref": "#/$defs/heal" }
+      },
       "summon": { "type": [ "array" ] },
       "baseStatusBoost": {
         "type": "object",
@@ -452,21 +516,8 @@
         "items": { "$ref": "#/$defs/effect" }
       },
       "buffCancel": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "value": {
-            "anyOf": [
-              { "type": "number" },
-              {
-                "type": "array",
-                "items": { "type": "number" }
-              }
-            ]
-          },
-          "timing": { "$ref": "#/$defs/timingType" },
-          "condition": { "$ref": "#/$defs/condition" }
-        }
+        "type": "array",
+        "items": { "$ref": "#/$defs/buffCancel" }
       },
       "buffSteal": {
         "type": "object",
@@ -520,6 +571,10 @@
           },
           "condition": { "$ref": "#/$defs/condition" }
         }
+      },
+      "ctReduction": {
+        "type": "array",
+        "items": { "$ref": "#/$defs/ctReduction" }
       },
       "tags": {
         "type": "array",

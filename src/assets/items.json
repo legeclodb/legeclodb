@@ -192,7 +192,15 @@
         }
       }
     ],
-    "tags": [ "バフ解除" ],
+    "buffCancel": [
+      {
+        "value": 1,
+        "timing": "戦闘後",
+        "condition": {
+          "onCriticalHit": true
+        }
+      }
+    ],
     "note": "ランダムデバフ内訳: アタック-10%(2ターン)、ディフェンス-10%(2ターン)、マジック-10%(2ターン)、レジスト-20%(2ターン)、与ダメージ-10%(2ターン)、ダメージ耐性-10%(2ターン)"
   },
   {
@@ -581,12 +589,20 @@
         "amount": 1,
         "condition": {
           "onCriticalHit": true,
-          "onOwnTurn": true,
-          "probability": 50
+          "onOwnTurn": true
         }
       }
     ],
-    "tags": [ "バフ解除" ],
+    "buffCancel": [
+      {
+        "value": 1,
+        "timing": "戦闘後",
+        "condition": {
+          "onCriticalHit": true,
+          "onOwnTurn": true
+        }
+      }
+    ],
     "note": "ランダムデバフ内訳: アタック-10%(2ターン)、ディフェンス-10%(2ターン)、マジック-10%(2ターン)、レジスト-20%(2ターン)、与ダメージ-10%(2ターン)、ダメージ耐性-10%(2ターン)"
   },
   {
@@ -647,7 +663,15 @@
         }
       }
     ],
-    "tags": [ "バフ解除" ],
+    "buffCancel": [
+      {
+        "value": 1,
+        "timing": "戦闘後",
+        "condition": {
+          "onCriticalHit": true
+        }
+      }
+    ],
     "note": "ランダムデバフ内訳: アタック-20%(2ターン)、ディフェンス-20%(2ターン)、マジック-20%(2ターン)、レジスト-30%(2ターン)、与ダメージ-20%(2ターン)、ダメージ耐性-20%(2ターン)、移動-2(1ターン)、アクティブスキル使用不可(2ターン)、パッシブスキル使用不可(2ターン)、強化不可(2ターン)、回復不可(2ターン)、ガード不可(1ターン)\n凸に応じてランダムデバフの内訳も強化される。上記内訳は完凸時のもの。"
   },
   {
@@ -3656,7 +3680,16 @@
         "target": "自身"
       }
     ],
-    "tags": [ "バフ解除" ]
+    "buffCancel": [
+      {
+        "value": 1,
+        "timing": "攻撃後",
+        "condition": {
+          "onActiveSkill": true,
+          "onOwnTurn": true
+        }
+      }
+    ]
   },
   {
     "uid": "Item_Equipment_SSR_0088",
@@ -6086,12 +6119,22 @@
         "type": "ダメージ耐性(魔法)",
         "value": 10,
         "duration": 1,
+        "timing": "戦闘前",
         "condition": {
           "targetActiveBuffCount": [ ">=", 2 ]
         }
       }
     ],
-    "tags": [ "分類:マスター装備", "バフ解除" ]
+    "buffCancel": [
+      {
+        "value": 1,
+        "timing": "戦闘前",
+        "condition": {
+          "targetActiveBuffCount": [ ">=", 2 ]
+        }
+      }
+    ],
+    "tags": [ "分類:マスター装備" ]
   },
   {
     "uid": "Item_Equipment_SSR_0168",
@@ -7198,7 +7241,16 @@
         }
       }
     ],
-    "tags": [ "分類:真厄神装備", "バフ解除" ],
+    "buffCancel": [
+      {
+        "value": 1,
+        "timing": "戦闘後",
+        "condition": {
+          "onCriticalHit": true
+        }
+      }
+    ],
+    "tags": [ "分類:真厄神装備" ],
     "note": "クリティカル後に発動するアタック+15%は、常時発動しているアタック+10%と競合。(+25%にはならず+15%止まり)"
   },
   {

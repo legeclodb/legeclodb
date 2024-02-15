@@ -419,7 +419,14 @@
     "range": 1,
     "cost": 2,
     "damageRate": 1.5,
-    "tags": [ "単体攻撃", "与ダメ回復" ]
+    "heal": [
+      {
+        "type": "ダメージ割合",
+        "rate": 0.3,
+        "target": "自身"
+      }
+    ],
+    "tags": [ "単体攻撃" ]
   },
   {
     "uid": "1100581",
@@ -431,6 +438,13 @@
     "range": 1,
     "cost": 2,
     "damageRate": 2.0,
+    "heal": [
+      {
+        "type": "ダメージ割合",
+        "rate": 0.3,
+        "target": "自身"
+      }
+    ],
     "buff": [
       {
         "type": "与ダメージ(物理)",
@@ -449,7 +463,7 @@
         "timing": "戦闘前"
       }
     ],
-    "tags": [ "単体攻撃", "与ダメ回復" ]
+    "tags": [ "単体攻撃" ]
   },
   {
     "uid": "1100011",
@@ -461,10 +475,12 @@
     "range": 1,
     "cost": 2,
     "damageRate": 1.3,
-    "buffCancel": {
-      "value": 2,
-      "timing": "戦闘前"
-    },
+    "buffCancel": [
+      {
+        "value": 2,
+        "timing": "戦闘前"
+      }
+    ],
     "debuff": [
       {
         "type": "アタック",
@@ -566,10 +582,12 @@
     "range": 1,
     "cost": 2,
     "damageRate": 1.8,
-    "buffCancel": {
-      "value": 3,
-      "timing": "戦闘前"
-    },
+    "buffCancel": [
+      {
+        "value": 3,
+        "timing": "戦闘前"
+      }
+    ],
     "tags": [ "単体攻撃" ]
   },
   {
@@ -916,6 +934,13 @@
     "range": 1,
     "cost": 2,
     "damageRate": 1.4,
+    "heal": [
+      {
+        "type": "ダメージ割合",
+        "rate": 0.5,
+        "target": "自身"
+      }
+    ],
     "buff": [
       {
         "type": "アタック",
@@ -925,7 +950,7 @@
         "timing": "戦闘前"
       }
     ],
-    "tags": [ "単体攻撃", "与ダメ回復" ]
+    "tags": [ "単体攻撃" ]
   },
   {
     "uid": "1100619",
@@ -937,6 +962,13 @@
     "range": 1,
     "cost": 2,
     "damageRate": 2.0,
+    "heal": [
+      {
+        "type": "ダメージ割合",
+        "rate": 0.7,
+        "target": "自身"
+      }
+    ],
     "buff": [
       {
         "type": "アタック",
@@ -954,7 +986,7 @@
         "timing": "戦闘前"
       }
     ],
-    "tags": [ "単体攻撃", "与ダメ回復" ]
+    "tags": [ "単体攻撃" ]
   },
   {
     "uid": "1100029",
@@ -1056,7 +1088,12 @@
     "area": 4,
     "range": 3,
     "cost": 2,
-    "healRate": 3.0,
+    "heal": [
+      {
+        "type": "マジック",
+        "rate": 3.0
+      }
+    ],
     "buff": [
       {
         "type": "与ダメージ",
@@ -1081,6 +1118,13 @@
     "range": 2,
     "cost": 2,
     "damageRate": 1.7,
+    "heal": [
+      {
+        "type": "ダメージ割合",
+        "rate": 0.5,
+        "target": "自身"
+      }
+    ],
     "debuff": [
       {
         "type": "レジスト",
@@ -1089,7 +1133,7 @@
         "timing": "戦闘前"
       }
     ],
-    "tags": [ "単体攻撃", "与ダメ回復" ]
+    "tags": [ "単体攻撃" ]
   },
   {
     "uid": "1100035",
@@ -1566,7 +1610,14 @@
     "range": 2,
     "cost": 2,
     "damageRate": 1.5,
-    "tags": [ "単体攻撃", "与ダメ回復", "サポート同時攻撃" ]
+    "heal": [
+      {
+        "type": "ダメージ割合",
+        "rate": 0.2,
+        "target": "自身"
+      }
+    ],
+    "tags": [ "単体攻撃", "サポート同時攻撃" ]
   },
   {
     "uid": "1100058",
@@ -1609,10 +1660,12 @@
     "range": "自ユニット",
     "cost": 2,
     "damageRate": 0.45,
-    "buffCancel": {
-      "value": 2,
-      "timing": "攻撃後"
-    },
+    "buffCancel": [
+      {
+        "value": 2,
+        "timing": "攻撃後"
+      }
+    ],
     "tags": [ "範囲攻撃(自分中心)" ]
   },
   {
@@ -1824,10 +1877,12 @@
         "onEnemyClass": [ "エアリアル" ]
       }
     },
-    "buffCancel": {
-      "value": 1,
-      "timing": "攻撃後"
-    },
+    "buffCancel": [
+      {
+        "value": 1,
+        "timing": "攻撃後"
+      }
+    ],
     "multiMove": {
       "type": "基本移動力"
     },
@@ -2328,7 +2383,12 @@
     "area": 3,
     "range": 2,
     "cost": 2,
-    "healRate": 1.5,
+    "heal": [
+      {
+        "type": "マジック",
+        "rate": 1.5
+      }
+    ],
     "tags": [ "範囲回復(中心指定)", "デバフ解除" ]
   },
   {
@@ -2340,7 +2400,12 @@
     "area": 3,
     "range": 2,
     "cost": 2,
-    "healRate": 3.0,
+    "heal": [
+      {
+        "type": "マジック",
+        "rate": 3.0
+      }
+    ],
     "buff": [
       {
         "type": "ディフェンス",
@@ -2635,7 +2700,12 @@
     "area": 3,
     "range": 3,
     "cost": 2,
-    "healRate": 4.0,
+    "heal": [
+      {
+        "type": "マジック",
+        "rate": 4.0
+      }
+    ],
     "tags": [ "範囲回復(中心指定)", "バフ:リジェネ" ]
   },
   {
@@ -2647,7 +2717,12 @@
     "area": 3,
     "range": 3,
     "cost": 2,
-    "healRate": 5.0,
+    "heal": [
+      {
+        "type": "マジック",
+        "rate": 5.0
+      }
+    ],
     "tags": [ "範囲回復(中心指定)", "バフ:リジェネ" ]
   },
   {
@@ -2660,10 +2735,12 @@
     "range": 2,
     "cost": 2,
     "damageRate": 0.35,
-    "buffCancel": {
-      "value": 3,
-      "timing": "攻撃後"
-    },
+    "buffCancel": [
+      {
+        "value": 3,
+        "timing": "攻撃後"
+      }
+    ],
     "statusEffects": [
       {
         "type": "スタン",
@@ -2682,10 +2759,12 @@
     "range": 2,
     "cost": 2,
     "damageRate": 0.75,
-    "buffCancel": {
-      "value": 3,
-      "timing": "攻撃後"
-    },
+    "buffCancel": [
+      {
+        "value": 3,
+        "timing": "攻撃後"
+      }
+    ],
     "buff": [
       {
         "type": "与ダメージ(魔法)",
@@ -2963,10 +3042,12 @@
     "area": 3,
     "range": 3,
     "cost": 2,
-    "buffCancel": {
-      "value": 1,
-      "timing": "攻撃後"
-    },
+    "buffCancel": [
+      {
+        "value": 1,
+        "timing": "攻撃後"
+      }
+    ],
     "debuff": [
       {
         "type": "ランダム",
@@ -2994,10 +3075,12 @@
         "onEnemyClass": [ "アサシン" ]
       }
     },
-    "buffCancel": {
-      "value": 2,
-      "timing": "戦闘後"
-    },
+    "buffCancel": [
+      {
+        "value": 2,
+        "timing": "戦闘後"
+      }
+    ],
     "tags": [ "単体攻撃", "特効(アサシン)" ],
     "note": "対象がアサシンの場合、2倍のダメージ"
   },
@@ -3182,10 +3265,12 @@
     "range": 1,
     "cost": 2,
     "damageRate": 1.4,
-    "buffCancel": {
-      "value": 3,
-      "timing": "戦闘前"
-    },
+    "buffCancel": [
+      {
+        "value": 3,
+        "timing": "戦闘前"
+      }
+    ],
     "buff": [
       {
         "type": "アタック",
@@ -3674,6 +3759,13 @@
     "range": 2,
     "cost": 2,
     "damageRate": 1.3,
+    "heal": [
+      {
+        "type": "ダメージ割合",
+        "rate": 0.3,
+        "target": "自身"
+      }
+    ],
     "statusEffects": [
       {
         "type": "回復不可",
@@ -3681,7 +3773,7 @@
         "timing": "戦闘後"
       }
     ],
-    "tags": [ "単体攻撃", "サポート同時攻撃", "与ダメ回復" ]
+    "tags": [ "単体攻撃", "サポート同時攻撃" ]
   },
   {
     "uid": "1100159",
@@ -3692,6 +3784,13 @@
     "area": "単体",
     "range": "自ユニット",
     "cost": 1,
+    "heal": [
+      {
+        "type": "HP割合",
+        "rate": 1.0,
+        "target": "自身"
+      }
+    ],
     "multiAction": {},
     "tags": [ "自己回復" ]
   },
@@ -3838,12 +3937,32 @@
     "range": 2,
     "cost": 2,
     "damageRate": 1.6,
+    "heal": [
+      {
+        "type": "ダメージ割合",
+        "rate": 0.3,
+        "target": "自身",
+        "condition": {
+          "token": [ ">=", 3 ]
+        }
+      }
+    ],
+    "ctReduction": [
+      {
+        "value": 1,
+        "targetSkill": "このスキル",
+        "condition": {
+          "token": [ ">=", 4 ]
+        }
+      }
+    ],
     "multiAction": {
       "condition": {
+        "token": [ ">=", 2 ],
         "onKill": true
       }
     },
-    "tags": [ "単体攻撃", "与ダメ回復", "サポート同時攻撃" ]
+    "tags": [ "単体攻撃", "サポート同時攻撃" ]
   },
   {
     "uid": "1100675",
@@ -3855,12 +3974,32 @@
     "range": 2,
     "cost": 2,
     "damageRate": 1.7,
+    "heal": [
+      {
+        "type": "ダメージ割合",
+        "rate": 0.3,
+        "target": "自身",
+        "condition": {
+          "token": [ ">=", 2 ]
+        }
+      }
+    ],
+    "ctReduction": [
+      {
+        "value": 1,
+        "targetSkill": "このスキル",
+        "condition": {
+          "token": [ ">=", 3 ]
+        }
+      }
+    ],
     "multiAction": {
       "condition": {
+        "token": [ ">=", 1 ],
         "onKill": true
       }
     },
-    "tags": [ "単体攻撃", "与ダメ回復", "サポート同時攻撃" ]
+    "tags": [ "単体攻撃", "サポート同時攻撃" ]
   },
   {
     "uid": "1100171",
@@ -3872,10 +4011,12 @@
     "range": 3,
     "cost": 2,
     "damageRate": 0.45,
-    "buffCancel": {
-      "value": 1,
-      "timing": "攻撃後"
-    },
+    "buffCancel": [
+      {
+        "value": 1,
+        "timing": "攻撃後"
+      }
+    ],
     "tags": [ "範囲攻撃(中心指定)" ]
   },
   {
@@ -3981,10 +4122,12 @@
     "range": 2,
     "cost": 2,
     "damageRate": 1.6,
-    "buffCancel": {
-      "value": 2,
-      "timing": "戦闘前"
-    },
+    "buffCancel": [
+      {
+        "value": 2,
+        "timing": "戦闘前"
+      }
+    ],
     "tags": [ "単体攻撃" ]
   },
   {
@@ -3997,7 +4140,27 @@
     "range": 3,
     "cost": 2,
     "damageRate": 1.8,
-    "tags": [ "単体攻撃", "与ダメ回復", "サポート同時攻撃" ]
+    "heal": [
+      {
+        "type": "ダメージ割合",
+        "rate": 0.5,
+        "target": "自身",
+        "condition": {
+          "hp": [ "<=", 50 ]
+        }
+      }
+    ],
+    "ctReduction": [
+      {
+        "value": 2,
+        "target": "自身",
+        "targetSkill": "このスキル",
+        "condition": {
+          "hp": [ "<=", 50 ]
+        }
+      }
+    ],
+    "tags": [ "単体攻撃", "サポート同時攻撃" ]
   },
   {
     "uid": "1100184",
@@ -4036,6 +4199,16 @@
     "range": 1,
     "cost": 2,
     "damageRate": 1.6,
+    "heal": [
+      {
+        "type": "ダメージ割合",
+        "rate": 0.3,
+        "target": "自身",
+        "condition": {
+          "token": [ ">=", 2 ]
+        }
+      }
+    ],
     "debuff": [
       {
         "type": "ダメージ耐性",
@@ -4047,7 +4220,7 @@
         }
       }
     ],
-    "tags": [ "単体攻撃", "与ダメ回復" ]
+    "tags": [ "単体攻撃" ]
   },
   {
     "uid": "1100186",
@@ -4105,13 +4278,15 @@
     "range": 3,
     "cost": 2,
     "damageRate": 1.7,
-    "buffCancel": {
-      "value": 2,
-      "timing": "戦闘前",
-      "condition": {
-        "token": [ ">=", 1 ]
+    "buffCancel": [
+      {
+        "value": 2,
+        "timing": "戦闘前",
+        "condition": {
+          "token": [ ">=", 1 ]
+        }
       }
-    },
+    ],
     "buff": [
       {
         "type": "ディフェンス無視",
@@ -4263,10 +4438,19 @@
     "range": 1,
     "cost": 2,
     "damageRate": 1.6,
-    "buffCancel": {
-      "value": 3,
-      "timing": "戦闘前"
-    },
+    "heal": [
+      {
+        "type": "ダメージ割合",
+        "rate": 0.1,
+        "target": "全体"
+      }
+    ],
+    "buffCancel": [
+      {
+        "value": 3,
+        "timing": "戦闘前"
+      }
+    ],
     "debuff": [
       {
         "type": "ダメージ耐性(魔法)",
@@ -4275,7 +4459,7 @@
         "timing": "戦闘前"
       }
     ],
-    "tags": [ "単体攻撃", "与ダメ回復(味方全体)", "範囲回復(味方全体)" ]
+    "tags": [ "単体攻撃" ]
   },
   {
     "uid": "1100200",
@@ -4356,10 +4540,12 @@
         "onEnemyClass": [ "アサシン" ]
       }
     },
-    "buffCancel": {
-      "value": 2,
-      "timing": "戦闘後"
-    },
+    "buffCancel": [
+      {
+        "value": 2,
+        "timing": "戦闘後"
+      }
+    ],
     "tags": [ "単体攻撃", "特効(アサシン)" ],
     "note": "対象がアサシンの場合、2倍のダメージ"
   },
@@ -4487,7 +4673,24 @@
     "range": 1,
     "cost": 2,
     "damageRate": 2.0,
-    "tags": [ "単体攻撃", "ガード不可攻撃", "与ダメ回復" ]
+    "heal": [
+      {
+        "type": "ダメージ割合",
+        "rate": 0.5,
+        "target": "自身"
+      }
+    ],
+    "ctReduction": [
+      {
+        "value": 3,
+        "target": "自身",
+        "targetSkill": "このスキル",
+        "condition": {
+          "onKill": true
+        }
+      }
+    ],
+    "tags": [ "単体攻撃", "ガード不可攻撃" ]
   },
   {
     "uid": "1100698",
@@ -4499,7 +4702,24 @@
     "range": 1,
     "cost": 2,
     "damageRate": 2.2,
-    "tags": [ "単体攻撃", "ガード不可攻撃", "与ダメ回復" ]
+    "heal": [
+      {
+        "type": "ダメージ割合",
+        "rate": 0.6,
+        "target": "自身"
+      }
+    ],
+    "ctReduction": [
+      {
+        "value": 3,
+        "target": "自身",
+        "targetSkill": "このスキル",
+        "condition": {
+          "onKill": true
+        }
+      }
+    ],
+    "tags": [ "単体攻撃", "ガード不可攻撃" ]
   },
   {
     "uid": "1100208",
@@ -4631,10 +4851,12 @@
     "range": 1,
     "cost": 2,
     "damageRate": 2.0,
-    "buffCancel": {
-      "value": 2,
-      "timing": "戦闘前"
-    },
+    "buffCancel": [
+      {
+        "value": 2,
+        "timing": "戦闘前"
+      }
+    ],
     "tags": [ "単体攻撃", "ガード不可攻撃" ]
   },
   {
@@ -4778,7 +5000,14 @@
     "range": 1,
     "cost": 2,
     "damageRate": 1.2,
-    "tags": [ "単体攻撃", "与ダメ回復" ]
+    "heal": [
+      {
+        "type": "ダメージ割合",
+        "rate": 0.15,
+        "target": "自身"
+      }
+    ],
+    "tags": [ "単体攻撃" ]
   },
   {
     "uid": "1100227",
@@ -4836,10 +5065,12 @@
     "range": 1,
     "cost": 2,
     "damageRate": 1.7,
-    "buffCancel": {
-      "value": 1,
-      "timing": "戦闘前"
-    },
+    "buffCancel": [
+      {
+        "value": 1,
+        "timing": "戦闘前"
+      }
+    ],
     "debuff": [
       {
         "type": "ダメージ耐性(物理)",
@@ -4860,10 +5091,12 @@
     "range": 1,
     "cost": 2,
     "damageRate": 2.0,
-    "buffCancel": {
-      "value": 2,
-      "timing": "戦闘前"
-    },
+    "buffCancel": [
+      {
+        "value": 2,
+        "timing": "戦闘前"
+      }
+    ],
     "debuff": [
       {
         "type": "ダメージ耐性(物理)",
@@ -5293,10 +5526,12 @@
     "range": 2,
     "cost": 2,
     "damageRate": 1.7,
-    "buffCancel": {
-      "value": 2,
-      "timing": "戦闘前"
-    },
+    "buffCancel": [
+      {
+        "value": 2,
+        "timing": "戦闘前"
+      }
+    ],
     "debuff": [
       {
         "type": "ダメージ耐性(物理)",
@@ -5783,10 +6018,12 @@
     "range": 4,
     "cost": 2,
     "damageRate": 1.7,
-    "buffCancel": {
-      "value": 1,
-      "timing": "戦闘前"
-    },
+    "buffCancel": [
+      {
+        "value": 1,
+        "timing": "戦闘前"
+      }
+    ],
     "tags": [ "単体攻撃", "長射程攻撃", "サポート同時攻撃" ]
   },
   {
@@ -5799,7 +6036,14 @@
     "range": 1,
     "cost": 2,
     "damageRate": 1.8,
-    "tags": [ "単体攻撃", "与ダメ回復" ]
+    "heal": [
+      {
+        "type": "ダメージ割合",
+        "rate": 0.3,
+        "target": "自身"
+      }
+    ],
+    "tags": [ "単体攻撃" ]
   },
   {
     "name": "パーティー・ナイト",
@@ -5832,10 +6076,12 @@
     "range": 1,
     "cost": 2,
     "damageRate": 1.9,
-    "buffCancel": {
-      "value": 2,
-      "timing": "戦闘前"
-    },
+    "buffCancel": [
+      {
+        "value": 2,
+        "timing": "戦闘前"
+      }
+    ],
     "debuff": [
       {
         "type": "ディフェンス",
@@ -5971,7 +6217,14 @@
     "range": 1,
     "cost": 1,
     "damageRate": 1.5,
-    "tags": [ "単体攻撃", "与ダメ回復(味方全体)", "範囲回復(味方全体)" ]
+    "heal": [
+      {
+        "type": "ダメージ割合",
+        "rate": 0.05,
+        "target": "全体"
+      }
+    ],
+    "tags": [ "単体攻撃" ]
   },
   {
     "uid": "1100687",
@@ -5983,7 +6236,14 @@
     "range": 1,
     "cost": 1,
     "damageRate": 1.8,
-    "tags": [ "単体攻撃", "与ダメ回復(味方全体)", "範囲回復(味方全体)" ]
+    "heal": [
+      {
+        "type": "ダメージ割合",
+        "rate": 0.1,
+        "target": "全体"
+      }
+    ],
+    "tags": [ "単体攻撃" ]
   },
   {
     "uid": "1100299",
@@ -6289,6 +6549,13 @@
     "range": 1,
     "cost": 2,
     "damageRate": 1.7,
+    "heal": [
+      {
+        "type": "ダメージ割合",
+        "rate": 0.3,
+        "target": "自身"
+      }
+    ],
     "debuff": [
       {
         "type": "ダメージ耐性(魔法)",
@@ -6297,7 +6564,7 @@
         "timing": "戦闘前"
       }
     ],
-    "tags": [ "単体攻撃", "与ダメ回復" ]
+    "tags": [ "単体攻撃" ]
   },
   {
     "uid": "1100286",
@@ -6355,10 +6622,12 @@
     "range": 2,
     "cost": 2,
     "damageRate": 1.8,
-    "buffCancel": {
-      "value": 2,
-      "timing": "戦闘前"
-    },
+    "buffCancel": [
+      {
+        "value": 2,
+        "timing": "戦闘前"
+      }
+    ],
     "debuff": [
       {
         "type": "与ダメージ",
@@ -6399,6 +6668,13 @@
     "range": 1,
     "cost": 2,
     "damageRate": 2.0,
+    "heal": [
+      {
+        "type": "ダメージ割合",
+        "rate": 0.25,
+        "target": "自身"
+      }
+    ],
     "buff": [
       {
         "type": "与ダメージ(スキル)",
@@ -6408,7 +6684,7 @@
         "timing": "敵撃破時"
       }
     ],
-    "tags": [ "単体攻撃", "与ダメ回復" ]
+    "tags": [ "単体攻撃" ]
   },
   {
     "uid": "1100311",
@@ -6540,6 +6816,13 @@
     "range": 1,
     "cost": 2,
     "damageRate": 1.8,
+    "heal": [
+      {
+        "type": "ダメージ割合",
+        "rate": 0.5,
+        "target": "自身"
+      }
+    ],
     "buff": [
       {
         "type": "アタック",
@@ -6549,7 +6832,7 @@
         "timing": "戦闘前"
       }
     ],
-    "tags": [ "単体攻撃", "与ダメ回復" ]
+    "tags": [ "単体攻撃" ]
   },
   {
     "uid": "1100317",
@@ -6757,10 +7040,12 @@
     "range": 4,
     "cost": 2,
     "damageRate": 0.55,
-    "buffCancel": {
-      "value": 1,
-      "timing": "攻撃後"
-    },
+    "buffCancel": [
+      {
+        "value": 1,
+        "timing": "攻撃後"
+      }
+    ],
     "buff": [
       {
         "type": "クリティカル率",
@@ -7014,10 +7299,12 @@
     "range": 2,
     "cost": 2,
     "damageRate": 1.9,
-    "buffCancel": {
-      "value": 1,
-      "timing": "戦闘前"
-    },
+    "buffCancel": [
+      {
+        "value": 1,
+        "timing": "戦闘前"
+      }
+    ],
     "tags": [ "単体攻撃", "サポート同時攻撃" ]
   },
   {
@@ -7278,6 +7565,13 @@
     "range": 1,
     "cost": 2,
     "damageRate": 2.0,
+    "heal": [
+      {
+        "type": "ダメージ割合",
+        "rate": 0.3,
+        "target": "自身"
+      }
+    ],
     "buff": [
       {
         "type": "クリティカル率",
@@ -7287,7 +7581,7 @@
         "timing": "戦闘前"
       }
     ],
-    "tags": [ "単体攻撃", "与ダメ回復" ]
+    "tags": [ "単体攻撃" ]
   },
   {
     "uid": "1100415",
@@ -7492,7 +7786,14 @@
     "range": 1,
     "cost": 2,
     "damageRate": 1.9,
-    "tags": [ "単体攻撃", "与ダメ回復" ]
+    "heal": [
+      {
+        "type": "ダメージ割合",
+        "rate": 0.3,
+        "target": "自身"
+      }
+    ],
+    "tags": [ "単体攻撃" ]
   },
   {
     "uid": "1100423",
@@ -7557,6 +7858,13 @@
     "range": 1,
     "cost": 2,
     "damageRate": 1.8,
+    "heal": [
+      {
+        "type": "ダメージ割合",
+        "rate": 0.25,
+        "target": "自身"
+      }
+    ],
     "buff": [
       {
         "type": "ディフェンス",
@@ -7573,7 +7881,7 @@
         "timing": "戦闘前"
       }
     ],
-    "tags": [ "単体攻撃", "与ダメ回復" ]
+    "tags": [ "単体攻撃" ]
   },
   {
     "uid": "1100429",
@@ -7720,7 +8028,20 @@
     "area": "全体",
     "range": "自ユニット",
     "cost": 2,
-    "healRate": 2.0,
+    "heal": [
+      {
+        "type": "マジック",
+        "rate": 2.0,
+        "target": "全体"
+      }
+    ],
+    "ctReduction": [
+      {
+        "value": 1,
+        "target": "全体",
+        "targetSkill": "全スキル(このスキル以外)"
+      }
+    ],
     "tags": [ "範囲回復(味方全体)", "CT減(味方)" ]
   },
   {
@@ -8267,6 +8588,14 @@
     "range": 2,
     "cost": 2,
     "damageRate": 1.7,
+    "heal": [
+      {
+        "type": "マジック",
+        "rate": 4.0,
+        "target": "味方(低HP)",
+        "timing": "スキル後"
+      }
+    ],
     "tags": [ "単体攻撃", "単体回復(低HP)" ]
   },
   {
@@ -8330,7 +8659,17 @@
     "range": 2,
     "cost": 2,
     "damageRate": 1.8,
-    "tags": [ "単体攻撃", "サポート同時攻撃", "与ダメ回復(味方全体)" ]
+    "heal": [
+      {
+        "type": "ダメージ割合",
+        "rate": 0.1,
+        "target": "全体",
+        "condition": {
+          "onCriticalHit": true
+        }
+      }
+    ],
+    "tags": [ "単体攻撃", "サポート同時攻撃" ]
   },
   {
     "uid": "1100691",
@@ -8450,6 +8789,16 @@
     "range": 1,
     "cost": 2,
     "damageRate": 2.0,
+    "heal": [
+      {
+        "type": "ダメージ割合",
+        "rate": 0.1,
+        "target": "自身",
+        "condition": {
+          "token": [ ">=", 1 ]
+        }
+      }
+    ],
     "debuff": [
       {
         "type": "ダメージ耐性",
@@ -8461,7 +8810,7 @@
         }
       }
     ],
-    "tags": [ "単体攻撃", "与ダメ回復", "シールド付与(自身)" ]
+    "tags": [ "単体攻撃", "シールド付与(自身)" ]
   },
   {
     "uid": "1100538",
@@ -9036,10 +9385,12 @@
     "range": 1,
     "cost": 2,
     "damageRate": 2.1,
-    "buffCancel": {
-      "value": 2,
-      "timing": "戦闘前"
-    },
+    "buffCancel": [
+      {
+        "value": 2,
+        "timing": "戦闘前"
+      }
+    ],
     "buff": [
       {
         "type": "アタック",
@@ -9109,10 +9460,12 @@
     "range": "自ユニット",
     "cost": 2,
     "damageRate": 0.75,
-    "buffCancel": {
-      "value": 2,
-      "timing": "攻撃後"
-    },
+    "buffCancel": [
+      {
+        "value": 2,
+        "timing": "攻撃後"
+      }
+    ],
     "buff": [
       {
         "type": "アタック",
@@ -9143,7 +9496,14 @@
     "range": 1,
     "cost": 2,
     "damageRate": 2.0,
-    "tags": [ "単体攻撃", "与ダメ回復" ]
+    "heal": [
+      {
+        "type": "ダメージ割合",
+        "rate": 0.25,
+        "target": "自身"
+      }
+    ],
+    "tags": [ "単体攻撃" ]
   },
   {
     "uid": "1100602",
@@ -9155,7 +9515,19 @@
     "range": 1,
     "cost": 2,
     "damageRate": 2.1,
-    "tags": [ "単体攻撃", "単体回復(低HP)", "与ダメ回復" ]
+    "heal": [
+      {
+        "type": "ダメージ割合",
+        "rate": 0.25,
+        "target": "自身"
+      },
+      {
+        "type": "マジック",
+        "rate": 2.5,
+        "target": "味方(低HP)"
+      }
+    ],
+    "tags": [ "単体攻撃" ]
   },
   {
     "uid": "1100614",
@@ -9167,7 +9539,14 @@
     "range": 2,
     "cost": 2,
     "damageRate": 2.0,
-    "tags": [ "単体攻撃", "サポート同時攻撃", "与ダメ回復" ]
+    "heal": [
+      {
+        "type": "ダメージ割合",
+        "rate": 0.2,
+        "target": "自身"
+      }
+    ],
+    "tags": [ "単体攻撃", "サポート同時攻撃" ]
   },
   {
     "uid": "1100624",
@@ -9179,6 +9558,13 @@
     "range": 2,
     "cost": 2,
     "damageRate": 2.0,
+    "heal": [
+      {
+        "type": "ダメージ割合",
+        "rate": 0.2,
+        "target": "自身"
+      }
+    ],
     "buff": [
       {
         "type": "アタック",
@@ -9195,7 +9581,7 @@
         "timing": "戦闘前"
       }
     ],
-    "tags": [ "単体攻撃", "サポート同時攻撃", "与ダメ回復" ]
+    "tags": [ "単体攻撃", "サポート同時攻撃" ]
   },
   {
     "uid": "1100615",
@@ -9552,10 +9938,12 @@
     "range": "自ユニット",
     "cost": 2,
     "damageRate": 0.75,
-    "buffCancel": {
-      "value": 2,
-      "timing": "攻撃後"
-    },
+    "buffCancel": [
+      {
+        "value": 2,
+        "timing": "攻撃後"
+      }
+    ],
     "debuff": [
       {
         "type": "ダメージ耐性(物理)",
@@ -9853,7 +10241,14 @@
     "range": 2,
     "cost": 2,
     "damageRate": 2.25,
-    "tags": [ "単体攻撃", "与ダメ回復", "CT減(味方)" ]
+    "heal": [
+      {
+        "type": "ダメージ割合",
+        "rate": 0.25,
+        "target": "自身"
+      }
+    ],
+    "tags": [ "単体攻撃", "CT減(味方)" ]
   },
   {
     "uid": "1100682",
@@ -9929,6 +10324,13 @@
     "range": 2,
     "cost": 2,
     "damageRate": 1.6,
+    "heal": [
+      {
+        "type": "ダメージ割合",
+        "rate": 0.3,
+        "target": "自身"
+      }
+    ],
     "buff": [
       {
         "type": "マジック",
@@ -9938,7 +10340,7 @@
         "timing": "戦闘前"
       }
     ],
-    "tags": [ "単体攻撃", "与ダメ回復" ]
+    "tags": [ "単体攻撃" ]
   },
   {
     "uid": "1100721",
@@ -9950,6 +10352,13 @@
     "range": 2,
     "cost": 2,
     "damageRate": 1.8,
+    "heal": [
+      {
+        "type": "ダメージ割合",
+        "rate": 0.4,
+        "target": "自身"
+      }
+    ],
     "buff": [
       {
         "type": "マジック",
@@ -9959,7 +10368,7 @@
         "timing": "戦闘前"
       }
     ],
-    "tags": [ "単体攻撃", "与ダメ回復" ]
+    "tags": [ "単体攻撃" ]
   },
   {
     "uid": "1100685",
@@ -10346,7 +10755,14 @@
     "range": 2,
     "cost": 2,
     "damageRate": 1.8,
-    "tags": [ "単体攻撃", "サポート同時攻撃", "与ダメ回復" ]
+    "heal": [
+      {
+        "type": "ダメージ割合",
+        "rate": 0.15,
+        "target": "自身"
+      }
+    ],
+    "tags": [ "単体攻撃", "サポート同時攻撃" ]
   },
   {
     "uid": "1100749",
@@ -10358,6 +10774,13 @@
     "range": 2,
     "cost": 2,
     "damageRate": 2.0,
+    "heal": [
+      {
+        "type": "ダメージ割合",
+        "rate": 0.25,
+        "target": "自身"
+      }
+    ],
     "immune": [
       {
         "type": "全デバフ(アクティブ由来)",
@@ -10365,7 +10788,7 @@
         "target": "自身"
       }
     ],
-    "tags": [ "単体攻撃", "サポート同時攻撃", "与ダメ回復" ]
+    "tags": [ "単体攻撃", "サポート同時攻撃" ]
   },
   {
     "uid": "1100746",
@@ -10587,10 +11010,12 @@
     "range": 3,
     "cost": 2,
     "damageRate": 0.95,
-    "buffCancel": {
-      "value": 1,
-      "timing": "攻撃後"
-    },
+    "buffCancel": [
+      {
+        "value": 1,
+        "timing": "攻撃後"
+      }
+    ],
     "debuff": [
       {
         "type": "与ダメージ",

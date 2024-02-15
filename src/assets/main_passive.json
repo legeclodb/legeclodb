@@ -1237,13 +1237,15 @@
     "name": "騎士王精神",
     "desc": "近距離による戦闘時、その戦闘前、敵ユニットの強化効果を1個解除し、ディフェンス-20%(1ターン)。",
     "cost": 2,
-    "buffCancel": {
-      "value": 1,
-      "timing": "戦闘前",
-      "condition": {
-        "onCloseCombat": true
+    "buffCancel": [
+      {
+        "value": 1,
+        "timing": "戦闘前",
+        "condition": {
+          "onCloseCombat": true
+        }
       }
-    },
+    ],
     "debuff": [
       {
         "type": "ディフェンス",
@@ -1906,13 +1908,15 @@
     "name": "グリムフェイス",
     "desc": "味方ターンでの戦闘時、その戦闘前、敵ユニットの強化効果を1個解除し、アタック/ディフェンス-10%(1ターン)。",
     "cost": 1,
-    "buffCancel": {
-      "value": 1,
-      "timing": "戦闘前",
-      "condition": {
-        "onOwnTurn": true
+    "buffCancel": [
+      {
+        "value": 1,
+        "timing": "戦闘前",
+        "condition": {
+          "onOwnTurn": true
+        }
       }
-    },
+    ],
     "debuff": [
       {
         "type": "アタック",
@@ -1940,13 +1944,15 @@
     "name": "♥グリムフェイス♥",
     "desc": "味方ターンでの戦闘時、その戦闘前、敵ユニットの強化効果を[b]2個[/b]解除し、アタック/ディフェンス[b]-15%(2ターン)[/b]。[b]更に、自ユニットのアタック/ディフェンス+15%(2ターン)。[/b]",
     "cost": 1,
-    "buffCancel": {
-      "value": 2,
-      "timing": "戦闘前",
-      "condition": {
-        "onCloseCombat": true
+    "buffCancel": [
+      {
+        "value": 2,
+        "timing": "戦闘前",
+        "condition": {
+          "onCloseCombat": true
+        }
       }
-    },
+    ],
     "buff": [
       {
         "type": "アタック",
@@ -2303,13 +2309,15 @@
     "name": "デュエルオーラ",
     "desc": "近距離による戦闘時、その戦闘前、敵ユニットの強化効果を1個解除し、ディフェンス-20%(1ターン)。",
     "cost": 2,
-    "buffCancel": {
-      "value": 1,
-      "timing": "戦闘前",
-      "condition": {
-        "onCloseCombat": true
+    "buffCancel": [
+      {
+        "value": 1,
+        "timing": "戦闘前",
+        "condition": {
+          "onCloseCombat": true
+        }
       }
-    },
+    ],
     "debuff": [
       {
         "type": "ディフェンス",
@@ -2417,13 +2425,15 @@
     "name": "気を抜かぬ進軍",
     "desc": "近距離による戦闘時、その戦闘前、敵ユニットの強化効果を1個解除する。\n更にその戦闘後、味方メインが与えたダメージの15%分HPを回復し、味方メインのアタックの1倍の固定ダメージを与える。",
     "cost": 2,
-    "buffCancel": {
-      "value": 1,
-      "timing": "戦闘前",
-      "condition": {
-        "onCloseCombat": true
+    "buffCancel": [
+      {
+        "value": 1,
+        "timing": "戦闘前",
+        "condition": {
+          "onCloseCombat": true
+        }
       }
-    },
+    ],
     "tags": [ "与ダメ回復", "固定ダメージ" ]
   },
   {
@@ -2432,13 +2442,15 @@
     "name": "♥気を抜かぬ進軍♥",
     "desc": "[b]自ユニットのアタック/物理与ダメージ+10%。[/b]\n近距離による戦闘時、その戦闘前、敵ユニットの強化効果を[b]2個[/b]解除する。\n更にその戦闘後、味方メインが与えたダメージの[b]25%[/b]分HPを回復し、味方メインのアタックの[b]1.25倍[/b]の固定ダメージを与える。",
     "cost": 2,
-    "buffCancel": {
-      "value": 2,
-      "timing": "戦闘前",
-      "condition": {
-        "onCloseCombat": true
+    "buffCancel": [
+      {
+        "value": 2,
+        "timing": "戦闘前",
+        "condition": {
+          "onCloseCombat": true
+        }
       }
-    },
+    ],
     "buff": [
       {
         "type": "アタック",
