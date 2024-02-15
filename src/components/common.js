@@ -1027,7 +1027,15 @@ export default {
         if (skill.target == "単体") {
           skill.isSingleTarget = true;
         }
-        else {
+        if (skill.range == "自ユニット") {
+          if (skill.isSingleTarget) {
+            skill.isSelfTarget = true;
+          }
+          else {
+            skill.isRadialAreaTarget = true;
+          }
+        }
+        if (skill.area && skill.area != "単体") {
           skill.isAreaTarget = true;
         }
         if (skill.damageRate) {
@@ -1286,6 +1294,15 @@ export default {
     setArrayElement(ary, idx, item) {
       this.$set(ary, idx, item);
     },
+    pushArray(ary, item) {
+      ary.push(item);
+    },
+    popArray(ary) {
+      if (ary.length > 0) {
+        ary.splice(ary.length - 1);
+      }
+    },
+
     moveProperty(dst, src, name) {
       if (name in src) {
         dst[name] = src[name];

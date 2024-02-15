@@ -41,10 +41,10 @@
         <div style="padding: 10px; background-color: white; display: flex;">
           <div ref="cells" class="grid-container">
             <div v-for="(cell, i) in cells" :key="i" :set="unit=findUnitByCoord(cell.coord)" :class="getCellClass(cell)" :id="cell.id"
-                 @click.stop="onCellClick(cell)"
+                 @click.stop="onClickCell(cell)"
                  @click.middle.prevent.stop="onCellRClick(cell)" @mousedown.middle.prevent.stop="dummyHandler()"
                  @click.right.prevent.stop="onCellRClick(cell)"
-                 @mouseover="onCellEnter(cell)" @mouseleave="onCellLeave(cell)">
+                 @mouseover="onEnterCell(cell)" @mouseleave="onLeaveCell(cell)">
               <template v-if="unit?.isEnemy && unit?.hasSupport">
                 <b-img :src="getImageURL(unit.main.class)" class="center"
                             width="30" height="30" style="position: relative; left: 8px; top: -8px; z-index: 1;" />
@@ -55,7 +55,7 @@
                 <b-img :src="getImageURL(unit.main.class)" class="center" width="40" height="40" />
               </template>
               <template v-else-if="unit?.isPlayer">
-                <div draggable @dragstart="onCellDrag(cell)" @drop="onCellDrop(cell)" @dragover.prevent="dummyHandler()">
+                <div draggable @dragstart="onDragCell(cell)" @drop="onDropCell(cell)" @dragover.prevent="dummyHandler()">
                   <b-img :src="getImageURL(unit.main.icon)" class="center" width="50" height="50" />
                 </div>
               </template>
@@ -135,11 +135,11 @@
 
     <div v-if="simulation" class="content" style="margin-top: 20px" @click.stop="">
       <div class="unit-panel">
-        <div v-if="selectedUnit" style="margin-bottom: 20px">
+        <div v-if="actionsToSelect.length" style="margin-bottom: 20px">
           <b-button size="sm" style="width: 45px; height: 45px; margin-right: 5px;">
             待機
           </b-button>
-          <b-link v-for="(skill, si) of selectedUnit.actions" :key="si" @click="selectAction(skill)">
+          <b-link v-for="(skill, si) of actionsToSelect" :key="si" @click="onClickAction(skill)">
             <b-img :src="getImageURL(skill.icon)" :title="descToTitle(skill)" :class="skill.available ? '' : 'grayscale'" width="50" />
           </b-link>
         </div>
@@ -196,7 +196,7 @@
         <b-tabs v-model="unitTabIndex">
           <b-tab v-for="(unit, ui) in playerUnits" :key="ui" style="background-color: white; min-width: 1520px; min-height: 500px;">
             <template #title>
-              <h2 style="font-size: 1em;" draggable @dragstart="onUnitDrag(unit)" @drop="onUnitDrop(unit)" @dragover.prevent="dummyHandler()">
+              <h2 style="font-size: 1em;" draggable @dragstart="onDragUnit(unit)" @drop="onDropUnit(unit)" @dragover.prevent="dummyHandler()">
                 ユニット{{ui+1}}
                 <b-img-lazy :src="getImageURL(unit.main?.icon)" width="30" />
                 <b-img-lazy :src="getImageURL(unit.support?.icon)" width="30" />
@@ -398,19 +398,17 @@ export default {
       cells: [],
       phase: "",
       path: null,
+      skillRange: null,
+      skillArea: null,
 
-      OP_TYPE: {
-        SELECT_UNIT: 0,
-        SELECT_ACTION: 1,
-        SELECT_TARGET: 2,
-        SELECT_AREA_CENTER: 3,
-        SELECT_AREA_RADIAL: 4,
-      },
-      opMode: 0,
       selectedUnit: null, // unit
+      actionsToSelect: [], // skill
       selectedSkill: null, // skill
       selectedTarget: null, // unit
       hoveredCell: null, // cell
+
+      tools: {},
+      toolStack: [],
 
       phaseTabIndex: 0,
       prevURL: "",
@@ -519,10 +517,12 @@ export default {
       this.decodeURL();
     });
 
+    this.setupTools();
+
     window.onpopstate = function () {
       this.decodeURL(true);
     }.bind(this);
-    },
+  },
 
   computed: {
     activeEnemyUnits() {
@@ -544,6 +544,274 @@ export default {
   },
 
   methods: {
+    setupTools() {
+      let test = [0, 1, 2];
+      test.push(3);
+      console.log(test);
+
+      // noSim
+      // selectUnit -> unitAction -> selectTarget -> fireAction()
+      //                                          -> previewArea -> fireAction()
+      //                          -> previewArea -> fireAction()
+
+      let self = this;
+      this.tools = {
+        prepare: {
+          onClickCell(cell) {
+            const unit = self.findUnitByCoord(cell.coord);
+            if (!unit || self.selectedUnit === unit) {
+              // 空セル、もしくは自身が選択されたらキャンセル
+              this.onCancel();
+            }
+            else if(unit) {
+              // ユニット選択処理
+              self.selectUnit(unit);
+              if (unit) {
+                self.tools.moveUnit.buildPath(unit);
+                if (unit.isEnemy) {
+                  self.scrollTo(`enemy_${unit.fid}`);
+                }
+              }
+            }
+          },
+          onCancel() {
+            self.selectUnit(null);
+            self.path = null;
+          },
+          onRenderCell(cell, r) {
+            self.tools.moveUnit.onRenderCell(cell, r);
+          },
+        },
+
+        selectUnit: {
+          onClickCell(cell) {
+            const unit = self.findUnitByCoord(cell.coord);
+            // ユニット選択処理
+            self.selectUnit(unit);
+            if (unit?.isEnemy) {
+              self.scrollTo(`enemy_${unit.fid}`);
+            }
+
+            if (unit) {
+              self.pushTool(self.tools.moveUnit);
+            }
+          },
+          onClickAction(skill) {
+          },
+          onCancel() {
+          },
+          onRenderCell(cell, r) {
+          },
+        },
+
+        moveUnit: {
+          buildPath(unit) {
+            let pf = new ldb.PathFinder(self.divX, self.divY);
+            if (unit.isEnemy) {
+              pf.setObstacles(self.allActiveUnits.filter(a => a.isPlayer && a.main.cid));
+              pf.setOccupied(self.allActiveUnits.filter(a => a.isEnemy && a !== unit));
+            }
+            if (unit.isPlayer) {
+              pf.setObstacles(self.allActiveUnits.filter(a => a.isEnemy));
+              pf.setOccupied(self.allActiveUnits.filter(a => a.isPlayer && a.main.cid && a !== unit));
+            }
+            pf.setStart(unit.coord);
+            pf.buildPath(unit.move, unit.range);
+            self.path = pf;
+          },
+
+          onEnable() {
+            this.buildPath(self.selectedUnit);
+            if (self.simulation.isOwnTurn(self.selectedUnit)) {
+              self.actionsToSelect = self.selectedUnit.actions;
+            }
+          },
+          onDisable() {
+            self.selectUnit(null);
+            self.path = null;
+            self.actionsToSelect = [];
+          },
+          onClickCell(cell) {
+            const unit = self.findUnitByCoord(cell.coord);
+            let sim = self.simulation;
+            if (unit) {
+              if (self.selectedUnit === unit) {
+                // 自身が選択されたらキャンセル
+                self.popTool();
+              }
+              else {
+                // 別のユニットが選択されたらそちらに切り替え
+                self.popTool();
+                self.selectUnit(unit);
+                self.pushTool(self.tools.moveUnit);
+              }
+            }
+            else {
+              // ユニット移動処理
+              // プレイヤーターンならプレイヤー側、敵ターンなら敵側のユニットだけ移動を許可
+              if (sim.isOwnTurn(self.selectedUnit)) {
+                self.selectedUnit.coord = cell.coord;
+              }
+            }
+          },
+          onClickAction(skill) {
+            self.popToolUntil(self.tools.moveUnit);
+            self.selectAction(skill);
+
+            if (skill) {
+              if (skill.isSelfTarget || skill.isRadialAreaTarget) {
+                self.pushTool(self.tools.previewArea);
+              }
+              else {
+                self.pushTool(self.tools.selectTarget);
+              }
+            }
+          },
+          onCancel() {
+            self.popTool();
+          },
+          onRenderCell(cell, r) {
+            const unit = self.findUnitByCoord(cell.coord);
+            const selected = self.selectedUnit;
+            if (unit) {
+              if (unit.isEnemy)
+                r.push("enemy-cell");
+              if (unit.isPlayer)
+                r.push("player-cell");
+              if (unit === selected)
+                r.push("selected");
+            }
+            if (self.path) {
+              if (self.path.isReachable(cell.coord)) {
+                if (!unit) {
+                  r.push("move-range");
+                  if (cell === self.hoveredCell && self.simulation?.isOwnTurn(selected)) {
+                    r.push("hovered");
+                  }
+                }
+              }
+              else if (self.path.isShootable(cell.coord)) {
+                r.push("attack-range");
+                if (cell === self.hoveredCell && unit && selected && self.simulation?.isOwnTurn(selected) && unit.isPlayer != selected.isPlayer) {
+                  r.push("hovered");
+                }
+              }
+            }
+            if (self.simulation?.isOwnTurn(selected) && !unit) {
+              r.push("click-to-move");
+            }
+          },
+        },
+
+        selectTarget: {
+          onEnable() {
+            let skill = self.selectedSkill;
+            let pf = new ldb.PathFinder(self.divX, self.divY);
+            pf.setStart(self.selectedUnit.coord);
+            pf.buildPath(0, skill.range ?? 1);
+            self.skillRange = pf;
+          },
+          onDisable() {
+            self.skillRange = null;
+            self.targetUnit = null;
+          },
+          onClickCell(cell) {
+            let skill = self.selectedSkill;
+            const unit = self.findUnitByCoord(cell.coord);
+            if (unit) {
+              self.targetUnit = unit;
+              if (skill.isAreaTarget) {
+                self.pushTool(self.tools.previewArea);
+              }
+              else {
+                // fireSkill
+              }
+            }
+          },
+          onClickAction(skill) {
+            self.tools.moveUnit.onClickAction(skill);
+          },
+          onCancel() {
+            self.popTool();
+          },
+          onRenderCell(cell, r) {
+            const unit = self.findUnitByCoord(cell.coord);
+            const selected = self.selectedUnit;
+            if (self.skillRange.isShootable(cell.coord)) {
+              r.push("area-range");
+              if (cell === self.hoveredCell && unit && selected && self.simulation?.isOwnTurn(selected) && unit.isPlayer != selected.isPlayer) {
+                r.push("hovered");
+              }
+            }
+          },
+        },
+
+        previewArea: {
+          onEnable() {
+            let skill = self.selectedSkill;
+            let pf = new ldb.PathFinder(self.divX, self.divY);
+            pf.setStart((self.targetUnit ?? self.selectedUnit).coord);
+            pf.buildPath(0, skill.area, skill.areaShape);
+            self.skillArea = pf;
+          },
+          onDisable() {
+            self.skillArea = null;
+          },
+          onClickCell(cell) {
+            let skill = self.selectedSkill;
+            const unit = self.findUnitByCoord(cell.coord);
+            if (unit) {
+              // fireSkill
+            }
+          },
+          onClickAction(skill) {
+            self.tools.moveUnit.onClickAction(skill);
+          },
+          onCancel() {
+            self.popTool();
+          },
+          onRenderCell(cell, r) {
+            const unit = self.findUnitByCoord(cell.coord);
+            const selected = self.selectedUnit;
+            if (self.skillArea.isShootable(cell.coord)) {
+              r.push("attack-range");
+              if (cell === self.hoveredCell && unit && selected && self.simulation?.isOwnTurn(selected) && unit.isPlayer != selected.isPlayer) {
+                r.push("hovered");
+              }
+            }
+          },
+        },
+      };
+
+      this.toolStack = [this.tools.prepare];
+    },
+
+    clearTools() {
+      while (this.popTool()) {}
+    },
+    pushTool(tool) {
+      if (tool.onEnable) {
+        tool.onEnable();
+      }
+      this.pushArray(this.toolStack, tool);
+    },
+    popTool() {
+      if (this.toolStack.length > 0) {
+        let tool = this.toolStack.at(-1);
+        if (tool.onDisable) {
+          tool.onDisable();
+        }
+        this.popArray(this.toolStack);
+        return true;
+      }
+      return false;
+    },
+    popToolUntil(tool) {
+      while (this.toolStack.at(-1) !== tool) {
+        this.popTool();
+      }
+    },
+
     zeroPad(num, pad = 2) {
       return String(num).padStart(pad, '0');
     },
@@ -592,8 +860,8 @@ export default {
     },
 
     selectUnit(unit) {
+      this.selectedUnit = unit;
       if (unit) {
-        this.selectedUnit = unit;
         if (unit.isEnemy) {
           this.scrollTo(`unit_${unit.fid}`);
         }
@@ -601,25 +869,31 @@ export default {
           const idx = this.playerUnits.findIndex(a => a.fid == unit.fid);
           this.unitTabIndex = idx;
         }
+      }
+    },
 
-        let pf = new ldb.PathFinder(15, 15);
-        if (unit.isEnemy) {
-          pf.setObstacles(this.allActiveUnits.filter(a => a.isPlayer && a.main.cid));
-          pf.setOccupied(this.allActiveUnits.filter(a => a.isEnemy && a !== unit));
-        }
-        if (unit.isPlayer) {
-          pf.setObstacles(this.allActiveUnits.filter(a => a.isEnemy));
-          pf.setOccupied(this.allActiveUnits.filter(a => a.isPlayer && a.main.cid && a !== unit));
-        }
-        pf.setStart(unit.coord);
-        pf.buildPath(unit.move, unit.range);
-        this.path = pf;
+    selectAction(skill) {
+      this.selectedSkill = skill;
+    },
+
+    selectTarget(targetUnit) {
+      let skill = this.selectedSkill;
+      if (skill.isAreaTarget) {
+        let pf = new ldb.PathFinder(this.divX, this.divY);
+        pf.setStart(this.selectedUnit.coord);
+        pf.buildPath(0, skill.area, skill.areaShape);
+        this.skillArea = pf;
       }
       else {
-        this.selectedUnit = null;
-        this.selectedSkill = null;
-        this.path = null;
+        this.selectedTarget = targetUnit;
       }
+    },
+
+    fireAction(targetUnit) {
+    },
+
+    cancelAction() {
+      this.toolStack.at(-1)?.onCancel();
     },
 
     mergeChrData(dst, src) {
@@ -654,9 +928,6 @@ export default {
     },
 
     getCellClass(cell) {
-      const unit = this.findUnitByCoord(cell.coord);
-      const selected = this.selectedUnit;
-
       let r = ["grid-cell", "border-l", "border-t"];
       if (cell.coord[0] == this.divX - 1) {
         r.push("border-r");
@@ -665,33 +936,8 @@ export default {
         r.push("border-b");
       }
 
-      if (unit) {
-        if (unit.isEnemy)
-          r.push("enemy-cell");
-        if (unit.isPlayer)
-          r.push("player-cell");
-        if (unit === selected)
-          r.push("selected");
-      }
-      if (this.path) {
-        if (this.path.isReachable(cell.coord)) {
-          if (!unit) {
-            r.push("move-range");
-            if (cell === this.hoveredCell && this.simulation?.isOwnTurn(selected)) {
-              r.push("hovered");
-            }
-          }
-        }
-        else if (this.path.isShootable(cell.coord)) {
-          r.push("attack-range");
-          if (cell === this.hoveredCell && unit && selected && this.simulation?.isOwnTurn(selected) && unit.isPlayer != selected.isPlayer) {
-            r.push("hovered");
-          }
-        }
-      }
-      if (this.simulation?.isOwnTurn(selected) && !unit) {
-        r.push("click-to-move");
-      }
+      let tool = this.toolStack.at(-1);
+      tool.onRenderCell(cell, r);
       return r;
     },
 
@@ -704,46 +950,32 @@ export default {
       });
     },
 
-    onCellEnter(cell) {
+    onEnterCell(cell) {
       this.hoveredCell = cell;
       const unit = this.findUnitByCoord(cell.coord);
       if (unit?.isEnemy) {
         //this.scrollTo(`enemy_${unit.fid}`);
       }
     },
-    onCellLeave(cell) {
+    onLeaveCell(cell) {
       if (this.hoveredCell === cell) {
         this.hoveredCell = null;
       }
     },
-    onCellClick(cell) {
-      const unit = this.findUnitByCoord(cell.coord);
-      if (unit) {
-        // ユニット選択処理
-        this.selectUnit(this.selectedUnit === unit ? null : unit);
-      if (unit.isEnemy) {
-        this.scrollTo(`enemy_${unit.fid}`);
+    onClickCell(cell) {
+      let tool = this.toolStack.at(-1);
+      if (tool && tool.onClickCell) {
+        tool.onClickCell(cell);
       }
-      }
-      else {
-        // ユニット移動処理
-        if (this.simulation) {
-          // プレイヤーターンならプレイヤー側、敵ターンなら敵側のユニットだけ移動を許可
-          if (this.simulation.isOwnTurn(this.selectedUnit)) {
-            this.selectedUnit.coord = cell.coord;
-          }
-          else {
-
-          }
-        }
-        else {
-          this.selectUnit(null);
-        }
-      }
-      //this.updateURL();
     },
     onCellRClick(cell) {
-      this.selectUnit(null);
+      this.cancelAction();
+    },
+    onClickAction(skill) {
+      let tool = this.toolStack.at(-1);
+      if (tool && tool.onClickAction) {
+        tool.onClickAction(skill);
+      }
     },
 
     updateURL() {
@@ -787,6 +1019,9 @@ export default {
       if (!this.simulation) {
         this.simulation = new ldb.SimContext(this.divX, this.divY, [...this.playerUnits, ...this.enemyUnits]);
         this.simulation.onSimulationBegin();
+
+        this.clearTools();
+        this.pushTool(this.tools.selectUnit);
       }
     },
     endSimulation() {
@@ -794,6 +1029,9 @@ export default {
       if (this.simulation) {
         this.simulation.onSimulationEnd();
         this.simulation = null;
+
+        this.clearTools();
+        this.pushTool(this.tools.prepare);
       }
     },
 
@@ -801,25 +1039,10 @@ export default {
       this.simulation?.passTurn();
     },
 
-    confirmAction() {
-    },
-
-    cancelAction() {
-    },
-
-    selectAction(skill) {
-      this.selectedSkill = skill;
-
-      // debug
-      if (skill) {
-        skill.fire();
-      }
-    },
-
-    onUnitDrag(unit) {
+    onDragUnit(unit) {
       this.draggingUnit = unit;
     },
-    onUnitDrop(unit) {
+    onDropUnit(unit) {
       if (this.draggingUnit && !this.simulation) {
         if (this.draggingUnit && unit) {
           this.draggingUnit.swap(unit);
@@ -828,11 +1051,11 @@ export default {
       this.draggingUnit = null;
       this.selectUnit(null);
     },
-    onCellDrag(cell) {
-      this.onUnitDrag(this.findUnitByCoord(cell.coord));
+    onDragCell(cell) {
+      this.onDragUnit(this.findUnitByCoord(cell.coord));
     },
-    onCellDrop(cell) {
-      this.onUnitDrop(this.findUnitByCoord(cell.coord));
+    onDropCell(cell) {
+      this.onDropUnit(this.findUnitByCoord(cell.coord));
     },
     dummyHandler() {
     },
@@ -957,10 +1180,13 @@ export default {
     background: rgb(140, 160, 255);
   }
   .attack-range {
-    background: rgb(255, 230, 210);
+    background: rgb(255, 200, 190);
   }
   .attack-range.hovered {
-    background: rgb(255, 120, 90);
+    background: rgb(255, 90, 80);
+  }
+  .area-range {
+    background: rgb(255, 235, 190);
   }
   .click-to-move {
     cursor: move;

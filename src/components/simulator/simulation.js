@@ -837,7 +837,12 @@ export class PathFinder
       }
     }
   }
-  buildPath(move, range) {
+  buildPath(move, range, rangeShape = null) {
+    if (range == "単体")
+      range = 1;
+    else if (range == "全体")
+      range = 99;
+
     for (let m = 0; m < move; ++m) {
       for (let y = 0; y < this.ydiv; ++y) {
         for (let x = 0; x < this.xdiv; ++x) {
@@ -847,7 +852,7 @@ export class PathFinder
     }
     for (let y = 0; y < this.ydiv; ++y) {
       for (let x = 0; x < this.xdiv; ++x) {
-        this._shootCell(x, y, range);
+        this._shootCell(x, y, range, rangeShape);
       }
     }
   }
