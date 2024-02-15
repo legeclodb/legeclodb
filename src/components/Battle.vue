@@ -140,7 +140,7 @@
             待機
           </b-button>
           <b-link v-for="(skill, si) of actionsToSelect" :key="si" @click="onClickAction(skill)">
-            <b-img :src="getImageURL(skill.icon)" :title="descToTitle(skill)" :class="skill.available ? '' : 'grayscale'" width="50" />
+            <b-img :src="getImageURL(skill.icon)" :title="descToTitle(skill)" :class="getActionClass(skill)" width="50" />
           </b-link>
         </div>
         <div>
@@ -545,18 +545,15 @@ export default {
 
   methods: {
     setupTools() {
-      let test = [0, 1, 2];
-      test.push(3);
-      console.log(test);
-
-      // noSim
-      // selectUnit -> unitAction -> selectTarget -> fireAction()
-      //                                          -> previewArea -> fireAction()
-      //                          -> previewArea -> fireAction()
+      // tool 変遷：
+      // nonSimulation (非シミュレーション時)
+      // selectUnit -> unitAction -> selectTarget -> (fireSkill)
+      //                                          -> previewArea -> (fireSkill)
+      //                          -> previewArea -> (fireSkill)
 
       let self = this;
       this.tools = {
-        prepare: {
+        nonSimulation: {
           onClickCell(cell) {
             const unit = self.findUnitByCoord(cell.coord);
             if (!unit || self.selectedUnit === unit) {
@@ -641,9 +638,9 @@ export default {
               }
               else {
                 // 別のユニットが選択されたらそちらに切り替え
-                self.popTool();
+                this.onDisable();
                 self.selectUnit(unit);
-                self.pushTool(self.tools.moveUnit);
+                this.onEnable();
               }
             }
             else {
@@ -712,19 +709,22 @@ export default {
             self.skillRange = pf;
           },
           onDisable() {
+            self.selectedSkill = null;
             self.skillRange = null;
             self.targetUnit = null;
           },
           onClickCell(cell) {
-            let skill = self.selectedSkill;
-            const unit = self.findUnitByCoord(cell.coord);
-            if (unit) {
-              self.targetUnit = unit;
-              if (skill.isAreaTarget) {
-                self.pushTool(self.tools.previewArea);
-              }
-              else {
-                // fireSkill
+            if (self.skillRange.isShootable(cell.coord)) {
+              let skill = self.selectedSkill;
+              const unit = self.findUnitByCoord(cell.coord);
+              if (unit) {
+                self.targetUnit = unit;
+                if (skill.isAreaTarget) {
+                  self.pushTool(self.tools.previewArea);
+                }
+                else {
+                  // fireSkill
+                }
               }
             }
           },
@@ -755,13 +755,25 @@ export default {
             self.skillArea = pf;
           },
           onDisable() {
+            if (self.toolStack.at(-2) !== self.tools.selectTarget) {
+              self.selectedSkill = null;
+            }
             self.skillArea = null;
           },
           onClickCell(cell) {
-            let skill = self.selectedSkill;
-            const unit = self.findUnitByCoord(cell.coord);
-            if (unit) {
-              // fireSkill
+            if (self.skillArea.isShootable(cell.coord)) {
+              let skill = self.selectedSkill;
+              const unit = self.findUnitByCoord(cell.coord);
+              if (unit) {
+                if (!self.targetUnit || unit === self.targetUnit) {
+                  // fireSkill
+                }
+                else {
+                  this.onDisable();
+                  self.targetUnit = unit;
+                  this.onEnable();
+                }
+              }
             }
           },
           onClickAction(skill) {
@@ -783,7 +795,7 @@ export default {
         },
       };
 
-      this.toolStack = [this.tools.prepare];
+      this.toolStack = [this.tools.nonSimulation];
     },
 
     clearTools() {
@@ -940,6 +952,16 @@ export default {
       tool.onRenderCell(cell, r);
       return r;
     },
+    getActionClass(skill) {
+      let r = ["action"];
+      if (skill === this.selectedSkill) {
+        r.push("selected");
+      }
+      if (!skill.available) {
+        r.push("grayscale");
+      }
+      return r;
+    },
 
     scrollTo(id) {
       this.$nextTick(function () {
@@ -1031,7 +1053,7 @@ export default {
         this.simulation = null;
 
         this.clearTools();
-        this.pushTool(this.tools.prepare);
+        this.pushTool(this.tools.nonSimulation);
       }
     },
 
@@ -1225,6 +1247,15 @@ export default {
     margin: 0 15px;
   }
 
+  .action {
+    border: 1px solid rgba(255, 255, 255, 0);
+    border-radius: 0.3rem;
+    background-color: rgba(255, 255, 255, 0);
+  }
+  .action.selected {
+    border: 1px solid rgba(255, 0, 0, 255);
+    background-color: rgba(255, 0, 0, 255);
+  }
   .grayscale {
     filter: grayscale(100%);
   }
