@@ -665,7 +665,7 @@ export class SimContext
   }
 
 
-  fireSkill(skill, target) {
+  fireSkill(skill, targetUnit, targetCell) {
     skill.onFire();
   }
 
@@ -812,10 +812,10 @@ export class PathFinder
     return null;
   }
 
-  isReachable(pos) {
+  isInMoveRange(pos) {
     return (this.getCell(pos[0], pos[1])?.moveDistance ?? -1) >= 0;
   }
-  isShootable(pos) {
+  isInFireRange(pos) {
     return (this.getCell(pos[0], pos[1])?.shootDistance ?? -1) >= 0;
   }
   setStart(pos) {
@@ -841,7 +841,9 @@ export class PathFinder
     }
   }
   buildPath(move, range, rangeShape = null) {
-    if (range == "単体")
+    if (range == "自ユニット")
+      range = 0;
+    if (range == "単体" || range == "自ユニット")
       range = 1;
     else if (range == "全体")
       range = 99;

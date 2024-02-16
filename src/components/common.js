@@ -1036,7 +1036,7 @@ export default {
     setupSkill(skill, params) {
       const self = this;
       if (skill.isActive) {
-        if (skill.target == "単体") {
+        if (skill.area == "単体") {
           skill.isSingleTarget = true;
         }
         if (skill.range == "自ユニット") {
@@ -1051,11 +1051,25 @@ export default {
           skill.isAreaTarget = true;
         }
 
-        if (skill.damageRate || skill.debuff) {
+        const hasAreaEffect = function (effects) {
+          if (effects) {
+            for (const e of effects) {
+              if (e.target != "自身") {
+                return true;
+              }
+            }
+          }
+          return false;
+        };
+
+        if (skill.damageRate || hasAreaEffect(skill.debuff)) {
           skill.isTargetEnemy = true;
         }
-        if (skill.healRate || skill.buff) {
+        if (skill.healRate || hasAreaEffect(skill.buff)) {
           skill.isTargetAlly = true;
+        }
+        if (skill.summon) {
+          skill.isTargetCell = true;
         }
       }
 
