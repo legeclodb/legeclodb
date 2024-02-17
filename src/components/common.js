@@ -1043,6 +1043,9 @@ export default {
           if (skill.isSingleTarget) {
             skill.isSelfTarget = true;
           }
+          else if (skill.areaShape == "直線") {
+            skill.isDirectionalAreaTarget = true;
+          }
           else {
             skill.isRadialAreaTarget = true;
           }

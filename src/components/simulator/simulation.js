@@ -665,8 +665,11 @@ export class SimContext
   }
 
 
-  fireSkill(skill, targetUnit, targetCell) {
-    skill.onFire();
+  fireSkill(unit, skill, targetUnit, targetCell) {
+    // 待機の場合 skill は null
+    if (skill) {
+      skill.onFire();
+    }
   }
 
   passTurn() {
@@ -813,10 +816,10 @@ export class PathFinder
   }
 
   isInMoveRange(pos) {
-    return (this.getCell(pos[0], pos[1])?.moveDistance ?? -1) >= 0;
+    return pos && (this.getCell(pos[0], pos[1])?.moveDistance ?? -1) >= 0;
   }
   isInFireRange(pos) {
-    return (this.getCell(pos[0], pos[1])?.shootDistance ?? -1) >= 0;
+    return pos && (this.getCell(pos[0], pos[1])?.shootDistance ?? -1) >= 0;
   }
   setStart(pos) {
     let c = this.getCell(pos[0], pos[1]);

@@ -136,7 +136,7 @@
     <div v-if="simulation" class="content" style="margin-top: 20px" @click.stop="">
       <div class="unit-panel">
         <div v-if="actionsToSelect.length" style="margin-bottom: 20px">
-          <b-button size="sm" style="width: 45px; height: 45px; margin-right: 5px;">
+          <b-button size="sm" style="width: 45px; height: 45px; margin-right: 5px;" @click="pushTool(tools.confirm);">
             待機
           </b-button>
           <b-link v-for="(skill, si) of actionsToSelect" :key="si" @click="onClickAction(skill)">
@@ -158,16 +158,21 @@
       </div>
 
       <div class="unit-panel">
-        シミュレーションモードでは実際のゲームのようにユニットを操作できます。<br />
-        しかし、あくまで検証用であるため、異なる点もあります。大きな違いを以下に挙げます。<br />
-        <ul>
-          <li>移動可能範囲は表示されますが、それを無視して無限に移動できます。</li>
-          <li>無限に再行動できます。</li>
-          <li>CT 中のアクティブや使用済みサポートアクティブも使用可能です。<br />
-          (本来使用不能なスキルはアイコンが灰色になるので区別できます)</li>
-          <li>敵ユニットは自動では行動しません。<b>敵フェイズでは敵ユニットを手動で操作する必要があります</b>。<br />
-          (敵の挙動の正確な再現が困難であるため)</li>
-        </ul>
+        <div v-if="!showConfirm">
+          シミュレーションモードでは実際のゲームのようにユニットを操作できます。<br />
+          しかし、検証のため、あるいは再現が難しいため、動作が異なる点もあります。以下大雑把な説明。<br />
+          <ul>
+            <li><b>右クリックでキャンセル</b>の動作になります。</li>
+            <li><b>敵フェイズでは敵ユニットを手動で操作する必要があります</b>。正確な再現が困難なため、自動では行動しません。</li>
+            <li>移動可能範囲は表示されますが、それを無視して無限に移動できます。また、無限に再行動できます。</li>
+            <li>CT 中のアクティブスキルも使用可能です。</li>
+          </ul>
+        </div>
+        <div v-else>
+          <b-button size="sm" @click="confirmAction()" style="width: 14em;">
+            行動を確定
+          </b-button>
+        </div>
       </div>
     </div>
     <div v-else class="content" style="margin-top: 30px">
@@ -401,10 +406,12 @@ export default {
       skillRange: null,
       skillArea: null,
 
-      selectedUnit: null, // unit
-      actionsToSelect: [], // skill
-      selectedSkill: null, // skill
+      selectedUnit: null,   // unit
+      actionsToSelect: [],  // skill
+      selectedSkill: null,  // skill
       selectedTarget: null, // unit
+      selectedCell: null,   // cell
+      showConfirm: false,
 
       tools: {},
       toolStack: [],
@@ -551,6 +558,10 @@ export default {
       //                          -> previewArea -> (fireSkill)
 
       let self = this;
+      const confirm = function () {
+        self.pushTool(self.tools.confirm);
+      };
+
       this.tools = {
         // 非シミュレーション時
         // ユニット選択処理
@@ -653,7 +664,7 @@ export default {
             self.selectAction(skill);
 
             if (skill) {
-              if (skill.isRadialAreaTarget) {
+              if (skill.isRadialAreaTarget || skill.isDirectionalAreaTarget) {
                 self.pushTool(self.tools.previewArea);
               }
               else {
@@ -698,7 +709,7 @@ export default {
         // スキル射程表示＆ターゲット選択処理
         selectTarget: {
           isInFireRange(unit) {
-            return self.skillRange.isInFireRange(unit.coord);
+            return self.skillRange.isInFireRange(unit?.coord);
           },
 
           onEnable() {
@@ -712,42 +723,25 @@ export default {
             self.selectedSkill = null;
             self.skillRange = null;
             self.targetUnit = null;
+            self.targetCell = null;
           },
           onClickCell(cell) {
             let unit = self.findUnitByCoord(cell.coord);
             if (self.skillRange.isInFireRange(cell.coord)) {
               let skill = self.selectedSkill;
 
-              if (skill.isTargetCell) {
-                // 召喚スキルはユニットのいないセルが対象になる
-                if (!unit) {
-                  self.fireSkill(skill, null, cell);
+              if (self.isValidTarget(self.selectedUnit, skill, unit)) {
+                self.targetUnit = unit;
+                self.targetCell = cell;
+                if (skill.isAreaTarget) {
+                  // 範囲スキルの場合範囲確認モードに遷移
+                  self.pushTool(self.tools.previewArea);
                 }
                 else {
-                  self.cancelTools(self.tools.selectUnit);
-                  self.selectUnit(unit);
-                  self.pushTool(self.tools.moveUnit);
+                  // 単体スキルならスキル発動
+                  // 召喚スキルはユニットのいないセルが対象になる
+                  confirm();
                 }
-              }
-              else {
-                if (unit) {
-                  self.targetUnit = unit;
-                  if (skill.isAreaTarget) {
-                    // 範囲スキルの場合範囲確認モードに遷移
-                    self.pushTool(self.tools.previewArea);
-                  }
-                  else if (self.isValidTarget(self.selectedUnit, skill, unit)) {
-                    // 単体スキルならスキル発動
-                    self.fireSkill(skill, unit);
-                  }
-                }
-              }
-            }
-            else {
-              if (unit) {
-                self.cancelTools(self.tools.selectUnit);
-                self.selectUnit(unit);
-                self.pushTool(self.tools.moveUnit);
               }
             }
           },
@@ -758,16 +752,10 @@ export default {
           },
           onRenderCell(cell, r) {
             let unit = self.findUnitByCoord(cell.coord);
-            let skill = self.selectedSkill;
             let selected = self.selectedUnit;
             if (self.skillRange.isInFireRange(cell.coord)) {
               r.push("area-range");
-              if (skill.isTargetCell) {
-                if (!unit) {
-                  r.push("click-to-fire");
-                }
-              }
-              else if (unit && selected && self.isValidTarget(selected, self.selectedSkill, unit)) {
+              if (self.isValidTarget(selected, self.selectedSkill, unit)) {
                 r.push("click-to-fire");
               }
             }
@@ -786,6 +774,7 @@ export default {
           onDisable() {
             if (self.toolStack.at(-2) !== self.tools.selectTarget) {
               self.selectedSkill = null;
+              self.targetCell = null;
             }
             self.skillArea = null;
           },
@@ -793,50 +782,55 @@ export default {
             let unit = self.findUnitByCoord(cell.coord);
             if (self.skillArea.isInFireRange(cell.coord)) {
               let skill = self.selectedSkill;
-              if (unit) {
-                // 射程があるスキルの場合中心となるユニットが self.targetUnit に設定されている
-                // 自分中心スキルでは self.targetUnit は null になっている
-                if (self.targetUnit) {
-                  if (unit === self.targetUnit) {
-                    // 射程があるスキルで対象ユニットを再度クリックした場合、スキル発動
-                    self.fireSkill(skill, self.targetUnit);
-                  }
-                  else if (self.tools.selectTarget.isInFireRange(unit) && self.isValidTarget(self.selectedUnit, skill, unit)) {
-                    // 射程があるスキルで対象ユニット以外をクリックした場合、そちらを対象に再設定
-                    self.cancelTools(self.tools.selectTarget);
-                    self.targetUnit = unit;
-                    self.pushTool(self.tools.previewArea);
-                  }
+
+              // 射程があるスキルの場合中心となるユニットが self.targetUnit に設定されている。
+              // 自分中心スキルでは self.targetUnit は null になっている。
+              if (self.targetUnit) {
+                if (unit === self.targetUnit) {
+                  // 射程があるスキルで対象ユニットを再度クリックした場合、スキル発動
+                  confirm();
                 }
-                else if (self.isValidTarget(self.selectedUnit, skill, unit)) {
-                  // 自分中心スキルで何らかのユニットをクリックした場合、スキル発動
-                  self.fireSkill(skill, null);
+                else if (self.tools.selectTarget.isInFireRange(unit) && self.isValidTarget(self.selectedUnit, skill, unit)) {
+                  // 射程があるスキルで対象ユニット以外をクリックした場合、そちらを対象に再設定
+                  self.cancelTools(self.tools.selectTarget);
+                  self.targetUnit = unit;
+                  self.pushTool(self.tools.previewArea);
                 }
               }
-            }
-            else {
-              if (unit) {
-                self.cancelTools(self.tools.selectUnit);
-                self.selectUnit(unit);
-                self.pushTool(self.tools.moveUnit);
+              else {
+                if (self.isValidTarget(self.selectedUnit, skill, unit)) {
+                  self.targetCell = cell;
+                  // 自分中心スキルで何らかのユニットをクリックした場合、スキル発動
+                  confirm();
+                }
               }
             }
           },
           onClickAction(skill) {
             self.tools.moveUnit.onClickAction(skill);
           },
-          onCancel() {
-          },
           onRenderCell(cell, r) {
             const unit = self.findUnitByCoord(cell.coord);
             const selected = self.selectedUnit;
             if (self.skillArea.isInFireRange(cell.coord)) {
               r.push("attack-range");
-              if (unit && selected && self.isValidTarget(selected, self.selectedSkill, unit, cell) &&
+              if (self.isValidTarget(selected, self.selectedSkill, unit) &&
                 (!self.targetUnit || self.tools.selectTarget.isInFireRange(unit))) {
                 r.push("click-to-fire");
               }
             }
+          },
+        },
+
+        confirm: {
+          onEnable() {
+            self.showConfirm = true;
+          },
+          onDisable() {
+            self.showConfirm = false;
+          },
+          onRenderCell(cell, r) {
+            self.toolStack.at(-2).onRenderCell(cell, r);
           },
         },
       };
@@ -845,21 +839,36 @@ export default {
     },
 
     isValidTarget(unit, skill, target) {
-      if (unit && skill && target) {
-        if ((skill.isTargetEnemy && unit.isPlayer != target.isPlayer) || (skill.isTargetAlly && unit.isPlayer == target.isPlayer)) {
-          // ユニットが対象のスキル
-          return true;
-        }
-        else if (skill.isRadialAreaTarget && unit === target) {
-          // 自分中心の範囲スキルは対象が使用者自身でも有効
-          return true;
-        }
+      if (!unit || !skill) {
+        return false;
       }
-      if (unit && skill && (skill.isTargetCell && !target)) {
+
+      const isTargetSide = function () {
+        return target && ((skill.isTargetEnemy && unit.isPlayer != target.isPlayer) || (skill.isTargetAlly && unit.isPlayer == target.isPlayer));
+      };
+
+      if (skill.isSelfTarget) {
+        // 自身が対象のスキル
+        return unit === target;
+      }
+      else if (skill.isTargetCell) {
         // 空のセルが対象のスキル (召喚など)
-        return true;
+        return !target;
       }
-      return false;
+      else if (skill.isDirectionalAreaTarget) {
+        // 方向指定スキル
+        // ユニットでも空のセルでも対象に取れる、ただし使用者自身はダメ
+        return unit !== target;
+      }
+      else if (skill.isRadialAreaTarget) {
+        // 自分中心の範囲スキル
+        // 対象が使用者自身でも有効
+        return isTargetSide() || unit === target;
+      }
+      else {
+        // その他ユニットが対象のスキル
+        return isTargetSide();
+      }
     },
 
     resetTools(tool = null) {
@@ -986,6 +995,10 @@ export default {
 
     fireSkill(skill, targetUnit, targetCell = null) {
       this.simulation.fireSkill(skill, targetUnit, targetCell);
+      this.resetTools();
+    },
+    confirmAction() {
+      this.simulation.fireSkill(this.selectedUnit, this.selectedSkill, this.targetUnit, this.targetCell);
       this.resetTools();
     },
 
@@ -1278,7 +1291,7 @@ export default {
 
   .player-cell {
     background: rgb(140, 160, 255);
-    cursor: grab;
+    cursor: pointer;
   }
   .player-cell.selected {
     background: rgb(80, 80, 255);
@@ -1299,7 +1312,7 @@ export default {
   }
   .click-to-fire:hover {
     background: rgb(255, 90, 80);
-    cursor: grabbing;
+    cursor: crosshair;
   }
 
   .enemy-list {
