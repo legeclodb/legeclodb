@@ -405,12 +405,14 @@ export default {
       path: null,
       skillRange: null,
       skillArea: null,
+      skillDirection: null,
 
       selectedUnit: null,   // unit
       actionsToSelect: [],  // skill
       selectedSkill: null,  // skill
-      selectedTarget: null, // unit
-      selectedCell: null,   // cell
+      targetUnit: null, // unit
+      targetCell: null, // cell
+      targetDirection: ldb.Direction.None,
       showConfirm: false,
 
       tools: {},
@@ -547,6 +549,13 @@ export default {
         return [...this.playerUnits, ...this.enemyUnits].filter(a => a.phase == this.phase || a.fid == "E01");
       }
     },
+
+    currentTool() {
+      return this.toolStack.at(-1);
+    },
+    prevTool() {
+      return this.toolStack.at(-2);
+    },
   },
 
   methods: {
@@ -664,7 +673,20 @@ export default {
             self.selectAction(skill);
 
             if (skill) {
-              if (skill.isRadialAreaTarget || skill.isDirectionalAreaTarget) {
+              if (skill.isSelfTarget) {
+                self.targetCell = self.findCellByCoord(self.selectedUnit.coord);
+                self.pushTool(self.tools.selectTarget);
+                self.pushTool(self.tools.confirm);
+                self.tools.confirm.cancelPoint = this;
+              }
+              else if (skill.isRadialAreaTarget) {
+                self.targetCell = self.findCellByCoord(self.selectedUnit.coord);
+                self.pushTool(self.tools.previewArea);
+                self.pushTool(self.tools.confirm);
+                self.tools.confirm.cancelPoint = this;
+              }
+              else if (skill.isDirectionalAreaTarget) {
+                self.targetCell = self.findCellByCoord(self.selectedUnit.coord);
                 self.pushTool(self.tools.previewArea);
               }
               else {
@@ -716,7 +738,7 @@ export default {
             let skill = self.selectedSkill;
             let pf = new ldb.PathFinder(self.divX, self.divY);
             pf.setStart(self.selectedUnit.coord);
-            pf.buildPath(0, skill.range ?? 1);
+            pf.buildPath(0, skill.range ?? 1, skill.rangeShape);
             self.skillRange = pf;
           },
           onDisable() {
@@ -731,15 +753,22 @@ export default {
               let skill = self.selectedSkill;
 
               if (self.isValidTarget(self.selectedUnit, skill, unit)) {
-                self.targetUnit = unit;
-                self.targetCell = cell;
                 if (skill.isAreaTarget) {
                   // 範囲スキルの場合範囲確認モードに遷移
+                  self.targetCell = cell;
                   self.pushTool(self.tools.previewArea);
+                  self.pushTool(self.tools.confirm);
+                  self.tools.confirm.cancelPoint = this;
                 }
                 else {
                   // 単体スキルならスキル発動
                   // 召喚スキルはユニットのいないセルが対象になる
+                  if (skill.isTargetCell) {
+                    self.targetCell = cell;
+                  }
+                  else {
+                    self.targetUnit = unit;
+                  }
                   confirm();
                 }
               }
@@ -748,15 +777,20 @@ export default {
           onClickAction(skill) {
             self.tools.moveUnit.onClickAction(skill);
           },
-          onCancel() {
-          },
           onRenderCell(cell, r) {
             let unit = self.findUnitByCoord(cell.coord);
             let selected = self.selectedUnit;
             if (self.skillRange.isInFireRange(cell.coord)) {
               r.push("area-range");
-              if (self.isValidTarget(selected, self.selectedSkill, unit)) {
-                r.push("click-to-fire");
+              if (!self.showConfirm) {
+                if (self.isValidTarget(selected, self.selectedSkill, unit)) {
+                  r.push("click-to-fire");
+                }
+              }
+              else {
+                if ((unit && self.targetUnit === unit) || self.targetCell === cell) {
+                  r.push("target-cell");
+                }
               }
             }
           },
@@ -767,42 +801,32 @@ export default {
           onEnable() {
             let skill = self.selectedSkill;
             let pf = new ldb.PathFinder(self.divX, self.divY);
-            pf.setStart((self.targetUnit ?? self.selectedUnit).coord);
+            pf.setStart(self.targetCell.coord);
             pf.buildPath(0, skill.area, skill.areaShape);
             self.skillArea = pf;
+            this.pf = pf;
           },
           onDisable() {
-            if (self.toolStack.at(-2) !== self.tools.selectTarget) {
+            if (self.prevTool !== self.tools.selectTarget) {
               self.selectedSkill = null;
               self.targetCell = null;
             }
-            self.skillArea = null;
+            if (self.skillArea == this.pf) {
+              self.skillArea = null;
+            }
+            this.pf = null;
           },
           onClickCell(cell) {
             let unit = self.findUnitByCoord(cell.coord);
             if (self.skillArea.isInFireRange(cell.coord)) {
               let skill = self.selectedSkill;
 
-              // 射程があるスキルの場合中心となるユニットが self.targetUnit に設定されている。
-              // 自分中心スキルでは self.targetUnit は null になっている。
-              if (self.targetUnit) {
-                if (unit === self.targetUnit) {
-                  // 射程があるスキルで対象ユニットを再度クリックした場合、スキル発動
-                  confirm();
-                }
-                else if (self.tools.selectTarget.isInFireRange(unit) && self.isValidTarget(self.selectedUnit, skill, unit)) {
-                  // 射程があるスキルで対象ユニット以外をクリックした場合、そちらを対象に再設定
-                  self.cancelTools(self.tools.selectTarget);
-                  self.targetUnit = unit;
-                  self.pushTool(self.tools.previewArea);
-                }
-              }
-              else {
-                if (self.isValidTarget(self.selectedUnit, skill, unit)) {
-                  self.targetCell = cell;
-                  // 自分中心スキルで何らかのユニットをクリックした場合、スキル発動
-                  confirm();
-                }
+              if (self.isValidTarget(self.selectedUnit, skill, unit)) {
+                // 方向指定スキルの場合ここに来る
+                self.targetDirection = ldb.calcDirection(self.targetCell.coord, cell.coord);
+                self.pushTool(self.tools.previewDirection);
+                self.pushTool(self.tools.confirm);
+                self.tools.confirm.cancelPoint = this;
               }
             }
           },
@@ -814,9 +838,54 @@ export default {
             const selected = self.selectedUnit;
             if (self.skillArea.isInFireRange(cell.coord)) {
               r.push("attack-range");
-              if (self.isValidTarget(selected, self.selectedSkill, unit) &&
-                (!self.targetUnit || self.tools.selectTarget.isInFireRange(unit))) {
-                r.push("click-to-fire");
+              if (self.isValidTarget(selected, self.selectedSkill, unit)) {
+                if (!self.showConfirm) {
+                  r.push("click-to-fire");
+                }
+                else {
+                  r.push("target-cell");
+                }
+              }
+            }
+          },
+        },
+
+        previewDirection: {
+          onEnable() {
+            let skill = self.selectedSkill;
+            let pf = new ldb.PathFinder(self.divX, self.divY);
+            pf.setStart(self.targetCell.coord);
+            pf.buildPath(0, skill.area, skill.areaShape, self.targetDirection);
+            self.skillArea = pf;
+            this.pf = pf;
+          },
+          onDisable() {
+            if (self.skillArea == this.pf) {
+              self.skillArea = self.tools.previewArea.pf;
+            }
+            this.pf = null;
+            self.targetDirection = ldb.Direction.None;
+          },
+          onClickCell(cell) {
+            let unit = self.findUnitByCoord(cell.coord);
+            if (self.skillArea.isInFireRange(cell.coord)) {
+              let skill = self.selectedSkill;
+
+              if (self.isValidTarget(self.selectedUnit, skill, unit)) {
+                confirm();
+              }
+            }
+          },
+          onClickAction(skill) {
+            self.tools.moveUnit.onClickAction(skill);
+          },
+          onRenderCell(cell, r) {
+            const unit = self.findUnitByCoord(cell.coord);
+            const selected = self.selectedUnit;
+            if (self.skillArea.isInFireRange(cell.coord)) {
+              r.push("attack-range");
+              if (self.isValidTarget(selected, self.selectedSkill, unit, false)) {
+                r.push("target-cell");
               }
             }
           },
@@ -830,7 +899,7 @@ export default {
             self.showConfirm = false;
           },
           onRenderCell(cell, r) {
-            self.toolStack.at(-2).onRenderCell(cell, r);
+            self.prevTool.onRenderCell(cell, r);
           },
         },
       };
@@ -838,7 +907,7 @@ export default {
       this.resetTools(this.tools.nonSimulation);
     },
 
-    isValidTarget(unit, skill, target) {
+    isValidTarget(unit, skill, target, allowEmptyCell = true) {
       if (!unit || !skill) {
         return false;
       }
@@ -858,7 +927,12 @@ export default {
       else if (skill.isDirectionalAreaTarget) {
         // 方向指定スキル
         // ユニットでも空のセルでも対象に取れる、ただし使用者自身はダメ
-        return unit !== target;
+        if (allowEmptyCell) {
+          return unit !== target;
+        }
+        else {
+          return isTargetSide();
+        }
       }
       else if (skill.isRadialAreaTarget) {
         // 自分中心の範囲スキル
@@ -882,9 +956,14 @@ export default {
         }
       }
     },
-    cancelTools(tool = null) {
+    cancelTools(cancelPoint = null) {
+      let current = this.currentTool;
+      if (current?.cancelPoint) {
+        cancelPoint = current.cancelPoint;
+        current.cancelPoint = null;
+      }
       while (this.toolStack.length > 1) {
-        if (this.toolStack.at(-1) === tool) {
+        if (this.currentTool === cancelPoint) {
           break;
         }
         this.popTool(true);
@@ -898,7 +977,7 @@ export default {
     },
     popTool(callCancel = false) {
       if (this.toolStack.length > 0) {
-        let tool = this.toolStack.at(-1);
+        let tool = this.currentTool;
         if (callCancel && tool.onCancel) {
           tool.onCancel();
         }
@@ -910,10 +989,10 @@ export default {
       }
       return false;
     },
-    popToolUntil(tool) {
-      while (this.toolStack.at(-1) !== tool) {
-        this.popTool();
-      }
+    getPrevTool(tool) {
+      const i = this.toolStack.findIndex(a => a === tool);
+      console.log(i);
+      return this.toolStack.at(i - 1);
     },
 
     zeroPad(num, pad = 2) {
@@ -955,6 +1034,13 @@ export default {
       }
     },
 
+    findCellByCoord(coord) {
+      for (const c of this.cells) {
+        if (c.coord[0] == coord[0] && c.coord[1] == coord[1])
+          return c;
+      }
+      return null;
+    },
     findUnitByCoord(coord) {
       for (const u of this.allActiveUnits) {
         if (u.coord[0] == coord[0] && u.coord[1] == coord[1])
@@ -980,19 +1066,6 @@ export default {
       this.selectedSkill = skill;
     },
 
-    selectTarget(targetUnit) {
-      let skill = this.selectedSkill;
-      if (skill.isAreaTarget) {
-        let pf = new ldb.PathFinder(this.divX, this.divY);
-        pf.setStart(this.selectedUnit.coord);
-        pf.buildPath(0, skill.area, skill.areaShape);
-        this.skillArea = pf;
-      }
-      else {
-        this.selectedTarget = targetUnit;
-      }
-    },
-
     fireSkill(skill, targetUnit, targetCell = null) {
       this.simulation.fireSkill(skill, targetUnit, targetCell);
       this.resetTools();
@@ -1003,12 +1076,12 @@ export default {
     },
 
     cancelAction() {
-      let tool = this.toolStack.at(-1);
+      let tool = this.currentTool;
       if (tool?.onCancel) {
         tool.onCancel();
       }
       if (this.toolStack.length > 1) {
-        this.popTool();
+        this.cancelTools(this.prevTool);
       }
     },
 
@@ -1052,7 +1125,7 @@ export default {
         r.push("border-b");
       }
 
-      let tool = this.toolStack.at(-1);
+      let tool = this.currentTool;
       if (tool?.onRenderCell) {
         tool.onRenderCell(cell, r);
       }
@@ -1091,7 +1164,7 @@ export default {
       }
     },
     onClickCell(cell) {
-      let tool = this.toolStack.at(-1);
+      let tool = this.currentTool;
       if (tool && tool.onClickCell) {
         tool.onClickCell(cell);
       }
@@ -1100,7 +1173,7 @@ export default {
       this.cancelAction();
     },
     onClickAction(skill) {
-      let tool = this.toolStack.at(-1);
+      let tool = this.currentTool;
       if (tool && tool.onClickAction) {
         tool.onClickAction(skill);
       }
@@ -1295,6 +1368,11 @@ export default {
   }
   .player-cell.selected {
     background: rgb(80, 80, 255);
+  }
+
+  .target-cell {
+    background: rgb(255, 90, 80) !important;
+    cursor: crosshair;
   }
 
   .move-range {

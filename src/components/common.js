@@ -957,6 +957,7 @@ export default {
         }
         miscTags.push(`再移動${postfix}`);
       }
+
       if (skill.multiAction) {
         let postfix = "";
         for (const ma of skill.multiAction) {
@@ -973,11 +974,18 @@ export default {
             postfix = "(味方)";
           }
         }
-
         miscTags.push(`再行動${postfix}`);
         if (!skill.isActive || (skill.isActive && skill.damageRate) || postfix == "(味方)") {
           miscTags.push(`再攻撃${postfix}`);
         }
+      }
+
+      if (skill.positionManipulate) {
+        let postfix = "";
+        for (const v of skill.positionManipulate) {
+          postfix = `(${v.type})`;
+        }
+        miscTags.push(`位置移動${postfix}`);
       }
 
       const buffToS = function (effectCategory, effect) {

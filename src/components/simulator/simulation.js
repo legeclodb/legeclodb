@@ -843,7 +843,7 @@ export class PathFinder
       }
     }
   }
-  buildPath(move, range, rangeShape = null) {
+  buildPath(move, range, rangeShape = null, dir = Direction.None) {
     if (range == "自ユニット")
       range = 0;
     if (range == "単体" || range == "自ユニット")
@@ -860,7 +860,7 @@ export class PathFinder
     }
     for (let y = 0; y < this.ydiv; ++y) {
       for (let x = 0; x < this.xdiv; ++x) {
-        this._shootCell(x, y, range, rangeShape);
+        this._shootCell(x, y, range, rangeShape, dir);
       }
     }
   }
@@ -882,7 +882,7 @@ export class PathFinder
       }
     }
   }
-  _shootCell(x, y, range, shape) {
+  _shootCell(x, y, range, shape, dir) {
     let c = this.getCell(x, y);
     if (c.moveDistance < 0 || c.isOccupied) {
       return;
@@ -908,7 +908,9 @@ export class PathFinder
       df = function (rx, ry) {
         let d = Math.abs(rx) + Math.abs(ry);
         if (d <= range && (rx == 0 || ry == 0)) {
-          fillCell(rx, ry, d);
+          if (dir == Direction.None || (dir == Direction.Up && ry < 0) || (dir == Direction.Right && rx > 0) || (dir == Direction.Down && ry > 0) || (dir == Direction.Left && rx < 0)) {
+            fillCell(rx, ry, d);
+          }
         }
       };
     }
@@ -929,12 +931,36 @@ export class PathFinder
   }
 }
 
-function $vue() {
+export const Direction = {
+  None: 0,
+  Up: 1,
+  Right: 2,
+  Down: 3,
+  Left: 4,
+}
+export function calcDirection(base, target) {
+  const dir = [target[0] - base[0], target[1] - base[1]];
+  if (dir[1] < 0) {
+    return Direction.Up;
+  }
+  else if (dir[0] > 0) {
+    return Direction.Right;
+  }
+  else if (dir[1] > 0) {
+    return Direction.Down;
+  }
+  else if (dir[0] < 0) {
+    return Direction.Left;
+  }
+  return Direction.None; // base == target
+}
+
+export function $vue() {
   return window.$vue;
 }
-function $sim() {
+export function $sim() {
   return SimContext.instance;
 }
-function $findObjectByUid(uid) {
+export function $findObjectByUid(uid) {
   return $vue().findObjectByUid(uid);
 }
