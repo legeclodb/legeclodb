@@ -29,7 +29,7 @@
       "enum": [ "平地", "草原", "森", "水中", "荒地", "崖", "空", "山岳", "洞窟", "砂地", "砂丘", "積雪", "置物", "砦", "壁", "柵", "溶岩" ]
     },
     "targetEnum": {
-      "enum": [ "自身", "自身(メイン)", "自身(サポート)", "味方(低HP)", "単体", "複数", "スキル対象", "全体" ]
+      "enum": [ "自身", "自身(メイン)", "自身(サポート)", "味方(低HP)", "単体", "複数", "スキル対象", "範囲", "全体" ]
     },
     "targetType": {
       "anyOf": [
@@ -433,10 +433,12 @@
         },
         "target": { "$ref": "#/$defs/targetEnum" },
         "targetSkill": {
-          "enum": [ "全スキル", "全スキル(このスキル以外)", "このスキル" ]
+          "enum": [ "全スキル", "使用したスキル" ]
         },
         "timing": { "$ref": "#/$defs/timingType" },
-        "condition": { "$ref": "#/$defs/condition" }
+        "condition": { "$ref": "#/$defs/condition" },
+        "ct": { "type": "number" },
+        "area": { "$ref": "#/$defs/areaType" }
       }
     },
 
@@ -444,7 +446,7 @@
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "coolDown": {
+        "ct": {
           "anyOf": [
             { "type": "number" },
             {
@@ -472,7 +474,7 @@
       "additionalProperties": false,
       "properties": {
         "target": { "$ref": "#/$defs/targetEnum" },
-        "coolDown": {
+        "ct": {
           "anyOf": [
             { "type": "number" },
             {
@@ -482,6 +484,15 @@
           ]
         },
         "condition": { "$ref": "#/$defs/condition" }
+      }
+    },
+
+    "positionManipulate": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "type": { "enum": [ "引き寄せ", "後退", "テレポート" ] },
+        "amount": { "type": "number" }
       }
     }
 
@@ -501,6 +512,7 @@
       "area": { "type": [ "integer", "string" ] },
       "areaShape": { "$ref": "#/$defs/areaShape" },
       "range": { "type": [ "integer", "string" ] },
+      "rangeShape": { "$ref": "#/$defs/areaShape" },
       "cost": { "type": "integer" },
       "isNormalAttack": { "type": "boolean" },
       "isSymbolSkill": { "type": "boolean" },
@@ -582,7 +594,7 @@
       },
       "multiMove": {
         "type": "array",
-        "items": { "$ref": "#/$defs/multiMove" },
+        "items": { "$ref": "#/$defs/multiMove" }
       },
       "multiAction": {
         "type": "array",
@@ -591,6 +603,10 @@
       "ctReduction": {
         "type": "array",
         "items": { "$ref": "#/$defs/ctReduction" }
+      },
+      "positionManipulate": {
+        "type": "array",
+        "items": { "$ref": "#/$defs/positionManipulate" }
       },
       "tags": {
         "type": "array",

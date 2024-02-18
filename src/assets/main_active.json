@@ -1308,6 +1308,16 @@
         "amount": 2
       }
     ],
+    "ctReduction": [
+      {
+        "value": 1,
+        "target": "自身",
+        "targetSkill": "使用したスキル",
+        "condition": {
+          "onKill": true
+        }
+      }
+    ],
     "tags": [ "範囲攻撃(中心指定)" ],
     "note": "ランダムデバフ内訳: アタック-20%(2ターン)、ディフェンス-20%(2ターン)、マジック-20%(2ターン)、レジスト-30%(2ターン)、与ダメージ-20%(2ターン)、ダメージ耐性-20%(2ターン)、移動-2(1ターン)、アクティブスキル使用不可(2ターン)、パッシブスキル使用不可(2ターン)、強化不可(2ターン)、回復不可(2ターン)、ガード不可(1ターン)"
   },
@@ -1328,7 +1338,13 @@
         "timing": "戦闘後"
       }
     ],
-    "tags": [ "単体攻撃", "位置移動(敵)" ]
+    "positionManipulate": [
+      {
+        "type": "後退",
+        "amount": 2
+      }
+    ],
+    "tags": [ "単体攻撃" ]
   },
   {
     "uid": "1100047",
@@ -1369,7 +1385,13 @@
         "timing": "戦闘前"
       }
     ],
-    "tags": [ "単体攻撃", "位置移動(敵)" ]
+    "positionManipulate": [
+      {
+        "type": "後退",
+        "amount": 2
+      }
+    ],
+    "tags": [ "単体攻撃" ]
   },
   {
     "uid": "1100049",
@@ -1604,7 +1626,21 @@
     "area": 4,
     "range": 3,
     "cost": 2,
-    "tags": [ "範囲回復(中心指定)", "CT減(味方)" ]
+    "heal": [
+      {
+        "type": "マジック",
+        "rate": 3.0,
+        "target": "スキル対象"
+      }
+    ],
+    "ctReduction": [
+      {
+        "value": 3,
+        "target": "スキル対象",
+        "targetSkill": "全スキル"
+      }
+    ],
+    "tags": [ "範囲回復(中心指定)" ]
   },
   {
     "uid": "1100057",
@@ -2257,6 +2293,7 @@
     "ct": 3,
     "area": "単体",
     "range": 4,
+    "rangeShape": "直線",
     "cost": 2,
     "damageRate": 0.3,
     "debuff": [
@@ -2279,7 +2316,12 @@
         "timing": "戦闘後"
       }
     ],
-    "tags": [ "単体攻撃(非戦闘)", "位置移動(敵)" ]
+    "positionManipulate": [
+      {
+        "type": "引き寄せ"
+      }
+    ],
+    "tags": [ "単体攻撃(非戦闘)" ]
   },
   {
     "uid": "1100627",
@@ -2289,6 +2331,7 @@
     "ct": 3,
     "area": "単体",
     "range": 6,
+    "rangeShape": "直線",
     "cost": 2,
     "damageRate": 0.6,
     "debuff": [
@@ -2317,7 +2360,12 @@
         "timing": "戦闘後"
       }
     ],
-    "tags": [ "単体攻撃(非戦闘)", "位置移動(敵)" ]
+    "positionManipulate": [
+      {
+        "type": "引き寄せ"
+      }
+    ],
+    "tags": [ "単体攻撃(非戦闘)" ]
   },
   {
     "uid": "1100077",
@@ -2439,7 +2487,11 @@
     "area": "単体",
     "range": 2,
     "cost": 2,
-    "tags": [ "位置移動(味方)" ]
+    "positionManipulate": [
+      {
+        "type": "テレポート"
+      }
+    ]
   },
   {
     "uid": "1100082",
@@ -3325,7 +3377,13 @@
         "timing": "戦闘後"
       }
     ],
-    "tags": [ "単体攻撃", "位置移動(敵)" ]
+    "positionManipulate": [
+      {
+        "type": "後退",
+        "amount": 2
+      }
+    ],
+    "tags": [ "単体攻撃" ]
   },
   {
     "uid": "1100156",
@@ -3964,7 +4022,8 @@
     "ctReduction": [
       {
         "value": 1,
-        "targetSkill": "このスキル",
+        "target": "自身",
+        "targetSkill": "使用したスキル",
         "condition": {
           "token": [ ">=", 4 ]
         }
@@ -4003,7 +4062,8 @@
     "ctReduction": [
       {
         "value": 1,
-        "targetSkill": "このスキル",
+        "target": "自身",
+        "targetSkill": "使用したスキル",
         "condition": {
           "token": [ ">=", 3 ]
         }
@@ -4095,7 +4155,14 @@
     "range": "自ユニット",
     "cost": 2,
     "damageRate": 0.4,
-    "tags": [ "範囲攻撃(自分中心)", "CT減(味方)" ]
+    "ctReduction": [
+      {
+        "value": 1,
+        "target": "全体",
+        "targetSkill": "全スキル"
+      }
+    ],
+    "tags": [ "範囲攻撃(自分中心)" ]
   },
   {
     "uid": "1100099",
@@ -4172,7 +4239,7 @@
       {
         "value": 2,
         "target": "自身",
-        "targetSkill": "このスキル",
+        "targetSkill": "使用したスキル",
         "condition": {
           "hp": [ "<=", 50 ]
         }
@@ -4706,7 +4773,7 @@
       {
         "value": 3,
         "target": "自身",
-        "targetSkill": "このスキル",
+        "targetSkill": "使用したスキル",
         "condition": {
           "onKill": true
         }
@@ -4735,7 +4802,7 @@
       {
         "value": 3,
         "target": "自身",
-        "targetSkill": "このスキル",
+        "targetSkill": "使用したスキル",
         "condition": {
           "onKill": true
         }
@@ -5136,11 +5203,17 @@
     "desc": "敵ユニット1隊に0.2倍のダメージを与え、隣接マスまで引き寄せる。\nスキル使用後、再行動ができる。",
     "ct": 4,
     "area": "単体",
+    "areaShape": "直線",
     "range": 3,
     "cost": 2,
     "damageRate": 0.2,
     "multiAction": [ {} ],
-    "tags": [ "単体攻撃(非戦闘)", "位置移動(敵)" ]
+    "positionManipulate": [
+      {
+        "type": "引き寄せ"
+      }
+    ],
+    "tags": [ "単体攻撃(非戦闘)" ]
   },
   {
     "uid": "1100234",
@@ -5593,6 +5666,16 @@
     "range": 3,
     "cost": 2,
     "damageRate": 1.7,
+    "ctReduction": [
+      {
+        "value": 1,
+        "target": "自身",
+        "targetSkill": "使用したスキル",
+        "condition": {
+          "onKill": true
+        }
+      }
+    ],
     "tags": [ "単体攻撃" ]
   },
   {
@@ -5993,6 +6076,16 @@
         "timing": "戦闘前"
       }
     ],
+    "ctReduction": [
+      {
+        "value": 1,
+        "target": "自身",
+        "targetSkill": "使用したスキル",
+        "condition": {
+          "hp": [ ">=", 70 ]
+        }
+      }
+    ],
     "tags": [ "単体攻撃" ]
   },
   {
@@ -6005,6 +6098,16 @@
     "range": 2,
     "cost": 2,
     "damageRate": 1.7,
+    "ctReduction": [
+      {
+        "value": 1,
+        "target": "自身",
+        "targetSkill": "使用したスキル",
+        "condition": {
+          "targetHp": [ "<=", 50 ]
+        }
+      }
+    ],
     "tags": [ "単体攻撃" ]
   },
   {
@@ -6044,6 +6147,16 @@
       {
         "value": 1,
         "timing": "戦闘前"
+      }
+    ],
+    "ctReduction": [
+      {
+        "value": 3,
+        "target": "自身",
+        "targetSkill": "使用したスキル",
+        "condition": {
+          "targetHp": [ ">=", 50 ]
+        }
       }
     ],
     "tags": [ "単体攻撃", "長射程攻撃", "サポート同時攻撃" ]
@@ -6974,6 +7087,16 @@
         "timing": "戦闘前"
       }
     ],
+    "ctReduction": [
+      {
+        "value": 1,
+        "target": "自身",
+        "targetSkill": "使用したスキル",
+        "condition": {
+          "onKill": true
+        }
+      }
+    ],
     "tags": [ "単体攻撃", "サポート同時攻撃" ]
   },
   {
@@ -7411,7 +7534,17 @@
         "target": "自身"
       }
     ],
-    "tags": [ "単体攻撃", "CT減(味方)" ],
+    "ctReduction": [
+      {
+        "value": 1,
+        "target": "全体",
+        "targetSkill": "全スキル",
+        "condition": {
+          "onKill": true
+        }
+      }
+    ],
+    "tags": [ "単体攻撃" ],
     "note": "「範囲3マス以内の味方ユニット」は自分自身は含まない。"
   },
   {
@@ -7941,6 +8074,16 @@
         "timing": "戦闘前"
       }
     ],
+    "ctReduction": [
+      {
+        "value": 1,
+        "target": "自身",
+        "targetSkill": "使用したスキル",
+        "condition": {
+          "onCriticalHit": true
+        }
+      }
+    ],
     "tags": [ "単体攻撃" ]
   },
   {
@@ -8071,10 +8214,10 @@
       {
         "value": 1,
         "target": "全体",
-        "targetSkill": "全スキル(このスキル以外)"
+        "targetSkill": "全スキル"
       }
     ],
-    "tags": [ "範囲回復(味方全体)", "CT減(味方)" ]
+    "tags": [ "範囲回復(味方全体)" ]
   },
   {
     "uid": "1100447",
@@ -8614,7 +8757,17 @@
     "range": 2,
     "cost": 2,
     "damageRate": 1.8,
-    "tags": [ "単体攻撃", "CT減(自身)" ]
+    "ctReduction": [
+      {
+        "value": 1,
+        "target": "自身",
+        "targetSkill": "全スキル",
+        "condition": {
+          "onCriticalHit": true
+        }
+      }
+    ],
+    "tags": [ "単体攻撃" ]
   },
   {
     "uid": "1100499",
@@ -10131,6 +10284,7 @@
     "ct": 3,
     "area": "単体",
     "range": 6,
+    "rangeShape": "直線",
     "cost": 2
   },
   {
@@ -10242,7 +10396,17 @@
     "range": 3,
     "cost": 2,
     "damageRate": 0.8,
-    "tags": [ "超広範囲攻撃(中心指定)", "範囲攻撃(中心指定)", "CT減(自身)" ]
+    "ctReduction": [
+      {
+        "value": 1,
+        "target": "自身",
+        "targetSkill": "全スキル",
+        "condition": {
+          "onKill": true
+        }
+      }
+    ],
+    "tags": [ "超広範囲攻撃(中心指定)", "範囲攻撃(中心指定)" ]
   },
   {
     "uid": "1100727",
@@ -10263,7 +10427,17 @@
         }
       }
     ],
-    "tags": [ "超広範囲攻撃(中心指定)", "範囲攻撃(中心指定)", "CT減(自身)" ]
+    "ctReduction": [
+      {
+        "value": 1,
+        "target": "自身",
+        "targetSkill": "全スキル",
+        "condition": {
+          "onKill": true
+        }
+      }
+    ],
+    "tags": [ "超広範囲攻撃(中心指定)", "範囲攻撃(中心指定)" ]
   },
   {
     "uid": "1100683",
@@ -10275,7 +10449,17 @@
     "range": 2,
     "cost": 2,
     "damageRate": 2.0,
-    "tags": [ "単体攻撃", "CT減(味方)" ]
+    "ctReduction": [
+      {
+        "value": 1,
+        "target": "全体",
+        "targetSkill": "全スキル",
+        "condition": {
+          "onKill": true
+        }
+      }
+    ],
+    "tags": [ "単体攻撃" ]
   },
   {
     "uid": "1100724",
@@ -10294,7 +10478,17 @@
         "target": "自身"
       }
     ],
-    "tags": [ "単体攻撃", "CT減(味方)" ]
+    "ctReduction": [
+      {
+        "value": 1,
+        "target": "全体",
+        "targetSkill": "全スキル",
+        "condition": {
+          "onKill": true
+        }
+      }
+    ],
+    "tags": [ "単体攻撃" ]
   },
   {
     "uid": "1100682",

@@ -388,7 +388,7 @@
     ],
     "multiAction": [
       {
-        "coolDown": [ 4, 3, 3, 2 ],
+        "ct": [ 4, 3, 3, 2 ],
         "condition": {
           "onKill": true
         }
@@ -1166,7 +1166,19 @@
         "target": "自身"
       }
     ],
-    "tags": [ "CT減(自身)" ]
+    "ctReduction": [
+      {
+        "value": 1,
+        "target": "自身",
+        "targetSkill": "全スキル",
+        "timing": "攻撃後",
+        "condition": {
+          "probability": [ 50, 60, 80, 100 ],
+          "onOwnTurn": true,
+          "onDamage": true
+        }
+      }
+    ]
   },
   {
     "uid": "3100137",
@@ -2284,7 +2296,18 @@
         }
       }
     ],
-    "tags": [ "蓄積バフ", "CT減(自身)" ]
+    "ctReduction": [
+      {
+        "value": 1,
+        "target": "自身",
+        "targetSkill": "使用したスキル",
+        "timing": "敵撃破時",
+        "condition": {
+          "onActiveSkill": true
+        }
+      }
+    ],
+    "tags": [ "蓄積バフ" ]
   },
   {
     "uid": "3100240",
@@ -3050,7 +3073,7 @@
     ],
     "multiAction": [
       {
-        "coolDown": [ 2, 2, 2, 1 ],
+        "ct": [ 2, 2, 2, 1 ],
         "condition": {
           "targetHp": [ ">=", 50 ]
         }
@@ -3739,7 +3762,7 @@
     ],
     "multiAction": [
       {
-        "coolDown": 2,
+        "ct": 2,
         "condition": {
           "onActiveSkill": true,
           "onDamage": true
@@ -3838,7 +3861,7 @@
     ],
     "multiAction": [
       {
-        "coolDown": [ 3, 3, 2, 2 ],
+        "ct": [ 3, 3, 2, 2 ],
         "condition": {
           "onKill": true
         }
@@ -3893,7 +3916,18 @@
         "type": "基本移動力"
       }
     ],
-    "tags": [ "CT減(自身)", "蓄積バフ" ]
+    "ctReduction": [
+      {
+        "value": 1,
+        "target": "自身",
+        "targetSkill": "使用したスキル",
+        "timing": "敵撃破時",
+        "condition": {
+          "onActiveSkill": true
+        }
+      }
+    ],
+    "tags": [ "蓄積バフ" ]
   },
   {
     "uid": "3100341",
@@ -4089,7 +4123,7 @@
     ],
     "multiAction": [
       {
-        "coolDown": 3,
+        "ct": 3,
         "condition": {
           "onActiveSkill": true,
           "onDamage": true
@@ -4195,7 +4229,7 @@
     ],
     "multiAction": [
       {
-        "coolDown": [ 3, 3, 2, 2 ],
+        "ct": [ 3, 3, 2, 2 ],
         "condition": {
           "onCriticalHit": true
         }
@@ -4278,7 +4312,18 @@
         "timing": "行動後"
       }
     ],
-    "tags": [ "蓄積バフ", "CT減(自身)" ]
+    "ctReduction": [
+      {
+        "value": 1,
+        "target": "自身",
+        "targetSkill": "全スキル",
+        "timing": "敵撃破時",
+        "condition": {
+          "onActiveSkill": true
+        }
+      }
+    ],
+    "tags": [ "蓄積バフ" ]
   },
   {
     "uid": "3100365",
@@ -4402,7 +4447,7 @@
     ],
     "multiAction": [
       {
-        "coolDown": 3,
+        "ct": 3,
         "condition": {
           "onKill": true,
           "token": [ ">=", 2 ]
@@ -4467,7 +4512,7 @@
     ],
     "multiAction": [
       {
-        "coolDown": [ 4, 4, 3, 3 ],
+        "ct": [ 4, 4, 3, 3 ],
         "condition": {
           "activeBuffCount": [ ">=", 6 ]
         }
@@ -4774,7 +4819,7 @@
     ],
     "multiAction": [
       {
-        "coolDown": [ 4, 4, 3, 3 ],
+        "ct": [ 4, 4, 3, 3 ],
         "condition": {
           "onActiveSkill": true
         }
@@ -4977,7 +5022,7 @@
     ],
     "multiAction": [
       {
-        "coolDown": 3,
+        "ct": 3,
         "condition": {
           "onActiveSkill": true,
           "onDamage": true
@@ -5030,7 +5075,19 @@
         }
       }
     ],
-    "tags": [ "範囲+", "CT減(自身)" ]
+    "ctReduction": [
+      {
+        "value": 1,
+        "target": "自身",
+        "targetSkill": "全スキル",
+        "timing": "攻撃後",
+        "condition": {
+          "onOwnTurn": true,
+          "onDamage": true
+        }
+      }
+    ],
+    "tags": [ "範囲+" ]
   },
   {
     "uid": "3100412",
@@ -5263,7 +5320,18 @@
         }
       }
     ],
-    "tags": [ "CT減(自身)", "範囲回復(味方全体)", "デバフ解除" ]
+    "ctReduction": [
+      {
+        "value": 1,
+        "target": "自身",
+        "targetSkill": "全スキル",
+        "timing": "ターン開始時",
+        "condition": {
+          "hp": [ ">=", 100 ]
+        }
+      }
+    ],
+    "tags": [ "範囲回復(味方全体)", "デバフ解除" ]
   },
   {
     "uid": "3100421",
@@ -5545,7 +5613,20 @@
         }
       }
     ],
-    "tags": [ "バフ:シンボル(オリジン)", "射程+(反撃)", "ガード", "CT減(自身)" ]
+    "ctReduction": [
+      {
+        "value": 1,
+        "target": "自身",
+        "targetSkill": "全スキル",
+        "timing": "攻撃後",
+        "condition": {
+          "onActiveSkill": true,
+          "onDamage": true
+        },
+        "ct": 2
+      }
+    ],
+    "tags": [ "バフ:シンボル(オリジン)", "射程+(反撃)", "ガード" ]
   },
   {
     "uid": "3100430",
@@ -5589,7 +5670,7 @@
     ],
     "multiAction": [
       {
-        "coolDown": 3,
+        "ct": 3,
         "condition": {
           "onKill": true
         }
@@ -5661,7 +5742,7 @@
     ],
     "multiAction": [
       {
-        "coolDown": 3,
+        "ct": 3,
         "condition": {
           "onActiveSkill": true,
           "onDamage": true,
@@ -6057,7 +6138,7 @@
     ],
     "multiAction": [
       {
-        "coolDown": 2,
+        "ct": 2,
         "condition": {
           "onDamage": true
         }
@@ -6159,7 +6240,7 @@
     ],
     "multiAction": [
       {
-        "coolDown": 2,
+        "ct": 2,
         "condition": {
           "onBattle": true
         }
@@ -6468,13 +6549,21 @@
     ],
     "multiAction": [
       {
-        "coolDown": 2,
+        "ct": 2,
         "condition": {
           "onCriticalHit": true
         }
       }
     ],
-    "tags": [ "地形無視", "CT減(自身)", "移動+" ]
+    "ctReduction": [
+      {
+        "value": 1,
+        "target": "自身",
+        "targetSkill": "全スキル",
+        "timing": "敵撃破時"
+      }
+    ],
+    "tags": [ "地形無視", "移動+" ]
   },
   {
     "uid": "3100463",
@@ -6602,7 +6691,7 @@
     ],
     "multiAction": [
       {
-        "coolDown": 3,
+        "ct": 3,
         "condition": {
           "token": [ ">=", 1 ]
         }
@@ -7299,14 +7388,24 @@
     ],
     "multiAction": [
       {
-        "coolDown": 3,
+        "ct": 3,
         "condition": {
           "onDamage": true,
           "onSingleSkill": true
         }
       }
     ],
-    "tags": [ "CT減(自身)" ]
+    "ctReduction": [
+      {
+        "value": 1,
+        "target": "自身",
+        "targetSkill": "全スキル",
+        "timing": "ターン開始時",
+        "condition": {
+          "hp": [ ">=", 100 ]
+        }
+      }
+    ]
   },
   {
     "uid": "3100473",
@@ -7679,7 +7778,7 @@
     ],
     "multiAction": [
       {
-        "coolDown": 2,
+        "ct": 2,
         "condition": {
           "onCriticalHit": true
         }
@@ -7758,7 +7857,18 @@
         }
       }
     ],
-    "tags": [ "CT減(味方)" ],
+    "ctReduction": [
+      {
+        "value": 1,
+        "target": "範囲",
+        "area": [ 2, "周囲" ],
+        "targetSkill": "全スキル",
+        "timing": "ターン開始時",
+        "condition": {
+          "token": [ ">=", 2 ]
+        }
+      }
+    ],
     "note": "CT 減は 2ターン目から発動可能。また、卑弥呼の CT 減と同時に発動 (CT-2) 可能。"
   },
   {
@@ -8082,7 +8192,7 @@
     ],
     "multiAction": [
       {
-        "coolDown": 4,
+        "ct": 4,
         "condition": {
           "onActiveSkill": true,
           "onDamage": true
@@ -8239,7 +8349,7 @@
     ],
     "multiAction": [
       {
-        "coolDown": 3,
+        "ct": 3,
         "condition": {
           "onCriticalHit": true
         }
@@ -8637,7 +8747,7 @@
     ],
     "multiAction": [
       {
-        "coolDown": 3,
+        "ct": 3,
         "condition": {
           "onAreaSkill": true
         }
@@ -8779,7 +8889,7 @@
     ],
     "multiAction": [
       {
-        "coolDown": 3,
+        "ct": 3,
         "condition": {
           "onDamage": true,
           "onSingleSkill": true

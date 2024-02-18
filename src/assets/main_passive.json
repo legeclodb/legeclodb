@@ -804,7 +804,7 @@
     "desc": "同一クラスまたは対応するクラスのアディショナルリンクを解放したサポートとリンクしたとき、1ターン中に1回、追加で行動できる(この特性は発動してから2ターン毎に発動可能)。",
     "multiAction": [
       {
-        "coolDown": 2
+        "ct": 2
       }
     ]
   },
@@ -1082,7 +1082,17 @@
     "baseStatusBoost": {
       "atk": 5,
       "mag": 5
-    }
+    },
+    "ctReduction": [
+      {
+        "value": 1,
+        "target": "自身",
+        "targetSkill": "使用したスキル",
+        "condition": {
+          "onKill": true
+        }
+      }
+    ]
   },
   {
     "uid": "104",
@@ -2395,7 +2405,7 @@
     ],
     "multiAction": [
       {
-        "coolDown": 2,
+        "ct": 2,
         "condition": {
           "onActiveSkill": true,
           "onDamage": true
@@ -2424,7 +2434,7 @@
     ],
     "multiAction": [
       {
-        "coolDown": 2,
+        "ct": 2,
         "condition": {
           "onActiveSkill": true,
           "onDamage": true
@@ -3281,7 +3291,14 @@
         "target": "自身"
       }
     ],
-    "tags": [ "移動+", "範囲回復(自分中心)", "CT減(味方)" ]
+    "ctReduction": [
+      {
+        "value": 1,
+        "area": 3,
+        "targetSkill": "全スキル"
+      }
+    ],
+    "tags": [ "移動+", "範囲回復(自分中心)" ]
   },
   {
     "uid": "1200124",
@@ -3696,7 +3713,17 @@
         "area": 3
       }
     ],
-    "tags": [ "CT減(自身)" ]
+    "ctReduction": [
+      {
+        "value": 1,
+        "target": "自身",
+        "targetSkill": "全スキル",
+        "timing": "戦闘後",
+        "condition": {
+          "onCriticalHit": true
+        }
+      }
+    ]
   },
   {
     "uid": "1200143",
@@ -3843,7 +3870,7 @@
     "cost": 2,
     "multiAction": [
       {
-        "coolDown": 3,
+        "ct": 3,
         "condition": {
           "onCriticalHit": true
         }
@@ -3859,7 +3886,7 @@
     "cost": 2,
     "multiAction": [
       {
-        "coolDown": 3,
+        "ct": 3,
         "condition": {
           "onCriticalHit": true
         }
@@ -3997,7 +4024,7 @@
     ],
     "multiAction": [
       {
-        "coolDown": 3,
+        "ct": 3,
         "condition": {
           "onActiveSkill": true,
           "onDamage": true
@@ -4025,7 +4052,14 @@
         "timing": "敵撃破時"
       }
     ],
-    "tags": [ "CT減(自身)" ]
+    "ctReduction": [
+      {
+        "value": 1,
+        "target": "自身",
+        "targetSkill": "全スキル",
+        "timing": "敵撃破時"
+      }
+    ]
   },
   {
     "uid": "1200153",
@@ -4148,7 +4182,17 @@
         }
       }
     ],
-    "tags": [ "CT減(自身)" ]
+    "ctReduction": [
+      {
+        "value": 1,
+        "target": "自身",
+        "targetSkill": "全スキル",
+        "timing": "敵撃破時",
+        "condition": {
+          "onActiveSkill": true
+        }
+      }
+    ]
   },
   {
     "uid": "1200157",
@@ -4299,7 +4343,7 @@
     ],
     "doubleAttack": [
       {
-        "coolDown": 2,
+        "ct": 2,
         "condition": {
           "onOwnTurn": true
         }
@@ -4326,7 +4370,7 @@
     ],
     "multiAction": [
       {
-        "coolDown": 3,
+        "ct": 3,
         "condition": {
           "onCriticalHit": true
         }
