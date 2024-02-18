@@ -565,6 +565,7 @@ export default {
       // selectUnit -> unitAction -> selectTarget -> (fireSkill)
       //                                          -> previewArea -> (fireSkill)
       //                          -> previewArea -> (fireSkill)
+      //                                         -> previewDirection -> (fireSkill)
 
       let self = this;
       const confirm = function () {
@@ -675,15 +676,11 @@ export default {
             if (skill) {
               if (skill.isSelfTarget) {
                 self.targetCell = self.findCellByCoord(self.selectedUnit.coord);
-                self.pushTool(self.tools.selectTarget);
-                self.pushTool(self.tools.confirm);
-                self.tools.confirm.cancelPoint = this;
+                self.pushTools([self.tools.selectTarget, self.tools.confirm], this);
               }
               else if (skill.isRadialAreaTarget) {
                 self.targetCell = self.findCellByCoord(self.selectedUnit.coord);
-                self.pushTool(self.tools.previewArea);
-                self.pushTool(self.tools.confirm);
-                self.tools.confirm.cancelPoint = this;
+                self.pushTools([self.tools.previewArea, self.tools.confirm], this);
               }
               else if (skill.isDirectionalAreaTarget) {
                 self.targetCell = self.findCellByCoord(self.selectedUnit.coord);
@@ -756,9 +753,7 @@ export default {
                 if (skill.isAreaTarget) {
                   // 範囲スキルの場合範囲確認モードに遷移
                   self.targetCell = cell;
-                  self.pushTool(self.tools.previewArea);
-                  self.pushTool(self.tools.confirm);
-                  self.tools.confirm.cancelPoint = this;
+                  self.pushTools([self.tools.previewArea, self.tools.confirm], this);
                 }
                 else {
                   // 単体スキルならスキル発動
@@ -824,9 +819,7 @@ export default {
               if (self.isValidTarget(self.selectedUnit, skill, unit)) {
                 // 方向指定スキルの場合ここに来る
                 self.targetDirection = ldb.calcDirection(self.targetCell.coord, cell.coord);
-                self.pushTool(self.tools.previewDirection);
-                self.pushTool(self.tools.confirm);
-                self.tools.confirm.cancelPoint = this;
+                self.pushTools([self.tools.previewDirection, self.tools.confirm], this);
               }
             }
           },
@@ -898,6 +891,9 @@ export default {
           onDisable() {
             self.showConfirm = false;
           },
+          onClickAction(skill) {
+            self.tools.moveUnit.onClickAction(skill);
+          },
           onRenderCell(cell, r) {
             self.prevTool.onRenderCell(cell, r);
           },
@@ -957,14 +953,15 @@ export default {
       }
     },
     cancelTools(cancelPoint = null) {
-      let current = this.currentTool;
-      if (current?.cancelPoint) {
-        cancelPoint = current.cancelPoint;
-        current.cancelPoint = null;
-      }
+      let pos = this.toolStack.findIndex(a => a === cancelPoint);
       while (this.toolStack.length > 1) {
-        if (this.currentTool === cancelPoint) {
+        if (this.toolStack.length - 1 == pos) {
           break;
+        }
+        let t = this.currentTool;
+        let tpos = this.toolStack.findIndex(a => a === t.cancelPoint);
+        if (tpos >= 1 && tpos < pos) {
+          pos = tpos;
         }
         this.popTool(true);
       }
@@ -974,6 +971,14 @@ export default {
         tool.onEnable();
       }
       this.pushArray(this.toolStack, tool);
+    },
+    pushTools(tools, cancelPoint = null) {
+      if (cancelPoint) {
+        tools.at(-1).cancelPoint = cancelPoint;
+      }
+      for (let t of tools) {
+        this.pushTool(t);
+      }
     },
     popTool(callCancel = false) {
       if (this.toolStack.length > 0) {

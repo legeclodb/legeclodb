@@ -980,6 +980,21 @@ export default {
         }
       }
 
+      if (skill.ctReduction) {
+        let postfix = "";
+        for (const v of skill.ctReduction) {
+          if (v.target != "自身") {
+            postfix = `(味方)`;
+          }
+          else if (v.targetSkill == "全スキル") {
+            postfix = `(自身)`;
+          }
+        }
+        if (postfix) {
+          miscTags.push(`CT減${postfix}`);
+        }
+      }
+
       if (skill.positionManipulate) {
         let postfix = "";
         for (const v of skill.positionManipulate) {
