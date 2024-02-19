@@ -155,6 +155,11 @@
             シミュレーション終了
           </b-button>
         </div>
+        <div style="margin-top: 20px">
+          <b-button size="sm" @click="eraseWeakEnemies()" style="width: 10em;">
+            ザコ敵を除去
+          </b-button>
+        </div>
       </div>
 
       <div class="unit-panel">
@@ -1048,8 +1053,9 @@ export default {
     },
     findUnitByCoord(coord) {
       for (const u of this.allActiveUnits) {
-        if (u.coord[0] == coord[0] && u.coord[1] == coord[1])
-          return u;
+        if (u.coord[0] == coord[0] && u.coord[1] == coord[1]) {
+          return (!this.simulation || u.isActive) ? u : null;
+        }
       }
       return null;
     },
@@ -1235,6 +1241,11 @@ export default {
         this.simulation = null;
         this.resetTools(this.tools.nonSimulation);
       }
+    },
+
+    eraseWeakEnemies() {
+      this.simulation?.eraseWeakEnemies();
+      this.$forceUpdate();
     },
 
     endTurn() {

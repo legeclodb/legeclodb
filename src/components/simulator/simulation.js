@@ -483,6 +483,8 @@ class SimUnit {
   get fid() { return this.base.fid; }
   get phase() { return this.base.phase; }
   get isActive() { return !this.isDormant && this.main.hp > 0; }
+  get isPlayer() { return this.base.isPlayer; }
+  get isEnemy() { return this.base.isEnemy; }
 
   constructor(unit) {
     unit.sim = this;
@@ -766,6 +768,15 @@ export class SimContext
       }
     }
     return false;
+  }
+
+  eraseWeakEnemies() {
+    for (const u of this.activeUnits) {
+      if (u.isEnemy && u.fid != "E01") {
+        u.main.hp = 0;
+        u.support.hp = 0;
+      }
+    }
   }
 }
 
