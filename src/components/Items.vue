@@ -183,7 +183,7 @@
               </div>
               <div class="info">
                 <div class="status" v-html="itemClassesToHtml(item)"></div>
-                <div class="status2" v-html="statusToHtml(item.status, '+')" title="テクニックはメイン+サポートの攻撃力が 3000 の前提で戦闘力に計上"></div>
+                <div class="status2" v-html="statusToHtml(item.status, '+')"></div>
               </div>
               <div class="skills">
                 <div class="skill" :class="{ 'highlighted': isDescHighlighted(item) }" v-show="displayType >= 2" style="flex-grow: 1">
@@ -441,10 +441,7 @@ export default {
     updateStatus() {
       const base = Object.values(this.stat.base).map(a => a.value);
       for (let item of this.equipments) {
-        const status = this.getItemStatus(item, ...base);
-        if (status) {
-          item.status = [...status, this.getEstimatedItemBattlePower(status)];
-        }
+        item.status = this.getItemStatus(item, ...base);
       }
       this.$forceUpdate();
     },
