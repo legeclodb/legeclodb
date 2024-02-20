@@ -1032,8 +1032,14 @@ export default {
       const buffToS = function (effectCategory, effect) {
         if (params.tagFilter && !params.tagFilter(skill, effectCategory, effect))
           return [];
-        if (effect.isDebuff && !effect.duration)
+
+        if (effect.type == "ランダム") {
+          // ランダムは扱いが特殊なので個別処理
+          return `${effectCategory}:${effect.type}(${effect.variant})`;
+        }
+        if (effect.isDebuff && !effect.duration) {
           return [];
+        }
 
         // マイナスバフをデメリットタグとして登録するか
         if (typeof (effect.value) == 'number') {
@@ -1042,6 +1048,7 @@ export default {
               effectCategory = "デメリット"
             }
             else {
+              console.log(effect);
               return [];
             }
           }
@@ -1060,9 +1067,6 @@ export default {
         else if (params.includeAreaTags && effect.isBuff && effect.area) {
           t += `(味方)`;
         }
-
-        if (effect.variant)
-          t += `(${effect.variant})`;
         return t;
       }.bind(this);
 
