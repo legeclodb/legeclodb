@@ -361,7 +361,7 @@ export default {
       return lines;
     },
     chrEffectsToHtml(r) {
-      const data = this.getEffectValues(r.main.usedEffects);
+      const data = this.getEffectValues([...r.main.usedEffects, ...(r.support?.usedEffects ?? [])]);
       return this.effectParamsToHtml(data);
     },
     allEffectsToHtml(recs) {

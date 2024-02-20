@@ -1048,7 +1048,7 @@ export default {
               effectCategory = "デメリット"
             }
             else {
-              console.log(effect);
+              //console.log(effect);
               return [];
             }
           }

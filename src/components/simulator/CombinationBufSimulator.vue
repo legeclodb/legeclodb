@@ -213,7 +213,7 @@
           <br />
           なお、必ずしも本当に最適な結果になるとは限らないことに注意が必要です。<br />
           完璧に解くには時間がかかりすぎるため、若干正確性を犠牲にしつつ高速に解く方法を用いています。<br />
-          (アルゴリズムは随時改良中: 2024/01/06)<br />
+          (アルゴリズムは随時改良中: 2024/02/20)<br />
         </div>
       </div>
 
@@ -751,8 +751,8 @@ export default {
         }
       }
 
+      let vue = this;
       const createContext = function (parent = null) {
-        let vue = this;
         let ctx = {
           totalAmount: new Int32Array(parent ? parent.totalAmount : vue.effectTypeIndex),
           usedSlots: parent ? [...parent.usedSlots] : new Array(vue.slotIndex),
@@ -763,15 +763,17 @@ export default {
             return !this.usedSkills.get(item.index) && !isExcluded(item, owner);
           },
           markAsUsed: function (item) {
-            if (item.index)
+            if (item.index) {
               this.usedSkills.set(item.index, true);
+            }
           },
 
           getEffectValue(effect) {
             let p = targets[effect.effectTypeIndex];
             if (p && effectCondition(effect)) {
-              if (effect.slotIndex && this.usedSlots[effect.slotIndex])
+              if (effect.slotIndex && this.usedSlots[effect.slotIndex]) {
                 return [0, p, true];
+              }
 
               const current = this.totalAmount[p.effectTypeIndex];
               let v = vue.getEffectValue(effect);
@@ -787,28 +789,33 @@ export default {
           acceptEffects(effectList) {
             for (const effect of effectList) {
               this.totalAmount[effect.effectTypeIndex] += vue.getEffectValue(effect);
-              if (effect.slotIndex)
+              if (effect.slotIndex) {
                 this.usedSlots[effect.slotIndex] = effect;
+              }
             }
           },
 
           prepassSkill(skill, owner = null) {
-            if (!skill || !this.isAvailable(skill, owner) || !skillCondition(skill))
+            if (!skill || !this.isAvailable(skill, owner) || !skillCondition(skill)) {
               return 0;
+            }
             let score = 0;
             for (const v of vue.enumerateEffects(skill)) {
               let p = this.getEffectValue(v);
-              if (p)
+              if (p) {
                 score += p[0] * (p[1].weight * 0.1);
+              }
             }
             if (skill.summon) {
               let sch = skill.summon[0];
-              for (const s of [sch.talent, ...sch.skills])
+              for (const s of [sch.talent, ...sch.skills]) {
                 score += this.prepassSkill(s);
+              }
             }
             // 無価値なら以降 isAvailable() で速やかに弾く
-            if (score == 0)
+            if (score == 0) {
               this.markAsUsed(skill);
+            }
             return score;
           },
           prepassChr(chr) {
@@ -869,18 +876,18 @@ export default {
         let conflictedEffects = [];
 
         const getSkillScore = function (ctx, skill) {
-          if (!ctx.isAvailable(skill, chr) || !skillCondition(skill))
-            return 0;
-
           let r = {
             skill: skill,
             score: 0,
             usedEffects: [],
             conflictedEffects: [],
           };
+          if (!ctx.isAvailable(skill, chr) || !skillCondition(skill)) {
+            return r;
+          }
 
           let scoreBoost = 1;
-          if (skill.multiAction && opt.prioritizeReaction) {
+          if (skill.isActive && skill.multiAction && opt.prioritizeReaction) {
               // 再行動つきアクティブは優先的に選ぶ
               scoreBoost += 0.25;
           }
@@ -1126,8 +1133,9 @@ export default {
             for (let v of [r.main, r.summon, r.support]) {
               if (v) {
                 mctx.markAsUsed(v.character);
-                for (const s of this.enumerate(v.skills, v.equipments))
+                for (const s of this.enumerate(v.skills, v.equipments)) {
                   mctx.markAsUsed(s);
+                }
               }
             }
 

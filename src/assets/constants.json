@@ -214,58 +214,5 @@
     "armor": [ 200, 11, 19, 11, 19 ],
     "helmet": [ 200, 11, 19, 11, 19 ],
     "accessory": [ 131, 21, 13, 21, 13 ]
-  },
-
-  "timing": {
-    "always": 0,
-    "turnBegin": 1,
-    "turnEnd": 2,
-    "actionBegin": 3,
-    "actionEnd": 4,
-    "battleBegin": 5,
-    "battleEnd": 6,
-    "skillBegin": 7,
-    "skillEnd": 8
-  },
-
-  "conditionList": {
-    "onAlways": [ "boolean" ],
-    "onTurnBegin": [ "boolean" ],
-    "onActionBegin": [ "boolean" ],
-    "onBattle": [ "boolean" ],
-    "onBattleBegin": [ "boolean" ],
-    "onBattleEnd": [ "boolean" ],
-    "onActionEnd": [ "boolean" ],
-    "onTurnEnd": [ "boolean" ],
-
-    "onCloseCombat": [ "boolean" ],
-    "onRangedCombat": [ "boolean" ],
-    "onCriticalHit": [ "boolean" ],
-    "onGuard": [ "boolean" ],
-    "onKill": [ "boolean" ],
-    "onMove": [ "boolean" ],
-    "onSkill": [ "boolean" ],
-    "onAreaSkill": [ "boolean" ],
-    "onOwnTurn": [ "boolean" ],
-    "onEnemyTurn": [ "boolean" ],
-    "onNearAlly": [ "number" ],
-    "onNoNearAlly": [ "number" ],
-    "onNearEnemy": [ "number" ],
-    "onNoNearEnemy": [ "number" ],
-    "onClass": [ "object" ],
-    "onEnemyClass": [ "object" ],
-    "onClassAdvantage": [ "boolean" ],
-    "onEffect": [ "string" ],
-
-    "probability": [ "number" ],
-    "turn": [ "number", "string" ],
-    "hp": [ "string" ],
-    "enemyHp": [ "string" ],
-    "move": [ "number", "boolean" ],
-    "token": [ "number", "boolean" ],
-    "activeBuffCount": [ "number", "string" ],
-    "activeDebuffCount": [ "number", "string" ],
-    "enemyActiveBuffCount": [ "number", "string" ],
-    "enemyActiveDebuffCount": [ "number", "string" ]
   }
 }
