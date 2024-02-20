@@ -13,12 +13,12 @@
       {
         "type": "アタック",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "最大HP",
         "value": 5,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ]
   },
@@ -36,12 +36,12 @@
       {
         "type": "アタック",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "ディフェンス",
         "value": 5,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ]
   },
@@ -59,18 +59,18 @@
       {
         "type": "ディフェンス",
         "value": 5,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "レジスト",
         "value": 5,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "範囲",
         "value": 1,
         "ephemeral": true,
-        "target": "自身",
+        "target": "自身(メイン)",
         "condition": {
           "onAreaSkill": true
         }
@@ -91,13 +91,13 @@
       {
         "type": "アタック",
         "value": 5,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "アタック",
         "value": 15,
         "ephemeral": true,
-        "target": "自身",
+        "target": "自身(メイン)",
         "timing": "戦闘前",
         "condition": {
           "onOwnTurn": true
@@ -107,7 +107,7 @@
         "type": "クリティカル率",
         "value": 10,
         "ephemeral": true,
-        "target": "自身",
+        "target": "自身(メイン)",
         "timing": "戦闘前",
         "condition": {
           "onOwnTurn": true
@@ -153,7 +153,7 @@
       {
         "type": "クリティカル率",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ],
     "fixedDamage": [
@@ -178,7 +178,7 @@
       {
         "type": "アタック",
         "value": 5,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ],
     "debuff": [
@@ -217,7 +217,7 @@
       {
         "type": "アタック",
         "value": 5,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ],
     "debuff": [
@@ -246,12 +246,12 @@
       {
         "type": "ディフェンス",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "最大HP",
         "value": 5,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ]
   },
@@ -270,7 +270,7 @@
         "type": "ディフェンス",
         "value": 15,
         "ephemeral": true,
-        "target": "自身",
+        "target": "自身(メイン)",
         "timing": "戦闘前",
         "condition": {
           "onEnemyTurn": true
@@ -280,7 +280,7 @@
         "type": "アタック",
         "value": 5,
         "ephemeral": true,
-        "target": "自身",
+        "target": "自身(メイン)",
         "timing": "戦闘前",
         "condition": {
           "onEnemyTurn": true
@@ -302,12 +302,12 @@
       {
         "type": "射程(通常攻撃)",
         "value": 1,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "与ダメージ",
         "value": -10,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ]
   },
@@ -325,7 +325,7 @@
       {
         "type": "アタック",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ],
     "fixedDamage": [
@@ -353,12 +353,12 @@
       {
         "type": "アタック",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "最大HP",
         "value": 5,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ]
   },
@@ -377,7 +377,7 @@
         "type": "アタック",
         "value": 15,
         "ephemeral": true,
-        "target": "自身",
+        "target": "自身(メイン)",
         "timing": "戦闘前",
         "condition": {
           "onOwnTurn": true
@@ -387,7 +387,7 @@
         "type": "ディフェンス",
         "value": 5,
         "ephemeral": true,
-        "target": "自身",
+        "target": "自身(メイン)",
         "timing": "戦闘前",
         "condition": {
           "onOwnTurn": true
@@ -409,7 +409,7 @@
       {
         "type": "アタック",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ],
     "fixedDamage": [
@@ -437,7 +437,7 @@
       {
         "type": "アタック",
         "value": 5,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ],
     "debuff": [
@@ -467,12 +467,12 @@
       {
         "type": "アタック",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "ディフェンス",
         "value": 5,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ]
   },
@@ -490,12 +490,12 @@
       {
         "type": "ディフェンス",
         "value": 8,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "レジスト",
         "value": 8,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ]
   },
@@ -513,7 +513,7 @@
       {
         "type": "アタック",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ],
     "statusEffects": [
@@ -537,10 +537,18 @@
       {
         "type": "アタック",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ],
-    "tags": [ "デバフ解除", "自己回復" ]
+    "heal": [
+      {
+        "type": "HP割合",
+        "rate": 0.15,
+        "target": "自身",
+        "timing": "敵撃破時"
+      }
+    ],
+    "tags": [ "デバフ解除" ]
   },
   {
     "uid": "Item_Equipment_SSR_0021",
@@ -556,12 +564,12 @@
       {
         "type": "アタック",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "ディフェンス",
         "value": 5,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ]
   },
@@ -579,7 +587,7 @@
       {
         "type": "アタック",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ],
     "debuff": [
@@ -619,7 +627,7 @@
       {
         "type": "アタック",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ],
     "debuff": [
@@ -649,7 +657,7 @@
       {
         "type": "アタック",
         "value": 5,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ],
     "debuff": [
@@ -689,7 +697,7 @@
         "type": "アタック",
         "value": 15,
         "ephemeral": true,
-        "target": "自身",
+        "target": "自身(メイン)",
         "timing": "戦闘前",
         "condition": {
           "onEnemyTurn": true
@@ -699,7 +707,7 @@
         "type": "ディフェンス",
         "value": 5,
         "ephemeral": true,
-        "target": "自身",
+        "target": "自身(メイン)",
         "timing": "戦闘前",
         "condition": {
           "onEnemyTurn": true
@@ -721,12 +729,12 @@
       {
         "type": "アタック",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "クリティカル率",
         "value": 5,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ]
   },
@@ -744,13 +752,13 @@
       {
         "type": "アタック",
         "value": 5,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "アタック",
         "value": 15,
         "ephemeral": true,
-        "target": "自身",
+        "target": "自身(メイン)",
         "timing": "戦闘前",
         "condition": {
           "onOwnTurn": true
@@ -760,7 +768,7 @@
         "type": "ディフェンス",
         "value": 5,
         "ephemeral": true,
-        "target": "自身",
+        "target": "自身(メイン)",
         "timing": "戦闘前",
         "condition": {
           "onOwnTurn": true
@@ -783,12 +791,12 @@
       {
         "type": "射程(通常攻撃)",
         "value": 1,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "与ダメージ",
         "value": -10,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ]
   },
@@ -806,12 +814,12 @@
       {
         "type": "マジック",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "最大HP",
         "value": 5,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ]
   },
@@ -829,12 +837,12 @@
       {
         "type": "治療効果",
         "value": 15,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "マジック",
         "value": 5,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ]
   },
@@ -852,11 +860,21 @@
       {
         "type": "マジック",
         "value": 5,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ],
-    "tags": [ "単体回復(低HP)" ]
-  },
+    "heal": [
+      {
+        "type": "マジック",
+        "rate": 3.0,
+        "target": "味方(低HP)",
+        "timing": "戦闘後",
+        "condition": {
+          "onOwnTurn": true
+        }
+      }
+    ]
+ },
   {
     "uid": "Item_Equipment_SSR_0032",
     "name": "白銀の魔杖",
@@ -871,7 +889,7 @@
       {
         "type": "治療効果",
         "value": 15,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ],
     "debuff": [
@@ -900,12 +918,12 @@
       {
         "type": "マジック",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "レジスト",
         "value": 5,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ]
   },
@@ -923,7 +941,7 @@
       {
         "type": "与ダメージ(範囲スキル)",
         "value": 15,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ],
     "debuff": [
@@ -954,7 +972,7 @@
       {
         "type": "マジック",
         "value": 5,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ],
     "debuff": [
@@ -985,8 +1003,8 @@
         "type": "与ダメージ(スキル)",
         "value": 15,
         "ephemeral": true,
-        "target": "自身",
-        "timing": "スキル前",
+        "target": "自身(メイン)",
+        "timing": "戦闘前",
         "condition": {
           "onSingleSkill": true
         }
@@ -1021,7 +1039,7 @@
         "type": "アタック",
         "value": 10,
         "ephemeral": true,
-        "target": "自身",
+        "target": "自身(メイン)",
         "timing": "戦闘前",
         "condition": {
           "onOwnTurn": true
@@ -1031,7 +1049,7 @@
         "type": "マジック",
         "value": 10,
         "ephemeral": true,
-        "target": "自身",
+        "target": "自身(メイン)",
         "timing": "戦闘前",
         "condition": {
           "onOwnTurn": true
@@ -1053,7 +1071,7 @@
       {
         "type": "アタック",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ]
   },
@@ -1071,7 +1089,7 @@
       {
         "type": "ディフェンス",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ]
   },
@@ -1090,7 +1108,7 @@
         "type": "アタック",
         "value": 15,
         "ephemeral": true,
-        "target": "自身",
+        "target": "自身(メイン)",
         "timing": "戦闘前",
         "condition": {
           "onOwnTurn": true
@@ -1112,7 +1130,7 @@
       {
         "type": "アタック",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ]
   },
@@ -1130,7 +1148,7 @@
       {
         "type": "クリティカル率",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ]
   },
@@ -1149,7 +1167,7 @@
         "type": "クリティカル率",
         "value": 15,
         "ephemeral": true,
-        "target": "自身",
+        "target": "自身(メイン)",
         "timing": "戦闘前",
         "condition": {
           "onOwnTurn": true
@@ -1171,7 +1189,7 @@
       {
         "type": "アタック",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ]
   },
@@ -1189,7 +1207,7 @@
       {
         "type": "ディフェンス",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ]
   },
@@ -1207,7 +1225,7 @@
       {
         "type": "最大HP",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ]
   },
@@ -1225,7 +1243,7 @@
       {
         "type": "アタック",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ]
   },
@@ -1243,7 +1261,7 @@
       {
         "type": "最大HP",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ]
   },
@@ -1262,7 +1280,7 @@
         "type": "アタック",
         "value": 15,
         "ephemeral": true,
-        "target": "自身",
+        "target": "自身(メイン)",
         "timing": "戦闘前",
         "condition": {
           "onOwnTurn": true
@@ -1284,7 +1302,7 @@
       {
         "type": "最大HP",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ]
   },
@@ -1302,7 +1320,7 @@
       {
         "type": "ディフェンス",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ]
   },
@@ -1321,7 +1339,7 @@
         "type": "ディフェンス",
         "value": 15,
         "ephemeral": true,
-        "target": "自身",
+        "target": "自身(メイン)",
         "timing": "戦闘前",
         "condition": {
           "onOwnTurn": true
@@ -1343,7 +1361,7 @@
       {
         "type": "アタック",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ]
   },
@@ -1361,7 +1379,7 @@
       {
         "type": "ディフェンス",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ]
   },
@@ -1380,7 +1398,7 @@
         "type": "アタック",
         "value": 15,
         "ephemeral": true,
-        "target": "自身",
+        "target": "自身(メイン)",
         "timing": "戦闘前",
         "condition": {
           "onOwnTurn": true
@@ -1402,7 +1420,7 @@
       {
         "type": "アタック",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ]
   },
@@ -1420,7 +1438,7 @@
       {
         "type": "クリティカル率",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ]
   },
@@ -1439,7 +1457,7 @@
         "type": "クリティカル率",
         "value": 15,
         "ephemeral": true,
-        "target": "自身",
+        "target": "自身(メイン)",
         "timing": "戦闘前",
         "condition": {
           "onOwnTurn": true
@@ -1461,7 +1479,7 @@
       {
         "type": "マジック",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ]
   },
@@ -1479,7 +1497,7 @@
       {
         "type": "治療効果",
         "value": 15,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ]
   },
@@ -1497,7 +1515,7 @@
       {
         "type": "マジック",
         "value": 15,
-        "target": "自身",
+        "target": "自身(メイン)",
         "condition": {
           "hp": [ ">=", 80 ]
         }
@@ -1519,7 +1537,7 @@
         "type": "与ダメージ",
         "value": 15,
         "ephemeral": true,
-        "target": "自身",
+        "target": "自身(メイン)",
         "timing": "戦闘前",
         "condition": {
           "onSingleSkill": true
@@ -1541,7 +1559,7 @@
       {
         "type": "与ダメージ(範囲スキル)",
         "value": 15,
-        "target": "自身",
+        "target": "自身(メイン)",
         "timing": "スキル前",
         "condition": {
           "onAreaSkill": true
@@ -1563,7 +1581,7 @@
       {
         "type": "マジック",
         "value": 15,
-        "target": "自身",
+        "target": "自身(メイン)",
         "condition": {
           "hp": [ ">=", 80 ]
         }
@@ -1584,12 +1602,12 @@
       {
         "type": "ディフェンス",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "治療効果",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ]
   },
@@ -1607,12 +1625,12 @@
       {
         "type": "レジスト",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "治療効果",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ]
   },
@@ -1630,12 +1648,12 @@
       {
         "type": "ディフェンス",
         "value": 5,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "ディフェンス",
         "value": 15,
-        "target": "自身",
+        "target": "自身(メイン)",
         "condition": {
           "hp": [ ">=", 80 ]
         }
@@ -1656,12 +1674,12 @@
       {
         "type": "レジスト",
         "value": 5,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "レジスト",
         "value": 15,
-        "target": "自身",
+        "target": "自身(メイン)",
         "condition": {
           "hp": [ ">=", 80 ]
         }
@@ -1682,12 +1700,12 @@
       {
         "type": "最大HP",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "ディフェンス",
         "value": 15,
-        "target": "自身",
+        "target": "自身(メイン)",
         "condition": {
           "nearAllyCount": {
             "area": 2,
@@ -1711,7 +1729,7 @@
       {
         "type": "レジスト",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ],
     "fixedDamage": [
@@ -1739,7 +1757,7 @@
       {
         "type": "ディフェンス",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ],
     "fixedDamage": [
@@ -1767,13 +1785,13 @@
       {
         "type": "最大HP",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "ディフェンス",
         "value": 10,
         "ephemeral": true,
-        "target": "自身",
+        "target": "自身(メイン)",
         "timing": "戦闘前"
       }
     ],
@@ -1793,12 +1811,12 @@
       {
         "type": "ディフェンス",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "最大HP",
         "value": 5,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ]
   },
@@ -1816,12 +1834,12 @@
       {
         "type": "ディフェンス",
         "value": 8,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "レジスト",
         "value": 8,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ]
   },
@@ -1839,12 +1857,12 @@
       {
         "type": "ディフェンス",
         "value": 5,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "ディフェンス",
         "value": 15,
-        "target": "自身",
+        "target": "自身(メイン)",
         "condition": {
           "hp": [ ">=", 80 ]
         }
@@ -1865,12 +1883,12 @@
       {
         "type": "レジスト",
         "value": 5,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "レジスト",
         "value": 15,
-        "target": "自身",
+        "target": "自身(メイン)",
         "condition": {
           "hp": [ ">=", 80 ]
         }
@@ -1891,10 +1909,20 @@
       {
         "type": "ディフェンス",
         "value": 5,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ],
-    "tags": [ "自己回復" ]
+    "heal": [
+      {
+        "type": "HP割合",
+        "rate": 0.2,
+        "target": "自身",
+        "timing": "行動後",
+        "condition": {
+          "hp": [ "<=", 50 ]
+        }
+      }
+    ]
   },
   {
     "uid": "Item_Equipment_SSR_0050",
@@ -1910,7 +1938,7 @@
       {
         "type": "最大HP",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ],
     "debuff": [
@@ -1935,7 +1963,7 @@
       {
         "type": "最大HP",
         "value": 5,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ],
     "fixedDamage": [
@@ -1964,7 +1992,7 @@
       {
         "type": "ディフェンス",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "アタック",
@@ -1996,13 +2024,13 @@
       {
         "type": "最大HP",
         "value": 5,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "マジック",
         "value": 10,
         "ephemeral": true,
-        "target": "自身",
+        "target": "自身(メイン)",
         "timing": "戦闘前",
         "condition": {
           "onOwnTurn": true
@@ -2024,12 +2052,12 @@
       {
         "type": "レジスト",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "最大HP",
         "value": 5,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ]
   },
@@ -2047,12 +2075,12 @@
       {
         "type": "ディフェンス",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "最大HP",
         "value": 5,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ]
   },
@@ -2070,7 +2098,7 @@
       {
         "type": "レジスト",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ],
     "fixedDamage": [
@@ -2099,12 +2127,12 @@
       {
         "type": "最大HP",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "マジック",
         "value": 10,
-        "target": "自身",
+        "target": "自身(メイン)",
         "condition": {
           "hp": [ ">=", 100 ]
         }
@@ -2112,7 +2140,7 @@
       {
         "type": "治療効果",
         "value": 10,
-        "target": "自身",
+        "target": "自身(メイン)",
         "condition": {
           "hp": [ ">=", 100 ]
         }
@@ -2133,7 +2161,7 @@
       {
         "type": "最大HP",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ],
     "debuff": [
@@ -2163,7 +2191,7 @@
       {
         "type": "ディフェンス",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "マジック",
@@ -2195,7 +2223,7 @@
       {
         "type": "ディフェンス",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ]
   },
@@ -2213,7 +2241,7 @@
       {
         "type": "レジスト",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ]
   },
@@ -2231,7 +2259,7 @@
       {
         "type": "最大HP",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ]
   },
@@ -2250,7 +2278,7 @@
         "type": "アタック",
         "value": 15,
         "ephemeral": true,
-        "target": "自身",
+        "target": "自身(メイン)",
         "timing": "戦闘前",
         "condition": {
           "onEnemyTurn": true
@@ -2273,7 +2301,7 @@
         "type": "クリティカル率",
         "value": 15,
         "ephemeral": true,
-        "target": "自身",
+        "target": "自身(メイン)",
         "timing": "戦闘前",
         "condition": {
           "onEnemyTurn": true
@@ -2295,7 +2323,7 @@
       {
         "type": "ディフェンス",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ]
   },
@@ -2313,7 +2341,7 @@
       {
         "type": "レジスト",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ]
   },
@@ -2331,7 +2359,7 @@
       {
         "type": "最大HP",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ]
   },
@@ -2349,7 +2377,7 @@
       {
         "type": "アタック",
         "value": 10,
-        "target": "自身",
+        "target": "自身(メイン)",
         "condition": {
           "hp": [ ">=", 80 ]
         }
@@ -2370,7 +2398,7 @@
       {
         "type": "アタック",
         "value": 10,
-        "target": "自身",
+        "target": "自身(メイン)",
         "condition": {
           "hp": [ ">=", 80 ]
         }
@@ -2391,7 +2419,7 @@
       {
         "type": "ディフェンス",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ]
   },
@@ -2409,7 +2437,7 @@
       {
         "type": "レジスト",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ]
   },
@@ -2427,7 +2455,7 @@
       {
         "type": "最大HP",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ]
   },
@@ -2445,7 +2473,7 @@
       {
         "type": "治療効果",
         "value": 5,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ]
   },
@@ -2463,7 +2491,7 @@
       {
         "type": "ディフェンス",
         "value": 15,
-        "target": "自身",
+        "target": "自身(メイン)",
         "condition": {
           "hp": [ ">=", 80 ]
         }
@@ -2483,7 +2511,7 @@
       {
         "type": "最大HP",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ]
   },
@@ -2501,12 +2529,12 @@
       {
         "type": "最大HP",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "ディフェンス",
         "value": 5,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ]
   },
@@ -2524,12 +2552,12 @@
       {
         "type": "最大HP",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "レジスト",
         "value": 5,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ]
   },
@@ -2547,7 +2575,7 @@
       {
         "type": "ディフェンス",
         "value": 5,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "ダメージ耐性(物理)",
@@ -2573,7 +2601,7 @@
       {
         "type": "レジスト",
         "value": 5,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "ダメージ耐性(魔法)",
@@ -2599,7 +2627,7 @@
       {
         "type": "ディフェンス",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ],
     "statusEffects": [
@@ -2629,7 +2657,7 @@
       {
         "type": "最大HP",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "レジスト",
@@ -2654,7 +2682,7 @@
       {
         "type": "最大HP",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ],
     "debuff": [
@@ -2683,7 +2711,7 @@
       {
         "type": "最大HP",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ],
     "fixedDamage": [
@@ -2709,12 +2737,12 @@
       {
         "type": "ディフェンス",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "最大HP",
         "value": 5,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ]
   },
@@ -2728,7 +2756,18 @@
     "classes": [ "ライダー", "エアリアル", "シューター", "アサシン" ],
     "statusInit": [ 51.0, 0, 0, 0, 10.2, 0 ],
     "statusLv": [ 8.0, 0, 0, 0, 1.21, 0 ],
-    "tags": [ "バフ:ディフェンス", "バフ:レジスト" ]
+    "buff": [
+      {
+        "type": "ディフェンス",
+        "value": 8,
+        "target": "自身(メイン)"
+      },
+      {
+        "type": "レジスト",
+        "value": 8,
+        "target": "自身(メイン)"
+      }
+    ]
   },
   {
     "uid": "Item_Equipment_SSR_0066",
@@ -2744,7 +2783,7 @@
       {
         "type": "ディフェンス",
         "value": 5,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "ダメージ耐性(物理)",
@@ -2770,7 +2809,7 @@
       {
         "type": "レジスト",
         "value": 5,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "ダメージ耐性(魔法)",
@@ -2796,10 +2835,20 @@
       {
         "type": "ディフェンス",
         "value": 5,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ],
-    "tags": [ "自己回復" ]
+    "heal": [
+      {
+        "type": "HP割合",
+        "rate": 0.2,
+        "target": "自身",
+        "timing": "行動後",
+        "condition": {
+          "hp": [ "<=", 50 ]
+        }
+      }
+    ]
   },
   {
     "uid": "Item_Equipment_SSR_0070",
@@ -2815,13 +2864,15 @@
       {
         "type": "最大HP",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "与ダメージ",
         "value": 20,
         "duration": 1,
-        "target": "単体",
+        "target": "範囲(ランダム)",
+        "area": [ 1, "周囲" ],
+        "unitCount": 1,
         "timing": "行動後"
       }
     ]
@@ -2840,7 +2891,7 @@
       {
         "type": "最大HP",
         "value": 5,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ],
     "fixedDamage": [
@@ -2869,14 +2920,15 @@
       {
         "type": "最大HP",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ],
     "fixedDamage": [
       {
         "base": "アタック",
         "rate": 1.5,
-        "area": [ 1, "周囲", 1 ],
+        "target": "単体",
+        "area": [ 1, "周囲" ],
         "timing": "行動後"
       }
     ]
@@ -2895,13 +2947,13 @@
       {
         "type": "最大HP",
         "value": 5,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "ダメージ耐性",
         "value": 10,
         "ephemeral": true,
-        "target": "自身",
+        "target": "自身(メイン)",
         "timing": "戦闘前",
         "condition": {
           "onOwnTurn": true
@@ -2923,12 +2975,12 @@
       {
         "type": "レジスト",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "最大HP",
         "value": 5,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ]
   },
@@ -2946,12 +2998,12 @@
       {
         "type": "ディフェンス",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "最大HP",
         "value": 5,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ]
   },
@@ -2969,14 +3021,16 @@
       {
         "type": "レジスト",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ],
     "fixedDamage": [
       {
         "base": "レジスト",
         "rate": 2.5,
-        "area": [ 2, "範囲", 1 ],
+        "target": "範囲(ランダム)",
+        "area": [ 2, "範囲" ],
+        "unitCount": 1,
         "timing": "行動後"
       }
     ]
@@ -2995,12 +3049,12 @@
       {
         "type": "最大HP",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "ディフェンス",
         "value": 15,
-        "target": "自身",
+        "target": "自身(メイン)",
         "condition": {
           "hp": [ ">=", 100 ]
         }
@@ -3008,7 +3062,7 @@
       {
         "type": "レジスト",
         "value": 15,
-        "target": "自身",
+        "target": "自身(メイン)",
         "condition": {
           "hp": [ ">=", 100 ]
         }
@@ -3029,12 +3083,15 @@
       {
         "type": "最大HP",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "ランダム",
         "variant": "弱",
         "amount": 1,
+        "target": "範囲(ランダム)",
+        "area": 2,
+        "unitCount": 1,
         "timing": "行動後"
       }
     ],
@@ -3054,20 +3111,24 @@
       {
         "type": "最大HP",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "ディフェンス",
         "value": 10,
         "duration": 2,
-        "target": "単体",
+        "target": "範囲(ランダム)",
+        "area": 2,
+        "unitCount": 1,
         "timing": "行動後"
       },
       {
         "type": "被治療効果",
         "value": 10,
         "duration": 2,
-        "target": "単体",
+        "target": "範囲(ランダム)",
+        "area": 2,
+        "unitCount": 1,
         "timing": "行動後"
       }
     ]
@@ -3085,7 +3146,7 @@
       {
         "type": "最大HP",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ]
   },
@@ -3103,7 +3164,7 @@
       {
         "type": "ディフェンス",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ]
   },
@@ -3121,7 +3182,7 @@
       {
         "type": "レジスト",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ]
   },
@@ -3139,7 +3200,7 @@
       {
         "type": "最大HP",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ]
   },
@@ -3158,7 +3219,7 @@
         "type": "ディフェンス",
         "value": 15,
         "ephemeral": true,
-        "target": "自身",
+        "target": "自身(メイン)",
         "timing": "戦闘前",
         "condition": {
           "onEnemyTurn": true
@@ -3181,7 +3242,7 @@
         "type": "レジスト",
         "value": 15,
         "ephemeral": true,
-        "target": "自身",
+        "target": "自身(メイン)",
         "timing": "戦闘前",
         "condition": {
           "onEnemyTurn": true
@@ -3203,7 +3264,7 @@
       {
         "type": "ディフェンス",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ]
   },
@@ -3221,7 +3282,7 @@
       {
         "type": "レジスト",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ]
   },
@@ -3239,7 +3300,7 @@
       {
         "type": "最大HP",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ]
   },
@@ -3257,7 +3318,7 @@
       {
         "type": "レジスト",
         "value": 15,
-        "target": "自身",
+        "target": "自身(メイン)",
         "condition": {
           "hp": [ ">=", 80 ]
         }
@@ -3278,7 +3339,7 @@
       {
         "type": "ディフェンス",
         "value": 15,
-        "target": "自身",
+        "target": "自身(メイン)",
         "condition": {
           "hp": [ "<=", 80 ]
         }
@@ -3299,7 +3360,7 @@
       {
         "type": "ディフェンス",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ]
   },
@@ -3317,7 +3378,7 @@
       {
         "type": "レジスト",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ]
   },
@@ -3335,7 +3396,7 @@
       {
         "type": "最大HP",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ]
   },
@@ -3353,7 +3414,7 @@
       {
         "type": "レジスト",
         "value": 15,
-        "target": "自身",
+        "target": "自身(メイン)",
         "condition": {
           "hp": [ ">=", 80 ]
         }
@@ -3374,7 +3435,7 @@
       {
         "type": "ディフェンス",
         "value": 15,
-        "target": "自身",
+        "target": "自身(メイン)",
         "condition": {
           "hp": [ ">=", 80 ]
         }
@@ -3394,7 +3455,7 @@
       {
         "type": "アタック",
         "value": 5,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ],
     "fixedDamage": [
@@ -3422,7 +3483,7 @@
         "type": "アタック",
         "value": 8,
         "ephemeral": true,
-        "target": "自身",
+        "target": "自身(メイン)",
         "timing": "戦闘前",
         "condition": {
           "onOwnTurn": true
@@ -3432,7 +3493,7 @@
         "type": "アタック",
         "value": 8,
         "ephemeral": true,
-        "target": "自身",
+        "target": "自身(メイン)",
         "timing": "戦闘前",
         "condition": {
           "onOwnTurn": true
@@ -3453,7 +3514,7 @@
       {
         "type": "アタック",
         "value": 8,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "与ダメージ",
@@ -3481,7 +3542,7 @@
       {
         "type": "アタック",
         "value": 8,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "与ダメージ",
@@ -3509,13 +3570,13 @@
       {
         "type": "治療効果",
         "value": 15,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "マジック",
         "value": 20,
         "ephemeral": true,
-        "target": "自身",
+        "target": "自身(メイン)",
         "timing": "戦闘前",
         "condition": {
           "onEnemyClass": [ "ソーサラー" ]
@@ -3525,7 +3586,7 @@
         "type": "レジスト",
         "value": 20,
         "ephemeral": true,
-        "target": "自身",
+        "target": "自身(メイン)",
         "timing": "戦闘前",
         "condition": {
           "onEnemyClass": [ "ソーサラー" ]
@@ -3535,7 +3596,7 @@
         "type": "ディフェンス",
         "value": 20,
         "ephemeral": true,
-        "target": "自身",
+        "target": "自身(メイン)",
         "timing": "戦闘前",
         "condition": {
           "onEnemyClass": [ "ソーサラー" ]
@@ -3557,13 +3618,13 @@
       {
         "type": "アタック",
         "value": 8,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "ディフェンス",
         "value": 10,
         "ephemeral": true,
-        "target": "自身",
+        "target": "自身(メイン)",
         "timing": "戦闘前",
         "condition": {
           "onEnemyTurn": true
@@ -3584,7 +3645,7 @@
       {
         "type": "マジック",
         "value": 5,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ],
     "debuff": [
@@ -3612,10 +3673,22 @@
       {
         "type": "マジック",
         "value": 5,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ],
-    "tags": [ "範囲回復" ]
+    "heal": [
+      {
+        "type": "HP割合",
+        "rate": 0.15,
+        "target": "範囲",
+        "area": [ 1, "周囲" ],
+        "timing": "戦闘後",
+        "condition": {
+          "onOwnTurn": true,
+          "onDamage": true
+        }
+      }
+    ]
   },
   {
     "uid": "Item_Equipment_SSR_0085",
@@ -3630,10 +3703,20 @@
       {
         "type": "マジック",
         "value": 5,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ],
-    "tags": [ "CT減" ],
+    "ctReduction": [
+      {
+        "target": "自身",
+        "value": 1,
+        "targetSkill": "全スキル",
+        "timing": "敵撃破時",
+        "condition": {
+          "onActiveSkill": true
+        }
+      }
+    ],
     "note": "CT減は全スキルが対象。範囲攻撃でも発動するが、複数同時に撃破しても -1 のみ。"
   },
   {
@@ -3649,7 +3732,7 @@
       {
         "type": "マジック",
         "value": 5,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ],
     "debuff": [
@@ -3677,7 +3760,7 @@
       {
         "type": "マジック",
         "value": 5,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ],
     "buffCancel": [
@@ -3704,13 +3787,13 @@
       {
         "type": "マジック",
         "value": 8,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "ディフェンス",
         "value": 20,
         "ephemeral": true,
-        "target": "自身",
+        "target": "自身(メイン)",
         "timing": "戦闘前",
         "condition": {
           "onEnemyClass": [ "シューター", "アサシン" ]
@@ -3732,7 +3815,7 @@
       {
         "type": "マジック",
         "value": 8,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ],
     "tags": [ "反射" ]
@@ -3750,7 +3833,7 @@
       {
         "type": "最大HP",
         "value": 8,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ],
     "tags": [ "反射" ]
@@ -3768,7 +3851,7 @@
       {
         "type": "最大HP",
         "value": 15,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ],
     "immune": [
@@ -3795,12 +3878,12 @@
       {
         "type": "最大HP",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "治療効果",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ],
     "immune": [
@@ -3823,7 +3906,7 @@
       {
         "type": "治療効果",
         "value": 15,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ],
     "tags": [ "デバフ解除(味方)" ]
@@ -3842,7 +3925,7 @@
         "type": "ディフェンス",
         "value": 10,
         "ephemeral": true,
-        "target": "自身",
+        "target": "自身(メイン)",
         "timing": "戦闘前",
         "condition": {
           "onEnemyTurn": true,
@@ -3853,7 +3936,7 @@
         "type": "レジスト",
         "value": 10,
         "ephemeral": true,
-        "target": "自身",
+        "target": "自身(メイン)",
         "timing": "戦闘前",
         "condition": {
           "onEnemyTurn": true,
@@ -3876,7 +3959,7 @@
         "type": "ディフェンス",
         "value": 10,
         "ephemeral": true,
-        "target": "自身",
+        "target": "自身(メイン)",
         "timing": "戦闘前",
         "condition": {
           "onEnemyTurn": true,
@@ -3887,7 +3970,7 @@
         "type": "レジスト",
         "value": 10,
         "ephemeral": true,
-        "target": "自身",
+        "target": "自身(メイン)",
         "timing": "戦闘前",
         "condition": {
           "onEnemyTurn": true,
@@ -3909,7 +3992,7 @@
       {
         "type": "レジスト",
         "value": 8,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ],
     "immune": [
@@ -3936,32 +4019,32 @@
       {
         "type": "最大HP",
         "value": 5,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "アタック",
         "value": 5,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "ディフェンス",
         "value": 5,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "マジック",
         "value": 5,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "レジスト",
         "value": 5,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "テクニック",
         "value": 5,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ],
     "immune": [
@@ -4001,7 +4084,7 @@
         "type": "ディフェンス",
         "value": 10,
         "ephemeral": true,
-        "target": "自身",
+        "target": "自身(メイン)",
         "timing": "戦闘前",
         "condition": {
           "nearAllyCount": {
@@ -4014,7 +4097,7 @@
         "type": "レジスト",
         "value": 10,
         "ephemeral": true,
-        "target": "自身",
+        "target": "自身(メイン)",
         "timing": "戦闘前",
         "condition": {
           "nearAllyCount": {
@@ -4039,7 +4122,7 @@
         "type": "アタック",
         "value": 10,
         "ephemeral": true,
-        "target": "自身",
+        "target": "自身(メイン)",
         "timing": "戦闘前",
         "condition": {
           "nearAllyCount": {
@@ -4052,7 +4135,7 @@
         "type": "ディフェンス",
         "value": 10,
         "ephemeral": true,
-        "target": "自身",
+        "target": "自身(メイン)",
         "timing": "戦闘前",
         "condition": {
           "nearAllyCount": {
@@ -4076,7 +4159,7 @@
       {
         "type": "ディフェンス",
         "value": 8,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ],
     "multiMove": [
@@ -4099,7 +4182,7 @@
       {
         "type": "最大HP",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ],
     "immune": [
@@ -4126,7 +4209,7 @@
       {
         "type": "治療効果",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ],
     "immune": [
@@ -4149,7 +4232,7 @@
       {
         "type": "マジック",
         "value": 5,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ],
     "immune": [
@@ -4172,12 +4255,12 @@
       {
         "type": "レジスト",
         "value": 5,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "アタック",
         "value": 5,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ]
   },
@@ -4194,7 +4277,7 @@
       {
         "type": "レジスト",
         "value": 8,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ]
   },
@@ -4211,7 +4294,7 @@
       {
         "type": "最大HP",
         "value": 8,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ]
   },
@@ -4228,7 +4311,7 @@
       {
         "type": "ダメージ耐性",
         "value": 10,
-        "target": "自身",
+        "target": "自身(メイン)",
         "timing": "戦闘前",
         "condition": {
           "onCloseCombat": true
@@ -4249,7 +4332,7 @@
       {
         "type": "ダメージ耐性",
         "value": 10,
-        "target": "自身",
+        "target": "自身(メイン)",
         "timing": "戦闘前",
         "condition": {
           "onRangedCombat": true
@@ -4270,12 +4353,12 @@
       {
         "type": "マジック",
         "value": 5,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "最大HP",
         "value": 5,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ]
   },
@@ -4292,7 +4375,7 @@
       {
         "type": "レジスト",
         "value": 8,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ]
   },
@@ -4309,7 +4392,7 @@
       {
         "type": "最大HP",
         "value": 8,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ]
   },
@@ -4326,12 +4409,12 @@
       {
         "type": "治療効果",
         "value": 8,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "レジスト",
         "value": 5,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ]
   },
@@ -4348,12 +4431,12 @@
       {
         "type": "治療効果",
         "value": 8,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "最大HP",
         "value": 5,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ]
   },
@@ -4370,12 +4453,12 @@
       {
         "type": "ディフェンス",
         "value": 5,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "被治療効果",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ]
   },
@@ -4392,7 +4475,7 @@
       {
         "type": "レジスト",
         "value": 8,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ]
   },
@@ -4409,7 +4492,7 @@
       {
         "type": "最大HP",
         "value": 8,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ]
   },
@@ -4426,7 +4509,7 @@
       {
         "type": "最大HP",
         "value": 8,
-        "target": "自身",
+        "target": "自身(メイン)",
         "condition": {
           "onSymbol": [ "ゼニス" ]
         }
@@ -4434,7 +4517,7 @@
       {
         "type": "アタック",
         "value": 8,
-        "target": "自身",
+        "target": "自身(メイン)",
         "condition": {
           "onSymbol": [ "ゼニス" ]
         }
@@ -4442,7 +4525,7 @@
       {
         "type": "ディフェンス",
         "value": 8,
-        "target": "自身",
+        "target": "自身(メイン)",
         "condition": {
           "onSymbol": [ "ゼニス" ]
         }
@@ -4450,7 +4533,7 @@
       {
         "type": "マジック",
         "value": 8,
-        "target": "自身",
+        "target": "自身(メイン)",
         "condition": {
           "onSymbol": [ "ゼニス" ]
         }
@@ -4458,7 +4541,7 @@
       {
         "type": "レジスト",
         "value": 8,
-        "target": "自身",
+        "target": "自身(メイン)",
         "condition": {
           "onSymbol": [ "ゼニス" ]
         }
@@ -4466,7 +4549,7 @@
       {
         "type": "テクニック",
         "value": 8,
-        "target": "自身",
+        "target": "自身(メイン)",
         "condition": {
           "onSymbol": [ "ゼニス" ]
         }
@@ -4474,7 +4557,7 @@
       {
         "type": "クリティカルダメージ倍率",
         "value": 10,
-        "target": "自身",
+        "target": "自身(メイン)",
         "condition": {
           "onSymbol": [ "ゼニス" ]
         }
@@ -4482,7 +4565,7 @@
       {
         "type": "移動",
         "value": 1,
-        "target": "自身",
+        "target": "自身(メイン)",
         "condition": {
           "onSymbol": [ "ゼニス" ]
         }
@@ -4503,7 +4586,7 @@
       {
         "type": "最大HP",
         "value": 8,
-        "target": "自身",
+        "target": "自身(メイン)",
         "condition": {
           "onSymbol": [ "オリジン" ]
         }
@@ -4511,7 +4594,7 @@
       {
         "type": "アタック",
         "value": 8,
-        "target": "自身",
+        "target": "自身(メイン)",
         "condition": {
           "onSymbol": [ "オリジン" ]
         }
@@ -4519,7 +4602,7 @@
       {
         "type": "ディフェンス",
         "value": 8,
-        "target": "自身",
+        "target": "自身(メイン)",
         "condition": {
           "onSymbol": [ "オリジン" ]
         }
@@ -4527,7 +4610,7 @@
       {
         "type": "マジック",
         "value": 8,
-        "target": "自身",
+        "target": "自身(メイン)",
         "condition": {
           "onSymbol": [ "オリジン" ]
         }
@@ -4535,7 +4618,7 @@
       {
         "type": "レジスト",
         "value": 8,
-        "target": "自身",
+        "target": "自身(メイン)",
         "condition": {
           "onSymbol": [ "オリジン" ]
         }
@@ -4543,7 +4626,7 @@
       {
         "type": "テクニック",
         "value": 8,
-        "target": "自身",
+        "target": "自身(メイン)",
         "condition": {
           "onSymbol": [ "オリジン" ]
         }
@@ -4551,7 +4634,7 @@
       {
         "type": "クリティカルダメージ倍率",
         "value": 10,
-        "target": "自身",
+        "target": "自身(メイン)",
         "condition": {
           "onSymbol": [ "オリジン" ]
         }
@@ -4559,7 +4642,7 @@
       {
         "type": "移動",
         "value": 1,
-        "target": "自身",
+        "target": "自身(メイン)",
         "condition": {
           "onSymbol": [ "オリジン" ]
         }
@@ -4580,7 +4663,7 @@
       {
         "type": "最大HP",
         "value": 8,
-        "target": "自身",
+        "target": "自身(メイン)",
         "condition": {
           "onSymbol": [ "ナディア" ]
         }
@@ -4588,7 +4671,7 @@
       {
         "type": "アタック",
         "value": 8,
-        "target": "自身",
+        "target": "自身(メイン)",
         "condition": {
           "onSymbol": [ "ナディア" ]
         }
@@ -4596,7 +4679,7 @@
       {
         "type": "ディフェンス",
         "value": 8,
-        "target": "自身",
+        "target": "自身(メイン)",
         "condition": {
           "onSymbol": [ "ナディア" ]
         }
@@ -4604,7 +4687,7 @@
       {
         "type": "マジック",
         "value": 8,
-        "target": "自身",
+        "target": "自身(メイン)",
         "condition": {
           "onSymbol": [ "ナディア" ]
         }
@@ -4612,7 +4695,7 @@
       {
         "type": "レジスト",
         "value": 8,
-        "target": "自身",
+        "target": "自身(メイン)",
         "condition": {
           "onSymbol": [ "ナディア" ]
         }
@@ -4620,7 +4703,7 @@
       {
         "type": "テクニック",
         "value": 8,
-        "target": "自身",
+        "target": "自身(メイン)",
         "condition": {
           "onSymbol": [ "ナディア" ]
         }
@@ -4628,7 +4711,7 @@
       {
         "type": "クリティカルダメージ倍率",
         "value": 10,
-        "target": "自身",
+        "target": "自身(メイン)",
         "condition": {
           "onSymbol": [ "ナディア" ]
         }
@@ -4636,7 +4719,7 @@
       {
         "type": "移動",
         "value": 1,
-        "target": "自身",
+        "target": "自身(メイン)",
         "condition": {
           "onSymbol": [ "ナディア" ]
         }
@@ -4658,12 +4741,12 @@
       {
         "type": "クリティカルダメージ倍率",
         "value": 12,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "クリティカル率",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "ランダム",
@@ -4693,7 +4776,7 @@
       {
         "type": "アタック",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ],
     "fixedDamage": [
@@ -4728,20 +4811,20 @@
       {
         "type": "アタック",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "移動",
         "value": 1,
-        "target": "自身",
+        "target": "自身(メイン)",
         "timing": "敵撃破時"
       },
       {
         "type": "与ダメージ",
         "value": 10,
         "ephemeral": true,
-        "target": "自身",
-        "timing": "スキル前",
+        "target": "自身(メイン)",
+        "timing": "戦闘前",
         "condition": {
           "onSingleSkill": true
         }
@@ -4763,17 +4846,17 @@
       {
         "type": "ディフェンス",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "最大HP",
         "value": 5,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "移動",
         "value": 2,
-        "target": "自身",
+        "target": "自身(メイン)",
         "condition": {
           "nearAllyCount": {
             "area": [ 2, "周囲" ],
@@ -4784,7 +4867,7 @@
       {
         "type": "ダメージ耐性(物理)",
         "value": 15,
-        "target": "自身",
+        "target": "自身(メイン)",
         "condition": {
           "nearAllyCount": {
             "area": [ 2, "周囲" ],
@@ -4809,15 +4892,23 @@
       {
         "type": "アタック",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "ディフェンス",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ],
-    "tags": [ "分類:マスター装備", "バフ:アタック", "バフ:ディフェンス", "自己回復" ]
+    "heal": [
+      {
+        "type": "HP割合",
+        "rate": 0.15,
+        "target": "自身",
+        "timing": "スキル後"
+      }
+    ],
+    "tags": [ "分類:マスター装備", "バフ:アタック", "バフ:ディフェンス" ]
   },
   {
     "uid": "Item_Equipment_SSR_0113",
@@ -4833,25 +4924,36 @@
       {
         "type": "ディフェンス",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "最大HP",
         "value": 5,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "アタック",
         "value": 10,
         "ephemeral": true,
-        "target": "自身",
+        "target": "自身(メイン)",
         "timing": "戦闘前",
         "condition": {
           "onEnemyTurn": true
         }
       }
     ],
-    "tags": [ "分類:マスター装備", "与ダメ回復" ]
+    "heal": [
+      {
+        "type": "ダメージ割合",
+        "rate": 0.05,
+        "target": "自身",
+        "timing": "戦闘後",
+        "condition": {
+          "onEnemyTurn": true
+        }
+      }
+    ],
+    "tags": [ "分類:マスター装備" ]
   },
   {
     "uid": "Item_Equipment_SSR_0116",
@@ -4867,12 +4969,12 @@
       {
         "type": "アタック",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "クリティカルダメージ倍率",
         "value": 15,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "クリティカル率",
@@ -4899,20 +5001,31 @@
       {
         "type": "アタック",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "与ダメージ",
         "value": 10,
         "ephemeral": true,
-        "target": "自身",
+        "target": "自身(メイン)",
         "timing": "戦闘前",
         "condition": {
           "onOwnTurn": true
         }
       }
     ],
-    "tags": [ "分類:マスター装備", "与ダメ回復" ]
+    "heal": [
+      {
+        "type": "ダメージ割合",
+        "rate": 0.05,
+        "target": "自身",
+        "timing": "戦闘後",
+        "condition": {
+          "onOwnTurn": true
+        }
+      }
+    ],
+    "tags": [ "分類:マスター装備" ]
   },
   {
     "uid": "Item_Equipment_SSR_0114",
@@ -4928,12 +5041,13 @@
       {
         "type": "アタック",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "クリティカル率",
         "value": 10,
         "duration": 2,
+        "target": "範囲",
         "area": [ 2, "周囲" ],
         "timing": "行動後"
       },
@@ -4941,6 +5055,7 @@
         "type": "クリティカルダメージ倍率",
         "value": 10,
         "duration": 2,
+        "target": "範囲",
         "area": [ 2, "周囲" ],
         "timing": "行動後",
         "condition": {
@@ -4964,13 +5079,13 @@
       {
         "type": "アタック",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "与ダメージ",
         "value": 15,
         "ephemeral": true,
-        "target": "自身",
+        "target": "自身(メイン)",
         "timing": "戦闘前"
       }
     ],
@@ -4998,17 +5113,17 @@
       {
         "type": "アタック",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "与ダメージ(スキル)",
         "value": 15,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "射程(スキル)",
         "value": 1,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ],
     "tags": [ "分類:マスター装備" ]
@@ -5027,20 +5142,31 @@
       {
         "type": "アタック",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "与ダメージ",
         "value": 10,
         "ephemeral": true,
-        "target": "自身",
+        "target": "自身(メイン)",
         "timing": "戦闘前",
         "condition": {
           "onOwnTurn": true
         }
       }
     ],
-    "tags": [ "分類:マスター装備", "与ダメ回復" ]
+    "heal": [
+      {
+        "type": "ダメージ割合",
+        "rate": 0.05,
+        "target": "自身",
+        "timing": "戦闘後",
+        "condition": {
+          "onEnemyTurn": true
+        }
+      }
+    ],
+    "tags": [ "分類:マスター装備" ]
   },
   {
     "uid": "Item_Equipment_SSR_0120",
@@ -5056,7 +5182,7 @@
       {
         "type": "マジック",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ],
     "fixedDamage": [
@@ -5082,7 +5208,7 @@
       {
         "type": "マジック",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ],
     "debuff": [
@@ -5114,12 +5240,12 @@
       {
         "type": "マジック",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "射程(スキル)",
         "value": 1,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ],
     "fixedDamage": [
@@ -5149,7 +5275,7 @@
       {
         "type": "アタック",
         "value": 12,
-        "target": "自身",
+        "target": "自身(メイン)",
         "condition": {
           "hp": [ "<=", 90 ]
         }
@@ -5157,7 +5283,7 @@
       {
         "type": "ディフェンス",
         "value": 12,
-        "target": "自身",
+        "target": "自身(メイン)",
         "condition": {
           "hp": [ "<=", 90 ]
         }
@@ -5165,7 +5291,7 @@
       {
         "type": "マジック",
         "value": 12,
-        "target": "自身",
+        "target": "自身(メイン)",
         "condition": {
           "hp": [ "<=", 90 ]
         }
@@ -5173,7 +5299,7 @@
       {
         "type": "レジスト",
         "value": 12,
-        "target": "自身",
+        "target": "自身(メイン)",
         "condition": {
           "hp": [ "<=", 90 ]
         }
@@ -5181,7 +5307,7 @@
       {
         "type": "テクニック",
         "value": 12,
-        "target": "自身",
+        "target": "自身(メイン)",
         "condition": {
           "hp": [ "<=", 90 ]
         }
@@ -5189,7 +5315,7 @@
       {
         "type": "治療効果",
         "value": 15,
-        "target": "自身",
+        "target": "自身(メイン)",
         "condition": {
           "hp": [ "<=", 90 ]
         }
@@ -5197,7 +5323,7 @@
       {
         "type": "移動",
         "value": 1,
-        "target": "自身",
+        "target": "自身(メイン)",
         "condition": {
           "hp": [ "<=", 90 ]
         }
@@ -5219,17 +5345,18 @@
       {
         "type": "マジック",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "最大HP",
         "value": 5,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "ディフェンス",
         "value": 10,
         "duration": 2,
+        "target": "範囲",
         "area": [ 2, "周囲" ],
         "timing": "行動後"
       },
@@ -5237,6 +5364,7 @@
         "type": "レジスト",
         "value": 10,
         "duration": 2,
+        "target": "範囲",
         "area": [ 2, "周囲" ],
         "timing": "行動後"
       }
@@ -5257,12 +5385,12 @@
       {
         "type": "マジック",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "最大HP",
         "value": 5,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ],
     "debuff": [
@@ -5270,6 +5398,7 @@
         "type": "ランダム",
         "variant": "弱",
         "amount": 1,
+        "target": "範囲",
         "area": [ 2, "周囲" ],
         "timing": "戦闘後"
       }
@@ -5291,19 +5420,21 @@
       {
         "type": "アタック",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ],
     "debuff": [
       {
         "type": "アタック",
         "value": 20,
-        "duration": 1
+        "duration": 1,
+        "timing": "戦闘前"
       },
       {
         "type": "ディフェンス",
         "value": 20,
-        "duration": 1
+        "duration": 1,
+        "timing": "戦闘前"
       }
     ],
     "tags": [ "分類:マスター装備" ]
@@ -5322,12 +5453,12 @@
       {
         "type": "アタック",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "射程(スキル)",
         "value": 1,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ],
     "fixedDamage": [
@@ -5357,17 +5488,17 @@
       {
         "type": "アタック",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "範囲",
         "value": 1,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "与ダメージ(範囲スキル)",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ],
     "tags": [ "分類:マスター装備" ]
@@ -5386,15 +5517,26 @@
       {
         "type": "クリティカルダメージ倍率",
         "value": 15,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "クリティカル率",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ],
-    "tags": [ "分類:マスター装備", "与ダメ回復" ]
+    "heal": [
+      {
+        "type": "ダメージ割合",
+        "rate": 0.05,
+        "target": "自身",
+        "timing": "戦闘後",
+        "condition": {
+          "onCriticalHit": true
+        }
+      }
+    ],
+    "tags": [ "分類:マスター装備" ]
   },
   {
     "uid": "Item_Equipment_SSR_0130",
@@ -5410,12 +5552,12 @@
       {
         "type": "アタック",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "与ダメージ",
         "value": 30,
-        "target": "自身",
+        "target": "自身(メイン)",
         "condition": {
           "nearEnemyCount": {
             "area": [ 1, "周囲" ],
@@ -5441,12 +5583,12 @@
       {
         "type": "クリティカルダメージ倍率",
         "value": 15,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "移動",
         "value": 1,
-        "target": "自身",
+        "target": "自身(メイン)",
         "condition": {
           "hp": [ ">=", 50 ]
         }
@@ -5454,7 +5596,7 @@
       {
         "type": "アタック",
         "value": 10,
-        "target": "自身",
+        "target": "自身(メイン)",
         "condition": {
           "hp": [ ">=", 50 ]
         }
@@ -5462,7 +5604,7 @@
       {
         "type": "ディフェンス",
         "value": 10,
-        "target": "自身",
+        "target": "自身(メイン)",
         "condition": {
           "hp": [ ">=", 50 ]
         }
@@ -5483,7 +5625,7 @@
       {
         "type": "アタック",
         "value": 10,
-        "target": "自身",
+        "target": "自身(メイン)",
         "condition": {
           "onSymbol": [ "ゼニス" ]
         }
@@ -5491,7 +5633,7 @@
       {
         "type": "ディフェンス",
         "value": 10,
-        "target": "自身",
+        "target": "自身(メイン)",
         "condition": {
           "onSymbol": [ "ゼニス" ]
         }
@@ -5499,7 +5641,7 @@
       {
         "type": "マジック",
         "value": 10,
-        "target": "自身",
+        "target": "自身(メイン)",
         "condition": {
           "onSymbol": [ "ゼニス" ]
         }
@@ -5507,7 +5649,7 @@
       {
         "type": "レジスト",
         "value": 10,
-        "target": "自身",
+        "target": "自身(メイン)",
         "condition": {
           "onSymbol": [ "ゼニス" ]
         }
@@ -5528,7 +5670,7 @@
       {
         "type": "アタック",
         "value": 10,
-        "target": "自身",
+        "target": "自身(メイン)",
         "condition": {
           "onSymbol": [ "オリジン" ]
         }
@@ -5536,7 +5678,7 @@
       {
         "type": "ディフェンス",
         "value": 10,
-        "target": "自身",
+        "target": "自身(メイン)",
         "condition": {
           "onSymbol": [ "オリジン" ]
         }
@@ -5544,7 +5686,7 @@
       {
         "type": "マジック",
         "value": 10,
-        "target": "自身",
+        "target": "自身(メイン)",
         "condition": {
           "onSymbol": [ "オリジン" ]
         }
@@ -5552,7 +5694,7 @@
       {
         "type": "レジスト",
         "value": 10,
-        "target": "自身",
+        "target": "自身(メイン)",
         "condition": {
           "onSymbol": [ "オリジン" ]
         }
@@ -5573,7 +5715,7 @@
       {
         "type": "アタック",
         "value": 10,
-        "target": "自身",
+        "target": "自身(メイン)",
         "condition": {
           "onSymbol": [ "ナディア" ]
         }
@@ -5581,7 +5723,7 @@
       {
         "type": "ディフェンス",
         "value": 10,
-        "target": "自身",
+        "target": "自身(メイン)",
         "condition": {
           "onSymbol": [ "ナディア" ]
         }
@@ -5589,7 +5731,7 @@
       {
         "type": "マジック",
         "value": 10,
-        "target": "自身",
+        "target": "自身(メイン)",
         "condition": {
           "onSymbol": [ "ナディア" ]
         }
@@ -5597,7 +5739,7 @@
       {
         "type": "レジスト",
         "value": 10,
-        "target": "自身",
+        "target": "自身(メイン)",
         "condition": {
           "onSymbol": [ "ナディア" ]
         }
@@ -5618,13 +5760,21 @@
       {
         "type": "最大HP",
         "value": 15,
-        "target": "自身",
+        "target": "自身(メイン)",
         "condition": {
           "onSymbol": [ "ゼニス" ]
         }
       }
     ],
-    "tags": [ "分類:ギルド装備", "自己回復" ]
+    "heal": [
+      {
+        "type": "HP割合",
+        "rate": 0.06,
+        "target": "自身",
+        "timing": "戦闘後"
+      }
+    ],
+    "tags": [ "分類:ギルド装備" ]
   },
   {
     "uid": "Item_Equipment_SSR_0145",
@@ -5639,13 +5789,21 @@
       {
         "type": "最大HP",
         "value": 15,
-        "target": "自身",
+        "target": "自身(メイン)",
         "condition": {
           "onSymbol": [ "オリジン" ]
         }
       }
     ],
-    "tags": [ "分類:ギルド装備", "自己回復" ]
+    "heal": [
+      {
+        "type": "HP割合",
+        "rate": 0.06,
+        "target": "自身",
+        "timing": "戦闘後"
+      }
+    ],
+    "tags": [ "分類:ギルド装備" ]
   },
   {
     "uid": "Item_Equipment_SSR_0146",
@@ -5660,13 +5818,21 @@
       {
         "type": "最大HP",
         "value": 15,
-        "target": "自身",
+        "target": "自身(メイン)",
         "condition": {
           "onSymbol": [ "ナディア" ]
         }
       }
     ],
-    "tags": [ "分類:ギルド装備", "自己回復" ]
+    "heal": [
+      {
+        "type": "HP割合",
+        "rate": 0.06,
+        "target": "自身",
+        "timing": "戦闘後"
+      }
+    ],
+    "tags": [ "分類:ギルド装備" ]
   },
   {
     "uid": "Item_Equipment_SSR_0141",
@@ -5682,7 +5848,7 @@
       {
         "type": "移動",
         "value": 3,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ],
     "fixedDamage": [
@@ -5711,7 +5877,7 @@
         "type": "与ダメージ",
         "value": 60,
         "duration": 0,
-        "target": "自身",
+        "target": "自身(メイン)",
         "timing": "戦闘前",
         "condition": {
           "onCloseCombat": true
@@ -5721,7 +5887,7 @@
         "type": "与ダメージ",
         "value": -40,
         "duration": 0,
-        "target": "自身",
+        "target": "自身(メイン)",
         "timing": "戦闘前",
         "condition": {
           "onRangedCombat": true
@@ -5788,12 +5954,12 @@
       {
         "type": "アタック",
         "value": 20,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "マジック",
         "value": 20,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "与ダメージ(スキル)",
@@ -5822,17 +5988,17 @@
       {
         "type": "ディフェンス",
         "value": 20,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "レジスト",
         "value": 20,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "移動",
         "value": -3,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ],
     "tags": [ "分類:遺跡装備" ]
@@ -5872,12 +6038,12 @@
       {
         "type": "与ダメージ",
         "value": 25,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "クリティカル率",
         "value": -70,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ],
     "tags": [ "分類:遺跡装備" ]
@@ -5896,7 +6062,7 @@
       {
         "type": "アタック",
         "value": 20,
-        "target": "自身",
+        "target": "自身(メイン)",
         "condition": {
           "hp": [ "<=", 80 ]
         }
@@ -5904,7 +6070,7 @@
       {
         "type": "マジック",
         "value": 20,
-        "target": "自身",
+        "target": "自身(メイン)",
         "condition": {
           "hp": [ "<=", 80 ]
         }
@@ -5934,12 +6100,12 @@
       {
         "type": "ダメージ耐性(物理)",
         "value": 20,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "ダメージ耐性(魔法)",
         "value": 20,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "与ダメージ(物理)",
@@ -5968,17 +6134,17 @@
       {
         "type": "アタック",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "マジック",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "与ダメージ(スキル)",
         "value": 15,
-        "target": "自身",
+        "target": "自身(メイン)",
         "condition": {
           "activeBuffCount": [ ">=", 4 ]
         }
@@ -6000,26 +6166,26 @@
       {
         "type": "最大HP",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "ダメージ耐性(物理)",
         "value": 5,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "アタック",
         "value": 5,
         "maxStack": 3,
         "stackBy": "nearEnemyCount",
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "ディフェンス",
         "value": 5,
         "maxStack": 3,
         "stackBy": "nearEnemyCount",
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ],
     "tags": [ "分類:マスター装備" ]
@@ -6038,17 +6204,18 @@
       {
         "type": "アタック",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "最大HP",
         "value": 5,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "与ダメージ",
         "value": 10,
         "duration": 2,
+        "target": "範囲",
         "area": [ 2, "周囲" ],
         "timing": "スキル後",
         "condition": {
@@ -6072,12 +6239,12 @@
       {
         "type": "アタック",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "クリティカル率",
         "value": 20,
-        "target": "自身",
+        "target": "自身(メイン)",
         "condition": {
           "nearAllyCount": {
             "area": 1,
@@ -6088,7 +6255,7 @@
       {
         "type": "クリティカルダメージ倍率",
         "value": 20,
-        "target": "自身",
+        "target": "自身(メイン)",
         "condition": {
           "nearAllyCount": {
             "area": 1,
@@ -6113,7 +6280,7 @@
       {
         "type": "マジック",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ],
     "debuff": [
@@ -6152,29 +6319,46 @@
       {
         "type": "アタック",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "マジック",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "ディフェンス",
         "value": 15,
         "duration": 1,
-        "target": "単体",
-        "timing": "戦闘後"
+        "target": "味方(低HP)",
+        "timing": "戦闘後",
+        "condition": {
+          "onOwnTurn": true
+        }
       },
       {
         "type": "レジスト",
         "value": 15,
         "duration": 1,
-        "target": "単体",
-        "timing": "戦闘後"
+        "target": "味方(低HP)",
+        "timing": "戦闘後",
+        "condition": {
+          "onOwnTurn": true
+        }
       }
     ],
-    "tags": [ "分類:マスター装備", "バフ:アタック", "バフ:マジック", "単体回復(低HP)" ]
+    "heal": [
+      {
+        "type": "HP割合",
+        "rate": 0.15,
+        "target": "味方(低HP)",
+        "timing": "戦闘後",
+        "condition": {
+          "onOwnTurn": true
+        }
+      }
+    ],
+    "tags": [ "分類:マスター装備", "バフ:アタック", "バフ:マジック" ]
   },
   {
     "uid": "Item_Equipment_SSR_0170",
@@ -6190,20 +6374,31 @@
       {
         "type": "アタック",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "クリティカル率",
         "value": 20,
         "ephemeral": true,
-        "target": "自身",
+        "target": "自身(メイン)",
         "timing": "戦闘前",
         "condition": {
           "onOwnTurn": true
         }
       }
     ],
-    "tags": [ "分類:マスター装備", "与ダメ回復" ]
+    "heal": [
+      {
+        "type": "ダメージ割合",
+        "rate": 0.05,
+        "target": "自身",
+        "timing": "戦闘後",
+        "condition": {
+          "onOwnTurn": true
+        }
+      }
+    ],
+    "tags": [ "分類:マスター装備" ]
   },
   {
     "uid": "Item_Equipment_SSR_0172",
@@ -6219,12 +6414,12 @@
       {
         "type": "与ダメージ",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "クリティカルダメージ倍率",
         "value": 5,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ],
     "debuff": [
@@ -6256,7 +6451,7 @@
         "type": "与ダメージ",
         "value": 25,
         "ephemeral": true,
-        "target": "自身",
+        "target": "自身(メイン)",
         "timing": "戦闘前"
       }
     ],
@@ -6334,7 +6529,7 @@
       {
         "type": "アタック",
         "value": 15,
-        "target": "自身",
+        "target": "自身(メイン)",
         "condition": {
           "turn": [ ">=", 5 ]
         }
@@ -6342,7 +6537,7 @@
       {
         "type": "ディフェンス",
         "value": 15,
-        "target": "自身",
+        "target": "自身(メイン)",
         "condition": {
           "turn": [ ">=", 5 ]
         }
@@ -6350,7 +6545,7 @@
       {
         "type": "マジック",
         "value": 15,
-        "target": "自身",
+        "target": "自身(メイン)",
         "condition": {
           "turn": [ ">=", 5 ]
         }
@@ -6358,7 +6553,7 @@
       {
         "type": "レジスト",
         "value": 15,
-        "target": "自身",
+        "target": "自身(メイン)",
         "condition": {
           "turn": [ ">=", 5 ]
         }
@@ -6366,7 +6561,7 @@
       {
         "type": "テクニック",
         "value": 15,
-        "target": "自身",
+        "target": "自身(メイン)",
         "condition": {
           "turn": [ ">=", 5 ]
         }
@@ -6392,15 +6587,26 @@
       {
         "type": "アタック",
         "value": 8,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "マジック",
         "value": 8,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ],
-    "tags": [ "分類:コラボ装備", "与ダメ回復" ]
+    "heal": [
+      {
+        "type": "ダメージ割合",
+        "rate": 0.05,
+        "target": "自身",
+        "timing": "戦闘後",
+        "condition": {
+          "onOwnTurn": true
+        }
+      }
+    ],
+    "tags": [ "分類:コラボ装備" ]
   },
   {
     "uid": "Item_Equipment_SSR_0189",
@@ -6417,7 +6623,7 @@
         "type": "与ダメージ",
         "value": 30,
         "ephemeral": true,
-        "target": "自身",
+        "target": "自身(メイン)",
         "timing": "戦闘前",
         "condition": {
           "onClassAdvantage": true
@@ -6450,7 +6656,7 @@
       {
         "type": "与ダメージ",
         "value": 15,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "最大HP",
@@ -6479,7 +6685,7 @@
       {
         "type": "クリティカル率",
         "value": 50,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "与ダメージ",
@@ -6502,7 +6708,7 @@
       {
         "type": "アタック",
         "value": 5,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "ディフェンス無視",
@@ -6525,7 +6731,7 @@
       {
         "type": "移動",
         "value": 1,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "ダメージ耐性",
@@ -6553,7 +6759,7 @@
       {
         "type": "アタック",
         "value": 12,
-        "target": "自身",
+        "target": "自身(メイン)",
         "condition": {
           "nearAllyCount": {
             "area": [ 1, "周囲" ],
@@ -6564,7 +6770,7 @@
       {
         "type": "与ダメージ",
         "value": 12,
-        "target": "自身",
+        "target": "自身(メイン)",
         "condition": {
           "nearAllyCount": {
             "area": [ 1, "周囲" ],
@@ -6588,17 +6794,17 @@
       {
         "type": "アタック",
         "value": 8,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "マジック",
         "value": 8,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "与ダメージ(スキル)",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ],
     "tags": [ "分類:ギルド装備" ]
@@ -6616,7 +6822,7 @@
       {
         "type": "マジック",
         "value": 5,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "レジスト無視",
@@ -6639,10 +6845,19 @@
       {
         "type": "最大HP",
         "value": 15,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ],
-    "tags": [ "分類:ギルド装備", "範囲回復" ]
+    "heal": [
+      {
+        "type": "HP割合",
+        "rate": 0.08,
+        "target": "範囲",
+        "area": 2,
+        "timing": "行動後"
+      }
+    ],
+    "tags": [ "分類:ギルド装備" ]
   },
   {
     "uid": "Item_Equipment_SSR_0186",
@@ -6657,12 +6872,12 @@
       {
         "type": "最大HP",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "与ダメージ(範囲スキル)",
         "value": 15,
-        "target": "自身",
+        "target": "自身(メイン)",
         "condition": {
           "hp": [ ">=", 100 ]
         }
@@ -6683,12 +6898,12 @@
       {
         "type": "クリティカル率",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "クリティカルダメージ倍率",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ],
     "tags": [ "分類:ギルド装備" ]
@@ -6707,7 +6922,7 @@
       {
         "type": "与ダメージ(スキル)",
         "value": 30,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "アタック",
@@ -6763,7 +6978,15 @@
         "target": "自身"
       }
     ],
-    "tags": [ "分類:遺跡装備", "自己回復" ]
+    "heal": [
+      {
+        "type": "HP割合",
+        "rate": 0.2,
+        "target": "自身",
+        "timing": "行動後"
+      }
+    ],
+    "tags": [ "分類:遺跡装備" ]
   },
   {
     "uid": "Item_Equipment_SSR_0195",
@@ -6779,17 +7002,17 @@
       {
         "type": "最大HP",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "与ダメージ(スキル)",
         "value": 8,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "アタック",
         "value": 15,
-        "target": "自身",
+        "target": "自身(メイン)",
         "condition": {
           "hp": [ "<=", 80 ]
         }
@@ -6811,13 +7034,13 @@
       {
         "type": "最大HP",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "与ダメージ(物理)",
         "value": 10,
         "ephemeral": true,
-        "target": "自身",
+        "target": "自身(メイン)",
         "timing": "戦闘前",
         "condition": {
           "onOwnTurn": true
@@ -6847,13 +7070,13 @@
       {
         "type": "最大HP",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "与ダメージ(スキル)",
         "value": 8,
         "ephemeral": true,
-        "target": "自身",
+        "target": "自身(メイン)",
         "timing": "戦闘前",
         "condition": {
           "onOwnTurn": true,
@@ -6891,12 +7114,12 @@
       {
         "type": "ディフェンス",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "アタック",
         "value": 12,
-        "target": "自身",
+        "target": "自身(メイン)",
         "condition": {
           "hp": [ ">=", 100 ]
         }
@@ -6904,7 +7127,7 @@
       {
         "type": "与ダメージ(範囲スキル)",
         "value": 10,
-        "target": "自身",
+        "target": "自身(メイン)",
         "condition": {
           "hp": [ ">=", 100 ]
         }
@@ -6926,12 +7149,12 @@
       {
         "type": "マジック",
         "value": 20,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "与ダメージ(魔法)",
         "value": 20,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "ディフェンス",
@@ -6960,7 +7183,7 @@
       {
         "type": "最大HP",
         "value": 30,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "与ダメージ(物理)",
@@ -6984,12 +7207,12 @@
       {
         "type": "アタック",
         "value": 15,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "クリティカル率",
         "value": 15,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ],
     "fixedDamage": [
@@ -7018,12 +7241,12 @@
       {
         "type": "アタック",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "マジック",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ],
     "debuff": [
@@ -7064,17 +7287,18 @@
       {
         "type": "マジック",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "範囲",
         "value": 1,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "クリティカル率",
         "value": 10,
         "duration": 2,
+        "target": "範囲",
         "area": [ 2, "周囲" ],
         "timing": "行動後"
       },
@@ -7082,6 +7306,7 @@
         "type": "与ダメージ(スキル)",
         "value": 10,
         "duration": 2,
+        "target": "範囲",
         "area": [ 2, "周囲" ],
         "timing": "行動後"
       }
@@ -7102,18 +7327,18 @@
       {
         "type": "アタック",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "クリティカル率",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "クリティカルダメージ倍率",
         "value": 20,
         "ephemeral": true,
-        "target": "自身",
+        "target": "自身(メイン)",
         "timing": "戦闘前",
         "condition": {
           "onOwnTurn": true
@@ -7136,12 +7361,12 @@
       {
         "type": "アタック",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "マジック",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ],
     "debuff": [
@@ -7180,12 +7405,12 @@
       {
         "type": "アタック",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "ディフェンス",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "ディフェンス",
@@ -7208,7 +7433,18 @@
         }
       }
     ],
-    "tags": [ "分類:真厄神装備", "与ダメ回復" ],
+    "heal": [
+      {
+        "type": "ダメージ割合",
+        "rate": 0.05,
+        "target": "自身",
+        "timing": "戦闘後",
+        "condition": {
+          "onCriticalHit": true
+        }
+      }
+    ],
+    "tags": [ "分類:真厄神装備" ],
     "note": "クリティカル後に発動するディフェンス+15%は、常時発動しているディフェンス+10%と競合。(+25%にはならず+15%止まり)"
   },
   {
@@ -7225,12 +7461,12 @@
       {
         "type": "アタック",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "クリティカルダメージ倍率",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "アタック",
@@ -7269,18 +7505,18 @@
       {
         "type": "アタック",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "クリティカル率",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "クリティカル率",
         "value": 20,
         "ephemeral": true,
-        "target": "自身",
+        "target": "自身(メイン)",
         "timing": "戦闘前",
         "condition": {
           "onOwnTurn": true
@@ -7303,18 +7539,18 @@
       {
         "type": "アタック",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "マジック",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "クリティカル率",
         "value": 10,
         "ephemeral": true,
-        "target": "自身",
+        "target": "自身(メイン)",
         "timing": "戦闘前",
         "condition": {
           "onOwnTurn": true
@@ -7324,7 +7560,7 @@
         "type": "クリティカルダメージ倍率",
         "value": 10,
         "ephemeral": true,
-        "target": "自身",
+        "target": "自身(メイン)",
         "timing": "戦闘前",
         "condition": {
           "onOwnTurn": true
@@ -7347,18 +7583,18 @@
       {
         "type": "アタック",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "ディフェンス",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "与ダメージ",
         "value": 10,
         "ephemeral": true,
-        "target": "自身",
+        "target": "自身(メイン)",
         "timing": "戦闘前",
         "condition": {
           "onOwnTurn": true
@@ -7368,7 +7604,7 @@
         "type": "ダメージ耐性",
         "value": 10,
         "ephemeral": true,
-        "target": "自身",
+        "target": "自身(メイン)",
         "timing": "戦闘前",
         "condition": {
           "onEnemyTurn": true
@@ -7391,22 +7627,22 @@
       {
         "type": "クリティカルダメージ倍率",
         "value": 30,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "クリティカル率",
         "value": 30,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "移動",
         "value": -2,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "ダメージ耐性",
         "value": -20,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ],
     "tags": [ "分類:遺跡装備" ]
@@ -7425,12 +7661,12 @@
       {
         "type": "ダメージ耐性",
         "value": 30,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "与ダメージ(スキル)",
         "value": -20,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ],
     "tags": [ "分類:遺跡装備" ]
@@ -7506,10 +7742,21 @@
       {
         "type": "アタック",
         "value": 12,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ],
-    "tags": [ "分類:スターフォース装備", "CT減" ],
+    "ctReduction": [
+      {
+        "target": "自身",
+        "value": 1,
+        "targetSkill": "全スキル",
+        "timing": "敵撃破時",
+        "condition": {
+          "onActiveSkill": true
+        }
+      }
+    ],
+    "tags": [ "分類:スターフォース装備" ],
     "note": "CT減は全スキルが対象。範囲攻撃でも発動するが、複数同時に撃破しても -1 のみ。"
   },
   {
@@ -7525,15 +7772,24 @@
       {
         "type": "最大HP",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "治療効果",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ],
-    "tags": [ "分類:コラボ装備", "範囲回復" ]
+    "heal": [
+      {
+        "type": "HP割合",
+        "rate": 0.1,
+        "target": "範囲",
+        "area": 1,
+        "timing": "行動後"
+      }
+    ],
+    "tags": [ "分類:コラボ装備" ]
   },
   {
     "uid": "Item_Equipment_SSR_0214",
@@ -7549,7 +7805,7 @@
       {
         "type": "最大HP",
         "value": 30,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "被治療効果",
@@ -7631,12 +7887,12 @@
       {
         "type": "マジック",
         "value": 12,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "範囲",
         "value": 1,
-        "target": "自身"
+        "target": "自身(メイン)"
       }
     ],
     "tags": [ "分類:スターフォース装備" ]
@@ -7655,12 +7911,12 @@
       {
         "type": "クリティカル率",
         "value": 40,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "クリティカルダメージ倍率",
         "value": 25,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "与ダメージ",
@@ -7879,17 +8135,17 @@
       {
         "type": "アタック",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "マジック",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "クリティカル率",
         "value": 15,
-        "target": "自身",
+        "target": "自身(メイン)",
         "condition": {
           "hp": [ ">=", 50 ]
         }
@@ -7897,7 +8153,7 @@
       {
         "type": "クリティカルダメージ倍率",
         "value": 15,
-        "target": "自身",
+        "target": "自身(メイン)",
         "condition": {
           "hp": [ ">=", 50 ]
         }
@@ -7919,12 +8175,12 @@
       {
         "type": "治療効果",
         "value": 50,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "マジック",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "ディフェンス",
@@ -7953,7 +8209,7 @@
       {
         "type": "最大HP",
         "value": 40,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "移動",
@@ -7977,7 +8233,7 @@
       {
         "type": "与ダメージ(スキル)",
         "value": 15,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "被治療効果",
@@ -8000,12 +8256,12 @@
       {
         "type": "アタック",
         "value": 12,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "クリティカル率",
         "value": 20,
-        "target": "自身",
+        "target": "自身(メイン)",
         "condition": {
           "onClass": [ "シューター", "ソルジャー" ]
         }
@@ -8013,13 +8269,21 @@
       {
         "type": "クリティカルダメージ倍率",
         "value": 20,
-        "target": "自身",
+        "target": "自身(メイン)",
         "condition": {
           "onClass": [ "シューター", "ソルジャー" ]
         }
       }
     ],
-    "tags": [ "分類:クラスチャレンジ装備", "自己回復" ]
+    "heal": [
+      {
+        "type": "HP割合",
+        "rate": 0.08,
+        "target": "自身",
+        "timing": "行動後"
+      }
+    ],
+    "tags": [ "分類:クラスチャレンジ装備" ]
   },
   {
     "uid": "Item_Equipment_SSR_0224",
@@ -8035,12 +8299,12 @@
       {
         "type": "アタック",
         "value": 15,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "与ダメージ(通常攻撃)",
         "value": 15,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "被治療効果",
@@ -8065,7 +8329,7 @@
         "type": "与ダメージ",
         "value": 15,
         "ephemeral": true,
-        "target": "自身",
+        "target": "自身(メイン)",
         "timing": "戦闘前",
         "condition": {
           "onCloseCombat": true
@@ -8075,7 +8339,7 @@
         "type": "ダメージ耐性",
         "value": 15,
         "ephemeral": true,
-        "target": "自身",
+        "target": "自身(メイン)",
         "timing": "戦闘前",
         "condition": {
           "onCloseCombat": true
@@ -8085,7 +8349,7 @@
         "type": "与ダメージ",
         "value": -25,
         "ephemeral": true,
-        "target": "自身",
+        "target": "自身(メイン)",
         "timing": "戦闘前",
         "condition": {
           "onRangedCombat": true
@@ -8095,7 +8359,7 @@
         "type": "ダメージ耐性",
         "value": -25,
         "ephemeral": true,
-        "target": "自身",
+        "target": "自身(メイン)",
         "timing": "戦闘前",
         "condition": {
           "onRangedCombat": true
@@ -8118,12 +8382,12 @@
       {
         "type": "最大HP",
         "value": 30,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "被治療効果",
         "value": 50,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "アタック",
@@ -8151,17 +8415,17 @@
       {
         "type": "与ダメージ",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "ダメージ耐性",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "クリティカル率",
         "value": 20,
-        "target": "自身",
+        "target": "自身(メイン)",
         "condition": {
           "onClass": [ "セイント", "ランサー" ]
         }
@@ -8169,13 +8433,21 @@
       {
         "type": "クリティカルダメージ倍率",
         "value": 20,
-        "target": "自身",
+        "target": "自身(メイン)",
         "condition": {
           "onClass": [ "セイント", "ランサー" ]
         }
       }
     ],
-    "tags": [ "分類:クラスチャレンジ装備", "自己回復" ]
+    "heal": [
+      {
+        "type": "HP割合",
+        "rate": 0.08,
+        "target": "自身",
+        "timing": "行動後"
+      }
+    ],
+    "tags": [ "分類:クラスチャレンジ装備" ]
   },
   {
     "uid": "Item_Equipment_SSR_0228",
@@ -8190,7 +8462,7 @@
       {
         "type": "アタック",
         "value": 12,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "クリティカル率",
@@ -8198,12 +8470,12 @@
         "maxStack": 5,
         "stackBy": "moveAmount",
         "ephemeral": true,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "与ダメージ(スキル)",
         "value": 25,
-        "target": "自身",
+        "target": "自身(メイン)",
         "condition": {
           "onClass": [ "ライダー", "エアリアル" ]
         }
@@ -8228,7 +8500,16 @@
         "target": "自身"
       }
     ],
-    "tags": [ "分類:遺跡装備", "与ダメ回復" ]
+    "heal": [
+      {
+        "type": "ダメージ割合",
+        "rate": 0.08,
+        "target": "自身",
+        "timing": "戦闘後"
+      }
+    ],
+
+    "tags": [ "分類:遺跡装備" ]
   },
   {
     "uid": "Item_Equipment_SSR_0230",
@@ -8244,12 +8525,12 @@
       {
         "type": "アタック",
         "value": 15,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "与ダメージ(物理)",
         "value": 15,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "ダメージ耐性",
@@ -8301,23 +8582,31 @@
       {
         "type": "アタック",
         "value": 12,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "マジック",
         "value": 12,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "与ダメージ(スキル)",
-        "value": 20,
-        "target": "自身",
+        "value": 25,
+        "target": "自身(メイン)",
         "condition": {
           "onClass": [ "ソルジャー", "ソーサラー" ]
         }
       }
     ],
-    "tags": [ "分類:クラスチャレンジ装備", "与ダメ回復" ]
+    "heal": [
+      {
+        "type": "ダメージ割合",
+        "rate": 0.04,
+        "target": "自身",
+        "timing": "戦闘後"
+      }
+    ],
+    "tags": [ "分類:クラスチャレンジ装備" ]
   },
   {
     "uid": "Item_Equipment_SSR_0233",
@@ -8332,12 +8621,12 @@
       {
         "type": "アタック",
         "value": 12,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "マジック",
         "value": 12,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "ディフェンス無視",
@@ -8352,7 +8641,7 @@
       {
         "type": "与ダメージ(スキル)",
         "value": 25,
-        "target": "自身",
+        "target": "自身(メイン)",
         "condition": {
           "onClass": [ "セイント", "シューター" ]
         }
@@ -8401,7 +8690,15 @@
         "target": "自身"
       }
     ],
-    "tags": [ "分類:遺跡装備", "自己回復" ]
+    "heal": [
+      {
+        "type": "HP割合",
+        "rate": 0.2,
+        "target": "自身",
+        "timing": "行動後"
+      }
+    ],
+    "tags": [ "分類:遺跡装備" ]
   },
   {
     "uid": "Item_Equipment_SSR_0236",
@@ -8448,7 +8745,7 @@
       {
         "type": "アタック",
         "value": 12,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "与ダメージ(物理)",
@@ -8456,12 +8753,12 @@
         "maxStack": 4,
         "stackBy": "moveAmount",
         "ephemeral": true,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "与ダメージ(スキル)",
         "value": 25,
-        "target": "自身",
+        "target": "自身(メイン)",
         "condition": {
           "onClass": [ "ランサー", "アサシン" ]
         }
@@ -8483,12 +8780,12 @@
       {
         "type": "マジック",
         "value": 20,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "与ダメージ(魔法)",
         "value": 20,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "ディフェンス",
@@ -8517,7 +8814,7 @@
       {
         "type": "与ダメージ(スキル)",
         "value": 15,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "最大HP",
@@ -8541,7 +8838,7 @@
       {
         "type": "被治療効果",
         "value": 60,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "最大HP",
@@ -8564,12 +8861,19 @@
       {
         "type": "与ダメージ",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "ダメージ耐性",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
+      },
+      {
+        "type": "移動",
+        "value": 1,
+        "duration": 2,
+        "target": "自身(メイン)",
+        "timing": "敵撃破時"
       },
       {
         "type": "クリティカルダメージ倍率",
@@ -8577,7 +8881,7 @@
         "maxStack": 5,
         "stackBy": "moveAmount",
         "ephemeral": true,
-        "target": "自身",
+        "target": "自身(メイン)",
         "condition": {
           "onClass": [ "ソーサラー", "ライダー" ]
         }
@@ -8598,18 +8902,22 @@
       {
         "type": "与ダメージ",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "ダメージ耐性",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "移動",
         "value": 2,
         "duration": 1,
-        "target": "自身"
+        "target": "自身",
+        "timing": "ターン開始時",
+        "condition": {
+          "hp": [ ">=", 100 ]
+        }
       },
       {
         "type": "クリティカルダメージ倍率",
@@ -8617,7 +8925,7 @@
         "maxStack": 5,
         "stackBy": "moveAmount",
         "ephemeral": true,
-        "target": "自身",
+        "target": "自身(メイン)",
         "condition": {
           "onClass": [ "ソーサラー", "ライダー" ]
         }
@@ -8638,12 +8946,12 @@
       {
         "type": "与ダメージ",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "ダメージ耐性",
         "value": 10,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "クリティカル率",
@@ -8658,7 +8966,7 @@
         "maxStack": 5,
         "stackBy": "moveAmount",
         "ephemeral": true,
-        "target": "自身",
+        "target": "自身(メイン)",
         "timing": "戦闘前",
         "condition": {
           "onClass": [ "シューター", "アサシン" ]
@@ -8680,12 +8988,12 @@
       {
         "type": "アタック",
         "value": 12,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "与ダメージ(物理)",
         "value": 10,
-        "target": "自身",
+        "target": "自身(メイン)",
         "condition": {
           "hp": [ ">=", 50 ]
         }
@@ -8696,7 +9004,7 @@
         "maxStack": 5,
         "stackBy": "moveAmount",
         "ephemeral": true,
-        "target": "自身",
+        "target": "自身(メイン)",
         "timing": "戦闘前",
         "condition": {
           "onClass": [ "ランサー", "ソルジャー" ]
@@ -8718,18 +9026,18 @@
       {
         "type": "アタック",
         "value": 12,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "マジック",
         "value": 12,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "与ダメージ",
         "value": 8,
         "ephemeral": true,
-        "target": "自身",
+        "target": "自身(メイン)",
         "timing": "戦闘前",
         "condition": {
           "onRangedCombat": true
@@ -8738,7 +9046,7 @@
       {
         "type": "与ダメージ(通常攻撃)",
         "value": 25,
-        "target": "自身",
+        "target": "自身(メイン)",
         "condition": {
           "onClass": [ "セイント", "アサシン" ]
         }
@@ -8759,18 +9067,18 @@
       {
         "type": "アタック",
         "value": 12,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "マジック",
         "value": 12,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "与ダメージ",
         "value": 8,
         "ephemeral": true,
-        "target": "自身",
+        "target": "自身(メイン)",
         "timing": "戦闘前",
         "condition": {
           "onCloseCombat": true
@@ -8779,7 +9087,7 @@
       {
         "type": "与ダメージ(通常攻撃)",
         "value": 25,
-        "target": "自身",
+        "target": "自身(メイン)",
         "condition": {
           "onClass": [ "ソルジャー", "エアリアル" ]
         }
@@ -8800,17 +9108,17 @@
       {
         "type": "アタック",
         "value": 12,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "マジック",
         "value": 12,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "クリティカル率",
         "value": 20,
-        "target": "自身",
+        "target": "自身(メイン)",
         "condition": {
           "onClass": [ "エアリアル", "ソーサラー" ]
         }
@@ -8818,13 +9126,24 @@
       {
         "type": "クリティカルダメージ倍率",
         "value": 20,
-        "target": "自身",
+        "target": "自身(メイン)",
         "condition": {
           "onClass": [ "エアリアル", "ソーサラー" ]
         }
       }
     ],
-    "tags": [ "分類:クラスチャレンジ装備", "与ダメ回復" ]
+    "heal": [
+      {
+        "type": "ダメージ割合",
+        "rate": 0.1,
+        "target": "自身",
+        "timing": "戦闘後",
+        "condition": {
+          "onCriticalHit": true
+        }
+      }
+    ],
+    "tags": [ "分類:クラスチャレンジ装備" ]
   },
   {
     "uid": "Item_Equipment_SSR_0248",
@@ -8839,12 +9158,12 @@
       {
         "type": "アタック",
         "value": 12,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "クリティカル率",
         "value": 20,
-        "target": "自身",
+        "target": "自身(メイン)",
         "condition": {
           "onClass": [ "アサシン", "ライダー" ]
         }
@@ -8852,13 +9171,24 @@
       {
         "type": "クリティカルダメージ倍率",
         "value": 20,
-        "target": "自身",
+        "target": "自身(メイン)",
         "condition": {
           "onClass": [ "アサシン", "ライダー" ]
         }
       }
     ],
-    "tags": [ "分類:クラスチャレンジ装備", "与ダメ回復" ]
+    "heal": [
+      {
+        "type": "ダメージ割合",
+        "rate": 0.1,
+        "target": "自身",
+        "timing": "戦闘後",
+        "condition": {
+          "onCriticalHit": true
+        }
+      }
+    ],
+    "tags": [ "分類:クラスチャレンジ装備" ]
   },
   {
     "uid": "Item_Equipment_SSR_0249",
@@ -8873,7 +9203,7 @@
       {
         "type": "アタック",
         "value": 12,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "ディフェンス",
@@ -8894,7 +9224,7 @@
       {
         "type": "与ダメージ(通常攻撃)",
         "value": 25,
-        "target": "自身",
+        "target": "自身(メイン)",
         "condition": {
           "onClass": [ "ライダー", "ランサー" ]
         }
@@ -8915,17 +9245,17 @@
       {
         "type": "アタック",
         "value": 12,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "マジック",
         "value": 12,
-        "target": "自身"
+        "target": "自身(メイン)"
       },
       {
         "type": "与ダメージ(通常攻撃)",
         "value": 25,
-        "target": "自身",
+        "target": "自身(メイン)",
         "condition": {
           "onClass": [ "ソーサラー", "シューター" ]
         }

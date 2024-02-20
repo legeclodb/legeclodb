@@ -29,7 +29,7 @@
       "enum": [ "平地", "草原", "森", "水中", "荒地", "崖", "空", "山岳", "洞窟", "砂地", "砂丘", "積雪", "置物", "砦", "壁", "柵", "溶岩" ]
     },
     "targetEnum": {
-      "enum": [ "自身", "自身(メイン)", "自身(サポート)", "味方(低HP)", "単体", "複数", "スキル対象", "範囲", "全体" ]
+      "enum": [ "自身", "自身(メイン)", "自身(サポート)", "味方(低HP)", "単体", "範囲", "範囲(ランダム)", "全体", "スキル対象" ]
     },
     "targetType": {
       "anyOf": [
@@ -319,6 +319,7 @@
         "ephemeral": { "type": "boolean" },
         "target": { "$ref": "#/$defs/targetType" },
         "area": { "$ref": "#/$defs/areaType" },
+        "unitCount": { "type": "number" },
         "amount": { "type": [ "number", "string" ] },
         "variant": { "type": [ "number", "string" ] },
         "slot": { "type": "string" },
@@ -356,6 +357,7 @@
         },
         "target": { "$ref": "#/$defs/targetType" },
         "area": { "$ref": "#/$defs/areaType" },
+        "unitCount": { "type": "number" },
         "timing": { "$ref": "#/$defs/timingType" },
         "condition": { "$ref": "#/$defs/condition" }
       }
@@ -377,6 +379,7 @@
           ]
         },
         "target": { "$ref": "#/$defs/targetEnum" },
+        "area": { "$ref": "#/$defs/areaType" },
         "timing": { "$ref": "#/$defs/timingType" },
         "condition": { "$ref": "#/$defs/condition" }
       }

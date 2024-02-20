@@ -903,11 +903,11 @@ export default {
 
     isPublicTarget(target) {
       return !target ||
-        (typeof (target) == "string" && target != "自身");
+        (typeof (target) == "string" && !target.startsWith("自身"));
     },
     isSelfTarget(target) {
       return !target ||
-        (typeof (target) == "string" && target == "自身");
+        (typeof (target) == "string" && target.startsWith("自身"));
     },
 
     effectParamsToTags(skill, params) {
@@ -920,7 +920,7 @@ export default {
         miscTags.push(`召喚`);
       }
       if (skill.fixedDamage) {
-        if (skill.fixedDamage.find(a => a.target != "自身")) {
+        if (skill.fixedDamage.find(a => !(typeof (target) == "string" && a.target?.startsWith("自身")))) {
           miscTags.push(`固定ダメージ`);
         }
       }
