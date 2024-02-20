@@ -1269,11 +1269,11 @@
     "uid": "2200001",
     "icon": "sk_sp1001",
     "name": "剛気",
-    "desc": "自ユニットのアタック+5%。",
+    "desc": "自ユニットのアタック+15%。",
     "buff": [
       {
         "type": "アタック",
-        "value": 5,
+        "value": 15,
         "target": "自身"
       }
     ]
@@ -1282,11 +1282,11 @@
     "uid": "2200003",
     "icon": "sk_sp1003",
     "name": "堅守",
-    "desc": "自ユニットのディフェンス+5%。",
+    "desc": "自ユニットのディフェンス+15%。",
     "buff": [
       {
         "type": "ディフェンス",
-        "value": 5,
+        "value": 15,
         "target": "自身"
       }
     ]
@@ -1295,11 +1295,11 @@
     "uid": "2200005",
     "icon": "sk_sp1005",
     "name": "魔性",
-    "desc": "自ユニットのマジック+5%。",
+    "desc": "自ユニットのマジック+15%。",
     "buff": [
       {
         "type": "マジック",
-        "value": 5,
+        "value": 15,
         "target": "自身"
       }
     ]
@@ -1321,11 +1321,11 @@
     "uid": "2200007",
     "icon": "sk_sp1007",
     "name": "強靭",
-    "desc": "自ユニットの最大HP+5%。",
+    "desc": "自ユニットの最大HP+15%。",
     "buff": [
       {
         "type": "最大HP",
-        "value": 5,
+        "value": 15,
         "target": "自身"
       }
     ]
@@ -1334,11 +1334,11 @@
     "uid": "2200006",
     "icon": "sk_sp1006",
     "name": "集中",
-    "desc": "自ユニットのクリティカル率+5%。",
+    "desc": "自ユニットのクリティカル率+15%。",
     "buff": [
       {
         "type": "クリティカル率",
-        "value": 5,
+        "value": 15,
         "target": "自身"
       }
     ]
@@ -1347,11 +1347,11 @@
     "uid": "2200002",
     "icon": "sk_sp1002",
     "name": "奮迅",
-    "desc": "自ユニットのスキル与ダメージ+5%。",
+    "desc": "自ユニットのスキル与ダメージ+15%。",
     "buff": [
       {
         "type": "与ダメージ(スキル)",
-        "value": 5,
+        "value": 15,
         "target": "自身"
       }
     ]
@@ -1360,11 +1360,11 @@
     "uid": "2200004",
     "icon": "sk_sp1004",
     "name": "治術",
-    "desc": "自ユニットの治療効果+5%。",
+    "desc": "自ユニットの治療効果+15%。",
     "buff": [
       {
         "type": "治療効果",
-        "value": 5,
+        "value": 15,
         "target": "自身"
       }
     ]
@@ -3359,6 +3359,44 @@
         "timing": "戦闘前",
         "condition": {
           "onOwnTurn": true
+        }
+      }
+    ]
+  },
+  {
+    "uid": "2300099",
+    "icon": "sk_sp2099",
+    "name": "艶美に舞う扇",
+    "desc": "遠距離による戦闘時、その戦闘前、自ユニットのクリティカル率/クリティカルダメージ倍率+20%/スキル与ダメージ+10%。",
+    "buff": [
+      {
+        "type": "クリティカル率",
+        "value": 20,
+        "ephemeral": true,
+        "target": "自身",
+        "timing": "戦闘前",
+        "condition": {
+          "onRangedCombat": true
+        }
+      },
+      {
+        "type": "クリティカルダメージ倍率",
+        "value": 20,
+        "ephemeral": true,
+        "target": "自身",
+        "timing": "戦闘前",
+        "condition": {
+          "onRangedCombat": true
+        }
+      },
+      {
+        "type": "与ダメージ(スキル)",
+        "value": 10,
+        "ephemeral": true,
+        "target": "自身",
+        "timing": "戦闘前",
+        "condition": {
+          "onRangedCombat": true
         }
       }
     ]
