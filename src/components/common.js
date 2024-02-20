@@ -912,24 +912,50 @@ export default {
 
     effectParamsToTags(skill, params) {
       let miscTags = [];
+      const addTag = function (tag) {
+        miscTags.push(tag);
+      };
 
       if (skill.isSymbolSkill) {
-        miscTags.push(`シンボルスキル`);
+        addTag(`シンボルスキル`);
       }
       if (skill.summon) {
-        miscTags.push(`召喚`);
+        addTag(`召喚`);
       }
-      if (skill.fixedDamage) {
-        if (skill.fixedDamage.find(a => !(typeof (target) == "string" && a.target?.startsWith("自身")))) {
-          miscTags.push(`固定ダメージ`);
+
+      if (skill.heal) {
+        for (const heal of skill.heal) {
+          if (heal.target == "全体") {
+            addTag(`全体回復`);
+          }
+          else if (heal.target == "範囲" || (heal.target == "スキル対象" && skill.area != "単体")) {
+            addTag(`範囲回復`);
+          }
+          else if (heal.target == "スキル対象" && skill.area == "単体") {
+            addTag(`単体回復`);
+          }
+          else if (heal.target == "味方(低HP)") {
+            addTag(`単体回復(低HP)`);
+          }
+          else if (heal.target == "自身" && heal.type == "ダメージ割合") {
+            addTag(`与ダメ回復`);
+          }
         }
       }
+
+      if (skill.fixedDamage) {
+        if (skill.fixedDamage.find(a => !(typeof (target) == "string" && a.target?.startsWith("自身")))) {
+          addTag(`固定ダメージ`);
+        }
+      }
+
       if (skill.buffCancel) {
-        miscTags.push(`バフ解除`);
+        addTag(`バフ解除`);
       }
       if (skill.buffSteal) {
-        miscTags.push(`バフ奪取`);
+        addTag(`バフ奪取`);
       }
+
       if (skill.doubleAttack) {
         let postfix = "";
         for (const da of skill.doubleAttack) {
@@ -941,7 +967,7 @@ export default {
               postfix = "";
           }
         }
-        miscTags.push(`2回攻撃${postfix}`);
+        addTag(`2回攻撃${postfix}`);
       }
 
       if (skill.multiMove) {
@@ -955,7 +981,7 @@ export default {
               postfix = "";
           }
         }
-        miscTags.push(`再移動${postfix}`);
+        addTag(`再移動${postfix}`);
       }
 
       if (skill.multiAction) {
@@ -970,13 +996,13 @@ export default {
             else
               postfix = "";
           }
-          if (ma.target) {
+          if (ma.target && ma.target != "自身") {
             postfix = "(味方)";
           }
         }
-        miscTags.push(`再行動${postfix}`);
+        addTag(`再行動${postfix}`);
         if (!skill.isActive || (skill.isActive && skill.damageRate) || postfix == "(味方)") {
-          miscTags.push(`再攻撃${postfix}`);
+          addTag(`再攻撃${postfix}`);
         }
       }
 
@@ -991,7 +1017,7 @@ export default {
           }
         }
         if (postfix) {
-          miscTags.push(`CT減${postfix}`);
+          addTag(`CT減${postfix}`);
         }
       }
 
@@ -1000,7 +1026,7 @@ export default {
         for (const v of skill.positionManipulate) {
           postfix = `(${v.type})`;
         }
-        miscTags.push(`位置移動${postfix}`);
+        addTag(`位置移動${postfix}`);
       }
 
       const buffToS = function (effectCategory, effect) {
