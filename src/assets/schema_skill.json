@@ -385,6 +385,25 @@
       }
     },
 
+    "revive": {
+      "type": "object",
+      "required": [ "rate" ],
+      "additionalProperties": false,
+      "properties": {
+        "rate": {
+          "anyOf": [
+            { "type": "number" },
+            {
+              "type": "array",
+              "items": { "type": "number" }
+            }
+          ]
+        },
+        "count": { "type": "number" },
+        "condition": { "$ref": "#/$defs/condition" }
+      }
+    },
+
     "buffCancel": {
       "type": "object",
       "additionalProperties": false,
@@ -552,6 +571,10 @@
       "heal": {
         "type": "array",
         "items": { "$ref": "#/$defs/heal" }
+      },
+      "revive": {
+        "type": "array",
+        "items": { "$ref": "#/$defs/revive" }
       },
       "summon": { "type": [ "array" ] },
       "baseStatusBoost": {

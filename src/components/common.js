@@ -943,6 +943,10 @@ export default {
         }
       }
 
+      if (skill.revive) {
+        addTag(`復活`);
+      }
+
       if (skill.fixedDamage) {
         if (skill.fixedDamage.find(a => !(typeof (target) == "string" && a.target?.startsWith("自身")))) {
           addTag(`固定ダメージ`);
