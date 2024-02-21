@@ -815,6 +815,19 @@ export default {
       return r;
     },
 
+    getEngateDate(chr) {
+      return chr.engage ? chr.engage.date : "";
+    },
+    compareEngageDate(l, r) {
+      const ld = this.getEngateDate(l);
+      const rd = this.getEngateDate(r);
+      if (ld || rd) {
+        return ld == rd ? r.date.localeCompare(l.date) : rd.localeCompare(ld);
+      }
+      else {
+        return r.date.localeCompare(l.date);
+      }
+    },
 
     // seq must be sorted array
     lowerBound(seq, n) {

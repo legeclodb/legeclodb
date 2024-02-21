@@ -154,8 +154,9 @@ export default {
             effectType += "-";
           effect.effectType = effectType;
 
-          if (effect.target == "単体")
+          if (effect.target == "単体" || effect.target == "範囲(ランダム)") {
             effect.isSingleTarget = true;
+          }
 
           effect.effectTypeIndex = effectTypeTable.get(effectType);
           if (!effect.effectTypeIndex) {

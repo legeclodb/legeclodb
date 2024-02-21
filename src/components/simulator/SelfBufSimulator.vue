@@ -11,13 +11,26 @@
             <template #cell(value)="r">
               <div class="flex">
                 <div style="margin-left: auto">
-                  <b-form-checkbox v-if="r.item.type == 'boolean'" v-model="r.item.value"></b-form-checkbox>
-                  <b-form-input v-if="r.item.type == 'number'" style="width: 3em" v-model.number="r.item.value" :min="r.item.min" :max="r.item.max" size="sm" type="number" class="input-param" lazy></b-form-input>
+                  <template v-if="r.item.type == 'boolean'">
+                    <b-form-checkbox v-model="r.item.value"></b-form-checkbox>
+                  </template>
+                  <template v-else-if="r.item.type == 'number'">
+                    <b-form-input style="width: 3em" v-model.number="r.item.value" :min="r.item.min" :max="r.item.max" size="sm" type="number" class="input-param" lazy></b-form-input>
+                  </template>
+                  <template v-else-if="r.item.type == 'sortMode'">
+                    <b-dropdown :text="`${sortModes[r.item.value].label}`" size="sm">
+                      <b-dropdown-item v-for="(v, i) in sortModes" :key="i" class="d-flex flex-column" size="sm" @click="r.item.value=i">
+                        {{sortModes[i].label}}
+                      </b-dropdown-item>
+                    </b-dropdown>
+                  </template>
                 </div>
               </div>
             </template>
             <template #cell(label)="r">
-              <div :id="`sb-p-${r.item.name}`">{{r.item.label}}</div>
+              <template>
+                <div :id="`sb-p-${r.item.name}`">{{r.item.label}}</div>
+              </template>
             </template>
           </b-table>
         </b-container>
@@ -325,6 +338,19 @@ export default {
           label: "項目",
         },
       ],
+
+      sortModes: [
+        {
+          label: "スコア"
+        },
+        {
+          label: "実装日"
+        },
+        {
+          label: "エンゲージ実装日"
+        },
+      ],
+      sortMode: 0,
     };
   },
 
@@ -335,17 +361,23 @@ export default {
       this.removeEffectsOfSameType(s);
     }
 
+    this.sortModes[0].compare = (a, b) => this.compare(a.score, b.score); // スコア
+    this.sortModes[1].compare = (a, b) => b.main.character.date.localeCompare(a.main.character.date); // 実装日
+    this.sortModes[2].compare = (a, b) => this.compareEngageDate(a.main.character, b.main.character); // エンゲージ実装日
+
     const makeOptions = function (params) {
       let r = {};
       for (const p of params) {
         const v = p.value;
-        p.type = typeof v;
+        if (!p.type)
+          p.type = typeof v;
         p.reset = function () { this.value = v; };
         r[p.name] = p;
       }
       return r;
     };
     this.options = makeOptions([
+      { name: "sortMode", label: "ソート", value: 0, type: "sortMode" },
       { name: "maxPickup", label: "人まで表示", value: 20, min: 1, max: 200 },
       { name: "maxActiveCount", label: "アクティブ数制限 (再行動ありを除く)", value: 2, min: 0, max: 3 },
       { name: "allowTalent", label: "タレントを含める", value: true },
@@ -354,7 +386,6 @@ export default {
       { name: "allowEngageSkills", label: "エンゲージスキルを含める", value: true },
       { name: "allowOnBattle", label: "戦闘時発動効果を含める", value: true },
       { name: "allowProbability", label: "確率発動効果を含める", value: true },
-      { name: "allowNonReaction", label: "再行動なしバフスキルを含める", value: true },
     ]);
 
     const makeParams = function (effectType, types) {
@@ -451,8 +482,7 @@ export default {
           const cond = effect.condition;
           const probability = cond?.probability;
           if ((!opt.allowOnBattle && effect.ephemeral) ||
-            (!opt.allowProbability && probability) ||
-            (!opt.allowNonReaction && skill.isActive && !skill.multiAction && !skill.damageRate))
+            (!opt.allowProbability && probability))
             return false;
           return true;
         };
@@ -538,7 +568,8 @@ export default {
         scoreTableChr.push(score);
       }
 
-      return scoreTableChr.filter(a => a.score > 0).sort((a, b) => b.score - a.score).slice(0, opt.maxPickup);
+      const compare = this.sortModes[opt.sortMode].compare;
+      return scoreTableChr.filter(a => a.score > 0).sort(compare).slice(0, opt.maxPickup);
     },
 
     beginSearch() {

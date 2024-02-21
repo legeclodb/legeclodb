@@ -524,13 +524,17 @@ export default {
     this.options = makeOptions([
       { name: "maxPickup", label: "人を選出", value: 5, min: 1, max: 10 },
       { name: "maxActiveCount", label: "アクティブ数制限 (再行動ありを除く)", value: 2, min: 0, max: 3 },
+      { name: "allowTalent", label: "タレントを含める", value: true },
+      { name: "allowPassive", label: "パッシブスキルを含める", value: true },
+      { name: "allowActive", label: "アクティブスキルを含める", value: true },
+      { name: "allowItem", label: "装備の効果を含める", value: true },
       { name: "allowEngageSkills", label: "エンゲージスキルを含める", value: true },
+      { name: "allowSupportActive", label: "サポートのアクティブを含める", value: true },
+      { name: "allowSupportPassive", label: "サポートのパッシブを含める", value: true },
       { name: "allowOnBattle", label: "戦闘時発動効果を含める", value: true },
       { name: "allowProbability", label: "確率発動効果を含める", value: true },
       { name: "allowSingleUnitBuff", label: "単体バフを含める", value: false },
       { name: "allowSymbolSkill", label: "シンボルスキルを含める", value: false },
-      { name: "allowSupportActive", label: "サポートのアクティブを含める", value: true },
-      { name: "prioritizeReaction", label: "再行動付きを優先する", value: true },
     ]);
 
     const effectTypeTable = this.effectTypeTable;
@@ -699,10 +703,16 @@ export default {
         }
       };
       const skillCondition = function (skill) {
-        if (!opt.allowSymbolSkill && skill.isSymbolSkill)
+        if ((!opt.allowTalent && skill.isTalent) ||
+          (!opt.allowPassive && skill.isPassive && skill.isMainSkill) ||
+          (!opt.allowActive && skill.isActive && skill.isMainSkill) ||
+          (!opt.allowItem && skill.isItem) ||
+          (!opt.allowSymbolSkill && skill.isSymbolSkill) ||
+          (!opt.allowSupportActive && skill.isActive && skill.isSupportSkill) ||
+          (!opt.allowSupportPassive && skill.isPassive && skill.isSupportSkill)
+        ) {
           return false;
-        if (!opt.allowSupportActive && skill.isActive && skill.isSupportSkill)
-          return false;
+        }
         return true;
       };
 
@@ -887,11 +897,6 @@ export default {
           }
 
           let scoreBoost = 1;
-          if (skill.isActive && skill.multiAction && opt.prioritizeReaction) {
-              // 再行動つきアクティブは優先的に選ぶ
-              scoreBoost += 0.25;
-          }
- 
           for (const effect of this.enumerateEffects(skill)) {
             const ev = ctx.getEffectValue(effect);
             if (!ev)
@@ -943,12 +948,9 @@ export default {
           return null;
         }.bind(this);
 
-        const pickSkill = function (ctx, skills, ignoreActive) {
+        const pickSkill = function (ctx, skills) {
           let scoreList = [];
           for (const skill of skills) {
-            if (ignoreActive && skill.isActive && !skill.multiAction)
-              continue;
-
             const r = getSkillScore(ctx, skill);
             if (r.score > 0) {
               if (ctx.isPrioritized(skill, chr))
@@ -999,11 +1001,15 @@ export default {
         }
         if (chr.skills) {
           let tmpSkills = [...chr.skills];
-          let activeCount = false;
+          let activeCount = 0;
           for (let i = 0; i < 3; ++i) {
-            let r = pickSkill(cctx, tmpSkills, activeCount >= opt.maxActiveCount);
-            if (!r)
+            if (activeCount >= opt.maxActiveCount) {
               break;
+            }
+            let r = pickSkill(cctx, tmpSkills);
+            if (!r) {
+              break;
+            }
 
             tmpSkills.splice(tmpSkills.indexOf(r.skill), 1);
             skillsScore.push(r);
