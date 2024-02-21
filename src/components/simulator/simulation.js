@@ -487,6 +487,8 @@ function makeSimSkill(skill, ownerChr) {
 }
 
 class SimUnit {
+
+  //#region fields
   base = null; // BaseUnit
   isDormant = false; // 配置前 (出現ターン前) のユニットは true
   coord = [0, 0];
@@ -504,13 +506,27 @@ class SimUnit {
     status: [0, 0, 0, 0, 0, 0],
     hp: 0,
   };
+  //#endregion fields
 
+
+  //#region props
   get fid() { return this.base.fid; }
   get phase() { return this.base.phase; }
   get isActive() { return !this.isDormant && this.main.hp > 0; }
   get isPlayer() { return this.base.isPlayer; }
   get isEnemy() { return this.base.isEnemy; }
+  get hpRate() { return 0; }
+  get hpRateMain() { return 0; }
+  get hpRateSupport() { return 0; }
+  get activeBuffCount() { return 0; }
+  get activeDebuffCount() { return 0; }
+  get actions() {
+    return [...(this.base.main?.skills ?? []), ...(this.base.support?.skills ?? [])].filter(a => a.isActive);
+  }
+  //#endregion props
 
+
+  //#region methods
   constructor(unit) {
     unit.sim = this;
     this.base = unit;
@@ -585,21 +601,11 @@ class SimUnit {
     SimUnit.copyProps(this.support, r.support);
   }
 
-  get hpRate() { return 0; }
-  get hpRateMain() { return 0; }
-  get hpRateSupport() { return 0; }
-  get activeBuffCount() { return 0; }
-  get activeDebuffCount() { return 0; }
-
   getNearAllyCount(args) {
     return 0;
   }
   getNearEnemyCount(args) {
     return 0;
-  }
-
-  get actions() {
-    return [...(this.base.main?.skills ?? []), ...(this.base.support?.skills ?? [])].filter(a => a.isActive);
   }
 
   applySkill(skill, self = false) {
@@ -617,6 +623,8 @@ class SimUnit {
   evaluateEffects(battleCtx) {
 
   }
+  //#endregion methods
+
 
   //#region callbacks
   onSimulationBegin () {
@@ -672,6 +680,7 @@ class SimUnit {
   }
   //#endregion callbacks
 
+
   //#region impl
   static copyProps(dst, src) {
     if (!src)
@@ -720,8 +729,9 @@ export class ActionContext {
   }
 }
 
-export class SimContext
-{
+export class SimContext {
+
+  //#region fields
   static instance = null;
   battleId = "";
 
@@ -736,6 +746,8 @@ export class SimContext
   attacker = null;
   defender = null;
   results = []; // CombatResult
+  //#endregion fields
+
 
   //#region props
   get activeUnits() { return this.units.filter(u => !u.isDormant); }
@@ -745,6 +757,8 @@ export class SimContext
   get phaseId() { return `${this.turn}${this.isPlayerTurn ? 'P' : 'E'}`; }
   //#endregion props
 
+
+  //#region methods
   constructor(xd, yd, baseUnits) {
     SimContext.instance = this;
     this.divX = xd;
@@ -854,8 +868,10 @@ export class SimContext
       }
     }
   }
+  //#endregion methods
 
 
+  //#region impl
   findUnitByCoord(coord) {
     for (const u of this.activeUnits) {
       if (u.coord[0] == coord[0] && u.coord[1] == coord[1])
@@ -893,6 +909,7 @@ export class SimContext
       }
     }
   }
+  //#endregion impl
 }
 
 
@@ -1077,4 +1094,21 @@ export function $sim() {
 }
 export function $findObjectByUid(uid) {
   return $vue().findObjectByUid(uid);
+}
+
+export function download(filename, data) {
+  if (typeof (data) == 'string') {
+    data = new Blob([data]);
+  }
+  else if (typeof (data) == 'object') {
+    data = new Blob([JSON.stringify(data, null, 2)]);
+  }
+
+  let u = window.URL.createObjectURL(data);
+  let a = document.createElement('a');
+  a.href = u;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  window.URL.revokeObjectURL(u);
 }
