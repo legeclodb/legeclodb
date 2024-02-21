@@ -662,14 +662,22 @@
         "value": [ 10, 12, 14, 17, 20 ],
         "duration": 2,
         "target": "スキル対象",
-        "timing": "スキル後"
+        "timing": "行動後",
+        "condition": {
+          "onActiveSkill": true,
+          "onTargetAlly": true
+        }
       },
       {
         "type": "ディフェンス",
         "value": [ 15, 17, 20, 25, 30 ],
         "duration": 2,
         "target": "スキル対象",
-        "timing": "スキル後"
+        "timing": "行動後",
+        "condition": {
+          "onActiveSkill": true,
+          "onTargetAlly": true
+        }
       }
     ]
   },
@@ -963,7 +971,11 @@
         "variant": "弱",
         "amount": 1,
         "target": "スキル対象",
-        "timing": "スキル後"
+        "timing": "行動後",
+        "condition": {
+          "onActiveSkill": true,
+          "onTargetAlly": true
+        }
       }
     ],
     "note": "ランダムバフ内訳: アタック+10%(2ターン)、ディフェンス+10%(2ターン)、マジック+10%(2ターン)、レジスト+10%(2ターン)、与ダメージ+10%(2ターン)、ダメージ耐性+10%(2ターン)、移動+1(2ターン)"
@@ -2137,7 +2149,7 @@
         "value": 10,
         "duration": 1,
         "target": "全体",
-        "timing": "ターン終了時",
+        "timing": "自ターン終了時",
         "condition": {
           "token": [ ">=", 2 ]
         }
@@ -4170,7 +4182,10 @@
         "type": "マジック",
         "rate": [ 1.0, 1.5, 2.0, 2.5 ],
         "target": "味方(低HP)",
-        "timing": "スキル後"
+        "timing": "行動後",
+        "condition": {
+          "onActiveSkill": true
+        }
       }
     ],
     "tags": [ "バフ:リジェネ" ]
@@ -4329,7 +4344,7 @@
         "value": [ 10, 12, 17, 25 ],
         "duration": 1,
         "target": "自身",
-        "timing": "スキル前",
+        "timing": "行動前",
         "condition": {
           "onAreaSkill": true
         }
@@ -5103,7 +5118,10 @@
         "value": [ 10, 12, 15, 20 ],
         "duration": 1,
         "target": "自身",
-        "timing": "スキル前"
+        "timing": "行動前",
+        "condition": {
+          "onActiveSkill": true
+        }
       }
     ],
     "heal": [
@@ -5578,7 +5596,7 @@
         "value": 1,
         "target": "自身",
         "targetSkill": "全スキル",
-        "timing": "ターン開始時",
+        "timing": "自ターン開始時",
         "condition": {
           "hp": [ ">=", 100 ]
         }
@@ -5589,7 +5607,10 @@
         "type": "マジック",
         "rate": 3.0,
         "target": "全体",
-        "timing": "スキル後"
+        "timing": "行動後",
+        "condition": {
+          "onActiveSkill": true
+        }
       }
     ],
     "tags": [ "デバフ解除" ]
@@ -6195,7 +6216,10 @@
         "type": "HP割合",
         "rate": [ 0.2, 0.3, 0.4, 0.5 ],
         "target": "味方(低HP)",
-        "timing": "スキル後"
+        "timing": "行動後",
+        "condition": {
+          "onActiveSkill": true
+        }
       }
     ],
     "tags": [ "範囲+", "デバフ解除" ]
@@ -6226,7 +6250,7 @@
         "value": [ 6, 7, 8, 10 ],
         "duration": 1,
         "area": 3,
-        "timing": "ターン開始時"
+        "timing": "自ターン開始時"
       },
       {
         "type": "アタック",
@@ -6573,7 +6597,7 @@
         "type": "HP割合",
         "rate": 0.2,
         "target": "味方(低HP)",
-        "timing": "ターン開始時"
+        "timing": "自ターン開始時"
       }
     ]
   },
@@ -6605,15 +6629,19 @@
         "value": [ 18, 22, 28, 35 ],
         "duration": 2,
         "target": "自身",
-        "timing": "スキル前"
+        "timing": "行動前",
+        "condition": {
+          "onActiveSkill": true
+        }
       },
       {
         "type": "ダメージ耐性",
         "value": [ 18, 22, 26, 30 ],
         "duration": 4,
         "target": "自身",
-        "timing": "スキル後",
+        "timing": "行動後",
         "condition": {
+          "onAreaSkill": true,
           "onDamage": true
         }
       },
@@ -6622,8 +6650,9 @@
         "value": -2,
         "duration": 4,
         "target": "自身",
-        "timing": "スキル後",
+        "timing": "行動後",
         "condition": {
+          "onAreaSkill": true,
           "onDamage": true
         }
       },
@@ -6671,7 +6700,7 @@
         "ephemeral": true,
         "duration": 2,
         "area": [ 3, "周囲", "自身を除く" ],
-        "timing": "ターン開始時"
+        "timing": "自ターン開始時"
       },
       {
         "type": "ダメージ耐性",
@@ -6679,7 +6708,7 @@
         "ephemeral": true,
         "duration": 2,
         "area": [ 3, "周囲", "自身を除く" ],
-        "timing": "ターン開始時"
+        "timing": "自ターン開始時"
       },
       {
         "type": "与ダメージ(魔法)",
@@ -6920,7 +6949,7 @@
         "value": [ 6, 7, 8, 10 ],
         "duration": 2,
         "target": "自身",
-        "timing": "ターン開始時",
+        "timing": "自ターン開始時",
         "condition": {
           "nearAllyCount": {
             "area": [ 1, "周囲" ],
@@ -6933,7 +6962,7 @@
         "value": [ 2, 2, 3, 3 ],
         "duration": 2,
         "target": "自身",
-        "timing": "ターン開始時",
+        "timing": "自ターン開始時",
         "condition": {
           "nearAllyCount": {
             "area": [ 1, "周囲" ],
@@ -7726,7 +7755,7 @@
         "type": "クリティカル率",
         "value": [ 35, 38, 43, 50 ],
         "target": "自身",
-        "timing": "ターン開始時",
+        "timing": "自ターン開始時",
         "condition": {
           "hp": [ ">=", 100 ]
         }
@@ -7807,7 +7836,7 @@
         "value": 1,
         "target": "自身",
         "targetSkill": "全スキル",
-        "timing": "ターン開始時",
+        "timing": "自ターン開始時",
         "condition": {
           "hp": [ ">=", 100 ]
         }
@@ -8321,7 +8350,7 @@
         "target": "範囲",
         "area": [ 2, "周囲" ],
         "targetSkill": "全スキル",
-        "timing": "ターン開始時",
+        "timing": "自ターン開始時",
         "condition": {
           "token": [ ">=", 2 ]
         }
@@ -8351,7 +8380,10 @@
         "duration": 3,
         "maxStack": 3,
         "target": "自身",
-        "timing": "スキル後"
+        "timing": "行動後",
+        "condition": {
+          "onActiveSkill": true
+        }
       },
       {
         "type": "クリティカル率",
@@ -8378,7 +8410,7 @@
         "rate": [ 0.08, 0.1, 0.12, 0.15 ],
         "target": "範囲",
         "area": [ 3, "周囲" ],
-        "timing": "ターン開始時"
+        "timing": "自ターン開始時"
       }
     ]
   },
@@ -8762,7 +8794,7 @@
         "type": "マジック",
         "rate": [ 2.0, 2.0, 4.0, 5.0 ],
         "target": "味方(低HP)",
-        "timing": "ターン開始時"
+        "timing": "自ターン開始時"
       }
     ],
     "tags": [ "移動+" ]
@@ -9365,7 +9397,7 @@
         "value": 2,
         "duration": 1,
         "target": "自身",
-        "timing": "ターン開始時",
+        "timing": "自ターン開始時",
         "condition": {
           "hp": [ ">=", 100 ]
         }
@@ -9691,7 +9723,7 @@
         "type": "移動",
         "value": 1,
         "target": "自身",
-        "timing": "ターン開始時",
+        "timing": "自ターン開始時",
         "condition": {
           "nearAllyCount": {
             "area": [ 3, "周囲" ],
@@ -9703,7 +9735,7 @@
         "type": "範囲",
         "value": 1,
         "target": "自身",
-        "timing": "ターン開始時",
+        "timing": "自ターン開始時",
         "condition": {
           "nearAllyCount": {
             "area": [ 3, "周囲" ],
@@ -9835,7 +9867,7 @@
         "value": 1,
         "target": "自身",
         "targetSkill": "全スキル",
-        "timing": "ターン開始時",
+        "timing": "自ターン開始時",
         "condition": {
           "hp": [ ">=", 50 ]
         }

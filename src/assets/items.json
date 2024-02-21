@@ -1555,11 +1555,7 @@
       {
         "type": "与ダメージ(範囲スキル)",
         "value": 15,
-        "target": "自身(メイン)",
-        "timing": "スキル前",
-        "condition": {
-          "onAreaSkill": true
-        }
+        "target": "自身(メイン)"
       }
     ]
   },
@@ -1967,10 +1963,7 @@
         "base": "レジスト",
         "rate": 2.5,
         "area": 2,
-        "timing": "攻撃後",
-        "condition": {
-          "onKill": true
-        }
+        "timing": "敵撃破時"
       }
     ]
   },
@@ -2894,10 +2887,7 @@
         "base": "ディフェンス",
         "rate": 2.5,
         "area": 2,
-        "timing": "攻撃後",
-        "condition": {
-          "onKill": true
-        }
+        "timing": "敵撃破時"
       }
     ]
   },
@@ -4900,7 +4890,10 @@
         "type": "HP割合",
         "rate": 0.15,
         "target": "自身",
-        "timing": "スキル後"
+        "timing": "行動後",
+        "condition": {
+          "onActiveSkill": true
+        }
       }
     ],
     "tags": [ "分類:マスター装備" ]
@@ -6212,8 +6205,9 @@
         "duration": 2,
         "target": "範囲",
         "area": [ 2, "周囲" ],
-        "timing": "スキル後",
+        "timing": "行動後",
         "condition": {
+          "onActiveSkill": true,
           "onDamage": true
         }
       }
@@ -7250,8 +7244,9 @@
         "value": 10,
         "duration": 1,
         "area": 2,
-        "timing": "スキル後",
+        "timing": "行動後",
         "condition": {
+          "onActiveSkill": true,
           "onDamage": true
         }
       },
@@ -7260,8 +7255,9 @@
         "value": 10,
         "duration": 1,
         "area": 2,
-        "timing": "スキル後",
+        "timing": "行動後",
         "condition": {
+          "onActiveSkill": true,
           "onDamage": true
         }
       }
@@ -7369,8 +7365,9 @@
         "type": "レジスト",
         "value": 20,
         "duration": 1,
-        "timing": "スキル後",
+        "timing": "行動後",
         "condition": {
+          "onActiveSkill": true,
           "onDamage": true
         }
       },
@@ -7378,8 +7375,9 @@
         "type": "ダメージ耐性",
         "value": 10,
         "duration": 1,
-        "timing": "スキル後",
+        "timing": "行動後",
         "condition": {
+          "onActiveSkill": true,
           "onDamage": true
         }
       }
@@ -8722,7 +8720,7 @@
         "maxStack": 3,
         "duration": 3,
         "target": "自身",
-        "timing": "ターン開始時"
+        "timing": "自ターン開始時"
       }
     ],
     "tags": [ "分類:遺跡装備" ]
@@ -8909,7 +8907,7 @@
         "value": 2,
         "duration": 1,
         "target": "自身",
-        "timing": "ターン開始時",
+        "timing": "自ターン開始時",
         "condition": {
           "hp": [ ">=", 100 ]
         }
@@ -8953,7 +8951,10 @@
         "value": 20,
         "duration": 2,
         "target": "自身",
-        "timing": "スキル後"
+        "timing": "行動後",
+        "condition": {
+          "onActiveSkill": true
+        }
       },
       {
         "type": "クリティカルダメージ倍率",

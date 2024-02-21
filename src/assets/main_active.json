@@ -1737,7 +1737,7 @@
         "type": "マジック",
         "rate": 2.0,
         "target": "全体",
-        "timing": "ターン開始時"
+        "timing": "戦闘後"
       }
     ],
     "tags": [ "単体攻撃", "サポート同時攻撃" ]
@@ -7737,7 +7737,10 @@
         "ephemeral": true,
         "duration": 4,
         "slot": "加護",
-        "timing": "スキル前"
+        "timing": "行動前",
+        "condition": {
+          "onActiveSkill": true
+        }
       },
       {
         "type": "クリティカルダメージ倍率",
@@ -7745,7 +7748,10 @@
         "ephemeral": true,
         "duration": 4,
         "slot": "加護",
-        "timing": "スキル前"
+        "timing": "行動前",
+        "condition": {
+          "onActiveSkill": true
+        }
       }
     ]
   },
@@ -8976,7 +8982,7 @@
         "type": "マジック",
         "rate": 4.0,
         "target": "味方(低HP)",
-        "timing": "スキル後"
+        "timing": "行動後"
       }
     ],
     "tags": [ "単体攻撃" ]

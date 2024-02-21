@@ -300,15 +300,24 @@ function makeSimEffect(effect) {
   self.evaluateDebuff = function (target, caster, battleCtx) {
   }
 
-  self.onTurnBegin = function () {
-  }
+  //#region callbacks
   self.onSimulationBegin = function () {
   }
   self.onSimulationEnd = function () {
   }
-  self.onAttackBegin = function () {
+
+  self.onOwnTurnBegin = function () {
   }
-  self.onAttackEnd = function () {
+  self.onOwnTurnEnd = function () {
+    self.isStopped = false;
+  }
+
+  self.onOpponentTurnBegin = function () {
+  }
+  self.onOpponentTurnEnd = function () {
+  }
+
+  self.onActionBegin = function () {
   }
   self.onActionEnd = function () {
     if (!self.isStopped && self.time > 0) {
@@ -317,9 +326,12 @@ function makeSimEffect(effect) {
       }
     }
   }
-  self.onTurnEnd = function () {
-    self.isStopped = false;
+
+  self.onBattleBegin = function () {
   }
+  self.onBattleEnd = function () {
+  }
+  //#endregion callbacks
 
   self._getValue = function (battleCtx, baseStat) {
     let r = 0;
@@ -420,11 +432,8 @@ function makeSimSkill(skill, ownerChr) {
       self.coolTime = self.ct ?? Infinity;
     }
   }
-  self.onTurnBegin = function () {
-    for (let e of self.effects) {
-      e.onTurnBegin();
-    }
-  }
+
+  //#region callbacks
   self.onSimulationBegin = function () {
     for (let e of self.effects) {
       e.onSimulationBegin();
@@ -433,6 +442,26 @@ function makeSimSkill(skill, ownerChr) {
   self.onSimulationEnd = function () {
     for (let e of self.effects) {
       e.onSimulationEnd();
+    }
+  }
+  self.onOwnTurnBegin = function () {
+    for (let e of self.effects) {
+      e.onOwnTurnBegin();
+    }
+  }
+  self.onOwnTurnEnd = function () {
+    for (let e of self.effects) {
+      e.onOwnTurnEnd();
+    }
+  }
+  self.onOpponentTurnBegin = function () {
+    for (let e of self.effects) {
+      e.onOpponentTurnBegin();
+    }
+  }
+  self.onOpponentTurnEnd = function () {
+    for (let e of self.effects) {
+      e.onOpponentTurnEnd();
     }
   }
   self.onAttackBegin = function () {
@@ -453,11 +482,7 @@ function makeSimSkill(skill, ownerChr) {
       e.onActionEnd();
     }
   }
-  self.onTurnEnd = function () {
-    for (let e of self.effects) {
-      e.onTurnEnd();
-    }
-  }
+  //#endregion callbacks
   return self;
 }
 
@@ -560,12 +585,6 @@ class SimUnit {
     SimUnit.copyProps(this.support, r.support);
   }
 
-  onSimulationBegin() {
-  }
-  onSimulationEnd() {
-    this.base.sim = null;
-  }
-
   get hpRate() { return 0; }
   get hpRateMain() { return 0; }
   get hpRateSupport() { return 0; }
@@ -599,17 +618,61 @@ class SimUnit {
 
   }
 
-  onTurnBegin() {
+  //#region callbacks
+  onSimulationBegin () {
   }
-  beforeAttack() {
+  onSimulationEnd() {
+    this.base.sim = null;
   }
-  afterAttack() {
+
+  // 自ターン開始前/後
+  onOwnTurnBegin() {
+  }
+  onOwnTurnEnd() {
+  }
+
+  // 相手ターン開始前/後
+  onOpponentTurnBegin() {
+  }
+  onOpponentTurnEnd() {
+  }
+
+  // 移動後、行動確定時、戦闘開始前もしくは非戦闘を含むスキル使用前に呼ばれる
+  // 攻撃の場合は直後に onAttackBegin() が、
+  // 戦闘に入る場合は直後に onBattleBegin() が呼ばれる
+  onActionBegin() {
   }
   onActionEnd() {
   }
-  onTurnEnd() {
+
+  // 移動後、行動確定時、戦闘非戦闘を問わず攻撃前に呼ばれる
+  // 戦闘に入る場合は直後に onBattleBegin() が呼ばれる
+  onAttackBegin() {
+  }
+  onAttackEnd() {
   }
 
+  // 戦闘前 (非範囲攻撃、ゲーム中戦闘画面に入るもの) に呼ばれる
+  // 攻撃される側も呼ばれる
+  onBattleBegin() {
+  }
+  onBattleEnd() {
+  }
+
+  // 手段を問わず敵撃破時に呼ばれる
+  onKill() {
+  }
+
+  // 手段を問わず撃破されたとき呼ばれる
+  onDeath() {
+  }
+
+  // ラストスタンドなどで復活した時呼ばれる
+  onRevive() {
+  }
+  //#endregion callbacks
+
+  //#region impl
   static copyProps(dst, src) {
     if (!src)
       return;
@@ -625,6 +688,36 @@ class SimUnit {
       }
     }
   }
+  //#endregion impl
+}
+
+export class ActionContext {
+  attacker = null;
+  defender = null;
+  skill = null;
+  move = 0;
+  range = 1;
+  dmgAttacker = {
+    main: 0,
+    support: 0,
+  };
+  dmgDefender = {
+    main: 0,
+    support: 0,
+  };
+
+  constructor(attacker, defender, skill) {
+    this.attacker = attacker;
+    this.defender = defender;
+    this.skill = skill;
+  }
+
+  serialize() {
+    let r = {};
+    return r;
+  }
+  deserialize(r) {
+  }
 }
 
 export class SimContext
@@ -638,11 +731,19 @@ export class SimContext
 
   units = [];
   turn = 1;
-  isPlayerTurn = true;
+  phase = Phase.Player;
 
   attacker = null;
   defender = null;
   results = []; // CombatResult
+
+  //#region props
+  get activeUnits() { return this.units.filter(u => !u.isDormant); }
+
+  get isPlayerTurn() { return this.phase == Phase.Player; }
+  get isEnemyTurn() { return this.phase == Phase.Enemy; }
+  get phaseId() { return `${this.turn}${this.isPlayerTurn ? 'P' : 'E'}`; }
+  //#endregion props
 
   constructor(xd, yd, baseUnits) {
     SimContext.instance = this;
@@ -650,22 +751,14 @@ export class SimContext
     this.divY = yd;
     this.units = baseUnits.map(a => new SimUnit(a));
   }
+
   findUnitByBase(baseUnit) {
     return this.units.find(a => a.base === baseUnit);
   }
 
-  get currentPhase() {
-    return `${this.turn}${this.isPlayerTurn ? 'P' : 'E'}`;
-  }
-  get activeUnits() { return this.units.filter(u => !u.isDormant); }
-
-  get isEnemyTurn() { return !this.isPlayerTurn; }
-  set isEnemyTurn(v) { this.isPlayerTurn = !v; }
-
   isOwnTurn(unit) {
     return unit && ((unit.isPlayer && this.isPlayerTurn) || (unit.isEnemy && this.isEnemyTurn));
   }
-
 
   fireSkill(unit, skill, targetUnit, targetCell) {
     // 待機の場合 skill は null
@@ -676,13 +769,13 @@ export class SimContext
 
   passTurn() {
     if (this.isPlayerTurn) {
-      this.isPlayerTurn = false;
+      this.phase = Phase.Enemy;
       this.onPlayerTurnEnd();
       this.onEnemyTurnBegin();
     }
     else if (this.turn < this.maxTurn) {
       ++this.turn;
-      this.isPlayerTurn = true;
+      this.phase = Phase.Player;
       this.onEnemyTurnEnd();
       this.onPlayerTurnBegin();
     }
@@ -707,35 +800,57 @@ export class SimContext
   onPlayerTurnBegin() {
     for (let u of this.activeUnits) {
       if (u.isPlayer) {
-        u.onTurnBegin();
+        u.onOwnTurnBegin();
+      }
+    }
+    for (let u of this.activeUnits) {
+      if (!u.isPlayer) {
+        u.onOpponentTurnBegin();
       }
     }
   }
   onPlayerTurnEnd() {
     for (let u of this.activeUnits) {
       if (u.isPlayer) {
-        u.onTurnEnd();
+        u.onOwnTurnEnd();
+      }
+    }
+    for (let u of this.activeUnits) {
+      if (!u.isPlayer) {
+        u.onOpponentTurnEnd();
       }
     }
   }
 
   onEnemyTurnBegin() {
-    const phase = this.currentPhase;
+    // 増援配置
+    const pid = this.phaseId;
     for (let u of this.units) {
-      if (u.isDormant && u.phase == phase) {
+      if (u.isDormant && u.phase == pid) {
         this.placeUnit(u, u.coord);
       }
     }
+
     for (let u of this.activeUnits) {
       if (u.isEnemy) {
-        u.onTurnBegin();
+        u.onOwnTurnBegin();
+      }
+    }
+    for (let u of this.activeUnits) {
+      if (!u.isEnemy) {
+        u.onOpponentTurnBegin();
       }
     }
   }
   onEnemyTurnEnd() {
     for (let u of this.activeUnits) {
       if (u.isEnemy) {
-        u.onTurnEnd();
+        u.onOwnTurnEnd();
+      }
+    }
+    for (let u of this.activeUnits) {
+      if (!u.isEnemy) {
+        u.onOpponentTurnEnd();
       }
     }
   }
@@ -777,23 +892,6 @@ export class SimContext
         u.support.hp = 0;
       }
     }
-  }
-}
-
-export class CombatResult
-{
-  attacker = {
-    unit: null,
-    damageMain: 0,
-    damageSupport: 0,
-  };
-  defender = {
-    unit: null,
-    damageMain: 0,
-    damageSupport: 0,
-  };
-
-  constructor() {
   }
 }
 
@@ -940,6 +1038,11 @@ export class PathFinder
       }
     }
   }
+}
+
+export const Phase = {
+  Player: 0,
+  Enemy: 1,
 }
 
 export const Direction = {

@@ -47,16 +47,16 @@
     "timingType": {
       "enum": [
         "永続",
-        "ターン開始時",
-        "戦闘前",
-        "戦闘後",
+        "自ターン開始時",
+        "自ターン終了時",
+        "敵ターン開始時",
+        "敵ターン終了時",
+        "行動前",
         "行動後",
-        "ターン終了時",
-
-        "スキル前",
-        "スキル後",
         "攻撃前",
         "攻撃後",
+        "戦闘前",
+        "戦闘後",
         "敵撃破時",
         "死亡時",
         "復活時"
@@ -247,6 +247,8 @@
         "onActiveSkill": { "type": "boolean" },
         "onSingleSkill": { "type": "boolean" },
         "onAreaSkill": { "type": "boolean" },
+        "onTargetAlly": { "type": "boolean" },
+        "onTargetEnemy": { "type": "boolean" },
         "onOwnTurn": { "type": "boolean" },
         "onEnemyTurn": { "type": "boolean" },
         "onSymbol": {

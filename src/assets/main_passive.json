@@ -3587,7 +3587,7 @@
       {
         "type": "マジック",
         "rate": 1.0,
-        "timing": "ターン開始時",
+        "timing": "自ターン開始時",
         "target": "範囲",
         "area": 3
       }
@@ -4009,14 +4009,20 @@
         "value": 10,
         "duration": 1,
         "area": [ 3, "周囲" ],
-        "timing": "スキル後"
+        "timing": "行動後",
+        "condition": {
+          "onActiveSkill": true
+        }
       },
       {
         "type": "ダメージ耐性",
         "value": 10,
         "duration": 1,
         "area": [ 3, "周囲" ],
-        "timing": "スキル後"
+        "timing": "行動後",
+        "condition": {
+          "onActiveSkill": true
+        }
       }
     ]
   },
@@ -4979,7 +4985,10 @@
         "value": 50,
         "duration": 2,
         "target": "自身",
-        "timing": "スキル後"
+        "timing": "行動後",
+        "condition": {
+          "onActiveSkill": true
+        }
       }
     ]
   },
@@ -5000,14 +5009,20 @@
         "value": 60,
         "duration": 2,
         "target": "自身",
-        "timing": "スキル後"
+        "timing": "行動後",
+        "condition": {
+          "onActiveSkill": true
+        }
       },
       {
         "type": "移動",
         "value": 1,
         "duration": 2,
         "target": "自身",
-        "timing": "スキル後"
+        "timing": "行動後",
+        "condition": {
+          "onActiveSkill": true
+        }
       }
     ]
   },
@@ -5615,7 +5630,7 @@
         "value": 1,
         "duration": 1,
         "target": "自身",
-        "timing": "ターン開始時",
+        "timing": "自ターン開始時",
         "condition": {
           "nearAllyCount": {
             "area": [ 1, "周囲" ],
@@ -5648,7 +5663,7 @@
         "value": 1,
         "duration": 1,
         "target": "自身",
-        "timing": "ターン開始時",
+        "timing": "自ターン開始時",
         "condition": {
           "nearAllyCount": {
             "area": [ 1, "周囲" ],
@@ -5723,7 +5738,7 @@
         "type": "移動",
         "value": 2,
         "target": "自身",
-        "timing": "ターン開始時",
+        "timing": "自ターン開始時",
         "condition": {
           "hp": [ ">=", 100 ]
         }
@@ -5734,7 +5749,7 @@
         "type": "全デバフ(アクティブ由来)",
         "duration": 1,
         "target": "自身",
-        "timing": "ターン開始時",
+        "timing": "自ターン開始時",
         "condition": {
           "hp": [ ">=", 100 ]
         }
@@ -5769,7 +5784,7 @@
         "type": "与ダメージ(物理)",
         "value": 5,
         "target": "自身",
-        "timing": "ターン開始時",
+        "timing": "自ターン開始時",
         "condition": {
           "hp": [ ">=", 100 ]
         }
@@ -5778,7 +5793,7 @@
         "type": "移動",
         "value": 2,
         "target": "自身",
-        "timing": "ターン開始時",
+        "timing": "自ターン開始時",
         "condition": {
           "hp": [ ">=", 100 ]
         }
@@ -5789,7 +5804,7 @@
         "type": "全デバフ(アクティブ由来)",
         "duration": 1,
         "target": "自身",
-        "timing": "ターン開始時",
+        "timing": "自ターン開始時",
         "condition": {
           "hp": [ ">=", 100 ]
         }
