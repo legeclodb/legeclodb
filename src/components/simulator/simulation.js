@@ -1096,6 +1096,18 @@ export function $findObjectByUid(uid) {
   return $vue().findObjectByUid(uid);
 }
 
+// fileType: ".json" など
+export function openFileDialog(fileType, callback) {
+  let input = window.document.createElement("input");
+  input.type = "file";
+  input.accept = fileType;
+  input.onchange = function () {
+    callback(input.files[0]);
+    input.remove();
+    return false;
+  };
+  input.click();
+}
 export function download(filename, data) {
   if (typeof (data) == 'string') {
     data = new Blob([data]);

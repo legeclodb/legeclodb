@@ -184,19 +184,24 @@
       <div class="unit-panel">
         <div class="flex">
           <b-form-input v-model="slotName" placeholder="編成名" style="width: 12em"></b-form-input>
-          <b-dropdown size="sm" text="編成をセーブ" style="width: 10em; margin-left: 0.5em;">
+          <b-dropdown size="sm" text="編成をセーブ" style="min-width: 10em; margin-left: 0.5em;">
             <b-dropdown-item v-for="(name, i) in slotNames" :key=i @click="saveLoadout(i)">スロット{{i}}: {{name}}</b-dropdown-item>
           </b-dropdown>
-          <b-dropdown size="sm" text="編成をロード" style="width: 10em; margin-left: 0.5em;">
+          <b-dropdown size="sm" text="編成をロード" style="min-width: 10em; margin-left: 0.5em; ">
             <b-dropdown-item v-for="(name, i) in slotNames" :key=i @click="loadLoadout(i)">スロット{{i}}: {{name}}</b-dropdown-item>
             <b-dropdown-item @click="loadLoadout(99)">バックアップ</b-dropdown-item>
           </b-dropdown>
-          <b-button size="sm" @click="exportLoadout()" style="width: 12em; margin-left: 1em;">
+
+          <b-button size="sm" @click="exportLoadout()" style="min-width: 12em; margin-left: 2.0em; ">
             編成をエクスポート
           </b-button>
-          <b-button size="sm" @click="clearLoadout()" style="width: 10em; margin-left: 1em;">
+          <b-button @click="importLoadoutFile()" style="min-width: 12em; margin-left: 0.5em; ">
+            編成をインポート
+          </b-button>
+          <b-button size="sm" @click="clearLoadout()" style="min-width: 10em; margin-left: 2em; ">
             編成をクリア
           </b-button>
+
           <b-button size="sm" style="width: 14em; margin-left: 4em;" @click="beginSimulation()">
             シミュレーション開始
           </b-button>
@@ -216,16 +221,15 @@
               </h2>
             </template>
 
-            <div @dragover.prevent @drop.prevent="importLoadout($event)" style="min-width: 1520px; min-height: 500px;">
-              <div v-if="!simulation" style="padding: 10px;">
-                <b-button :id="`btn-edit-unit${ui}`" @click="unit.showEditor=!unit.showEditor" style="width: 10em;">編集</b-button>
+            <div @dragover.prevent @drop.prevent="onDropLoadout($event)" style="min-width: 1520px; min-height: 300px;">
+              <div v-if="!simulation" style="padding: 10px; display: flex">
+                <b-button :id="`btn-edit-unit${ui}`" @click="unit.showEditor=!unit.showEditor" style="width: 12em;">編集</b-button>
                 <b-popover :target="`btn-edit-unit${ui}`" custom-class="status-simulator-popover" :show.sync="unit.showEditor" :delay="{show:0, hide:250}" no-fade>
                   <StatusSimulator embed :data="unit.editorData" @change="unit.edit($event)" />
                   <div class="flex">
                     <b-button size="sm" @click="unit.showEditor=false">閉じる</b-button>
                   </div>
                 </b-popover>
-                このエリアに .loadout.json ファイルをドロップすると編成をインポートします。
               </div>
 
               <div class="flex" style="align-items: flex-start;">
@@ -1197,41 +1201,6 @@ export default {
       }
     },
 
-    updateURL() {
-      let seri = new this.URLSerializer();
-      seri.b = this.battleId;
-      if (this.phase != "0")
-        seri.p = this.phase;
-      if (this.selectedUnit)
-        seri.u = this.selectedUnit.fid;
-
-      let url = seri.serialize();
-      if (url != this.prevURL) {
-        window.history.pushState(null, null, url);
-        this.prevURL = url;
-        return true;
-      }
-      return false;
-    },
-    decodeURL(initState = false) {
-      let data = new this.URLSerializer({
-        b: "",
-        p: "",
-        u: "",
-      });
-
-      if (data.deserialize(window.location.href) || initState) {
-        if (data.b)
-          this.selectBattle(data.b);
-        if (data.p)
-          this.selectPhase(data.p);
-        else if (data.b)
-          this.selectPhase("0");
-        if (data.u)
-          this.selectUnit(data.u);
-      }
-    },
-
 
     beginSimulation() {
       this.selectUnit(null);
@@ -1331,17 +1300,36 @@ export default {
     },
     exportLoadout() {
       const data = this.serializeLoadout();
-      const name = data.name ? data.name : "編成";
-      ldb.download(`${name}.loadout.json`, data);
+      const name = data.name ? data.name : "編成名";
+      ldb.download(`${name}.loadout`, data);
     },
-    importLoadout(event) {
-      if (!event || !event.dataTransfer || event.dataTransfer.files.length == 0) {
-        return;
+    importLoadoutFile() {
+      let self = this;
+      ldb.openFileDialog(".loadout", function (file) {
+        file.text().then(function (text) {
+          self.deserializeLoadout(JSON.parse(text));
+        });
+      });
+    },
+    importLoadoutUrl(url) {
+      // dropbox 対策
+      url = url.replace("www.dropbox.com", "dl.dropboxusercontent.com");
+
+      let self = this;
+      fetch(url).then(function (res) {
+        res.json().then(function (json) {
+          self.deserializeLoadout(json);
+        })
+      });
+    },
+    onDropLoadout(event) {
+      if (event?.dataTransfer?.files?.length) {
+        let self = this;
+        let file = event.dataTransfer.files[0];
+        file.text().then(function (text) {
+          self.deserializeLoadout(JSON.parse(text));
+        });
       }
-      let file = event.dataTransfer.files[0];
-      file.text().then(function (text) {
-        this.deserializeLoadout(JSON.parse(text));
-      }.bind(this));
     },
     clearLoadout() {
       for (let unit of this.playerUnits) {
@@ -1349,6 +1337,48 @@ export default {
       }
     },
 
+
+    updateURL() {
+      let seri = new this.URLSerializer();
+      seri.b = this.battleId;
+      if (this.phase != "0")
+        seri.p = this.phase;
+      if (this.selectedUnit)
+        seri.u = this.selectedUnit.fid;
+
+      let url = seri.serialize();
+      if (url != this.prevURL) {
+        window.history.pushState(null, null, url);
+        this.prevURL = url;
+        return true;
+      }
+      return false;
+    },
+    decodeURL(initState = false) {
+      let data = new this.URLSerializer({
+        b: "",
+        p: "",
+        u: "",
+      });
+
+      if (data.deserialize(window.location.href) || initState) {
+        if (data.b)
+          this.selectBattle(data.b);
+        if (data.p)
+          this.selectPhase(data.p);
+        else if (data.b)
+          this.selectPhase("0");
+        if (data.u)
+          this.selectUnit(data.u);
+
+        if (data.loadout) {
+          this.importLoadoutUrl(data.loadout);
+        }
+        if (data.battlelog) {
+          this.importBattleLogUrl(data.battlelog);
+        }
+      }
+    },
     dbgTest() {
     },
   },

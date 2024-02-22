@@ -6,5 +6,6 @@ module.exports = defineConfig({
   assetsDir: './',
   devServer: {
     historyApiFallback: true,
+    headers: { "Access-Control-Allow-Origin": "*" }
   },
 })
