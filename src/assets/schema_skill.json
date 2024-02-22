@@ -365,6 +365,19 @@
       }
     },
 
+    "areaDamage": {
+      "type": "object",
+      "required": [ "damageRate", "area" ],
+      "additionalProperties": false,
+      "properties": {
+        "damageRate": { "type": [ "number", "array" ] },
+        "target": { "$ref": "#/$defs/targetType" },
+        "area": { "$ref": "#/$defs/areaType" },
+        "timing": { "$ref": "#/$defs/timingType" },
+        "condition": { "$ref": "#/$defs/condition" }
+      }
+    },
+
     "heal": {
       "type": "object",
       "required": [ "type", "rate" ],
@@ -569,6 +582,10 @@
       "fixedDamage": {
         "type": "array",
         "items": { "$ref": "#/$defs/fixedDamage" }
+      },
+      "areaDamage": {
+        "type": "array",
+        "items": { "$ref": "#/$defs/areaDamage" }
       },
       "heal": {
         "type": "array",

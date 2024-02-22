@@ -936,6 +936,15 @@ export default {
         addTag(`召喚`);
       }
 
+      if (skill.fixedDamage) {
+        if (skill.fixedDamage.find(a => !(typeof (target) == "string" && a.target?.startsWith("自身")))) {
+          addTag(`固定ダメージ`);
+        }
+      }
+      if (skill.areaDamage) {
+        addTag(`範囲攻撃(自分中心)`);
+      }
+
       if (skill.heal) {
         for (const heal of skill.heal) {
           if (heal.target == "全体") {
@@ -958,12 +967,6 @@ export default {
 
       if (skill.revive) {
         addTag(`復活`);
-      }
-
-      if (skill.fixedDamage) {
-        if (skill.fixedDamage.find(a => !(typeof (target) == "string" && a.target?.startsWith("自身")))) {
-          addTag(`固定ダメージ`);
-        }
       }
 
       if (skill.buffCancel) {
