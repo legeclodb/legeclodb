@@ -698,7 +698,6 @@ export default {
       }
 
       deserialize(url) {
-        url = decodeURIComponent(url);
         let numHandled = 0;
         let q = url.match(/\?([^#]+)/);
         if (q) {
@@ -709,7 +708,7 @@ export default {
               if (typeof this[kvp[0]] === "number")
                 this[kvp[0]] = parseInt(kvp[1]);
               else
-                this[kvp[0]] = kvp[1];
+                this[kvp[0]] = decodeURIComponent(kvp[1]);
               ++numHandled;
             }
           }
