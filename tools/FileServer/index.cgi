@@ -1,12 +1,52 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import sys, os, io, cgi, json, datetime, hashlib, traceback
+
+# for python2.7
+import sys, os, io, stat, time, datetime, hashlib, cgi, json, traceback
 
 reload(sys)
 sys.setdefaultencoding("utf-8")
 
 ListJson = "./list.json"
 form = cgi.FieldStorage()
+
+
+class DirLock:
+    def __init__(self, lockDir):
+        self.lockDir = lockDir
+        self.result = False
+
+    def lock(self):
+        # 10秒以上前に作成されたロックファイルを削除する
+        # ※何らかの原因で残ったままになったロックファイル
+        try:
+            fileStat = os.stat(self.lockDir)
+            timeStamp = fileStat[stat.ST_MTIME]
+            if timeStamp < (time.time() - 10): os.rmdir(self.lockDir)
+        except:
+            pass
+
+        # ロックファイルを作成してみる
+        # ※5回やってダメなら失敗とする
+        self.result = False
+        for i in range(5):
+            try:
+                os.mkdir(self.lockDir)
+                self.result = True # ロックを自分で作ったという印
+                break
+            except OSError:
+                time.sleep(0.2)
+        return self.result
+
+    def unlock(self):
+        if self.result == True: # 自分で作ったロックファイルなら消す
+            os.rmdir(self.lockDir)
+        self.result = False
+
+    def __del__(self):
+        if self.result == True: # 自分で作ったロックファイルなら消す
+            os.rmdir(self.lockDir)
+        self.result = False
 
 
 def getList():
@@ -26,6 +66,9 @@ def putData(file):
         if e["hash"] == hash:
             return '{"succeeded": false, "error": "duplicated"}'
 
+    lock = DirLock("./data/__lock__");
+    lock.lock()
+
     data = json.loads(str)
     with open("./data/" + hash, 'w') as f:
         f.write(str)
@@ -35,15 +78,22 @@ def putData(file):
         "hash": hash,
     });
     json.dump(list, open(ListJson, 'w'), ensure_ascii=False)
+
+    lock.unlock()
     return '{"succeeded": true}'
 
 def delData(hash):
     list = json.load(open(ListJson))
     for i, e in enumerate(list):
         if e["hash"] == hash:
+            lock = DirLock("./data/__lock__");
+            lock.lock()
+
             del list[i]
             json.dump(list, open(ListJson, 'w'), ensure_ascii=False)
             os.remove("./data/" + hash)
+
+            lock.unlock()
             return '{"succeeded": true}'
     return '{"succeeded": false}'
 
