@@ -41,6 +41,8 @@ export default {
         "100",
         "全て",
       ],
+
+      lastClipboardValue: "",
     }
   },
 
@@ -677,6 +679,7 @@ export default {
     },
 
     copyToClipboard(value) {
+      this.lastClipboardValue = value;
       if (navigator.clipboard) {
         return navigator.clipboard.writeText(value);
       }

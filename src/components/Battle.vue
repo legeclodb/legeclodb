@@ -192,12 +192,47 @@
             <b-dropdown-item @click="loadLoadout(99)">バックアップ</b-dropdown-item>
           </b-dropdown>
 
-          <b-button size="sm" @click="exportLoadout()" style="min-width: 12em; margin-left: 2.0em; ">
-            編成をエクスポート
+          <b-button size="sm" id="btn-loadout-op" style="min-width: 10em; margin-left: 0.5em; ">
+            編成を共有
           </b-button>
-          <b-button @click="importLoadoutFile()" style="min-width: 12em; margin-left: 0.5em; ">
-            編成をインポート
-          </b-button>
+          <b-popover :target="`btn-loadout-op`" triggers="click" custom-class="loadout-popover" @show="fetchLoadoutList()" ref="loadout_popover">
+            <div class="flex" style="margin-bottom: 1.0em;">
+              <b-button size="sm" @click="exportLoadoutToServer()" style="min-width: 12em;">
+                現在の編成を公開
+              </b-button>
+              <b-button size="sm" @click="exportLoadoutAsFile()" style="min-width: 12em; margin-left: 1.0em;">
+                ファイルにエクスポート
+              </b-button>
+              <b-button size="sm" @click="importLoadoutFromFile()" style="min-width: 12em; margin-left: 1.0em;">
+                ファイルからインポート
+              </b-button>
+            </div>
+
+            <h5>公開されている編成</h5>
+            <b-table small outlined sticky-header :items="loadoutList" :fields="loadoutFields" style="min-width: 90%">
+              <template #cell(name)="row">
+                <span>{{row.item.name}}</span>
+              </template>
+              <template #cell(actions)="row">
+                <b-button size="sm" @click="downloadLoadoutFromServer(row.item)" style="margin: 3px">
+                  ロード
+                </b-button>
+
+                <b-button size="sm" :id="`loadout-${row.item.hash}`" @click="copyLoadoutUrl(row.item)" style="margin-left: 0.25em">URL コピー</b-button>
+                <b-popover :target="`loadout-${row.item.hash}`" triggers="click blur" custom-class="url-popover">
+                  コピーしました
+                </b-popover>
+
+                <b-button size="sm" @click="deleteLoadoutFromServer(row.item)" style="margin-left: 1em">
+                  削除(確認あり)
+                </b-button>
+              </template>
+            </b-table>
+            <div class="flex">
+              <b-button size="sm" @click="$refs.loadout_popover.$emit('close')">閉じる</b-button>
+            </div>
+          </b-popover>
+
           <b-button size="sm" @click="clearLoadout()" style="min-width: 10em; margin-left: 2em; ">
             編成をクリア
           </b-button>
@@ -387,6 +422,9 @@ import lookupjs from "./simulator/lookup.js";
 import StatusSimulator from './simulator/StatusSimulator.vue'
 import * as ldb from "./simulator/simulation.js";
 
+const LoadoutServer = "https://primitive-games.jp/legeclodb/loadout/index.cgi";
+const BattleLogServer = "https://primitive-games.jp/legeclodb/battlelog/index.cgi";
+
 export default {
   name: 'Battle',
   components: {
@@ -462,6 +500,25 @@ export default {
         { index: 9, id: "5E", desc: "5Tエネミー" },
       ],
       simulation: null,
+
+      loadoutList: [],
+      loadoutFields: [
+        {
+          key: "name",
+          label: "名前",
+        },
+        {
+          key: "date",
+          label: "日付",
+        },
+        {
+          key: "actions",
+          label: "アクション",
+        }
+      ],
+
+      battlelogList: [],
+      fetching: false,
     };
   },
 
@@ -1298,12 +1355,12 @@ export default {
       }
       this.selectUnit(null);
     },
-    exportLoadout() {
+    exportLoadoutAsFile() {
       const data = this.serializeLoadout();
       const name = data.name ? data.name : "編成名";
       ldb.download(`${name}.loadout`, data);
     },
-    importLoadoutFile() {
+    importLoadoutFromFile() {
       let self = this;
       ldb.openFileDialog(".loadout", function (file) {
         file.text().then(function (text) {
@@ -1311,14 +1368,20 @@ export default {
         });
       });
     },
-    importLoadoutUrl(url) {
-      // dropbox 対策
-      url = url.replace("www.dropbox.com", "dl.dropboxusercontent.com");
+    importLoadoutFromUrl(url) {
+      if (url.match(/^https?:\/\//)) {
+        // dropbox 対策
+        url = url.replace("www.dropbox.com", "dl.dropboxusercontent.com");
+      }
+      else {
+        // http で始まらない場合は hash とみなす
+        url = `${LoadoutServer}?mode=get&hash=${url}`;
+      }
 
       let self = this;
       fetch(url).then(function (res) {
-        res.json().then(function (json) {
-          self.deserializeLoadout(json);
+        res.json().then(function (obj) {
+          self.deserializeLoadout(obj);
         })
       });
     },
@@ -1335,6 +1398,47 @@ export default {
       for (let unit of this.playerUnits) {
         unit.initialize();
       }
+    },
+    fetchLoadoutList() {
+      let self = this;
+      self.fetching = true;
+      fetch(LoadoutServer).then(function (res) {
+        res.json().then(function (obj) {
+          self.fetching = false;
+          self.loadoutList = obj.sort((a, b) => b.date.localeCompare(a.date));
+        })
+      });
+    },
+    exportLoadoutToServer() {
+      const data = this.serializeLoadout();
+      let self = this;
+
+      var form = new FormData()
+      form.append('mode', 'put');
+      form.append('data', new Blob([JSON.stringify(data, null, 2)]));
+      fetch(LoadoutServer, { method: "POST", body: form }).then(function (res) {
+        res.json().then(function (obj) {
+          if (obj.succeeded) {
+            self.fetchLoadoutList();
+          }
+        })
+      });
+    },
+    downloadLoadoutFromServer(rec) {
+      this.importLoadoutFromUrl(`${LoadoutServer}?mode=get&hash=${rec.hash}`);
+    },
+    deleteLoadoutFromServer(rec) {
+      if (window.confirm(`"${rec.name}" をサーバーから削除します。よろしいですか？`)) {
+        let self = this;
+        fetch(`${LoadoutServer}?mode=del&hash=${rec.hash}`).then(function (res) {
+          self.fetchLoadoutList();
+        });
+      }
+    },
+    copyLoadoutUrl(rec) {
+      let url = window.location.href.replace(/\?.+/, '').replace(/#.+/, '');
+      url += `?loadout=${rec.hash}`;
+      this.copyToClipboard(url);
     },
 
 
@@ -1372,7 +1476,7 @@ export default {
           this.selectUnit(data.u);
 
         if (data.loadout) {
-          this.importLoadoutUrl(data.loadout);
+          this.importLoadoutFromUrl(data.loadout);
         }
         if (data.battlelog) {
           this.importBattleLogUrl(data.battlelog);
@@ -1541,6 +1645,10 @@ export default {
   .status-simulator-popover {
     max-width: 880px !important;
     width: 880px !important;
+  }
+  .loadout-popover {
+    max-width: 700px !important;
+    width: 700px !important;
   }
 
 </style>
