@@ -14,39 +14,37 @@ form = cgi.FieldStorage()
 class DirLock:
     def __init__(self, lockDir):
         self.lockDir = lockDir
-        self.result = False
+        self.succeeded = False
 
     def lock(self):
-        # 10秒以上前に作成されたロックファイルを削除する
-        # ※何らかの原因で残ったままになったロックファイル
         try:
             fileStat = os.stat(self.lockDir)
             timeStamp = fileStat[stat.ST_MTIME]
-            if timeStamp < (time.time() - 10): os.rmdir(self.lockDir)
+            # 古いロック (10秒前) が残っていたら除去
+            if timeStamp < (time.time() - 10):
+                os.rmdir(self.lockDir)
         except:
             pass
 
-        # ロックファイルを作成してみる
-        # ※5回やってダメなら失敗とする
-        self.result = False
+        self.succeeded = False
         for i in range(5):
             try:
                 os.mkdir(self.lockDir)
-                self.result = True # ロックを自分で作ったという印
+                self.succeeded = True
                 break
             except OSError:
                 time.sleep(0.2)
-        return self.result
+        return self.succeeded
 
     def unlock(self):
-        if self.result == True: # 自分で作ったロックファイルなら消す
+        if self.succeeded:
             os.rmdir(self.lockDir)
-        self.result = False
+        self.succeeded = False
 
     def __del__(self):
-        if self.result == True: # 自分で作ったロックファイルなら消す
+        if self.succeeded:
             os.rmdir(self.lockDir)
-        self.result = False
+        self.succeeded = False
 
 
 def getList():
@@ -57,45 +55,50 @@ def getData(hash):
     with open("./data/" + hash) as f:
         return f.read()
 
-def putData(file):
+def putData(file, author):
     str = file.read()
     hash = hashlib.md5(str).hexdigest()
-
-    list = json.load(open(ListJson))
-    for e in list:
-        if e["hash"] == hash:
-            return '{"succeeded": false, "error": "duplicated"}'
+    data = json.loads(str)
+    date = datetime.datetime.now().strftime("%Y/%m/%d %H:%M:%S")
 
     lock = DirLock("./data/__lock__");
-    lock.lock()
+    if lock.lock():
+        list = json.load(open(ListJson))
+        for e in list:
+            if e["hash"] == hash:
+                e["date"] = date
+                json.dump(list, open(ListJson, 'w'), ensure_ascii=False)
+                return '{"succeeded": true, "message": "同じ内容のデータがあります。日付だけ更新しました。"}'
 
-    data = json.loads(str)
-    with open("./data/" + hash, 'w') as f:
-        f.write(str)
-    list.append({
-        "name": data["name"].encode('utf-8'),
-        "date": datetime.datetime.now().strftime("%Y/%m/%d %H:%M:%S"),
-        "hash": hash,
-    });
-    json.dump(list, open(ListJson, 'w'), ensure_ascii=False)
+        with open("./data/" + hash, 'w') as f:
+            f.write(str)
+        list.append({
+            "name": data["name"].encode('utf-8'),
+            "author": author or "",
+            "date": date,
+            "hash": hash,
+        });
+        json.dump(list, open(ListJson, 'w'), ensure_ascii=False)
 
-    lock.unlock()
-    return '{"succeeded": true}'
+        return '{"succeeded": true}'
+    else:
+        return '{"succeeded": false, "message": "ファイルロックに失敗。時間を置いてもう一度お試しください。"}'
 
 def delData(hash):
     list = json.load(open(ListJson))
     for i, e in enumerate(list):
         if e["hash"] == hash:
             lock = DirLock("./data/__lock__");
-            lock.lock()
+            if lock.lock():
+                del list[i]
+                json.dump(list, open(ListJson, 'w'), ensure_ascii=False)
+                os.remove("./data/" + hash)
 
-            del list[i]
-            json.dump(list, open(ListJson, 'w'), ensure_ascii=False)
-            os.remove("./data/" + hash)
-
-            lock.unlock()
-            return '{"succeeded": true}'
-    return '{"succeeded": false}'
+                lock.unlock()
+                return '{"succeeded": true}'
+            else:
+                return '{"succeeded": false, "message": "ファイルロックに失敗。時間を置いてもう一度お試しください。"}'
+    return '{"succeeded": false, "message": "データが見つかりませんでした。"}'
 
 
 try:
@@ -104,7 +107,7 @@ try:
     if mode == "get":
         content = getData(form.getfirst("hash"))
     elif mode == "put":
-        content = putData(form["data"].file)
+        content = putData(form["data"].file, form.getfirst("author"))
     elif mode == "del":
         content = delData(form.getfirst("hash"))
     else:

@@ -183,11 +183,10 @@
     <div v-else class="content" style="margin-top: 30px">
       <div class="unit-panel">
         <div class="flex">
-          <b-form-input v-model="slotName" placeholder="編成名" style="width: 12em"></b-form-input>
-          <b-dropdown size="sm" text="編成をセーブ" style="min-width: 10em; margin-left: 0.5em;">
+          <b-dropdown text="編成をセーブ" style="min-width: 10em; margin-left: 0.5em;">
             <b-dropdown-item v-for="(name, i) in slotNames" :key=i @click="saveLoadout(i)">スロット{{i}}: {{name}}</b-dropdown-item>
           </b-dropdown>
-          <b-dropdown size="sm" text="編成をロード" style="min-width: 10em; margin-left: 0.5em; ">
+          <b-dropdown text="編成をロード" style="min-width: 10em; margin-left: 0.5em; ">
             <b-dropdown-item v-for="(name, i) in slotNames" :key=i @click="loadLoadout(i)">スロット{{i}}: {{name}}</b-dropdown-item>
             <b-dropdown-item @click="loadLoadout(99)">バックアップ</b-dropdown-item>
           </b-dropdown>
@@ -197,13 +196,18 @@
           </b-button>
           <b-popover :target="`btn-loadout-op`" triggers="click" custom-class="loadout-popover" @show="fetchLoadoutList()" ref="loadout_popover">
             <div class="flex" style="margin-bottom: 1.0em;">
-              <b-button size="sm" @click="exportLoadoutToServer()" style="min-width: 12em;">
+              <b-button size="sm" @click="exportLoadoutToServer()" style="min-width: 12em;" id="btn-loadout-publish">
                 現在の編成を公開
+                <b-popover :target="`btn-loadout-publish`" custom-class="url-popover" placement="bottom" :show="fetchMessage.length>0" triggers="">
+                  {{fetchMessage}}
+                </b-popover>
               </b-button>
+              <b-form-input size="sm" v-model="author" placeholder="投稿者名" style="width: 8em; margin-left: 0.25em;"></b-form-input>
+
               <b-button size="sm" @click="exportLoadoutAsFile()" style="min-width: 12em; margin-left: 1.0em;">
                 ファイルにエクスポート
               </b-button>
-              <b-button size="sm" @click="importLoadoutFromFile()" style="min-width: 12em; margin-left: 1.0em;">
+              <b-button size="sm" @click="importLoadoutFromFile()" style="min-width: 12em; margin-left: 0.25em;">
                 ファイルからインポート
               </b-button>
             </div>
@@ -218,10 +222,12 @@
                   ロード
                 </b-button>
 
-                <b-button size="sm" :id="`loadout-${row.item.hash}`" @click="copyLoadoutUrl(row.item)" style="margin-left: 0.25em">URL コピー</b-button>
-                <b-popover :target="`loadout-${row.item.hash}`" triggers="click blur" custom-class="url-popover">
-                  コピーしました
-                </b-popover>
+                <b-button size="sm" :id="`loadout-${row.item.hash}`" @click="copyLoadoutUrl(row.item)" style="margin-left: 0.25em">
+                  URL コピー
+                  <b-popover :target="`loadout-${row.item.hash}`" triggers="click blur" custom-class="url-popover" placement="bottom">
+                    コピーしました：{{lastClipboardValue}}
+                  </b-popover>
+                </b-button>
 
                 <b-button size="sm" @click="deleteLoadoutFromServer(row.item)" style="margin-left: 1em">
                   削除(確認あり)
@@ -233,11 +239,11 @@
             </div>
           </b-popover>
 
-          <b-button size="sm" @click="clearLoadout()" style="min-width: 10em; margin-left: 2em; ">
+          <b-button @click="clearLoadout()" style="min-width: 10em; margin-left: 2em; ">
             編成をクリア
           </b-button>
 
-          <b-button size="sm" style="width: 14em; margin-left: 4em;" @click="beginSimulation()">
+          <b-button style="width: 14em; margin-left: 4em;" @click="beginSimulation()">
             シミュレーション開始
           </b-button>
         </div>
@@ -245,7 +251,12 @@
     </div>
 
     <div class="content" :style="style">
-      <div class="main-panel" style="margin-top: 10px; margin-bottom: 20px;">
+      <div class="main-panel" style="margin-top: 10px; margin-bottom: 10px;">
+        <div v-if="!simulation" class="flex" style="margin: 0px 10px 10px 10px;">
+          <b-form-input size="sm" v-model="slotName" placeholder="編成名" style="width: 16em"></b-form-input>
+          <b-form-input size="sm" v-model="slotDesc" placeholder="説明など" style="flex: 1; margin-left: 0.25em; "></b-form-input>
+        </div>
+
         <b-tabs v-model="unitTabIndex">
           <b-tab v-for="(unit, ui) in playerUnits" :key="ui" style="background-color: white;">
             <template #title>
@@ -477,6 +488,9 @@ export default {
 
       slotNames: ["", "", "", "", "", "", "", "", "", ""],
       slotName: "",
+      slotDesc: "",
+      author: "",
+
       enemyUnits: [],
       playerUnits: [
         new ldb.BaseUnit(),
@@ -508,6 +522,10 @@ export default {
           label: "名前",
         },
         {
+          key: "author",
+          label: "投稿者",
+        },
+        {
           key: "date",
           label: "日付",
         },
@@ -519,6 +537,7 @@ export default {
 
       battlelogList: [],
       fetching: false,
+      fetchMessage: "",
     };
   },
 
@@ -591,6 +610,8 @@ export default {
     cellStyle.gridTemplateColumns = Array(divX).fill("50px").join(" ");
     cellStyle.gridTemplateRows = Array(divY).fill("50px").join(" ");
 
+    this.author = localStorage.getItem(`author`);
+
     this.selectBattle(this.battleList.slice(-1)[0].uid);
     this.selectPhase("0");
     this.$nextTick(function () {
@@ -628,6 +649,12 @@ export default {
     },
     prevTool() {
       return this.toolStack.at(-2);
+    },
+  },
+
+  watch: {
+    author: function (v) {
+      localStorage.setItem(`author`, v);
     },
   },
 
@@ -1323,12 +1350,14 @@ export default {
     serializeLoadout() {
       let r = {
         name: this.slotName,
+        desc: this.slotDesc,
         units: this.playerUnits.map(a => a.serialize()),
       };
       return r;
     },
     deserializeLoadout(obj) {
       this.slotName = obj.name ?? "";
+      this.slotDesc = obj.desc ?? "";
       for (let i = 0; i < this.playerUnits.length; ++i) {
         this.playerUnits[i].deserialize(obj.units[i]);
       }
@@ -1406,6 +1435,13 @@ export default {
         res.json().then(function (obj) {
           self.fetching = false;
           self.loadoutList = obj.sort((a, b) => b.date.localeCompare(a.date));
+          for (let e of self.loadoutList) {
+            // 長すぎる名前は切り詰めておく
+            const maxNameLen = 24;
+            if (e.name.length > maxNameLen) {
+              e.name = e.name.substring(0, maxNameLen);
+            }
+          }
         })
       });
     },
@@ -1416,10 +1452,17 @@ export default {
       var form = new FormData()
       form.append('mode', 'put');
       form.append('data', new Blob([JSON.stringify(data, null, 2)]));
+      form.append('author', this.author);
       fetch(LoadoutServer, { method: "POST", body: form }).then(function (res) {
         res.json().then(function (obj) {
           if (obj.succeeded) {
             self.fetchLoadoutList();
+          }
+          if (obj.message) {
+            self.fetchMessage = obj.message;
+            setTimeout(function () {
+              self.fetchMessage = "";
+            }, self.fetchMessage.length * 100);
           }
         })
       });
@@ -1647,8 +1690,8 @@ export default {
     width: 880px !important;
   }
   .loadout-popover {
-    max-width: 700px !important;
-    width: 700px !important;
+    max-width: 900px !important;
+    width: 900px !important;
   }
 
 </style>
