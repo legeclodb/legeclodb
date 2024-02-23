@@ -195,12 +195,28 @@
             編成を共有
           </b-button>
           <b-popover :target="`btn-loadout-op`" triggers="click" custom-class="loadout-popover" @show="fetchLoadoutList()" ref="loadout_popover">
-            <div class="flex" style="margin-bottom: 1.0em;">
+            <h5>公開されている編成</h5>
+            <b-table small outlined sticky-header :items="loadoutList" :fields="loadoutFields" style="min-width: 90%;">
+              <template #cell(name)="row">
+                <span>{{row.item.name}}</span>
+              </template>
+              <template #cell(actions)="row">
+                <div class="flex" style="">
+                  <b-button size="sm" @click="downloadLoadoutFromServer(row.item)">
+                    ロード
+                  </b-button>
+                  <b-button size="sm" :id="`loadout-${row.item.hash}`" @click="copyLoadoutUrl(row.item)" style="margin-left: 0.25em">
+                    URL コピー
+                  </b-button>
+                  <b-button size="sm" @click="deleteLoadoutFromServer(row.item)" style="margin-left: 0.25em">
+                    削除(確認あり)
+                  </b-button>
+                </div>
+              </template>
+            </b-table>
+            <div class="flex" style="margin-bottom: 0.5em;">
               <b-button size="sm" @click="exportLoadoutToServer()" style="min-width: 12em;" id="btn-loadout-publish">
                 現在の編成を公開
-                <b-popover :target="`btn-loadout-publish`" custom-class="url-popover" placement="bottom" :show="fetchMessage.length>0" triggers="">
-                  {{fetchMessage}}
-                </b-popover>
               </b-button>
               <b-form-input size="sm" v-model="author" placeholder="投稿者名" style="width: 8em; margin-left: 0.25em;"></b-form-input>
 
@@ -211,29 +227,6 @@
                 ファイルからインポート
               </b-button>
             </div>
-
-            <h5>公開されている編成</h5>
-            <b-table small outlined sticky-header :items="loadoutList" :fields="loadoutFields" style="min-width: 90%">
-              <template #cell(name)="row">
-                <span>{{row.item.name}}</span>
-              </template>
-              <template #cell(actions)="row">
-                <b-button size="sm" @click="downloadLoadoutFromServer(row.item)" style="margin: 3px">
-                  ロード
-                </b-button>
-
-                <b-button size="sm" :id="`loadout-${row.item.hash}`" @click="copyLoadoutUrl(row.item)" style="margin-left: 0.25em">
-                  URL コピー
-                  <b-popover :target="`loadout-${row.item.hash}`" triggers="click blur" custom-class="url-popover" placement="bottom">
-                    コピーしました：{{lastClipboardValue}}
-                  </b-popover>
-                </b-button>
-
-                <b-button size="sm" @click="deleteLoadoutFromServer(row.item)" style="margin-left: 1em">
-                  削除(確認あり)
-                </b-button>
-              </template>
-            </b-table>
             <div class="flex">
               <b-button size="sm" @click="$refs.loadout_popover.$emit('close')">閉じる</b-button>
             </div>
@@ -531,13 +524,12 @@ export default {
         },
         {
           key: "actions",
-          label: "アクション",
+          label: "操作",
         }
       ],
 
       battlelogList: [],
       fetching: false,
-      fetchMessage: "",
     };
   },
 
@@ -1364,8 +1356,9 @@ export default {
     },
     saveLoadout(slot = 0) {
       let old = JSON.parse(localStorage.getItem(`battle.slot${slot}`));
-      if (old?.units) {
+      if (old?.units?.find(a => a.main.cid)) {
         localStorage.setItem(`battle.slot99`, JSON.stringify(old));
+        this.toast("上書き前の編成をバックアップスロットに保存しました。");
       }
 
       this.setArrayElement(this.slotNames, slot, this.slotName);
@@ -1424,6 +1417,12 @@ export default {
       }
     },
     clearLoadout() {
+      if (this.playerUnits.find(a => a.main.cid)) {
+        let old = this.serializeLoadout();
+        localStorage.setItem(`battle.slot99`, JSON.stringify(old));
+        this.toast("クリア前の編成をバックアップスロットに保存しました。");
+      }
+
       for (let unit of this.playerUnits) {
         unit.initialize();
       }
@@ -1459,10 +1458,7 @@ export default {
             self.fetchLoadoutList();
           }
           if (obj.message) {
-            self.fetchMessage = obj.message;
-            setTimeout(function () {
-              self.fetchMessage = "";
-            }, self.fetchMessage.length * 100);
+            self.toast(obj.message);
           }
         })
       });
@@ -1482,6 +1478,15 @@ export default {
       let url = window.location.href.replace(/\?.+/, '').replace(/#.+/, '');
       url += `?loadout=${rec.hash}`;
       this.copyToClipboard(url);
+      this.toast(`コピーしました：${url}`);
+    },
+
+    toast(mes) {
+      this.$bvToast.toast(mes, {
+        toaster: 'b-toaster-bottom-left',
+        autoHideDelay: Math.min(mes.length * 150, 3000),
+        appendToast: true,
+      });
     },
 
 
@@ -1673,7 +1678,8 @@ export default {
   }
 
   .table-sm td {
-    padding: 1px;
+    padding-top: 1px;
+    padding-bottom: 1px;
     vertical-align: middle;
   }
 

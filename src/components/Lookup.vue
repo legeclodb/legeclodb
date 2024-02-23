@@ -138,11 +138,6 @@ export default {
     padding: 0.1em;
   }
 
-  .table-sm td {
-    padding: 1px;
-    vertical-align: middle;
-  }
-
   input::placeholder {
     color: rgb(190, 190, 190) !important;
     font-size: small !important;
