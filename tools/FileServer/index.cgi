@@ -1,11 +1,6 @@
-#!/usr/bin/env python
+#!/home/i-saint/bin/python3
 # -*- coding: utf-8 -*-
-
-# for python2.7
 import sys, os, io, stat, time, datetime, hashlib, cgi, json, traceback
-
-reload(sys)
-sys.setdefaultencoding("utf-8")
 
 ListJson = "./list.json"
 form = cgi.FieldStorage()
@@ -48,7 +43,7 @@ class DirLock:
 
 
 def getList():
-    with open(ListJson, 'r') as file:
+    with open(ListJson) as file:
         return file.read()
 
 def getData(hash):
@@ -56,33 +51,42 @@ def getData(hash):
         return f.read()
 
 def putData(file, author):
-    str = file.read()
-    hash = hashlib.md5(str).hexdigest()
-    data = json.loads(str)
+    rawBytes = file.read()
+    hash = hashlib.md5(rawBytes).hexdigest()
+    rawString = rawBytes.decode('utf-8')
+    del rawBytes # 結構でかい可能性があるので一応
+    jsonObj = json.loads(rawString)
     date = datetime.datetime.now().strftime("%Y/%m/%d %H:%M:%S")
 
     lock = DirLock("./data/__lock__");
     if lock.lock():
         list = json.load(open(ListJson))
+        def updateList():
+            json.dump(list, open(ListJson, 'w'), ensure_ascii=False)
         for e in list:
             if e["hash"] == hash:
                 e["date"] = date
-                json.dump(list, open(ListJson, 'w'), ensure_ascii=False)
-                return '{"succeeded": true, "message": "同じ内容のデータがあります。日付だけ更新しました。"}'
+                updateList()
+                return {
+                    "succeeded": True,
+                    "message": "同じ内容のデータがあります。日付だけ更新しました。"
+                }
 
         with open("./data/" + hash, 'w') as f:
-            f.write(str)
+            f.write(rawString)
         list.append({
-            "name": data["name"].encode('utf-8'),
+            "name": jsonObj["name"],
             "author": author or "",
             "date": date,
             "hash": hash,
         });
-        json.dump(list, open(ListJson, 'w'), ensure_ascii=False)
-
-        return '{"succeeded": true}'
+        updateList()
+        return {"succeeded": True}
     else:
-        return '{"succeeded": false, "message": "ファイルロックに失敗。時間を置いてもう一度お試しください。"}'
+        return {
+            "succeeded": False,
+            "message": "ファイルロックに失敗。時間を置いてもう一度お試しください。"
+        }
 
 def delData(hash):
     list = json.load(open(ListJson))
@@ -95,10 +99,16 @@ def delData(hash):
                 os.remove("./data/" + hash)
 
                 lock.unlock()
-                return '{"succeeded": true}'
+                return {"succeeded": True}
             else:
-                return '{"succeeded": false, "message": "ファイルロックに失敗。時間を置いてもう一度お試しください。"}'
-    return '{"succeeded": false, "message": "データが見つかりませんでした。"}'
+                return {
+                    "succeeded": False,
+                    "message": "ファイルロックに失敗。時間を置いてもう一度お試しください。"
+                }
+    return {
+        "succeeded": False,
+        "message": "データが見つかりませんでした。直前に誰かが消した可能性があります。"
+    }
 
 
 try:
@@ -112,11 +122,13 @@ try:
         content = delData(form.getfirst("hash"))
     else:
         content = getList()
+
+    if isinstance(content, dict):
+        content = json.dumps(content, ensure_ascii=False)
+
     print('Content-Type: application/json; charset="utf8"\r\nAccess-Control-Allow-Origin: *\r\n\r\n')
     print(content)
 
 except Exception as e:
     print('Content-Type: text/plain; charset="utf8"\r\n\r\n')
-    t, v, tb = sys.exc_info()
-    print(traceback.format_exception(t,v,tb))
-    print(traceback.format_tb(e.__traceback__))
+    print(traceback.format_exc())
