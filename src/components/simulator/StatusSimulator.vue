@@ -210,13 +210,26 @@
     </b-tabs>
     <div style="padding: 0px 10px 10px 10px">
       <b-container>
-        <div style="margin-bottom: 10px">
+        <div class="flex">
           <b-dropdown text="自動装備＆エンチャント" size="sm">
             <b-dropdown-item class="d-flex flex-column" v-for="(c, i) in autoEquipTypes" :key="i" @click="autoEquip(i)">
               {{ c }}
             </b-dropdown-item>
           </b-dropdown>
-          <b-button v-if="!embed" @click="highscoreSearch()" style="margin-left: 5px">このレベルで戦闘力が高い組み合わせを探す</b-button>
+          <template v-if="!embed">
+            <b-button size="sm" :id="`ss${uid}-copy-url`" @click="copyToClipboard(statUrl)" style="margin-left: 0.5em;">
+              パラメータを URL としてコピー
+              <b-popover :target="`ss${uid}-copy-url`" triggers="click blur" placement="top" custom-class="url-popover">
+                コピーしました：<br />{{ statUrl }}
+              </b-popover>
+            </b-button>
+          </template>
+        </div>
+        <div v-if="!embed">
+          <div class="flex" style="margin: 10px 0 5px 0;">
+            <b-button size="sm" @click="highscoreSearch()">このレベルで戦闘力が高い組み合わせを探す</b-button>
+            <b-form-checkbox v-model="hssCharOnce" style="margin-left: 1.0em;">一度出たキャラを除外</b-form-checkbox>
+          </div>
           <b-table v-if="highscoreData.length" small outlined sticky-header :items="highscoreData" :fields="highscoreFields">
             <template #cell(actions)="row">
               <b-button size="sm" @click="highscoreReplay(row.item)" style="padding: 1px 10px">
@@ -224,12 +237,6 @@
               </b-button>
             </template>
           </b-table>
-        </div>
-        <div v-if="!embed">
-          <b-button :id="`ss${uid}-copy-url`" @click="copyToClipboard(statUrl)">パラメータを URL としてコピー</b-button>
-          <b-popover :target="`ss${uid}-copy-url`" triggers="click blur" placement="top" custom-class="url-popover">
-            コピーしました：<br />{{ statUrl }}
-          </b-popover>
         </div>
       </b-container>
     </div>
@@ -551,6 +558,7 @@ export default {
           label: "アクション",
         }
       ],
+      hssCharOnce: false,
 
       prevMainEngage: true,
       draggingSkillIdx: -1,
@@ -1076,8 +1084,9 @@ export default {
       const powMain = (a) => this.getBattlePower(this.getMainChrStatus(a, msa.level, msa.star, msa.master, msa.loveBonus, msa.boosts));
       const powSup = (a) => this.getBattlePower(this.getSupportChrStatus(a, ssa.level, ssa.star, ssa.master, ssa.loveBonus, ssa.boosts));
 
-      const mainChrs = [...this.mainChrs].sort((a, b) => this.compare(powMain(a), powMain(b))).slice(0, 50);
-      const supChrs = [...this.supChrs].sort((a, b) => this.compare(powSup(a), powSup(b))).slice(0, 50);
+      const maxChars = this.hssCharOnce ? 75 : 50;
+      const mainChrs = [...this.mainChrs].sort((a, b) => this.compare(powMain(a), powMain(b))).slice(0, maxChars);
+      const supChrs = [...this.supChrs].sort((a, b) => this.compare(powSup(a), powSup(b))).slice(0, maxChars);
 
       let results = [];
 
@@ -1140,19 +1149,32 @@ export default {
         }
       }
 
-      results = results.sort((a, b) => this.compare(a.bp, b.bp)).slice(0, 200);
-      let mains = [];
-      let supports = [];
+      results = results.sort((a, b) => this.compare(a.bp, b.bp));
+      if (this.hssCharOnce) {
+        let filtered = [];
+        let used = new Set();
+        for (let e of results) {
+          if (!used.has(e.data.main) && !used.has(e.data.support)) {
+            filtered.push(e);
+            used.add(e.data.main);
+            used.add(e.data.support);
+          }
+        }
+        results = filtered;
+      }
+      results = results.slice(0, 200);
+
+      let usedChr = new Set();
       for (let i = 0; i < results.length; ++i) {
         let r = results[i];
         r.index = i + 1;
         r._cellVariants = {};
-        if (!mains.includes(r.main)) {
-          mains.push(r.main);
+        if (!usedChr.has(r.main)) {
+          usedChr.add(r.main);
           r._cellVariants.main = "primary";
         }
-        if (!supports.includes(r.support)) {
-          supports.push(r.support);
+        if (!usedChr.has(r.support)) {
+          usedChr.add(r.support);
           r._cellVariants.support = "warning";
         }
       }
