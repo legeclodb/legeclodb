@@ -195,50 +195,46 @@
           </div>
         </div>
         <div>
-          <b-container>
-            <div v-if="support.character.value" class="status flex" style="margin-bottom: 10px">
-              <div class="param-box"><b-img-lazy :src="getImageURL('HP')" title="HP" width="18" height="18" /><span>{{statSupportResult[0]}}</span></div>
-              <div class="param-box" v-if="support.character.value.damageType=='アタック'"><b-img-lazy :src="getImageURL('アタック')" title="アタック" width="18" height="18" /><span>{{statSupportResult[1]}}</span></div>
-              <div class="param-box" v-if="support.character.value.damageType=='マジック'"><b-img-lazy :src="getImageURL('マジック')" title="マジック" width="18" height="18" /><span>{{statSupportResult[3]}}</span></div>
-              <div class="param-box"><b-img-lazy :src="getImageURL('ディフェンス')" title="ディフェンス" width="18" height="18" /><span>{{statSupportResult[2]}}</span></div>
-              <div class="param-box"><b-img-lazy :src="getImageURL('レジスト')" title="レジスト" width="18" height="18" /><span>{{statSupportResult[4]}}</span></div>
-              <div class="param-box"><span class="param-name">戦闘力:</span><span class="param-value">{{statSupportResult[6]}}</span></div>
-            </div>
-          </b-container>
+          <div v-if="support.character.value" class="status flex" style="margin-bottom: 10px">
+            <div class="param-box"><b-img-lazy :src="getImageURL('HP')" title="HP" width="18" height="18" /><span>{{statSupportResult[0]}}</span></div>
+            <div class="param-box" v-if="support.character.value.damageType=='アタック'"><b-img-lazy :src="getImageURL('アタック')" title="アタック" width="18" height="18" /><span>{{statSupportResult[1]}}</span></div>
+            <div class="param-box" v-if="support.character.value.damageType=='マジック'"><b-img-lazy :src="getImageURL('マジック')" title="マジック" width="18" height="18" /><span>{{statSupportResult[3]}}</span></div>
+            <div class="param-box"><b-img-lazy :src="getImageURL('ディフェンス')" title="ディフェンス" width="18" height="18" /><span>{{statSupportResult[2]}}</span></div>
+            <div class="param-box"><b-img-lazy :src="getImageURL('レジスト')" title="レジスト" width="18" height="18" /><span>{{statSupportResult[4]}}</span></div>
+            <div class="param-box"><span class="param-name">戦闘力:</span><span class="param-value">{{statSupportResult[6]}}</span></div>
+          </div>
         </div>
       </b-tab>
     </b-tabs>
     <div style="padding: 0px 10px 10px 10px">
-      <b-container>
-        <div class="flex">
-          <b-dropdown text="自動装備＆エンチャント" size="sm">
-            <b-dropdown-item class="d-flex flex-column" v-for="(c, i) in autoEquipTypes" :key="i" @click="autoEquip(i)">
-              {{ c }}
-            </b-dropdown-item>
-          </b-dropdown>
-          <template v-if="!embed">
-            <b-button size="sm" :id="`ss${uid}-copy-url`" @click="copyToClipboard(statUrl)" style="margin-left: 0.5em;">
-              パラメータを URL としてコピー
-              <b-popover :target="`ss${uid}-copy-url`" triggers="click blur" placement="top" custom-class="url-popover">
-                コピーしました：<br />{{ statUrl }}
-              </b-popover>
+      <div class="flex">
+        <b-dropdown text="自動装備＆エンチャント" size="sm">
+          <b-dropdown-item class="d-flex flex-column" v-for="(c, i) in autoEquipTypes" :key="i" @click="autoEquip(i)">
+            {{ c }}
+          </b-dropdown-item>
+        </b-dropdown>
+        <template v-if="!embed">
+          <b-button size="sm" :id="`ss${uid}-copy-url`" @click="copyToClipboard(statUrl)" style="margin-left: 0.5em;">
+            パラメータを URL としてコピー
+            <b-popover :target="`ss${uid}-copy-url`" triggers="click blur" placement="top" custom-class="url-popover">
+              コピーしました：<br />{{ statUrl }}
+            </b-popover>
+          </b-button>
+        </template>
+      </div>
+      <div v-if="!embed">
+        <div class="flex" style="margin: 10px 0 5px 0;">
+          <b-button size="sm" @click="highscoreSearch()">このレベルで戦闘力が高い組み合わせを探す</b-button>
+          <b-form-checkbox v-model="hssCharOnce" style="margin-left: 1.0em;">一度出たキャラを除外</b-form-checkbox>
+        </div>
+        <b-table v-if="highscoreData.length" small outlined sticky-header :items="highscoreData" :fields="highscoreFields">
+          <template #cell(actions)="row">
+            <b-button size="sm" @click="highscoreReplay(row.item)" style="padding: 1px 10px">
+              再現
             </b-button>
           </template>
-        </div>
-        <div v-if="!embed">
-          <div class="flex" style="margin: 10px 0 5px 0;">
-            <b-button size="sm" @click="highscoreSearch()">このレベルで戦闘力が高い組み合わせを探す</b-button>
-            <b-form-checkbox v-model="hssCharOnce" style="margin-left: 1.0em;">一度出たキャラを除外</b-form-checkbox>
-          </div>
-          <b-table v-if="highscoreData.length" small outlined sticky-header :items="highscoreData" :fields="highscoreFields">
-            <template #cell(actions)="row">
-              <b-button size="sm" @click="highscoreReplay(row.item)" style="padding: 1px 10px">
-                再現
-              </b-button>
-            </template>
-          </b-table>
-        </div>
-      </b-container>
+        </b-table>
+      </div>
     </div>
   </div>
 </template>

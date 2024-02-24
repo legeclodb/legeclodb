@@ -265,7 +265,7 @@
                 <b-button :id="`btn-edit-unit${ui}`" @click="unit.showEditor=!unit.showEditor" style="width: 12em;">編集</b-button>
                 <b-popover :target="`btn-edit-unit${ui}`" custom-class="status-simulator-popover" :show.sync="unit.showEditor" :delay="{show:0, hide:250}" no-fade>
                   <StatusSimulator embed :data="unit.editorData" @change="unit.edit($event)" />
-                  <div class="flex">
+                  <div class="flex" style="margin: 0 0 10px 10px;">
                     <b-button size="sm" @click="unit.showEditor=false">閉じる</b-button>
                   </div>
                 </b-popover>
@@ -1694,6 +1694,9 @@ export default {
   .status-simulator-popover {
     max-width: 880px !important;
     width: 880px !important;
+  }
+  .status-simulator-popover .popover-body {
+    padding: 0px !important;
   }
   .loadout-popover {
     max-width: 900px !important;
