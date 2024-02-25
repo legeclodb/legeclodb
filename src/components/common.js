@@ -1454,7 +1454,16 @@ export default {
                 s.icon = s.uid;
               }
             }
+            Object.defineProperty(chr, 'baseSkills', {
+              configurable: true,
+              get: () => chr.skills
+            });
+
             handleSummons(chr.skills);
+            Object.defineProperty(chr, 'summonAll', {
+              configurable: true,
+              get: () => chr.summon
+            });
           }
         }
 
@@ -1469,9 +1478,12 @@ export default {
 
           chr._skills = chr.skills;
           Object.defineProperty(chr, 'skills', {
-            get: () => {
-              return chr.engage.enabled ? chr.engage.skills : chr._skills;
-            }
+            configurable: true,
+            get: () => chr.engage.enabled ? chr.engage.skills : chr._skills,
+          });
+          Object.defineProperty(chr, 'baseSkills', {
+            configurable: true,
+            get: () => chr._skills,
           });
 
           if (chr.summon) {
@@ -1479,9 +1491,12 @@ export default {
 
             chr._summon = chr.summon;
             Object.defineProperty(chr, 'summon', {
-              get: () => {
-                return chr.skills.find(a => a.summon).summon;
-              }
+              configurable: true,
+              get: () => chr.skills.find(a => a.summon).summon
+            });
+            Object.defineProperty(chr, 'summonAll', {
+              configurable: true,
+              get: () => chr._summon
             });
           }
         }

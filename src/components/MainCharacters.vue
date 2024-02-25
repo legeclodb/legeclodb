@@ -749,7 +749,7 @@ export default {
           chr.status = [...status, this.getMainBattlePower(status, star, master, 5, 0, false)];
         }
 
-        for (let sum of chr.summon ?? []) {
+        for (let sum of (chr.summonAll ?? [])) {
           sum.status = this.getNPCChrStatus(sum, level);
         }
       }
