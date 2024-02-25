@@ -719,7 +719,6 @@ export default {
     switchEngage(chr, v) {
       if (chr.engage) {
         chr.engage.enabled = v;
-        chr.skills = v ? chr.engage.skills : chr.skillsBase;
       }
       this.updateTagCounts();
     },
@@ -727,7 +726,6 @@ export default {
       for (let chr of this.characters) {
         if (chr.engage) {
           chr.engage.enabled = v;
-          chr.skills = v ? chr.engage.skills : chr.skillsBase;
         }
       }
       this.updateTagCounts();

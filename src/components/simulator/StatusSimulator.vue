@@ -671,11 +671,10 @@ export default {
       if (!chr) {
         return [null, null, null];
       }
-      let skills = null;
-      if (chr.engage && this.main.engage.value)
-        skills = [...chr.engage.skills];
-      else
-        skills = [...chr.skills];
+      if (chr.engage) {
+        chr.engage.enabled = this.main.engage.value;
+      }
+      let skills = [...chr.skills];
       skills = skills.sort((a, b) => this.getSkillBPRate(b) - this.getSkillBPRate(a));
       return skills.slice(0, 3);
     },
@@ -1504,16 +1503,7 @@ export default {
       return chr ? chr.class : true;
     },
     mainSkillList() {
-      let chr = this.main.character.value;
-      if (chr) {
-        if (chr.engage) {
-          return this.main.engage.value ? chr.engage.skills : chr.skillsBase;
-        }
-        else {
-          return chr.skills;
-        }
-      }
-      return [];
+      return this.main.character.value?.skills ?? [];
     },
 
     statMainResult() {

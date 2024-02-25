@@ -757,7 +757,7 @@ export default {
 
       for (let chr of mainChrs) {
         if (chr.engage) {
-          chr.skills = opt.allowEngageSkills ? chr.engage.skills : chr.skillsBase;
+          chr.engage.enabled = opt.allowEngageSkills;
         }
       }
 

@@ -1384,16 +1384,29 @@ export default {
 
         if (chr.engage && chr.engage.skills) {
           chr.engage.skills = chr.engage.skills.flatMap(id => grabSkill(id, chr));
-          if (chr.summon) {
-            handleSummons(chr.engage.skills);
-          }
-          chr.skillsBase = chr.skills;
-          this.$set(chr.engage, 'enabled', false);
-
           for (let i = 0; i < chr.skills.length; ++i) {
             if (chr.engage.skills[i] !== chr.skills[i]) {
               chr.engage.skills[i].isEngageSkill = true;
             }
+          }
+          this.$set(chr.engage, 'enabled', false);
+
+          chr._skills = chr.skills;
+          Object.defineProperty(chr, 'skills', {
+            get: () => {
+              return chr.engage.enabled ? chr.engage.skills : chr._skills;
+            }
+          });
+
+          if (chr.summon) {
+            handleSummons(chr.engage.skills);
+
+            chr._summon = chr.summon;
+            Object.defineProperty(chr, 'summon', {
+              get: () => {
+                return chr.skills.find(a => a.summon).summon;
+              }
+            });
           }
         }
       }

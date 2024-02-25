@@ -443,7 +443,7 @@ export default {
       const enabledDebuffEffects = this.debuffs.filter(a => a.enabled).map(a => a.label);
       for (let chr of this.mainChrs) {
         if (chr.engage) {
-          chr.skills = opt.allowEngageSkills ? chr.engage.skills : chr.skillsBase;
+          chr.engage.enabled = opt.allowEngageSkills;
         }
       }
 
