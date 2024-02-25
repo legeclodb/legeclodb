@@ -1,0 +1,236 @@
+{
+  "ランダムバフ:弱": [
+    {
+      "type": "アタック",
+      "value": 10,
+      "duration": 2
+    },
+    {
+      "type": "ディフェンス",
+      "value": 10,
+      "duration": 2
+    },
+    {
+      "type": "マジック",
+      "value": 10,
+      "duration": 2
+    },
+    {
+      "type": "レジスト",
+      "value": 20,
+      "duration": 2
+    },
+    {
+      "type": "与ダメージ",
+      "value": 10,
+      "duration": 2
+    },
+    {
+      "type": "ダメージ耐性",
+      "value": 10,
+      "duration": 2
+    },
+    {
+      "type": "移動",
+      "value": 1,
+      "duration": 2
+    }
+  ],
+  "ランダムバフ:中": [
+    {
+      "type": "アタック",
+      "value": 15,
+      "duration": 2
+    },
+    {
+      "type": "ディフェンス",
+      "value": 15,
+      "duration": 2
+    },
+    {
+      "type": "マジック",
+      "value": 15,
+      "duration": 2
+    },
+    {
+      "type": "レジスト",
+      "value": 25,
+      "duration": 2
+    },
+    {
+      "type": "与ダメージ",
+      "value": 15,
+      "duration": 2
+    },
+    {
+      "type": "ダメージ耐性",
+      "value": 15,
+      "duration": 2
+    },
+    {
+      "type": "移動",
+      "value": 2,
+      "duration": 2
+    }
+  ],
+  "ランダムバフ:強": [
+    {
+      "type": "アタック",
+      "value": 20,
+      "duration": 2
+    },
+    {
+      "type": "ディフェンス",
+      "value": 20,
+      "duration": 2
+    },
+    {
+      "type": "マジック",
+      "value": 20,
+      "duration": 2
+    },
+    {
+      "type": "レジスト",
+      "value": 20,
+      "duration": 2
+    },
+    {
+      "type": "与ダメージ",
+      "value": 20,
+      "duration": 2
+    },
+    {
+      "type": "ダメージ耐性",
+      "value": 20,
+      "duration": 2
+    },
+    {
+      "type": "移動",
+      "value": 3,
+      "duration": 2
+    }
+  ],
+
+  "ランダムデバフ:弱": [
+    {
+      "type": "アタック",
+      "value": 10,
+      "duration": 2
+    },
+    {
+      "type": "ディフェンス",
+      "value": 10,
+      "duration": 2
+    },
+    {
+      "type": "マジック",
+      "value": 10,
+      "duration": 2
+    },
+    {
+      "type": "レジスト",
+      "value": 20,
+      "duration": 2
+    },
+    {
+      "type": "与ダメージ",
+      "value": 10,
+      "duration": 2
+    },
+    {
+      "type": "ダメージ耐性",
+      "value": 10,
+      "duration": 2
+    }
+  ],
+  "ランダムデバフ:中": [
+    {
+      "type": "アタック",
+      "value": 20,
+      "duration": 2
+    },
+    {
+      "type": "ディフェンス",
+      "value": 20,
+      "duration": 2
+    },
+    {
+      "type": "マジック",
+      "value": 20,
+      "duration": 2
+    },
+    {
+      "type": "レジスト",
+      "value": 30,
+      "duration": 2
+    },
+    {
+      "type": "与ダメージ",
+      "value": 20,
+      "duration": 2
+    },
+    {
+      "type": "ダメージ耐性",
+      "value": 20,
+      "duration": 2
+    }
+  ],
+  "ランダムデバフ:強": [
+    {
+      "type": "アタック",
+      "value": 20,
+      "duration": 2
+    },
+    {
+      "type": "ディフェンス",
+      "value": 20,
+      "duration": 2
+    },
+    {
+      "type": "マジック",
+      "value": 20,
+      "duration": 2
+    },
+    {
+      "type": "レジスト",
+      "value": 30,
+      "duration": 2
+    },
+    {
+      "type": "与ダメージ",
+      "value": 20,
+      "duration": 2
+    },
+    {
+      "type": "ダメージ耐性",
+      "value": 20,
+      "duration": 2
+    },
+    {
+      "type": "移動",
+      "value": 1,
+      "duration": 2
+    },
+    {
+      "type": "アクティブスキル使用不可",
+      "duration": 2
+    },
+    {
+      "type": "パッシブスキル使用不可",
+      "duration": 2
+    },
+    {
+      "type": "強化不可",
+      "duration": 2
+    },
+    {
+      "type": "回復不可",
+      "duration": 2
+    },
+    {
+      "type": "ガード不可",
+      "duration": 1
+    }
+  ]
+
+}

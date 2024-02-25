@@ -1,5 +1,6 @@
 import jsonImageTable from '../assets/image_table.json'
 import jsonConstants from '../assets/constants.json'
+import jsonRandomEffectTable from '../assets/random_effect_table.json'
 
 export default {
   data() {
@@ -535,6 +536,37 @@ export default {
     },
     noteToHtml(item) {
       let text = item.note;
+
+      const funcTable = {
+        randomTableToString(name) {
+          name = name.replace(/^['"]/, "").replace(/['"]$/, "");
+          if (name in jsonRandomEffectTable) {
+            const table = jsonRandomEffectTable[name];
+            const getVal = (a) => {
+              let v = a.value ?? "";
+              if (v) {
+                if (name.startsWith("ランダムデバフ"))
+                  v = `-${v}`;
+                else
+                  v = `+${v}`;
+                if (a.type != "移動")
+                  v = `${v}%`;
+              }
+              return v;
+            };
+            return table.map(a => `${a.type}${getVal(a)}(${a.duration}ターン)`).join("、");
+          }
+        },
+      };
+      text = text.replace(/`([^(]+?)\(([^)]+)\)`/g, (match, func, args) => {
+        if (func in funcTable) {
+          return funcTable[func](args);
+        }
+        else {
+          throw `関数が見つかりませんでした: ${func}`;
+        }
+      });
+
       while (true) {
         let tmp = text.replaceAll(/\[([^\]]+?)\](.+?)\[\/\1\]/g, "<span class='$1'>$2</span>");
         if (tmp == text)
@@ -1151,7 +1183,7 @@ export default {
         }
       }
 
-      const setupSlot = function (effect) {
+      const setupSlot = (effect) => {
         effect.typeId = self.getEffectIndex(effect.type);
         if (skill.isActive && !effect.slot) {
           let slot = effect.type;
@@ -1171,11 +1203,22 @@ export default {
           effect.hasSpecialSlot = true;
         }
       };
-      const setParent = function (effect) {
+      const setParent = (effect) => {
         Object.defineProperty(effect, 'parent', {
           value: skill,
           writable: false,
         });
+      };
+      const setupRandomTable = (effect) => {
+        if (effect.type == "ランダム") {
+          const tableName = effect.isBuff ? `ランダムバフ:${effect.variant}` : `ランダムデバフ:${effect.variant}`;
+          if (tableName in jsonRandomEffectTable) {
+            effect.randomTable = jsonRandomEffectTable[tableName].map(a => Object.assign({}, a)); // shallow copy
+          }
+          else {
+            throw `ランダム効果がテーブルから見つかりませんでした: ${skill.name} ${effect.variant}`;
+          }
+        }
       };
 
       if (skill.buff) {
@@ -1183,6 +1226,7 @@ export default {
           setParent(v);
           v.isBuff = true;
           setupSlot(v);
+          setupRandomTable(v);
 
           if (typeof (v.value) === 'number' && v.value < 0) {
             if (!skill.negativeEffects)
@@ -1196,6 +1240,7 @@ export default {
           setParent(v);
           v.isDebuff = true;
           setupSlot(v);
+          setupRandomTable(v);
         }
       }
       if (skill.statusEffects) {
