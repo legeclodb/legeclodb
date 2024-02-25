@@ -727,7 +727,7 @@ export default {
           },
 
           onEnable() {
-            this.baseCoord = self.selectedUnit.coord;
+            self.selectedUnit.prevCoord = self.selectedUnit.coord;
             this.buildPath(self.selectedUnit);
             if (self.simulation.isOwnTurn(self.selectedUnit)) {
               self.actionsToSelect = self.selectedUnit.actions;
@@ -784,7 +784,7 @@ export default {
             }
           },
           onCancel() {
-            self.selectedUnit.coord = this.baseCoord;
+            self.selectedUnit.coord = self.selectedUnit.prevCoord;
           },
           onRenderCell(cell, r) {
             let sim = self.simulation;
@@ -1024,8 +1024,7 @@ export default {
       }
       else if (skill.isRadialAreaTarget) {
         // 自分中心の範囲スキル
-        // 対象が使用者自身でも有効
-        return isTargetSide() || unit === target;
+        return isTargetSide();
       }
       else {
         // その他ユニットが対象のスキル
@@ -1164,12 +1163,20 @@ export default {
       this.selectedSkill = skill;
     },
 
-    fireSkill(skill, targetUnit, targetCell = null) {
-      this.simulation.fireSkill(skill, targetUnit, targetCell);
-      this.resetTools();
+    getTargetUnits() {
+      let pf = this.skillDirection ?? this.skillArea;
+      if (pf) {
+        return this.allActiveUnits.filter(u => {
+          return pf.isInFireRange(u.coord) && this.isValidTarget(this.selectedUnit, this.selectedSkill, u);
+        })
+      }
+      else {
+        return this.targetUnit;
+      }
     },
+
     confirmAction() {
-      this.simulation.fireSkill(this.selectedUnit, this.selectedSkill, this.targetUnit, this.targetCell);
+      this.simulation.fireSkill(this.selectedUnit, this.selectedSkill, this.getTargetUnits(), this.targetCell);
       this.resetTools();
     },
 

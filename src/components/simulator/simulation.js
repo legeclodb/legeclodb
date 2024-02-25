@@ -35,28 +35,15 @@ export class BaseUnit {
     else
       this.base.coord = v;
   }
-  get main() {
-    return this.sim ? this.sim.main : this.base.main;
-  }
-  get support() {
-    return this.sim ? this.sim.support : this.base.support;
-  }
-  get hasSupport() {
-    return this.base.support.cid;
-  }
-  get actions() {
-    return this.sim ? this.sim.actions : [];
-  }
+  get main() { return this.sim ? this.sim.main : this.base.main; }
+  get support() { return this.sim ? this.sim.support : this.base.support; }
+  get hasSupport() { return this.base.support.cid; }
+  get actions() { return this.sim ? this.sim.actions : []; }
 
-  get move() {
-    return this.sim ? this.sim.main.move : this.main.move;
-  }
-  get range() {
-    return this.sim ? this.sim.main.range : this.main.range;
-  }
-  get isActive() {
-    return this.sim ? this.sim.isActive : false;
-  }
+  get move() { return this.sim ? this.sim.main.move : this.main.move; }
+  get range() { return this.sim ? this.sim.main.range : this.main.range; }
+  get isAlive() { return this.sim ? this.sim.isAlive : false; }
+  get isActive() { return this.sim ? this.sim.isActive : false; }
 
   constructor(isPlayer = true) {
     if (isPlayer)
@@ -512,7 +499,8 @@ class SimUnit {
   //#region props
   get fid() { return this.base.fid; }
   get phase() { return this.base.phase; }
-  get isActive() { return !this.isDormant && this.main.hp > 0; }
+  get isAlive() { return this.main.hp > 0; }
+  get isActive() { return !this.isDormant && this.isAlive; }
   get isPlayer() { return this.base.isPlayer; }
   get isEnemy() { return this.base.isEnemy; }
   get hpRate() { return 0; }
@@ -774,11 +762,87 @@ export class SimContext {
     return unit && ((unit.isPlayer && this.isPlayerTurn) || (unit.isEnemy && this.isEnemyTurn));
   }
 
-  fireSkill(unit, skill, targetUnit, targetCell) {
+  fireSkill(unit, skill, targets, cell) {
+    // targets は配列なら複数、非配列なら単体
+    let target = Array.isArray(targets) ? null : targets;
+    let range = 0;
+    let move = 0;
+
+    let doAttack = false;
+    let doBattle = false;
+    if (unit.prevCoord) {
+      move = Math.abs(unit.coord[0] - unit.prevCoord[0]) + Math.abs(unit.coord[1] - unit.prevCoord[1]);
+    }
+    if (target) {
+      range = Math.abs(unit.coord[0] - target.coord[0]) + Math.abs(unit.coord[1] - target.coord[1]);
+    }
+
+    // 条件変数を設定
+    // 攻撃側
+    let cond = {
+      onOwnTurn: true,
+      move: move,
+    };
+    if (skill) {
+      if (skill.isNormalAttack) {
+        cond.onNormalAttack = true;
+      }
+      else {
+        cond.onActiveSkill = true;
+        if (skill.isAreaTarget) {
+          cond.onAreaSkill = true;
+        }
+        else {
+          cond.onSingleSkill = true;
+        }
+      }
+
+      if (target) {
+        // 単体スキルの場合
+        cond.range = range;
+        if (skill.isTargetAlly) {
+          cond.onTargetAlly = true;
+        }
+        if (skill.isTargetEnemy) {
+          cond.onTargetEnemy = true;
+        }
+        if (range == 1) {
+          cond.onCloseCombat = true;
+        }
+        else if (range > 1) {
+          cond.onRangedCombat = true;
+        }
+      }
+    }
+
+    // fire onActionBegin()
+    // fire onAttackBegin()
+    // fire onBattleBegin()
+
     // 待機の場合 skill は null
     if (skill) {
+      console.log(targets);
+      console.log(cond);
       skill.onFire();
     }
+
+    //cond.onCriticalhit = true;
+    //cond.onDamage = true;
+
+    let killed = (target ? [target] : targets).filter(a => !a.isAlive);
+    if (killed.length) {
+      cond.onKill = true;
+
+      for (let k of killed) {
+        // fire onDeath
+      }
+
+      // fire onKill()
+    }
+
+    // fire onBattleEnd()
+    // fire onAttackEnd()
+    // fire onActionEnd()
   }
 
   passTurn() {
