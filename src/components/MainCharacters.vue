@@ -731,17 +731,17 @@ export default {
       this.updateTagCounts();
     },
     updateStatus() {
-      let s = this.stat;
-      let base = Object.values(s.base).map(a => a.value);
-      let level = base[0];
-      let star = base[1];
-      let master = base[2];
-      let loveBonus = base[3];
-      let boosts = Object.values(s.boosts).map(a => a.value);
-      if (level < 1) {
-        level = 1;
-        s.base.level.value = level;
+      const clampAndGet = (a) => {
+        if (typeof a.min == 'number') {
+          a.value = Math.max(a.value, a.min);
+        }
+        if (typeof a.max == 'number') {
+          a.value = Math.min(a.value, a.max);
+        }
+        return a.value;
       }
+      let [level, star, master, loveBonus] = Object.values(this.stat.base).map(a => clampAndGet(a));
+      let boosts = Object.values(this.stat.boosts).map(a => a.value);
 
       for (let chr of this.characters) {
         const status = this.getMainChrStatus(chr, level, star, master, loveBonus, boosts);
@@ -749,6 +749,7 @@ export default {
           chr.status = [...status, this.getMainBattlePower(status, star, master, 5, 0, false)];
         }
 
+        // 召喚ユニット
         for (let sum of (chr.summonAll ?? [])) {
           sum.status = this.getNPCChrStatus(sum, level);
         }

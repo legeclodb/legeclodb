@@ -573,13 +573,22 @@ export default {
     },
 
     updateStatus() {
-      const s = this.stat;
-      const base = Object.values(s.base).map(a => a.value);
-      const boosts = Object.values(s.boosts).map(a => a.value);
+      const clampAndGet = (a) => {
+        if (typeof a.min == 'number') {
+          a.value = Math.max(a.value, a.min);
+        }
+        if (typeof a.max == 'number') {
+          a.value = Math.min(a.value, a.max);
+        }
+        return a.value;
+      }
+      let [level, star, master, loveBonus] = Object.values(this.stat.base).map(a => clampAndGet(a));
+      let boosts = Object.values(this.stat.boosts).map(a => a.value);
+
       for (let chr of this.characters) {
-        const status = this.getSupportChrStatus(chr, ...base, boosts);
+        const status = this.getSupportChrStatus(chr, level, star, master, loveBonus, boosts);
         if (status) {
-          chr.status = [...status, this.getSupportBattlePower(status, s.base.star.value, s.base.master.value)];
+          chr.status = [...status, this.getSupportBattlePower(status, star, master)];
         }
       }
       this.$forceUpdate();
@@ -591,8 +600,9 @@ export default {
         [100, 6, 0, true, 30, 30, 30, 30, 30]
       ];
       let vals = [...presets[type]];
-      for (let v of [...Object.values(s.base), ...Object.values(s.boosts)])
+      for (let v of [...Object.values(s.base), ...Object.values(s.boosts)]) {
         v.value = vals.shift();
+      }
       this.updateStatus();
     },
 
