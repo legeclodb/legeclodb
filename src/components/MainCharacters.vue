@@ -319,7 +319,7 @@
                     <div class="param-box"><b-img-lazy :src="getImageURL('射程')" title="射程" width="18" height="18" /><span>{{summon.range}}</span></div>
                     <div class="param-box"><b-img-lazy :src="getImageURL('移動')" title="移動" width="18" height="18" /><span>{{summon.move}}</span></div>
                   </div>
-                  <div v-if="summon.statusLvs" class="status2" title="Lv110 時の能力値" v-html="statusToHtml(summon.statusLvs[110])" />
+                  <div v-if="summon.statusLvs" class="status2" v-html="statusToHtml(summon.status)" />
                 </div>
                 <div class="skills">
                   <div class="talent" :class="{ 'highlighted': isTalentHighlighted(summon.talent) }">
@@ -731,13 +731,26 @@ export default {
       this.updateTagCounts();
     },
     updateStatus() {
-      const s = this.stat;
-      const base = Object.values(s.base).map(a => a.value);
-      const boosts = Object.values(s.boosts).map(a => a.value);
+      let s = this.stat;
+      let base = Object.values(s.base).map(a => a.value);
+      let level = base[0];
+      let star = base[1];
+      let master = base[2];
+      let loveBonus = base[3];
+      let boosts = Object.values(s.boosts).map(a => a.value);
+      if (level < 1) {
+        level = 1;
+        s.base.level.value = level;
+      }
+
       for (let chr of this.characters) {
-        const status = this.getMainChrStatus(chr, ...base, boosts);
+        const status = this.getMainChrStatus(chr, level, star, master, loveBonus, boosts);
         if (status) {
-          chr.status = [...status, this.getMainBattlePower(status, s.base.star.value, s.base.master.value, 5, 0, false)];
+          chr.status = [...status, this.getMainBattlePower(status, star, master, 5, 0, false)];
+        }
+
+        for (let sum of chr.summon ?? []) {
+          sum.status = this.getNPCChrStatus(sum, level);
         }
       }
       this.$forceUpdate();
@@ -749,8 +762,9 @@ export default {
         [100, 6, 0, true, 70, 50, 50, 50, 50, 50]
       ];
       let vals = [...presets[type]];
-      for (let v of [...Object.values(s.base), ...Object.values(s.boosts)])
+      for (let v of [...Object.values(s.base), ...Object.values(s.boosts)]) {
         v.value = vals.shift();
+      }
       this.updateStatus();
     },
 

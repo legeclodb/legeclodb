@@ -838,15 +838,46 @@ export default {
       return r;
     },
 
-    getNPCChrStatus(chr, level, rate = [100, 100, 100, 100, 100, 100])
+    // rate: 各能力値のブースト量% (例: [200, 100, 100, 100, 100, 100] で HP だけ 2 倍)
+    getNPCChrStatus(chr, level, rate = null)
     {
-      // todo: 補間
-      let r = [...chr.statusLvs[level]];
-      if (rate) {
-        for (let i = 0; i < r.length; ++i)
-          r[i] = Math.round(r[i] * (rate[i] * 0.01));
+      let status = null;
+
+      // NPC のステータスは大体 10 レベル毎にキーとなる値が設定されており、それ以外のレベルでは線形補間する必要がある
+      let prevLv = null;
+      for (let lvStr in chr.statusLvs) {
+        const lv = parseInt(lvStr);
+        if (lv == level) {
+          // キーレベルに一致する場合、その値を使う
+          status = [...chr.statusLvs[lv]];
+          break;
+        }
+        else if (lv < level) {
+          prevLv = lv;
+        }
+        else {
+          // ステータス補間
+          const ps = chr.statusLvs[prevLv];
+          const cs = chr.statusLvs[lv];
+          status = new Array(cs.length);
+          for (let i = 0; i < cs.length; ++i) {
+            status[i] = ps[i] + Math.floor(((cs[i] - ps[i]) / (lv - prevLv)) * (level - prevLv));
+          }
+          break;
+        }
       }
-      return r;
+      if (!status) {
+        // 最大キーレベルより高い場合は最大キーレベルの値を使う
+        status = [...chr.statusLvs[prevLv]];
+      }
+
+      // ブースト適用
+      if (rate) {
+        for (let i = 0; i < status.length; ++i) {
+          status[i] = Math.round(status[i] * (rate[i] * 0.01));
+        }
+      }
+      return status;
     },
 
     getEngateDate(chr) {
