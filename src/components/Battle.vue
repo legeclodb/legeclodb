@@ -196,24 +196,31 @@
           </b-button>
           <b-popover :target="`btn-loadout-op`" triggers="click" custom-class="loadout-popover" @show="fetchLoadoutList()" ref="loadout_popover">
             <h5>公開されている編成</h5>
-            <b-table small outlined sticky-header :items="loadoutList" :fields="loadoutFields" style="min-width: 90%;">
-              <template #cell(name)="row">
-                <span>{{row.item.name}}</span>
-              </template>
-              <template #cell(actions)="row">
-                <div class="flex" style="">
-                  <b-button size="sm" @click="downloadLoadoutFromServer(row.item)">
-                    ロード
-                  </b-button>
-                  <b-button size="sm" :id="`loadout-${row.item.hash}`" @click="copyLoadoutUrl(row.item)" style="margin-left: 0.25em">
-                    URL コピー
-                  </b-button>
-                  <b-button size="sm" @click="deleteLoadoutFromServer(row.item)" style="margin-left: 0.25em">
-                    削除(確認あり)
-                  </b-button>
-                </div>
-              </template>
-            </b-table>
+            <template v-if="fetching">
+              <div style="padding: 10px;">
+                <b-spinner small label="Spinning"></b-spinner>
+              </div>
+            </template>
+            <template v-else>
+              <b-table small outlined sticky-header :items="loadoutList" :fields="loadoutFields" style="min-width: 90%;">
+                <template #cell(name)="row">
+                  <span>{{row.item.name}}</span>
+                </template>
+                <template #cell(actions)="row">
+                  <div class="flex" style="">
+                    <b-button size="sm" @click="downloadLoadoutFromServer(row.item)">
+                      ロード
+                    </b-button>
+                    <b-button size="sm" :id="`loadout-${row.item.hash}`" @click="copyLoadoutUrl(row.item)" style="margin-left: 0.25em">
+                      URL コピー
+                    </b-button>
+                    <b-button size="sm" @click="deleteLoadoutFromServer(row.item)" style="margin-left: 0.25em">
+                      削除(確認あり)
+                    </b-button>
+                  </div>
+                </template>
+              </b-table>
+            </template>
             <div class="flex" style="margin-bottom: 0.5em;">
               <b-button size="sm" @click="exportLoadoutToServer()" style="min-width: 12em;" id="btn-loadout-publish">
                 現在の編成を公開
