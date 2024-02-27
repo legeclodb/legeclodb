@@ -42,8 +42,6 @@ export default {
         "100",
         "全て",
       ],
-
-      lastClipboardValue: "",
     }
   },
 
@@ -711,7 +709,6 @@ export default {
     },
 
     copyToClipboard(value) {
-      this.lastClipboardValue = value;
       if (navigator.clipboard) {
         return navigator.clipboard.writeText(value);
       }
@@ -999,6 +996,10 @@ export default {
       }
       if (skill.summon) {
         addTag(`召喚`);
+      }
+
+      if (skill.supportAttack) {
+        addTag(`サポート同時攻撃`);
       }
 
       if (skill.fixedDamage) {

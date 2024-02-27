@@ -496,6 +496,14 @@
       }
     },
 
+    "supportAttack": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "condition": { "$ref": "#/$defs/condition" }
+      }
+    },
+
     "multiMove": {
       "type": "object",
       "additionalProperties": false,
@@ -636,6 +644,10 @@
       "doubleAttack": {
         "type": "array",
         "items": { "$ref": "#/$defs/doubleAttack" }
+      },
+      "supportAttack": {
+        "type": "array",
+        "items": { "$ref": "#/$defs/supportAttack" }
       },
       "multiMove": {
         "type": "array",
