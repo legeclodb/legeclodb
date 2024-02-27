@@ -315,3 +315,14 @@ div.skill {
   background-color: #fffefe;
   padding: 3px;
 }
+
+.toast {
+    max-width: 500px !important;
+}
+.b-toast {
+    max-width: 500px !important;
+}
+.b-toaster-slot {
+    max-width: 500px !important;
+    display: flex !important;
+}

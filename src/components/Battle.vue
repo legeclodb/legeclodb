@@ -1495,14 +1495,6 @@ export default {
       this.toast(`コピーしました：${url}`);
     },
 
-    toast(mes) {
-      this.$bvToast.toast(mes, {
-        toaster: 'b-toaster-bottom-left',
-        autoHideDelay: Math.min(mes.length * 150, 3000),
-        appendToast: true,
-      });
-    },
-
 
     updateURL() {
       let seri = new this.URLSerializer();

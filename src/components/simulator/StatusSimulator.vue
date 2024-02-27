@@ -214,11 +214,8 @@
           </b-dropdown-item>
         </b-dropdown>
         <template v-if="!embed">
-          <b-button size="sm" :id="`ss${uid}-copy-url`" @click="copyToClipboard(statUrl)" style="margin-left: 0.5em;">
+          <b-button size="sm" @click="onCopyUrl()" style="margin-left: 0.5em;">
             パラメータを URL としてコピー
-            <b-popover :target="`ss${uid}-copy-url`" triggers="click blur" placement="top" custom-class="url-popover">
-              コピーしました：<br />{{ statUrl }}
-            </b-popover>
           </b-button>
         </template>
       </div>
@@ -1495,6 +1492,12 @@ export default {
     },
     dummyHandler() {
     },
+
+    onCopyUrl() {
+      const url = this.getParamsUrl();
+      this.copyToClipboard(url);
+      this.toast(`コピーしました`);
+    },
   },
 
   computed: {
@@ -1512,9 +1515,6 @@ export default {
     statSupportResult() {
       return this.calcStatSupport();
     },
-    statUrl() {
-      return this.getParamsUrl();
-    }
   },
 
   watch: {

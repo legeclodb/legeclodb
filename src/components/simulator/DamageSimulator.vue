@@ -70,10 +70,7 @@
     <div>
       <b-container>
         <h5 style="margin-bottom: 10px">ダメージ: {{dmgResult}}</h5>
-        <b-button id="dmg-copy-url" @click="copyToClipboard(dmgUrl)">パラメータを URL としてコピー</b-button>
-        <b-popover target="dmg-copy-url" triggers="click blur" placement="top" custom-class="url-popover">
-          コピーしました：<br />{{ dmgUrl }}
-        </b-popover>
+        <b-button @click="onCopyUrl()">パラメータを URL としてコピー</b-button>
       </b-container>
     </div>
   </div>
@@ -293,14 +290,17 @@ export default {
       }
       return false;
     },
+
+    onCopyUrl() {
+      const url = this.getParamsUrl();
+      this.copyToClipboard(url);
+      this.toast(`コピーしました`);
+    },
   },
 
   computed: {
     dmgResult() {
       return this.calcDamage();
-    },
-    dmgUrl() {
-      return this.getParamsUrl();
     },
   }
 };

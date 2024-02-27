@@ -1503,6 +1503,16 @@ export default {
       }
     },
 
+
+    toast(mes) {
+      this.$bvToast.toast(mes, {
+        toaster: 'b-toaster-bottom-left',
+        autoHideDelay: Math.min(300 + mes.length * 150, 3000),
+        appendToast: true,
+      });
+    },
+
+
     setArrayElement(ary, idx, item) {
       this.$set(ary, idx, item);
     },

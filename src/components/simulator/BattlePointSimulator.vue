@@ -50,10 +50,7 @@
     <div>
       <b-container>
         <h5 style="margin-bottom: 10px">戦闘力: {{bpResult}}</h5>
-        <b-button id="bp-copy-url" @click="copyToClipboard(bpUrl)">パラメータを URL としてコピー</b-button>
-        <b-popover target="bp-copy-url" triggers="click blur" placement="top" custom-class="url-popover">
-          コピーしました：<br />{{ bpUrl }}
-        </b-popover>
+        <b-button @click="onCopyUrl()">パラメータを URL としてコピー</b-button>
       </b-container>
     </div>
   </div>
@@ -254,6 +251,13 @@ export default {
       return Math.round(((hp * 0.05) + (atk * 2 * (1.0 + tec * 0.0003)) + (def * 2) + (res * 2)) * rate);
     },
 
+    onCopyUrl() {
+      const url = this.getParamsUrl();
+      this.copyToClipboard(url);
+      this.toast(`コピーしました`);
+    },
+
+
     getParamsUrl() {
       let params = [];
 
@@ -293,9 +297,6 @@ export default {
   computed: {
     bpResult() {
       return this.calcBattlePower();
-    },
-    bpUrl() {
-      return this.getParamsUrl();
     },
   }
 };

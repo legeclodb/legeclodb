@@ -71,10 +71,7 @@
           </div>
           <div class="button-box">
             <div class="left-align">
-              <b-button size="sm" id="cb-copy-url" @click="copyToClipboard(getParamsUrl())">パラメータを URL としてコピー</b-button>
-              <b-popover target="cb-copy-url" triggers="click blur" placement="top" custom-class="url-popover">
-                コピーしました：<br />{{ getParamsUrl() }}
-              </b-popover>
+              <b-button size="sm" @click="onCopyUrl()">パラメータを URL としてコピー</b-button>
             </div>
           </div>
         </b-container>
@@ -1014,10 +1011,12 @@ export default {
             tmpSkills.splice(tmpSkills.indexOf(r.skill), 1);
             skillsScore.push(r);
             updateState(r);
-            if (r.summon)
+            if (r.summon) {
               summonScore = r.summon;
-            if (r.skill.isActive && !r.skill.multiAction)
+            }
+            if (chr.isMain && r.skill.isActive && !r.skill.multiAction) {
               ++activeCount;
+            }
           }
         }
 
@@ -1180,6 +1179,12 @@ export default {
 
     updateQuery() {
       this.beginSearch();
+    },
+
+    onCopyUrl() {
+      const url = this.getParamsUrl();
+      this.copyToClipboard(url);
+      this.toast(`コピーしました`);
     },
 
     enableBuf(label) {
