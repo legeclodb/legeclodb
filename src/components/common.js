@@ -406,9 +406,9 @@ export default {
 
       this.preventShowHideHeaderOnScroll = 1;
       this.hidePopover();
-      this.$nextTick(function () {
+      this.$nextTick(() => {
         this.showHeader = true;
-      }.bind(this));
+      });
     },
     setFreeSearchPattern(txt, wholeWord = false, escape = true) {
       txt = txt.trim();
@@ -422,9 +422,9 @@ export default {
 
       this.preventShowHideHeaderOnScroll = 1;
       this.hidePopover();
-      this.$nextTick(function () {
+      this.$nextTick(() => {
         this.showHeader = true;
-      }.bind(this));
+      });
     },
 
     matchTags(tags, re) {
@@ -587,14 +587,14 @@ export default {
         .join("");
     },
     statusToHtml(status, prefix = "", damageType = null) {
-      const conv = function (n, v, i) {
+      const conv = (n, v, i) => {
         if (!v)
           return [];
         if (i < 6)
           return `<div class="param-box"><img src="${this.getImageURL(n)}" title="${n}" width="18" height="18" /><span>${prefix}${v}</span></div>`;
         else
           return `<div class="param-box"><span class="param-name">${n}:</span><span class="param-value">${v}</span></div>`;
-      }.bind(this);
+      };
       let list = ["HP", "アタック", "ディフェンス", "マジック", "レジスト", "テクニック", "戦闘力"].flatMap((n, i) => conv(n, status[i], i));
 
       if (damageType) {
@@ -607,11 +607,11 @@ export default {
       return list.join("");
     },
     statusToText(status) {
-      const conv = function (n, v, i) {
+      const conv = (n, v, i) => {
         if (!v)
           return [];
         return `${n}+${v} `;
-      }.bind(this);
+      };
       let list = ["HP", "アタック", "ディフェンス", "マジック", "レジスト", "テクニック", "戦闘力"].flatMap((n, i) => conv(n, status[i], i));
       return list.join("");
     },
@@ -626,9 +626,9 @@ export default {
 
           if (this.tagSearchPattern.length != 0) {
             const re = new RegExp(this.tagSearchPattern);
-            this.tagSearchFn = function (item) {
+            this.tagSearchFn = (item) => {
               return this.matchTags(item.tags, re);
-            }.bind(this);
+            };
           }
           else {
             this.tagSearchFn = null;
@@ -987,7 +987,7 @@ export default {
 
     effectParamsToTags(skill, params) {
       let miscTags = [];
-      const addTag = function (tag) {
+      const addTag = (tag) => {
         miscTags.push(tag);
       };
 
@@ -1125,7 +1125,7 @@ export default {
         addTag(`位置移動${postfix}`);
       }
 
-      const buffToS = function (effectCategory, effect) {
+      const buffToS = (effectCategory, effect) => {
         if (params.tagFilter && !params.tagFilter(skill, effectCategory, effect))
           return [];
 
@@ -1164,7 +1164,7 @@ export default {
           t += `(味方)`;
         }
         return t;
-      }.bind(this);
+      };
 
       let buff = skill.buff;
       if (skill.isSymbolSkill) {
@@ -1203,7 +1203,7 @@ export default {
           skill.isAreaTarget = true;
         }
 
-        const hasAreaEffect = function (effects) {
+        const hasAreaEffect = (effects) => {
           if (effects) {
             for (const e of effects) {
               if (e.target != "自身") {
@@ -1374,7 +1374,7 @@ export default {
         skillTable.set(s.uid, s);
       }
 
-      const grabSkill = function (id, chr) {
+      const grabSkill = (id, chr) => {
         if (typeof (id) == "object") {
           return id;
         }
@@ -1392,11 +1392,12 @@ export default {
         if (!skill.owners.includes(chr))
           skill.owners.push(chr);
 
+        // todo: まともなレベル選択処理
         if (!skill.desc && skill.descs) {
           skill.current = "Lv 6";
           this.$set(skill, 'desc', skill.descs[skill.current]);
 
-          const arrayToScalar = function (obj, prop) {
+          const arrayToScalar = (obj, prop) => {
             const v = obj[prop];
             if (Array.isArray(v)) {
               obj[`${prop}_`] = v;
@@ -1422,7 +1423,7 @@ export default {
           }
         }
         return skill;
-      }.bind(this);
+      };
 
       for (let chr of characters) {
         if (chr.talent) {
@@ -1447,7 +1448,7 @@ export default {
         if (chr.supportType)
           chr.supportTypeId = consts.supportTypes.findIndex(v => v == chr.supportType);
 
-        const handleSummons = function (skills) {
+        const handleSummons = (skills) => {
           for (let s of skills) {
             if (Array.isArray(s.summon) && (typeof s.summon[0]) == "string") {
               s.summon = s.summon.map(uid => chr.summon.find(sch => sch.uid == uid));
@@ -1478,7 +1479,7 @@ export default {
           }
         }
 
-        if (chr.engage && chr.engage.skills) {
+        if (chr.engage?.skills) {
           chr.engage.skills = chr.engage.skills.flatMap(id => grabSkill(id, chr));
           for (let i = 0; i < chr.skills.length; ++i) {
             if (chr.engage.skills[i] !== chr.skills[i]) {
@@ -1509,6 +1510,19 @@ export default {
               configurable: true,
               get: () => chr._summon
             });
+          }
+        }
+
+        if (params.includeSkillEffectTags && chr.isMain) {
+          let multiAttack = 0;
+          const skills = [chr.talent, ...(chr.engage?.skills ?? chr.skills ?? [])];
+          for (const skill of skills) {
+            if (this.matchTags(skill?.tags, /^再攻撃(\(敵撃破時\))?$/)) {
+              ++multiAttack;
+            }
+          }
+          if (multiAttack >= 2) {
+            chr.talent.tags.push("再々攻撃");
           }
         }
       }
