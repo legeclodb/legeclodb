@@ -991,15 +991,70 @@ export default {
         miscTags.push(tag);
       };
 
-      if (skill.isSymbolSkill) {
-        addTag(`シンボルスキル`);
-      }
-      if (skill.summon) {
-        addTag(`召喚`);
+      if (skill.multiAction) {
+        let postfix = "";
+        for (const ma of skill.multiAction) {
+          const cond = ma.condition;
+          if (cond) {
+            if (cond.onKill)
+              postfix = "(敵撃破時)";
+            else if (cond.probability)
+              postfix = "(確率)";
+            else
+              postfix = "";
+          }
+          if (ma.target && ma.target != "自身") {
+            postfix = "(味方)";
+          }
+        }
+        addTag(`再行動${postfix}`);
+        if (!skill.isActive || (skill.isActive && skill.damageRate) || postfix == "(味方)") {
+          addTag(`再攻撃${postfix}`);
+        }
       }
 
+      if (skill.multiMove) {
+        let postfix = "";
+        for (const mm of skill.multiMove) {
+          const cond = mm.condition;
+          if (cond) {
+            if (cond.onKill)
+              postfix = "(敵撃破時)";
+            else
+              postfix = "";
+          }
+        }
+        addTag(`再移動${postfix}`);
+      }
+
+      if (skill.guard) {
+        let postfix = "";
+        for (const v of skill.guard) {
+          if (v.type == "物理") {
+            postfix = "(物理攻撃)";
+          }
+        }
+        addTag(`ガード${postfix}`);
+      }
+
+      if (skill.doubleAttack) {
+        let postfix = "";
+        for (const da of skill.doubleAttack) {
+          const cond = da.condition;
+          if (cond) {
+            if (cond.onEnemyTurn)
+              postfix = "(反撃)";
+            else
+              postfix = "";
+          }
+        }
+        addTag(`2回攻撃${postfix}`);
+      }
       if (skill.supportAttack) {
         addTag(`サポート同時攻撃`);
+      }
+      if (skill.ignoreGuard) {
+        addTag(`ガード不可攻撃`);
       }
 
       if (skill.fixedDamage) {
@@ -1034,62 +1089,17 @@ export default {
       if (skill.revive) {
         addTag(`復活`);
       }
-
+      if (skill.summon) {
+        addTag(`召喚`);
+      }
+      if (skill.isSymbolSkill) {
+        addTag(`シンボルスキル`);
+      }
       if (skill.buffCancel) {
         addTag(`バフ解除`);
       }
       if (skill.buffSteal) {
         addTag(`バフ奪取`);
-      }
-
-      if (skill.doubleAttack) {
-        let postfix = "";
-        for (const da of skill.doubleAttack) {
-          const cond = da.condition;
-          if (cond) {
-            if (cond.onEnemyTurn)
-              postfix = "(反撃)";
-            else
-              postfix = "";
-          }
-        }
-        addTag(`2回攻撃${postfix}`);
-      }
-
-      if (skill.multiMove) {
-        let postfix = "";
-        for (const mm of skill.multiMove) {
-          const cond = mm.condition;
-          if (cond) {
-            if (cond.onKill)
-              postfix = "(敵撃破時)";
-            else
-              postfix = "";
-          }
-        }
-        addTag(`再移動${postfix}`);
-      }
-
-      if (skill.multiAction) {
-        let postfix = "";
-        for (const ma of skill.multiAction) {
-          const cond = ma.condition;
-          if (cond) {
-            if (cond.onKill)
-              postfix = "(敵撃破時)";
-            else if (cond.probability)
-              postfix = "(確率)";
-            else
-              postfix = "";
-          }
-          if (ma.target && ma.target != "自身") {
-            postfix = "(味方)";
-          }
-        }
-        addTag(`再行動${postfix}`);
-        if (!skill.isActive || (skill.isActive && skill.damageRate) || postfix == "(味方)") {
-          addTag(`再攻撃${postfix}`);
-        }
       }
 
       if (skill.ctReduction) {

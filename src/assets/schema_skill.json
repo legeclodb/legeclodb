@@ -479,6 +479,25 @@
       }
     },
 
+    "guard": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "type": { "enum": [ "物理", "魔法", "全攻撃" ] },
+        "area": { "$ref": "#/$defs/areaType" },
+        "duration": { "type": "number" },
+        "condition": { "$ref": "#/$defs/condition" }
+      }
+    },
+
+    "ignoreGuard": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "condition": { "$ref": "#/$defs/condition" }
+      }
+    },
+
     "doubleAttack": {
       "type": "object",
       "additionalProperties": false,
@@ -640,6 +659,14 @@
       "buffSteal": {
         "type": "array",
         "items": { "$ref": "#/$defs/buffSteal" }
+      },
+      "guard": {
+        "type": "array",
+        "items": { "$ref": "#/$defs/guard" }
+      },
+      "ignoreGuard": {
+        "type": "array",
+        "items": { "$ref": "#/$defs/ignoreGuard" }
       },
       "doubleAttack": {
         "type": "array",
