@@ -1,30 +1,28 @@
 #!/home/i-saint/bin/python3
 # -*- coding: utf-8 -*-
 import sys, os, io, stat, time, datetime, hashlib, cgi, json, traceback, MySQLdb
-from config import *
-
-ListJson = "./list.json"
-form = cgi.FieldStorage()
+from config import * # Table, Host, User, Password, Database 非公開データ
 
 mydb = MySQLdb.connect(Host, User, Password, Database, use_unicode = True, charset = "utf8")
 mycursor = mydb.cursor()
 table = Table
+form = cgi.FieldStorage()
 
 def getList():
     mycursor.execute(f"SELECT date, hash, name, author FROM {table}")
-    result = mycursor.fetchall()
     return list(map(lambda r: {
         "date": r[0],
         "hash": r[1],
         "name": r[2],
         "author": r[3],
-    }, result))
+    }, mycursor.fetchall()))
 
 def getData(hash):
     try:
-        mycursor.execute(f"SELECT data FROM {table} WHERE hash = '{hash}'")
-        result = mycursor.fetchall()
-        return result[0][0]
+        sql = f"SELECT data FROM {table} WHERE hash = %s"
+        val = (hash,)
+        mycursor.execute(sql, val)
+        return mycursor.fetchone()[0]
     except Exception as e:
         return {
             "succeeded": False,
@@ -55,7 +53,9 @@ def putData(file, author):
 
 def delData(hash):
     try:
-        mycursor.execute(f"DELETE FROM {table} WHERE hash = '{hash}'")
+        sql = f"DELETE FROM {table} WHERE hash = %s"
+        val = (hash,)
+        mycursor.execute(sql, val)
         mydb.commit()
         return {"succeeded": True}
     except Exception as e:

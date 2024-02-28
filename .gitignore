@@ -6,7 +6,7 @@ node_modules
 /tmp
 /masterdata
 */_build*
-
+config.py
 
 # local env files
 .env.local
