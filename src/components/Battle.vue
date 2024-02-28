@@ -1442,13 +1442,12 @@ export default {
       }
     },
     fetchLoadoutList() {
-      let self = this;
-      self.fetching = true;
-      fetch(LoadoutServer).then(function (res) {
-        res.json().then(function (obj) {
-          self.fetching = false;
-          self.loadoutList = obj.sort((a, b) => b.date.localeCompare(a.date));
-          for (let e of self.loadoutList) {
+      this.fetching = true;
+      fetch(LoadoutServer).then((res) => {
+        res.json().then((obj) => {
+          this.fetching = false;
+          this.loadoutList = obj.sort((a, b) => b.date.localeCompare(a.date));
+          for (let e of this.loadoutList) {
             // 長すぎる名前は切り詰めておく
             const maxNameLen = 24;
             if (e.name.length > maxNameLen) {
@@ -1460,19 +1459,17 @@ export default {
     },
     exportLoadoutToServer() {
       const data = this.serializeLoadout();
-      let self = this;
-
       var form = new FormData()
       form.append('mode', 'put');
       form.append('data', new Blob([JSON.stringify(data, null, 2)]));
       form.append('author', this.author);
-      fetch(LoadoutServer, { method: "POST", body: form }).then(function (res) {
-        res.json().then(function (obj) {
+      fetch(LoadoutServer, { method: "POST", body: form }).then((res) => {
+        res.json().then((obj) => {
           if (obj.succeeded) {
-            self.fetchLoadoutList();
+            this.fetchLoadoutList();
           }
           if (obj.message) {
-            self.toast(obj.message);
+            this.toast(obj.message);
           }
         })
       });
@@ -1482,9 +1479,15 @@ export default {
     },
     deleteLoadoutFromServer(rec) {
       if (window.confirm(`"${rec.name}" をサーバーから削除します。よろしいですか？`)) {
-        let self = this;
-        fetch(`${LoadoutServer}?mode=del&hash=${rec.hash}`).then(function (res) {
-          self.fetchLoadoutList();
+        fetch(`${LoadoutServer}?mode=del&hash=${rec.hash}`).then((res) => {
+          res.json().then((obj) => {
+            if (obj.succeeded) {
+              this.fetchLoadoutList();
+            }
+            if (obj.message) {
+              this.toast(obj.message);
+            }
+          });
         });
       }
     },
