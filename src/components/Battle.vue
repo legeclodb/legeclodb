@@ -214,7 +214,7 @@
                     <b-button size="sm" :id="`loadout-${row.item.hash}`" @click="copyLoadoutUrl(row.item)" style="margin-left: 0.25em">
                       URL コピー
                     </b-button>
-                    <b-button size="sm" @click="deleteLoadoutFromServer(row.item)" style="margin-left: 0.25em">
+                    <b-button v-if="row.item.delkey" size="sm" @click="deleteLoadoutFromServer(row.item)" style="margin-left: 0.25em">
                       削除(確認あり)
                     </b-button>
                   </div>
@@ -226,8 +226,10 @@
                 現在の編成を公開
               </b-button>
               <b-form-input size="sm" v-model="author" placeholder="投稿者名" style="width: 8em; margin-left: 0.25em;"></b-form-input>
-
-              <b-button size="sm" @click="exportLoadoutAsFile()" style="min-width: 12em; margin-left: 1.0em;">
+              <span style="margin-left: 0.5em; color: rgb(160,160,160) ">(投稿者本人は投稿したデータを削除可能)</span>
+            </div>
+            <div class="flex" style="margin-bottom: 0.5em;">
+              <b-button size="sm" @click="exportLoadoutAsFile()" style="min-width: 12em;">
                 ファイルにエクスポート
               </b-button>
               <b-button size="sm" @click="importLoadoutFromFile()" style="min-width: 12em; margin-left: 0.25em;">
@@ -1453,6 +1455,10 @@ export default {
             if (e.name.length > maxNameLen) {
               e.name = e.name.substring(0, maxNameLen);
             }
+            const delkey = localStorage.getItem(`delkey.${e.hash}`);
+            if (delkey) {
+              e.delkey = delkey;
+            }
           }
         })
       });
@@ -1462,10 +1468,11 @@ export default {
       var form = new FormData()
       form.append('mode', 'put');
       form.append('data', new Blob([JSON.stringify(data, null, 2)]));
-      form.append('author', this.author);
+      form.append('author', this.author.trim());
       fetch(LoadoutServer, { method: "POST", body: form }).then((res) => {
         res.json().then((obj) => {
           if (obj.succeeded) {
+            localStorage.setItem(`delkey.${obj.hash}`, obj.delkey);
             this.fetchLoadoutList();
           }
           if (obj.message) {
@@ -1479,9 +1486,10 @@ export default {
     },
     deleteLoadoutFromServer(rec) {
       if (window.confirm(`"${rec.name}" をサーバーから削除します。よろしいですか？`)) {
-        fetch(`${LoadoutServer}?mode=del&hash=${rec.hash}`).then((res) => {
+        fetch(`${LoadoutServer}?mode=del&hash=${rec.hash}&delkey=${rec.delkey}`).then((res) => {
           res.json().then((obj) => {
             if (obj.succeeded) {
+              localStorage.removeItem(`delkey.${rec.hash}`);
               this.fetchLoadoutList();
             }
             if (obj.message) {
