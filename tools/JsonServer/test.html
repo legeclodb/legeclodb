@@ -5,10 +5,22 @@
   <title>test</title>
 </head>
 <body>
-  <form method="post" enctype="multipart/form-data" action="./index.cgi">
-    <input type="file" name="data" />
-    <input type="hidden" name="mode" value="put" />
-    <input type="submit" />
-  </form>
+  <div style="margin-bottom: 0.5em;">
+    <form method="post" enctype="multipart/form-data" action="./index.cgi">
+      <input type="file" name="data" />
+      <input type="hidden" name="mode" value="put" />
+      <input type="submit" />
+    </form>
+  </div>
+
+  <div>
+    <form method="post" action="./index.cgi">
+      <input type="text" name="name" />
+      <input type="text" name="message" />
+      <input type="hidden" name="thread" value="testthread" />
+      <input type="hidden" name="mode" value="putm" />
+      <input type="submit" />
+    </form>
+  </div>
 </body>
 </html>

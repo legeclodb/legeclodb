@@ -18,12 +18,13 @@ def getMessage():
     }, mycursor.fetchall()))
 
 def putMessage():
+    thread = form.getfirst("thread")
     date = time.strftime("%Y-%m-%d %H:%M:%S")
     name = form.getfirst("name") or ""
     message = form.getfirst("message")
     try:
-        sql = f"INSERT INTO {MessageTable} (date, name, message) VALUES (%s, %s, %s)"
-        val = (date, name, message)
+        sql = f"INSERT INTO {MessageTable} (thread, date, name, message) VALUES (%s, %s, %s, %s)"
+        val = (thread, date, name, message)
         mycursor.execute(sql, val)
         mydb.commit()
         return {
@@ -34,6 +35,20 @@ def putMessage():
             "succeeded": False,
             "traceback": traceback.format_exc()
         }
+
+def checkNewMessage():
+    date = form.getfirst("date")
+    if not date:
+        return {}
+    date = date.replace("/", "-")
+
+    sql = f"SELECT thread, date FROM {MessageTable} WHERE date > %s"
+    val = (date,)
+    mycursor.execute(sql, val)
+    return list(map(lambda r: {
+        "thread": r[0],
+        "date": r[1].strftime("%Y/%m/%d %H:%M:%S"),
+    }, mycursor.fetchall()))
 
 
 def getDataList():
@@ -88,10 +103,22 @@ def putData():
 
 def delData():
     try:
+        hash = form.getfirst("hash")
+        delkey = form.getfirst("delkey")
+
+        # データの削除
         sql = f"DELETE FROM {DataTable} WHERE hash = %s AND delkey = %s"
-        val = (form.getfirst("hash"), form.getfirst("delkey"))
+        val = (hash, delkey)
         mycursor.execute(sql, val)
         mydb.commit()
+
+        if mycursor.rowcount > 0:
+            # 関連するメッセージの削除
+            sql = f"DELETE FROM {MessageTable} WHERE thread = %s"
+            val = (hash,)
+            mycursor.execute(sql, val)
+            mydb.commit()
+
         return {"succeeded": True}
     except Exception as e:
         return {
@@ -101,27 +128,27 @@ def delData():
         }
 
 
-print('Content-Type: application/json; charset="utf8"\r\nAccess-Control-Allow-Origin: *\r\n\r\n')
+print('Content-Type: application/json; charset="utf8"\r\nAccess-Control-Allow-Origin: *\r\n\r\n', end='')
 try:
     mode = form.getfirst("mode")
-    content = ""
-    if mode == "get":
-        content = getData()
-    elif mode == "put":
-        content = putData()
-    elif mode == "del":
-        content = delData()
-    else:
-        content = getDataList()
+    content = {
+        "get": getData,
+        "put": putData,
+        "del": delData,
+        "getm": getMessage,
+        "putm": putMessage,
+        "chkm": checkNewMessage,
+    }.get(mode, getDataList)()
 
     if isinstance(content, dict) or isinstance(content, list):
         content = json.dumps(content, ensure_ascii=False)
 
-    print(content)
+    print(content, end='')
 
 except Exception as e:
     print(json.dumps({
         "succeeded": False,
         "message": "想定外のエラー。",
         "traceback": traceback.format_exc()
-    }, ensure_ascii=False))
+    }, ensure_ascii=False),
+    end='')
