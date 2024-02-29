@@ -257,6 +257,15 @@
         <div v-if="!simulation" class="flex" style="margin: 0px 10px 10px 10px;">
           <b-form-input size="sm" v-model="slotName" placeholder="編成名" style="width: 16em"></b-form-input>
           <b-form-input size="sm" v-model="slotDesc" placeholder="説明など" style="flex: 1; margin-left: 0.25em; "></b-form-input>
+          <b-button size="sm" v-if="loadoutHash" id="btn-loadout-message" style="margin-left: 0.25em; ">
+            <b-icon icon="chat-square-text" title="この編成へのコメントを表示" />
+            <b-popover target="btn-loadout-message" triggers="click" custom-class="comment-popover" ref="message_popover">
+              <MessageBoard :thread="loadoutHash" />
+              <div class="flex">
+                <b-button size="sm" @click="$refs.message_popover.$emit('close')">閉じる</b-button>
+              </div>
+            </b-popover>
+          </b-button>
         </div>
 
         <b-tabs v-model="unitTabIndex">
@@ -433,6 +442,7 @@ import jsonBattle from '../assets/battle.json'
 import commonjs from "./common.js";
 import lookupjs from "./simulator/lookup.js";
 import StatusSimulator from './simulator/StatusSimulator.vue'
+import MessageBoard from './parts/MessageBoard.vue'
 import * as ldb from "./simulator/simulation.js";
 
 const LoadoutServer = "https://primitive-games.jp/legeclodb/loadout/index.cgi";
@@ -443,6 +453,7 @@ export default {
   components: {
     Navigation,
     StatusSimulator,
+    MessageBoard,
   },
   mixins: [commonjs,lookupjs],
 
@@ -536,6 +547,7 @@ export default {
           label: "操作",
         }
       ],
+      loadoutHash: "",
 
       battlelogList: [],
       fetching: false,
@@ -1364,6 +1376,7 @@ export default {
       return r;
     },
     deserializeLoadout(obj) {
+      this.loadoutHash = null;
       this.slotName = obj.name ?? "";
       this.slotDesc = obj.desc ?? "";
       for (let i = 0; i < this.playerUnits.length; ++i) {
@@ -1406,7 +1419,7 @@ export default {
         });
       });
     },
-    importLoadoutFromUrl(url) {
+    importLoadoutFromUrl(url, callback = null) {
       if (url.match(/^https?:\/\//)) {
         // dropbox 対策
         url = url.replace("www.dropbox.com", "dl.dropboxusercontent.com");
@@ -1420,6 +1433,9 @@ export default {
       fetch(url).then(function (res) {
         res.json().then(function (obj) {
           self.deserializeLoadout(obj);
+          if (callback) {
+            callback();
+          }
         })
       });
     },
@@ -1439,6 +1455,9 @@ export default {
         this.toast("クリア前の編成をバックアップスロットに保存しました。");
       }
 
+      this.slotName = "";
+      this.slotDesc = "";
+      this.loadoutHash = null;
       for (let unit of this.playerUnits) {
         unit.initialize();
       }
@@ -1482,7 +1501,9 @@ export default {
       });
     },
     downloadLoadoutFromServer(rec) {
-      this.importLoadoutFromUrl(`${LoadoutServer}?mode=get&hash=${rec.hash}`);
+      this.importLoadoutFromUrl(`${LoadoutServer}?mode=get&hash=${rec.hash}`, () => {
+        this.loadoutHash = rec.hash;
+      });
     },
     deleteLoadoutFromServer(rec) {
       if (window.confirm(`"${rec.name}" をサーバーから削除します。よろしいですか？`)) {
@@ -1490,6 +1511,9 @@ export default {
           res.json().then((obj) => {
             if (obj.succeeded) {
               localStorage.removeItem(`delkey.${rec.hash}`);
+              if (rec.hash == this.loadoutHash) {
+                this.loadoutHash = null;
+              }
               this.fetchLoadoutList();
             }
             if (obj.message) {
@@ -1709,15 +1733,17 @@ export default {
     max-width: 450px;
   }
   .status-simulator-popover {
-    max-width: 880px !important;
-    width: 880px !important;
+    max-width: 1000px !important;
   }
   .status-simulator-popover .popover-body {
     padding: 0px !important;
   }
   .loadout-popover {
-    max-width: 900px !important;
-    width: 900px !important;
+    max-width: 1000px !important;
+    min-width: 800px !important;
   }
-
+  .comment-popover {
+    max-width: 800px !important;
+    min-width: 600px !important;
+  }
 </style>

@@ -79,7 +79,6 @@ export default {
         });
     },
 
-
     sanitizeText(str) {
       const callback = (c) => {
         const table = {
@@ -94,12 +93,6 @@ export default {
     }
   },
 
-  computed: {
-    displayMessages() {
-      return this.messages.slice(0, this.maxDisplayCount);
-    }
-  },
-
   watch: {
     userName: function (v) {
       localStorage.setItem(`userName`, v);
@@ -111,7 +104,7 @@ export default {
   .message-ul {
     margin: 0.25em 0 0.25em 0;
     max-height: 16em;
-    overflow-y: scroll;
+    overflow-y: auto;
   }
 
   .message-li {
