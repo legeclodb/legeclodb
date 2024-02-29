@@ -16,18 +16,15 @@
             <li><a href="#damage">ダメージ計算</a></li>
             <li><a href="#status">基本ステータスについて</a></li>
             <li><a href="#battle_power">戦闘力について</a></li>
+            <li><a href="#comments">コメント</a></li>
           </ul>
         </p>
 
         <h2><a name="about" href="#about"></a>このサイトについて</h2>
         <p>
           <b-link href="https://www.legend-clover.net/" target="_blank">れじぇくろ！</b-link>の攻略データベースです。主にバフ・デバフを検索するのを目的としています。<br />
-          間違いの指摘や要望などありましたら以下の公開 Google Docs にコメントいただけると幸いです。<br />
-          <b-button variant="secondary" id="btn-docs">Google Docs</b-button><br />
+          間違いの指摘や要望などありましたら<a href="#comments">コメント欄</a>にコメントいただけると幸いです。<br />
         </p>
-        <b-popover target="btn-docs" placement="bottom" custom-class="gdocs">
-          <iframe width="1100" height="500" src="https://docs.google.com/document/d/1vldiHELiy0GFKhXO20SOsMdw4mczivU4SuxXO9Wv26I/edit?embedded=true"></iframe>
-        </b-popover>
 
         <h2>バフ・デバフの競合・重複<a name="buff" href="#buff">.</a></h2>
         <p>
@@ -374,6 +371,8 @@
           </ul>
         </p>
 
+        <h2><a name="comments" href="#comments"></a>コメント</h2>
+        <MessageBoard thread="0123456789abcdef" />
       </div>
     </div>
 
@@ -398,6 +397,7 @@ import Navigation from './Navigation.vue'
 import DamageSimulator from './simulator/DamageSimulator.vue'
 import BattlePointSimulator from './simulator/BattlePointSimulator.vue'
 import StatusSimulator from './simulator/StatusSimulator.vue'
+import MessageBoard from './parts/MessageBoard.vue'
 
 import jsonMainActive from '../assets/main_active.json'
 import jsonMainPassive from '../assets/main_passive.json'
@@ -416,6 +416,7 @@ export default {
     DamageSimulator,
     BattlePointSimulator,
     StatusSimulator,
+    MessageBoard,
   },
   mixins: [common],
 

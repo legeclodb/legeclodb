@@ -225,7 +225,7 @@
               <b-button size="sm" @click="exportLoadoutToServer()" style="min-width: 12em;" id="btn-loadout-publish">
                 現在の編成を公開
               </b-button>
-              <b-form-input size="sm" v-model="author" placeholder="投稿者名" style="width: 8em; margin-left: 0.25em;"></b-form-input>
+              <b-form-input size="sm" v-model="userName" placeholder="投稿者名" style="width: 8em; margin-left: 0.25em;"></b-form-input>
               <span style="margin-left: 0.5em; color: rgb(160,160,160) ">(投稿者本人は投稿したデータを削除可能)</span>
             </div>
             <div class="flex" style="margin-bottom: 0.5em;">
@@ -491,7 +491,7 @@ export default {
       slotNames: ["", "", "", "", "", "", "", "", "", ""],
       slotName: "",
       slotDesc: "",
-      author: "",
+      userName: "",
 
       enemyUnits: [],
       playerUnits: [
@@ -611,7 +611,7 @@ export default {
     cellStyle.gridTemplateColumns = Array(divX).fill("50px").join(" ");
     cellStyle.gridTemplateRows = Array(divY).fill("50px").join(" ");
 
-    this.author = localStorage.getItem(`author`);
+    this.userName = localStorage.getItem(`userName`);
 
     this.selectBattle(this.battleList.slice(-1)[0].uid);
     this.selectPhase("0");
@@ -654,8 +654,8 @@ export default {
   },
 
   watch: {
-    author: function (v) {
-      localStorage.setItem(`author`, v);
+    userName: function (v) {
+      localStorage.setItem(`userName`, v);
     },
   },
 
@@ -1257,10 +1257,10 @@ export default {
     },
 
     scrollTo(id) {
-      this.$nextTick(function () {
+      this.$nextTick(() => {
         let e = document.getElementById(id);
         if (e) {
-          e.scrollIntoView({block: "nearest"});
+          e.scrollIntoView({ block: "nearest" });
         }
       });
     },
@@ -1468,7 +1468,7 @@ export default {
       var form = new FormData()
       form.append('mode', 'put');
       form.append('data', new Blob([JSON.stringify(data, null, 2)]));
-      form.append('author', this.author.trim());
+      form.append('author', this.userName.trim());
       fetch(LoadoutServer, { method: "POST", body: form }).then((res) => {
         res.json().then((obj) => {
           if (obj.succeeded) {
