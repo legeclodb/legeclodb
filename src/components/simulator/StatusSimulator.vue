@@ -9,7 +9,7 @@
     </b-container>
 
     <b-tabs v-model="tabIndex">
-      <b-tab title="メインキャラ" style="padding: 10px 10px 0px 10px">
+      <b-tab title="メインキャラ" style="padding: 10px 10px 10px 10px" ref="tabMainChr">
         <div class="flex">
           <div>
             <b-container>
@@ -47,7 +47,7 @@
               </b-form-row>
             </b-container>
           </div>
-          <div>
+          <div ref="mainSkillField">
             <b-container>
               <div>
                 <div style="text-align:center">
@@ -112,21 +112,19 @@
           </div>
         </div>
         <div>
-          <b-container>
-            <div v-if="main.character.value" class="status flex" style="margin-bottom: 10px">
-              <div class="param-box"><b-img-lazy :src="getImageURL('HP')" title="HP" width="18" height="18" /><span>{{statMainResult[0]}}</span></div>
-              <div class="param-box"><b-img-lazy :src="getImageURL('アタック')" title="アタック" width="18" height="18" /><span>{{statMainResult[1]}}</span></div>
-              <div class="param-box"><b-img-lazy :src="getImageURL('ディフェンス')" title="ディフェンス" width="18" height="18" /><span>{{statMainResult[2]}}</span></div>
-              <div class="param-box"><b-img-lazy :src="getImageURL('マジック')" title="マジック" width="18" height="18" /><span>{{statMainResult[3]}}</span></div>
-              <div class="param-box"><b-img-lazy :src="getImageURL('レジスト')" title="レジスト" width="18" height="18" /><span>{{statMainResult[4]}}</span></div>
-              <div class="param-box"><b-img-lazy :src="getImageURL('テクニック')" title="テクニック" width="18" height="18" /><span>{{statMainResult[5]}}</span></div>
-              <div class="param-box"><span class="param-name">戦闘力:</span><span class="param-value">{{statMainResult[6]}}</span></div>
-              <div class="param-box" v-if="statMainResult[7]"><span class="param-name">サポート込み戦闘力:</span><span class="param-value">{{statMainResult[7]}}</span></div>
-            </div>
-          </b-container>
+          <div v-if="main.character.value" class="status flex">
+            <div class="param-box"><b-img-lazy :src="getImageURL('HP')" title="HP" width="18" height="18" /><span>{{statMainResult[0]}}</span></div>
+            <div class="param-box"><b-img-lazy :src="getImageURL('アタック')" title="アタック" width="18" height="18" /><span>{{statMainResult[1]}}</span></div>
+            <div class="param-box"><b-img-lazy :src="getImageURL('ディフェンス')" title="ディフェンス" width="18" height="18" /><span>{{statMainResult[2]}}</span></div>
+            <div class="param-box"><b-img-lazy :src="getImageURL('マジック')" title="マジック" width="18" height="18" /><span>{{statMainResult[3]}}</span></div>
+            <div class="param-box"><b-img-lazy :src="getImageURL('レジスト')" title="レジスト" width="18" height="18" /><span>{{statMainResult[4]}}</span></div>
+            <div class="param-box"><b-img-lazy :src="getImageURL('テクニック')" title="テクニック" width="18" height="18" /><span>{{statMainResult[5]}}</span></div>
+            <div class="param-box"><span class="param-name">戦闘力:</span><span class="param-value">{{statMainResult[6]}}</span></div>
+            <div class="param-box" v-if="statMainResult[7]"><span class="param-name">サポート込み戦闘力:</span><span class="param-value">{{statMainResult[7]}}</span></div>
+          </div>
         </div>
       </b-tab>
-      <b-tab title="サポートキャラ" style="padding: 10px 10px 0px 10px ">
+      <b-tab title="サポートキャラ" style="padding: 10px 10px 10px 10px;" ref="tabSupportChr">
         <div class="flex">
           <div>
             <b-container>
@@ -163,7 +161,7 @@
               </b-form-row>
             </b-container>
           </div>
-          <div>
+          <div ref="supportSkillField">
             <b-container>
               <div style="text-align:center">
                 <h6 style="margin: 5px 0px">装備</h6>
@@ -195,7 +193,7 @@
           </div>
         </div>
         <div>
-          <div v-if="support.character.value" class="status flex" style="margin-bottom: 10px">
+          <div v-if="support.character.value" class="status flex">
             <div class="param-box"><b-img-lazy :src="getImageURL('HP')" title="HP" width="18" height="18" /><span>{{statSupportResult[0]}}</span></div>
             <div class="param-box" v-if="support.character.value.damageType=='アタック'"><b-img-lazy :src="getImageURL('アタック')" title="アタック" width="18" height="18" /><span>{{statSupportResult[1]}}</span></div>
             <div class="param-box" v-if="support.character.value.damageType=='マジック'"><b-img-lazy :src="getImageURL('マジック')" title="マジック" width="18" height="18" /><span>{{statSupportResult[3]}}</span></div>
@@ -568,6 +566,14 @@ export default {
   },
   
   mounted() {
+    this.$nextTick(() => {
+      // サポートのタブも同じサイズにしておく
+      // (そうしないと popover 内で使う際タブを切り替えると移動が起きるため)
+      this.$refs.tabSupportChr.$el.style.minHeight = `${this.$refs.tabMainChr.$el.clientHeight}px`;
+      this.$refs.tabSupportChr.$el.style.minWidth = `${this.$refs.tabMainChr.$el.clientWidth}px`;
+
+      this.$refs.supportSkillField.style.minWidth = `${this.$refs.mainSkillField.clientWidth}px`;
+    });
   },
 
   methods: {
@@ -617,7 +623,7 @@ export default {
         }
       }
 
-      const condMatch = function (effect) {
+      const condMatch = (effect) => {
         if (effect.condition) {
           if (effect.value > 0 && effect.condition.turn) {
             // ターン経過が必要なバフは除外
@@ -791,7 +797,7 @@ export default {
 
       const cmp = this.compare;
       const getItemBattlePower = (item, api) => this.getEstimatedItemBattlePower(item.status, api, ap, tec);
-      const cmpPow = function (a, b, api) {
+      const cmpPow = (a, b, api) => {
         const bpa = getItemBattlePower(a, api);
         const bpb = getItemBattlePower(b, api);
         if (bpa != bpb) {
@@ -804,9 +810,9 @@ export default {
           const nb = !b.negativeEffects ? 1 : 0;
           return na != nb ? cmp(na, nb) : cmp(getDmg(a), getDmg(b));
         }
-      }.bind(this);
+      };
 
-      const pickItem = function (items, filter, sortf) {
+      const pickItem = (items, filter, sortf) => {
         if (filter) {
           let filtered = items.filter(filter);
           if (filtered.length)
@@ -814,18 +820,18 @@ export default {
         }
         items.sort(sortf);
         return items[0];
-      }.bind(this);
+      };
 
-      const adjustSymbol = function (item) {
+      const adjustSymbol = (item) => {
         const pattern = /^(ゼニス|オリジン|ナディア)/;
         if (item && item.name.match(pattern)) {
           let r = item.name.replace(pattern, symbol);
           return this.findItem(r);
         }
         return item;
-      }.bind(this);
+      };
 
-      const pickItemsMain = function (filter = null, sortf = null) {
+      const pickItemsMain = (filter = null, sortf = null) => {
         const cond = a => this.matchClass(a, ma.character);
         if (!sortf)
           sortf = (a, b) => cmpPow(a, b, mapi);
@@ -837,16 +843,16 @@ export default {
         helmet = adjustSymbol(helmet);
         accessory = adjustSymbol(accessory);
         result.main.items = [weapon, armor, helmet, accessory];
-      }.bind(this);
+      };
 
-      const pickItemsSupport = function (filter = null) {
+      const pickItemsSupport = (filter = null) => {
         const sortf = (a, b) => cmpPow(a, b, sapi);
         let amulet1 = pickItem(this.amulets1, filter, sortf);
         let amulet2 = pickItem(this.amulets2, filter, sortf);
         result.support.items = [amulet1, amulet2];
-      }.bind(this);
+      };
 
-      const pickOptimalEnchants = function (filterFunc = null, scoreBooster = null) {
+      const pickOptimalEnchants = (filterFunc = null, scoreBooster = null) => {
         const s = ma.status;
         let r = [0.05, 0, 2, 0, 2]; // score rate
         r[mapi] = 2 * (1.0 + tec * 0.0003);
@@ -858,7 +864,7 @@ export default {
         let dst = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
         let cmdlists = [[], [], [], []];
-        const cmd = function (i, name, score, exec) {
+        const cmd = (i, name, score, exec) => {
           cmdlists[i].push({
             name: name,
             score: score,
@@ -877,13 +883,13 @@ export default {
         const resF = (i, v) => cmd(i, "resF", v * r[4], () => dst[9] += v);
 
         const paramsP = [
-          [10, 15,  5, 15,  5],
-          [15,  5, 15,  5, 15],
-          [15,  5, 15,  5, 15],
+          [10, 15, 5, 15, 5],
+          [15, 5, 15, 5, 15],
+          [15, 5, 15, 5, 15],
           [10, 10, 10, 10, 10],
         ];
         const paramsF = [
-          [131, 31,  7, 31,  7],
+          [131, 31, 7, 31, 7],
           [200, 11, 19, 11, 19],
           [200, 11, 19, 11, 19],
           [131, 21, 13, 21, 13],
@@ -914,9 +920,9 @@ export default {
             cl[i].exec();
         }
         result.main.enchants = dst;
-      }.bind(this);
+      };
 
-      const pickOptialAmuletSkills = function (filterFunc = null, scoreBooster = null) {
+      const pickOptialAmuletSkills = (filterFunc = null, scoreBooster = null) => {
         const s = sa.status;
         let r = [0.05, 0, 2, 0, 2]; // score rate
         r[sapi] = 2 * (1.0 + tec * 0.0003); // リンク前提でテクニックも考慮
@@ -928,7 +934,7 @@ export default {
         let dst = [0, 0, 0, 0, 0];
 
         let cmdlists = [[], [], [], []];
-        const cmd = function (i, name, score, exec) {
+        const cmd = (i, name, score, exec) => {
           cmdlists[i].push({ name: name, score: score, exec: exec });
         };
         const hpP = (i, v) => cmd(i, "hpP", s[0] * (v / 100) * r[0], () => dst[0] += v);
@@ -967,7 +973,7 @@ export default {
             cl[i].exec();
         }
         result.support.enchants = dst;
-      }.bind(this);
+      };
 
 
       let enchant = "バスター";
@@ -980,7 +986,7 @@ export default {
         pickOptialAmuletSkills();
       }
       else if (type == AUTO_EQUIP_TYPE.DAMAGE) { // ダメージ優先
-        const sortf = function (a, b) {
+        const sortf = (a, b) => {
           const sa = getDmg(a);
           const sb = getDmg(b);
           return sa != sb ? cmp(sa, sb) : cmpPow(a, b, mapi);
@@ -993,7 +999,7 @@ export default {
 
       }
       else if (type == AUTO_EQUIP_TYPE.DEBUF) { // デバフ優先
-        const sortf = function (a, b) {
+        const sortf = (a, b) => {
           const sa = getDebuf(a);
           const sb = getDebuf(b);
           return sa != sb ? cmp(sa, sb) : cmpPow(a, b, mapi);
@@ -1082,14 +1088,14 @@ export default {
 
       let results = [];
 
-      const getPEnchants = function (a) {
+      const getPEnchants = (a) => {
         let r = [];
         for (let i = 0; i < a.length; ++i)
           if (i % 2 == 0)
             r.push(a[i]);
         return r;
       };
-      const getFEnchants = function (a) {
+      const getFEnchants = (a) => {
         let r = [];
         for (let i = 0; i < a.length; ++i)
           if (i % 2 == 1)
