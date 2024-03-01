@@ -490,13 +490,13 @@ export default {
 
   mounted() {
     this.enableUpdateURL = true;
-    window.onpopstate = function () {
+    window.onpopstate = () => {
       this.enableUpdateURL = false;
       this.decodeURL(true);
-      this.$nextTick(function () {
+      this.$nextTick(() => {
         this.enableUpdateURL = true;
       });
-    }.bind(this);
+    };
   },
 
   methods: {
@@ -520,7 +520,7 @@ export default {
         chr.damageTypeId = this.damageTypes.findIndex(v => v == chr.damageType);
         this.$set(chr, 'status', [0, 0, 0, 0, 0, 0, 0]);
         Object.defineProperty(chr, 'attackPower', {
-          get: chr.damageTypeId == 0 ? function () { return this.status[1]; } : function () { return this.status[3]; },
+          get: chr.damageTypeId == 0 ? () => { return this.status[1]; } : () => { return this.status[3]; },
         });
 
         for (let si = 0; si < chr.skills.length; ++si) {
@@ -541,13 +541,13 @@ export default {
       let handledTags = new Set();
       this.appendSet(handledTags, this.constants.tagsHidden);
 
-      const isAction = function (t) {
+      const isAction = (t) => {
         for (const n of this.constants.tagsAction) {
           if (t.startsWith(n))
             return true;
         }
         return false;
-      }.bind(this);
+      };
 
       for (let t of this.getMainTags()) {
         if (handledTags.has(t))

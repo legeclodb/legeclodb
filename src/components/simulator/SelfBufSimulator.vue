@@ -362,13 +362,13 @@ export default {
     this.sortModes[1].compare = (a, b) => b.main.character.date.localeCompare(a.main.character.date); // 実装日
     this.sortModes[2].compare = (a, b) => this.compareEngageDate(a.main.character, b.main.character); // エンゲージ実装日
 
-    const makeOptions = function (params) {
+    const makeOptions = (params) => {
       let r = {};
       for (const p of params) {
         const v = p.value;
         if (!p.type)
           p.type = typeof v;
-        p.reset = function () { this.value = v; };
+        p.reset = () => { this.value = v; };
         r[p.name] = p;
       }
       return r;
@@ -385,8 +385,8 @@ export default {
       { name: "allowProbability", label: "確率発動効果を含める", value: true },
     ]);
 
-    const makeParams = function (effectType, types) {
-      const make = function (t) {
+    const makeParams = (effectType, types) => {
+      const make = (t) => {
         return {
           label: t.label,
           enabled: false,
@@ -453,7 +453,7 @@ export default {
         }
       };
 
-      const getSkillScore = function (chr, skill) {
+      const getSkillScore = (chr, skill) => {
         let r = {
           score: 0,
           prioritized: this.isPrioritized(skill, chr) ? 1 : 0,
@@ -466,12 +466,11 @@ export default {
           (!opt.allowTalent && skill.isTalent) ||
           (!opt.allowPassive && skill.isPassive) ||
           (!opt.allowActive && skill.isActive) ||
-          (skill.isActive && !skill.multiAction && ctx.activeCount >= opt.maxActiveCount))
-        {
+          (skill.isActive && !skill.multiAction && ctx.activeCount >= opt.maxActiveCount)) {
           return r;
         }
 
-        const evalCondition = function (effect) {
+        const evalCondition = (effect) => {
           if ((!effect.value && !effect.variable && !effect.add) ||
             (skill.isActive && !effect.duration))
             return;
@@ -517,7 +516,7 @@ export default {
           }
         }
         return r;
-      }.bind(this);
+      };
 
       let scoreTableChr = [];
       for (const chr of this.mainChrs) {
@@ -527,7 +526,7 @@ export default {
         ctx.reset();
         let skillScore = [];
 
-        const addSkill = function (score) {
+        const addSkill = (score) => {
           skillScore.push(score);
           for (const effect of score.usedEffects) {
             if (effect.slotIndex) {
@@ -576,10 +575,10 @@ export default {
       }
 
       this.progress.completed = false;
-      const body = function () {
+      const body = () => {
         this.progress.result = this.doSearch(this.options.maxPickup.value);
         this.progress.completed = true;
-      }.bind(this);
+      };
       setTimeout(body, 300);
       return true;
     },

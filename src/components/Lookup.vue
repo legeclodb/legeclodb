@@ -52,15 +52,15 @@ export default {
   },
 
   mounted() {
-    const handleURLUpdate = function() {
-      this.$nextTick(function () {
+    const handleURLUpdate = () => {
+      this.$nextTick(() => {
         this.enableUpdateURL = false;
         this.decodeURL();
-        this.$nextTick(function () {
+        this.$nextTick(() => {
           this.enableUpdateURL = true;
         });
       });
-    }.bind(this);
+    };
 
     handleURLUpdate();
     window.onpopstate = handleURLUpdate;

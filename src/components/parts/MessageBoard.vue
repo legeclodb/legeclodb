@@ -115,7 +115,7 @@ export default {
         return table[c] || c;
       };
       str = str.replace(/[&<>\n]/g, callback);
-      // [[アイテム名]] を popover 化
+      // [[スキル名]] を anchor 化、ItemPopovers で popover 化
       str = str.replace(/\[\[(.+?)\]\]/g, "<a href='javascript:void(0);'>$1</a>");
       return str;
     }

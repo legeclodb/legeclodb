@@ -257,11 +257,11 @@ export default {
     },
 
     removeEffectsOfSameType(skill) {
-      const doRemove = function (effects) {
+      const doRemove = (effects) => {
         if (!effects)
           return;
 
-        const countEffect = function (effect) {
+        const countEffect = (effect) => {
           let count = 0;
           for (const e of effects) {
             if (e.type == effect.type && e.target == effect.target && e.ephemeral == effect.ephemeral && e.slot == effect.slot &&
@@ -518,13 +518,13 @@ export default {
     serializeParams() {
       const isGetSet = this.isGetSet;
 
-      const handleOptions = function (obj) {
+      const handleOptions = (obj) => {
         return Object.values(obj).map(a => a.value);
       };
-      const handleFilter = function (obj) {
+      const handleFilter = (obj) => {
         return Object.values(obj).map(a => this.serializeFilter(a));
-      }.bind(this);
-      const handleBuffs = function (list) {
+      };
+      const handleBuffs = (list) => {
         let r = [];
         const props = ["enabled", "limit_", "weight"];
         for (const obj of list) {
@@ -538,7 +538,7 @@ export default {
         }
         return r;
       };
-      const handleExcludes = function (list) {
+      const handleExcludes = (list) => {
         let r = [];
         for (let v of list) {
           if (v.owner != undefined)
@@ -562,7 +562,7 @@ export default {
       const isGetSet = this.isGetSet;
       const findItemByUid = this.findItemByUid;
 
-      const handleOptions = function (dst, src) {
+      const handleOptions = (dst, src) => {
         dst = Object.values(dst);
         if (src && dst.length == src.length) {
           for (let i = 0; i < dst.length; ++i) {
@@ -571,15 +571,15 @@ export default {
           }
         }
       };
-      const handleFilter = function (dst, src) {
+      const handleFilter = (dst, src) => {
         dst = Object.values(dst);
         if (src && dst.length == src.length) {
           for (let i = 0; i < dst.length; ++i) {
             this.deserializeFilter(dst[i], src[i]);
           }
         }
-      }.bind(this);
-      const handleBuffs = function (dst, src) {
+      };
+      const handleBuffs = (dst, src) => {
         if (src && dst.length == src.length) {
           for (let i = 0; i < dst.length; ++i) {
             let d = dst[i];
@@ -593,7 +593,7 @@ export default {
           }
         }
       };
-      const handleExcludes = function (dst, src) {
+      const handleExcludes = (dst, src) => {
         if (src) {
           dst.splice(0, dst.length);
           for (let v of src) {
@@ -674,7 +674,7 @@ export default {
     excluded: function () { this.updateQuery(); },
   },
 
-  updated: function () {
+  updated() {
     // ペンディングリクエストが残っていたら再検索
     if (this.progress.pending && this.progress.completed) {
       if (this.beginSearch()) {

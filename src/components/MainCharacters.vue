@@ -615,13 +615,13 @@ export default {
 
   mounted() {
     this.enableUpdateURL = true;
-    window.onpopstate = function () {
+    window.onpopstate = () => {
       this.enableUpdateURL = false;
       this.decodeURL(true);
-      this.$nextTick(function () {
+      this.$nextTick(() => {
         this.enableUpdateURL = true;
       });
-    }.bind(this);
+    };
   },
 
   methods: {
@@ -661,7 +661,7 @@ export default {
         chr.damageTypeId = this.damageTypes.findIndex(v => v == chr.damageType);
         this.$set(chr, 'status', [0, 0, 0, 0, 0, 0, 0]);
         Object.defineProperty(chr, 'attackPower', {
-          get: chr.damageTypeId == 0 ? function () { return this.status[1]; } : function () { return this.status[3]; },
+          get: chr.damageTypeId == 0 ? () => { return this.status[1]; } : () => { return this.status[3]; },
         });
       }
       this.stat.defaults = [
@@ -677,7 +677,7 @@ export default {
       // リストの上の方に出すため特別処理
       let handledTags = new Set();
       this.appendSet(handledTags, this.constants.tagsHidden);
-      let handlePredefinedTags = function (dstTags, predefinedTags) {
+      let handlePredefinedTags = (dstTags, predefinedTags) => {
         for (let t of predefinedTags) {
           dstTags.add(t);
           handledTags.add(t);
@@ -685,13 +685,13 @@ export default {
       };
       handlePredefinedTags(this.tagCategory.buff.tags, ["シンボルスキル"]);
 
-      const isAction = function (t) {
+      const isAction = (t) => {
         for (const n of this.constants.tagsAction) {
           if (t.startsWith(n))
             return true;
         }
         return false;
-      }.bind(this);
+      };
 
       for (let t of this.getMainTags()) {
         if (handledTags.has(t))
@@ -780,7 +780,7 @@ export default {
 
       if (p > 0) {
         this.page = p;
-        this.$nextTick(function () {
+        this.$nextTick(() => {
           let e = document.getElementById(`chr_${cid}`);
           if (e != null) {
             this.preventShowHideHeaderOnScroll = 1;
@@ -796,7 +796,7 @@ export default {
       this.tagSearchPattern = '';
       this.freeSearchPattern = '';
 
-      const resetFilter = function (filter) {
+      const resetFilter = (filter) => {
         for (let e of filter)
           e.state = false;
       };
@@ -856,12 +856,12 @@ export default {
         this.filterMatch(this.damageTypeFilter, chr.damageTypeId));
     },
     applySearchPatterns(chr) {
-      const doApply = function (obj) {
+      const doApply = (obj) => {
         let r = this.isInfoHighlighted(obj) | this.isTalentHighlighted(obj.talent);
         for (let skill of obj.skills)
           r |= this.isSkillHighlighted(skill);
         return r;
-      }.bind(this);
+      };
 
       let r = doApply(chr);
       if (chr.summon) {
@@ -880,7 +880,7 @@ export default {
     updateTagCounts() {
       this.resetTagCounts();
 
-      const doCount = function (obj) {
+      const doCount = (obj) => {
         if (this.applyTalentFilter(obj.talent)) {
           this.countTags(obj.talent.tags);
         }
@@ -889,7 +889,7 @@ export default {
             this.countTags(skill.tags);
           }
         }
-      }.bind(this);
+      };
 
       for (let chr of this.characters) {
         if (this.applyClassFilter(chr)) {
