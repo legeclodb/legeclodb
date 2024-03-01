@@ -140,11 +140,11 @@
             <div class="flex exclude-box">
               <b-link v-for="(v, i) in prioritized" :key="i" @click="prioritized.splice(prioritized.indexOf(v), 1)">
                 <div v-if="!v.owner" :title="v.name">
-                  <b-img-lazy :src="getImageURL(v.icon)" :title="v.name" width="50" />
+                  <b-img-lazy :src="getImageURL(v.icon)" width="50" />
                 </div>
                 <div v-if="v.owner" style="width: 50px; height: 50px;" :title="v.owner.name + ' & ' + v.item.name">
-                  <b-img-lazy :src="getImageURL(v.owner.icon)" :title="v.name" width="35" style="position: relative; left: 0px; top: 0px; " />
-                  <b-img-lazy :src="getImageURL(v.item.icon)" :title="v.name" width="35" style="position: relative; left: -20px; top: 15px; " />
+                  <b-img-lazy :src="getImageURL(v.owner.icon)" width="35" style="position: relative; left: 0px; top: 0px; " />
+                  <b-img-lazy :src="getImageURL(v.item.icon)" width="35" style="position: relative; left: -20px; top: 15px; " />
                 </div>
               </b-link>
             </div>
@@ -159,11 +159,11 @@
             <div class="flex exclude-box">
               <b-link v-for="(v, i) in excluded" :key="i" @click="excluded.splice(excluded.indexOf(v), 1)">
                 <div v-if="!v.owner" :title="v.name">
-                  <b-img-lazy :src="getImageURL(v.icon)" :title="v.name" width="50" />
+                  <b-img-lazy :src="getImageURL(v.icon)" width="50" />
                 </div>
                 <div v-if="v.owner" style="width: 50px; height: 50px; " :title="v.owner.name + ' & ' + v.item.name">
-                  <b-img-lazy :src="getImageURL(v.owner.icon)" :title="v.name" width="35" style="position: relative; left: 0px; top: 0px; " />
-                  <b-img-lazy :src="getImageURL(v.item.icon)" :title="v.name" width="35" style="position: relative; left: -20px; top: 15px; " />
+                  <b-img-lazy :src="getImageURL(v.owner.icon)" width="35" style="position: relative; left: 0px; top: 0px; " />
+                  <b-img-lazy :src="getImageURL(v.item.icon)" width="35" style="position: relative; left: -20px; top: 15px; " />
                 </div>
               </b-link>
             </div>
@@ -210,7 +210,7 @@
                 </div>
                 <div class="status flex">
                   <b-link v-for="(skill, si) in r.main.character.skills" :key="si" @click="addPrioritized(skill)">
-                    <b-img-lazy :src="getImageURL(skill.icon)" :title="skill.name" width="50" />
+                    <b-img-lazy :src="getImageURL(skill.icon)" :title="descToTitle(skill)" width="50" />
                   </b-link>
                 </div>
               </b-popover>

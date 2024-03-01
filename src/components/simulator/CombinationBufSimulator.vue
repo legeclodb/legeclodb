@@ -145,11 +145,11 @@
             <div class="flex exclude-box">
               <b-link v-for="(v, i) in prioritized" :key="i" @click="prioritized.splice(prioritized.indexOf(v), 1)">
                 <div v-if="!v.owner" :title="v.name">
-                  <b-img-lazy :src="getImageURL(v.icon)" :title="v.name" width="50" />
+                  <b-img-lazy :src="getImageURL(v.icon)" width="50" />
                 </div>
                 <div v-if="v.owner" style="width: 50px; height: 50px;" :title="v.owner.name + ' & ' + v.item.name">
-                  <b-img-lazy :src="getImageURL(v.owner.icon)" :title="v.name" width="35" style="position: relative; left: 0px; top: 0px; " />
-                  <b-img-lazy :src="getImageURL(v.item.icon)" :title="v.name" width="35" style="position: relative; left: -20px; top: 15px; " />
+                  <b-img-lazy :src="getImageURL(v.owner.icon)" width="35" style="position: relative; left: 0px; top: 0px; " />
+                  <b-img-lazy :src="getImageURL(v.item.icon)" width="35" style="position: relative; left: -20px; top: 15px; " />
                 </div>
               </b-link>
             </div>
@@ -166,11 +166,11 @@
             <div class="flex exclude-box">
               <b-link v-for="(v, i) in excluded" :key="i" @click="excluded.splice(excluded.indexOf(v), 1)">
                 <div v-if="!v.owner" :title="v.name">
-                  <b-img-lazy :src="getImageURL(v.icon)" :title="v.name" width="50" />
+                  <b-img-lazy :src="getImageURL(v.icon)" width="50" />
                 </div>
                 <div v-if="v.owner" style="width: 50px; height: 50px; " :title="v.owner.name + ' & ' + v.item.name">
-                  <b-img-lazy :src="getImageURL(v.owner.icon)" :title="v.name" width="35" style="position: relative; left: 0px; top: 0px; " />
-                  <b-img-lazy :src="getImageURL(v.item.icon)" :title="v.name" width="35" style="position: relative; left: -20px; top: 15px; " />
+                  <b-img-lazy :src="getImageURL(v.owner.icon)" width="35" style="position: relative; left: 0px; top: 0px; " />
+                  <b-img-lazy :src="getImageURL(v.item.icon)" width="35" style="position: relative; left: -20px; top: 15px; " />
                 </div>
               </b-link>
             </div>
@@ -210,7 +210,7 @@
           <br />
           なお、必ずしも本当に最適な結果になるとは限らないことに注意が必要です。<br />
           完璧に解くには時間がかかりすぎるため、若干正確性を犠牲にしつつ高速に解く方法を用いています。<br />
-          (アルゴリズムは随時改良中: 2024/02/20)<br />
+          (アルゴリズムは随時改良中: 2024/03/02)<br />
         </div>
       </div>
 
@@ -237,7 +237,7 @@
                 </div>
                 <div class="status flex">
                   <b-link v-for="(skill, si) in r.main.character.skills" :key="si" @click="addPrioritized(skill)">
-                    <b-img-lazy :src="getImageURL(skill.icon)" :title="skill.name" width="50" />
+                    <b-img-lazy :src="getImageURL(skill.icon)" :title="descToTitle(skill)" width="50" />
                   </b-link>
                 </div>
                 <div class="flex exclude-menu">
@@ -380,7 +380,7 @@
                 </div>
                 <div class="status flex">
                   <b-link v-for="(skill, si) in r.support.character.skills" :key="si">
-                    <b-img-lazy :src="getImageURL(skill.icon)" :title="skill.name" width="50" />
+                    <b-img-lazy :src="getImageURL(skill.icon)" :title="descToTitle(skill)" width="50" />
                   </b-link>
                 </div>
                 <div class="flex exclude-menu">
@@ -480,6 +480,9 @@ export default {
   created() {
     this.setupDB();
     this.setupFilter();
+    for (let s of [...this.mainActive, ...this.mainPassive, ...this.mainTalents]) {
+      this.removeEffectsOfSameType(s);
+    }
 
     const excludeEffect = function (effect) {
       const cond = effect.condition;

@@ -193,7 +193,7 @@
 
           <b-button size="sm" id="btn-loadout-op" style="min-width: 10em; margin-left: 0.5em; ">
             編成を共有
-            <b-popover :target="`btn-loadout-op`" triggers="click" custom-class="loadout-popover" @show="fetchLoadoutList()" ref="loadout_popover">
+            <b-popover :target="`btn-loadout-op`" triggers="click" custom-class="loadout-popover" @show="fetchLoadoutList()" ref="loadout_popover"  boundary="window">
               <h5>公開されている編成</h5>
               <template v-if="fetching">
                 <div style="padding: 10px;">

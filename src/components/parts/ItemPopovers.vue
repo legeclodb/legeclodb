@@ -1,7 +1,7 @@
 <template >
   <div>
     <template v-for="(e, i) in popoverElements">
-      <b-popover :target="e" :key="i" triggers="hover focus" custom-class="item_po" :title="e.item.name" placement="top">
+      <b-popover :target="e" :key="i" triggers="hover focus" custom-class="item_po" :title="e.item.name" placement="top" boundary="window">
         <div class="flex">
           <div><b-img-lazy :src="getImageURL(e.item.icon)" width="50" height="50" /></div>
           <div><span v-html="descToHtml(e.item)"></span><span v-if="e.item.note" class="note" v-html="noteToHtml(e.item)"></span></div>
