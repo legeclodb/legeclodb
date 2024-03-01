@@ -484,7 +484,7 @@ export default {
       this.removeEffectsOfSameType(s);
     }
 
-    const excludeEffect = function (effect) {
+    const excludeEffect = (effect) => {
       const cond = effect.condition;
       if (!this.isPublicTarget(effect.target) ||
         (cond && (cond.onClass || cond.onSymbol)) ||
@@ -493,7 +493,7 @@ export default {
         return true;
       }
       return false;
-    }.bind(this);
+    };
     for (let skill of this.enumerate(this.mainActive, this.mainPassive, this.mainTalents, this.supActive, this.supPassive, this.items)) {
       if (skill.buff)
         skill.buff = skill.buff.filter(s => !excludeEffect(s));
@@ -501,12 +501,12 @@ export default {
         skill.debuff = skill.debuff.filter(s => !excludeEffect(s));
     }
 
-    const makeOptions = function (params) {
+    const makeOptions = (params) => {
       let r = {};
       for(const p of params) {
         const v = p.value;
         p.type = typeof v;
-        p.reset = function () { this.value = v; };
+        p.reset = () => { this.value = v; };
         r[p.name] = p;
       }
       return r;
@@ -528,8 +528,8 @@ export default {
     ]);
 
     const effectTypeTable = this.effectTypeTable;
-    const makeParams = function (prefix, types) {
-      const make = function (t) {
+    const makeParams = (prefix, types) => {
+      const make = (t) => {
         const l = t.limit ? t.limit : null;
         const w = t.weight ? t.weight : 10;
         const effectType = `${t.label}${prefix}`;
@@ -586,7 +586,7 @@ export default {
       {label: "ダメージ耐性(魔法)"},
     ]);
 
-    const setParent = function (list, childLabel, parentLabel) {
+    const setParent = (list, childLabel, parentLabel) => {
       let c = list.find(a => a.label == childLabel);
       let p = list.find(a => a.label == parentLabel);
       c.parent = p;
@@ -648,14 +648,14 @@ export default {
       const isExcluded = this.isExcluded;
       const isPrioritized = this.isPrioritized;
 
-      const compareScore = function (a, b) {
+      const compareScore = (a, b) => {
         if (a.score == b.score && a.scoreMain)
           return this.compare(a.scoreMain, b.scoreMain);
         else
           return this.compare(a.score, b.score);
-      }.bind(this);
+      };
 
-      const effectCondition = function (effect) {
+      const effectCondition = (effect) => {
         if (effect.ephemeral && !effect.duration)
           return false;
 
@@ -671,7 +671,7 @@ export default {
             (opt.allowProbability || !probability);
         }
       };
-      const skillCondition = function (skill) {
+      const skillCondition = (skill) => {
         if ((!opt.allowTalent && skill.isTalent) ||
           (!opt.allowPassive && skill.isPassive && skill.isMainSkill) ||
           (!opt.allowActive && skill.isActive && skill.isMainSkill) ||
@@ -685,17 +685,17 @@ export default {
         return true;
       };
 
-      const findPrioritizedChr = function (scoreList) {
+      const findPrioritizedChr = (scoreList) => {
         for (const p of this.prioritized) {
           const r = scoreList.find(a => (a.scoreMain != undefined ? a.scoreMain > 0 : a.score > 0) && a.character == p);
           if (r)
             return r;
         }
         return null;
-      }.bind(this);
+      };
 
       // 高速化のため事前フィルタ
-      const isRelevant = function (item) {
+      const isRelevant = (item) => {
         if (isExcluded(item))
           return false;
         if (item.isSupport) {
@@ -715,7 +715,7 @@ export default {
           }
         }
         return false;
-      }.bind(this);
+      };
 
       let mainChrs = this.mainChrs.filter(a => this.filterMatchMainChr(a));
       let supChrs = this.supChrs.filter(a => isRelevant(a) && this.filterMatchSupChr(a));
@@ -731,17 +731,17 @@ export default {
       }
 
       let vue = this;
-      const createContext = function (parent = null) {
+      const createContext = (parent = null) => {
         let ctx = {
           totalAmount: new Int32Array(parent ? parent.totalAmount : vue.effectTypeIndex),
           usedSlots: parent ? [...parent.usedSlots] : new Array(vue.slotIndex),
           usedSkills: this.createUsedFlags(parent ? parent.usedSkills : null),
 
           isPrioritized: isPrioritized,
-          isAvailable: function (item, owner = null) {
+          isAvailable(item, owner = null) {
             return !this.usedSkills.get(item.index) && !isExcluded(item, owner);
           },
-          markAsUsed: function (item) {
+          markAsUsed(item) {
             if (item.index) {
               this.usedSkills.set(item.index, true);
             }
@@ -765,12 +765,15 @@ export default {
             }
             return null;
           },
+          acceptEffect(effect) {
+            this.totalAmount[effect.effectTypeIndex] += vue.getEffectValue(effect);
+            if (effect.slotIndex) {
+              this.usedSlots[effect.slotIndex] = effect;
+            }
+          },
           acceptEffects(effectList) {
             for (const effect of effectList) {
-              this.totalAmount[effect.effectTypeIndex] += vue.getEffectValue(effect);
-              if (effect.slotIndex) {
-                this.usedSlots[effect.slotIndex] = effect;
-              }
+              this.acceptEffect(effect);
             }
           },
 
@@ -811,9 +814,10 @@ export default {
                   }
                 }
               }.bind(this);
-              const pickBest = function (equipments) {
+
+              const pickBest = (equipments) => {
                 return vue.pickMax(enumerateItems(equipments, chr), a => this.prepassSkill(a))[1];
-              }.bind(this);
+              };
 
               // 補正なしだと装備の影響が強すぎるので、適当に減衰係数を用意…
               const itemRate = 0.5;
@@ -844,9 +848,9 @@ export default {
 
         };
         return ctx;
-      }.bind(this);
+      };
 
-      const getChrScore = function (parentCtx, chr) {
+      const getChrScore = (parentCtx, chr) => {
         if (!parentCtx.isAvailable(chr))
           return null;
 
@@ -854,7 +858,7 @@ export default {
         let usedEffects = [];
         let conflictedEffects = [];
 
-        const getSkillScore = function (ctx, skill) {
+        const getSkillScore = (ctx, skill) => {
           let r = {
             skill: skill,
             score: 0,
@@ -865,19 +869,21 @@ export default {
             return r;
           }
 
-          let scoreBoost = 1;
+          let sctx = createContext(ctx);
           for (const effect of this.enumerateEffects(skill)) {
-            const ev = ctx.getEffectValue(effect);
+            const ev = sctx.getEffectValue(effect);
             if (!ev)
               continue;
             const [val, p, hitLimit] = ev;
 
-            let score = val * (p.weight * 0.1) * scoreBoost;
+            let score = val * (p.weight * 0.1);
             if (score > 0) {
-              if (!hitLimit && skill.isActive)
+              if (!hitLimit && skill.isActive && !effect.hasSpecialSlot) {
                 score *= Math.pow(Math.min(val / 20, 1), 2); // 中途半端な効果量のアクティブは選ばれにくいようにスコア補正
+              }
               r.score += score;
               r.usedEffects.push(effect);
+              sctx.acceptEffect(effect);
             }
             else {
               r.conflictedEffects.push(effect);
@@ -885,7 +891,6 @@ export default {
           }
 
           if (skill.summon) {
-            let sctx = createContext(ctx);
             let sch = skill.summon[0];
             r.summon = {
               character: sch,
@@ -903,21 +908,22 @@ export default {
             }
           }
           return r;
-        }.bind(this);
+        };
 
-        const pickEquip = function (ctx, equipments) {
+        const pickEquip = (ctx, equipments) => {
           const scoreList = equipments.filter(a => this.matchClass(a, chr)).map(a => getSkillScore(ctx, a));
           for (const s of scoreList)
-            if (s.score > 0 && ctx.isPrioritized(s.skill, chr))
+            if (s.score > 0 && ctx.isPrioritized(s.skill, chr)) {
               return s;
+            }
 
           scoreList.sort(compareScore);
           if (scoreList.length > 0 && scoreList[0].score > 0)
             return scoreList[0];
           return null;
-        }.bind(this);
+        };
 
-        const pickSkill = function (ctx, skills) {
+        const pickSkill = (ctx, skills) => {
           let scoreList = [];
           for (const skill of skills) {
             const r = getSkillScore(ctx, skill);
@@ -932,7 +938,7 @@ export default {
 
           let r = scoreList.sort(compareScore)[0];
           return r;
-        }.bind(this);
+        };
 
 
         let result = { character: chr };
@@ -942,7 +948,7 @@ export default {
         let summonScore = null;
         let supportScore = null;
 
-        const updateState = function (s) {
+        const updateState = (s) => {
           score += s.score;
           usedEffects = usedEffects.concat(s.usedEffects);
           conflictedEffects = conflictedEffects.concat(s.conflictedEffects);
@@ -1008,14 +1014,14 @@ export default {
         result.usedEffects = usedEffects;
         result.conflictedEffects = conflictedEffects;
         return result;
-      }.bind(this);
+      };
 
 
       let bestScore = 0;
       let bestSkillCount = 0;
       let bestResult = [];
       let searchCount = 0;
-      const updateBest = function (r, depth, resultGetter) {
+      const updateBest = (r, depth, resultGetter) => {
         ++searchCount;
 
         let update = r.score > bestScore;
@@ -1038,7 +1044,7 @@ export default {
         }
       };
 
-      const searchRecursive = function (pctx, results, stack = [], depth = 0) {
+      const searchRecursive = (pctx, results, stack = [], depth = 0) => {
         const mainPickCounts = [5, 4, 3, 3, 2, 2, 2, 2, 2, 2];
         const supPickCounts = [2, 2, 1, 1, 1, 1, 1, 1, 1, 1];
         if (depth > mainPickCounts.length)
@@ -1086,7 +1092,7 @@ export default {
             };
             results.push(r);
 
-            const updateState = function (s) {
+            const updateState = (s) => {
               r.score += s.score;
               r.skillCount += s.skills.length;
               if (s.equipments)
@@ -1128,8 +1134,7 @@ export default {
             }
           }
         }
-
-      }.bind(this);
+      };
 
       let ctx = createContext();
       let results = [];
@@ -1141,10 +1146,10 @@ export default {
     beginSearch() {
       this.progress.completed = false;
 
-      const body = function () {
+      const body = () => {
         this.progress.result = this.doSearch(this.options.maxPickup.value);
         this.progress.completed = true;
-      }.bind(this);
+      };
       //requestIdleCallback(body);
       setTimeout(body, 500);
     },
