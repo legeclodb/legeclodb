@@ -47,9 +47,9 @@
                  @mouseover="onEnterCell(cell)" @mouseleave="onLeaveCell(cell)">
               <template v-if="unit?.isEnemy && unit?.hasSupport">
                 <b-img :src="getImageURL(unit.main.class)" class="center"
-                            width="30" height="30" style="position: relative; left: 8px; top: -8px; z-index: 1;" />
+                       width="30" height="30" style="position: relative; left: 8px; top: -8px; z-index: 1;" />
                 <b-img :src="getImageURL(unit.support.class)" class="center"
-                            width="30" height="30" style="position: relative; left: -8px; top: 8px; z-index: 0;" />
+                       width="30" height="30" style="position: relative; left: -8px; top: 8px; z-index: 0;" />
               </template>
               <template v-else-if="unit?.isEnemy && unit?.main">
                 <b-img :src="getImageURL(unit.main.class)" class="center" width="40" height="40" />
@@ -183,7 +183,7 @@
     <div v-else class="content" style="margin-top: 30px">
       <div class="unit-panel">
         <div class="flex">
-          <b-dropdown text="編成をセーブ" style="min-width: 10em; margin-left: 0.5em;">
+          <b-dropdown text="編成をセーブ" style="min-width: 10em;">
             <b-dropdown-item v-for="(name, i) in slotNames" :key=i @click="saveLoadout(i)">スロット{{i}}: {{name}}</b-dropdown-item>
           </b-dropdown>
           <b-dropdown text="編成をロード" style="min-width: 10em; margin-left: 0.5em; ">
@@ -193,55 +193,55 @@
 
           <b-button size="sm" id="btn-loadout-op" style="min-width: 10em; margin-left: 0.5em; ">
             編成を共有
-          </b-button>
-          <b-popover :target="`btn-loadout-op`" triggers="click" custom-class="loadout-popover" @show="fetchLoadoutList()" ref="loadout_popover">
-            <h5>公開されている編成</h5>
-            <template v-if="fetching">
-              <div style="padding: 10px;">
-                <b-spinner small label="Spinning"></b-spinner>
+            <b-popover :target="`btn-loadout-op`" triggers="click" custom-class="loadout-popover" @show="fetchLoadoutList()" ref="loadout_popover">
+              <h5>公開されている編成</h5>
+              <template v-if="fetching">
+                <div style="padding: 10px;">
+                  <b-spinner small label="Spinning"></b-spinner>
+                </div>
+              </template>
+              <template v-else>
+                <b-table small outlined sticky-header :items="loadoutList" :fields="loadoutFields" style="min-width: 90%;">
+                  <template #cell(name)="row">
+                    <span>{{row.item.name}}</span>
+                  </template>
+                  <template #cell(actions)="row">
+                    <div class="flex" style="">
+                      <b-button size="sm" @click="downloadLoadoutFromServer(row.item)">
+                        ロード
+                      </b-button>
+                      <b-button size="sm" :id="`loadout-${row.item.hash}`" @click="copyLoadoutUrl(row.item)" style="margin-left: 0.25em">
+                        URL コピー
+                      </b-button>
+                      <b-button v-if="row.item.delkey" size="sm" @click="deleteLoadoutFromServer(row.item)" style="margin-left: 0.25em">
+                        削除(確認あり)
+                      </b-button>
+                    </div>
+                  </template>
+                </b-table>
+              </template>
+              <div class="flex" style="margin-bottom: 0.5em;">
+                <b-button size="sm" @click="exportLoadoutToServer()" style="min-width: 12em;" id="btn-loadout-publish">
+                  現在の編成を公開
+                </b-button>
+                <b-form-input size="sm" v-model="userName" placeholder="投稿者名" style="width: 8em; margin-left: 0.25em;"></b-form-input>
+                <span style="margin-left: 0.5em; color: rgb(160,160,160) ">(投稿者本人は投稿したデータを削除可能)</span>
               </div>
-            </template>
-            <template v-else>
-              <b-table small outlined sticky-header :items="loadoutList" :fields="loadoutFields" style="min-width: 90%;">
-                <template #cell(name)="row">
-                  <span>{{row.item.name}}</span>
-                </template>
-                <template #cell(actions)="row">
-                  <div class="flex" style="">
-                    <b-button size="sm" @click="downloadLoadoutFromServer(row.item)">
-                      ロード
-                    </b-button>
-                    <b-button size="sm" :id="`loadout-${row.item.hash}`" @click="copyLoadoutUrl(row.item)" style="margin-left: 0.25em">
-                      URL コピー
-                    </b-button>
-                    <b-button v-if="row.item.delkey" size="sm" @click="deleteLoadoutFromServer(row.item)" style="margin-left: 0.25em">
-                      削除(確認あり)
-                    </b-button>
-                  </div>
-                </template>
-              </b-table>
-            </template>
-            <div class="flex" style="margin-bottom: 0.5em;">
-              <b-button size="sm" @click="exportLoadoutToServer()" style="min-width: 12em;" id="btn-loadout-publish">
-                現在の編成を公開
-              </b-button>
-              <b-form-input size="sm" v-model="userName" placeholder="投稿者名" style="width: 8em; margin-left: 0.25em;"></b-form-input>
-              <span style="margin-left: 0.5em; color: rgb(160,160,160) ">(投稿者本人は投稿したデータを削除可能)</span>
-            </div>
-            <div class="flex" style="margin-bottom: 0.5em;">
-              <b-button size="sm" @click="exportLoadoutAsFile()" style="min-width: 12em;">
-                ファイルにエクスポート
-              </b-button>
-              <b-button size="sm" @click="importLoadoutFromFile()" style="min-width: 12em; margin-left: 0.25em;">
-                ファイルからインポート
-              </b-button>
-            </div>
-            <div class="flex">
-              <b-button size="sm" @click="$refs.loadout_popover.$emit('close')">閉じる</b-button>
-            </div>
-          </b-popover>
+              <div class="flex" style="margin-bottom: 0.5em;">
+                <b-button size="sm" @click="exportLoadoutAsFile()" style="min-width: 12em;">
+                  ファイルにエクスポート
+                </b-button>
+                <b-button size="sm" @click="importLoadoutFromFile()" style="min-width: 12em; margin-left: 0.25em;">
+                  ファイルからインポート
+                </b-button>
+              </div>
+              <div class="flex">
+                <b-button size="sm" @click="$refs.loadout_popover.$emit('close')">閉じる</b-button>
+              </div>
+            </b-popover>
+          </b-button>
 
-          <b-button @click="clearLoadout()" style="min-width: 10em; margin-left: 2em; ">
+          <b-button @click="clearLoadout()" style="min-width: 10em; margin-left: 0.5em; ">
             編成をクリア
           </b-button>
 
@@ -258,9 +258,9 @@
           <b-form-input size="sm" v-model="slotName" placeholder="編成名" style="width: 16em"></b-form-input>
           <b-form-input size="sm" v-model="slotDesc" placeholder="説明など" style="flex: 1; margin-left: 0.25em; "></b-form-input>
           <b-button size="sm" v-if="loadoutHash" id="btn-loadout-message" style="margin-left: 0.25em; ">
-            <b-icon icon="chat-square-text" title="この編成へのコメントを表示" />
+            <b-icon icon="chat-text" title="この編成へのコメントを表示" />
             <b-popover target="btn-loadout-message" triggers="click" custom-class="comment-popover" ref="message_popover">
-              <MessageBoard :thread="loadoutHash" :fetchCallback="dispatchScrollEvent" />
+              <MessageBoard :thread="loadoutHash" @change="onMessageChange" @discard="onMessageDiscard" />
               <div class="flex">
                 <b-button size="sm" @click="$refs.message_popover.$emit('close')">閉じる</b-button>
               </div>
@@ -278,7 +278,7 @@
               </h2>
             </template>
 
-            <div @dragover.prevent @drop.prevent="onDropLoadout($event)" style="min-width: 1520px; min-height: 300px;">
+            <div @dragover.prevent @drop.prevent="onDropLoadout($event)" style="min-width: 1520px; min-height: 500px;">
               <div v-if="!simulation" style="padding: 10px; display: flex">
                 <b-button :id="`btn-edit-unit${ui}`" @click="unit.showEditor=!unit.showEditor" style="width: 12em;">編集</b-button>
                 <b-popover :target="`btn-edit-unit${ui}`" custom-class="status-simulator-popover" :show.sync="unit.showEditor" :delay="{show:0, hide:250}" no-fade>
@@ -431,6 +431,7 @@
       </div>
     </div>
 
+    <ItemPopovers />
   </div>
 </template>
 
@@ -445,6 +446,9 @@ import StatusSimulator from './simulator/StatusSimulator.vue'
 import MessageBoard from './parts/MessageBoard.vue'
 import * as ldb from "./simulator/simulation.js";
 
+import ItemPopovers from './parts/ItemPopovers.vue'
+import ItemPopoversJs from "./parts/ItemPopovers.js";
+
 const LoadoutServer = "https://primitive-games.jp/legeclodb/loadout/index.cgi";
 const BattleLogServer = "https://primitive-games.jp/legeclodb/battlelog/index.cgi";
 
@@ -454,8 +458,9 @@ export default {
     Navigation,
     StatusSimulator,
     MessageBoard,
+    ItemPopovers,
   },
-  mixins: [commonjs,lookupjs],
+  mixins: [commonjs, lookupjs, ItemPopoversJs],
 
   data() {
     return {
@@ -1527,6 +1532,14 @@ export default {
       this.toast(`コピーしました：${url}`);
     },
 
+    onMessageChange(mb) {
+      this.addPo(mb.anchors);
+      this.dispatchScrollEvent();
+    },
+    onMessageDiscard(mb) {
+      this.removePo(mb.anchors);
+    },
+
 
     updateURL() {
       let seri = new this.URLSerializer();
@@ -1726,9 +1739,6 @@ export default {
     font-size: small !important;
   }
 
-  .popover {
-    max-width: 450px;
-  }
   .status-simulator-popover {
     max-width: 1000px !important;
   }

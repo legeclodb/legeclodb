@@ -420,19 +420,7 @@
       </template>
     </div>
 
-    <template v-for="(e, i) in popoverElements">
-      <b-popover :target="e.element" :key="i" triggers="hover focus" custom-class="item_po" :title="e.name" placement="top">
-        <div class="flex">
-          <div><b-img-lazy :src="getImageURL(e.item.icon)" width="50" height="50" /></div>
-          <div v-html="descToHtml(e.item)"></div>
-        </div>
-        <div v-if="e.item.owners" class="owners">
-          所持者:<br />
-          <b-img-lazy v-for="(owner, oi) in e.item.owners" :key="oi" :src="getImageURL(owner.icon)" :title="owner.name" width="50" height="50" />
-        </div>
-      </b-popover>
-    </template>
-
+    <ItemPopovers />
   </div>
 </template>
 
@@ -441,17 +429,19 @@ import ChrSelector from '../parts/ChrSelector.vue'
 import commonjs from "../common.js";
 import lookupjs from "./lookup.js";
 
+import ItemPopovers from '../parts/ItemPopovers.vue'
+import ItemPopoversJs from "../parts/ItemPopovers.js";
+
 export default {
   name: 'Lookup',
   components: {
     ChrSelector,
+    ItemPopovers,
   },
-  mixins: [commonjs, lookupjs],
+  mixins: [commonjs, lookupjs, ItemPopoversJs],
 
   data() {
     return {
-      popoverElements: [],
-
       initialState: {},
       history: [],
       historyIndex: 0,
@@ -613,27 +603,6 @@ export default {
   },
 
   methods: {
-    findItem(name) {
-      const r = this.searchTableWithName.get(name);
-      if (!r)
-        console.log(`${name} not found`);
-      return r;
-    },
-
-    po(e) {
-      if (e) {
-        let el = e.$el;
-        if (!this.popoverElements.find(e => e === el)) {
-          this.popoverElements.push({
-            name: el.innerText,
-            item: this.findItem(el.innerText),
-            element: el,
-          });
-        }
-      }
-    },
-
-
     createUsedFlags(parent = null) {
       if (parent) {
         return new this.BitFlags(parent);

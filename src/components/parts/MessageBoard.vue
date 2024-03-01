@@ -42,15 +42,20 @@ export default {
     return {
       userName: "",
       message: "",
-      messages: [],
-      showAll: false,
+
       fetching: false,
+      messages: [],
+      anchors: [],
     }
   },
 
   mounted() {
     this.userName = localStorage.getItem(`userName`) ?? "";
     this.reload();
+  },
+
+  destroyed() {
+    this.discard();
   },
 
   methods: {
@@ -66,24 +71,37 @@ export default {
 
           this.fetching = false;
           this.$nextTick(() => {
-            this.$refs.messageUl.scrollTo(0, this.$refs.messageUl.scrollHeight);
+            let ul = this.$refs.messageUl;
+            ul.scrollTo(0, ul.scrollHeight);
+
+            this.discard();
+            for (let m of ul.getElementsByClassName("message")) {
+              for (let a of m.children) {
+                this.anchors.push(a);
+              }
+            }
+            this.$emit('change', this);
           });
-          if (this.fetchCallback) {
-            this.fetchCallback();
-          }
         });
+    },
+
+    discard() {
+      this.$emit('discard', this);
+      this.anchors = [];
     },
 
     sendMessage() {
       const thread = this.thread;
       const name = encodeURIComponent(this.userName);
       const message = encodeURIComponent(this.message);
-      fetch(`${MessageServer}?mode=putm&thread=${thread}&name=${name}&message=${message}`)
-        .then(a => a.json())
-        .then(obj => {
-          this.message = "";
-          this.reload();
-        });
+      if (message.length > 0) {
+        fetch(`${MessageServer}?mode=putm&thread=${thread}&name=${name}&message=${message}`)
+          .then(a => a.json())
+          .then(obj => {
+            this.message = "";
+            this.reload();
+          });
+      }
     },
 
     sanitizeText(str) {
@@ -96,7 +114,10 @@ export default {
         };
         return table[c] || c;
       };
-      return str.replace(/[&<>\n]/g, callback);
+      str = str.replace(/[&<>\n]/g, callback);
+      // [[アイテム名]] を popover 化
+      str = str.replace(/\[\[(.+?)\]\]/g, "<a href='javascript:void(0);'>$1</a>");
+      return str;
     }
   },
 
@@ -105,7 +126,8 @@ export default {
       localStorage.setItem(`userName`, v);
     },
   },
-}</script>
+}
+</script>
 
 <style scoped>
   .message-ul {

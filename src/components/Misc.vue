@@ -111,15 +111,6 @@ export default {
     margin: 0 15px;
   }
 
-  .gdocs {
-    max-width: 1125px !important;
-    width: 1125px !important;
-  }
-
-  .item_po {
-    max-width: 430px !important;
-  }
-
   .note {
     font-size: 80%;
     color: rgb(150, 150, 150);

@@ -299,7 +299,7 @@ div.skill {
 }
 
 .popover {
-  max-width: 430px;
+  max-width: 550px !important;
 }
 .stat-popover {
   max-width: 400px !important;
@@ -325,4 +325,11 @@ div.skill {
 .b-toaster-slot {
     max-width: 500px !important;
     display: flex !important;
+}
+
+textarea.form-control {
+    /*height: calc(1.5em + 0.5rem + 2px);*/
+}
+textarea::placeholder {
+    color: rgb(190, 190, 190) !important;
 }

@@ -372,23 +372,11 @@
         </p>
 
         <h2><a name="comments" href="#comments"></a>コメント</h2>
-        <MessageBoard thread="0123456789abcdef" />
+        <MessageBoard thread="0123456789abcdef" @change="addPo($event.anchors);" @discard="removePo($event.anchors);" />
       </div>
     </div>
 
-    <template v-for="(e, i) in popoverElements">
-      <b-popover :target="e.element" :key="i" triggers="hover focus" custom-class="item_po" :title="e.name" placement="top">
-        <div class="flex">
-          <div><b-img-lazy :src="getImageURL(e.item.icon)" width="50" height="50" /></div>
-          <div><span v-html="descToHtml(e.item)"></span><span v-if="e.item.note" class="note" v-html="noteToHtml(e.item)"></span></div>
-        </div>
-        <div v-if="e.item.owners" class="owners">
-          所持者:<br />
-          <b-img-lazy v-for="(owner, oi) in e.item.owners" :key="oi" :src="getImageURL(owner.icon)" :title="descToTitle(owner)" width="50" height="50" />
-        </div>
-      </b-popover>
-    </template>
-
+    <ItemPopovers />
   </div>
 </template>
 
@@ -409,6 +397,9 @@ import jsonSupportChrs from '../assets/support_characters.json'
 import jsonItems from '../assets/items.json'
 import common from "./common";
 
+import ItemPopovers from './parts/ItemPopovers.vue'
+import ItemPopoversJs from "./parts/ItemPopovers.js";
+
 export default {
   name: 'About',
   components: {
@@ -417,13 +408,12 @@ export default {
     BattlePointSimulator,
     StatusSimulator,
     MessageBoard,
+    ItemPopovers,
   },
-  mixins: [common],
+  mixins: [common, ItemPopoversJs],
 
   data() {
     return {
-      popoverElements: [],
-
       stat: {
         masterBonus: [
           { "種類": "メイン", "レベル1": [200, 0, 0, 0, 0, 0], "レベル2": [400, 0, 0, 0, 0, 0], "レベル3": [800, 0, 0, 0, 0, 0] },
@@ -513,22 +503,10 @@ export default {
   methods: {
     findItem(name) {
       const r = this.searchTable.get(name);
-      if (!r)
-        console.log(`${name} not found`);
+      //if (!r) {
+      //  console.log(`${name} not found`);
+      //}
       return r;
-    },
-
-    po(e) {
-      if (e) {
-        let el = e.$el;
-        if (!this.popoverElements.find(e => e === el)) {
-          this.popoverElements.push({
-            name: el.innerText,
-            item: this.findItem(el.innerText),
-            element: el,
-          });
-        }
-      }
     },
 
     n2percent(n) {
@@ -570,15 +548,6 @@ div.about {
 .about li {
   display: list-item;
   margin: 0 15px;
-}
-
-.gdocs {
-  max-width: 1125px !important;
-  width: 1125px !important;
-}
-
-.item_po {
-  max-width: 430px !important;
 }
 
 .note {

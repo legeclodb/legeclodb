@@ -193,10 +193,6 @@ export default {
     margin: 2px 0px 2px auto;
   }
 
-  .popover {
-    max-width: 450px;
-  }
-
 
   .filter .btn-outline-secondary {
   }

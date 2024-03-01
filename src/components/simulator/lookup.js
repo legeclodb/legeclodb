@@ -460,11 +460,15 @@ export default {
     },
     findItemByName(name) {
       const r = this.searchTableWithName.get(name);
-      if (!r) {
-        console.log(`${name} not found`);
-      }
+      //if (!r) {
+      //  console.log(`${name} not found`);
+      //}
       return r;
     },
+    findItem(name) {
+      return this.findItemByName(name);
+    },
+
 
     matchClass(item, chr) {
       if (item) {
