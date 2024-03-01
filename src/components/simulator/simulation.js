@@ -829,8 +829,8 @@ export class SimContext {
     //cond.onCriticalhit = true;
     //cond.onDamage = true;
 
-    let killed = (target ? [target] : targets).filter(a => !a.isAlive);
-    if (killed.length) {
+    let killed = (target ? [target] : targets)?.filter(a => !a.isAlive);
+    if (killed?.length) {
       cond.onKill = true;
 
       for (let k of killed) {

@@ -260,7 +260,7 @@
           <b-button size="sm" v-if="loadoutHash" id="btn-loadout-message" style="margin-left: 0.25em; ">
             <b-icon icon="chat-square-text" title="この編成へのコメントを表示" />
             <b-popover target="btn-loadout-message" triggers="click" custom-class="comment-popover" ref="message_popover">
-              <MessageBoard :thread="loadoutHash" />
+              <MessageBoard :thread="loadoutHash" :fetchCallback="dispatchScrollEvent" />
               <div class="flex">
                 <b-button size="sm" @click="$refs.message_popover.$emit('close')">閉じる</b-button>
               </div>
@@ -627,16 +627,16 @@ export default {
 
     this.selectBattle(this.battleList.slice(-1)[0].uid);
     this.selectPhase("0");
-    this.$nextTick(function () {
+    this.$nextTick(() => {
       // 即時実行するとなんか tab の連動が追いつかないっぽいので $nextTick で行う
       this.decodeURL();
     });
 
     this.setupTools();
 
-    window.onpopstate = function () {
+    window.onpopstate = () => {
       this.decodeURL(true);
-    }.bind(this);
+    };
   },
 
   computed: {
@@ -681,7 +681,7 @@ export default {
       //                                         -> previewDirection -> (fireSkill)
 
       let self = this;
-      const confirm = function () {
+      const confirm = () => {
         self.pushTool(self.tools.confirm);
       };
 
@@ -1021,7 +1021,7 @@ export default {
         return false;
       }
 
-      const isTargetSide = function () {
+      const isTargetSide = () => {
         return target && ((skill.isTargetEnemy && unit.isPlayer != target.isPlayer) || (skill.isTargetAlly && unit.isPlayer == target.isPlayer));
       };
 
@@ -1412,10 +1412,9 @@ export default {
       ldb.download(`${name}.loadout`, data);
     },
     importLoadoutFromFile() {
-      let self = this;
-      ldb.openFileDialog(".loadout", function (file) {
-        file.text().then(function (text) {
-          self.deserializeLoadout(JSON.parse(text));
+      ldb.openFileDialog(".loadout", (file) => {
+        file.text().then((text) => {
+          this.deserializeLoadout(JSON.parse(text));
         });
       });
     },
@@ -1429,10 +1428,9 @@ export default {
         url = `${LoadoutServer}?mode=get&hash=${url}`;
       }
 
-      let self = this;
-      fetch(url).then(function (res) {
-        res.json().then(function (obj) {
-          self.deserializeLoadout(obj);
+      fetch(url).then((res) => {
+        res.json().then((obj) => {
+          this.deserializeLoadout(obj);
           if (callback) {
             callback();
           }
@@ -1441,10 +1439,9 @@ export default {
     },
     onDropLoadout(event) {
       if (event?.dataTransfer?.files?.length) {
-        let self = this;
         let file = event.dataTransfer.files[0];
-        file.text().then(function (text) {
-          self.deserializeLoadout(JSON.parse(text));
+        file.text().then((text) => {
+          this.deserializeLoadout(JSON.parse(text));
         });
       }
     },

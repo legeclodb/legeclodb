@@ -1537,6 +1537,11 @@ export default {
       });
     },
 
+    dispatchScrollEvent() {
+      // ダミー scroll イベントの発行。
+      // (主に popover 内の要素のサイズが変わった際に再配置を促すため用)
+      window.dispatchEvent(new CustomEvent('scroll'));
+    },
 
     setArrayElement(ary, idx, item) {
       this.$set(ary, idx, item);

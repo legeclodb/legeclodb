@@ -31,7 +31,11 @@ export default {
     messageClass: {
       type: String,
       default: "",
-    }
+    },
+    fetchCallback: {
+      type: Function,
+      default: null,
+    },
   },
 
   data() {
@@ -64,6 +68,9 @@ export default {
           this.$nextTick(() => {
             this.$refs.messageUl.scrollTo(0, this.$refs.messageUl.scrollHeight);
           });
+          if (this.fetchCallback) {
+            this.fetchCallback();
+          }
         });
     },
 
