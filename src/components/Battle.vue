@@ -623,7 +623,7 @@ export default {
     cellStyle.gridTemplateColumns = Array(divX).fill("50px").join(" ");
     cellStyle.gridTemplateRows = Array(divY).fill("50px").join(" ");
 
-    this.userName = localStorage.getItem(`userName`);
+    this.userName = localStorage.getItem(`userName`) ?? "";
 
     this.selectBattle(this.battleList.slice(-1)[0].uid);
     this.selectPhase("0");

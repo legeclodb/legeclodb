@@ -49,7 +49,7 @@ export default {
   },
 
   mounted() {
-    this.userName = localStorage.getItem(`userName`);
+    this.userName = localStorage.getItem(`userName`) ?? "";
     this.reload();
   },
 

@@ -3,7 +3,6 @@ module.exports = defineConfig({
   transpileDependencies: true,
   outputDir: 'docs',
   publicPath: '/',
-  assetsDir: './',
   devServer: {
     historyApiFallback: true,
     headers: { "Access-Control-Allow-Origin": "*" }
