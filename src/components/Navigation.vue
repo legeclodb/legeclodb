@@ -24,6 +24,8 @@
 </template>
 
 <script>
+import * as lut from "./utils.js";
+
 export default {
   name: 'Navigation',
   props: {
@@ -37,6 +39,45 @@ export default {
 
   mounted() {
     this.devmode = process.env.NODE_ENV === 'development';
+    this.checkNewMessage();
+  },
+
+  methods: {
+    checkNewMessage() {
+      const toast = () => {
+        this.$bvToast.toast("購読中のスレッドに新しいメッセージが投稿されています。", {
+          toaster: 'b-toaster-bottom-left',
+          noAutoHide: true,
+          appendToast: true,
+          variant: 'danger',
+        });
+      };
+
+      let threads = lut.getSubscribedThreads();
+      if (threads.length) {
+        let last = lut.getSubscribeLastCheckTime();
+        if (!last) {
+          lut.updateSubscribeLastCheck();
+        }
+        else {
+          const minimumInterval = 10 * 60 * 1000; // 10 分は間を置く
+          if (new Date().getTime() - last.getTime() > minimumInterval) {
+            let date = lut.toSQLDateTime(last);
+            fetch(`${lut.MessageServer}?mode=chkm&date=${encodeURIComponent(date)}`)
+              .then(a => a.json())
+              .then(list => {
+                for (const r of list) {
+                  if (threads.includes(r.thread)) {
+                    toast();
+                    break;
+                  }
+                }
+              });
+            lut.updateSubscribeLastCheck();
+          }
+        }
+      }
+    },
   },
 };
 </script>

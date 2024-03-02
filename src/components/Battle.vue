@@ -444,13 +444,12 @@ import commonjs from "./common.js";
 import lookupjs from "./simulator/lookup.js";
 import StatusSimulator from './simulator/StatusSimulator.vue'
 import MessageBoard from './parts/MessageBoard.vue'
-import * as ldb from "./simulator/simulation.js";
+import * as lsm from "./simulator/simulation.js";
+import * as lut from "./utils.js";
 
 import ItemPopovers from './parts/ItemPopovers.vue'
 import ItemPopoversJs from "./parts/ItemPopovers.js";
 
-const LoadoutServer = "https://primitive-games.jp/legeclodb/loadout/index.cgi";
-const BattleLogServer = "https://primitive-games.jp/legeclodb/battlelog/index.cgi";
 
 export default {
   name: 'Battle',
@@ -495,7 +494,7 @@ export default {
       selectedSkill: null,  // skill
       targetUnit: null, // unit
       targetCell: null, // cell
-      targetDirection: ldb.Direction.None,
+      targetDirection: lsm.Direction.None,
       showConfirm: false,
 
       tools: {},
@@ -511,11 +510,11 @@ export default {
 
       enemyUnits: [],
       playerUnits: [
-        new ldb.BaseUnit(),
-        new ldb.BaseUnit(),
-        new ldb.BaseUnit(),
-        new ldb.BaseUnit(),
-        new ldb.BaseUnit(),
+        new lsm.BaseUnit(),
+        new lsm.BaseUnit(),
+        new lsm.BaseUnit(),
+        new lsm.BaseUnit(),
+        new lsm.BaseUnit(),
       ],
       unitTabIndex: 0,
 
@@ -591,7 +590,7 @@ export default {
           enemy.support.status = this.getNPCChrStatus(chr, enemy.support.level, enemy.support.statusRate);
         }
 
-        let unit = new ldb.BaseUnit(false);
+        let unit = new lsm.BaseUnit(false);
         unit.fid = enemy.fid;
         unit.phase = enemy.phase;
         unit.coord = enemy.coord;
@@ -738,7 +737,7 @@ export default {
         // ユニット移動＆スキル選択処理
         moveUnit: {
           buildPath(unit) {
-            let pf = new ldb.PathFinder(self.divX, self.divY);
+            let pf = new lsm.PathFinder(self.divX, self.divY);
             if (unit.isEnemy) {
               pf.setObstacles(self.allActiveUnits.filter(a => a.isPlayer && a.main.cid));
               pf.setOccupied(self.allActiveUnits.filter(a => a.isEnemy && a !== unit));
@@ -851,7 +850,7 @@ export default {
 
           onEnable() {
             let skill = self.selectedSkill;
-            let pf = new ldb.PathFinder(self.divX, self.divY);
+            let pf = new lsm.PathFinder(self.divX, self.divY);
             pf.setStart(self.selectedUnit.coord);
             pf.buildPath(0, skill.range ?? 1, skill.rangeShape);
             self.skillRange = pf;
@@ -913,7 +912,7 @@ export default {
         previewArea: {
           onEnable() {
             let skill = self.selectedSkill;
-            let pf = new ldb.PathFinder(self.divX, self.divY);
+            let pf = new lsm.PathFinder(self.divX, self.divY);
             pf.setStart(self.targetCell.coord);
             pf.buildPath(0, skill.area, skill.areaShape);
             self.skillArea = pf;
@@ -936,7 +935,7 @@ export default {
 
               if (self.isValidTarget(self.selectedUnit, skill, unit)) {
                 // 方向指定スキルの場合ここに来る
-                self.targetDirection = ldb.calcDirection(self.targetCell.coord, cell.coord);
+                self.targetDirection = lsm.calcDirection(self.targetCell.coord, cell.coord);
                 self.pushTools([self.tools.previewDirection, self.tools.confirm], this);
               }
             }
@@ -964,7 +963,7 @@ export default {
         previewDirection: {
           onEnable() {
             let skill = self.selectedSkill;
-            let pf = new ldb.PathFinder(self.divX, self.divY);
+            let pf = new lsm.PathFinder(self.divX, self.divY);
             pf.setStart(self.targetCell.coord);
             pf.buildPath(0, skill.area, skill.areaShape, self.targetDirection);
             self.skillArea = pf;
@@ -975,7 +974,7 @@ export default {
               self.skillArea = self.tools.previewArea.pf;
             }
             this.pf = null;
-            self.targetDirection = ldb.Direction.None;
+            self.targetDirection = lsm.Direction.None;
           },
           onClickCell(cell) {
             let unit = self.findUnitByCoord(cell.coord);
@@ -1314,7 +1313,7 @@ export default {
     beginSimulation() {
       this.selectUnit(null);
       if (!this.simulation) {
-        this.simulation = new ldb.SimContext(this.divX, this.divY, [...this.playerUnits, ...this.enemyUnits]);
+        this.simulation = new lsm.SimContext(this.divX, this.divY, [...this.playerUnits, ...this.enemyUnits]);
         this.simulation.onSimulationBegin();
         this.resetTools(this.tools.selectUnit);
       }
@@ -1414,10 +1413,10 @@ export default {
     exportLoadoutAsFile() {
       const data = this.serializeLoadout();
       const name = data.name ? data.name : "編成名";
-      ldb.download(`${name}.loadout`, data);
+      lut.download(`${name}.loadout`, data);
     },
     importLoadoutFromFile() {
-      ldb.openFileDialog(".loadout", (file) => {
+      lut.openFileDialog(".loadout", (file) => {
         file.text().then((text) => {
           this.deserializeLoadout(JSON.parse(text));
         });
@@ -1430,7 +1429,7 @@ export default {
       }
       else {
         // http で始まらない場合は hash とみなす
-        url = `${LoadoutServer}?mode=get&hash=${url}`;
+        url = `${lut.LoadoutServer}?mode=get&hash=${url}`;
       }
 
       fetch(url).then((res) => {
@@ -1466,7 +1465,7 @@ export default {
     },
     fetchLoadoutList() {
       this.fetching = true;
-      fetch(LoadoutServer).then((res) => {
+      fetch(lut.LoadoutServer).then((res) => {
         res.json().then((obj) => {
           this.fetching = false;
           this.loadoutList = obj.sort((a, b) => b.date.localeCompare(a.date));
@@ -1490,10 +1489,11 @@ export default {
       form.append('mode', 'put');
       form.append('data', new Blob([JSON.stringify(data, null, 2)]));
       form.append('author', this.userName.trim());
-      fetch(LoadoutServer, { method: "POST", body: form }).then((res) => {
+      fetch(lut.LoadoutServer, { method: "POST", body: form }).then((res) => {
         res.json().then((obj) => {
           if (obj.succeeded) {
             localStorage.setItem(`delkey.${obj.hash}`, obj.delkey);
+            localStorage.setItem(`subscribe.${obj.hash}`, 'true');
             this.fetchLoadoutList();
           }
           if (obj.message) {
@@ -1503,13 +1503,13 @@ export default {
       });
     },
     downloadLoadoutFromServer(rec) {
-      this.importLoadoutFromUrl(`${LoadoutServer}?mode=get&hash=${rec.hash}`, () => {
+      this.importLoadoutFromUrl(`${lut.LoadoutServer}?mode=get&hash=${rec.hash}`, () => {
         this.loadoutHash = rec.hash;
       });
     },
     deleteLoadoutFromServer(rec) {
       if (window.confirm(`"${rec.name}" をサーバーから削除します。よろしいですか？`)) {
-        fetch(`${LoadoutServer}?mode=del&hash=${rec.hash}&delkey=${rec.delkey}`).then((res) => {
+        fetch(`${lut.LoadoutServer}?mode=del&hash=${rec.hash}&delkey=${rec.delkey}`).then((res) => {
           res.json().then((obj) => {
             if (obj.succeeded) {
               localStorage.removeItem(`delkey.${rec.hash}`);

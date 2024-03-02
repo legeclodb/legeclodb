@@ -762,6 +762,69 @@ export class SimContext {
     return unit && ((unit.isPlayer && this.isPlayerTurn) || (unit.isEnemy && this.isEnemyTurn));
   }
 
+  getBattleResult(unit, skill, target, ctx) {
+    const attack = (attacker, defender, skl = null) => {
+      let result = {
+        damageToSupport: 0,
+        damageToMain: 0,
+        get total() { return this.damageToSupport + this.damageToMain; },
+      };
+
+      let attackCount = 10;
+      let atk = this.getAttackPower(attacker);
+      let damageRate = this.getDamageRate(skl, attacker, defender);
+      let dmgDealtBuff = this.getDamageDealtBuff(attacker);
+      let critDmgRate = this.getCriticalDamageRate(attacker);
+      let rangedPenarty = 1.0;
+
+      // 対サポート
+      if (defender.support && defender.support.hp > 0) {
+        let def = this.getDefensePower(defender.support, attacker.damageType);
+        let baseDmg = Math.max(atk - def, 1);
+        let dmgTakenBuff = this.getDamageTakenBuff(defender.support, attacker.damageType);
+        let finalDmg = baseDmg * damageRate * dmgDealtBuff * dmgTakenBuff * critDmgRate * rangedPenarty;
+
+        let totalDamage = 0;
+        while (attackCount && totalDamage < defender.support.hp) {
+          totalDamage += finalDmg;
+          --attackCount;
+        }
+        result.damageToSupport = finalDmg;
+      }
+      // 対メイン
+      if (attackCount) {
+        let def = this.getDefensePower(defender.main, attacker.damageType);
+        let baseDmg = Math.max(atk - def, 1);
+        let dmgTakenBuff = this.getDamageTakenBuff(defender.main, attacker.damageType);
+        let finalDmg = baseDmg * damageRate * dmgDealtBuff * dmgTakenBuff * critDmgRate * rangedPenarty;
+
+        let totalDamage = 0;
+        while (attackCount) {
+          totalDamage += finalDmg;
+          --attackCount;
+        }
+        result.damageToMain = finalDmg;
+      }
+
+      return result;
+    };
+
+    let aSup = attack(unit.support, target, skill);
+    let aMain = attack(unit.main, target, skill);
+    let dSup = attack(target.support, unit);
+    let dMain = attack(target.main, unit);
+    return {
+      attackerScore: aSup.total + aMain.total,
+      defenderScore: dSup.total + dMain.total,
+      apply() {
+        target.support.hp -= aSup.damageToSupport + aMain.damageToSupport;
+        target.main.hp    -= aSup.damageToMain + aMain.damageToMain;
+        unit.support.hp   -= dSup.damageToSupport + dMain.damageToSupport;
+        unit.main.hp      -= dSup.damageToMain + dMain.damageToMain;
+      },
+    };
+  }
+
   fireSkill(unit, skill, targets, cell) {
     // targets は配列なら複数、非配列なら単体
     let target = Array.isArray(targets) ? null : targets;
@@ -812,6 +875,11 @@ export class SimContext {
         else if (range > 1) {
           cond.onRangedCombat = true;
         }
+      }
+
+      if (skill.isMainSkill && skill.damageRate) {
+        doAttack = true;
+        doBattle = cond.onTargetEnemy;
       }
     }
 
@@ -1158,33 +1226,4 @@ export function $sim() {
 }
 export function $findObjectByUid(uid) {
   return $vue().findObjectByUid(uid);
-}
-
-// fileType: ".json" など
-export function openFileDialog(fileType, callback) {
-  let input = window.document.createElement("input");
-  input.type = "file";
-  input.accept = fileType;
-  input.onchange = function () {
-    callback(input.files[0]);
-    input.remove();
-    return false;
-  };
-  input.click();
-}
-export function download(filename, data) {
-  if (typeof (data) == 'string') {
-    data = new Blob([data]);
-  }
-  else if (typeof (data) == 'object') {
-    data = new Blob([JSON.stringify(data, null, 2)]);
-  }
-
-  let u = window.URL.createObjectURL(data);
-  let a = document.createElement('a');
-  a.href = u;
-  a.download = filename;
-  document.body.appendChild(a);
-  a.click();
-  window.URL.revokeObjectURL(u);
 }

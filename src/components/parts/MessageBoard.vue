@@ -11,15 +11,16 @@
       </li>
     </ul>
     <div class="flex inputs">
-      <b-form-input size="sm" v-model="userName" placeholder="お名前" style="width: 8em"></b-form-input>
-      <b-form-textarea size="sm" v-model="message" placeholder="メッセージ" style="flex: 1; margin-left: 0.25em; "></b-form-textarea>
-      <b-button size="sm" @click="sendMessage()" style="min-width: 6em; margin-left: 0.25em; ">送信</b-button>
+      <div><b-form-input size="sm" v-model="userName" placeholder="お名前" style="width: 8em"></b-form-input></div>
+      <div style="margin-left: 0.25em; flex: 1;"><b-form-textarea size="sm" v-model="message" placeholder="メッセージ" style=""></b-form-textarea></div>
+      <div style="margin-left: 0.25em;"><b-button size="sm" @click="sendMessage()" style="min-width: 4em;">送信</b-button></div>
+      <div style="margin-left: 0.25em;"><b-button size="sm" :title="`投稿があった時通知 (現在 ${subscribed ? 'On' : 'Off'})`" @click="subscribed=!subscribed"><b-icon :icon="subscribed ? 'bell-fill' : 'bell'" /></b-button></div>
     </div>
   </div>
 </template>
 
 <script>
-const MessageServer = "https://primitive-games.jp/legeclodb/loadout/index.cgi";
+import * as lut from "../utils.js";
 
 export default {
   name: 'MessageBoard',
@@ -40,6 +41,7 @@ export default {
 
   data() {
     return {
+      subscribed: false,
       userName: "",
       message: "",
 
@@ -51,6 +53,7 @@ export default {
 
   mounted() {
     this.userName = localStorage.getItem(`userName`) ?? "";
+    this.subscribed = localStorage.getItem(`subscribe.${this.thread}`) != null;
     this.reload();
   },
 
@@ -61,20 +64,23 @@ export default {
   methods: {
     reload() {
       this.fetching = true;
-      fetch(`${MessageServer}?mode=getm&thread=${this.thread}`)
+      fetch(`${lut.MessageServer}?mode=getm&thread=${this.thread}`)
         .then(a => a.json())
         .then(mesages => {
+          this.fetching = false;
           this.messages = mesages;
           for (let m of this.messages) {
             m.message = this.sanitizeText(m.message);
           }
 
-          this.fetching = false;
           this.$nextTick(() => {
             let ul = this.$refs.messageUl;
-            ul.scrollTo(0, ul.scrollHeight);
+            if (ul) {
+              ul.scrollTo(0, ul.scrollHeight);
+            }
 
-            this.discard();
+            this.$emit('discard', this);
+            this.anchors = [];
             for (let m of ul.getElementsByClassName("message")) {
               for (let a of m.children) {
                 this.anchors.push(a);
@@ -85,21 +91,18 @@ export default {
         });
     },
 
-    discard() {
-      this.$emit('discard', this);
-      this.anchors = [];
-    },
-
     sendMessage() {
       const thread = this.thread;
       const name = encodeURIComponent(this.userName);
       const message = encodeURIComponent(this.message);
       if (message.length > 0) {
-        fetch(`${MessageServer}?mode=putm&thread=${thread}&name=${name}&message=${message}`)
+        fetch(`${lut.MessageServer}?mode=putm&thread=${thread}&name=${name}&message=${message}`)
           .then(a => a.json())
           .then(obj => {
             this.message = "";
+            this.subscribed = true;
             this.reload();
+            lut.updateSubscribeLastCheck();
           });
       }
     },
@@ -124,6 +127,16 @@ export default {
   watch: {
     userName: function (v) {
       localStorage.setItem(`userName`, v);
+    },
+    subscribed: function (v) {
+      const key = `subscribe.${this.thread}`;
+      if (v) {
+        localStorage.setItem(key, 'true');
+      }
+      else {
+        localStorage.removeItem(key);
+      }
+      //console.log(`subscribed: ${v}`);
     },
   },
 }

@@ -42,12 +42,13 @@ def checkNewMessage():
         return {}
     date = date.replace("/", "-")
 
-    sql = f"SELECT thread, date FROM {MessageTable} WHERE date > %s"
+    sql = f"SELECT thread, date, name FROM {MessageTable} WHERE date > %s"
     val = (date,)
     mycursor.execute(sql, val)
     return list(map(lambda r: {
         "thread": r[0],
         "date": r[1].strftime("%Y/%m/%d %H:%M:%S"),
+        "name": r[2],
     }, mycursor.fetchall()))
 
 
