@@ -1227,22 +1227,24 @@ export default {
 
       const setupSlot = (effect) => {
         effect.typeId = self.getEffectIndex(effect.type);
-        if (skill.isActive && !effect.slot) {
-          let slot = effect.type;
-          if (effect.isBuff)
-            slot += "+";
-          else if (effect.isDebuff)
-            slot += "-";
-          if (skill.isMainSkill)
-            slot += "(メイン)";
-          else if (skill.isSupportSkill)
-            slot += "(サポート)";
-          if (effect.ephemeral)
-            slot += "(戦闘時)";
-          effect.slot = slot;
-        }
-        else if (skill.isActive && effect.slot) {
-          effect.hasSpecialSlot = true;
+        if (skill.isActive) {
+          if (effect.slot) {
+            effect.hasSpecialSlot = true;
+          }
+          else {
+            let slot = effect.type;
+            if (effect.isBuff)
+              slot += "+";
+            else if (effect.isDebuff)
+              slot += "-";
+            if (skill.isMainSkill)
+              slot += "(メイン)";
+            else if (skill.isSupportSkill)
+              slot += "(サポート)";
+            if (effect.ephemeral)
+              slot += "(戦闘時)";
+            effect.slot = slot;
+          }
         }
       };
       const setParent = (effect) => {

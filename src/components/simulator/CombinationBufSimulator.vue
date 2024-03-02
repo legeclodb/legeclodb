@@ -765,15 +765,15 @@ export default {
             }
             return null;
           },
-          acceptEffect(effect) {
+          acceptEffectValue(effect) {
             this.totalAmount[effect.effectTypeIndex] += vue.getEffectValue(effect);
-            if (effect.slotIndex) {
-              this.usedSlots[effect.slotIndex] = effect;
-            }
           },
           acceptEffects(effectList) {
             for (const effect of effectList) {
-              this.acceptEffect(effect);
+              this.totalAmount[effect.effectTypeIndex] += vue.getEffectValue(effect);
+              if (effect.slotIndex) {
+                this.usedSlots[effect.slotIndex] = effect;
+              }
             }
           },
 
@@ -883,7 +883,7 @@ export default {
               }
               r.score += score;
               r.usedEffects.push(effect);
-              sctx.acceptEffect(effect);
+              sctx.acceptEffectValue(effect);
             }
             else {
               r.conflictedEffects.push(effect);
