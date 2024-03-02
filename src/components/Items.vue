@@ -225,6 +225,7 @@ import Navigation from './Navigation.vue'
 import jsonItems from '../assets/items.json'
 import jsonConstants from '../assets/constants.json'
 import common from "./common";
+import * as lut from './utils.js'
 
 export default {
   name: 'Equipments',
@@ -506,7 +507,7 @@ export default {
       if (!this.enableUpdateURL)
         return false;
 
-      let seri = new this.URLSerializer();
+      let seri = new lut.URLSerializer();
       if (this.isFilterEnabled(this.classFilter))
         seri.class = this.serializeFilter(this.classFilter);
       if (this.isFilterEnabled(this.itemTypeFilter))
@@ -532,7 +533,7 @@ export default {
       return false;
     },
     decodeURL(initState = false) {
-      let data = new this.URLSerializer({
+      let data = new lut.URLSerializer({
         class: 0,
         itemType: 0,
         rarity: 0,

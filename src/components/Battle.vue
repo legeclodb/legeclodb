@@ -572,12 +572,13 @@ export default {
     this.setupCharacters(this.enemyMainChrs, this.mainActive, this.mainPassive, this.mainTalents);
     this.setupCharacters(this.enemySupChrs, this.supActive, this.supPassive);
 
+    // 全クエストの全敵をここでセットアップ (大して重くもないのでとりあえず…)
     this.battleList = structuredClone(jsonBattle);
     for (let battle of this.battleList) {
       for (let enemy of battle.enemies) {
         {
           const chr = this.enemyMainChrs.find(c => c.uid == enemy.main.cid);
-          this.mergeChrData(enemy.main, chr);
+          lsm.mergeChrData(enemy.main, chr);
           enemy.main.skills = [
             this.searchTableWithUid.get(enemy.main.talent),
             ...enemy.main.skills.map(id => this.searchTableWithUid.get(id)),
@@ -586,7 +587,7 @@ export default {
         }
         if (enemy.support) {
           const chr = this.enemySupChrs.find(c => c.uid == enemy.support.cid);
-          this.mergeChrData(enemy.support, chr);
+          lsm.mergeChrData(enemy.support, chr);
           enemy.support.status = this.getNPCChrStatus(chr, enemy.support.level, enemy.support.statusRate);
         }
 
@@ -596,6 +597,7 @@ export default {
         unit.coord = enemy.coord;
         this.moveProperty(unit.base, enemy, "main");
         this.moveProperty(unit.base, enemy, "support");
+        unit.setup();
         enemy.unit = unit;
       }
     }
@@ -1215,26 +1217,6 @@ export default {
       }
     },
 
-    mergeChrData(dst, src) {
-      const props = [
-        "isMain", "isSupport",
-        "name", "icon", "class", "rarity", "symbol", "supportType", "damageType", "range", "move",
-      ];
-      if (src) {
-        for (const prop of props) {
-          if (prop in src)
-            dst[prop] = src[prop];
-          else
-            delete dst[prop];
-        }
-      }
-      else {
-        for (const prop of props) {
-          delete dst[prop];
-        }
-      }
-    },
-
     getSkillClass(skill) {
       return {
         active: skill.isActive,
@@ -1542,7 +1524,7 @@ export default {
 
 
     updateURL() {
-      let seri = new this.URLSerializer();
+      let seri = new lut.URLSerializer();
       seri.b = this.battleId;
       if (this.phase != "0")
         seri.p = this.phase;
@@ -1558,7 +1540,7 @@ export default {
       return false;
     },
     decodeURL(initState = false) {
-      let data = new this.URLSerializer({
+      let data = new lut.URLSerializer({
         b: "",
         p: "",
         u: "",

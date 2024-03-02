@@ -714,41 +714,6 @@ export default {
       }
     },
 
-    URLSerializer: class {
-      constructor(data) {
-        for (const k in data) {
-          this[k] = data[k];
-        }
-      }
-
-      serialize() {
-        let params = [];
-        for (const k in this) {
-          params.push(k + "=" + this[k].toString());
-        }
-        return "?" + (params.length != 0 ? params.join("&") : "");
-      }
-
-      deserialize(url) {
-        let numHandled = 0;
-        let q = url.match(/\?([^#]+)/);
-        if (q) {
-          let params = q[1].split('&');
-          for (let param of params) {
-            let kvp = param.split('=');
-            if (kvp.length == 2) {
-              if (typeof this[kvp[0]] === "number")
-                this[kvp[0]] = parseInt(kvp[1]);
-              else
-                this[kvp[0]] = decodeURIComponent(kvp[1]);
-              ++numHandled;
-            }
-          }
-        }
-        return numHandled;
-      }
-    },
-
     getMainChrStatus(chr, level = 110, star = 6, master = 3, loveBonus = true, boost = [150, 140, 130, 140, 130, 50])
     {
       if (!chr || !chr.statusInit || !chr.statusLv || !chr.statusStar)
@@ -1183,7 +1148,6 @@ export default {
     },
 
     setupSkill(skill, params) {
-      const self = this;
       if (skill.isActive) {
         if (skill.area == "単体") {
           skill.isSingleTarget = true;
@@ -1226,7 +1190,7 @@ export default {
       }
 
       const setupSlot = (effect) => {
-        effect.typeId = self.getEffectIndex(effect.type);
+        effect.typeId = this.getEffectIndex(effect.type);
         if (skill.isActive) {
           if (effect.slot) {
             effect.hasSpecialSlot = true;
@@ -1249,8 +1213,8 @@ export default {
       };
       const setParent = (effect) => {
         Object.defineProperty(effect, 'parent', {
-          value: skill,
-          writable: false,
+          configurable: true,
+          get: () => skill,
         });
       };
       const setupRandomTable = (effect) => {

@@ -2,6 +2,74 @@ export const MessageServer = "https://primitive-games.jp/legeclodb/loadout/index
 export const LoadoutServer = "https://primitive-games.jp/legeclodb/loadout/index.cgi";
 export const BattleLogServer = "https://primitive-games.jp/legeclodb/battlelog/index.cgi";
 
+export class BitFlags {
+  constructor(arg) {
+    if (typeof arg == "number") {
+      const size = arg;
+      // (size / 32) + (size % 32 ? 1 : 0)
+      // 整数のまま処理するためビット演算
+      const n = (size >> 5) + (size & 31 ? 1 : 0);
+      this.data_ = new Uint32Array(n);
+    }
+    else if (arg.constructor === this.constructor) {
+      const parent = arg;
+      this.data_ = new Uint32Array(parent.data_);
+    }
+    else {
+      throw "BitFlags(??????)";
+    }
+  }
+  get(i) {
+    const byte = i >> 5;
+    const bit = i & 31;
+    return (this.data_[byte] & (1 << bit)) != 0;
+  }
+  set(i, v) {
+    const byte = i >> 5;
+    const bit = i & 31;
+    if (v)
+      this.data_[byte] |= 1 << bit;
+    else
+      this.data_[byte] &= ~(1 << bit);
+  }
+}
+
+export class URLSerializer {
+  constructor(data) {
+    for (const k in data) {
+      this[k] = data[k];
+    }
+  }
+
+  serialize() {
+    let params = [];
+    for (const k in this) {
+      params.push(k + "=" + this[k].toString());
+    }
+    return "?" + (params.length != 0 ? params.join("&") : "");
+  }
+
+  deserialize(url) {
+    let numHandled = 0;
+    let q = url.match(/\?([^#]+)/);
+    if (q) {
+      let params = q[1].split('&');
+      for (let param of params) {
+        let kvp = param.split('=');
+        if (kvp.length == 2) {
+          if (typeof this[kvp[0]] === "number")
+            this[kvp[0]] = parseInt(kvp[1]);
+          else
+            this[kvp[0]] = decodeURIComponent(kvp[1]);
+          ++numHandled;
+        }
+      }
+    }
+    return numHandled;
+  }
+}
+
+
 export function toSQLDateTime(date) {
   let time = typeof (date) === 'number' ? date : date.getTime();
   let a9h = new Date(time + (9 * 60 * 60 * 1000)); // +9H

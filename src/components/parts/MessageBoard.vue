@@ -79,8 +79,7 @@ export default {
               ul.scrollTo(0, ul.scrollHeight);
             }
 
-            this.$emit('discard', this);
-            this.anchors = [];
+            this.discard();
             for (let m of ul.getElementsByClassName("message")) {
               for (let a of m.children) {
                 this.anchors.push(a);
@@ -89,6 +88,11 @@ export default {
             this.$emit('change', this);
           });
         });
+    },
+
+    discard() {
+      this.$emit('discard', this);
+      this.anchors = [];
     },
 
     sendMessage() {

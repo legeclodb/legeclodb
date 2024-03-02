@@ -406,7 +406,8 @@ import jsonPassive from '../assets/main_passive.json'
 import jsonTalents from '../assets/main_talents.json'
 import jsonCharacters from '../assets/main_characters.json'
 import jsonConstants from '../assets/constants.json'
-import common from "./common";
+import common from "./common"
+import * as lut from './utils.js'
 
 export default {
   name: 'MainCharacters',
@@ -914,7 +915,7 @@ export default {
       if (!this.enableUpdateURL)
         return false;
 
-      let seri = new this.URLSerializer();
+      let seri = new lut.URLSerializer();
       if (this.isFilterEnabled(this.classFilter))
         seri.class = this.serializeFilter(this.classFilter);
       if (this.isFilterEnabled(this.symbolFilter))
@@ -946,7 +947,7 @@ export default {
       return false;
     },
     decodeURL(initState = false) {
-      let data = new this.URLSerializer({
+      let data = new lut.URLSerializer({
         class: 0,
         symbol: 0,
         damageType: 0,

@@ -24,6 +24,32 @@ export class BaseUnit {
       },
     };
   }
+  static defineStatusGetter(self) {
+    Object.defineProperty(self, 'hp', {
+      configurable: true,
+      get: () => self.status[0]
+    });
+    Object.defineProperty(self, 'atk', {
+      configurable: true,
+      get: () => self.status[1]
+    });
+    Object.defineProperty(self, 'def', {
+      configurable: true,
+      get: () => self.status[2]
+    });
+    Object.defineProperty(self, 'mag', {
+      configurable: true,
+      get: () => self.status[3]
+    });
+    Object.defineProperty(self, 'res', {
+      configurable: true,
+      get: () => self.status[4]
+    });
+    Object.defineProperty(self, 'tec', {
+      configurable: true,
+      get: () => self.status[5]
+    });
+  }
 
   get coord() {
     //return this.base.coord;
@@ -50,18 +76,11 @@ export class BaseUnit {
       this.isPlayer = true;
     else
       this.isEnemy = true;
-    this.initialize();
   }
-  initialize() {
-    const emp = BaseUnit.emptyUnit;
-    Object.assign(this.base.main, emp.main);
-    Object.assign(this.base.support, emp.support);
-    this.showEditor = false;
-    this.editorData = [];
-
-    const mergeChrData = $vue().mergeChrData;
-    mergeChrData(this.base.main, null);
-    mergeChrData(this.base.support, null);
+  setup() {
+    BaseUnit.defineStatusGetter(this.base.main);
+    BaseUnit.defineStatusGetter(this.base.support);
+    //console.log(this);
   }
   swap(v) {
     const swapProperty = $vue().swapProperty;
@@ -95,7 +114,6 @@ export class BaseUnit {
   }
   deserialize(r) {
     const findItemByUid = $vue().findItemByUid;
-    const mergeChrData = $vue().mergeChrData;
     const deserializeChr = function (dst, src) {
       const chr = findItemByUid(src.cid);
       mergeChrData(dst, chr);
@@ -107,11 +125,11 @@ export class BaseUnit {
     deserializeChr(this.base.main, r.main);
     deserializeChr(this.base.support, r.support);
     this.editorData = [...r.editorData];
+    this.setup();
   }
   edit(ss) {
     const findItemByUid = $vue().findItemByUid;
     const copyArray = $vue().copyArray;
-    const mergeChrData = $vue().mergeChrData;
     // エディタ側のオブジェクトとこちら側のオブジェクトは別個体なため、uid を元にこちら側のオブジェクトに差し替える。
 
     let main = this.base.main;
@@ -137,6 +155,8 @@ export class BaseUnit {
     support.status = ss.statSupportResult.slice(0, 6);
 
     copyArray(this.editorData, ss.serialize());
+
+    this.setup();
     //console.log(this);
   }
 }
@@ -480,18 +500,18 @@ class SimUnit {
   isDormant = false; // 配置前 (出現ターン前) のユニットは true
   coord = [0, 0];
   affectedSkills = []; // SimSkill
-  customEffects = [];
+  effects = []; // SimEffect
   main = {
     bufP: [],
     bufF: [],
     status: [0, 0, 0, 0, 0, 0],
-    hp: 0,
+    maxHp: 0,
   };
   support = {
     bufP: [],
     bufF: [],
     status: [0, 0, 0, 0, 0, 0],
-    hp: 0,
+    maxHp: 0,
   };
   //#endregion fields
 
@@ -499,15 +519,29 @@ class SimUnit {
   //#region props
   get fid() { return this.base.fid; }
   get phase() { return this.base.phase; }
-  get isAlive() { return this.main.hp > 0; }
+  get isAlive() { return this.main.status[0] > 0; }
   get isActive() { return !this.isDormant && this.isAlive; }
   get isPlayer() { return this.base.isPlayer; }
   get isEnemy() { return this.base.isEnemy; }
-  get hpRate() { return 0; }
-  get hpRateMain() { return 0; }
-  get hpRateSupport() { return 0; }
-  get activeBuffCount() { return 0; }
-  get activeDebuffCount() { return 0; }
+  get hpRate() {
+    return (this.main.status[0] + this.support.status[0]) / (this.main.maxHp + this.support.maxHp);
+  }
+  get activeBuffCount() {
+    return this.effects.reduce((total, e) => {
+      if (e.isBuff && e.parent.isActive) {
+        total += 1;
+      }
+      return total;
+    }, 0);
+  }
+  get activeDebuffCount() {
+    return this.effects.reduce((total, e) => {
+      if (e.isDebuff && e.parent.isActive) {
+        total += 1;
+      }
+      return total;
+    }, 0);
+ }
   get actions() {
     return [...(this.base.main?.skills ?? []), ...(this.base.support?.skills ?? [])].filter(a => a.isActive);
   }
@@ -524,12 +558,11 @@ class SimUnit {
       this.isDormant = true;
     }
 
-    const addBattleProps = function (chr, base) {
+    const addBattleProps = (chr, base) => {
       chr.unit = this;
       chr.bufP = [];
       chr.bufF = [];
       chr.status = [...base.status];
-      chr.hp = chr.status[0];
 
       let skills = base.skills ? base.skills.map(skill => makeSimSkill(skill, chr)) : [];
       if (chr.isMain) {
@@ -547,10 +580,9 @@ class SimUnit {
       }
 
       Object.defineProperty(chr, 'statusBase', {
-        value: base.status,
-        writable: false,
+        get: () => base.status,
       });
-    }.bind(this);
+    };
     {
       this.main = Object.create(unit.base.main);
       addBattleProps(this.main, unit.base.main);
@@ -587,6 +619,31 @@ class SimUnit {
     this.coord = [...r.coord];
     SimUnit.copyProps(this.main, r.main);
     SimUnit.copyProps(this.support, r.support);
+  }
+
+  // options: {
+  //  onBattle: boolean,
+  //  main: boolean,
+  //  support: boolean,
+  //  damageType: enum ["アタック", "マジック"],
+  //}
+  getAttackPower(options) {
+
+  }
+  getDamageDealtBuff(options) {
+
+  }
+  geCriticalRate(options) {
+
+  }
+  geCriticalDamageRate(options) {
+
+  }
+  getDefensePower(options) {
+
+  }
+  getDamageTakenBuff(options) {
+
   }
 
   getNearAllyCount(args) {
@@ -1104,7 +1161,7 @@ export class PathFinder
   buildPath(move, range, rangeShape = null, dir = Direction.None) {
     if (range == "自ユニット")
       range = 0;
-    if (range == "単体" || range == "自ユニット")
+    else if (range == "単体" || range == "自ユニット")
       range = 1;
     else if (range == "全体")
       range = 99;
@@ -1217,6 +1274,27 @@ export function calcDirection(base, target) {
   }
   return Direction.None; // base == target
 }
+
+export function mergeChrData(dst, src) {
+  const props = [
+    "isMain", "isSupport",
+    "name", "icon", "class", "rarity", "symbol", "supportType", "damageType", "range", "move",
+  ];
+  if (src) {
+    for (const prop of props) {
+      if (prop in src)
+        dst[prop] = src[prop];
+      else
+        delete dst[prop];
+    }
+  }
+  else {
+    for (const prop of props) {
+      delete dst[prop];
+    }
+  }
+}
+
 
 export function $vue() {
   return window.$vue;

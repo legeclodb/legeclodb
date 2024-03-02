@@ -292,7 +292,8 @@ import jsonActive from '../assets/support_active.json'
 import jsonPassive from '../assets/support_passive.json'
 import jsonCharacters from '../assets/support_characters.json'
 import jsonConstants from '../assets/constants.json'
-import common from "./common";
+import common from "./common"
+import * as lut from './utils.js'
 
 export default {
   name: 'SupportCharacters',
@@ -673,7 +674,7 @@ export default {
       if (!this.enableUpdateURL)
         return false;
 
-      let seri = new this.URLSerializer();
+      let seri = new lut.URLSerializer();
       if (this.isFilterEnabled(this.classFilter))
         seri.class = this.serializeFilter(this.classFilter);
       if (this.isFilterEnabled(this.supportTypeFilter))
@@ -703,7 +704,7 @@ export default {
       return false;
     },
     decodeURL(initState = false) {
-      let data = new this.URLSerializer({
+      let data = new lut.URLSerializer({
         class: 0,
         supportType: 0,
         damageType: 0,

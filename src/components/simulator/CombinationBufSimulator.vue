@@ -428,6 +428,7 @@
 import ChrSelector from '../parts/ChrSelector.vue'
 import commonjs from "../common.js";
 import lookupjs from "./lookup.js";
+import * as lut from '../utils.js'
 
 import ItemPopovers from '../parts/ItemPopovers.vue'
 import ItemPopoversJs from "../parts/ItemPopovers.js";
@@ -608,10 +609,10 @@ export default {
   methods: {
     createUsedFlags(parent = null) {
       if (parent) {
-        return new this.BitFlags(parent);
+        return new lut.BitFlags(parent);
       }
       else {
-        return new this.BitFlags(this.itemCount);
+        return new lut.BitFlags(this.itemCount);
       }
     },
 
