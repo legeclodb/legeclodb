@@ -444,7 +444,7 @@ import commonjs from "./common.js";
 import lookupjs from "./simulator/lookup.js";
 import StatusSimulator from './simulator/StatusSimulator.vue'
 import MessageBoard from './parts/MessageBoard.vue'
-import * as lsm from "./simulator/simulation.js";
+import * as lbt from "./simulator/battle.js";
 import * as lut from "./utils.js";
 
 import ItemPopovers from './parts/ItemPopovers.vue'
@@ -494,7 +494,7 @@ export default {
       selectedSkill: null,  // skill
       targetUnit: null, // unit
       targetCell: null, // cell
-      targetDirection: lsm.Direction.None,
+      targetDirection: lbt.Direction.None,
       showConfirm: false,
 
       tools: {},
@@ -510,11 +510,11 @@ export default {
 
       enemyUnits: [],
       playerUnits: [
-        new lsm.BaseUnit(),
-        new lsm.BaseUnit(),
-        new lsm.BaseUnit(),
-        new lsm.BaseUnit(),
-        new lsm.BaseUnit(),
+        new lbt.BaseUnit(),
+        new lbt.BaseUnit(),
+        new lbt.BaseUnit(),
+        new lbt.BaseUnit(),
+        new lbt.BaseUnit(),
       ],
       unitTabIndex: 0,
 
@@ -578,7 +578,7 @@ export default {
       for (let enemy of battle.enemies) {
         {
           const chr = this.enemyMainChrs.find(c => c.uid == enemy.main.cid);
-          lsm.mergeChrData(enemy.main, chr);
+          lbt.mergeChrData(enemy.main, chr);
           enemy.main.skills = [
             this.searchTableWithUid.get(enemy.main.talent),
             ...enemy.main.skills.map(id => this.searchTableWithUid.get(id)),
@@ -587,11 +587,11 @@ export default {
         }
         if (enemy.support) {
           const chr = this.enemySupChrs.find(c => c.uid == enemy.support.cid);
-          lsm.mergeChrData(enemy.support, chr);
+          lbt.mergeChrData(enemy.support, chr);
           enemy.support.status = this.getNPCChrStatus(chr, enemy.support.level, enemy.support.statusRate);
         }
 
-        let unit = new lsm.BaseUnit(false);
+        let unit = new lbt.BaseUnit(false);
         unit.fid = enemy.fid;
         unit.phase = enemy.phase;
         unit.coord = enemy.coord;
@@ -739,7 +739,7 @@ export default {
         // ユニット移動＆スキル選択処理
         moveUnit: {
           buildPath(unit) {
-            let pf = new lsm.PathFinder(self.divX, self.divY);
+            let pf = new lbt.PathFinder(self.divX, self.divY);
             if (unit.isEnemy) {
               pf.setObstacles(self.allActiveUnits.filter(a => a.isPlayer && a.main.cid));
               pf.setOccupied(self.allActiveUnits.filter(a => a.isEnemy && a !== unit));
@@ -852,7 +852,7 @@ export default {
 
           onEnable() {
             let skill = self.selectedSkill;
-            let pf = new lsm.PathFinder(self.divX, self.divY);
+            let pf = new lbt.PathFinder(self.divX, self.divY);
             pf.setStart(self.selectedUnit.coord);
             pf.buildPath(0, skill.range ?? 1, skill.rangeShape);
             self.skillRange = pf;
@@ -914,7 +914,7 @@ export default {
         previewArea: {
           onEnable() {
             let skill = self.selectedSkill;
-            let pf = new lsm.PathFinder(self.divX, self.divY);
+            let pf = new lbt.PathFinder(self.divX, self.divY);
             pf.setStart(self.targetCell.coord);
             pf.buildPath(0, skill.area, skill.areaShape);
             self.skillArea = pf;
@@ -937,7 +937,7 @@ export default {
 
               if (self.isValidTarget(self.selectedUnit, skill, unit)) {
                 // 方向指定スキルの場合ここに来る
-                self.targetDirection = lsm.calcDirection(self.targetCell.coord, cell.coord);
+                self.targetDirection = lbt.calcDirection(self.targetCell.coord, cell.coord);
                 self.pushTools([self.tools.previewDirection, self.tools.confirm], this);
               }
             }
@@ -965,7 +965,7 @@ export default {
         previewDirection: {
           onEnable() {
             let skill = self.selectedSkill;
-            let pf = new lsm.PathFinder(self.divX, self.divY);
+            let pf = new lbt.PathFinder(self.divX, self.divY);
             pf.setStart(self.targetCell.coord);
             pf.buildPath(0, skill.area, skill.areaShape, self.targetDirection);
             self.skillArea = pf;
@@ -976,7 +976,7 @@ export default {
               self.skillArea = self.tools.previewArea.pf;
             }
             this.pf = null;
-            self.targetDirection = lsm.Direction.None;
+            self.targetDirection = lbt.Direction.None;
           },
           onClickCell(cell) {
             let unit = self.findUnitByCoord(cell.coord);
@@ -1295,7 +1295,7 @@ export default {
     beginSimulation() {
       this.selectUnit(null);
       if (!this.simulation) {
-        this.simulation = new lsm.SimContext(this.divX, this.divY, [...this.playerUnits, ...this.enemyUnits]);
+        this.simulation = new lbt.SimContext(this.divX, this.divY, [...this.playerUnits, ...this.enemyUnits]);
         this.simulation.onSimulationBegin();
         this.resetTools(this.tools.selectUnit);
       }
