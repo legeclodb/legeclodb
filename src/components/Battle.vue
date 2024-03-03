@@ -139,9 +139,10 @@
           <b-button size="sm" style="width: 45px; height: 45px; margin-right: 5px;" @click="pushTool(tools.confirm);">
             待機
           </b-button>
-          <b-link v-for="(skill, si) of actionsToSelect" :key="si" @click="onClickAction(skill)">
-            <b-img :src="getImageURL(skill.icon)" :title="descToTitle(skill)" :class="getActionClass(skill)" width="50" />
-          </b-link>
+          <div v-for="(skill, si) of actionsToSelect" :key="si" :class="getActionClass(skill)" :title="descToTitle(skill)" @click="onClickAction(skill)">
+            <b-img :src="getImageURL(skill.icon)" style="width: 100%; height: 100%;" />
+            <div v-if="!skill.available" class="text-overlay">CT{{isFinite(skill.coolTime) ? skill.coolTime : "∞"}}</div>
+          </div>
         </div>
         <div>
           <h5>
@@ -1244,7 +1245,7 @@ export default {
       return r;
     },
     getActionClass(skill) {
-      let r = ["action"];
+      let r = ["action-button"];
       if (skill === this.selectedSkill) {
         r.push("selected");
       }
@@ -1684,19 +1685,33 @@ export default {
     margin: 0 15px;
   }
 
-  .action {
+  .action-button {
+    display: inline-block;
+    width: 50px;
+    height: 50px;
+    cursor: pointer;
+
     border: 1px solid rgba(255, 255, 255, 0);
     border-radius: 0.3rem;
     background-color: rgba(255, 255, 255, 0);
   }
-  .action.selected {
+  .action-button.selected {
     border: 1px solid rgba(255, 0, 0, 255);
     background-color: rgba(255, 0, 0, 255);
   }
   .grayscale {
     filter: grayscale(100%);
   }
-
+  .text-overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-weight: bold;
+    text-align: center;
+    background-color: rgba(0, 0, 0, 0.5);
+  }
 </style>
 <style>
   .table {

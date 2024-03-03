@@ -296,7 +296,7 @@ export function makeSimSkill(skill, ownerChr) {
   self.onFire = function () {
     console.log(this);
     if (this.isActive) {
-      this.coolTime = this.ct ?? Infinity;
+      this.coolTime = this.ct + 1 ?? Infinity;
     }
   }
 

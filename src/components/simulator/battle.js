@@ -208,6 +208,7 @@ export class SimContext {
     let range = 0;
     let move = 0;
 
+    let doAction = skill?.isSupportSkill ? false : true;
     let doAttack = false;
     let doBattle = false;
     if (unit.prevCoord) {
@@ -262,7 +263,8 @@ export class SimContext {
       }
     }
 
-    callHandler("onActionBegin", unit);
+    if (doAction)
+      callHandler("onActionBegin", unit);
     if (doAttack)
       callHandler("onAttackBegin", unit);
     if (doBattle)
@@ -290,7 +292,8 @@ export class SimContext {
       callHandler("onBattleEnd", unit, target);
     if (doAttack)
       callHandler("onAttackEnd", unit);
-    callHandler("onActionEnd", unit);
+    if (doAction)
+      callHandler("onActionEnd", unit);
 
     if (killed?.length) {
       callHandler("onKill", unit);
