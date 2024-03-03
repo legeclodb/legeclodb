@@ -1293,7 +1293,7 @@ export default {
 
 
     beginSimulation() {
-      this.selectUnit(null);
+      this.resetTools();
       if (!this.simulation) {
         this.simulation = new lbt.SimContext(this.divX, this.divY, [...this.playerUnits, ...this.enemyUnits]);
         this.simulation.onSimulationBegin();
@@ -1301,7 +1301,7 @@ export default {
       }
     },
     endSimulation() {
-      this.selectUnit(null);
+      this.resetTools();
       if (this.simulation) {
         this.simulation.onSimulationEnd();
         this.simulation = null;
@@ -1310,11 +1310,13 @@ export default {
     },
 
     eraseWeakEnemies() {
+      this.resetTools();
       this.simulation?.eraseWeakEnemies();
       this.$forceUpdate();
     },
 
     endTurn() {
+      this.resetTools();
       this.simulation?.passTurn();
     },
 
@@ -1328,7 +1330,7 @@ export default {
         }
       }
       this.draggingUnit = null;
-      this.selectUnit(null);
+      this.resetTools();
     },
     onDragCell(cell) {
       this.onDragUnit(this.findUnitByCoord(cell.coord));
@@ -1390,7 +1392,7 @@ export default {
           unit.initialize();
         }
       }
-      this.selectUnit(null);
+      this.resetTools();
     },
     exportLoadoutAsFile() {
       const data = this.serializeLoadout();

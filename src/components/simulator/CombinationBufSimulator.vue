@@ -924,13 +924,18 @@ export default {
           return null;
         };
 
-        const pickSkill = (ctx, skills) => {
+        const pickSkill = (ctx, skills, allowActive) => {
           let scoreList = [];
           for (const skill of skills) {
+            if (!allowActive && skill.isActive && !skill.multiAction) {
+              continue;
+            }
+
             const r = getSkillScore(ctx, skill);
             if (r.score > 0) {
-              if (ctx.isPrioritized(skill, chr))
+              if (ctx.isPrioritized(skill, chr)) {
                 return r;
+              }
               scoreList.push(r);
             }
           }
@@ -979,10 +984,8 @@ export default {
           let tmpSkills = [...chr.skills];
           let activeCount = 0;
           for (let i = 0; i < 3; ++i) {
-            if (activeCount >= opt.maxActiveCount) {
-              break;
-            }
-            let r = pickSkill(cctx, tmpSkills);
+            let allowActive = !chr.isMain || activeCount < opt.maxActiveCount;
+            let r = pickSkill(cctx, tmpSkills, allowActive);
             if (!r) {
               break;
             }
