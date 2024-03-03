@@ -15,6 +15,128 @@ export function callHandler(funcName, ...callees) {
   }
 }
 
+export function evaluateCondition(ctx, cond)
+{
+  if (!cond)
+    return true;
+
+  const condExp = function (val1, cmp, val2) {
+    if (val1 == null)
+      val1 = 0;
+    const table = {
+      "==": () => val1 == val2,
+      ">": () => val1 > val2,
+      "<": () => val1 < val2,
+      ">=": () => val1 >= val2,
+      "<=": () => val1 <= val2,
+      "!=": () => val1 != val2,
+    };
+    return table[cmp]();
+  }
+
+  let ok = true;
+  if (cond.turn) {
+    const params = cond.turn;
+    if (!condExp(ctx.turn, params[0], params[1])) {
+      ok = false;
+    }
+  }
+
+  if (cond.hp) {
+    const params = cond.hp;
+    if (!condExp(ctx.hpRate * 100, params[0], params[1])) {
+      ok = false;
+    }
+  }
+  if (cond.targetHp) {
+    const params = cond.targetHp;
+    if (!condExp(ctx.targetHpRate * 100, params[0], params[1])) {
+      ok = false;
+    }
+  }
+
+  if (cond.nearAllyCount) {
+    const params = cond.nearAllyCount.condition;
+    if (!condExp(ctx.getNearAllyCount(cond.nearAllyCount.area), params[0], params[1])) {
+      ok = false;
+    }
+  }
+  if (cond.nearEnemyCount) {
+    const params = cond.nearEnemyCount.condition;
+    if (!condExp(ctx.getNearEnemyCount(cond.nearAllyCount.area), params[0], params[1])) {
+      ok = false;
+    }
+  }
+
+  if (cond.activeBuffCount) {
+    const params = cond.activeBuffCount;
+    if (!condExp(ctx.activeBuffCount, params[0], params[1])) {
+      ok = false;
+    }
+  }
+  if (cond.targetActiveBuffCount) {
+    const params = cond.targetActiveBuffCount;
+    if (!condExp(ctx.targetActiveBuffCount, params[0], params[1])) {
+      ok = false;
+    }
+  }
+  if (cond.activeDebuffCount) {
+    const params = cond.activeDebuffCount;
+    if (!condExp(ctx.activeDebuffCount, params[0], params[1])) {
+      ok = false;
+    }
+  }
+  if (cond.targetActiveDebuffCount) {
+    const params = cond.targetActiveDebuffCount;
+    if (!condExp(ctx.targetActiveDebuffCount, params[0], params[1])) {
+      ok = false;
+    }
+  }
+
+  if (cond.token) {
+    const params = cond.token;
+    // todo
+  }
+  if (cond.targetToken) {
+    const params = cond.targetToken;
+    // todo
+  }
+
+  if (cond.onClass) {
+    if (!cond.onClass.includes(ctx.class)) {
+      ok = false;
+    }
+  }
+  if (cond.onTargetClass) {
+    if (!cond.onTargetClass.includes(ctx.targetClass)) {
+      ok = false;
+    }
+  }
+
+  if (cond.onSymbol) {
+    if (!cond.onSymbol.includes(ctx.symbol)) {
+      ok = false;
+    }
+  }
+
+  const boolProps = [
+    "onOwnTurn", "onEnemyTurn",
+    "onTargetAlly", "onTargetEnemy",
+    "onActiveSkill", "onSingleSkill", "onAreaSkill",
+    "onCloseCombat", "onRangedCombat",
+    "onDamage", "onCriticalit", "onKill", "onClassAdvantage"
+  ];
+  for (const p of boolProps) {
+    if (p in cond) {
+      if (!ctx[p]) {
+        ok = false;
+        break;
+      }
+    }
+  }
+  return ok;
+}
+
 
 export function makeSimEffect(effect) {
   let self = Object.create(effect);
@@ -45,105 +167,6 @@ export function makeSimEffect(effect) {
         self.isStopped = false;
       }
     }
-  }
-  self.evaluateCondition = function (target, caster, ctx) {
-    const condExp = function (val1, cmp, val2) {
-      const table = {
-        "==": () => val1 == val2,
-        ">": () => val1 > val2,
-        "<": () => val1 < val2,
-        ">=": () => val1 >= val2,
-        "<=": () => val1 <= val2,
-        "!=": () => val1 != val2,
-      };
-      return table[cmp];
-    }
-
-    const cond = self.condition;
-    let ok = true;
-    if (cond) {
-      if (cond.turn) {
-        const params = cond.turn;
-        if (!condExp(ctx.turn, params[0], params[1])) {
-          ok = false;
-        }
-      }
-      if (cond.hp || cond.targetHp) {
-        const params = cond.hp ?? cond.targetHp;
-        if (!condExp(target.hpRate, params[0], params[1])) {
-          ok = false;
-        }
-      }
-      if (cond.nearAllyCount) {
-        const params = cond.nearAllyCount.condition;
-        if (!condExp(target.getNearAllyCount(cond.nearAllyCount.area), params[0], params[1])) {
-          ok = false;
-        }
-      }
-      if (cond.nearEnemyCount) {
-        const params = cond.nearEnemyCount.condition;
-        if (!condExp(target.getNearEnemyCount(cond.nearAllyCount.area), params[0], params[1])) {
-          ok = false;
-        }
-      }
-      if (cond.activeBuffCount || cond.targetActiveBuffCount) {
-        const params = cond.activeBuffCount ?? cond.targetActiveBuffCount;
-        if (!condExp(target.activeBuffCount, params[0], params[1])) {
-          ok = false;
-        }
-      }
-      if (cond.activeDebuffCount || cond.targetActiveDebuffCount) {
-        const params = cond.activeDebuffCount ?? cond.targetActiveDebuffCount;
-        if (!condExp(target.activeDebuffCount, params[0], params[1])) {
-          ok = false;
-        }
-      }
-      if (cond.token || cond.targetToken) {
-        const params = cond.token ?? cond.targetToken;
-        // todo
-      }
-
-      if (cond.onClass || cond.onEnemyClass) {
-        if (!cond.onClass.includes(target.main.class)) {
-          ok = false;
-        }
-      }
-      if (cond.onSymbol) {
-        if (!cond.onSymbol.includes(target.main.symbol)) {
-          ok = false;
-        }
-      }
-      if (cond.onOwnTurn) {
-        if ((ctx.isPlayerTurn && !target.isPlayer) || (ctx.isEnemyTurn && !target.isEnemy)) {
-          ok = false;
-        }
-      }
-      if (cond.onEnemyTurn) {
-        if ((ctx.isPlayerTurn && target.isPlayer) || (ctx.isEnemyTurn && target.isEnemy)) {
-          ok = false;
-        }
-      }
-      if (cond.onCloseCombat) {
-        if (ctx.range > 1) {
-          ok = false;
-        }
-      }
-      if (cond.onRangedCombat) {
-        if (ctx.range == 1) {
-          ok = false;
-        }
-      }
-      if (cond.onDamage) {
-        // todo
-      }
-      if (cond.onCriticalit) {
-        // todo
-      }
-      if (cond.onKill) {
-        // todo
-      }
-    }
-    return ok;
   }
   self.evaluateBuff = function (target, caster, ctx) {
   }

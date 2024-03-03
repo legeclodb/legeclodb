@@ -94,6 +94,10 @@ export class SimContext {
         damageToSupport: 0,
         damageToMain: 0,
         get total() { return this.damageToSupport + this.damageToMain; },
+        add(v) {
+          this.damageToSupport += v.damageToSupport;
+          this.damageToMain += v.damageToMain;
+        },
       };
 
       let aunit = attacker.unit;
@@ -149,7 +153,7 @@ export class SimContext {
             totalDamage += finalDmg;
           }
           --attackCount;
-          if (breakOnKill && t.isDead) {
+          if (breakOnKill && !t.isAlive) {
             break;
           }
         }
@@ -158,7 +162,7 @@ export class SimContext {
 
       while (attackCount) {
         let t = targetQueue.at(-1);
-        if (t.isDead && targetQueue.length > 1) {
+        if (!t.isAlive && targetQueue.length > 1) {
           targetQueue.pop();
           continue;
         }
@@ -189,7 +193,7 @@ export class SimContext {
         chr: chr,
         hp: chr.hp,
         shield: 0,
-        get isDead() { return this.hp <= 0; },
+        get isAlive() { return this.hp > 0; },
         dealDamage(v) {
           if (this.shield > 0) {
             this.shield -= v;
@@ -210,10 +214,18 @@ export class SimContext {
       makeTarget(target.main),
       makeTarget(target.support),
     ];
+
     let aSup = doAttack(actx, unit.support, defender);
     let aMain = doAttack(actx, unit.main, defender, skill);
+    if (defender.at(-1).isAlive && unit.invokeDoubleAttack(actx)) {
+      aMain.add(doAttack(actx, unit.main, defender, skill));
+    }
+
     let dSup = doAttack(dctx, target.support, attacker);
     let dMain = doAttack(dctx, target.main, attacker);
+    if (attacker.at(-1).isAlive && target.invokeDoubleAttack(actx)) {
+      dMain.add(doAttack(dctx, target.main, attacker));
+    }
     return {
       ctx: aMain.ctx,
       attackerScore: aSup.total + aMain.total,
@@ -255,6 +267,7 @@ export class SimContext {
       onOwnTurn: true,
       move: move,
       class: unit.mainClass,
+      hpRate: unit.hpRate,
     };
     if (skill) {
       if (skill.isNormalAttack) {
@@ -274,6 +287,7 @@ export class SimContext {
         // 単体スキルの場合
         ctx.range = range;
         ctx.targetClass = target.mainClass;
+        ctx.targetHpRate = target.hpRate;
         if (skill.isTargetAlly) {
           ctx.onTargetAlly = true;
         }

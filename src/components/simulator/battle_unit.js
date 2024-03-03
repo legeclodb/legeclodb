@@ -1,4 +1,4 @@
-import { makeSimSkill, makeSimEffect, callHandler } from "./battle_skill.js";
+import { makeSimSkill, makeSimEffect, callHandler, evaluateCondition } from "./battle_skill.js";
 
 function $vue() {
   return window.$vue;
@@ -241,10 +241,10 @@ export class SimUnit {
     }, 0);
   }
   get actions() {
-    return [...(this.base.main?.skills ?? []), ...(this.base.support?.skills ?? [])].filter(a => a.isActive);
+    return this.skills.filter(a => a.isActive);
   }
   get passives() {
-    return [...(this.base.main?.skills ?? []), ...(this.base.support?.skills ?? [])].filter(a => a.isPassive || a.isTalent || a.isItem);
+    return this.skills.filter(a => a.isPassive || a.isTalent || a.isItem);
   }
   //#endregion props
 
@@ -263,21 +263,6 @@ export class SimUnit {
       Object.defineProperty(chr, 'unit', {
         get: () => this,
       });
-
-      let skills = base.skills ? base.skills.map(skill => makeSimSkill(skill, chr)) : [];
-      if (chr.isMain) {
-        // メインのスキルリストに通常攻撃を追加
-        let atk = makeSimSkill($vue().findItemByUid(chr.damageType == "アタック" ? "9999999" : "9999998"));
-        Object.defineProperty(atk, 'range', {
-          get: () => chr.range,
-        });
-        skills = [atk, ...skills];
-      }
-      if (skills.length) {
-        Object.defineProperty(chr, 'skills', {
-          get: () => skills,
-        });
-      }
 
       Object.defineProperty(chr, 'baseStatus', {
         get: () => base.status,
@@ -320,17 +305,21 @@ export class SimUnit {
 
     let vue = $vue();
     if (unit) {
-      // パッシブ/タレントを収集
-      const skills = [...(unit.main.skills ?? []), ...(unit.support?.skills ?? []),
-      ...(unit.main ? vue.getClassPassiveMain(unit.main.class) : []),
-      ...(unit.support ? vue.getClassPassiveSupport(unit.support.class) : []),
-      ...(unit.main.items ?? []),
-      ];
-      for (let skill of skills) {
-        if (skill.isTalent || skill.isPassive || skill.isItem) {
-          this.applySkill(skill, true);
-        }
-      }
+      // 通常攻撃
+      let atk = makeSimSkill($vue().findItemByUid(this.main.damageType == "アタック" ? "9999999" : "9999998"), this);
+      Object.defineProperty(atk, 'range', {
+        get: () => this.main.baseRange,
+      });
+
+      this.skills = [
+        atk,
+        ...(unit.main.skills ?? []),
+        ...(unit.main.items ?? []),
+        ...(unit.main ? vue.getClassPassiveMain(unit.main.class) : []),
+        ...(unit.support?.skills ?? []),
+        ...(unit.support?.items ?? []),
+        ...(unit.support ? vue.getClassPassiveSupport(unit.support.class) : []),
+      ].map(skill => makeSimSkill(skill, this));
     }
 
     //console.log(this);
@@ -421,17 +410,25 @@ export class SimUnit {
     return 0;
   }
 
-  applySkill(skill, self = false) {
-    let s = this.affectedSkills.find(a => a.skill === skill);
-    if (!s) {
-      s = makeSimSkill(skill, self);
-      this.affectedSkills.push(s);
-    }
-    s.activate(self);
+  evaluateEffects(ctx) {
+
   }
 
-  evaluateEffects(battleCtx) {
-
+  invokeDoubleAttack(ctx) {
+    let succeeded = false;
+    if (ctx.onNormalAttack) {
+      for (let skill of this.passives.filter(a => a.doubleAttack)) {
+        for (let da of skill.doubleAttack) {
+          if (evaluateCondition(ctx, da.condition)) {
+            succeeded = true;
+          }
+        }
+      }
+    }
+    if (succeeded) {
+      console.log("!! 2回攻撃 !!");
+    }
+    return succeeded;
   }
 
   reduceEffectDuration() {
