@@ -9,9 +9,9 @@
           <div class="menu-widgets flex">
             <div class="widget">
               <span>マップデータ：</span>
-              <b-dropdown :text="battleData ? battleData.uid : ''" size="sm" id="battle_selector" :disabled="simulation!=null">
+              <b-dropdown :text="battleData ? battleData.name : ''" size="sm" id="battle_selector" :disabled="simulation!=null">
                 <b-dropdown-item v-for="(battle, i) in battleList" class="d-flex flex-column" :key="i" @click="selectBattle(battle.uid, true); updateURL();">
-                  {{ battle.uid }}
+                  {{ battle.name }}
                 </b-dropdown-item>
               </b-dropdown>
             </div>

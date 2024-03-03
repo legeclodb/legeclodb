@@ -1,6 +1,54 @@
 [
   {
+    "uid": "TestField1",
+    "name": "実験場",
+    "leftTop": [ 0, 0 ],
+    "rightDown": [ 14, 14 ],
+    "allies": [
+      {
+        "fid": "A01",
+        "coord": [ 7, 4 ],
+        "phase": "0"
+      },
+      {
+        "fid": "A02",
+        "coord": [ 9, 5 ],
+        "phase": "0"
+      },
+      {
+        "fid": "A03",
+        "coord": [ 10, 7 ],
+        "phase": "0"
+      },
+      {
+        "fid": "A04",
+        "coord": [ 5, 5 ],
+        "phase": "0"
+      },
+      {
+        "fid": "A05",
+        "coord": [ 4, 7 ],
+        "phase": "0"
+      }
+    ],
+    "enemies": [
+      {
+        "fid": "E01",
+        "coord": [ 7, 7 ],
+        "phase": "0",
+        "main": {
+          "cid": "Ch513300400exx",
+          "level": 100,
+          "statusRate": [ 100, 100, 100, 100, 100, 100 ],
+          "skills": [ "1100168", "1100152", "1100153" ],
+          "talent": "3100000x"
+        }
+      }
+    ]
+  },
+  {
     "uid": "Guild_Ex_Zenith_18",
+    "name": "2023/08/16 (ランサー)",
     "leftTop": [ 0, 0 ],
     "rightDown": [ 14, 14 ],
     "allies": [
@@ -370,6 +418,7 @@
   },
   {
     "uid": "Guild_Ex_Zenith_19",
+    "name": "2023/09/13 (シューター)",
     "leftTop": [ 0, 0 ],
     "rightDown": [ 14, 14 ],
     "allies": [
@@ -739,6 +788,7 @@
   },
   {
     "uid": "Guild_Ex_Zenith_20",
+    "name": "2023/10/11 (アサシン)",
     "leftTop": [ 0, 0 ],
     "rightDown": [ 14, 14 ],
     "allies": [
@@ -1108,6 +1158,7 @@
   },
   {
     "uid": "Guild_Ex_Zenith_21",
+    "name": "2023/11/08 (ランサー)",
     "leftTop": [ 0, 0 ],
     "rightDown": [ 14, 14 ],
     "allies": [
@@ -1477,6 +1528,7 @@
   },
   {
     "uid": "Guild_Ex_Zenith_22",
+    "name": "2023/12/21 (アサシン)",
     "leftTop": [ 0, 0 ],
     "rightDown": [ 14, 14 ],
     "allies": [
@@ -1836,6 +1888,7 @@
   },
   {
     "uid": "Guild_Ex_Zenith_23",
+    "name": "2024/01/17 (エアリアル)",
     "leftTop": [ 0, 0 ],
     "rightDown": [ 14, 14 ],
     "allies": [
@@ -2205,6 +2258,7 @@
   },
   {
     "uid": "Guild_Ex_Zenith_24",
+    "name": "2024/02/14 (ソルジャー)",
     "leftTop": [ 0, 0 ],
     "rightDown": [ 14, 14 ],
     "allies": [
