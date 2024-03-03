@@ -8,7 +8,7 @@
         <div class="menu-panel" id="cb-settings">
           <div class="menu-widgets flex">
             <div class="widget">
-              <span>マップデータ：</span>
+              <span>クエストデータ：</span>
               <b-dropdown :text="battleData ? battleData.name : ''" size="sm" id="battle_selector" :disabled="simulation!=null">
                 <b-dropdown-item v-for="(battle, i) in battleList" class="d-flex flex-column" :key="i" @click="selectBattle(battle.uid, true); updateURL();">
                   {{ battle.name }}
@@ -1511,7 +1511,7 @@ export default {
     },
     copyLoadoutUrl(rec) {
       let url = window.location.href.replace(/\?.+/, '').replace(/#.+/, '');
-      url += `?loadout=${rec.hash}`;
+      url += `?b=${this.battleId}&loadout=${rec.hash}`;
       this.copyToClipboard(url);
       this.toast(`コピーしました：${url}`);
     },

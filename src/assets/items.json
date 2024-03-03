@@ -3508,7 +3508,7 @@
         "target": "自身",
         "timing": "戦闘前",
         "condition": {
-          "onEnemyClass": [ "エアリアル" ]
+          "onTargetClass": [ "エアリアル" ]
         }
       }
     ],
@@ -3536,7 +3536,7 @@
         "target": "自身",
         "timing": "戦闘前",
         "condition": {
-          "onEnemyClass": [ "ソーサラー" ]
+          "onTargetClass": [ "ソーサラー" ]
         }
       }
     ],
@@ -3564,7 +3564,7 @@
         "target": "自身(メイン)",
         "timing": "戦闘前",
         "condition": {
-          "onEnemyClass": [ "ソーサラー" ]
+          "onTargetClass": [ "ソーサラー" ]
         }
       },
       {
@@ -3574,7 +3574,7 @@
         "target": "自身(メイン)",
         "timing": "戦闘前",
         "condition": {
-          "onEnemyClass": [ "ソーサラー" ]
+          "onTargetClass": [ "ソーサラー" ]
         }
       },
       {
@@ -3584,7 +3584,7 @@
         "target": "自身(メイン)",
         "timing": "戦闘前",
         "condition": {
-          "onEnemyClass": [ "ソーサラー" ]
+          "onTargetClass": [ "ソーサラー" ]
         }
       }
     ],
@@ -3781,7 +3781,7 @@
         "target": "自身(メイン)",
         "timing": "戦闘前",
         "condition": {
-          "onEnemyClass": [ "シューター", "アサシン" ]
+          "onTargetClass": [ "シューター", "アサシン" ]
         }
       }
     ],

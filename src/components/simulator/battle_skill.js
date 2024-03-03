@@ -46,12 +46,15 @@ export function makeSimEffect(effect) {
       }
     }
   }
-  self.evaluateCondition = function (target, caster, battleCtx) {
+  self.evaluateCondition = function (target, caster, ctx) {
     const condExp = function (val1, cmp, val2) {
       const table = {
-        ">": () => val1 > val2,
-        ">=": () => val1 >= val2,
         "==": () => val1 == val2,
+        ">": () => val1 > val2,
+        "<": () => val1 < val2,
+        ">=": () => val1 >= val2,
+        "<=": () => val1 <= val2,
+        "!=": () => val1 != val2,
       };
       return table[cmp];
     }
@@ -61,7 +64,7 @@ export function makeSimEffect(effect) {
     if (cond) {
       if (cond.turn) {
         const params = cond.turn;
-        if (!condExp(battleCtx.turn, params[0], params[1])) {
+        if (!condExp(ctx.turn, params[0], params[1])) {
           ok = false;
         }
       }
@@ -111,22 +114,22 @@ export function makeSimEffect(effect) {
         }
       }
       if (cond.onOwnTurn) {
-        if ((battleCtx.isPlayerTurn && !target.isPlayer) || (battleCtx.isEnemyTurn && !target.isEnemy)) {
+        if ((ctx.isPlayerTurn && !target.isPlayer) || (ctx.isEnemyTurn && !target.isEnemy)) {
           ok = false;
         }
       }
       if (cond.onEnemyTurn) {
-        if ((battleCtx.isPlayerTurn && target.isPlayer) || (battleCtx.isEnemyTurn && target.isEnemy)) {
+        if ((ctx.isPlayerTurn && target.isPlayer) || (ctx.isEnemyTurn && target.isEnemy)) {
           ok = false;
         }
       }
       if (cond.onCloseCombat) {
-        if (battleCtx.range > 1) {
+        if (ctx.range > 1) {
           ok = false;
         }
       }
       if (cond.onRangedCombat) {
-        if (battleCtx.range == 1) {
+        if (ctx.range == 1) {
           ok = false;
         }
       }
@@ -142,9 +145,9 @@ export function makeSimEffect(effect) {
     }
     return ok;
   }
-  self.evaluateBuff = function (target, caster, battleCtx) {
+  self.evaluateBuff = function (target, caster, ctx) {
   }
-  self.evaluateDebuff = function (target, caster, battleCtx) {
+  self.evaluateDebuff = function (target, caster, ctx) {
   }
 
   //#region callbacks
@@ -194,7 +197,7 @@ export function makeSimEffect(effect) {
   }
   //#endregion callbacks
 
-  self._getValue = function (battleCtx, baseStat) {
+  self._getValue = function (ctx, baseStat) {
     let r = 0;
     const effect = self;
     if (effect.value) {
@@ -286,6 +289,9 @@ export function makeSimSkill(skill, ownerChr) {
     for (let e of this.effects) {
       e.activate(bySelf);
     }
+  }
+  self.getDamageRate = function (ctx) {
+    return self.damageRate;
   }
   self.onFire = function () {
     console.log(this);

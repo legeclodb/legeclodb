@@ -131,7 +131,7 @@
       "type": "array",
       "items": {
         "anyOf": [
-          { "enum": [ ">", ">=", "==" ] },
+          { "enum": [ ">", "<", ">=", "<=", "==" ] },
           { "enum": [ "target" ] },
           { "type": "number" },
           {
@@ -261,7 +261,7 @@
           "uniqueItems": true,
           "items": { "$ref": "#/$defs/unitType" }
         },
-        "onEnemyClass": {
+        "onTargetClass": {
           "type": "array",
           "uniqueItems": true,
           "items": { "$ref": "#/$defs/unitType" }

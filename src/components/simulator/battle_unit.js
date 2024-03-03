@@ -218,6 +218,8 @@ export class SimUnit {
   get isActive() { return !this.isDormant && this.isAlive; }
   get isPlayer() { return this.base.isPlayer; }
   get isEnemy() { return this.base.isEnemy; }
+  get symbol() { return this.main.symbol; }
+  get mainClass() { return this.main.class; }
   get hpRate() {
     return (this.main.hp + this.support.hp) / (this.main.maxHp + this.support.maxHp);
   }
@@ -281,14 +283,24 @@ export class SimUnit {
         get: () => base.status,
       });
 
-      const table = {
+      let table = {
+        isAlive: function () { return chr.hp > 0; },
         baseHp: function () { return base.status[0]; },
         baseAtk: function () { return base.status[1]; },
         baseDef: function () { return base.status[2]; },
         baseMag: function () { return base.status[3]; },
         baseRes: function () { return base.status[4]; },
         baseTec: function () { return base.status[5]; },
+        baseRange: function () { return base.range; },
       };
+      if (chr.isMain) {
+        table.baseMove = function () { return base.move; };
+        table.baseCriticalRate = function () { return base.status[5] / 10.0; };
+      }
+      table.baseAttackPower = chr.damageType == "アタック" ?
+        function () { return base.status[1]; } :
+        function () { return base.status[3]; };
+
       for (const [key, func] of Object.entries(table)) {
         Object.defineProperty(chr, key, {
           configurable: true,
@@ -339,31 +351,57 @@ export class SimUnit {
   }
 
   // ctx: {
+  //  onMainAttack: boolean,
+  //  onMainDefense: boolean,
+  //  onSupportAttack: boolean,
+  //  onSupportDefense: boolean,
+  //  onPhysicalDamage: boolean,
+  //  onMagicDamage: boolean,
   //  onBattle: boolean,
   //  onNormalAttack: boolean,
   //  onActiveSkill: boolean,
   //  onAreaSkill: boolean,
-  //  main: boolean,
-  //  support: boolean,
-  //  damageType: enum ["アタック", "マジック"],
   //}
   getAttackPower(ctx) {
-
+    if (ctx.onMainAttack) {
+      return this.main.baseAttackPower;
+    }
+    else {
+      return this.support.baseAttackPower;
+    }
   }
   getDamageDealtBuff(ctx) {
-
+    return 1.0;
   }
-  geCriticalRate(ctx) {
-
+  getCriticalRate(ctx) {
+    if (ctx.onMainAttack) {
+      return this.main.baseCriticalRate;
+    }
+    else {
+      return 0;
+    }
   }
-  geCriticalDamageRate(ctx) {
-
+  getCriticalDamageRate(ctx) {
+    if (ctx.onMainAttack) {
+      return 1.3;
+    }
+    else {
+      return 1.0;
+    }
   }
   getDefensePower(ctx) {
-
+    const get = (chr) => {
+      return ctx.onPhysicalDamage ? chr.baseDef : chr.baseRes;
+    };
+    if (ctx.onMainDefense) {
+      return get(this.main);
+    }
+    else {
+      return get(this.support);
+    }
   }
   getDamageTakenBuff(ctx) {
-
+    return 1.0;
   }
 
   getNearAllyCount(args) {

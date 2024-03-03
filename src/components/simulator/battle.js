@@ -77,26 +77,53 @@ export class SimContext {
     return unit && ((unit.isPlayer && this.isPlayerTurn) || (unit.isEnemy && this.isEnemyTurn));
   }
 
-  getBattleResult(unit, skill, target, ctx) {
-    const attack = (attacker, defender, skl = null) => {
+  getBattleResult(unit, skill, target, _ctx) {
+    const doAttack = (attacker, defender, skl = null) => {
+      let ctx = Object.create(_ctx);
       let result = {
+        ctx: ctx,
         damageToSupport: 0,
         damageToMain: 0,
         get total() { return this.damageToSupport + this.damageToMain; },
       };
+      if (!attacker.isAlive) {
+        return result;
+      }
+
+      let aunit = attacker.unit;
+      let dunit = defender;
+      {
+        if (attacker.isMain)
+          ctx.onMainAttack = true;
+        else
+          ctx.onSupportAttack = true;
+      }
+      {
+        if (attacker.damageType == "アタック")
+          ctx.onPhysicalDamage = true;
+        else
+          ctx.onMagicDamage = true;
+      }
+      {
+        if (attacker.baseRange >= 2 && ctx.range < 2)
+          ctx.onRangedPenarty = true;
+      }
 
       let attackCount = 10;
-      let atk = this.getAttackPower(attacker);
-      let damageRate = this.getDamageRate(skl, attacker, defender);
-      let dmgDealtBuff = this.getDamageDealtBuff(attacker);
-      let critDmgRate = this.getCriticalDamageRate(attacker);
-      let rangedPenarty = 1.0;
+      let atk = aunit.getAttackPower(ctx);
+      let damageRate = skill.getDamageRate(ctx);
+      let dmgDealtBuff = aunit.getDamageDealtBuff(ctx);
+      let critDmgRate = aunit.getCriticalDamageRate(ctx);
+      let rangedPenarty = ctx.onRangedPenarty ? 0.6 : 1.0;
 
       // 対サポート
       if (defender.support && defender.support.hp > 0) {
-        let def = this.getDefensePower(defender.support, attacker.damageType);
+        let dctx = Object.create(ctx);
+        dctx.onSupportDefense = true;
+
+        let def = dunit.getDefensePower(dctx);
         let baseDmg = Math.max(atk - def, 1);
-        let dmgTakenBuff = this.getDamageTakenBuff(defender.support, attacker.damageType);
+        let dmgTakenBuff = dunit.getDamageTakenBuff(dctx);
         let finalDmg = baseDmg * damageRate * dmgDealtBuff * dmgTakenBuff * critDmgRate * rangedPenarty;
 
         let totalDamage = 0;
@@ -104,13 +131,16 @@ export class SimContext {
           totalDamage += finalDmg;
           --attackCount;
         }
-        result.damageToSupport = finalDmg;
+        result.damageToSupport = Math.round(totalDamage);
       }
       // 対メイン
       if (attackCount) {
-        let def = this.getDefensePower(defender.main, attacker.damageType);
+        let dctx = Object.create(ctx);
+        dctx.onMainDefense = true;
+
+        let def = dunit.getDefensePower(dctx);
         let baseDmg = Math.max(atk - def, 1);
-        let dmgTakenBuff = this.getDamageTakenBuff(defender.main, attacker.damageType);
+        let dmgTakenBuff = dunit.getDamageTakenBuff(dctx);
         let finalDmg = baseDmg * damageRate * dmgDealtBuff * dmgTakenBuff * critDmgRate * rangedPenarty;
 
         let totalDamage = 0;
@@ -118,17 +148,18 @@ export class SimContext {
           totalDamage += finalDmg;
           --attackCount;
         }
-        result.damageToMain = finalDmg;
+        result.damageToMain = Math.round(totalDamage);
       }
 
       return result;
     };
 
-    let aSup = attack(unit.support, target, skill);
-    let aMain = attack(unit.main, target, skill);
-    let dSup = attack(target.support, unit);
-    let dMain = attack(target.main, unit);
+    let aSup = doAttack(unit.support, target, skill);
+    let aMain = doAttack(unit.main, target, skill);
+    let dSup = doAttack(target.support, unit);
+    let dMain = doAttack(target.main, unit);
     return {
+      ctx: aMain.ctx,
       attackerScore: aSup.total + aMain.total,
       defenderScore: dSup.total + dMain.total,
       apply() {
@@ -163,44 +194,46 @@ export class SimContext {
 
     // 条件変数を設定
     // 攻撃側
-    let cond = {
+    let ctx = {
       onOwnTurn: true,
       move: move,
+      class: unit.mainClass,
     };
     if (skill) {
       if (skill.isNormalAttack) {
-        cond.onNormalAttack = true;
+        ctx.onNormalAttack = true;
       }
       else {
-        cond.onActiveSkill = true;
+        ctx.onActiveSkill = true;
         if (skill.isAreaTarget) {
-          cond.onAreaSkill = true;
+          ctx.onAreaSkill = true;
         }
         else {
-          cond.onSingleSkill = true;
+          ctx.onSingleSkill = true;
         }
       }
 
       if (target) {
         // 単体スキルの場合
-        cond.range = range;
+        ctx.range = range;
+        ctx.targetClass = target.mainClass;
         if (skill.isTargetAlly) {
-          cond.onTargetAlly = true;
+          ctx.onTargetAlly = true;
         }
         if (skill.isTargetEnemy) {
-          cond.onTargetEnemy = true;
+          ctx.onTargetEnemy = true;
         }
         if (range == 1) {
-          cond.onCloseCombat = true;
+          ctx.onCloseCombat = true;
         }
         else if (range > 1) {
-          cond.onRangedCombat = true;
+          ctx.onRangedCombat = true;
         }
       }
 
       if (skill.isMainSkill && skill.damageRate) {
         doAttack = true;
-        doBattle = cond.onTargetEnemy;
+        doBattle = ctx.onTargetEnemy;
       }
     }
 
@@ -212,17 +245,20 @@ export class SimContext {
 
     // 待機の場合 skill は null
     if (skill) {
-      console.log(targets);
-      console.log(cond);
+      console.log(target ?? targets);
+      if (doBattle) {
+        let r = this.getBattleResult(unit, skill, target, ctx);
+        console.log(r);
+      }
       skill.onFire();
     }
 
-    //cond.onCriticalhit = true;
-    //cond.onDamage = true;
+    //ctx.onCriticalhit = true;
+    //ctx.onDamage = true;
 
     let killed = (target ? [target] : targets)?.filter(a => !a.isAlive);
     if (killed?.length) {
-      cond.onKill = true;
+      ctx.onKill = true;
     }
 
     if (doBattle)
@@ -238,6 +274,8 @@ export class SimContext {
     }
     if (!unit.isAlive)
       callHandler("onDeath", unit);
+
+    console.log(ctx);
   }
 
   passTurn() {

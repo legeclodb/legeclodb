@@ -1190,7 +1190,7 @@
     "damageRateSp": {
       "value": 2.0,
       "condition": {
-        "onEnemyClass": [ "ライダー" ]
+        "onTargetClass": [ "ライダー" ]
       }
     },
     "tags": [ "単体攻撃", "特効(ライダー)" ],
@@ -1209,7 +1209,7 @@
     "damageRateSp": {
       "value": 0.8,
       "condition": {
-        "onEnemyClass": [ "ランサー" ]
+        "onTargetClass": [ "ランサー" ]
       }
     },
     "statusEffects": [
@@ -1235,7 +1235,7 @@
     "damageRateSp": {
       "value": 0.8,
       "condition": {
-        "onEnemyClass": [ "ソーサラー" ]
+        "onTargetClass": [ "ソーサラー" ]
       }
     },
     "buff": [
@@ -1263,7 +1263,7 @@
     "damageRateSp": {
       "value": 1.05,
       "condition": {
-        "onEnemyClass": [ "ソーサラー" ]
+        "onTargetClass": [ "ソーサラー" ]
       }
     },
     "buff": [
@@ -1902,7 +1902,7 @@
     "damageRateSp": {
       "value": 2.0,
       "condition": {
-        "onEnemyClass": [ "エアリアル" ]
+        "onTargetClass": [ "エアリアル" ]
       }
     },
     "tags": [ "単体攻撃", "特効(エアリアル)" ],
@@ -1921,7 +1921,7 @@
     "damageRateSp": {
       "value": 0.8,
       "condition": {
-        "onEnemyClass": [ "エアリアル" ]
+        "onTargetClass": [ "エアリアル" ]
       }
     },
     "debuff": [
@@ -1978,7 +1978,7 @@
     "damageRateSp": {
       "value": 0.8,
       "condition": {
-        "onEnemyClass": [ "エアリアル" ]
+        "onTargetClass": [ "エアリアル" ]
       }
     },
     "buffCancel": [
@@ -2081,7 +2081,7 @@
     "damageRateSp": {
       "value": 1.8,
       "condition": {
-        "onEnemyClass": [ "エアリアル" ]
+        "onTargetClass": [ "エアリアル" ]
       }
     },
     "debuff": [
@@ -2632,7 +2632,7 @@
     "damageRateSp": {
       "value": 0.8,
       "condition": {
-        "onEnemyClass": [ "ソルジャー" ]
+        "onTargetClass": [ "ソルジャー" ]
       }
     },
     "statusEffects": [
@@ -2658,7 +2658,7 @@
     "damageRateSp": {
       "value": 2.0,
       "condition": {
-        "onEnemyClass": [ "ランサー" ]
+        "onTargetClass": [ "ランサー" ]
       }
     },
     "tags": [ "単体攻撃", "特効(ランサー)" ],
@@ -2677,7 +2677,7 @@
     "damageRateSp": {
       "value": 0.8,
       "condition": {
-        "onEnemyClass": [ "ランサー" ]
+        "onTargetClass": [ "ランサー" ]
       }
     },
     "debuff": [
@@ -3158,7 +3158,7 @@
     "damageRateSp": {
       "value": 2.0,
       "condition": {
-        "onEnemyClass": [ "アサシン" ]
+        "onTargetClass": [ "アサシン" ]
       }
     },
     "heal": [
@@ -3239,7 +3239,7 @@
     "damageRateSp": {
       "value": 2.0,
       "condition": {
-        "onEnemyClass": [ "アサシン" ]
+        "onTargetClass": [ "アサシン" ]
       }
     },
     "buffCancel": [
@@ -3340,7 +3340,7 @@
     "damageRateSp": {
       "value": 0.8,
       "condition": {
-        "onEnemyClass": [ "ソーサラー" ]
+        "onTargetClass": [ "ソーサラー" ]
       }
     },
     "buff": [
@@ -3847,7 +3847,7 @@
     "damageRateSp": {
       "value": 2.2,
       "condition": {
-        "onEnemyClass": [ "ライダー" ]
+        "onTargetClass": [ "ライダー" ]
       }
     },
     "debuff": [
@@ -4706,7 +4706,7 @@
     "damageRateSp": {
       "value": 2.0,
       "condition": {
-        "onEnemyClass": [ "ソルジャー", "ランサー", "ライダー" ]
+        "onTargetClass": [ "ソルジャー", "ランサー", "ライダー" ]
       }
     },
     "tags": [ "単体攻撃", "特効(ソルジャー)", "特効(ランサー)", "特効(ライダー)" ],
@@ -4769,7 +4769,7 @@
     "damageRateSp": {
       "value": 2.0,
       "condition": {
-        "onEnemyClass": [ "アサシン" ]
+        "onTargetClass": [ "アサシン" ]
       }
     },
     "buffCancel": [
@@ -5554,7 +5554,7 @@
     "damageRateSp": {
       "value": 1.8,
       "condition": {
-        "onEnemyClass": [ "ランサー" ]
+        "onTargetClass": [ "ランサー" ]
       }
     },
     "tags": [ "単体攻撃", "特効(ランサー)" ],
@@ -5573,7 +5573,7 @@
     "damageRateSp": {
       "value": 2.3,
       "condition": {
-        "onEnemyClass": [ "ランサー" ]
+        "onTargetClass": [ "ランサー" ]
       }
     },
     "tags": [ "単体攻撃", "特効(ランサー)" ]
@@ -5726,7 +5726,7 @@
     "damageRateSp": {
       "value": 1.8,
       "condition": {
-        "onEnemyClass": [ "エアリアル" ]
+        "onTargetClass": [ "エアリアル" ]
       }
     },
     "buff": [
@@ -10546,7 +10546,7 @@
     "damageRateSp": {
       "value": 2.5,
       "condition": {
-        "onEnemyClass": [ "ソルジャー" ]
+        "onTargetClass": [ "ソルジャー" ]
       }
     },
     "buff": [
@@ -10580,7 +10580,7 @@
     "damageRateSp": {
       "value": 2.6,
       "condition": {
-        "onEnemyClass": [ "ソルジャー" ]
+        "onTargetClass": [ "ソルジャー" ]
       }
     },
     "buff": [
