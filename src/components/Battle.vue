@@ -600,6 +600,7 @@ export default {
         this.moveProperty(unit.base, enemy, "support");
         unit.setup();
         enemy.unit = unit;
+        //console.log(unit);
       }
     }
 

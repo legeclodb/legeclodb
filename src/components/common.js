@@ -1393,11 +1393,7 @@ export default {
 
       for (let chr of characters) {
         if (chr.talent) {
-          chr.isMain = true;
           chr.talent = grabSkill(chr.talent, chr);
-        }
-        else {
-          chr.isSupport = true;
         }
         if (!chr.icon) {
           chr.icon = chr.uid;

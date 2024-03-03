@@ -78,7 +78,8 @@ export class SimContext {
   }
 
   getBattleResult(unit, skill, target, actx) {
-    const doAttack = (_ctx, attacker, defender, skl = null) => {
+
+    const doAttack = (_ctx, attacker, targetQueue, skl = null) => {
       let ctx = Object.create(_ctx);
       if (!skl) {
         // メインがスキル使用の場合もサポートは通常攻撃
@@ -96,7 +97,6 @@ export class SimContext {
       };
 
       let aunit = attacker.unit;
-      let dunit = defender;
       {
         if (attacker.isMain)
           ctx.onMainAttack = true;
@@ -125,39 +125,44 @@ export class SimContext {
       let critDmgRate = aunit.getCriticalDamageRate(ctx);
       let rangedPenarty = ctx.onRangedPenarty ? 0.6 : 1.0;
 
-      // 対サポート
-      if (defender.support && defender.support.hp > 0) {
+      const calcDamage = (t, breakOnKill) => {
+        let tunit = t.chr.unit;
         let dctx = Object.create(ctx);
-        dctx.onSupportDefense = true;
-
-        let def = dunit.getDefensePower(dctx);
-        let baseDmg = Math.max(atk - def, 1);
-        let dmgTakenBuff = dunit.getDamageTakenBuff(dctx);
-        let finalDmg = baseDmg * damageRate * dmgDealtBuff * dmgTakenBuff * critDmgRate * rangedPenarty;
-
-        let totalDamage = 0;
-        while (attackCount && totalDamage < defender.support.hp) {
-          totalDamage += finalDmg;
-          --attackCount;
+        let addScore = null;
+        if (t.chr.isSupport) {
+          dctx.onSupportDefense = true;
+          addScore = (v) => { result.damageToSupport += v; }
         }
-        result.damageToSupport = Math.round(totalDamage);
-      }
-      // 対メイン
-      if (attackCount) {
-        let dctx = Object.create(ctx);
-        dctx.onMainDefense = true;
+        else {
+          dctx.onMainDefense = true;
+          addScore = (v) => { result.damageToMain += v; }
+        }
 
-        let def = dunit.getDefensePower(dctx);
+        let def = tunit.getDefensePower(dctx);
         let baseDmg = Math.max(atk - def, 1);
-        let dmgTakenBuff = dunit.getDamageTakenBuff(dctx);
+        let dmgTakenBuff = tunit.getDamageTakenBuff(dctx);
         let finalDmg = baseDmg * damageRate * dmgDealtBuff * dmgTakenBuff * critDmgRate * rangedPenarty;
 
         let totalDamage = 0;
         while (attackCount) {
-          totalDamage += finalDmg;
+          if (t.dealDamage(finalDmg)) {
+            totalDamage += finalDmg;
+          }
           --attackCount;
+          if (breakOnKill && t.isDead) {
+            break;
+          }
         }
-        result.damageToMain = Math.round(totalDamage);
+        addScore(Math.round(totalDamage));
+      };
+
+      while (attackCount) {
+        let t = targetQueue.at(-1);
+        if (t.isDead && targetQueue.length > 1) {
+          targetQueue.pop();
+          continue;
+        }
+        calcDamage(t, targetQueue.length > 1);
       }
 
       return result;
@@ -179,10 +184,36 @@ export class SimContext {
     };
     mergeProperties(dctx, actx, ["range", "onCloseCombat", "onRangedCombat"]);
 
-    let aSup = doAttack(actx, unit.support, target);
-    let aMain = doAttack(actx, unit.main, target, skill);
-    let dSup = doAttack(dctx, target.support, unit);
-    let dMain = doAttack(dctx, target.main, unit);
+    const makeTarget = (chr) => {
+      return {
+        chr: chr,
+        hp: chr.hp,
+        shield: 0,
+        get isDead() { return this.hp <= 0; },
+        dealDamage(v) {
+          if (this.shield > 0) {
+            this.shield -= v;
+            return false;
+          }
+          else {
+            this.hp -= v;
+            return true;
+          }
+        },
+      };
+    };
+    let attacker = [
+      makeTarget(unit.main),
+      makeTarget(unit.support),
+    ];
+    let defender = [
+      makeTarget(target.main),
+      makeTarget(target.support),
+    ];
+    let aSup = doAttack(actx, unit.support, defender);
+    let aMain = doAttack(actx, unit.main, defender, skill);
+    let dSup = doAttack(dctx, target.support, attacker);
+    let dMain = doAttack(dctx, target.main, attacker);
     return {
       ctx: aMain.ctx,
       attackerScore: aSup.total + aMain.total,
