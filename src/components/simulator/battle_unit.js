@@ -77,6 +77,16 @@ export class BaseUnit {
     else
       this.isEnemy = true;
   }
+  initialize() {
+    const emp = BaseUnit.emptyUnit;
+    Object.assign(this.base.main, emp.main);
+    Object.assign(this.base.support, emp.support);
+    this.showEditor = false;
+    this.editorData = [];
+
+    mergeChrData(this.base.main, null);
+    mergeChrData(this.base.support, null);
+  }
   setup() {
     const defineStatusGetter = (self) => {
       const table = {
@@ -230,6 +240,9 @@ export class SimUnit {
   get actions() {
     return [...(this.base.main?.skills ?? []), ...(this.base.support?.skills ?? [])].filter(a => a.isActive);
   }
+  get passives() {
+    return [...(this.base.main?.skills ?? []), ...(this.base.support?.skills ?? [])].filter(a => a.isPassive || a.isTalent || a.isItem);
+  }
   //#endregion props
 
 
@@ -277,6 +290,7 @@ export class SimUnit {
       };
       for (const [key, func] of Object.entries(table)) {
         Object.defineProperty(chr, key, {
+          configurable: true,
           get: func,
         });
       }
@@ -307,7 +321,7 @@ export class SimUnit {
       }
     }
 
-    console.log(this);
+    //console.log(this);
   }
 
   serialize() {
@@ -372,58 +386,76 @@ export class SimUnit {
   }
   //#endregion methods
 
+  dbgLog(message) {
+    console.log(`${this.main.name}: ${message}`);
+  }
 
   //#region callbacks
   onSimulationBegin() {
+    this.dbgLog("onSimulationBegin");
   }
   onSimulationEnd() {
+    this.dbgLog("onSimulationEnd");
     this.base.sim = null;
   }
 
   // 自ターン開始前/後
   onOwnTurnBegin() {
+    this.dbgLog("onOwnTurnBegin");
   }
   onOwnTurnEnd() {
+    this.dbgLog("onOwnTurnEnd");
   }
 
   // 相手ターン開始前/後
   onOpponentTurnBegin() {
+    this.dbgLog("onOpponentTurnBegin");
   }
   onOpponentTurnEnd() {
+    this.dbgLog("onOpponentTurnEnd");
   }
 
   // 移動後、行動確定時、戦闘開始前もしくは非戦闘を含むスキル使用前に呼ばれる
   // 攻撃の場合は直後に onAttackBegin() が、
   // 戦闘に入る場合は直後に onBattleBegin() が呼ばれる
   onActionBegin() {
+    this.dbgLog("onActionBegin");
   }
   onActionEnd() {
+    this.dbgLog("onActionEnd");
   }
 
   // 移動後、行動確定時、戦闘非戦闘を問わず攻撃前に呼ばれる
   // 戦闘に入る場合は直後に onBattleBegin() が呼ばれる
   onAttackBegin() {
+    this.dbgLog("onAttackBegin");
   }
   onAttackEnd() {
+    this.dbgLog("onAttackEnd");
   }
 
   // 戦闘前 (非範囲攻撃、ゲーム中戦闘画面に入るもの) に呼ばれる
   // 攻撃される側も呼ばれる
   onBattleBegin() {
+    this.dbgLog("onBattleBegin");
   }
   onBattleEnd() {
+    this.dbgLog("onBattleEnd");
   }
 
   // 手段を問わず敵撃破時に呼ばれる
   onKill() {
+    this.dbgLog("onKill");
   }
 
   // 手段を問わず撃破されたとき呼ばれる
   onDeath() {
+    this.dbgLog("onDeath");
   }
 
   // ラストスタンドなどで復活した時呼ばれる
   onRevive() {
+    this.dbgLog("onRevive");
   }
   //#endregion callbacks
 

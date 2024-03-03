@@ -35,12 +35,9 @@ export function makeSimEffect(effect) {
   self.evaluateCondition = function (target, caster, battleCtx) {
     const condExp = function (val1, cmp, val2) {
       const table = {
-        "==": () => val1 == val2,
         ">": () => val1 > val2,
-        "<": () => val1 < val2,
         ">=": () => val1 >= val2,
-        "<=": () => val1 <= val2,
-        "!=": () => val1 != val2,
+        "==": () => val1 == val2,
       };
       return table[cmp];
     }
@@ -57,18 +54,6 @@ export function makeSimEffect(effect) {
       if (cond.hp || cond.targetHp) {
         const params = cond.hp ?? cond.targetHp;
         if (!condExp(target.hpRate, params[0], params[1])) {
-          ok = false;
-        }
-      }
-      if (cond.mainHp) {
-        const params = cond.mainHp;
-        if (!condExp(target.hpRateMain, params[0], params[1])) {
-          ok = false;
-        }
-      }
-      if (cond.supportHp) {
-        const params = cond.supportHp;
-        if (!condExp(target.hpRateSupport, params[0], params[1])) {
           ok = false;
         }
       }

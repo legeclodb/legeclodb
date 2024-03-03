@@ -141,8 +141,14 @@ export class SimContext {
   }
 
   fireSkill(unit, skill, targets, cell) {
+    unit = unit.sim ?? unit;
     // targets は配列なら複数、非配列なら単体
-    let target = Array.isArray(targets) ? null : targets;
+    let target = null;
+    if (Array.isArray(targets))
+      targets = targets.map(a => a.sim ?? a);
+    else
+      target = targets.sim ?? targets;
+
     let range = 0;
     let move = 0;
 
@@ -198,9 +204,22 @@ export class SimContext {
       }
     }
 
-    // fire onActionBegin()
-    // fire onAttackBegin()
-    // fire onBattleBegin()
+    const callHandler = (funcName, ...callees) => {
+      for (let c of callees) {
+        try {
+          c[funcName]();
+        }
+        catch (except) {
+          console.log(`!!! ${c.main.name}.${funcName}`);
+        }
+      }
+    };
+
+    callHandler("onActionBegin", unit);
+    if (doAttack)
+      callHandler("onAttackBegin", unit);
+    if (doBattle)
+      callHandler("onBattleBegin", unit, target);
 
     // 待機の場合 skill は null
     if (skill) {
@@ -215,17 +234,21 @@ export class SimContext {
     let killed = (target ? [target] : targets)?.filter(a => !a.isAlive);
     if (killed?.length) {
       cond.onKill = true;
-
-      for (let k of killed) {
-        // fire onDeath
-      }
-
-      // fire onKill()
     }
 
-    // fire onBattleEnd()
-    // fire onAttackEnd()
-    // fire onActionEnd()
+    if (doBattle)
+      callHandler("onBattleEnd", unit, target);
+    if (doAttack)
+      callHandler("onAttackEnd", unit);
+    callHandler("onActionEnd", unit);
+
+    if (killed?.length) {
+      callHandler("onKill", unit);
+      for (let k of killed)
+        callHandler("onDeath", k);
+    }
+    if (!unit.isAlive)
+      callHandler("onDeath", unit);
   }
 
   passTurn() {
