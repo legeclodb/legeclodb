@@ -1,6 +1,6 @@
 export * from "./battle_unit.js";
 export * from "./battle_skill.js";
-import { makeSimSkill, makeSimEffect } from "./battle_skill.js";
+import { makeSimSkill, makeSimEffect, callHandler } from "./battle_skill.js";
 import { BaseUnit, SimUnit } from "./battle_unit.js";
 
 export class ActionContext {
@@ -147,7 +147,7 @@ export class SimContext {
     if (Array.isArray(targets))
       targets = targets.map(a => a.sim ?? a);
     else
-      target = targets.sim ?? targets;
+      target = targets?.sim ?? targets;
 
     let range = 0;
     let move = 0;
@@ -203,17 +203,6 @@ export class SimContext {
         doBattle = cond.onTargetEnemy;
       }
     }
-
-    const callHandler = (funcName, ...callees) => {
-      for (let c of callees) {
-        try {
-          c[funcName]();
-        }
-        catch (except) {
-          console.log(`!!! ${c.main.name}.${funcName}`);
-        }
-      }
-    };
 
     callHandler("onActionBegin", unit);
     if (doAttack)

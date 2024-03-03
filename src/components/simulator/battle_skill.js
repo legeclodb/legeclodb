@@ -2,6 +2,20 @@ function $vue() {
   return window.$vue;
 }
 
+export function callHandler(funcName, ...callees) {
+  for (let c of callees) {
+    c[funcName]();
+  //  try {
+  //    c[funcName]();
+  //  }
+  //  catch (except) {
+  //    console.log(`!!! ${funcName}`);
+  //    console.log(c);
+  //  }
+  }
+}
+
+
 export function makeSimEffect(effect) {
   let self = Object.create(effect);
   self.stack = 1;
@@ -160,9 +174,23 @@ export function makeSimEffect(effect) {
     }
   }
 
+  self.onAttackBegin = function () {
+  }
+  self.onAttackEnd = function () {
+  }
+
   self.onBattleBegin = function () {
   }
   self.onBattleEnd = function () {
+  }
+
+  self.onKill = function () {
+  }
+
+  self.onDeath = function () {
+  }
+
+  self.onRevive = function () {
   }
   //#endregion callbacks
 
@@ -224,8 +252,8 @@ export function makeSimSkill(skill, ownerChr) {
   if (self.isActive) {
     self.coolTime = 0;
   }
-  self.effects = []; // SimEffect
 
+  self.effects = []; // SimEffect
   for (let effect of [...(self.buff ?? []), ...(self.debuff ?? [])]) {
     self.effects.push(makeSimEffect(effect));
   }
@@ -297,14 +325,10 @@ export function makeSimSkill(skill, ownerChr) {
       e.onOpponentTurnEnd();
     }
   }
-  self.onAttackBegin = function () {
+
+  self.onActionBegin = function () {
     for (let e of this.effects) {
-      e.onAttackBegin();
-    }
-  }
-  self.onAttackEnd = function () {
-    for (let e of this.effects) {
-      e.onAttackEnd();
+      e.onActionBegin();
     }
   }
   self.onActionEnd = function () {
@@ -315,6 +339,47 @@ export function makeSimSkill(skill, ownerChr) {
       e.onActionEnd();
     }
   }
+
+  self.onAttackBegin = function () {
+    for (let e of this.effects) {
+      e.onAttackBegin();
+    }
+  }
+  self.onAttackEnd = function () {
+    for (let e of this.effects) {
+      e.onAttackEnd();
+    }
+  }
+
+  self.onBattleBegin = function () {
+    for (let e of this.effects) {
+      e.onBattleBegin();
+    }
+  }
+  self.onBattleEnd = function () {
+    for (let e of this.effects) {
+      e.onBattleEnd();
+    }
+  }
+
+  self.onKill = function () {
+    for (let e of this.effects) {
+      e.onKill();
+    }
+  }
+
+  self.onDeath = function () {
+    for (let e of this.effects) {
+      e.onDeath();
+    }
+  }
+
+  self.onRevive = function () {
+    for (let e of this.effects) {
+      e.onRevive();
+    }
+  }
+
   //#endregion callbacks
   return self;
 }

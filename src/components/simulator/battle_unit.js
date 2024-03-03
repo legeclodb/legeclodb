@@ -1,4 +1,4 @@
-import { makeSimSkill, makeSimEffect } from "./battle_skill.js";
+import { makeSimSkill, makeSimEffect, callHandler } from "./battle_skill.js";
 
 function $vue() {
   return window.$vue;
@@ -221,6 +221,7 @@ export class SimUnit {
   get hpRate() {
     return (this.main.hp + this.support.hp) / (this.main.maxHp + this.support.maxHp);
   }
+  get prevCoord() { return this.base.prevCoord; }
   get activeBuffCount() {
     return this.effects.reduce((total, e) => {
       if (e.isBuff && e.parent.isActive) {
@@ -390,72 +391,77 @@ export class SimUnit {
     console.log(`${this.main.name}: ${message}`);
   }
 
+  _callPassiveHandler(funcName) {
+    this.dbgLog(funcName);
+    callHandler(funcName, ...this.passives);
+  }
+
   //#region callbacks
   onSimulationBegin() {
-    this.dbgLog("onSimulationBegin");
+    this._callPassiveHandler("onSimulationBegin");
   }
   onSimulationEnd() {
-    this.dbgLog("onSimulationEnd");
+    this._callPassiveHandler("onSimulationEnd");
     this.base.sim = null;
   }
 
   // 自ターン開始前/後
   onOwnTurnBegin() {
-    this.dbgLog("onOwnTurnBegin");
+    this._callPassiveHandler("onOwnTurnBegin");
   }
   onOwnTurnEnd() {
-    this.dbgLog("onOwnTurnEnd");
+    this._callPassiveHandler("onOwnTurnEnd");
   }
 
   // 相手ターン開始前/後
   onOpponentTurnBegin() {
-    this.dbgLog("onOpponentTurnBegin");
+    this._callPassiveHandler("onOpponentTurnBegin");
   }
   onOpponentTurnEnd() {
-    this.dbgLog("onOpponentTurnEnd");
+    this._callPassiveHandler("onOpponentTurnEnd");
   }
 
   // 移動後、行動確定時、戦闘開始前もしくは非戦闘を含むスキル使用前に呼ばれる
   // 攻撃の場合は直後に onAttackBegin() が、
   // 戦闘に入る場合は直後に onBattleBegin() が呼ばれる
   onActionBegin() {
-    this.dbgLog("onActionBegin");
+    this._callPassiveHandler("onActionBegin");
   }
   onActionEnd() {
-    this.dbgLog("onActionEnd");
+    this._callPassiveHandler("onActionEnd");
   }
 
   // 移動後、行動確定時、戦闘非戦闘を問わず攻撃前に呼ばれる
   // 戦闘に入る場合は直後に onBattleBegin() が呼ばれる
   onAttackBegin() {
-    this.dbgLog("onAttackBegin");
+    this._callPassiveHandler("onAttackBegin");
   }
   onAttackEnd() {
-    this.dbgLog("onAttackEnd");
+    this._callPassiveHandler("onAttackEnd");
   }
 
   // 戦闘前 (非範囲攻撃、ゲーム中戦闘画面に入るもの) に呼ばれる
   // 攻撃される側も呼ばれる
   onBattleBegin() {
-    this.dbgLog("onBattleBegin");
+    this._callPassiveHandler("onBattleBegin");
   }
   onBattleEnd() {
-    this.dbgLog("onBattleEnd");
+    this._callPassiveHandler("onBattleEnd");
   }
 
   // 手段を問わず敵撃破時に呼ばれる
   onKill() {
-    this.dbgLog("onKill");
+    this._callPassiveHandler("onKill");
   }
 
   // 手段を問わず撃破されたとき呼ばれる
   onDeath() {
-    this.dbgLog("onDeath");
+    this._callPassiveHandler("onDeath");
   }
 
   // ラストスタンドなどで復活した時呼ばれる
   onRevive() {
-    this.dbgLog("onRevive");
+    this._callPassiveHandler("onRevive");
   }
   //#endregion callbacks
 
