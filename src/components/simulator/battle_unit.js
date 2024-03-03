@@ -295,7 +295,6 @@ export class SimUnit {
       };
       if (chr.isMain) {
         table.baseMove = function () { return base.move; };
-        table.baseCriticalRate = function () { return base.status[5] / 10.0; };
       }
       table.baseAttackPower = chr.damageType == "アタック" ?
         function () { return base.status[1]; } :
@@ -362,42 +361,53 @@ export class SimUnit {
   //  onActiveSkill: boolean,
   //  onAreaSkill: boolean,
   //}
-  getAttackPower(ctx) {
-    if (ctx.onMainAttack) {
-      return this.main.baseAttackPower;
+  getMove(ctx) {
+    return this.main.baseMove;
+  }
+  getRange(ctx) {
+    if (ctx?.onSupportAttack) {
+      return this.support.baseRange;
     }
     else {
+      return this.main.baseRange;
+    }
+  }
+  getAttackPower(ctx) {
+    if (ctx?.onSupportAttack) {
       return this.support.baseAttackPower;
+    }
+    else {
+      return this.main.baseAttackPower;
     }
   }
   getDamageDealtBuff(ctx) {
     return 1.0;
   }
   getCriticalRate(ctx) {
-    if (ctx.onMainAttack) {
-      return this.main.baseCriticalRate;
+    if (ctx?.onSupportAttack) {
+      return 0;
     }
     else {
-      return 0;
+      return this.main.baseTec / 10;
     }
   }
   getCriticalDamageRate(ctx) {
-    if (ctx.onMainAttack) {
-      return 1.3;
+    if (ctx?.onSupportAttack) {
+      return 1.0;
     }
     else {
-      return 1.0;
+      return 1.3;
     }
   }
   getDefensePower(ctx) {
     const get = (chr) => {
       return ctx.onPhysicalDamage ? chr.baseDef : chr.baseRes;
     };
-    if (ctx.onMainDefense) {
-      return get(this.main);
+    if (ctx?.onSupportDefense) {
+      return get(this.support);
     }
     else {
-      return get(this.support);
+      return get(this.main);
     }
   }
   getDamageTakenBuff(ctx) {

@@ -77,18 +77,23 @@ export class SimContext {
     return unit && ((unit.isPlayer && this.isPlayerTurn) || (unit.isEnemy && this.isEnemyTurn));
   }
 
-  getBattleResult(unit, skill, target, _ctx) {
-    const doAttack = (attacker, defender, skl = null) => {
+  getBattleResult(unit, skill, target, actx) {
+    const doAttack = (_ctx, attacker, defender, skl = null) => {
       let ctx = Object.create(_ctx);
+      if (!skl) {
+        // メインがスキル使用の場合もサポートは通常攻撃
+        // todo: もっとスマートに対処したい…
+        ctx.onNormalAttack = true;
+        ctx.onActiveSkill = false;
+        ctx.onAreaSkill = false;
+      }
+
       let result = {
         ctx: ctx,
         damageToSupport: 0,
         damageToMain: 0,
         get total() { return this.damageToSupport + this.damageToMain; },
       };
-      if (!attacker.isAlive) {
-        return result;
-      }
 
       let aunit = attacker.unit;
       let dunit = defender;
@@ -105,13 +110,17 @@ export class SimContext {
           ctx.onMagicDamage = true;
       }
       {
-        if (attacker.baseRange >= 2 && ctx.range < 2)
+        if (attacker.baseRange > 1 && ctx.range <= 1)
           ctx.onRangedPenarty = true;
+      }
+      // todo: サポート同時攻撃の考慮
+      if (!attacker.isAlive || ctx.range > aunit.getRange(ctx)) {
+        return result;
       }
 
       let attackCount = 10;
       let atk = aunit.getAttackPower(ctx);
-      let damageRate = skill.getDamageRate(ctx);
+      let damageRate = skl ? skl.getDamageRate(ctx) : 1.0;
       let dmgDealtBuff = aunit.getDamageDealtBuff(ctx);
       let critDmgRate = aunit.getCriticalDamageRate(ctx);
       let rangedPenarty = ctx.onRangedPenarty ? 0.6 : 1.0;
@@ -154,10 +163,26 @@ export class SimContext {
       return result;
     };
 
-    let aSup = doAttack(unit.support, target, skill);
-    let aMain = doAttack(unit.main, target, skill);
-    let dSup = doAttack(target.support, unit);
-    let dMain = doAttack(target.main, unit);
+    // 防御側コンテキスト
+    let dctx = {
+      onEnemyTurn: true,
+      onNormalAttack: true,
+      class: target.mainClass,
+      targetClass: unit.mainClass,
+    };
+    const mergeProperties = function (dst, src, propNames) {
+      for (const name of propNames) {
+        if (name in src) {
+          dst[name] = src[name];
+        }
+      }
+    };
+    mergeProperties(dctx, actx, ["range", "onCloseCombat", "onRangedCombat"]);
+
+    let aSup = doAttack(actx, unit.support, target);
+    let aMain = doAttack(actx, unit.main, target, skill);
+    let dSup = doAttack(dctx, target.support, unit);
+    let dMain = doAttack(dctx, target.main, unit);
     return {
       ctx: aMain.ctx,
       attackerScore: aSup.total + aMain.total,
