@@ -50,29 +50,33 @@
       {
         "type": "アタック",
         "value": [ 10, 10, 10, 10, 10, 10 ],
+        "duration": 2,
         "stack": {
           "max": 2
         },
-        "duration": 2,
-        "target": "自身",
-        "timing": "戦闘前",
-        "condition": {
-          "onEnemyTurn": true,
-          "probability": [ 50, 60, 70, 80, 90, 100 ]
+        "propagate": {
+          "target": "自身",
+          "timing": "戦闘後",
+          "condition": {
+            "onEnemyTurn": true,
+            "probability": [ 50, 60, 70, 80, 90, 100 ]
+          }
         }
       },
       {
         "type": "ディフェンス",
         "value": [ 10, 10, 10, 15, 15, 20 ],
+        "duration": 2,
         "stack": {
           "max": 2
         },
-        "duration": 2,
-        "target": "自身",
-        "timing": "戦闘前",
-        "condition": {
-          "onEnemyTurn": true,
-          "probability": [ 50, 60, 70, 80, 90, 100 ]
+        "propagate": {
+          "target": "自身",
+          "timing": "戦闘後",
+          "condition": {
+            "onEnemyTurn": true,
+            "probability": [ 50, 60, 70, 80, 90, 100 ]
+          }
         }
       }
     ],
@@ -158,22 +162,26 @@
       {
         "type": "アタック",
         "value": [ 3, 5, 7, 10 ],
+        "duration": 4,
         "stack": {
           "max": 4
         },
-        "duration": 4,
-        "target": "自身",
-        "timing": "戦闘前"
+        "propagate": {
+          "target": "自身",
+          "timing": "戦闘前"
+        }
       },
       {
         "type": "ダメージ耐性(物理)",
         "value": [ 2, 3, 4, 5 ],
+        "duration": 4,
         "stack": {
           "max": 4
         },
-        "duration": 4,
-        "target": "自身",
-        "timing": "戦闘前"
+        "propagate": {
+          "target": "自身",
+          "timing": "戦闘前"
+        }
       }
     ],
     "tags": [ "蓄積バフ" ]
@@ -2058,10 +2066,12 @@
         "stack": {
           "max": 3
         },
-        "target": "味方全体",
-        "giveTiming": "戦闘後",
-        "giveCondition": {
-          "onSingleSkill": true
+        "propagate": {
+          "target": "味方全体",
+          "timing": "戦闘後",
+          "condition": {
+            "onSingleSkill": true
+          }
         }
       },
       {
@@ -2075,82 +2085,91 @@
       {
         "type": "アタック",
         "value": [ 2, 3, 4, 5 ],
-        "target": "自身",
         "stack": {
           "max": 3,
           "by": "token",
           "tokenName": "キラキラ☆エール"
         },
-        "giveTarget": "味方全体",
-        "giveTiming": "戦闘後",
-        "giveCondition": {
-          "onSingleSkill": true
+        "target": "自身",
+        "propagate": {
+          "target": "味方全体",
+          "timing": "戦闘後",
+          "condition": {
+            "onSingleSkill": true
+          }
         }
       },
       {
         "type": "ディフェンス",
         "value": [ 2, 3, 4, 5 ],
-        "target": "自身",
         "stack": {
           "max": 3,
           "by": "token",
           "tokenName": "キラキラ☆エール"
         },
-        "giveTarget": "味方全体",
-        "giveTiming": "戦闘後",
-        "giveCondition": {
-          "onSingleSkill": true
+        "target": "自身",
+        "propagate": {
+          "target": "味方全体",
+          "timing": "戦闘後",
+          "condition": {
+            "onSingleSkill": true
+          }
         }
       },
       {
         "type": "マジック",
         "value": [ 2, 3, 4, 5 ],
-        "target": "自身",
         "stack": {
           "max": 3,
           "by": "token",
           "tokenName": "キラキラ☆エール"
         },
-        "giveTarget": "味方全体",
-        "giveTiming": "戦闘後",
-        "giveCondition": {
-          "onSingleSkill": true
+        "target": "自身",
+        "propagate": {
+          "target": "味方全体",
+          "timing": "戦闘後",
+          "condition": {
+            "onSingleSkill": true
+          }
         }
       },
       {
         "type": "レジスト",
         "value": [ 2, 3, 4, 5 ],
-        "target": "自身",
         "stack": {
           "max": 3,
           "by": "token",
           "tokenName": "キラキラ☆エール"
         },
-        "giveTarget": "味方全体",
-        "giveTiming": "戦闘後",
-        "giveCondition": {
-          "onSingleSkill": true
+        "target": "自身",
+        "propagate": {
+          "target": "味方全体",
+          "timing": "戦闘後",
+          "condition": {
+            "onSingleSkill": true
+          }
         }
       },
       {
         "type": "テクニック",
         "value": [ 2, 3, 4, 5 ],
-        "target": "自身",
         "stack": {
           "max": 3,
           "by": "token",
           "tokenName": "キラキラ☆エール"
         },
-        "giveTarget": "味方全体",
-        "giveTiming": "戦闘後",
-        "giveCondition": {
-          "onSingleSkill": true
+        "target": "自身",
+        "propagate": {
+          "target": "味方全体",
+          "timing": "戦闘後",
+          "condition": {
+            "onSingleSkill": true
+          }
         }
       },
       {
         "type": "与ダメージ",
         "value": 15,
-        "target": "自身",
         "ephemeral": true,
         "duration": 4,
         "condition": {
@@ -2159,16 +2178,18 @@
             "compare": [ ">=", 3 ]
           }
         },
-        "giveTarget": "味方全体",
-        "giveTiming": "戦闘後",
-        "giveCondition": {
-          "onSingleSkill": true
+        "target": "自身",
+        "propagate": {
+          "target": "味方全体",
+          "timing": "戦闘後",
+          "condition": {
+            "onSingleSkill": true
+          }
         }
       },
       {
         "type": "ダメージ耐性",
         "value": 15,
-        "target": "自身",
         "ephemeral": true,
         "duration": 4,
         "condition": {
@@ -2177,10 +2198,13 @@
             "compare": [ ">=", 3 ]
           }
         },
-        "giveTarget": "味方全体",
-        "giveTiming": "戦闘後",
-        "giveCondition": {
-          "onSingleSkill": true
+        "target": "自身",
+        "propagate": {
+          "target": "味方全体",
+          "timing": "戦闘後",
+          "condition": {
+            "onSingleSkill": true
+          }
         }
       }
     ],
@@ -2196,10 +2220,13 @@
             "compare": [ ">=", 2 ]
           }
         },
-        "giveTarget": "味方全体",
-        "giveTiming": "戦闘後",
-        "giveCondition": {
-          "onSingleSkill": true
+        "target": "攻撃対象",
+        "propagate": {
+          "target": "味方全体",
+          "timing": "戦闘後",
+          "condition": {
+            "onSingleSkill": true
+          }
         }
       },
       {
@@ -2213,10 +2240,13 @@
             "compare": [ ">=", 2 ]
           }
         },
-        "giveTarget": "味方全体",
-        "giveTiming": "戦闘後",
-        "giveCondition": {
-          "onSingleSkill": true
+        "target": "攻撃対象",
+        "propagate": {
+          "target": "味方全体",
+          "timing": "戦闘後",
+          "condition": {
+            "onSingleSkill": true
+          }
         }
       }
     ],
@@ -2292,8 +2322,8 @@
           "max": 3
         },
         "target": "自身",
-        "giveTiming": "戦闘後",
-        "giveCondition": {
+        "timing": "戦闘後",
+        "condition": {
           "onSingleSkill": true
         }
       },
@@ -2353,7 +2383,6 @@
         "value": 10,
         "ephemeral": true,
         "target": "自身",
-        "timing": "戦闘前",
         "condition": {
           "token": {
             "tokenName": "ばーにんぐソウル！",
@@ -2365,14 +2394,18 @@
         "type": "与ダメージ",
         "value": 10,
         "duration": 1,
-        "target": "味方全体",
-        "timing": "自ターン開始時",
-        "condition": {
-          "token": {
-            "tokenName": "ばーにんぐソウル！",
-            "compare": [ ">=", 2 ]
+        "target": "自身",
+        "propagate": {
+          "target": "味方全体",
+          "timing": "自ターン開始時",
+          "condition": {
+            "token": {
+              "tokenName": "ばーにんぐソウル！",
+              "compare": [ ">=", 2 ]
+            }
           }
         }
+
       }
     ],
     "debuff": [
@@ -5555,13 +5588,11 @@
     "buff": [
       {
         "type": "アタック",
-        "value": [ 10, 12, 15, 20 ],
-        "target": "自身"
+        "value": [ 10, 12, 15, 20 ]
       },
       {
         "type": "クリティカル率",
-        "value": [ 10, 12, 15, 20 ],
-        "target": "自身"
+        "value": [ 10, 12, 15, 20 ]
       },
       {
         "type": "最大HP",
@@ -5580,72 +5611,66 @@
         }
       },
       {
+        "type": "クリティカルダメージ倍率",
+        "value": [ 10, 12, 15, 20 ],
+        "ephemeral": true,
+        "condition": {
+          "targetToken": {
+            "tokenName": "ナディアの天威",
+            "compare": [ "==", 1 ]
+          }
+        }
+      },
+      {
+        "type": "クリティカルダメージ倍率",
+        "value": [ 15, 18, 23, 30 ],
+        "ephemeral": true,
+        "condition": {
+          "targetToken": {
+            "tokenName": "ナディアの天威",
+            "compare": [ ">=", 2 ]
+          }
+        }
+      },
+      {
+        "type": "ダメージ耐性",
+        "value": [ 10, 12, 15, 20 ],
+        "ephemeral": true,
+        "condition": {
+          "targetToken": {
+            "tokenName": "ナディアの天威",
+            "compare": [ "==", 1 ]
+          }
+        }
+      },
+      {
+        "type": "ダメージ耐性",
+        "value": [ 15, 18, 23, 30 ],
+        "ephemeral": true,
+        "condition": {
+          "targetToken": {
+            "tokenName": "ナディアの天威",
+            "compare": [ ">=", 2 ]
+          }
+        }
+      }
+    ],
+    "debuff": [
+      {
         "type": "トークン",
         "tokenName": "ナディアの天威",
         "duration": 3,
         "stack": {
           "max": 2
         },
-        "target": "スキル対象",
-        "timing": "攻撃後",
-        "condition": {
-          "onDamage": true
-        }
-      },
-      {
-        "type": "クリティカルダメージ倍率",
-        "value": [ 10, 12, 15, 20 ],
-        "ephemeral": true,
-        "target": "自身",
-        "timing": "戦闘前",
-        "condition": {
-          "targetToken": {
-            "tokenName": "ナディアの天威",
-            "compare": [ "==", 1 ]
+        "propagate": {
+          "target": "攻撃対象",
+          "timing": "攻撃後",
+          "condition": {
+            "onDamage": true
           }
         }
       },
-      {
-        "type": "ダメージ耐性",
-        "value": [ 10, 12, 15, 20 ],
-        "ephemeral": true,
-        "target": "自身",
-        "timing": "戦闘前",
-        "condition": {
-          "targetToken": {
-            "tokenName": "ナディアの天威",
-            "compare": [ "==", 1 ]
-          }
-        }
-      },
-      {
-        "type": "クリティカルダメージ倍率",
-        "value": [ 15, 18, 23, 30 ],
-        "ephemeral": true,
-        "target": "自身",
-        "timing": "戦闘前",
-        "condition": {
-          "targetToken": {
-            "tokenName": "ナディアの天威",
-            "compare": [ ">=", 1 ]
-          }
-        }
-      },
-      {
-        "type": "ダメージ耐性",
-        "value": [ 15, 18, 23, 30 ],
-        "ephemeral": true,
-        "target": "自身",
-        "timing": "戦闘前",
-        "condition": {
-          "targetToken": {
-            "tokenName": "ナディアの天威",
-            "compare": [ ">=", 1 ]
-          }
-        }
-      }
-    ],
-    "debuff": [
       {
         "type": "ディフェンス",
         "value": [ 8, 10, 12, 15 ],
@@ -5654,7 +5679,13 @@
           "by": "token",
           "tokenName": "ナディアの天威"
         },
-        "target": "スキル対象"
+        "propagate": {
+          "target": "攻撃対象",
+          "timing": "攻撃後",
+          "condition": {
+            "onDamage": true
+          }
+        }
       },
       {
         "type": "ダメージ耐性",
@@ -5664,7 +5695,13 @@
           "by": "token",
           "tokenName": "ナディアの天威"
         },
-        "target": "スキル対象"
+        "propagate": {
+          "target": "攻撃対象",
+          "timing": "攻撃後",
+          "condition": {
+            "onDamage": true
+          }
+        }
       }
     ],
     "doubleAttack": [
@@ -5980,13 +6017,11 @@
     "buff": [
       {
         "type": "マジック",
-        "value": [ 10, 12, 17, 25 ],
-        "target": "自身"
+        "value": [ 10, 12, 17, 25 ]
       },
       {
         "type": "ディフェンス",
-        "value": [ 10, 12, 17, 25 ],
-        "target": "自身"
+        "value": [ 10, 12, 17, 25 ]
       },
       {
         "type": "トークン",
@@ -5995,10 +6030,12 @@
         "stack": {
           "max": 3
         },
-        "target": "味方全体",
-        "timing": "行動後",
-        "condition": {
-          "onActiveSkill": true
+        "propagate": {
+          "target": "味方全体",
+          "timing": "行動後",
+          "condition": {
+            "onActiveSkill": true
+          }
         }
       },
       {
@@ -6009,11 +6046,12 @@
           "by": "token",
           "tokenName": "風華の知略"
         },
-        "target": "自身",
-        "giveTarget": "味方全体",
-        "giveTiming": "行動後",
-        "giveCondition": {
-          "onActiveSkill": true
+        "propagate": {
+          "target": "味方全体",
+          "timing": "行動後",
+          "condition": {
+            "onActiveSkill": true
+          }
         }
       },
       {
@@ -6024,11 +6062,12 @@
           "by": "token",
           "tokenName": "風華の知略"
         },
-        "target": "自身",
-        "giveTarget": "味方全体",
-        "giveTiming": "行動後",
-        "giveCondition": {
-          "onActiveSkill": true
+        "propagate": {
+          "target": "味方全体",
+          "timing": "行動後",
+          "condition": {
+            "onActiveSkill": true
+          }
         }
       },
       {
@@ -6041,10 +6080,12 @@
             "compare": [ ">=", 2 ]
           }
         },
-        "giveTarget": "味方全体",
-        "giveTiming": "行動後",
-        "giveCondition": {
-          "onActiveSkill": true
+        "propagate": {
+          "target": "味方全体",
+          "timing": "行動後",
+          "condition": {
+            "onActiveSkill": true
+          }
         }
       },
       {
@@ -6057,42 +6098,46 @@
             "compare": [ ">=", 2 ]
           }
         },
-        "giveTarget": "味方全体",
-        "giveTiming": "行動後",
-        "giveCondition": {
-          "onActiveSkill": true
+        "propagate": {
+          "target": "味方全体",
+          "timing": "行動後",
+          "condition": {
+            "onActiveSkill": true
+          }
         }
       },
       {
         "type": "与ダメージ",
         "value": [ 8, 10, 12, 15 ],
-        "duration": 4,
         "condition": {
           "token": {
             "tokenName": "風華の知略",
             "compare": [ ">=", 3 ]
           }
         },
-        "giveTarget": "味方全体",
-        "giveTiming": "行動後",
-        "giveCondition": {
-          "onActiveSkill": true
+        "propagate": {
+          "target": "味方全体",
+          "timing": "行動後",
+          "condition": {
+            "onActiveSkill": true
+          }
         }
       },
       {
         "type": "与ダメージ(範囲スキル)",
         "value": [ 8, 10, 12, 15 ],
-        "duration": 4,
         "condition": {
           "token": {
             "tokenName": "風華の知略",
             "compare": [ ">=", 3 ]
           }
         },
-        "giveTarget": "味方全体",
-        "giveTiming": "行動後",
-        "giveCondition": {
-          "onActiveSkill": true
+        "propagate": {
+          "target": "味方全体",
+          "timing": "行動後",
+          "condition": {
+            "onActiveSkill": true
+          }
         }
       }
     ],
@@ -6789,14 +6834,17 @@
     "buff": [
       {
         "type": "与ダメージ(スキル)",
-        "value": [ 15, 18, 23, 30 ],
-        "target": "自身"
+        "value": [ 15, 18, 23, 30 ]
       },
       {
         "type": "被治療効果",
         "value": [ 20, 30, 40, 50 ],
-        "area": 3,
-        "timing": "行動後"
+        "duration": 2,
+        "propagate": {
+          "target": "範囲",
+          "area": 3,
+          "timing": "行動後"
+        }
       },
       {
         "type": "アタック",
@@ -6805,16 +6853,17 @@
         "stack": {
           "max": 3
         },
-        "target": "自身",
-        "timing": "攻撃後",
-        "giveCondition": {
-          "onDamage": true
+        "propagate": {
+          "target": "自身",
+          "timing": "攻撃後",
+          "condition": {
+            "onDamage": true
+          }
         }
       },
       {
         "type": "範囲",
         "value": 1,
-        "target": "自身",
         "condition": {
           "hp": [
             ">=",
@@ -6849,32 +6898,35 @@
     "buff": [
       {
         "type": "与ダメージ(魔法)",
-        "value": [ 10, 12, 15, 20 ],
-        "target": "自身"
+        "value": [ 10, 12, 15, 20 ]
       },
       {
         "type": "最大HP",
-        "value": [ 10, 12, 15, 20 ],
-        "target": "自身"
+        "value": [ 10, 12, 15, 20 ]
       },
       {
         "type": "与ダメージ",
         "value": [ 6, 7, 8, 10 ],
         "duration": 1,
-        "area": 3,
-        "timing": "自ターン開始時"
+        "propagate": {
+          "target": "範囲",
+          "area": 3,
+          "timing": "自ターン開始時"
+        }
       },
       {
         "type": "トークン",
         "tokenName": "サンパワー！",
+        "duration": 4,
         "stack": {
           "max": 3
         },
-        "duration": 4,
-        "target": "味方全体",
-        "timing": "行動後",
-        "condition": {
-          "onActiveSkill": true
+        "propagate": {
+          "target": "味方全体",
+          "timing": "行動後",
+          "condition": {
+            "onActiveSkill": true
+          }
         }
       },
       {
@@ -6885,11 +6937,12 @@
           "by": "token",
           "tokenName": "サンパワー！"
         },
-        "target": "自身",
-        "giveTarget": "味方全体",
-        "giveTiming": "行動後",
-        "giveCondition": {
-          "onActiveSkill": true
+        "propagate": {
+          "target": "味方全体",
+          "timing": "行動後",
+          "condition": {
+            "onActiveSkill": true
+          }
         }
       },
       {
@@ -6900,11 +6953,12 @@
           "by": "token",
           "tokenName": "サンパワー！"
         },
-        "target": "自身",
-        "giveTarget": "味方全体",
-        "giveTiming": "行動後",
-        "giveCondition": {
-          "onActiveSkill": true
+        "propagate": {
+          "target": "味方全体",
+          "timing": "行動後",
+          "condition": {
+            "onActiveSkill": true
+          }
         }
       },
       {
@@ -6915,11 +6969,12 @@
           "by": "token",
           "tokenName": "サンパワー！"
         },
-        "target": "自身",
-        "giveTarget": "味方全体",
-        "giveTiming": "行動後",
-        "giveCondition": {
-          "onActiveSkill": true
+        "propagate": {
+          "target": "味方全体",
+          "timing": "行動後",
+          "condition": {
+            "onActiveSkill": true
+          }
         }
       },
       {
@@ -6930,11 +6985,12 @@
           "by": "token",
           "tokenName": "サンパワー！"
         },
-        "target": "自身",
-        "giveTarget": "味方全体",
-        "giveTiming": "行動後",
-        "giveCondition": {
-          "onActiveSkill": true
+        "propagate": {
+          "target": "味方全体",
+          "timing": "行動後",
+          "condition": {
+            "onActiveSkill": true
+          }
         }
       },
       {
@@ -6945,19 +7001,18 @@
           "by": "token",
           "tokenName": "サンパワー！"
         },
-        "target": "自身",
-        "giveTarget": "味方全体",
-        "giveTiming": "行動後",
-        "giveCondition": {
-          "onActiveSkill": true
+        "propagate": {
+          "target": "味方全体",
+          "timing": "行動後",
+          "condition": {
+            "onActiveSkill": true
+          }
         }
       },
       {
         "type": "クリティカル率",
         "value": 15,
         "ephemeral": true,
-        "duration": 4,
-        "target": "自身",
         "timing": "戦闘前",
         "condition": {
           "token": {
@@ -6965,18 +7020,18 @@
             "compare": [ ">=", 1 ]
           }
         },
-        "giveTarget": "味方全体",
-        "giveTiming": "行動後",
-        "giveCondition": {
-          "onActiveSkill": true
+        "propagate": {
+          "target": "味方全体",
+          "timing": "行動後",
+          "condition": {
+            "onActiveSkill": true
+          }
         }
       },
       {
         "type": "クリティカルダメージ倍率",
         "value": 15,
         "ephemeral": true,
-        "duration": 4,
-        "target": "自身",
         "timing": "戦闘前",
         "condition": {
           "token": {
@@ -6984,17 +7039,17 @@
             "compare": [ ">=", 1 ]
           }
         },
-        "giveTarget": "味方全体",
-        "giveTiming": "行動後",
-        "giveCondition": {
-          "onActiveSkill": true
+        "propagate": {
+          "target": "味方全体",
+          "timing": "行動後",
+          "condition": {
+            "onActiveSkill": true
+          }
         }
       },
       {
         "type": "与ダメージ(スキル)",
-        "duration": 4,
         "value": 20,
-        "target": "自身",
         "condition": {
           "token": {
             "tokenName": "サンパワー！",
@@ -7002,10 +7057,12 @@
           },
           "hp": [ ">=", 100 ]
         },
-        "giveTarget": "味方全体",
-        "giveTiming": "行動後",
-        "giveCondition": {
-          "onActiveSkill": true
+        "propagate": {
+          "target": "味方全体",
+          "timing": "行動後",
+          "condition": {
+            "onActiveSkill": true
+          }
         }
       }
     ],
@@ -7024,14 +7081,12 @@
     "buff": [
       {
         "type": "与ダメージ(物理)",
-        "value": [ 15, 18, 23, 30 ],
-        "target": "自身"
+        "value": [ 15, 18, 23, 30 ]
       },
       {
         "type": "クリティカル率",
         "value": [ 10, 12, 15, 20 ],
         "ephemeral": true,
-        "target": "自身",
         "timing": "戦闘前",
         "condition": {
           "onRangedCombat": true
@@ -7041,7 +7096,6 @@
         "type": "クリティカルダメージ倍率",
         "value": [ 10, 12, 15, 20 ],
         "ephemeral": true,
-        "target": "自身",
         "timing": "戦闘前",
         "condition": {
           "onRangedCombat": true
@@ -7050,22 +7104,26 @@
       {
         "type": "アタック",
         "value": [ 8, 10, 12, 15 ],
+        "duration": 3,
         "stack": {
           "max": 2
         },
-        "duration": 3,
-        "target": "自身",
-        "timing": "敵撃破時"
+        "propagate": {
+          "target": "自身",
+          "timing": "敵撃破時"
+        }
       },
       {
         "type": "与ダメージ(通常攻撃)",
         "value": [ 8, 10, 12, 15 ],
+        "duration": 3,
         "stack": {
           "max": 2
         },
-        "duration": 3,
-        "target": "自身",
-        "timing": "敵撃破時"
+        "propagate": {
+          "target": "自身",
+          "timing": "敵撃破時"
+        }
       }
     ],
     "debuff": [
@@ -7073,18 +7131,24 @@
         "type": "ディフェンス",
         "value": [ 10, 12, 17, 25 ],
         "duration": 1,
-        "timing": "戦闘後",
-        "condition": {
-          "onCriticalHit": true
+        "propagate": {
+          "target": "攻撃対象",
+          "timing": "戦闘後",
+          "condition": {
+            "onCriticalHit": true
+          }
         }
       },
       {
         "type": "ダメージ耐性",
         "value": [ 10, 12, 17, 25 ],
         "duration": 1,
-        "timing": "戦闘後",
-        "condition": {
-          "onCriticalHit": true
+        "propagate": {
+          "target": "攻撃対象",
+          "timing": "戦闘後",
+          "condition": {
+            "onCriticalHit": true
+          }
         }
       }
     ],
@@ -7164,8 +7228,7 @@
     "buff": [
       {
         "type": "アタック",
-        "value": [ 15, 18, 23, 30 ],
-        "target": "自身"
+        "value": [ 15, 18, 23, 30 ]
       },
       {
         "type": "与ダメージ",
@@ -7180,10 +7243,13 @@
         "stack": {
           "max": 3
         },
-        "target": "自身",
-        "timing": "行動後",
-        "condition": {
-          "onActiveSkill": true
+        "propagate": {
+          "target": "自身",
+          "timing": "行動後",
+          "condition": {
+            "onActiveSkill": true,
+            "onEffect": "3100451"
+          }
         }
       },
       {
@@ -7193,8 +7259,7 @@
           "max": 3,
           "by": "token",
           "tokenName": "オシリス神の啓示"
-        },
-        "target": "自身"
+        }
       },
       {
         "type": "与ダメージ(物理)",
@@ -7203,8 +7268,7 @@
           "max": 3,
           "by": "token",
           "tokenName": "オシリス神の啓示"
-        },
-        "target": "自身"
+        }
       }
     ],
     "multiMove": [
@@ -7213,6 +7277,52 @@
       }
     ],
     "tags": [ "蓄積バフ" ]
+  },
+  {
+    "uid": "3100451",
+    "icon": "sk_t383",
+    "name": "王への讃歌",
+    "desc": "自ユニットの物理ダメージ耐性+20%。\n味方ターン開始時、現在HP割合が最も低い味方ユニットのメイン、サポートそれぞれのHPを最大HPの20%分回復する。\n自身を中心とした範囲5マス以内の全ての味方ユニットの最大HP以外の全ステータス+3%。",
+    "buff": [
+      {
+        "type": "アタック",
+        "value": 3,
+        "target": "範囲",
+        "area": 5
+      },
+      {
+        "type": "ディフェンス",
+        "value": 3,
+        "target": "範囲",
+        "area": 5
+      },
+      {
+        "type": "マジック",
+        "value": 3,
+        "target": "範囲",
+        "area": 5
+      },
+      {
+        "type": "レジスト",
+        "value": 3,
+        "target": "範囲",
+        "area": 5
+      },
+      {
+        "type": "テクニック",
+        "value": 3,
+        "target": "範囲",
+        "area": 5
+      }
+    ],
+    "heal": [
+      {
+        "type": "HP割合",
+        "rate": 0.2,
+        "target": "味方(低HP)",
+        "timing": "自ターン開始時"
+      }
+    ]
   },
   {
     "uid": "3100449",
@@ -7278,47 +7388,6 @@
       }
     ],
     "tags": [ "移動時強化", "固定ダメージ" ]
-  },
-  {
-    "uid": "3100451",
-    "icon": "sk_t383",
-    "name": "王への讃歌",
-    "desc": "自ユニットの物理ダメージ耐性+20%。\n味方ターン開始時、現在HP割合が最も低い味方ユニットのメイン、サポートそれぞれのHPを最大HPの20%分回復する。\n自身を中心とした範囲5マス以内の全ての味方ユニットの最大HP以外の全ステータス+3%。",
-    "buff": [
-      {
-        "type": "アタック",
-        "value": 3,
-        "area": 5
-      },
-      {
-        "type": "ディフェンス",
-        "value": 3,
-        "area": 5
-      },
-      {
-        "type": "マジック",
-        "value": 3,
-        "area": 5
-      },
-      {
-        "type": "レジスト",
-        "value": 3,
-        "area": 5
-      },
-      {
-        "type": "テクニック",
-        "value": 3,
-        "area": 5
-      }
-    ],
-    "heal": [
-      {
-        "type": "HP割合",
-        "rate": 0.2,
-        "target": "味方(低HP)",
-        "timing": "自ターン開始時"
-      }
-    ]
   },
   {
     "uid": "3100459",
@@ -8488,13 +8557,11 @@
     "buff": [
       {
         "type": "与ダメージ(スキル)",
-        "value": [ 18, 23, 30, 40 ],
-        "target": "自身"
+        "value": [ 18, 23, 30, 40 ]
       },
       {
         "type": "治療効果",
         "value": [ 20, 30, 40, 50 ],
-        "target": "自身",
         "condition": {
           "hp": [ ">=", 100 ]
         }
@@ -8502,7 +8569,6 @@
       {
         "type": "与ダメージ(魔法)",
         "value": [ 15, 18, 23, 30 ],
-        "target": "自身",
         "condition": {
           "hp": [ ">=", 100 ]
         }
@@ -8510,10 +8576,13 @@
       {
         "type": "クリティカル率",
         "value": [ 35, 38, 43, 50 ],
-        "target": "自身",
-        "timing": "自ターン開始時",
-        "condition": {
-          "hp": [ ">=", 100 ]
+        "duration": 1,
+        "propagate": {
+          "target": "自身",
+          "timing": "自ターン開始時",
+          "condition": {
+            "hp": [ ">=", 100 ]
+          }
         }
       },
       {
@@ -8523,10 +8592,12 @@
           "max": 3
         },
         "duration": 4,
-        "target": "味方全体",
-        "timing": "行動後",
-        "condition": {
-          "onActiveSkill": true
+        "propagate": {
+          "target": "味方全体",
+          "timing": "行動後",
+          "condition": {
+            "onActiveSkill": true
+          }
         }
       },
       {
@@ -8537,11 +8608,12 @@
           "by": "token",
           "tokenName": "天使の息吹"
         },
-        "target": "自身",
-        "giveTarget": "味方全体",
-        "giveTiming": "行動後",
-        "giveCondition": {
-          "onActiveSkill": true
+        "propagate": {
+          "target": "味方全体",
+          "timing": "行動後",
+          "condition": {
+            "onActiveSkill": true
+          }
         }
       },
       {
@@ -8552,11 +8624,12 @@
           "by": "token",
           "tokenName": "天使の息吹"
         },
-        "target": "自身",
-        "giveTarget": "味方全体",
-        "giveTiming": "行動後",
-        "giveCondition": {
-          "onActiveSkill": true
+        "propagate": {
+          "target": "味方全体",
+          "timing": "行動後",
+          "condition": {
+            "onActiveSkill": true
+          }
         }
       },
       {
@@ -8567,11 +8640,12 @@
           "by": "token",
           "tokenName": "天使の息吹"
         },
-        "target": "自身",
-        "giveTarget": "味方全体",
-        "giveTiming": "行動後",
-        "giveCondition": {
-          "onActiveSkill": true
+        "propagate": {
+          "target": "味方全体",
+          "timing": "行動後",
+          "condition": {
+            "onActiveSkill": true
+          }
         }
       },
       {
@@ -8582,11 +8656,12 @@
           "by": "token",
           "tokenName": "天使の息吹"
         },
-        "target": "自身",
-        "giveTarget": "味方全体",
-        "giveTiming": "行動後",
-        "giveCondition": {
-          "onActiveSkill": true
+        "propagate": {
+          "target": "味方全体",
+          "timing": "行動後",
+          "condition": {
+            "onActiveSkill": true
+          }
         }
       },
       {
@@ -8597,21 +8672,30 @@
           "by": "token",
           "tokenName": "天使の息吹"
         },
-        "target": "自身",
-        "giveTarget": "味方全体",
-        "giveTiming": "行動後",
-        "giveCondition": {
-          "onActiveSkill": true
+        "propagate": {
+          "target": "味方全体",
+          "timing": "行動後",
+          "condition": {
+            "onActiveSkill": true
+          }
         }
       },
       {
         "type": "ダメージ耐性",
         "value": 15,
+        "ephemeral": true,
         "timing": "戦闘前",
         "condition": {
           "token": {
             "tokenName": "天使の息吹",
             "compare": [ ">=", 2 ]
+          }
+        },
+        "propagate": {
+          "target": "味方全体",
+          "timing": "行動後",
+          "condition": {
+            "onActiveSkill": true
           }
         }
       },
@@ -8624,6 +8708,13 @@
             "compare": [ ">=", 3 ]
           },
           "hp": [ ">=", 100 ]
+        },
+        "propagate": {
+          "target": "味方全体",
+          "timing": "行動後",
+          "condition": {
+            "onActiveSkill": true
+          }
         }
       }
     ],
@@ -10776,8 +10867,7 @@
     "buff": [
       {
         "type": "与ダメージ(スキル)",
-        "value": [ 10, 12, 17, 25 ],
-        "target": "自身"
+        "value": [ 10, 12, 17, 25 ]
       },
       {
         "type": "アタック",
@@ -10786,8 +10876,7 @@
           "max": 5,
           "by": "move"
         },
-        "ephemeral": true,
-        "target": "自身"
+        "ephemeral": true
       },
       {
         "type": "与ダメージ(物理)",
@@ -10796,42 +10885,12 @@
           "max": 5,
           "by": "move"
         },
-        "ephemeral": true,
-        "target": "自身",
-        "timing": "戦闘前"
-      },
-      {
-        "type": "トークン",
-        "tokenName": "万里を歩む微笑み",
-        "duration": 3,
-        "stack": {
-          "max": 2
-        },
-        "target": "スキル対象",
-        "timing": "攻撃後",
-        "condition": {
-          "onDamage": true
-        }
+        "ephemeral": true
       },
       {
         "type": "クリティカル率",
         "value": [ 10, 12, 15, 20 ],
-        "duration": 0,
-        "target": "自身",
-        "timing": "戦闘前",
-        "condition": {
-          "targetToken": {
-            "tokenName": "万里を歩む微笑み",
-            "compare": [ "==", 1 ]
-          }
-        }
-      },
-      {
-        "type": "クリティカルダメージ倍率",
-        "value": [ 6, 7, 8, 10 ],
-        "duration": 0,
-        "target": "自身",
-        "timing": "戦闘前",
+        "ephemeral": true,
         "condition": {
           "targetToken": {
             "tokenName": "万里を歩む微笑み",
@@ -10842,9 +10901,7 @@
       {
         "type": "クリティカル率",
         "value": [ 15, 18, 23, 30 ],
-        "duration": 0,
-        "target": "自身",
-        "timing": "戦闘前",
+        "ephemeral": true,
         "condition": {
           "targetToken": {
             "tokenName": "万里を歩む微笑み",
@@ -10854,10 +10911,19 @@
       },
       {
         "type": "クリティカルダメージ倍率",
+        "value": [ 6, 7, 8, 10 ],
+        "ephemeral": true,
+        "condition": {
+          "targetToken": {
+            "tokenName": "万里を歩む微笑み",
+            "compare": [ "==", 1 ]
+          }
+        }
+      },
+      {
+        "type": "クリティカルダメージ倍率",
         "value": [ 10, 12, 15, 20 ],
-        "duration": 0,
-        "target": "自身",
-        "timing": "戦闘前",
+        "ephemeral": true,
         "condition": {
           "targetToken": {
             "tokenName": "万里を歩む微笑み",
@@ -10868,6 +10934,21 @@
     ],
     "debuff": [
       {
+        "type": "トークン",
+        "tokenName": "万里を歩む微笑み",
+        "duration": 3,
+        "stack": {
+          "max": 2
+        },
+        "propagate": {
+          "target": "攻撃対象",
+          "timing": "攻撃後",
+          "condition": {
+            "onDamage": true
+          }
+        }
+      },
+      {
         "type": "与ダメージ",
         "value": [ 6, 7, 8, 10 ],
         "stack": {
@@ -10875,7 +10956,13 @@
           "by": "token",
           "tokenName": "万里を歩む微笑み"
         },
-        "target": "スキル対象"
+        "propagate": {
+          "target": "攻撃対象",
+          "timing": "攻撃後",
+          "condition": {
+            "onDamage": true
+          }
+        }
       },
       {
         "type": "ダメージ耐性",
@@ -10885,7 +10972,13 @@
           "by": "token",
           "tokenName": "万里を歩む微笑み"
         },
-        "target": "スキル対象"
+        "propagate": {
+          "target": "攻撃対象",
+          "timing": "攻撃後",
+          "condition": {
+            "onDamage": true
+          }
+        }
       }
     ],
     "ctReduction": [

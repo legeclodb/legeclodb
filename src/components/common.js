@@ -942,11 +942,23 @@ export default {
     },
 
     isPublicTarget(effect) {
-      return effect.giveTarget || !effect.target ||
-        (typeof (effect.target) == "string" && !effect.target.startsWith("自身"));
+      const propagate = effect.propagate;
+      if (propagate) {
+        return !propagate.target.startsWith("自身");
+      }
+      else {
+        return !effect.target || (typeof (effect.target) == "string" && !effect.target.startsWith("自身"));
+      }
     },
     isSelfTarget(effect) {
-      return !effect.giveTarget && (!effect.target || (typeof (effect.target) == "string" && effect.target.startsWith("自身")));
+      const propagate = effect.propagate;
+      if (propagate) {
+        return propagate.target.startsWith("自身");
+      }
+      else {
+        return !effect.target || (typeof (effect.target) == "string" && effect.target.startsWith("自身"));
+      }
+
     },
 
     effectParamsToTags(skill, params) {
@@ -1121,13 +1133,13 @@ export default {
         if (effect.ephemeral) {
           t += "(戦闘時)";
         }
+        else if (params.includeAreaTags && effect.isBuff && effect.propagate?.target == "範囲") {
+          t += `(味方)`;
+        }
         else if (effect.target) {
-          if ((params.includeSelfTags && this.isSelfTarget(effect))) {
+          if (params.includeSelfTags && this.isSelfTarget(effect)) {
             t += `(${effect.target})`;
           }
-        }
-        else if (params.includeAreaTags && effect.isBuff && effect.area) {
-          t += `(味方)`;
         }
         return t;
       };

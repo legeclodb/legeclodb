@@ -272,6 +272,8 @@ export default {
           return count;
         }
 
+        // 同系統の先にある効果を消していく。
+        // 効果が低い方が先にあるので、最も効果が高いのが残る。
         for (let i = 0; i < effects.length;) {
           if (countEffect(effects[i]) > 1) {
             //console.log(effects[i]);

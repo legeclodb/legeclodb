@@ -1383,7 +1383,10 @@
           "max": 4
         },
         "target": "自身",
-        "timing": "敵撃破時"
+        "propagate": {
+          "target": "自身",
+          "timing": "敵撃破時"
+        }
       }
     ],
     "tags": [ "蓄積バフ" ]
@@ -1597,7 +1600,10 @@
           "max": 4
         },
         "target": "自身",
-        "timing": "敵撃破時"
+        "propagate": {
+          "target": "自身",
+          "timing": "敵撃破時"
+        }
       }
     ],
     "tags": [ "蓄積バフ" ]
@@ -1914,8 +1920,11 @@
         "type": "ダメージ耐性",
         "value": 10,
         "duration": 2,
-        "area": 2,
-        "timing": "戦闘後"
+        "propagate": {
+          "target": "範囲",
+          "area": 2,
+          "timing": "行動後"
+        }
       }
     ]
   },
@@ -1967,9 +1976,12 @@
           "max": 4
         },
         "target": "自身",
-        "timing": "戦闘前",
-        "condition": {
-          "onEnemyTurn": true
+        "propagate": {
+          "target": "自身",
+          "timing": "戦闘前",
+          "condition": {
+            "onEnemyTurn": true
+          }
         }
       },
       {
@@ -1980,9 +1992,12 @@
           "max": 4
         },
         "target": "自身",
-        "timing": "戦闘前",
-        "condition": {
-          "onEnemyTurn": true
+        "propagate": {
+          "target": "自身",
+          "timing": "戦闘前",
+          "condition": {
+            "onEnemyTurn": true
+          }
         }
       },
       {
@@ -1993,9 +2008,12 @@
           "max": 4
         },
         "target": "自身",
-        "timing": "戦闘前",
-        "condition": {
-          "onEnemyTurn": true
+        "propagate": {
+          "target": "自身",
+          "timing": "戦闘前",
+          "condition": {
+            "onEnemyTurn": true
+          }
         }
       },
       {
@@ -2006,9 +2024,12 @@
           "max": 4
         },
         "target": "自身",
-        "timing": "戦闘前",
-        "condition": {
-          "onEnemyTurn": true
+        "propagate": {
+          "target": "自身",
+          "timing": "戦闘前",
+          "condition": {
+            "onEnemyTurn": true
+          }
         }
       },
       {
@@ -2019,9 +2040,12 @@
           "max": 4
         },
         "target": "自身",
-        "timing": "戦闘前",
-        "condition": {
-          "onEnemyTurn": true
+        "propagate": {
+          "target": "自身",
+          "timing": "戦闘前",
+          "condition": {
+            "onEnemyTurn": true
+          }
         }
       }
     ],
@@ -2129,8 +2153,12 @@
         "type": "与ダメージ(スキル)",
         "value": 20,
         "duration": 2,
-        "area": 2,
-        "timing": "行動後"
+        "target": "自身",
+        "propagate": {
+          "target": "範囲",
+          "area": 2,
+          "timing": "行動後"
+        }
       }
     ]
   },
@@ -2310,6 +2338,7 @@
         "type": "与ダメージ",
         "value": 10,
         "ephemeral": true,
+        "target": "攻撃対象",
         "timing": "戦闘前",
         "condition": {
           "onEnemyTurn": true,
@@ -2328,15 +2357,21 @@
         "type": "ディフェンス",
         "value": 10,
         "duration": 2,
-        "area": 3,
-        "timing": "行動後"
+        "propagate": {
+          "target": "範囲",
+          "area": 3,
+          "timing": "行動後"
+        }
       },
       {
         "type": "レジスト",
         "value": 10,
         "duration": 2,
-        "area": 3,
-        "timing": "行動後"
+        "propagate": {
+          "target": "範囲",
+          "area": 3,
+          "timing": "行動後"
+        }
       }
     ]
   },
@@ -2475,15 +2510,21 @@
         "type": "ディフェンス",
         "value": 5,
         "duration": 1,
-        "area": 2,
-        "timing": "行動後"
+        "propagate": {
+          "target": "範囲",
+          "area": 2,
+          "timing": "行動後"
+        }
       },
       {
         "type": "レジスト",
         "value": 5,
         "duration": 1,
-        "area": 2,
-        "timing": "行動後"
+        "propagate": {
+          "target": "範囲",
+          "area": 2,
+          "timing": "行動後"
+        }
       }
     ]
   },
@@ -2501,7 +2542,10 @@
           "max": 4
         },
         "target": "自身",
-        "timing": "戦闘前"
+        "propagate": {
+          "target": "自身",
+          "timing": "戦闘前"
+        }
       },
       {
         "type": "ディフェンス",
@@ -2511,7 +2555,10 @@
           "max": 4
         },
         "target": "自身",
-        "timing": "戦闘前"
+        "propagate": {
+          "target": "自身",
+          "timing": "戦闘前"
+        }
       }
     ],
     "tags": [ "蓄積バフ" ]
@@ -2568,9 +2615,12 @@
         "type": "与ダメージ",
         "value": 10,
         "duration": 1,
-        "timing": "戦闘前",
-        "condition": {
-          "onOwnTurn": true
+        "propagate": {
+          "target": "攻撃対象",
+          "timing": "戦闘後",
+          "condition": {
+            "onOwnTurn": true
+          }
         }
       }
     ]
@@ -2693,8 +2743,11 @@
         "type": "与ダメージ",
         "value": 10,
         "duration": 1,
-        "area": [ 1, "周囲" ],
-        "timing": "行動後"
+        "propagate": {
+          "target": "範囲",
+          "area": [ 1, "周囲" ],
+          "timing": "行動後"
+        }
       }
     ]
   },
@@ -2958,8 +3011,10 @@
         "stack": {
           "max": 3
         },
-        "target": "自身",
-        "timing": "戦闘前"
+        "propagate": {
+          "target": "自身",
+          "timing": "戦闘前"
+        }
       },
       {
         "type": "クリティカル率",
@@ -2968,8 +3023,10 @@
         "stack": {
           "max": 3
         },
-        "target": "自身",
-        "timing": "戦闘前"
+        "propagate": {
+          "target": "自身",
+          "timing": "戦闘前"
+        }
       }
     ],
     "tags": [ "蓄積バフ" ]
@@ -3162,8 +3219,11 @@
         "type": "与ダメージ(スキル)",
         "value": 20,
         "duration": 2,
-        "area": 2,
-        "timing": "行動後"
+        "propagate": {
+          "target": "範囲",
+          "area": 2,
+          "timing": "行動後"
+        }
       }
     ]
   },
@@ -3201,8 +3261,11 @@
         "type": "ダメージ耐性(物理)",
         "value": 15,
         "duration": 2,
-        "area": 2,
-        "timing": "行動後"
+        "propagate": {
+          "target": "範囲",
+          "area": 2,
+          "timing": "行動後"
+        }
       }
     ]
   },

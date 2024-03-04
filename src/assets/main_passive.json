@@ -5266,8 +5266,7 @@
     "buff": [
       {
         "type": "射程(スキル)",
-        "value": 1,
-        "target": "自身"
+        "value": 1
       },
       {
         "type": "与ダメージ(物理)",
@@ -5277,8 +5276,6 @@
           "by": "range"
         },
         "ephemeral": true,
-        "target": "自身",
-        "timing": "戦闘前",
         "condition": {
           "onRangedCombat": true
         }
@@ -5291,8 +5288,6 @@
           "by": "range"
         },
         "ephemeral": true,
-        "target": "自身",
-        "timing": "戦闘前",
         "condition": {
           "onRangedCombat": true
         }
