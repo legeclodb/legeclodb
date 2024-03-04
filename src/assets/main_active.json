@@ -5449,6 +5449,19 @@
     "area": "単体",
     "range": 3,
     "cost": 1,
+    "buff": [
+      {
+        "type": "トークン",
+        "tokenName": "黄金に輝くモノ",
+        "duration": 4,
+        "stack": {
+          "max": 2
+        },
+        "propagate": {
+          "target": "自身"
+        }
+      }
+    ],
     "summon": [ "Ch508500499summon" ],
     "multiAction": [ {} ]
   },
