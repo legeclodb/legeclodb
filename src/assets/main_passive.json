@@ -841,8 +841,10 @@
       {
         "type": "アタック",
         "value": 10,
-        "maxStack": 5,
-        "stackBy": "moveAmount",
+        "stack": {
+          "max": 5,
+          "by": "move"
+        },
         "ephemeral": true,
         "target": "自身(メイン)",
         "timing": "戦闘前",
@@ -855,8 +857,10 @@
       {
         "base": "アタック",
         "rate": 0.7,
-        "maxStack": 5,
-        "stackBy": "moveAmount",
+        "stack": {
+          "max": 5,
+          "by": "move"
+        },
         "timing": "戦闘前",
         "condition": {
           "onOwnTurn": true
@@ -1756,7 +1760,11 @@
       {
         "type": "ディフェンス",
         "value": 5,
-        "maxStack": 3,
+        "stack": {
+          "max": 3,
+          "by": "nearAllyCount",
+          "area": 2
+        },
         "target": "自身",
         "condition": {
           "nearAllyCount": {
@@ -1768,7 +1776,11 @@
       {
         "type": "レジスト",
         "value": 5,
-        "maxStack": 3,
+        "stack": {
+          "max": 3,
+          "by": "nearAllyCount",
+          "area": 2
+        },
         "target": "自身",
         "condition": {
           "nearAllyCount": {
@@ -1790,7 +1802,9 @@
         "type": "ディフェンス",
         "value": 5,
         "duration": 1,
-        "maxStack": 3,
+        "stack": {
+          "max": 3
+        },
         "target": "自身",
         "timing": "戦闘前",
         "condition": {
@@ -1935,8 +1949,10 @@
       {
         "type": "アタック",
         "value": 5,
-        "maxStack": 3,
-        "stackBy": "moveAmount",
+        "stack": {
+          "max": 3,
+          "by": "move"
+        },
         "ephemeral": true,
         "target": "自身",
         "timing": "戦闘前"
@@ -4018,8 +4034,10 @@
       {
         "type": "クリティカルダメージ倍率",
         "value": 5,
-        "maxStack": 5,
-        "stackBy": "activeBuffCount",
+        "stack": {
+          "max": 5,
+          "by": "activeBuffCount"
+        },
         "target": "自身"
       }
     ],
@@ -4197,8 +4215,10 @@
       {
         "type": "アタック",
         "value": 5,
-        "maxStack": 6,
-        "stackBy": "moveAmount",
+        "stack": {
+          "max": 6,
+          "by": "move"
+        },
         "ephemeral": true,
         "target": "自身",
         "timing": "戦闘前"
@@ -4206,8 +4226,10 @@
       {
         "type": "与ダメージ(物理)",
         "value": 5,
-        "maxStack": 6,
-        "stackBy": "moveAmount",
+        "stack": {
+          "max": 6,
+          "by": "move"
+        },
         "ephemeral": true,
         "target": "自身",
         "timing": "戦闘前"
@@ -4274,7 +4296,9 @@
         "type": "アタック",
         "value": 10,
         "duration": 4,
-        "maxStack": 3,
+        "stack": {
+          "max": 3
+        },
         "target": "自身",
         "timing": "戦闘前"
       },
@@ -4282,7 +4306,9 @@
         "type": "ディフェンス",
         "value": 10,
         "duration": 4,
-        "maxStack": 3,
+        "stack": {
+          "max": 3
+        },
         "target": "自身",
         "timing": "戦闘前"
       }
@@ -4412,8 +4438,10 @@
       {
         "type": "与ダメージ(スキル)",
         "value": 5,
-        "maxStack": 6,
-        "stackBy": "moveAmount",
+        "stack": {
+          "max": 6,
+          "by": "move"
+        },
         "ephemeral": true,
         "target": "自身",
         "timing": "戦闘前"
@@ -4640,7 +4668,9 @@
       {
         "type": "アタック",
         "value": 8,
-        "maxStack": 3,
+        "stack": {
+          "max": 3
+        },
         "duration": 4,
         "target": "自身",
         "timing": "戦闘前"
@@ -4648,7 +4678,9 @@
       {
         "type": "与ダメージ(物理)",
         "value": 8,
-        "maxStack": 3,
+        "stack": {
+          "max": 3
+        },
         "duration": 4,
         "target": "自身",
         "timing": "戦闘前"
@@ -4953,8 +4985,10 @@
       {
         "type": "被治療効果",
         "value": 15,
-        "maxStack": 4,
-        "stackBy": "moveAmount",
+        "stack": {
+          "max": 4,
+          "by": "move"
+        },
         "ephemeral": true,
         "target": "自身",
         "timing": "戦闘前"
@@ -4993,8 +5027,10 @@
       {
         "type": "被治療効果",
         "value": 15,
-        "maxStack": 4,
-        "stackBy": "moveAmount",
+        "stack": {
+          "max": 4,
+          "by": "move"
+        },
         "ephemeral": true,
         "target": "自身",
         "timing": "戦闘前"
@@ -5236,8 +5272,10 @@
       {
         "type": "与ダメージ(物理)",
         "value": 10,
-        "maxStack": 3,
-        "stackBy": "range",
+        "stack": {
+          "max": 3,
+          "by": "range"
+        },
         "ephemeral": true,
         "target": "自身",
         "timing": "戦闘前",
@@ -5248,8 +5286,10 @@
       {
         "type": "クリティカルダメージ倍率",
         "value": 10,
-        "maxStack": 3,
-        "stackBy": "range",
+        "stack": {
+          "max": 3,
+          "by": "range"
+        },
         "ephemeral": true,
         "target": "自身",
         "timing": "戦闘前",

@@ -4967,8 +4967,10 @@
       {
         "type": "クリティカル率",
         "value": 5,
-        "maxStack": 5,
-        "stackBy": "moveAmount",
+        "stack": {
+          "max": 5,
+          "by": "move"
+        },
         "ephemeral": true,
         "target": "自身"
       }
@@ -5843,7 +5845,10 @@
       {
         "base": "最大HP",
         "rate": 0.15,
-        "stackBy": "moveAmount",
+        "stack": {
+          "max": 99,
+          "by": "move"
+        },
         "target": "自身",
         "timing": "行動後"
       }
@@ -6164,15 +6169,21 @@
       {
         "type": "アタック",
         "value": 5,
-        "maxStack": 3,
-        "stackBy": "nearEnemyCount",
+        "stack": {
+          "max": 3,
+          "by": "nearEnemyCount",
+          "area": [ 2, "周囲" ]
+        },
         "target": "自身(メイン)"
       },
       {
         "type": "ディフェンス",
         "value": 5,
-        "maxStack": 3,
-        "stackBy": "nearEnemyCount",
+        "stack": {
+          "max": 3,
+          "by": "nearEnemyCount",
+          "area": [ 2, "周囲" ]
+        },
         "target": "自身(メイン)"
       }
     ],
@@ -8461,10 +8472,13 @@
       {
         "type": "クリティカル率",
         "value": 3,
-        "maxStack": 5,
-        "stackBy": "moveAmount",
+        "stack": {
+          "max": 5,
+          "by": "move"
+        },
         "ephemeral": true,
-        "target": "自身(メイン)"
+        "target": "自身(メイン)",
+        "timing": "戦闘前"
       },
       {
         "type": "与ダメージ(スキル)",
@@ -8717,7 +8731,9 @@
       {
         "type": "ダメージ耐性",
         "value": -20,
-        "maxStack": 3,
+        "stack": {
+          "max": 3
+        },
         "duration": 3,
         "target": "自身",
         "timing": "自ターン開始時"
@@ -8743,10 +8759,13 @@
       {
         "type": "与ダメージ(物理)",
         "value": 2,
-        "maxStack": 4,
-        "stackBy": "moveAmount",
+        "stack": {
+          "max": 4,
+          "by": "move"
+        },
         "ephemeral": true,
-        "target": "自身(メイン)"
+        "target": "自身(メイン)",
+        "timing": "戦闘前"
       },
       {
         "type": "与ダメージ(スキル)",
@@ -8871,10 +8890,13 @@
       {
         "type": "クリティカルダメージ倍率",
         "value": 3,
-        "maxStack": 5,
-        "stackBy": "moveAmount",
+        "stack": {
+          "max": 5,
+          "by": "move"
+        },
         "ephemeral": true,
         "target": "自身(メイン)",
+        "timing": "戦闘前",
         "condition": {
           "onClass": [ "ソーサラー", "ライダー" ]
         }
@@ -8915,10 +8937,13 @@
       {
         "type": "クリティカルダメージ倍率",
         "value": 3,
-        "maxStack": 5,
-        "stackBy": "moveAmount",
+        "stack": {
+          "max": 5,
+          "by": "move"
+        },
         "ephemeral": true,
         "target": "自身(メイン)",
+        "timing": "戦闘前",
         "condition": {
           "onClass": [ "ソーサラー", "ライダー" ]
         }
@@ -8959,8 +8984,10 @@
       {
         "type": "クリティカルダメージ倍率",
         "value": 3,
-        "maxStack": 5,
-        "stackBy": "moveAmount",
+        "stack": {
+          "max": 5,
+          "by": "move"
+        },
         "ephemeral": true,
         "target": "自身(メイン)",
         "timing": "戦闘前",
@@ -8997,8 +9024,10 @@
       {
         "type": "クリティカルダメージ倍率",
         "value": 3,
-        "maxStack": 5,
-        "stackBy": "moveAmount",
+        "stack": {
+          "max": 5,
+          "by": "move"
+        },
         "ephemeral": true,
         "target": "自身(メイン)",
         "timing": "戦闘前",
@@ -9204,7 +9233,9 @@
       {
         "type": "ディフェンス",
         "value": 5,
-        "maxStack": 3,
+        "stack": {
+          "max": 3
+        },
         "duration": 3,
         "target": "自身",
         "timing": "戦闘前"
@@ -9212,7 +9243,9 @@
       {
         "type": "レジスト",
         "value": 5,
-        "maxStack": 3,
+        "stack": {
+          "max": 3
+        },
         "duration": 3,
         "target": "自身",
         "timing": "戦闘前"

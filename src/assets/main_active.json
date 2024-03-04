@@ -725,8 +725,10 @@
       {
         "type": "与ダメージ",
         "value": 5,
-        "maxStack": 3,
-        "stackBy": "moveAmount",
+        "stack": {
+          "max": 3,
+          "by": "move"
+        },
         "ephemeral": true,
         "duration": 4,
         "slot": "加護",
@@ -3442,8 +3444,10 @@
       {
         "type": "アタック",
         "value": 5,
-        "maxStack": 4,
-        "stackBy": "nearEnemyCount",
+        "stack": {
+          "max": 4,
+          "by": "nearEnemyCount"
+        },
         "ephemeral": true,
         "target": "自身",
         "timing": "戦闘前"
@@ -3451,8 +3455,10 @@
       {
         "type": "クリティカル率",
         "value": 5,
-        "maxStack": 4,
-        "stackBy": "nearEnemyCount",
+        "stack": {
+          "max": 4,
+          "by": "nearEnemyCount"
+        },
         "ephemeral": true,
         "target": "自身",
         "timing": "戦闘前"
@@ -4000,8 +4006,11 @@
       {
         "type": "与ダメージ(範囲スキル)",
         "value": 5,
-        "maxStack": 6,
-        "stackBy": "nearEnemyCount",
+        "stack": {
+          "max": 6,
+          "by": "nearEnemyCount",
+          "area": 3
+        },
         "ephemeral": true,
         "target": "自身",
         "timing": "戦闘前"
@@ -4778,7 +4787,10 @@
       {
         "type": "与ダメージ(スキル)",
         "value": 6,
-        "maxStack": 5,
+        "stack": {
+          "max": 5,
+          "by": "move"
+        },
         "ephemeral": true,
         "target": "自身",
         "timing": "戦闘前"
@@ -4800,7 +4812,10 @@
       {
         "type": "与ダメージ(スキル)",
         "value": 6,
-        "maxStack": 6,
+        "stack": {
+          "max": 6,
+          "by": "move"
+        },
         "ephemeral": true,
         "target": "自身",
         "timing": "戦闘前"
@@ -7802,16 +7817,22 @@
       {
         "type": "クリティカル率",
         "value": 10,
-        "maxStack": 5,
-        "stackBy": "nearAllyCount",
+        "stack": {
+          "max": 5,
+          "by": "nearAllyCount",
+          "area": 3
+        },
         "ephemeral": true,
         "target": "自身"
       },
       {
         "type": "与ダメージ(スキル)",
         "value": 10,
-        "maxStack": 5,
-        "stackBy": "nearAllyCount",
+        "stack": {
+          "max": 5,
+          "by": "nearAllyCount",
+          "area": 3
+        },
         "ephemeral": true,
         "target": "自身"
       }

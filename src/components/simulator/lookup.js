@@ -416,10 +416,10 @@ export default {
       let r = 0;
       if (effect.value) {
         r = effect.value;
-        if (effect.maxStack) {
+        if (effect.stack) {
           // 効果が重複するタイプ
           // フルスペック時の効果を返す
-          r *= effect.maxStack;
+          r *= effect.stack.max;
         }
       }
       else if (effect.variable) {

@@ -115,10 +115,10 @@
     },
     "conditionVariable": {
       "enum": [
+        "move",
+        "range",
         "token",
         "targetToken",
-        "moveAmount",
-        "range",
         "nearAllyCount",
         "nearEnemyCount",
         "activeBuffCount",
@@ -242,6 +242,18 @@
       }
     },
 
+    "stack": {
+      "type": "object",
+      "required": [ "max" ],
+      "additionalProperties": false,
+      "properties": {
+        "max": { "type": "number" },
+        "by": { "$ref": "#/$defs/conditionVariable" },
+        "area": { "$ref": "#/$defs/areaType" },
+        "tokenName": { "type": "string" }
+      }
+    },
+
     "condition": {
       "type": "object",
       "additionalProperties": false,
@@ -308,21 +320,7 @@
       "properties": {
         "type": { "$ref": "#/$defs/effectType" },
         "value": { "type": [ "number", "array" ] },
-        "maxStack": { "type": "number" },
-        "stackBy": {
-          "anyOf": [
-            { "$ref": "#/$defs/conditionVariable" },
-            {
-              "type": "array",
-              "items": {
-                "anyOf": [
-                  { "$ref": "#/$defs/conditionVariable" },
-                  { "$ref": "#/$defs/areaType" }
-                ]
-              }
-            }
-          ]
-        },
+        "stack": { "$ref": "#/$defs/stack" },
         "add": { "$ref": "#/$defs/statusConversion" },
         "replace": { "$ref": "#/$defs/statusConversion" },
         "variable": { "$ref": "#/$defs/variableStatusRate" },
@@ -356,21 +354,7 @@
           ]
         },
         "rate": { "type": [ "number", "array" ] },
-        "maxStack": { "type": "number" },
-        "stackBy": {
-          "anyOf": [
-            { "$ref": "#/$defs/conditionVariable" },
-            {
-              "type": "array",
-              "items": {
-                "anyOf": [
-                  { "$ref": "#/$defs/conditionVariable" },
-                  { "$ref": "#/$defs/areaType" }
-                ]
-              }
-            }
-          ]
-        },
+        "stack": { "$ref": "#/$defs/stack" },
         "target": { "$ref": "#/$defs/targetType" },
         "area": { "$ref": "#/$defs/areaType" },
         "unitCount": { "type": "number" },

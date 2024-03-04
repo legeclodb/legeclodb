@@ -1379,12 +1379,11 @@
         "type": "アタック",
         "value": 5,
         "duration": 2,
-        "maxStack": 4,
+        "stack": {
+          "max": 4
+        },
         "target": "自身",
-        "timing": "戦闘後",
-        "condition": {
-          "onKill": true
-        }
+        "timing": "敵撃破時"
       }
     ],
     "tags": [ "蓄積バフ" ]
@@ -1594,12 +1593,11 @@
         "type": "アタック",
         "value": 5,
         "duration": 2,
-        "maxStack": 4,
+        "stack": {
+          "max": 4
+        },
         "target": "自身",
-        "timing": "戦闘後",
-        "condition": {
-          "onKill": true
-        }
+        "timing": "敵撃破時"
       }
     ],
     "tags": [ "蓄積バフ" ]
@@ -1965,7 +1963,9 @@
         "type": "アタック",
         "value": 5,
         "duration": 2,
-        "maxStack": 4,
+        "stack": {
+          "max": 4
+        },
         "target": "自身",
         "timing": "戦闘前",
         "condition": {
@@ -1976,7 +1976,9 @@
         "type": "ディフェンス",
         "value": 5,
         "duration": 2,
-        "maxStack": 4,
+        "stack": {
+          "max": 4
+        },
         "target": "自身",
         "timing": "戦闘前",
         "condition": {
@@ -1987,7 +1989,9 @@
         "type": "マジック",
         "value": 5,
         "duration": 2,
-        "maxStack": 4,
+        "stack": {
+          "max": 4
+        },
         "target": "自身",
         "timing": "戦闘前",
         "condition": {
@@ -1998,7 +2002,9 @@
         "type": "レジスト",
         "value": 5,
         "duration": 2,
-        "maxStack": 4,
+        "stack": {
+          "max": 4
+        },
         "target": "自身",
         "timing": "戦闘前",
         "condition": {
@@ -2009,7 +2015,9 @@
         "type": "テクニック",
         "value": 5,
         "duration": 2,
-        "maxStack": 4,
+        "stack": {
+          "max": 4
+        },
         "target": "自身",
         "timing": "戦闘前",
         "condition": {
@@ -2489,7 +2497,9 @@
         "type": "アタック",
         "value": 5,
         "duration": 2,
-        "maxStack": 4,
+        "stack": {
+          "max": 4
+        },
         "target": "自身",
         "timing": "戦闘前"
       },
@@ -2497,7 +2507,9 @@
         "type": "ディフェンス",
         "value": 5,
         "duration": 2,
-        "maxStack": 4,
+        "stack": {
+          "max": 4
+        },
         "target": "自身",
         "timing": "戦闘前"
       }
@@ -2943,7 +2955,9 @@
         "type": "アタック",
         "value": 8,
         "duration": 3,
-        "maxStack": 3,
+        "stack": {
+          "max": 3
+        },
         "target": "自身",
         "timing": "戦闘前"
       },
@@ -2951,7 +2965,9 @@
         "type": "クリティカル率",
         "value": 8,
         "duration": 3,
-        "maxStack": 3,
+        "stack": {
+          "max": 3
+        },
         "target": "自身",
         "timing": "戦闘前"
       }

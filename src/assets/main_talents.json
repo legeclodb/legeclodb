@@ -50,7 +50,9 @@
       {
         "type": "アタック",
         "value": [ 10, 10, 10, 10, 10, 10 ],
-        "maxStack": 2,
+        "stack": {
+          "max": 2
+        },
         "duration": 2,
         "target": "自身",
         "timing": "戦闘前",
@@ -62,7 +64,9 @@
       {
         "type": "ディフェンス",
         "value": [ 10, 10, 10, 15, 15, 20 ],
-        "maxStack": 2,
+        "stack": {
+          "max": 2
+        },
         "duration": 2,
         "target": "自身",
         "timing": "戦闘前",
@@ -154,7 +158,9 @@
       {
         "type": "アタック",
         "value": [ 3, 5, 7, 10 ],
-        "maxStack": 4,
+        "stack": {
+          "max": 4
+        },
         "duration": 4,
         "target": "自身",
         "timing": "戦闘前"
@@ -162,7 +168,9 @@
       {
         "type": "ダメージ耐性(物理)",
         "value": [ 2, 3, 4, 5 ],
-        "maxStack": 4,
+        "stack": {
+          "max": 4
+        },
         "duration": 4,
         "target": "自身",
         "timing": "戦闘前"
@@ -185,8 +193,10 @@
         "type": "与ダメージ",
         "value": [ 1, 2, 3, 4 ],
         "ephemeral": true,
-        "maxStack": 5,
-        "stackBy": "moveAmount",
+        "stack": {
+          "max": 5,
+          "by": "move"
+        },
         "target": "自身",
         "timing": "戦闘前"
       },
@@ -194,8 +204,10 @@
         "type": "ディフェンス",
         "value": [ 5, 10, 15, 20 ],
         "ephemeral": true,
-        "maxStack": 5,
-        "stackBy": "moveAmount",
+        "stack": {
+          "max": 5,
+          "by": "move"
+        },
         "target": "自身",
         "timing": "戦闘前"
       }
@@ -222,8 +234,10 @@
         "type": "ダメージ耐性",
         "value": [ 3, 5, 7, 10 ],
         "ephemeral": true,
-        "maxStack": 5,
-        "stackBy": "moveAmount",
+        "stack": {
+          "max": 5,
+          "by": "move"
+        },
         "target": "自身",
         "timing": "戦闘前"
       }
@@ -420,7 +434,9 @@
       {
         "type": "アタック",
         "value": [ 10, 12, 14, 17, 20 ],
-        "maxStack": 2,
+        "stack": {
+          "max": 2
+        },
         "duration": 3,
         "target": "自身",
         "timing": "敵撃破時"
@@ -428,7 +444,9 @@
       {
         "type": "マジック",
         "value": [ 10, 12, 14, 17, 20 ],
-        "maxStack": 2,
+        "stack": {
+          "max": 2
+        },
         "duration": 3,
         "target": "自身",
         "timing": "敵撃破時"
@@ -436,7 +454,9 @@
       {
         "type": "ディフェンス",
         "value": [ 10, 12, 14, 17, 20 ],
-        "maxStack": 2,
+        "stack": {
+          "max": 2
+        },
         "duration": 3,
         "target": "自身",
         "timing": "敵撃破時"
@@ -444,7 +464,9 @@
       {
         "type": "レジスト",
         "value": [ 10, 12, 14, 17, 20 ],
-        "maxStack": 2,
+        "stack": {
+          "max": 2
+        },
         "duration": 3,
         "target": "自身",
         "timing": "敵撃破時"
@@ -475,7 +497,9 @@
       {
         "type": "アタック",
         "value": [ 3, 5, 7, 10, 15 ],
-        "maxStack": 3,
+        "stack": {
+          "max": 3
+        },
         "duration": 2,
         "target": "自身",
         "timing": "戦闘前"
@@ -483,7 +507,9 @@
       {
         "type": "ディフェンス",
         "value": [ -3, -5, -7, -10, -15 ],
-        "maxStack": 3,
+        "stack": {
+          "max": 3
+        },
         "duration": 2,
         "target": "自身",
         "timing": "戦闘前"
@@ -811,15 +837,20 @@
       {
         "type": "アタック",
         "value": [ 3, 4, 5, 6, 7 ],
-        "maxStack": 3,
-        "stackBy": "activeBuffCount",
+        "stack": {
+          "max": 3,
+          "by": "activeBuffCount"
+        },
+        "duration": 2,
         "target": "自身"
       },
       {
         "type": "ディフェンス",
         "value": [ 3, 4, 5, 6, 7 ],
-        "maxStack": 3,
-        "stackBy": "activeBuffCount",
+        "stack": {
+          "max": 3,
+          "by": "activeBuffCount"
+        },
         "target": "自身"
       }
     ],
@@ -1324,8 +1355,11 @@
       {
         "type": "アタック",
         "value": [ 2, 3, 4, 5 ],
-        "maxStack": 4,
-        "stackBy": "nearEnemyCount",
+        "stack": {
+          "max": 4,
+          "by": "nearEnemyCount",
+          "area": [ 1, 2, 2, 3 ]
+        },
         "target": "自身",
         "condition": {
           "nearEnemyCount": {
@@ -1609,16 +1643,20 @@
         "type": "トークン",
         "tokenName": "ラブパワー",
         "duration": 4,
-        "maxStack": 4,
+        "stack": {
+          "max": 4
+        },
         "target": "自身",
         "timing": "戦闘後"
       },
       {
         "type": "与ダメージ",
         "value": [ 3, 4, 5, 5 ],
-        "maxStack": 4,
-        "stackBy": "token",
-        "tokenName": "ラブパワー",
+        "stack": {
+          "max": 4,
+          "by": "token",
+          "tokenName": "ラブパワー"
+        },
         "duration": 4,
         "target": "自身"
       }
@@ -1804,7 +1842,9 @@
       {
         "type": "与ダメージ(魔法)",
         "value": [ -6, -9, -12, -13 ],
-        "maxStack": 2,
+        "stack": {
+          "max": 2
+        },
         "duration": 3,
         "target": "自身",
         "timing": "戦闘後"
@@ -1838,7 +1878,9 @@
         "type": "トークン",
         "tokenName": "罪",
         "duration": 3,
-        "maxStack": 2,
+        "stack": {
+          "max": 2
+        },
         "target": "スキル対象",
         "timing": "攻撃後",
         "condition": {
@@ -1928,9 +1970,11 @@
       {
         "type": "ダメージ耐性",
         "value": [ 5, 6, 7, 10 ],
-        "maxStack": 2,
-        "stackBy": "token",
-        "tokenName": "罪",
+        "stack": {
+          "max": 2,
+          "by": "token",
+          "tokenName": "罪"
+        },
         "target": "スキル対象"
       }
     ]
@@ -1949,7 +1993,9 @@
       {
         "type": "トークン",
         "tokenName": "忍の極意",
-        "maxStack": 3,
+        "stack": {
+          "max": 3
+        },
         "target": "自身",
         "timing": "戦闘後",
         "condition": {
@@ -1969,9 +2015,11 @@
       {
         "type": "アタック",
         "value": 5,
-        "maxStack": 3,
-        "stackBy": "token",
-        "tokenName": "忍の極意",
+        "stack": {
+          "max": 3,
+          "by": "token",
+          "tokenName": "忍の極意"
+        },
         "target": "自身"
       }
     ],
@@ -2007,7 +2055,9 @@
         "type": "トークン",
         "tokenName": "キラキラ☆エール",
         "duration": 4,
-        "maxStack": 3,
+        "stack": {
+          "max": 3
+        },
         "target": "味方全体",
         "giveTiming": "戦闘後",
         "giveCondition": {
@@ -2026,9 +2076,11 @@
         "type": "アタック",
         "value": [ 2, 3, 4, 5 ],
         "target": "自身",
-        "maxStack": 3,
-        "stackBy": "token",
-        "tokenName": "キラキラ☆エール",
+        "stack": {
+          "max": 3,
+          "by": "token",
+          "tokenName": "キラキラ☆エール"
+        },
         "giveTarget": "味方全体",
         "giveTiming": "戦闘後",
         "giveCondition": {
@@ -2039,9 +2091,11 @@
         "type": "ディフェンス",
         "value": [ 2, 3, 4, 5 ],
         "target": "自身",
-        "maxStack": 3,
-        "stackBy": "token",
-        "tokenName": "キラキラ☆エール",
+        "stack": {
+          "max": 3,
+          "by": "token",
+          "tokenName": "キラキラ☆エール"
+        },
         "giveTarget": "味方全体",
         "giveTiming": "戦闘後",
         "giveCondition": {
@@ -2052,9 +2106,11 @@
         "type": "マジック",
         "value": [ 2, 3, 4, 5 ],
         "target": "自身",
-        "maxStack": 3,
-        "stackBy": "token",
-        "tokenName": "キラキラ☆エール",
+        "stack": {
+          "max": 3,
+          "by": "token",
+          "tokenName": "キラキラ☆エール"
+        },
         "giveTarget": "味方全体",
         "giveTiming": "戦闘後",
         "giveCondition": {
@@ -2065,9 +2121,11 @@
         "type": "レジスト",
         "value": [ 2, 3, 4, 5 ],
         "target": "自身",
-        "maxStack": 3,
-        "stackBy": "token",
-        "tokenName": "キラキラ☆エール",
+        "stack": {
+          "max": 3,
+          "by": "token",
+          "tokenName": "キラキラ☆エール"
+        },
         "giveTarget": "味方全体",
         "giveTiming": "戦闘後",
         "giveCondition": {
@@ -2078,9 +2136,11 @@
         "type": "テクニック",
         "value": [ 2, 3, 4, 5 ],
         "target": "自身",
-        "maxStack": 3,
-        "stackBy": "token",
-        "tokenName": "キラキラ☆エール",
+        "stack": {
+          "max": 3,
+          "by": "token",
+          "tokenName": "キラキラ☆エール"
+        },
         "giveTarget": "味方全体",
         "giveTiming": "戦闘後",
         "giveCondition": {
@@ -2228,7 +2288,9 @@
         "type": "トークン",
         "tokenName": "ばーにんぐソウル！",
         "duration": 4,
-        "maxStack": 3,
+        "stack": {
+          "max": 3
+        },
         "target": "自身",
         "giveTiming": "戦闘後",
         "giveCondition": {
@@ -2239,41 +2301,51 @@
       {
         "type": "アタック",
         "value": [ 5, 6, 7, 10 ],
-        "maxStack": 3,
-        "stackBy": "token",
-        "tokenName": "ばーにんぐソウル！",
+        "stack": {
+          "max": 3,
+          "by": "token",
+          "tokenName": "ばーにんぐソウル！"
+        },
         "target": "自身"
       },
       {
         "type": "ディフェンス",
         "value": [ 5, 6, 7, 10 ],
-        "maxStack": 3,
-        "stackBy": "token",
-        "tokenName": "ばーにんぐソウル！",
+        "stack": {
+          "max": 3,
+          "by": "token",
+          "tokenName": "ばーにんぐソウル！"
+        },
         "target": "自身"
       },
       {
         "type": "マジック",
         "value": [ 5, 6, 7, 10 ],
-        "maxStack": 3,
-        "stackBy": "token",
-        "tokenName": "ばーにんぐソウル！",
+        "stack": {
+          "max": 3,
+          "by": "token",
+          "tokenName": "ばーにんぐソウル！"
+        },
         "target": "自身"
       },
       {
         "type": "レジスト",
         "value": [ 5, 6, 7, 10 ],
-        "maxStack": 3,
-        "stackBy": "token",
-        "tokenName": "ばーにんぐソウル！",
+        "stack": {
+          "max": 3,
+          "by": "token",
+          "tokenName": "ばーにんぐソウル！"
+        },
         "target": "自身"
       },
       {
         "type": "テクニック",
         "value": [ 5, 6, 7, 10 ],
-        "maxStack": 3,
-        "stackBy": "token",
-        "tokenName": "ばーにんぐソウル！",
+        "stack": {
+          "max": 3,
+          "by": "token",
+          "tokenName": "ばーにんぐソウル！"
+        },
         "target": "自身"
       },
       {
@@ -2420,7 +2492,9 @@
         "type": "アタック",
         "value": [ 5, 6, 8, 10 ],
         "ephemeral": true,
-        "maxStack": 3,
+        "stack": {
+          "max": 3
+        },
         "duration": 4,
         "target": "自身",
         "timing": "戦闘前"
@@ -2429,7 +2503,9 @@
         "type": "ディフェンス",
         "value": [ 5, 6, 8, 10 ],
         "ephemeral": true,
-        "maxStack": 3,
+        "stack": {
+          "max": 3
+        },
         "duration": 4,
         "target": "自身",
         "timing": "戦闘前"
@@ -2519,7 +2595,9 @@
         "type": "トークン",
         "tokenName": "ナイトパワー",
         "duration": 2,
-        "maxStack": 2,
+        "stack": {
+          "max": 2
+        },
         "target": "自身",
         "timing": "攻撃後",
         "condition": {
@@ -2529,9 +2607,11 @@
       {
         "type": "与ダメージ(物理)",
         "value": 10,
-        "maxStack": 2,
-        "stackBy": "token",
-        "tokenName": "ナイトパワー",
+        "stack": {
+          "max": 2,
+          "by": "token",
+          "tokenName": "ナイトパワー"
+        },
         "target": "自身"
       }
     ],
@@ -2601,14 +2681,18 @@
       {
         "type": "アタック",
         "value": [ 5, 6, 8, 10 ],
-        "maxStack": 3,
+        "stack": {
+          "max": 3
+        },
         "duration": 4,
         "target": "自身"
       },
       {
         "type": "クリティカル率",
         "value": [ 5, 6, 8, 10 ],
-        "maxStack": 3,
+        "stack": {
+          "max": 3
+        },
         "duration": 4,
         "target": "自身"
       },
@@ -3059,16 +3143,20 @@
         "type": "トークン",
         "tokenName": "夏のロマンス",
         "duration": 4,
-        "maxStack": 3,
+        "stack": {
+          "max": 3
+        },
         "target": "自身",
         "timing": "戦闘後"
       },
       {
         "type": "クリティカル率",
         "value": [ 5, 6, 7, 8 ],
-        "maxStack": 3,
-        "stackBy": "token",
-        "tokenName": "夏のロマンス",
+        "stack": {
+          "max": 3,
+          "by": "token",
+          "tokenName": "夏のロマンス"
+        },
         "target": "自身"
       }
     ]
@@ -3472,32 +3560,40 @@
         "type": "トークン",
         "tokenName": "誠の矜持",
         "duration": 4,
-        "maxStack": 3,
+        "stack": {
+          "max": 3
+        },
         "target": "自身",
         "timing": "戦闘後"
       },
       {
         "type": "アタック",
         "value": [ 6, 8, 10, 12 ],
-        "maxStack": 3,
-        "stackBy": "token",
-        "tokenName": "誠の矜持",
+        "stack": {
+          "max": 3,
+          "by": "token",
+          "tokenName": "誠の矜持"
+        },
         "target": "自身"
       },
       {
         "type": "クリティカル率",
         "value": [ 6, 8, 10, 12 ],
-        "maxStack": 3,
-        "stackBy": "token",
-        "tokenName": "誠の矜持",
+        "stack": {
+          "max": 3,
+          "by": "token",
+          "tokenName": "誠の矜持"
+        },
         "target": "自身"
       },
       {
         "type": "ディフェンス",
         "value": [ -6, -8, -10, -12 ],
-        "maxStack": 3,
-        "stackBy": "token",
-        "tokenName": "誠の矜持",
+        "stack": {
+          "max": 3,
+          "by": "token",
+          "tokenName": "誠の矜持"
+        },
         "target": "自身"
       },
       {
@@ -3685,8 +3781,10 @@
         "type": "クリティカル率",
         "value": [ 7, 10, 12, 15 ],
         "ephemeral": true,
-        "maxStack": 4,
-        "stackBy": "targetActiveDebuffCount",
+        "stack": {
+          "max": 4,
+          "by": "targetActiveDebuffCount"
+        },
         "target": "自身",
         "timing": "戦闘前"
       },
@@ -3694,8 +3792,10 @@
         "type": "与ダメージ(魔法)",
         "value": [ 5, 6, 8, 10 ],
         "ephemeral": true,
-        "maxStack": 4,
-        "stackBy": "targetActiveDebuffCount",
+        "stack": {
+          "max": 4,
+          "by": "targetActiveDebuffCount"
+        },
         "target": "自身",
         "timing": "戦闘前"
       }
@@ -3722,8 +3822,10 @@
         "type": "クリティカル率",
         "value": [ 7, 9, 11, 13 ],
         "ephemeral": true,
-        "maxStack": 3,
-        "stackBy": "range",
+        "stack": {
+          "max": 3,
+          "by": "range"
+        },
         "target": "自身",
         "timing": "戦闘前",
         "condition": {
@@ -3734,8 +3836,10 @@
         "type": "クリティカルダメージ倍率",
         "value": [ 7, 9, 11, 13 ],
         "ephemeral": true,
-        "maxStack": 3,
-        "stackBy": "range",
+        "stack": {
+          "max": 3,
+          "by": "range"
+        },
         "target": "自身",
         "timing": "戦闘前",
         "condition": {
@@ -4329,7 +4433,9 @@
       {
         "type": "与ダメージ",
         "value": [ 8, 10, 12, 15 ],
-        "maxStack": 2,
+        "stack": {
+          "max": 2
+        },
         "duration": 3,
         "target": "自身",
         "timing": "戦闘後",
@@ -4508,34 +4614,42 @@
         "type": "トークン",
         "tokenName": "対等な存在",
         "duration": 3,
-        "maxStack": 3,
+        "stack": {
+          "max": 3
+        },
         "target": "自身",
         "timing": "戦闘後"
       },
       {
         "type": "マジック",
         "value": [ 5, 6, 7, 10 ],
-        "maxStack": 3,
-        "stackBy": "token",
-        "tokenName": "対等な存在",
+        "stack": {
+          "max": 3,
+          "by": "token",
+          "tokenName": "対等な存在"
+        },
         "duration": 3,
         "target": "自身"
       },
       {
         "type": "与ダメージ(スキル)",
         "value": [ 5, 6, 7, 10 ],
-        "maxStack": 3,
-        "stackBy": "token",
-        "tokenName": "対等な存在",
+        "stack": {
+          "max": 3,
+          "by": "token",
+          "tokenName": "対等な存在"
+        },
         "duration": 3,
         "target": "自身"
       },
       {
         "type": "クリティカル率",
         "value": [ 5, 6, 7, 10 ],
-        "maxStack": 3,
-        "stackBy": "token",
-        "tokenName": "対等な存在",
+        "stack": {
+          "max": 3,
+          "by": "token",
+          "tokenName": "対等な存在"
+        },
         "duration": 3,
         "target": "自身"
       }
@@ -4662,7 +4776,9 @@
       {
         "type": "アタック",
         "value": [ 8, 10, 12, 15 ],
-        "maxStack": 2,
+        "stack": {
+          "max": 2
+        },
         "duration": 3,
         "target": "自身",
         "timing": "敵撃破時"
@@ -4670,7 +4786,9 @@
       {
         "type": "与ダメージ(物理)",
         "value": [ 8, 10, 12, 15 ],
-        "maxStack": 2,
+        "stack": {
+          "max": 2
+        },
         "duration": 3,
         "target": "自身",
         "timing": "敵撃破時"
@@ -4678,7 +4796,9 @@
       {
         "type": "移動",
         "value": 1,
-        "maxStack": 2,
+        "stack": {
+          "max": 2
+        },
         "duration": 3,
         "target": "自身",
         "timing": "敵撃破時"
@@ -4761,7 +4881,9 @@
       {
         "type": "アタック",
         "value": [ 5, 6, 7, 8 ],
-        "maxStack": 3,
+        "stack": {
+          "max": 3
+        },
         "duration": 4,
         "area": 3,
         "timing": "行動後"
@@ -4769,7 +4891,9 @@
       {
         "type": "マジック",
         "value": [ 5, 6, 7, 8 ],
-        "maxStack": 3,
+        "stack": {
+          "max": 3
+        },
         "duration": 4,
         "area": 3,
         "timing": "行動後"
@@ -4863,7 +4987,9 @@
         "type": "トークン",
         "tokenName": "創造的学習",
         "duration": 3,
-        "maxStack": 2,
+        "stack": {
+          "max": 2
+        },
         "target": "自身",
         "timing": "戦闘後",
         "condition": {
@@ -4873,18 +4999,22 @@
       {
         "type": "アタック",
         "value": [ 8, 10, 12, 15 ],
-        "maxStack": 2,
-        "stackBy": "token",
-        "tokenName": "創造的学習",
+        "stack": {
+          "max": 2,
+          "by": "token",
+          "tokenName": "創造的学習"
+        },
         "duration": 3,
         "target": "自身"
       },
       {
         "type": "ダメージ耐性",
         "value": [ 5, 6, 7, 10 ],
-        "maxStack": 2,
-        "stackBy": "token",
-        "tokenName": "創造的学習",
+        "stack": {
+          "max": 2,
+          "by": "token",
+          "tokenName": "創造的学習"
+        },
         "duration": 3,
         "target": "自身"
       },
@@ -4972,15 +5102,19 @@
       {
         "type": "クリティカル率",
         "value": [ 3, 4, 5, 6 ],
-        "maxStack": 5,
-        "stackBy": "activeBuffCount",
+        "stack": {
+          "max": 5,
+          "by": "activeBuffCount"
+        },
         "target": "自身"
       },
       {
         "type": "与ダメージ(物理)",
         "value": [ 3, 4, 5, 6 ],
-        "maxStack": 5,
-        "stackBy": "activeBuffCount",
+        "stack": {
+          "max": 5,
+          "by": "activeBuffCount"
+        },
         "target": "自身"
       }
     ],
@@ -5124,15 +5258,21 @@
       {
         "type": "クリティカル率",
         "value": [ 6, 7, 8, 10 ],
-        "maxStack": 3,
-        "stackBy": [ "nearAllyCount", 3 ],
+        "stack": {
+          "max": 3,
+          "by": "nearAllyCount",
+          "area": 3
+        },
         "target": "自身"
       },
       {
         "type": "クリティカルダメージ倍率",
         "value": [ 6, 7, 8, 10 ],
-        "maxStack": 3,
-        "stackBy": [ "nearAllyCount", 3 ],
+        "stack": {
+          "max": 3,
+          "by": "nearAllyCount",
+          "area": 3
+        },
         "target": "自身"
       },
       {
@@ -5167,7 +5307,9 @@
         "type": "トークン",
         "tokenName": "地獄ディーリング",
         "duration": 4,
-        "maxStack": 3,
+        "stack": {
+          "max": 3
+        },
         "target": "自身",
         "timing": "行動後",
         "condition": {
@@ -5177,18 +5319,22 @@
       {
         "type": "アタック",
         "value": [ 6, 8, 10, 12 ],
-        "maxStack": 3,
-        "stackBy": "token",
-        "tokenName": "地獄ディーリング",
+        "stack": {
+          "max": 3,
+          "by": "token",
+          "tokenName": "地獄ディーリング"
+        },
         "duration": 4,
         "target": "自身"
       },
       {
         "type": "ディフェンス",
         "value": [ 6, 8, 10, 12 ],
-        "maxStack": 3,
-        "stackBy": "token",
-        "tokenName": "地獄ディーリング",
+        "stack": {
+          "max": 3,
+          "by": "token",
+          "tokenName": "地獄ディーリング"
+        },
         "duration": 4,
         "target": "自身"
       }
@@ -5437,7 +5583,9 @@
         "type": "トークン",
         "tokenName": "ナディアの天威",
         "duration": 3,
-        "maxStack": 2,
+        "stack": {
+          "max": 2
+        },
         "target": "スキル対象",
         "timing": "攻撃後",
         "condition": {
@@ -5501,17 +5649,21 @@
       {
         "type": "ディフェンス",
         "value": [ 8, 10, 12, 15 ],
-        "maxStack": 2,
-        "stackBy": "token",
-        "tokenName": "ナディアの天威",
+        "stack": {
+          "max": 2,
+          "by": "token",
+          "tokenName": "ナディアの天威"
+        },
         "target": "スキル対象"
       },
       {
         "type": "ダメージ耐性",
         "value": [ 8, 10, 12, 15 ],
-        "maxStack": 2,
-        "stackBy": "token",
-        "tokenName": "ナディアの天威",
+        "stack": {
+          "max": 2,
+          "by": "token",
+          "tokenName": "ナディアの天威"
+        },
         "target": "スキル対象"
       }
     ],
@@ -5749,7 +5901,9 @@
       {
         "type": "マジック",
         "value": [ 5, 6, 7, 8 ],
-        "maxStack": 3,
+        "stack": {
+          "max": 3
+        },
         "duration": 4,
         "area": 3,
         "timing": "行動後"
@@ -5757,7 +5911,9 @@
       {
         "type": "クリティカル率",
         "value": [ 5, 6, 7, 8 ],
-        "maxStack": 3,
+        "stack": {
+          "max": 3
+        },
         "duration": 4,
         "area": 3,
         "timing": "行動後"
@@ -5836,7 +5992,9 @@
         "type": "トークン",
         "tokenName": "風華の知略",
         "duration": 4,
-        "maxStack": 3,
+        "stack": {
+          "max": 3
+        },
         "target": "味方全体",
         "timing": "行動後",
         "condition": {
@@ -5846,20 +6004,32 @@
       {
         "type": "与ダメージ(魔法)",
         "value": [ 2, 3, 4, 5 ],
-        "maxStack": 3,
-        "stackBy": "token",
-        "tokenName": "風華の知略",
+        "stack": {
+          "max": 3,
+          "by": "token",
+          "tokenName": "風華の知略"
+        },
         "target": "自身",
-        "giveTarget": "味方全体"
+        "giveTarget": "味方全体",
+        "giveTiming": "行動後",
+        "giveCondition": {
+          "onActiveSkill": true
+        }
       },
       {
         "type": "レジスト",
         "value": [ 2, 3, 4, 5 ],
-        "maxStack": 3,
-        "stackBy": "token",
-        "tokenName": "風華の知略",
+        "stack": {
+          "max": 3,
+          "by": "token",
+          "tokenName": "風華の知略"
+        },
         "target": "自身",
-        "giveTarget": "味方全体"
+        "giveTarget": "味方全体",
+        "giveTiming": "行動後",
+        "giveCondition": {
+          "onActiveSkill": true
+        }
       },
       {
         "type": "クリティカル率",
@@ -5871,7 +6041,11 @@
             "compare": [ ">=", 2 ]
           }
         },
-        "giveTarget": "味方全体"
+        "giveTarget": "味方全体",
+        "giveTiming": "行動後",
+        "giveCondition": {
+          "onActiveSkill": true
+        }
       },
       {
         "type": "クリティカルダメージ倍率",
@@ -5883,7 +6057,11 @@
             "compare": [ ">=", 2 ]
           }
         },
-        "giveTarget": "味方全体"
+        "giveTarget": "味方全体",
+        "giveTiming": "行動後",
+        "giveCondition": {
+          "onActiveSkill": true
+        }
       },
       {
         "type": "与ダメージ",
@@ -5895,7 +6073,11 @@
             "compare": [ ">=", 3 ]
           }
         },
-        "giveTarget": "味方全体"
+        "giveTarget": "味方全体",
+        "giveTiming": "行動後",
+        "giveCondition": {
+          "onActiveSkill": true
+        }
       },
       {
         "type": "与ダメージ(範囲スキル)",
@@ -5907,7 +6089,11 @@
             "compare": [ ">=", 3 ]
           }
         },
-        "giveTarget": "味方全体"
+        "giveTarget": "味方全体",
+        "giveTiming": "行動後",
+        "giveCondition": {
+          "onActiveSkill": true
+        }
       }
     ],
     "ctReduction": [
@@ -5953,15 +6139,21 @@
       {
         "type": "与ダメージ",
         "value": [ 2, 3, 4, 5 ],
-        "maxStack": 5,
-        "stackBy": [ "nearEnemyCount", 3 ],
+        "stack": {
+          "max": 5,
+          "by": "nearEnemyCount",
+          "area": 3
+        },
         "target": "自身"
       },
       {
         "type": "ダメージ耐性",
         "value": [ 2, 3, 4, 5 ],
-        "maxStack": 5,
-        "stackBy": [ "nearEnemyCount", 3 ],
+        "stack": {
+          "max": 5,
+          "by": "nearEnemyCount",
+          "area": 3
+        },
         "target": "自身"
       },
       {
@@ -6188,26 +6380,30 @@
         "type": "トークン",
         "tokenName": "ハートフルオリジン！",
         "duration": 3,
-        "maxStack": 3,
+        "stack": {
+          "max": 3
+        },
         "target": "自身",
         "timing": "戦闘前"
       },
       {
         "type": "アタック",
         "value": [ 6, 7, 8, 10 ],
-        "maxStack": 3,
-        "duration": 3,
-        "stackBy": "token",
-        "tokenName": "ハートフルオリジン！",
+        "stack": {
+          "max": 3,
+          "by": "token",
+          "tokenName": "ハートフルオリジン！"
+        },
         "target": "自身"
       },
       {
         "type": "与ダメージ(物理)",
         "value": [ 6, 7, 8, 10 ],
-        "maxStack": 3,
-        "duration": 3,
-        "stackBy": "token",
-        "tokenName": "ハートフルオリジン！",
+        "stack": {
+          "max": 3,
+          "by": "token",
+          "tokenName": "ハートフルオリジン！"
+        },
         "target": "自身"
       },
       {
@@ -6296,8 +6492,10 @@
         "type": "クリティカル率",
         "value": [ 2, 3, 4, 5 ],
         "ephemeral": true,
-        "maxStack": 5,
-        "stackBy": "moveAmount",
+        "stack": {
+          "max": 5,
+          "by": "move"
+        },
         "target": "自身",
         "timing": "戦闘前"
       },
@@ -6305,8 +6503,10 @@
         "type": "クリティカルダメージ倍率",
         "value": [ 2, 3, 4, 5 ],
         "ephemeral": true,
-        "maxStack": 5,
-        "stackBy": "moveAmount",
+        "stack": {
+          "max": 5,
+          "by": "move"
+        },
         "target": "自身",
         "timing": "戦闘前"
       }
@@ -6357,27 +6557,31 @@
         "type": "トークン",
         "tokenName": "真夏の輝き",
         "duration": 3,
-        "maxStack": 3,
+        "stack": {
+          "max": 3
+        },
         "target": "自身",
         "timing": "戦闘後"
       },
       {
         "type": "アタック",
         "value": [ 2, 3, 4, 5 ],
-        "maxStack": 3,
-        "duration": 3,
-        "stackBy": "token",
-        "tokenName": "真夏の輝き",
+        "stack": {
+          "max": 3,
+          "by": "token",
+          "tokenName": "真夏の輝き"
+        },
         "target": "範囲",
         "area": 3
       },
       {
         "type": "クリティカルダメージ倍率",
         "value": [ 2, 3, 4, 5 ],
-        "maxStack": 3,
-        "duration": 3,
-        "stackBy": "token",
-        "tokenName": "真夏の輝き",
+        "stack": {
+          "max": 3,
+          "by": "token",
+          "tokenName": "真夏の輝き"
+        },
         "target": "範囲",
         "area": 3
       }
@@ -6440,7 +6644,9 @@
         "type": "トークン",
         "tokenName": "マジカルフォーカス",
         "duration": 4,
-        "maxStack": 3,
+        "stack": {
+          "max": 3
+        },
         "target": "自身",
         "timing": "行動後",
         "condition": {
@@ -6450,18 +6656,22 @@
       {
         "type": "与ダメージ(スキル)",
         "value": [ 6, 7, 8, 10 ],
-        "maxStack": 3,
-        "stackBy": "token",
-        "tokenName": "マジカルフォーカス",
+        "stack": {
+          "max": 3,
+          "by": "token",
+          "tokenName": "マジカルフォーカス"
+        },
         "duration": 4,
         "target": "自身"
       },
       {
         "type": "クリティカルダメージ倍率",
         "value": [ 6, 7, 8, 10 ],
-        "maxStack": 3,
-        "stackBy": "token",
-        "tokenName": "マジカルフォーカス",
+        "stack": {
+          "max": 3,
+          "by": "token",
+          "tokenName": "マジカルフォーカス"
+        },
         "duration": 4,
         "target": "自身"
       },
@@ -6525,14 +6735,18 @@
       {
         "type": "ダメージ耐性",
         "value": [ 6, 7, 8, 10 ],
-        "maxStack": 3,
+        "stack": {
+          "max": 3
+        },
         "duration": 4,
         "target": "自身"
       },
       {
         "type": "与ダメージ(物理)",
         "value": [ 6, 7, 8, 10 ],
-        "maxStack": 3,
+        "stack": {
+          "max": 3
+        },
         "duration": 4,
         "target": "自身"
       },
@@ -6588,10 +6802,12 @@
         "type": "アタック",
         "value": [ 5, 8, 11, 15 ],
         "duration": 3,
-        "maxStack": 3,
+        "stack": {
+          "max": 3
+        },
         "target": "自身",
         "timing": "攻撃後",
-        "condition": {
+        "giveCondition": {
           "onDamage": true
         }
       },
@@ -6651,8 +6867,10 @@
       {
         "type": "トークン",
         "tokenName": "サンパワー！",
+        "stack": {
+          "max": 3
+        },
         "duration": 4,
-        "maxStack": 3,
         "target": "味方全体",
         "timing": "行動後",
         "condition": {
@@ -6662,52 +6880,77 @@
       {
         "type": "アタック",
         "value": [ 2, 3, 4, 5 ],
-        "duration": 4,
-        "maxStack": 3,
-        "stackBy": "token",
-        "tokenName": "サンパワー！",
+        "stack": {
+          "max": 3,
+          "by": "token",
+          "tokenName": "サンパワー！"
+        },
         "target": "自身",
-        "giveTarget": "味方全体"
+        "giveTarget": "味方全体",
+        "giveTiming": "行動後",
+        "giveCondition": {
+          "onActiveSkill": true
+        }
       },
       {
         "type": "マジック",
         "value": [ 2, 3, 4, 5 ],
-        "duration": 4,
-        "maxStack": 3,
-        "stackBy": "token",
-        "tokenName": "サンパワー！",
+        "stack": {
+          "max": 3,
+          "by": "token",
+          "tokenName": "サンパワー！"
+        },
         "target": "自身",
-        "giveTarget": "味方全体"
+        "giveTarget": "味方全体",
+        "giveTiming": "行動後",
+        "giveCondition": {
+          "onActiveSkill": true
+        }
       },
       {
         "type": "ディフェンス",
         "value": [ 2, 3, 4, 5 ],
-        "duration": 4,
-        "maxStack": 3,
-        "stackBy": "token",
-        "tokenName": "サンパワー！",
+        "stack": {
+          "max": 3,
+          "by": "token",
+          "tokenName": "サンパワー！"
+        },
         "target": "自身",
-        "giveTarget": "味方全体"
+        "giveTarget": "味方全体",
+        "giveTiming": "行動後",
+        "giveCondition": {
+          "onActiveSkill": true
+        }
       },
       {
         "type": "レジスト",
         "value": [ 2, 3, 4, 5 ],
-        "duration": 4,
-        "maxStack": 3,
-        "stackBy": "token",
-        "tokenName": "サンパワー！",
+        "stack": {
+          "max": 3,
+          "by": "token",
+          "tokenName": "サンパワー！"
+        },
         "target": "自身",
-        "giveTarget": "味方全体"
+        "giveTarget": "味方全体",
+        "giveTiming": "行動後",
+        "giveCondition": {
+          "onActiveSkill": true
+        }
       },
       {
         "type": "テクニック",
         "value": [ 2, 3, 4, 5 ],
-        "duration": 4,
-        "maxStack": 3,
-        "stackBy": "token",
-        "tokenName": "サンパワー！",
+        "stack": {
+          "max": 3,
+          "by": "token",
+          "tokenName": "サンパワー！"
+        },
         "target": "自身",
-        "giveTarget": "味方全体"
+        "giveTarget": "味方全体",
+        "giveTiming": "行動後",
+        "giveCondition": {
+          "onActiveSkill": true
+        }
       },
       {
         "type": "クリティカル率",
@@ -6722,7 +6965,11 @@
             "compare": [ ">=", 1 ]
           }
         },
-        "giveTarget": "味方全体"
+        "giveTarget": "味方全体",
+        "giveTiming": "行動後",
+        "giveCondition": {
+          "onActiveSkill": true
+        }
       },
       {
         "type": "クリティカルダメージ倍率",
@@ -6737,7 +6984,11 @@
             "compare": [ ">=", 1 ]
           }
         },
-        "giveTarget": "味方全体"
+        "giveTarget": "味方全体",
+        "giveTiming": "行動後",
+        "giveCondition": {
+          "onActiveSkill": true
+        }
       },
       {
         "type": "与ダメージ(スキル)",
@@ -6751,7 +7002,11 @@
           },
           "hp": [ ">=", 100 ]
         },
-        "giveTarget": "味方全体"
+        "giveTarget": "味方全体",
+        "giveTiming": "行動後",
+        "giveCondition": {
+          "onActiveSkill": true
+        }
       }
     ],
     "tags": [ "バフ:リジェネ" ]
@@ -6795,7 +7050,9 @@
       {
         "type": "アタック",
         "value": [ 8, 10, 12, 15 ],
-        "maxStack": 2,
+        "stack": {
+          "max": 2
+        },
         "duration": 3,
         "target": "自身",
         "timing": "敵撃破時"
@@ -6803,7 +7060,9 @@
       {
         "type": "与ダメージ(通常攻撃)",
         "value": [ 8, 10, 12, 15 ],
-        "maxStack": 2,
+        "stack": {
+          "max": 2
+        },
         "duration": 3,
         "target": "自身",
         "timing": "敵撃破時"
@@ -6918,7 +7177,9 @@
         "type": "トークン",
         "tokenName": "オシリス神の啓示",
         "duration": 4,
-        "maxStack": 3,
+        "stack": {
+          "max": 3
+        },
         "target": "自身",
         "timing": "行動後",
         "condition": {
@@ -6928,17 +7189,21 @@
       {
         "type": "クリティカル率",
         "value": [ 5, 6, 7, 10 ],
-        "maxStack": 3,
-        "stackBy": "token",
-        "tokenName": "オシリス神の啓示",
+        "stack": {
+          "max": 3,
+          "by": "token",
+          "tokenName": "オシリス神の啓示"
+        },
         "target": "自身"
       },
       {
         "type": "与ダメージ(物理)",
         "value": [ 5, 6, 7, 10 ],
-        "maxStack": 3,
-        "stackBy": "token",
-        "tokenName": "オシリス神の啓示",
+        "stack": {
+          "max": 3,
+          "by": "token",
+          "tokenName": "オシリス神の啓示"
+        },
         "target": "自身"
       }
     ],
@@ -6969,8 +7234,10 @@
         "type": "与ダメージ(魔法)",
         "value": [ 6, 7, 8, 10 ],
         "ephemeral": true,
-        "maxStack": 4,
-        "stackBy": "moveAmount",
+        "stack": {
+          "max": 4,
+          "by": "move"
+        },
         "target": "自身",
         "timing": "戦闘前"
       },
@@ -6978,8 +7245,10 @@
         "type": "クリティカル率",
         "value": [ 6, 7, 8, 10 ],
         "ephemeral": true,
-        "maxStack": 4,
-        "stackBy": "moveAmount",
+        "stack": {
+          "max": 4,
+          "by": "move"
+        },
         "target": "自身",
         "timing": "戦闘前"
       }
@@ -6989,12 +7258,14 @@
         "type": "アタック",
         "value": [ 8, 10, 12, 15 ],
         "duration": 2,
+        "target": "範囲",
         "area": 4
       },
       {
         "type": "マジック",
         "value": [ 8, 10, 12, 15 ],
         "duration": 2,
+        "target": "範囲",
         "area": 4
       }
     ],
@@ -7068,8 +7339,11 @@
       {
         "type": "クリティカルダメージ倍率",
         "value": [ 3, 4, 5, 6 ],
-        "maxStack": 6,
-        "stackBy": [ "nearEnemyCount", 6 ],
+        "stack": {
+          "max": 6,
+          "by": "nearEnemyCount",
+          "area": 6
+        },
         "target": "自身"
       },
       {
@@ -7107,7 +7381,9 @@
       {
         "type": "与ダメージ(魔法)",
         "value": [ 6, 7, 8, 10 ],
-        "maxStack": 4,
+        "stack": {
+          "max": 4
+        },
         "duration": 4,
         "target": "自身",
         "timing": "敵撃破時"
@@ -7422,7 +7698,9 @@
         "type": "トークン",
         "tokenName": "スイーツメイカー",
         "duration": 5,
-        "maxStack": 3,
+        "stack": {
+          "max": 3
+        },
         "target": "自身",
         "timing": "行動後",
         "condition": {
@@ -7432,41 +7710,51 @@
       {
         "type": "アタック",
         "value": [ 2, 3, 4, 5 ],
-        "maxStack": 3,
-        "stackBy": "token",
-        "tokenName": "スイーツメイカー",
+        "stack": {
+          "max": 3,
+          "by": "token",
+          "tokenName": "スイーツメイカー"
+        },
         "target": "自身"
       },
       {
         "type": "ディフェンス",
         "value": [ 2, 3, 4, 5 ],
-        "maxStack": 3,
-        "stackBy": "token",
-        "tokenName": "スイーツメイカー",
+        "stack": {
+          "max": 3,
+          "by": "token",
+          "tokenName": "スイーツメイカー"
+        },
         "target": "自身"
       },
       {
         "type": "マジック",
         "value": [ 2, 3, 4, 5 ],
-        "maxStack": 3,
-        "stackBy": "token",
-        "tokenName": "スイーツメイカー",
+        "stack": {
+          "max": 3,
+          "by": "token",
+          "tokenName": "スイーツメイカー"
+        },
         "target": "自身"
       },
       {
         "type": "レジスト",
         "value": [ 2, 3, 4, 5 ],
-        "maxStack": 3,
-        "stackBy": "token",
-        "tokenName": "スイーツメイカー",
+        "stack": {
+          "max": 3,
+          "by": "token",
+          "tokenName": "スイーツメイカー"
+        },
         "target": "自身"
       },
       {
         "type": "テクニック",
         "value": [ 2, 3, 4, 5 ],
-        "maxStack": 3,
-        "stackBy": "token",
-        "tokenName": "スイーツメイカー",
+        "stack": {
+          "max": 3,
+          "by": "token",
+          "tokenName": "スイーツメイカー"
+        },
         "target": "自身"
       },
       {
@@ -8231,8 +8519,10 @@
       {
         "type": "トークン",
         "tokenName": "天使の息吹",
+        "stack": {
+          "max": 3
+        },
         "duration": 4,
-        "maxStack": 3,
         "target": "味方全体",
         "timing": "行動後",
         "condition": {
@@ -8242,52 +8532,77 @@
       {
         "type": "アタック",
         "value": 7,
-        "duration": 4,
-        "maxStack": 3,
-        "stackBy": "token",
-        "tokenName": "天使の息吹",
+        "stack": {
+          "max": 3,
+          "by": "token",
+          "tokenName": "天使の息吹"
+        },
         "target": "自身",
-        "giveTarget": "味方全体"
+        "giveTarget": "味方全体",
+        "giveTiming": "行動後",
+        "giveCondition": {
+          "onActiveSkill": true
+        }
       },
       {
         "type": "マジック",
         "value": 7,
-        "duration": 4,
-        "maxStack": 3,
-        "stackBy": "token",
-        "tokenName": "天使の息吹",
+        "stack": {
+          "max": 3,
+          "by": "token",
+          "tokenName": "天使の息吹"
+        },
         "target": "自身",
-        "giveTarget": "味方全体"
+        "giveTarget": "味方全体",
+        "giveTiming": "行動後",
+        "giveCondition": {
+          "onActiveSkill": true
+        }
       },
       {
         "type": "ディフェンス",
         "value": 7,
-        "duration": 4,
-        "maxStack": 3,
-        "stackBy": "token",
-        "tokenName": "天使の息吹",
+        "stack": {
+          "max": 3,
+          "by": "token",
+          "tokenName": "天使の息吹"
+        },
         "target": "自身",
-        "giveTarget": "味方全体"
+        "giveTarget": "味方全体",
+        "giveTiming": "行動後",
+        "giveCondition": {
+          "onActiveSkill": true
+        }
       },
       {
         "type": "レジスト",
         "value": 7,
-        "duration": 4,
-        "maxStack": 3,
-        "stackBy": "token",
-        "tokenName": "天使の息吹",
+        "stack": {
+          "max": 3,
+          "by": "token",
+          "tokenName": "天使の息吹"
+        },
         "target": "自身",
-        "giveTarget": "味方全体"
+        "giveTarget": "味方全体",
+        "giveTiming": "行動後",
+        "giveCondition": {
+          "onActiveSkill": true
+        }
       },
       {
         "type": "テクニック",
         "value": 7,
-        "duration": 4,
-        "maxStack": 3,
-        "stackBy": "token",
-        "tokenName": "天使の息吹",
+        "stack": {
+          "max": 3,
+          "by": "token",
+          "tokenName": "天使の息吹"
+        },
         "target": "自身",
-        "giveTarget": "味方全体"
+        "giveTarget": "味方全体",
+        "giveTiming": "行動後",
+        "giveCondition": {
+          "onActiveSkill": true
+        }
       },
       {
         "type": "ダメージ耐性",
@@ -8841,8 +9156,10 @@
       {
         "type": "トークン",
         "tokenName": "模範生徒の熟達",
+        "stack": {
+          "max": 2
+        },
         "duration": 3,
-        "maxStack": 2,
         "target": "自身",
         "timing": "自ターン開始時",
         "condition": {
@@ -8852,17 +9169,21 @@
       {
         "type": "与ダメージ(物理)",
         "value": [ 6, 7, 8, 10 ],
-        "maxStack": 2,
-        "stackBy": "token",
-        "tokenName": "模範生徒の熟達",
+        "stack": {
+          "max": 2,
+          "by": "token",
+          "tokenName": "模範生徒の熟達"
+        },
         "target": "自身"
       },
       {
         "type": "ダメージ耐性",
         "value": [ 6, 7, 8, 10 ],
-        "maxStack": 2,
-        "stackBy": "token",
-        "tokenName": "模範生徒の熟達",
+        "stack": {
+          "max": 2,
+          "by": "token",
+          "tokenName": "模範生徒の熟達"
+        },
         "target": "自身"
       }
     ],
@@ -8918,7 +9239,9 @@
         "type": "与ダメージ(物理)",
         "value": [ 8, 10, 12, 15 ],
         "duration": 3,
-        "maxStack": 3,
+        "stack": {
+          "max": 3
+        },
         "target": "自身",
         "timing": "行動後",
         "condition": {
@@ -8979,7 +9302,9 @@
         "type": "トークン",
         "tokenName": "革命の星降る夜",
         "duration": 3,
-        "maxStack": 3,
+        "stack": {
+          "max": 3
+        },
         "target": "自身",
         "timing": "戦闘後",
         "condition": {
@@ -8990,17 +9315,21 @@
       {
         "type": "アタック",
         "value": [ 6, 7, 8, 10 ],
-        "maxStack": 3,
-        "stackBy": "token",
-        "tokenName": "革命の星降る夜",
+        "stack": {
+          "max": 3,
+          "by": "token",
+          "tokenName": "革命の星降る夜"
+        },
         "target": "自身"
       },
       {
         "type": "与ダメージ(スキル)",
         "value": [ 6, 7, 8, 10 ],
-        "maxStack": 3,
-        "stackBy": "token",
-        "tokenName": "革命の星降る夜",
+        "stack": {
+          "max": 3,
+          "by": "token",
+          "tokenName": "革命の星降る夜"
+        },
         "target": "自身"
       },
       {
@@ -9075,16 +9404,20 @@
         "type": "トークン",
         "tokenName": "聖夜の美容術",
         "duration": 4,
-        "maxStack": 4,
+        "stack": {
+          "max": 4
+        },
         "target": "自身",
         "timing": "行動後"
       },
       {
         "type": "クリティカル率",
         "value": [ 6, 7, 8, 10 ],
-        "maxStack": 4,
-        "stackBy": "token",
-        "tokenName": "聖夜の美容術",
+        "stack": {
+          "max": 4,
+          "by": "token",
+          "tokenName": "聖夜の美容術"
+        },
         "target": "自身"
       },
       {
@@ -9139,7 +9472,9 @@
         "type": "アタック",
         "value": 5,
         "duration": 3,
-        "maxStack": 3,
+        "stack": {
+          "max": 3
+        },
         "target": "自身",
         "timing": "戦闘前"
       },
@@ -9147,7 +9482,9 @@
         "type": "ディフェンス",
         "value": 5,
         "duration": 3,
-        "maxStack": 3,
+        "stack": {
+          "max": 3
+        },
         "target": "自身",
         "timing": "戦闘前"
       }
@@ -9277,13 +9614,21 @@
       {
         "type": "クリティカル率",
         "value": [ 5, 6, 7, 8 ],
-        "maxStack": 5,
+        "stack": {
+          "max": 5,
+          "by": "nearAllyCount",
+          "area": 3
+        },
         "target": "自身"
       },
       {
         "type": "与ダメージ(範囲スキル)",
         "value": [ 5, 6, 7, 8 ],
-        "maxStack": 5,
+        "stack": {
+          "max": 5,
+          "by": "nearAllyCount",
+          "area": 3
+        },
         "target": "自身"
       },
       {
@@ -9520,15 +9865,19 @@
       {
         "type": "ダメージ耐性",
         "value": [ 5, 6, 7, 8 ],
-        "maxStack": 5,
-        "stackBy": "activeBuffCount",
+        "stack": {
+          "max": 5,
+          "by": "activeBuffCount"
+        },
         "target": "自身"
       },
       {
         "type": "与ダメージ(物理)",
         "value": [ 5, 6, 7, 8 ],
-        "maxStack": 5,
-        "stackBy": "activeBuffCount",
+        "stack": {
+          "max": 5,
+          "by": "activeBuffCount"
+        },
         "target": "自身"
       },
       {
@@ -9749,8 +10098,10 @@
       {
         "type": "与ダメージ",
         "value": 5,
-        "maxStack": 5,
-        "stackBy": "moveAmount",
+        "stack": {
+          "max": 5,
+          "by": "move"
+        },
         "ephemeral": true,
         "target": "自身",
         "timing": "戦闘前"
@@ -9758,8 +10109,10 @@
       {
         "type": "ディフェンス",
         "value": 5,
-        "maxStack": 5,
-        "stackBy": "moveAmount",
+        "stack": {
+          "max": 5,
+          "by": "move"
+        },
         "ephemeral": true,
         "target": "自身",
         "timing": "戦闘前"
@@ -9865,8 +10218,11 @@
       {
         "type": "マジック",
         "value": [ 3, 4, 5, 6 ],
-        "maxStack": 5,
-        "stackBy": "nearAllyCount",
+        "stack": {
+          "max": 5,
+          "by": "nearAllyCount",
+          "area": 5
+        },
         "target": "自身",
         "condition": {
           "nearAllyCount": {
@@ -9878,8 +10234,11 @@
       {
         "type": "与ダメージ(魔法)",
         "value": [ 3, 4, 5, 6 ],
-        "maxStack": 5,
-        "stackBy": "nearAllyCount",
+        "stack": {
+          "max": 5,
+          "by": "nearAllyCount",
+          "area": 5
+        },
         "target": "自身",
         "condition": {
           "nearAllyCount": {
@@ -9927,7 +10286,9 @@
       {
         "type": "与ダメージ(スキル)",
         "value": [ 3, 4, 5, 6 ],
-        "maxStack": 3,
+        "stack": {
+          "max": 3
+        },
         "duration": 4,
         "target": "自身"
       },
@@ -10001,7 +10362,9 @@
         "type": "トークン",
         "tokenName": "新世界の探究者",
         "duration": 3,
-        "maxStack": 2,
+        "stack": {
+          "max": 2
+        },
         "target": "自身",
         "timing": "攻撃後",
         "condition": {
@@ -10011,19 +10374,21 @@
       {
         "type": "マジック",
         "value": [ 2, 4, 6, 8 ],
-        "maxStack": 2,
-        "stackBy": "token",
-        "tokenName": "新世界の探究者",
-        "duration": 3,
+        "stack": {
+          "max": 2,
+          "by": "token",
+          "tokenName": "新世界の探究者"
+        },
         "target": "自身"
       },
       {
         "type": "与ダメージ",
         "value": [ 2, 4, 6, 8 ],
-        "maxStack": 2,
-        "stackBy": "token",
-        "tokenName": "新世界の探究者",
-        "duration": 3,
+        "stack": {
+          "max": 2,
+          "by": "token",
+          "tokenName": "新世界の探究者"
+        },
         "target": "自身"
       },
       {
@@ -10121,7 +10486,9 @@
       {
         "type": "与ダメージ(物理)",
         "value": [ 4, 6, 8, 10 ],
-        "maxStack": 3,
+        "stack": {
+          "max": 3
+        },
         "duration": 4,
         "target": "自身",
         "timing": "戦闘後",
@@ -10132,7 +10499,9 @@
       {
         "type": "与ダメージ(通常攻撃)",
         "value": [ 4, 6, 8, 10 ],
-        "maxStack": 3,
+        "stack": {
+          "max": 3
+        },
         "duration": 4,
         "target": "自身",
         "timing": "戦闘後",
@@ -10376,7 +10745,9 @@
       {
         "type": "与ダメージ(物理)",
         "value": [ 2, 4, 6, 8 ],
-        "maxStack": 3,
+        "stack": {
+          "max": 3
+        },
         "duration": 4,
         "target": "自身",
         "timing": "敵撃破時"
@@ -10411,17 +10782,21 @@
       {
         "type": "アタック",
         "value": [ 2, 3, 4, 5 ],
-        "maxStack": 5,
-        "stackBy": "moveAmount",
-        "duration": 0,
+        "stack": {
+          "max": 5,
+          "by": "move"
+        },
+        "ephemeral": true,
         "target": "自身"
       },
       {
         "type": "与ダメージ(物理)",
         "value": [ 2, 3, 4, 5 ],
-        "maxStack": 5,
-        "stackBy": "moveAmount",
-        "duration": 0,
+        "stack": {
+          "max": 5,
+          "by": "move"
+        },
+        "ephemeral": true,
         "target": "自身",
         "timing": "戦闘前"
       },
@@ -10429,7 +10804,9 @@
         "type": "トークン",
         "tokenName": "万里を歩む微笑み",
         "duration": 3,
-        "maxStack": 2,
+        "stack": {
+          "max": 2
+        },
         "target": "スキル対象",
         "timing": "攻撃後",
         "condition": {
@@ -10493,17 +10870,21 @@
       {
         "type": "与ダメージ",
         "value": [ 6, 7, 8, 10 ],
-        "maxStack": 2,
-        "stackBy": "token",
-        "tokenName": "万里を歩む微笑み",
+        "stack": {
+          "max": 2,
+          "by": "token",
+          "tokenName": "万里を歩む微笑み"
+        },
         "target": "スキル対象"
       },
       {
         "type": "ダメージ耐性",
         "value": [ 6, 7, 8, 10 ],
-        "maxStack": 2,
-        "stackBy": "token",
-        "tokenName": "万里を歩む微笑み",
+        "stack": {
+          "max": 2,
+          "by": "token",
+          "tokenName": "万里を歩む微笑み"
+        },
         "target": "スキル対象"
       }
     ],

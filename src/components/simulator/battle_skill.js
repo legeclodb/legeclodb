@@ -187,11 +187,6 @@ export function makeSimEffect(effect) {
     const effect = self;
     if (effect.value) {
       r = effect.value;
-      if (effect.maxStack) {
-        // 効果が重複するタイプ
-        // フルスペック時の効果を返す
-        r *= self.stack;
-      }
     }
     else if (effect.variable) {
       // HP 割合などに応じて効果が上下するタイプ
