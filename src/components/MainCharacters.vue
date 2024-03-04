@@ -635,7 +635,7 @@ export default {
 
       const tagFilter = (skill, effectCategory, effect) => {
         if (effectCategory == "バフ") {
-          if (!this.isPublicTarget(effect.target))
+          if (!this.isPublicTarget(effect))
             return false;
           const cond = effect.condition;
           if (cond && (cond.onClass || cond.onSymbol))

@@ -2907,7 +2907,34 @@
         "value": 10,
         "target": "自身",
         "condition": {
-          "token": [ ">=", 1 ]
+          "token": {
+            "tokenName": "夏のロマンス",
+            "compare": [ ">=", 1 ]
+          }
+        }
+      },
+      {
+        "type": "アタック",
+        "value": 10,
+        "target": "範囲",
+        "area": 2,
+        "condition": {
+          "token": {
+            "tokenName": "夏のロマンス",
+            "compare": [ ">=", 2 ]
+          }
+        }
+      },
+      {
+        "type": "マジック",
+        "value": 10,
+        "target": "範囲",
+        "area": 2,
+        "condition": {
+          "token": {
+            "tokenName": "夏のロマンス",
+            "compare": [ ">=", 2 ]
+          }
         }
       },
       {
@@ -2915,23 +2942,10 @@
         "value": 10,
         "target": "自身",
         "condition": {
-          "token": [ ">=", 3 ]
-        }
-      },
-      {
-        "type": "アタック",
-        "value": 10,
-        "area": 2,
-        "condition": {
-          "token": [ ">=", 2 ]
-        }
-      },
-      {
-        "type": "マジック",
-        "value": 10,
-        "area": 2,
-        "condition": {
-          "token": [ ">=", 2 ]
+          "token": {
+            "tokenName": "夏のロマンス",
+            "compare": [ ">=", 3 ]
+          }
         }
       }
     ]
@@ -2953,7 +2967,34 @@
         "value": 15,
         "target": "自身",
         "condition": {
-          "token": [ ">=", 1 ]
+          "token": {
+            "tokenName": "夏のロマンス",
+            "compare": [ ">=", 1 ]
+          }
+        }
+      },
+      {
+        "type": "アタック",
+        "value": 15,
+        "target": "範囲",
+        "area": 2,
+        "condition": {
+          "token": {
+            "tokenName": "夏のロマンス",
+            "compare": [ ">=", 2 ]
+          }
+        }
+      },
+      {
+        "type": "マジック",
+        "value": 15,
+        "target": "範囲",
+        "area": 2,
+        "condition": {
+          "token": {
+            "tokenName": "夏のロマンス",
+            "compare": [ ">=", 2 ]
+          }
         }
       },
       {
@@ -2961,23 +3002,10 @@
         "value": 20,
         "target": "自身",
         "condition": {
-          "token": [ ">=", 3 ]
-        }
-      },
-      {
-        "type": "アタック",
-        "value": 15,
-        "area": 2,
-        "condition": {
-          "token": [ ">=", 2 ]
-        }
-      },
-      {
-        "type": "マジック",
-        "value": 15,
-        "area": 2,
-        "condition": {
-          "token": [ ">=", 2 ]
+          "token": {
+            "tokenName": "夏のロマンス",
+            "compare": [ ">=", 3 ]
+          }
         }
       }
     ]
@@ -3671,7 +3699,10 @@
         "value": 10,
         "target": "自身",
         "condition": {
-          "token": [ ">=", 1 ]
+          "token": {
+            "tokenName": "対等な存在",
+            "compare": [ ">=", 1 ]
+          }
         }
       }
     ],
@@ -3682,7 +3713,10 @@
         "duration": 1,
         "timing": "戦闘前",
         "condition": {
-          "token": [ ">=", 2 ]
+          "token": {
+            "tokenName": "対等な存在",
+            "compare": [ ">=", 2 ]
+          }
         }
       }
     ],
@@ -4008,7 +4042,10 @@
         "value": 30,
         "target": "自身",
         "condition": {
-          "token": [ ">=", 1 ]
+          "token": {
+            "tokenName": "地獄ディーリング",
+            "compare": [ ">=", 1 ]
+          }
         }
       },
       {
@@ -4016,7 +4053,10 @@
         "value": 20,
         "target": "自身",
         "condition": {
-          "token": [ ">=", 2 ]
+          "token": {
+            "tokenName": "地獄ディーリング",
+            "compare": [ ">=", 2 ]
+          }
         }
       }
     ],
@@ -4027,7 +4067,10 @@
         "duration": 2,
         "timing": "戦闘前",
         "condition": {
-          "token": [ ">=", 3 ]
+          "token": {
+            "tokenName": "地獄ディーリング",
+            "compare": [ ">=", 3 ]
+          }
         }
       },
       {
@@ -4036,7 +4079,10 @@
         "duration": 2,
         "timing": "戦闘前",
         "condition": {
-          "token": [ ">=", 3 ]
+          "token": {
+            "tokenName": "地獄ディーリング",
+            "compare": [ ">=", 3 ]
+          }
         }
       },
       {
@@ -4484,7 +4530,10 @@
         "value": 10,
         "target": "自身",
         "condition": {
-          "token": [ ">=", 1 ]
+          "token": {
+            "tokenName": "風華の知略",
+            "compare": [ ">=", 1 ]
+          }
         }
       },
       {
@@ -4492,7 +4541,10 @@
         "value": 30,
         "target": "自身",
         "condition": {
-          "token": [ ">=", 2 ]
+          "token": {
+            "tokenName": "風華の知略",
+            "compare": [ ">=", 2 ]
+          }
         }
       },
       {
@@ -4500,7 +4552,10 @@
         "value": 30,
         "target": "自身",
         "condition": {
-          "token": [ ">=", 3 ]
+          "token": {
+            "tokenName": "風華の知略",
+            "compare": [ ">=", 3 ]
+          }
         }
       }
     ],
@@ -4528,7 +4583,10 @@
         "value": 20,
         "target": "自身",
         "condition": {
-          "token": [ ">=", 1 ]
+          "token": {
+            "tokenName": "風華の知略",
+            "compare": [ ">=", 1 ]
+          }
         }
       },
       {
@@ -4536,7 +4594,10 @@
         "value": 20,
         "target": "自身",
         "condition": {
-          "token": [ ">=", 1 ]
+          "token": {
+            "tokenName": "風華の知略",
+            "compare": [ ">=", 1 ]
+          }
         }
       },
       {
@@ -4544,7 +4605,10 @@
         "value": 40,
         "target": "自身",
         "condition": {
-          "token": [ ">=", 2 ]
+          "token": {
+            "tokenName": "風華の知略",
+            "compare": [ ">=", 2 ]
+          }
         }
       },
       {
@@ -4552,7 +4616,10 @@
         "value": 45,
         "target": "自身",
         "condition": {
-          "token": [ ">=", 3 ]
+          "token": {
+            "tokenName": "風華の知略",
+            "compare": [ ">=", 3 ]
+          }
         }
       }
     ],
@@ -4631,7 +4698,10 @@
         "value": 20,
         "target": "自身",
         "condition": {
-          "token": [ ">=", 3 ]
+          "token": {
+            "tokenName": "真夏の輝き",
+            "compare": [ ">=", 3 ]
+          }
         }
       }
     ],
@@ -4767,7 +4837,10 @@
         "value": 30,
         "target": "自身",
         "condition": {
-          "token": [ ">=", 1 ]
+          "token": {
+            "tokenName": "サンパワー！",
+            "compare": [ ">=", 1 ]
+          }
         }
       },
       {
@@ -4775,7 +4848,10 @@
         "value": 20,
         "target": "自身",
         "condition": {
-          "token": [ ">=", 2 ]
+          "token": {
+            "tokenName": "サンパワー！",
+            "compare": [ ">=", 2 ]
+          }
         }
       },
       {
@@ -4783,7 +4859,10 @@
         "value": 30,
         "target": "自身",
         "condition": {
-          "token": [ ">=", 3 ]
+          "token": {
+            "tokenName": "サンパワー！",
+            "compare": [ ">=", 3 ]
+          }
         }
       }
     ],

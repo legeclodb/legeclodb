@@ -41,7 +41,7 @@ export function evaluateCondition(ctx, cond)
     "onTargetAlly", "onTargetEnemy",
     "onActiveSkill", "onSingleSkill", "onAreaSkill",
     "onCloseCombat", "onRangedCombat",
-    "onDamage", "onCriticalit", "onKill", "onClassAdvantage"
+    "onDamage", "onCriticalHit", "onKill", "onClassAdvantage"
   ];
   for (const p of boolProps) {
     if (p in cond) {
@@ -84,8 +84,8 @@ export function evaluateCondition(ctx, cond)
   const getExpressionProps = [
     ["nearAllyCount", "area", "getNearAllyCount"],
     ["nearEnemyCount", "area", "getNearEnemyCount"],
-    ["token", "variant", "getToken"],
-    ["targetToken", "variant", "getTargetToken"],
+    ["token", "tokenName", "getToken"],
+    ["targetToken", "tokenName", "getTargetToken"],
   ];
   for (const [cname, pname, fname] of getExpressionProps) {
     if (cname in cond) {
@@ -103,29 +103,33 @@ export function evaluateCondition(ctx, cond)
 
 export function makeSimEffect(effect) {
   let self = Object.create(effect);
-  self.stack = 1;
-  self.time = Infinity; // 残有効時間
+  self.count = self.duration ?? Infinity; // 残有効時間
   self.isStopped = true; // 自己バフはかけたターンは時間経過しない。そのためのフラグ。
-  self.enabled = true; // 有効か。基本的には time > 0 なら有効、そうでなければ無効だが、ユーザーが強制的に有効にすることもある。
+
+  Object.defineProperty(self, "isAlive", {
+    get: () => self.count > 0,
+  });
 
   self.serialize = function () {
     return {
-      stack: self.stack,
-      time: self.time,
+      count: self.count,
       isStopped: self.isStopped,
-      enabled: self.enabled,
     };
   }
   self.deserialize = function (r) {
-    self.stack = r.stack;
-    self.time = r.time;
+    self.count = r.count;
     self.isStopped = r.isStopped;
-    self.enabled = r.enabled;
+  }
+
+  self.decrementCount = function () {
+    if (!this.isStopped && this.count > 0) {
+      --this.count;
+    }
   }
 
   self.activate = function (bySelf) {
     if (self.duration) {
-      self.time = self.duration;
+      self.count = self.duration;
       if (bySelf) {
         self.isStopped = false;
       }
@@ -156,11 +160,6 @@ export function makeSimEffect(effect) {
   self.onActionBegin = function () {
   }
   self.onActionEnd = function () {
-    if (!self.isStopped && self.time > 0) {
-      if (--self.time == 0) {
-        self.enabled = false;
-      }
-    }
   }
 
   self.onAttackBegin = function () {

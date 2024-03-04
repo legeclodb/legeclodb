@@ -941,13 +941,12 @@ export default {
       return effectTypes.findIndex(a => a == effectType);
     },
 
-    isPublicTarget(target) {
-      return !target ||
-        (typeof (target) == "string" && !target.startsWith("自身"));
+    isPublicTarget(effect) {
+      return effect.giveTarget || !effect.target ||
+        (typeof (effect.target) == "string" && !effect.target.startsWith("自身"));
     },
-    isSelfTarget(target) {
-      return !target ||
-        (typeof (target) == "string" && target.startsWith("自身"));
+    isSelfTarget(effect) {
+      return !effect.giveTarget && (!effect.target || (typeof (effect.target) == "string" && effect.target.startsWith("自身")));
     },
 
     effectParamsToTags(skill, params) {
@@ -1091,10 +1090,12 @@ export default {
       }
 
       const buffToS = (effectCategory, effect) => {
+        if (effect.type == "トークン")
+          return `トークン付与`;
         if (params.tagFilter && !params.tagFilter(skill, effectCategory, effect))
           return [];
 
-        if (effect.type == "ランダム") {
+        else if (effect.type == "ランダム") {
           // ランダムは扱いが特殊なので個別処理
           return `${effectCategory}:${effect.type}(${effect.variant})`;
         }
@@ -1121,7 +1122,7 @@ export default {
           t += "(戦闘時)";
         }
         else if (effect.target) {
-          if ((params.includeSelfTags && this.isSelfTarget(effect.target))) {
+          if ((params.includeSelfTags && this.isSelfTarget(effect))) {
             t += `(${effect.target})`;
           }
         }
@@ -1263,6 +1264,13 @@ export default {
           v.isImmune = true;
         }
       }
+
+      // 確認用
+      //for (let e of [...(skill.buff ?? []), ...(skill.debuff ?? []), ...(skill.statusEffects ?? []), ...(skill.immune ?? [])]) {
+      //  if (e.stackBy == "token" && !e.tokenName) {
+      //    console.log(skill.name);
+      //  }
+      //}
 
       if (!skill.tags)
         skill.tags = [];

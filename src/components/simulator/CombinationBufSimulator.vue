@@ -487,7 +487,7 @@ export default {
 
     const excludeEffect = (effect) => {
       const cond = effect.condition;
-      if (!this.isPublicTarget(effect.target) ||
+      if (!this.isPublicTarget(effect) ||
         (cond && (cond.onClass || cond.onSymbol)) ||
         (effect.isDebuff && effect.ephemeral && !effect.duration)
       ) {

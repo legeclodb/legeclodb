@@ -409,6 +409,15 @@ export class SimUnit {
   getNearEnemyCount(args) {
     return 0;
   }
+  getTokenCount(tokenName) {
+    let r = 0;
+    for (let e of this.effects) {
+      if (e.type == "トークン" && e.tokenName == tokenName) {
+        ++r;
+      }
+    }
+    return r;
+  }
 
   evaluateEffects(ctx) {
 
@@ -432,6 +441,10 @@ export class SimUnit {
   }
 
   reduceEffectDuration() {
+    for (let e of this.effects) {
+      e.decrementCount();
+    }
+    this.effects = this.effects.filter(a => a.isAlive);
   }
   // スキルの CT 減
   reduceSkillCT(n, excludeFunc = null) {

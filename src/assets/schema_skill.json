@@ -29,7 +29,7 @@
       "enum": [ "平地", "草原", "森", "水中", "荒地", "崖", "空", "山岳", "洞窟", "砂地", "砂丘", "積雪", "置物", "砦", "壁", "柵", "溶岩" ]
     },
     "targetEnum": {
-      "enum": [ "自身", "自身(メイン)", "自身(サポート)", "味方(低HP)", "単体", "範囲", "範囲(ランダム)", "全体", "スキル対象" ]
+      "enum": [ "自身", "自身(メイン)", "自身(サポート)", "味方(低HP)", "単体", "範囲", "範囲(ランダム)", "敵味方全体", "味方全体", "敵全体", "スキル対象" ]
     },
     "targetType": {
       "anyOf": [
@@ -142,6 +142,15 @@
       },
       "minItems": 2,
       "maxItems": 2
+    },
+    "tokenCompare": {
+      "type": "object",
+      "required": [ "tokenName", "compare" ],
+      "additionalProperties": false,
+      "properties": {
+        "tokenName": { "type": "string" },
+        "compare": { "$ref": "#/$defs/numericCompare" }
+      }
     },
     "areaShape": {
       "enum": [ "範囲", "周囲", "直線" ]
@@ -280,13 +289,13 @@
         "supportHp": { "$ref": "#/$defs/numericCompare" },
         "targetHp": { "$ref": "#/$defs/numericCompare" },
         "turn": { "$ref": "#/$defs/numericCompare" },
-        "token": { "$ref": "#/$defs/numericCompare" },
-        "targetToken": { "$ref": "#/$defs/numericCompare" },
         "activeBuffCount": { "$ref": "#/$defs/numericCompare" },
         "activeDebuffCount": { "$ref": "#/$defs/numericCompare" },
         "targetActiveBuffCount": { "$ref": "#/$defs/numericCompare" },
         "targetActiveDebuffCount": { "$ref": "#/$defs/numericCompare" },
         "terrainDef": { "$ref": "#/$defs/numericCompare" },
+        "token": { "$ref": "#/$defs/tokenCompare" },
+        "targetToken": { "$ref": "#/$defs/tokenCompare" },
         "nearAllyCount": { "$ref": "#/$defs/unitsInArea" },
         "nearEnemyCount": { "$ref": "#/$defs/unitsInArea" }
       }
@@ -324,9 +333,14 @@
         "unitCount": { "type": "number" },
         "amount": { "type": [ "number", "string" ] },
         "variant": { "type": [ "number", "string" ] },
+        "tokenName": { "type": "string" },
         "slot": { "type": "string" },
         "timing": { "$ref": "#/$defs/timingType" },
-        "condition": { "$ref": "#/$defs/condition" }
+        "condition": { "$ref": "#/$defs/condition" },
+        "giveTarget": { "$ref": "#/$defs/targetType" },
+        "giveArea": { "$ref": "#/$defs/areaType" },
+        "giveTiming": { "$ref": "#/$defs/timingType" },
+        "giveCondition": { "$ref": "#/$defs/condition" }
       }
     },
 

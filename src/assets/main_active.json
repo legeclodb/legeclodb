@@ -1777,7 +1777,7 @@
       {
         "type": "マジック",
         "rate": 2.0,
-        "target": "全体",
+        "target": "味方全体",
         "timing": "戦闘後"
       }
     ],
@@ -4135,7 +4135,10 @@
         "rate": 0.3,
         "target": "自身",
         "condition": {
-          "token": [ ">=", 3 ]
+          "token": {
+            "tokenName": "ラブパワー",
+            "compare": [ ">=", 3 ]
+          }
         }
       }
     ],
@@ -4145,14 +4148,20 @@
         "target": "自身",
         "targetSkill": "使用したスキル",
         "condition": {
-          "token": [ ">=", 4 ]
+          "token": {
+            "tokenName": "ラブパワー",
+            "compare": [ ">=", 4 ]
+          }
         }
       }
     ],
     "multiAction": [
       {
         "condition": {
-          "token": [ ">=", 2 ],
+          "token": {
+            "tokenName": "ラブパワー",
+            "compare": [ ">=", 2 ]
+          },
           "onKill": true
         }
       }
@@ -4160,7 +4169,10 @@
     "supportAttack": [
       {
         "condition": {
-          "token": [ ">=", 1 ]
+          "token": {
+            "tokenName": "ラブパワー",
+            "compare": [ ">=", 1 ]
+          }
         }
       }
     ],
@@ -4182,7 +4194,10 @@
         "rate": 0.3,
         "target": "自身",
         "condition": {
-          "token": [ ">=", 2 ]
+          "token": {
+            "tokenName": "ラブパワー",
+            "compare": [ ">=", 2 ]
+          }
         }
       }
     ],
@@ -4192,14 +4207,20 @@
         "target": "自身",
         "targetSkill": "使用したスキル",
         "condition": {
-          "token": [ ">=", 3 ]
+          "token": {
+            "tokenName": "ラブパワー",
+            "compare": [ ">=", 3 ]
+          }
         }
       }
     ],
     "multiAction": [
       {
         "condition": {
-          "token": [ ">=", 1 ],
+          "token": {
+            "tokenName": "ラブパワー",
+            "compare": [ ">=", 1 ]
+          },
           "onKill": true
         }
       }
@@ -4286,7 +4307,7 @@
     "ctReduction": [
       {
         "value": 1,
-        "target": "全体",
+        "target": "味方全体",
         "targetSkill": "全スキル"
       }
     ],
@@ -4425,7 +4446,10 @@
         "rate": 0.3,
         "target": "自身",
         "condition": {
-          "token": [ ">=", 2 ]
+          "token": {
+            "tokenName": "罪",
+            "compare": [ ">=", 2 ]
+          }
         }
       }
     ],
@@ -4436,7 +4460,10 @@
         "duration": 1,
         "timing": "戦闘前",
         "condition": {
-          "token": [ ">=", 1 ]
+          "token": {
+            "tokenName": "罪",
+            "compare": [ ">=", 1 ]
+          }
         }
       }
     ],
@@ -4490,12 +4517,28 @@
         "duration": 1,
         "target": "自身",
         "condition": {
-          "token": [ ">=", 2 ]
+          "token": {
+            "tokenName": "忍びの極意",
+            "compare": [ ">=", 2 ]
+          }
+        }
+      }
+    ],
+    "fixedDamage": [
+      {
+        "base": "アタック",
+        "rate": 2.0,
+        "timing": "戦闘前",
+        "condition": {
+          "token": {
+            "tokenName": "忍びの極意",
+            "compare": [ ">=", 3 ]
+          }
         }
       }
     ],
     "multiAction": [ {} ],
-    "tags": [ "地形無視", "射程+(通常攻撃)", "固定ダメージ" ]
+    "tags": [ "地形無視", "射程+(通常攻撃)" ]
   },
   {
     "uid": "1100188",
@@ -4512,7 +4555,10 @@
         "value": 2,
         "timing": "戦闘前",
         "condition": {
-          "token": [ ">=", 1 ]
+          "token": {
+            "tokenName": "忍びの極意",
+            "compare": [ ">=", 1 ]
+          }
         }
       }
     ],
@@ -4524,7 +4570,10 @@
         "target": "自身",
         "timing": "戦闘前",
         "condition": {
-          "token": [ ">=", 3 ]
+          "token": {
+            "tokenName": "忍びの極意",
+            "compare": [ ">=", 3 ]
+          }
         }
       }
     ],
@@ -4540,7 +4589,10 @@
         "type": "スタン",
         "duration": 1,
         "condition": {
-          "token": [ ">=", 2 ]
+          "token": {
+            "tokenName": "忍びの極意",
+            "compare": [ ">=", 2 ]
+          }
         }
       }
     ],
@@ -4674,7 +4726,7 @@
       {
         "type": "ダメージ割合",
         "rate": 0.1,
-        "target": "全体"
+        "target": "味方全体"
       }
     ],
     "buffCancel": [
@@ -4835,7 +4887,10 @@
       {
         "type": "残移動力",
         "condition": {
-          "token": [ ">=", 2 ]
+          "token": {
+            "tokenName": "ばーにんぐソウル！",
+            "compare": [ ">=", 2 ]
+          }
         }
       }
     ],
@@ -6568,7 +6623,7 @@
       {
         "type": "ダメージ割合",
         "rate": 0.05,
-        "target": "全体"
+        "target": "味方全体"
       }
     ],
     "tags": [ "単体攻撃" ]
@@ -6587,7 +6642,7 @@
       {
         "type": "ダメージ割合",
         "rate": 0.1,
-        "target": "全体"
+        "target": "味方全体"
       }
     ],
     "tags": [ "単体攻撃" ]
@@ -7719,7 +7774,7 @@
         "type": "与ダメージ",
         "value": 20,
         "duration": 2,
-        "target": "全体",
+        "target": "味方全体",
         "timing": "戦闘後"
       }
     ],
@@ -7727,7 +7782,7 @@
       {
         "type": "ダメージ割合",
         "rate": 0.15,
-        "target": "全体",
+        "target": "味方全体",
         "timing": "戦闘後"
       }
     ],
@@ -7764,7 +7819,7 @@
     "ctReduction": [
       {
         "value": 1,
-        "target": "全体",
+        "target": "味方全体",
         "targetSkill": "全スキル",
         "condition": {
           "onKill": true
@@ -8008,7 +8063,10 @@
         "value": 2,
         "duration": 2,
         "condition": {
-          "token": [ ">=", 1 ]
+          "token": {
+            "tokenName": "ナディアの天威",
+            "compare": [ ">=", 1 ]
+          }
         }
       }
     ],
@@ -8017,7 +8075,10 @@
         "type": "スタン",
         "duration": 1,
         "condition": {
-          "token": [ ">=", 2 ]
+          "token": {
+            "tokenName": "ナディアの天威",
+            "compare": [ ">=", 2 ]
+          }
         }
       }
     ],
@@ -8049,7 +8110,10 @@
         "value": 2,
         "duration": 2,
         "condition": {
-          "token": [ ">=", 1 ]
+          "token": {
+            "tokenName": "ナディアの天威",
+            "compare": [ ">=", 1 ]
+          }
         }
       }
     ],
@@ -8065,7 +8129,10 @@
         "type": "スタン",
         "duration": 1,
         "condition": {
-          "token": [ ">=", 2 ]
+          "token": {
+            "tokenName": "ナディアの天威",
+            "compare": [ ">=", 2 ]
+          }
         }
       }
     ],
@@ -8478,13 +8545,13 @@
       {
         "type": "マジック",
         "rate": 2.0,
-        "target": "全体"
+        "target": "味方全体"
       }
     ],
     "ctReduction": [
       {
         "value": 1,
-        "target": "全体",
+        "target": "味方全体",
         "targetSkill": "全スキル"
       }
     ]
@@ -8502,30 +8569,30 @@
       {
         "type": "ディフェンスダウン",
         "duration": 1,
-        "target": "全体"
+        "target": "味方全体"
       },
       {
         "type": "レジストダウン",
         "duration": 1,
-        "target": "全体"
+        "target": "味方全体"
       },
       {
         "type": "回復不可",
         "duration": 1,
-        "target": "全体"
+        "target": "味方全体"
       }
     ],
     "heal": [
       {
         "type": "マジック",
         "rate": 2.5,
-        "target": "全体"
+        "target": "味方全体"
       }
     ],
     "ctReduction": [
       {
         "value": 1,
-        "target": "全体",
+        "target": "味方全体",
         "targetSkill": "全スキル"
       }
     ]
@@ -9121,7 +9188,7 @@
       {
         "type": "マジック",
         "rate": 3.0,
-        "target": "全体"
+        "target": "味方全体"
       }
     ],
     "tags": [ "バフ:リジェネ" ]
@@ -9180,7 +9247,7 @@
       {
         "type": "ダメージ割合",
         "rate": 0.1,
-        "target": "全体",
+        "target": "味方全体",
         "condition": {
           "onCriticalHit": true
         }
@@ -9212,7 +9279,7 @@
       {
         "type": "ダメージ割合",
         "rate": 0.1,
-        "target": "全体",
+        "target": "味方全体",
         "condition": {
           "onCriticalHit": true
         }
@@ -9324,7 +9391,10 @@
         "rate": 0.1,
         "target": "自身",
         "condition": {
-          "token": [ ">=", 1 ]
+          "token": {
+            "tokenName": "オシリス神の啓示",
+            "compare": [ ">=", 1 ]
+          }
         }
       }
     ],
@@ -10653,7 +10723,10 @@
         "type": "強化不可",
         "duration": 2,
         "condition": {
-          "token": [ ">=", 2 ]
+          "token": {
+            "tokenName": "革命の星降る夜",
+            "compare": [ ">=", 2 ]
+          }
         }
       }
     ],
@@ -10873,7 +10946,7 @@
     "ctReduction": [
       {
         "value": 1,
-        "target": "全体",
+        "target": "味方全体",
         "targetSkill": "全スキル",
         "condition": {
           "onKill": true
@@ -10902,7 +10975,7 @@
     "ctReduction": [
       {
         "value": 1,
-        "target": "全体",
+        "target": "味方全体",
         "targetSkill": "全スキル",
         "condition": {
           "onKill": true
@@ -11658,7 +11731,10 @@
         "value": 10,
         "duration": 2,
         "condition": {
-          "token": [ "==", 1 ]
+          "token": {
+            "tokenName": "新世界の探究者",
+            "compare": [ "==", 1 ]
+          }
         }
       },
       {
@@ -11666,7 +11742,10 @@
         "value": 15,
         "duration": 2,
         "condition": {
-          "token": [ ">=", 2 ]
+          "token": {
+            "tokenName": "新世界の探究者",
+            "compare": [ ">=", 2 ]
+          }
         }
       }
     ]
@@ -11693,7 +11772,10 @@
         "value": 15,
         "duration": 2,
         "condition": {
-          "token": [ "==", 1 ]
+          "token": {
+            "tokenName": "新世界の探究者",
+            "compare": [ "==", 1 ]
+          }
         }
       },
       {
@@ -11701,7 +11783,10 @@
         "value": 20,
         "duration": 2,
         "condition": {
-          "token": [ ">=", 2 ]
+          "token": {
+            "tokenName": "新世界の探究者",
+            "compare": [ ">=", 2 ]
+          }
         }
       }
     ]
@@ -11902,7 +11987,10 @@
         "value": 50,
         "duration": 3,
         "condition": {
-          "token": [ "==", 1 ]
+          "token": {
+            "tokenName": "万里を歩む微笑み",
+            "compare": [ "==", 1 ]
+          }
         }
       }
     ],
@@ -11911,7 +11999,10 @@
         "type": "回復不可",
         "duration": 3,
         "condition": {
-          "token": [ ">=", 2 ]
+          "token": {
+            "tokenName": "万里を歩む微笑み",
+            "compare": [ ">=", 2 ]
+          }
         }
       }
     ],
@@ -11919,13 +12010,19 @@
       {
         "value": 2,
         "condition": {
-          "token": [ "==", 1 ]
+          "token": {
+            "tokenName": "万里を歩む微笑み",
+            "compare": [ "==", 1 ]
+          }
         }
       },
       {
         "value": 3,
         "condition": {
-          "token": [ ">=", 2 ]
+          "token": {
+            "tokenName": "万里を歩む微笑み",
+            "compare": [ ">=", 2 ]
+          }
         }
       }
     ],
@@ -11948,7 +12045,10 @@
         "value": 50,
         "duration": 3,
         "condition": {
-          "token": [ "==", 1 ]
+          "token": {
+            "tokenName": "万里を歩む微笑み",
+            "compare": [ "==", 1 ]
+          }
         }
       },
       {
@@ -11956,7 +12056,10 @@
         "value": 1,
         "duration": 2,
         "condition": {
-          "token": [ ">=", 2 ]
+          "token": {
+            "tokenName": "万里を歩む微笑み",
+            "compare": [ ">=", 2 ]
+          }
         }
       }
     ],
@@ -11965,7 +12068,10 @@
         "type": "回復不可",
         "duration": 3,
         "condition": {
-          "token": [ ">=", 2 ]
+          "token": {
+            "tokenName": "万里を歩む微笑み",
+            "compare": [ ">=", 2 ]
+          }
         }
       }
     ],
@@ -11973,13 +12079,19 @@
       {
         "value": 2,
         "condition": {
-          "token": [ "==", 1 ]
+          "token": {
+            "tokenName": "万里を歩む微笑み",
+            "compare": [ "==", 1 ]
+          }
         }
       },
       {
         "value": 3,
         "condition": {
-          "token": [ ">=", 2 ]
+          "token": {
+            "tokenName": "万里を歩む微笑み",
+            "compare": [ ">=", 2 ]
+          }
         }
       }
     ],

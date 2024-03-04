@@ -303,7 +303,7 @@ export default {
         lines.push(`<div class="effect-box"><span class="effect">再行動</span></div>`);
       }
       for (const effect of this.enumerate(skill.buff, skill.debuff)) {
-        if (["ランダム"].includes(effect.type)) {
+        if (["ランダム", "トークン"].includes(effect.type)) {
           continue;
         }
 
