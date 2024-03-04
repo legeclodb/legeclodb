@@ -35,89 +35,6 @@ export function evaluateCondition(ctx, cond)
   }
 
   let ok = true;
-  if (cond.turn) {
-    const params = cond.turn;
-    if (!condExp(ctx.turn, params[0], params[1])) {
-      ok = false;
-    }
-  }
-
-  if (cond.hp) {
-    const params = cond.hp;
-    if (!condExp(ctx.hpRate * 100, params[0], params[1])) {
-      ok = false;
-    }
-  }
-  if (cond.targetHp) {
-    const params = cond.targetHp;
-    if (!condExp(ctx.targetHpRate * 100, params[0], params[1])) {
-      ok = false;
-    }
-  }
-
-  if (cond.nearAllyCount) {
-    const params = cond.nearAllyCount.condition;
-    if (!condExp(ctx.getNearAllyCount(cond.nearAllyCount.area), params[0], params[1])) {
-      ok = false;
-    }
-  }
-  if (cond.nearEnemyCount) {
-    const params = cond.nearEnemyCount.condition;
-    if (!condExp(ctx.getNearEnemyCount(cond.nearAllyCount.area), params[0], params[1])) {
-      ok = false;
-    }
-  }
-
-  if (cond.activeBuffCount) {
-    const params = cond.activeBuffCount;
-    if (!condExp(ctx.activeBuffCount, params[0], params[1])) {
-      ok = false;
-    }
-  }
-  if (cond.targetActiveBuffCount) {
-    const params = cond.targetActiveBuffCount;
-    if (!condExp(ctx.targetActiveBuffCount, params[0], params[1])) {
-      ok = false;
-    }
-  }
-  if (cond.activeDebuffCount) {
-    const params = cond.activeDebuffCount;
-    if (!condExp(ctx.activeDebuffCount, params[0], params[1])) {
-      ok = false;
-    }
-  }
-  if (cond.targetActiveDebuffCount) {
-    const params = cond.targetActiveDebuffCount;
-    if (!condExp(ctx.targetActiveDebuffCount, params[0], params[1])) {
-      ok = false;
-    }
-  }
-
-  if (cond.token) {
-    const params = cond.token;
-    // todo
-  }
-  if (cond.targetToken) {
-    const params = cond.targetToken;
-    // todo
-  }
-
-  if (cond.onClass) {
-    if (!cond.onClass.includes(ctx.class)) {
-      ok = false;
-    }
-  }
-  if (cond.onTargetClass) {
-    if (!cond.onTargetClass.includes(ctx.targetClass)) {
-      ok = false;
-    }
-  }
-
-  if (cond.onSymbol) {
-    if (!cond.onSymbol.includes(ctx.symbol)) {
-      ok = false;
-    }
-  }
 
   const boolProps = [
     "onOwnTurn", "onEnemyTurn",
@@ -134,6 +51,52 @@ export function evaluateCondition(ctx, cond)
       }
     }
   }
+
+  const includesPros = [
+    ["onClass", "class"],
+    ["onTargetClass", "targetClass"],
+    ["onSymbol", "symbol"],
+  ];
+  for (const [cname, pname] of includesPros) {
+    if (cname in cond) {
+      if (!cond[cname].includes(ctx[pname])) {
+        ok = false;
+        break;
+      }
+    }
+  }
+
+  const binaryExpressionProps = [
+    "turn",
+    "hp", "targetHp",
+    "activeBuffCount", "targetActiveBuffCount",
+    "activeDebuffCount", "targetActiveDebuffCount",
+  ];
+  for (const p of binaryExpressionProps) {
+    if (p in cond) {
+      if (!condExp(ctx[p], ...cond[p])) {
+        ok = false;
+        break;
+      }
+    }
+  }
+
+  const getExpressionProps = [
+    ["nearAllyCount", "area", "getNearAllyCount"],
+    ["nearEnemyCount", "area", "getNearEnemyCount"],
+    ["token", "variant", "getToken"],
+    ["targetToken", "variant", "getTargetToken"],
+  ];
+  for (const [cname, pname, fname] of getExpressionProps) {
+    if (cname in cond) {
+      const c = cond[cname];
+      if (!condExp(ctx[fname](c[pname]), ...c.compare)) {
+        ok = false;
+        break;
+      }
+    }
+  }
+
   return ok;
 }
 

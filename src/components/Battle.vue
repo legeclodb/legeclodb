@@ -1688,8 +1688,8 @@ export default {
 
   .action-button {
     display: inline-block;
-    width: 50px;
-    height: 50px;
+    width: 55px;
+    height: 55px;
     cursor: pointer;
 
     border: 1px solid rgba(255, 255, 255, 0);

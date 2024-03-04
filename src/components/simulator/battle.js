@@ -267,7 +267,7 @@ export class SimContext {
       onOwnTurn: true,
       move: move,
       class: unit.mainClass,
-      hpRate: unit.hpRate,
+      hp: unit.hpRate,
     };
     if (skill) {
       if (skill.isNormalAttack) {
@@ -287,7 +287,7 @@ export class SimContext {
         // 単体スキルの場合
         ctx.range = range;
         ctx.targetClass = target.mainClass;
-        ctx.targetHpRate = target.hpRate;
+        ctx.targetHp = target.hpRate;
         if (skill.isTargetAlly) {
           ctx.onTargetAlly = true;
         }
