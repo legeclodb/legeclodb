@@ -5061,7 +5061,7 @@
       {
         "type": "クリティカル率",
         "value": 5,
-        "stack": {
+        "multiply": {
           "max": 5,
           "by": "move"
         },
@@ -6284,7 +6284,7 @@
       {
         "type": "アタック",
         "value": 5,
-        "stack": {
+        "multiply": {
           "max": 3,
           "by": "nearEnemyCount",
           "area": [ 2, "周囲" ]
@@ -6294,7 +6294,7 @@
       {
         "type": "ディフェンス",
         "value": 5,
-        "stack": {
+        "multiply": {
           "max": 3,
           "by": "nearEnemyCount",
           "area": [ 2, "周囲" ]
@@ -8636,7 +8636,7 @@
       {
         "type": "クリティカル率",
         "value": 3,
-        "stack": {
+        "multiply": {
           "max": 5,
           "by": "move"
         },
@@ -8896,9 +8896,7 @@
         "type": "ダメージ耐性",
         "value": -20,
         "duration": 3,
-        "stack": {
-          "max": 3
-        },
+        "stack": 3,
         "target": "自身",
         "propagate": {
           "target": "自身",
@@ -8926,7 +8924,7 @@
       {
         "type": "与ダメージ(物理)",
         "value": 2,
-        "stack": {
+        "multiply": {
           "max": 4,
           "by": "move"
         },
@@ -9060,7 +9058,7 @@
       {
         "type": "クリティカルダメージ倍率",
         "value": 3,
-        "stack": {
+        "multiply": {
           "max": 5,
           "by": "move"
         },
@@ -9110,7 +9108,7 @@
       {
         "type": "クリティカルダメージ倍率",
         "value": 3,
-        "stack": {
+        "multiply": {
           "max": 5,
           "by": "move"
         },
@@ -9159,7 +9157,7 @@
       {
         "type": "クリティカルダメージ倍率",
         "value": 3,
-        "stack": {
+        "multiply": {
           "max": 5,
           "by": "move"
         },
@@ -9199,7 +9197,7 @@
       {
         "type": "クリティカルダメージ倍率",
         "value": 3,
-        "stack": {
+        "multiply": {
           "max": 5,
           "by": "move"
         },
@@ -9408,9 +9406,7 @@
       {
         "type": "ディフェンス",
         "value": 5,
-        "stack": {
-          "max": 3
-        },
+        "stack": 3,
         "duration": 3,
         "target": "自身",
         "propagate": {
@@ -9421,9 +9417,7 @@
       {
         "type": "レジスト",
         "value": 5,
-        "stack": {
-          "max": 3
-        },
+        "stack": 3,
         "duration": 3,
         "target": "自身",
         "propagate": {

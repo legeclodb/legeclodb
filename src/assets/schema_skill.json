@@ -117,6 +117,7 @@
       "enum": [
         "move",
         "range",
+        "stack",
         "token",
         "targetToken",
         "nearAllyCount",
@@ -242,9 +243,9 @@
       }
     },
 
-    "stack": {
+    "multiply": {
       "type": "object",
-      "required": [ "max" ],
+      "required": [ "by", "max" ],
       "additionalProperties": false,
       "properties": {
         "max": { "type": "number" },
@@ -320,12 +321,13 @@
       "properties": {
         "type": { "$ref": "#/$defs/effectType" },
         "value": { "type": [ "number", "array" ] },
-        "stack": { "$ref": "#/$defs/stack" },
         "add": { "$ref": "#/$defs/statusConversion" },
         "replace": { "$ref": "#/$defs/statusConversion" },
         "variable": { "$ref": "#/$defs/variableStatusRate" },
-        "duration": { "type": [ "number", "array" ] },
         "ephemeral": { "type": "boolean" },
+        "duration": { "type": [ "number", "array" ] },
+        "stack": { "type": "number" },
+        "multiply": { "$ref": "#/$defs/multiply" },
         "target": { "$ref": "#/$defs/targetEnum" },
         "area": { "$ref": "#/$defs/areaType" },
         "unitCount": { "type": "number" },

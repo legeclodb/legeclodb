@@ -725,7 +725,7 @@
       {
         "type": "与ダメージ",
         "value": 5,
-        "stack": {
+        "multiply": {
           "max": 3,
           "by": "move"
         },
@@ -3444,7 +3444,7 @@
       {
         "type": "アタック",
         "value": 5,
-        "stack": {
+        "multiply": {
           "max": 4,
           "by": "nearEnemyCount"
         },
@@ -3455,7 +3455,7 @@
       {
         "type": "クリティカル率",
         "value": 5,
-        "stack": {
+        "multiply": {
           "max": 4,
           "by": "nearEnemyCount"
         },
@@ -4006,7 +4006,7 @@
       {
         "type": "与ダメージ(範囲スキル)",
         "value": 5,
-        "stack": {
+        "multiply": {
           "max": 6,
           "by": "nearEnemyCount",
           "area": 3
@@ -4787,7 +4787,7 @@
       {
         "type": "与ダメージ(スキル)",
         "value": 6,
-        "stack": {
+        "multiply": {
           "max": 5,
           "by": "move"
         },
@@ -4812,7 +4812,7 @@
       {
         "type": "与ダメージ(スキル)",
         "value": 6,
-        "stack": {
+        "multiply": {
           "max": 6,
           "by": "move"
         },
@@ -5512,9 +5512,7 @@
         "type": "トークン",
         "tokenName": "黄金に輝くモノ",
         "duration": 4,
-        "stack": {
-          "max": 2
-        },
+        "stack": 2,
         "propagate": {
           "target": "自身"
         }
@@ -7917,7 +7915,7 @@
       {
         "type": "クリティカル率",
         "value": 10,
-        "stack": {
+        "multiply": {
           "max": 5,
           "by": "nearAllyCount",
           "area": 3
@@ -7928,7 +7926,7 @@
       {
         "type": "与ダメージ(スキル)",
         "value": 10,
-        "stack": {
+        "multiply": {
           "max": 5,
           "by": "nearAllyCount",
           "area": 3

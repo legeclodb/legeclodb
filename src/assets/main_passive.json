@@ -841,7 +841,7 @@
       {
         "type": "アタック",
         "value": 10,
-        "stack": {
+        "multiply": {
           "max": 5,
           "by": "move"
         },
@@ -1773,7 +1773,7 @@
       {
         "type": "ディフェンス",
         "value": 5,
-        "stack": {
+        "multiply": {
           "max": 3,
           "by": "nearAllyCount",
           "area": 2
@@ -1782,7 +1782,7 @@
       {
         "type": "レジスト",
         "value": 5,
-        "stack": {
+        "multiply": {
           "max": 3,
           "by": "nearAllyCount",
           "area": 2
@@ -1801,9 +1801,7 @@
         "type": "ディフェンス",
         "value": 5,
         "duration": 1,
-        "stack": {
-          "max": 3
-        },
+        "stack": 3,
         "propagate": {
           "target": "自身",
           "timing": "戦闘前",
@@ -1966,7 +1964,7 @@
       {
         "type": "アタック",
         "value": 5,
-        "stack": {
+        "multiply": {
           "max": 3,
           "by": "move"
         },
@@ -4163,7 +4161,7 @@
       {
         "type": "クリティカルダメージ倍率",
         "value": 5,
-        "stack": {
+        "multiply": {
           "max": 5,
           "by": "activeBuffCount"
         }
@@ -4361,7 +4359,7 @@
       {
         "type": "アタック",
         "value": 5,
-        "stack": {
+        "multiply": {
           "max": 6,
           "by": "move"
         },
@@ -4370,7 +4368,7 @@
       {
         "type": "与ダメージ(物理)",
         "value": 5,
-        "stack": {
+        "multiply": {
           "max": 6,
           "by": "move"
         },
@@ -4443,9 +4441,7 @@
         "type": "アタック",
         "value": 10,
         "duration": 4,
-        "stack": {
-          "max": 3
-        },
+        "stack": 3,
         "propagate": {
           "target": "自身",
           "timing": "戦闘前"
@@ -4455,9 +4451,7 @@
         "type": "ディフェンス",
         "value": 10,
         "duration": 4,
-        "stack": {
-          "max": 3
-        },
+        "stack": 3,
         "propagate": {
           "target": "自身",
           "timing": "戦闘前"
@@ -4580,7 +4574,7 @@
       {
         "type": "与ダメージ(スキル)",
         "value": 5,
-        "stack": {
+        "multiply": {
           "max": 6,
           "by": "move"
         },
@@ -4795,9 +4789,7 @@
         "type": "アタック",
         "value": 8,
         "duration": 4,
-        "stack": {
-          "max": 3
-        },
+        "stack": 3,
         "propagate": {
           "target": "自身",
           "timing": "戦闘前"
@@ -4807,9 +4799,7 @@
         "type": "与ダメージ(物理)",
         "value": 8,
         "duration": 4,
-        "stack": {
-          "max": 3
-        },
+        "stack": 3,
         "propagate": {
           "target": "自身",
           "timing": "戦闘前"
@@ -5104,7 +5094,7 @@
       {
         "type": "被治療効果",
         "value": 15,
-        "stack": {
+        "multiply": {
           "max": 4,
           "by": "move"
         },
@@ -5147,7 +5137,7 @@
       {
         "type": "被治療効果",
         "value": 15,
-        "stack": {
+        "multiply": {
           "max": 4,
           "by": "move"
         },
@@ -5392,7 +5382,7 @@
       {
         "type": "与ダメージ(物理)",
         "value": 10,
-        "stack": {
+        "multiply": {
           "max": 3,
           "by": "range"
         },
@@ -5404,7 +5394,7 @@
       {
         "type": "クリティカルダメージ倍率",
         "value": 10,
-        "stack": {
+        "multiply": {
           "max": 3,
           "by": "range"
         },

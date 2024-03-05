@@ -418,10 +418,13 @@ export default {
       let r = 0;
       if (effect.value) {
         r = effect.value;
-        if (effect.stack) {
-          // 効果が重複するタイプ
-          // フルスペック時の効果を返す
-          r *= effect.stack.max;
+
+        // 効果が重複するタイプはフルスペック時の効果を返す
+        if (effect.multiply) {
+          r *= effect.multiply.max;
+        }
+        else if (effect.stack) {
+          r *= effect.stack;
         }
       }
       else if (effect.variable) {

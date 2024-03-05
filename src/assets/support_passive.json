@@ -1379,9 +1379,7 @@
         "type": "アタック",
         "value": 5,
         "duration": 2,
-        "stack": {
-          "max": 4
-        },
+        "stack": 4,
         "target": "自身",
         "propagate": {
           "target": "自身",
@@ -1596,9 +1594,7 @@
         "type": "アタック",
         "value": 5,
         "duration": 2,
-        "stack": {
-          "max": 4
-        },
+        "stack": 4,
         "target": "自身",
         "propagate": {
           "target": "自身",
@@ -1972,9 +1968,7 @@
         "type": "アタック",
         "value": 5,
         "duration": 2,
-        "stack": {
-          "max": 4
-        },
+        "stack": 4,
         "target": "自身",
         "propagate": {
           "target": "自身",
@@ -1988,9 +1982,7 @@
         "type": "ディフェンス",
         "value": 5,
         "duration": 2,
-        "stack": {
-          "max": 4
-        },
+        "stack": 4,
         "target": "自身",
         "propagate": {
           "target": "自身",
@@ -2004,9 +1996,7 @@
         "type": "マジック",
         "value": 5,
         "duration": 2,
-        "stack": {
-          "max": 4
-        },
+        "stack": 4,
         "target": "自身",
         "propagate": {
           "target": "自身",
@@ -2020,9 +2010,7 @@
         "type": "レジスト",
         "value": 5,
         "duration": 2,
-        "stack": {
-          "max": 4
-        },
+        "stack": 4,
         "target": "自身",
         "propagate": {
           "target": "自身",
@@ -2036,9 +2024,7 @@
         "type": "テクニック",
         "value": 5,
         "duration": 2,
-        "stack": {
-          "max": 4
-        },
+        "stack": 4,
         "target": "自身",
         "propagate": {
           "target": "自身",
@@ -2538,9 +2524,7 @@
         "type": "アタック",
         "value": 5,
         "duration": 2,
-        "stack": {
-          "max": 4
-        },
+        "stack": 4,
         "target": "自身",
         "propagate": {
           "target": "自身",
@@ -2551,9 +2535,7 @@
         "type": "ディフェンス",
         "value": 5,
         "duration": 2,
-        "stack": {
-          "max": 4
-        },
+        "stack": 4,
         "target": "自身",
         "propagate": {
           "target": "自身",
@@ -3008,9 +2990,7 @@
         "type": "アタック",
         "value": 8,
         "duration": 3,
-        "stack": {
-          "max": 3
-        },
+        "stack": 3,
         "propagate": {
           "target": "自身",
           "timing": "戦闘前"
@@ -3020,9 +3000,7 @@
         "type": "クリティカル率",
         "value": 8,
         "duration": 3,
-        "stack": {
-          "max": 3
-        },
+        "stack": 3,
         "propagate": {
           "target": "自身",
           "timing": "戦闘前"
