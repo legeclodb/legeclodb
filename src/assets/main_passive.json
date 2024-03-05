@@ -1392,7 +1392,7 @@
     ],
     "areaDamage": [
       {
-        "damageRate": 0.3,
+        "rate": 0.3,
         "area": 2,
         "timing": "行動後",
         "condition": {
@@ -2784,7 +2784,7 @@
     ],
     "areaDamage": [
       {
-        "damageRate": 0.2,
+        "rate": 0.2,
         "area": 2,
         "timing": "行動後"
       }
@@ -2810,7 +2810,7 @@
     ],
     "areaDamage": [
       {
-        "damageRate": 0.3,
+        "rate": 0.3,
         "area": 3,
         "timing": "行動後"
       }

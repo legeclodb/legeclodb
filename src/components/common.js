@@ -1042,6 +1042,9 @@ export default {
         addTag(`範囲攻撃(自分中心)`);
       }
 
+      if (skill.shield) {
+        addTag(`シールド付与`);
+      }
       if (skill.heal) {
         for (const heal of skill.heal) {
           if (heal.target == "全体") {
@@ -1102,8 +1105,18 @@ export default {
       }
 
       const buffToS = (effectCategory, effect) => {
-        if (effect.type == "トークン")
-          return `トークン付与`;
+        if (effect.type == "トークン") {
+          let r = "トークン付与";
+          let target = effect.propagate?.target;
+          if (target == "自身")
+            r += "(自身)";
+          else if (target == "味方全体")
+            r += "(味方)";
+          else if (target == "攻撃対象")
+            r += "(敵)";
+          return r;
+        }
+
         if (params.tagFilter && !params.tagFilter(skill, effectCategory, effect))
           return [];
 

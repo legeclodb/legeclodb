@@ -373,13 +373,24 @@
 
     "areaDamage": {
       "type": "object",
-      "required": [ "damageRate", "area" ],
+      "required": [ "rate", "area" ],
       "additionalProperties": false,
       "properties": {
-        "damageRate": { "type": [ "number", "array" ] },
+        "rate": { "type": [ "number", "array" ] },
         "target": { "$ref": "#/$defs/targetType" },
         "area": { "$ref": "#/$defs/areaType" },
         "timing": { "$ref": "#/$defs/timingType" },
+        "condition": { "$ref": "#/$defs/condition" }
+      }
+    },
+
+    "shield": {
+      "type": "object",
+      "required": [ "base", "area" ],
+      "additionalProperties": false,
+      "properties": {
+        "base": { "$ref": "#/$defs/statusType" },
+        "rate": { "type": [ "number", "array" ] },
         "condition": { "$ref": "#/$defs/condition" }
       }
     },
@@ -621,6 +632,10 @@
       "areaDamage": {
         "type": "array",
         "items": { "$ref": "#/$defs/areaDamage" }
+      },
+      "shield": {
+        "type": "array",
+        "items": { "$ref": "#/$defs/shield" }
       },
       "heal": {
         "type": "array",
