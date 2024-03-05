@@ -23,6 +23,8 @@ export function evaluateCondition(ctx, cond)
   const condExp = function (val1, cmp, val2) {
     if (val1 == null)
       val1 = 0;
+    if (typeof (val2) == "string")
+      val2 = ctx[val2];
     const table = {
       "==": () => val1 == val2,
       ">": () => val1 > val2,
