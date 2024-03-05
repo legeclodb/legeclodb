@@ -29,7 +29,7 @@
       "enum": [ "平地", "草原", "森", "水中", "荒地", "崖", "空", "山岳", "洞窟", "砂地", "砂丘", "積雪", "置物", "砦", "壁", "柵", "溶岩" ]
     },
     "targetEnum": {
-      "enum": [ "自身", "自身(メイン)", "自身(サポート)", "味方(低HP)", "単体", "範囲", "範囲(ランダム)", "敵味方全体", "味方全体", "敵全体", "スキル対象", "攻撃対象" ]
+      "enum": [ "自身", "自身(メイン)", "自身(サポート)", "味方(低HP)", "単体", "範囲", "範囲(ランダム)", "味方全体", "敵全体", "スキル対象", "攻撃対象", "召喚元", "召喚先" ]
     },
     "targetType": {
       "anyOf": [
@@ -288,7 +288,7 @@
           "items": { "$ref": "#/$defs/unitType" }
         },
         "onClassAdvantage": { "type": "boolean" },
-        "onEffect": { "type": "string" },
+        "onEffect": { "type": "array" },
         "onTerrain": {
           "type": "array",
           "uniqueItems": true,
@@ -326,7 +326,7 @@
         "variable": { "$ref": "#/$defs/variableStatusRate" },
         "duration": { "type": [ "number", "array" ] },
         "ephemeral": { "type": "boolean" },
-        "target": { "$ref": "#/$defs/targetType" },
+        "target": { "$ref": "#/$defs/targetEnum" },
         "area": { "$ref": "#/$defs/areaType" },
         "unitCount": { "type": "number" },
         "amount": { "type": [ "number", "string" ] },
@@ -340,7 +340,7 @@
           "required": [ "target" ],
           "additionalProperties": false,
           "properties": {
-            "target": { "$ref": "#/$defs/targetType" },
+            "target": { "$ref": "#/$defs/targetEnum" },
             "area": { "$ref": "#/$defs/areaType" },
             "unitCount": { "type": "number" },
             "timing": { "$ref": "#/$defs/timingType" },
@@ -386,7 +386,7 @@
 
     "shield": {
       "type": "object",
-      "required": [ "base", "area" ],
+      "required": [ "base", "rate" ],
       "additionalProperties": false,
       "properties": {
         "base": { "$ref": "#/$defs/statusType" },

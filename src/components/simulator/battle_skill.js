@@ -66,6 +66,18 @@ export function evaluateCondition(ctx, cond)
     }
   }
 
+  const queryFuncPros = [
+    ["onEffect", "isOnEffect"],
+  ];
+  for (const [cname, fname] of queryFuncPros) {
+    if (cname in cond) {
+      if (!ctx[fname](cond[cname])) {
+        ok = false;
+        break;
+      }
+    }
+  }
+
   const binaryExpressionProps = [
     "turn",
     "hp", "targetHp",

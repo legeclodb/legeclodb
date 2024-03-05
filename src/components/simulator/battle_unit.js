@@ -418,6 +418,14 @@ export class SimUnit {
     }
     return r;
   }
+  isOnEffect(skillIds) {
+    for (let e of this.effects) {
+      if (skillIds.includes(e.parent.uid)) {
+        return true;
+      }
+    }
+    return false;
+  }
 
   evaluateEffects(ctx) {
 
