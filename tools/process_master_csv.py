@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import os, json, jsbeautifier, csv, requests, datetime, re
+from time import sleep
 
 OverrideJson = True
 
@@ -387,7 +388,8 @@ def processCharacters(args):
         l = findByCid(chrCsv, cid)
 
         if not l:
-            raise Exception("ID に対応するキャラがいない。マスターデータ更新忘れ？")
+            print(f"ID {cid} に対応するキャラが CSV にない")
+            continue
 
         name = l["CharacterName"].replace('（', '(').replace('）', ')')
         if not "name" in ch:
@@ -474,16 +476,18 @@ def processCharacters(args):
     if args.lvCsv and args.starCsv:
         for ch in args.chrJson:
             cid = ch["uid"]
-            ch["statusLv"] = getStatusUpValues(findByCid(args.lvCsv, cid))
-            ch["statusStar"] = getStatusUpValues(findByCid(args.starCsv, cid))
+            if findByCid(chrCsv, cid):
+                ch["statusLv"] = getStatusUpValues(findByCid(args.lvCsv, cid))
+                ch["statusStar"] = getStatusUpValues(findByCid(args.starCsv, cid))
     elif args.lvStatusCsv:
         for ch in args.chrJson:
             cid = ch["uid"]
-            stats = {}
-            stats[1] = getStatusValues(findByCid(initStatusCsv, cid))
-            for v in filterByCid(args.lvStatusCsv, cid):
-                stats[int(v["Lv"])] = getStatusValues(v)
-            ch["statusLvs"] = stats
+            if findByCid(chrCsv, cid):
+                stats = {}
+                stats[1] = getStatusValues(findByCid(initStatusCsv, cid))
+                for v in filterByCid(args.lvStatusCsv, cid):
+                    stats[int(v["Lv"])] = getStatusValues(v)
+                ch["statusLvs"] = stats
 
     # スキルシートから各キャラのスキル取得
     if not isEnemy:
@@ -783,15 +787,15 @@ def processBattleCsv():
     def makeBattle(uid):
         return {
             "uid": uid,
-            "leftTop": [0, 0],
-            "rightDown": [0, 0],
+            "mapSize": [15, 15],
+            "turn": 5,
             "allies": [],
             "enemies": [],
             }
 
-    def massToInt2(mass):
+    def massToInt2(mass, offset = 1):
         m = re.match(r'(\d+),(\d+)', mass)
-        return [int(m.group(1)), int(m.group(2))] if m else None
+        return [int(m.group(1)) - offset, int(m.group(2)) - offset] if m else None
 
     battleList = readJson(f"{assetsDir}/battle.json")
     battle = None
@@ -802,8 +806,9 @@ def processBattleCsv():
             battle = findByUid(battleList, bid)
             if not battle:
                 battle = makeBattle(bid)
-                battleList.append(battle)
-            battle["mapSize"] = massToInt2(line["MapRangeRightDown"])
+                # battleList.append(battle)
+            battle["mapSize"] = massToInt2(line["MapRangeRightDown"], 0)
+            battle["turn"] = int(line["MaxTurn"]);
             battle["allies"] = []
             battle["enemies"] = []
 
@@ -830,7 +835,7 @@ def processBattleCsv():
 
             cid = line["CharacterId"]
             if cid:
-                mainOrSupport = line["CharacterType"] # 1: メイン 2: サポート
+                mainOrSupport = line["CharacterType"] # 1: メイン, 2: サポート, 4: NxN
                 dst = None
 
                 def fillCommonData():
@@ -838,7 +843,7 @@ def processBattleCsv():
                     dst["level"] = int(line["Level"])
                     dst["statusRate"] = list(map(lambda k: int(line[k]), corKeys))
 
-                if mainOrSupport == "1":
+                if mainOrSupport == "1" or mainOrSupport == "4":
                     dst = {}
                     unit["main"] = dst
                     fillCommonData()
