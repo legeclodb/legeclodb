@@ -3453,8 +3453,6 @@
         "type": "クリティカル率",
         "value": 20,
         "ephemeral": true,
-        "target": "自身",
-        "timing": "戦闘前",
         "condition": {
           "onRangedCombat": true
         }
@@ -3463,8 +3461,6 @@
         "type": "クリティカルダメージ倍率",
         "value": 20,
         "ephemeral": true,
-        "target": "自身",
-        "timing": "戦闘前",
         "condition": {
           "onRangedCombat": true
         }
@@ -3473,10 +3469,53 @@
         "type": "与ダメージ(スキル)",
         "value": 10,
         "ephemeral": true,
-        "target": "自身",
-        "timing": "戦闘前",
         "condition": {
           "onRangedCombat": true
+        }
+      }
+    ]
+  },
+  {
+    "uid": "2300100",
+    "icon": "sk_sp2100",
+    "name": "ちょっぴり背伸びをして",
+    "desc": "味方ターンでの戦闘時、その戦闘前、敵ユニットのレジスト-25%。",
+    "debuff": [
+      {
+        "type": "レジスト",
+        "value": 25,
+        "ephemeral": true,
+        "condition": {
+          "onOwnTurn": true
+        }
+      }
+    ]
+  },
+  {
+    "uid": "2300101",
+    "icon": "sk_sp2101",
+    "name": "風紀委員の慈悲",
+    "desc": "自ユニットのHPが80%以上のとき、自ユニットのアタック/クリティカル率+25%/クリティカルダメージ倍率+10%。",
+    "buff": [
+      {
+        "type": "アタック",
+        "value": 25,
+        "condition": {
+          "hp": [ ">=", 80 ]
+        }
+      },
+      {
+        "type": "クリティカル率",
+        "value": 25,
+        "condition": {
+          "hp": [ ">=", 80 ]
+        }
+      },
+      {
+        "type": "クリティカルダメージ倍率",
+        "value": 10,
+        "condition": {
+          "hp": [ ">=", 80 ]
         }
       }
     ]

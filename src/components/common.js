@@ -1257,36 +1257,42 @@ export default {
 
       if (skill.buff) {
         for (let v of skill.buff) {
-          setParent(v);
           v.isBuff = true;
-          setupSlot(v);
-          setupRandomTable(v);
-
+          if (!v.target && !skill.isActive) {
+            v.target = "自身";
+          }
           if (typeof (v.value) === 'number' && v.value < 0) {
             if (!skill.negativeEffects)
               skill.negativeEffects = [];
             skill.negativeEffects.push(v);
           }
+
+          setParent(v);
+          setupSlot(v);
+          setupRandomTable(v);
         }
       }
       if (skill.debuff) {
         for (let v of skill.debuff) {
-          setParent(v);
           v.isDebuff = true;
+
+          setParent(v);
           setupSlot(v);
           setupRandomTable(v);
         }
       }
       if (skill.statusEffects) {
         for (let v of skill.statusEffects) {
-          setParent(v);
           v.isStatusEffect = true;
+
+          setParent(v);
         }
       }
       if (skill.immune) {
         for (let v of skill.immune) {
-          setParent(v);
           v.isImmune = true;
+
+          setParent(v);
         }
       }
 
