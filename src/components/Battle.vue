@@ -734,6 +734,13 @@ export default {
               pf.setOccupied(self.allActiveUnits.filter(a => a.isPlayer && a.main.cid && a !== unit));
             }
             pf.setStart(unit.coord);
+            if (self.battleData.bossArea && unit === self.enemyUnits[0]) {
+              for (let c of self.cells) {
+                if (c.boss) {
+                  pf.setStart(c.coord);
+                }
+              }
+            }
             pf.buildPath(unit.move, unit.range);
             self.path = pf;
           },
@@ -1141,6 +1148,14 @@ export default {
       });
 
       this.enemyUnits = battle.enemies?.map(a => a.unit) ?? [];
+      if (battle.bossArea) {
+        for (let c of cells) {
+          if (battle.bossArea[c.coord[1]][c.coord[0]]) {
+            c.boss = this.enemyUnits[0];
+          }
+        }
+      }
+
       if (battle.allies) {
         for (let i = 0; i < battle.allies.length; ++i) {
           let ally = battle.allies[i];
@@ -1170,13 +1185,17 @@ export default {
     },
 
     findCellByCoord(coord) {
-      for (const c of this.cells) {
-        if (c.coord[0] == coord[0] && c.coord[1] == coord[1])
-          return c;
+      if (coord[0] < this.divX && coord[1] < this.divY) {
+        return this.cells[coord[1] * this.divX + coord[0]];
       }
       return null;
     },
     findUnitByCoord(coord) {
+      let c = this.findCellByCoord(coord); {
+        if (c?.boss) {
+          return c.boss;
+        }
+      }
       for (const u of this.allActiveUnits) {
         if (u.coord[0] == coord[0] && u.coord[1] == coord[1]) {
           return (!this.simulation || u.isActive) ? u : null;
@@ -1248,7 +1267,7 @@ export default {
       if (cell.coord[1] == this.divY - 1) {
         r.push("border-b");
       }
-      if (cell.obstacle) {
+      if (cell.obstacle && !cell.boss) {
         r.push("obstacle");
       }
 
@@ -1651,7 +1670,7 @@ export default {
 
   .target-cell {
     background: rgb(255, 90, 80) !important;
-    cursor: crosshair;
+    cursor: pointer;
   }
 
   .move-range {
@@ -1669,7 +1688,7 @@ export default {
   }
   .click-to-fire:hover {
     background: rgb(255, 90, 80);
-    cursor: crosshair;
+    cursor: pointer;
   }
 
   .enemy-list {
