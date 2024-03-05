@@ -420,7 +420,7 @@ export default {
         r = effect.value;
 
         // 効果が重複するタイプはフルスペック時の効果を返す
-        if (effect.multiply) {
+        if (effect.multiply?.max) {
           r *= effect.multiply.max;
         }
         else if (effect.stack) {

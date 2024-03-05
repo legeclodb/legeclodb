@@ -62,7 +62,7 @@
             </div>
           </div>
 
-          <div class="enemy-list">
+          <div ref="enemyList" class="enemy-list">
             <template v-for="unit in activeEnemyUnits">
               <div class="character" :class="{ 'highlighted': isUnitHighlighted(unit) }" :id="'unit_'+unit.fid" :key="unit.fid">
                 <div class="flex">
@@ -613,24 +613,6 @@ export default {
   },
 
   mounted() {
-    const divX = this.divX;
-    const divY = this.divY;
-    let cells = new Array(divX * divY);
-    for (let y = 0; y < divY; ++y) {
-      for (let x = 0; x < divX; ++x) {
-        let i = y * divX + x;
-        cells[i] = {
-          id: `c${this.zeroPad(x)}${this.zeroPad(y)}`,
-          coord: [x, y],
-        };
-      }
-    }
-    this.cells = cells;
-
-    let cellStyle = this.$refs.cells.style;
-    cellStyle.gridTemplateColumns = Array(divX).fill("50px").join(" ");
-    cellStyle.gridTemplateRows = Array(divY).fill("50px").join(" ");
-
     this.userName = localStorage.getItem(`userName`) ?? "";
 
     this.selectBattle(this.battleList.slice(-1)[0].uid);
@@ -742,6 +724,7 @@ export default {
         moveUnit: {
           buildPath(unit) {
             let pf = new lbt.PathFinder(self.divX, self.divY);
+            pf.setObstacles(self.cells.filter(c => c.obstacle));
             if (unit.isEnemy) {
               pf.setObstacles(self.allActiveUnits.filter(a => a.isPlayer && a.main.cid));
               pf.setOccupied(self.allActiveUnits.filter(a => a.isEnemy && a !== unit));
@@ -1125,24 +1108,49 @@ export default {
     },
 
     selectBattle(bid, clear = false) {
-      this.enemyUnits = [];
       const battle = this.battleList.find(a => a.uid == bid);
       if (!battle)
         return;
       this.battleId = bid;
       this.battleData = battle;
-      this.enemyUnits = battle.enemies.map(a => a.unit);
+
+      const divX = this.divX = battle.mapSize[0];
+      const divY = this.divY = battle.mapSize[1];
+      let cells = new Array(divX * divY);
+      for (let y = 0; y < divY; ++y) {
+        for (let x = 0; x < divX; ++x) {
+          let i = y * divX + x;
+          cells[i] = {
+            id: `c${this.zeroPad(x)}${this.zeroPad(y)}`,
+            coord: [x, y],
+          };
+        }
+      }
+      this.cells = cells;
+
+      let cellStyle = this.$refs.cells.style;
+      cellStyle.gridTemplateColumns = Array(divX).fill("50px").join(" ");
+      cellStyle.gridTemplateRows = Array(divY).fill("50px").join(" ");
+
+      // enemyList の高さをグリッドに合わせる
+      this.$refs.enemyList.style.maxHeight = "0px";
+      this.$nextTick(() => {
+        this.$refs.enemyList.style.maxHeight = `${this.$refs.cells.clientHeight}px`;
+      });
+
+      this.enemyUnits = battle.enemies?.map(a => a.unit) ?? [];
+      if (battle.allies) {
+        for (let i = 0; i < battle.allies.length; ++i) {
+          let ally = battle.allies[i];
+          ally.unit = this.playerUnits[i];
+          ally.unit.fid = ally.fid;
+          ally.unit.phase = ally.phase;
+          ally.unit.coord = ally.coord;
+        }
+      }
 
       if (clear) {
         this.selectPhase("0", clear);
-      }
-
-      for (let i = 0; i < battle.allies.length; ++i) {
-        let ally = battle.allies[i];
-        ally.unit = this.playerUnits[i];
-        ally.unit.fid = ally.fid;
-        ally.unit.phase = ally.phase;
-        ally.unit.coord = ally.coord;
       }
     },
 
@@ -1237,6 +1245,9 @@ export default {
       }
       if (cell.coord[1] == this.divY - 1) {
         r.push("border-b");
+      }
+      if (cell.obstacle) {
+        r.push("obstacle");
       }
 
       let tool = this.currentTool;
@@ -1616,6 +1627,9 @@ export default {
   .border-b {
     border-bottom: 1px solid rgb(180,185,195);
   }
+  .grid-cell.obstacle {
+    background: rgb(180,185,195);
+  }
 
   .enemy-cell {
     background: rgb(255, 160, 160);
@@ -1657,7 +1671,6 @@ export default {
   }
 
   .enemy-list {
-    max-height: 750px;
     overflow-y: scroll;
   }
   .enemy-panel {

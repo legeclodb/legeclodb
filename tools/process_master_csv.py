@@ -788,7 +788,7 @@ def processBattleCsv():
 
     def massToInt2(mass):
         m = re.match(r'(\d+),(\d+)', mass)
-        return [int(m.group(1)) - 1, int(m.group(2)) - 1] if m else None
+        return [int(m.group(1)), int(m.group(2))] if m else None
 
     battleList = readJson(f"{assetsDir}/battle.json")
     battle = None
@@ -800,8 +800,7 @@ def processBattleCsv():
             if not battle:
                 battle = makeBattle(bid)
                 battleList.append(battle)
-            battle["leftTop"] = massToInt2(line["MapRangeLeftTop"])
-            battle["rightDown"] = massToInt2(line["MapRangeRightDown"])
+            battle["mapSize"] = massToInt2(line["MapRangeRightDown"])
             battle["allies"] = []
             battle["enemies"] = []
 

@@ -2,8 +2,7 @@
   {
     "uid": "TestField1",
     "name": "実験場",
-    "leftTop": [ 0, 0 ],
-    "rightDown": [ 14, 14 ],
+    "mapSize": [ 15, 15 ],
     "allies": [
       {
         "fid": "A01",
@@ -49,8 +48,7 @@
   {
     "uid": "Guild_Ex_Zenith_18",
     "name": "2023/08/16 ランサー (ソーサラー接待)",
-    "leftTop": [ 0, 0 ],
-    "rightDown": [ 14, 14 ],
+    "mapSize": [ 15, 15 ],
     "allies": [
       {
         "fid": "A01",
@@ -419,8 +417,7 @@
   {
     "uid": "Guild_Ex_Zenith_19",
     "name": "2023/09/13 シューター (アサシン接待)",
-    "leftTop": [ 0, 0 ],
-    "rightDown": [ 14, 14 ],
+    "mapSize": [ 15, 15 ],
     "allies": [
       {
         "fid": "A01",
@@ -789,8 +786,7 @@
   {
     "uid": "Guild_Ex_Zenith_20",
     "name": "2023/10/11 アサシン (セイント接待)",
-    "leftTop": [ 0, 0 ],
-    "rightDown": [ 14, 14 ],
+    "mapSize": [ 15, 15 ],
     "allies": [
       {
         "fid": "A01",
@@ -1159,8 +1155,7 @@
   {
     "uid": "Guild_Ex_Zenith_21",
     "name": "2023/11/08 ランサー (ソルジャー接待)",
-    "leftTop": [ 0, 0 ],
-    "rightDown": [ 14, 14 ],
+    "mapSize": [ 15, 15 ],
     "allies": [
       {
         "fid": "A01",
@@ -1529,8 +1524,7 @@
   {
     "uid": "Guild_Ex_Zenith_22",
     "name": "2023/12/21 アサシン (エアリアル接待)",
-    "leftTop": [ 0, 0 ],
-    "rightDown": [ 14, 14 ],
+    "mapSize": [ 15, 15 ],
     "allies": [
       {
         "fid": "A01",
@@ -1889,8 +1883,7 @@
   {
     "uid": "Guild_Ex_Zenith_23",
     "name": "2024/01/17 エアリアル (シューター接待)",
-    "leftTop": [ 0, 0 ],
-    "rightDown": [ 14, 14 ],
+    "mapSize": [ 15, 15 ],
     "allies": [
       {
         "fid": "A01",
@@ -2259,8 +2252,7 @@
   {
     "uid": "Guild_Ex_Zenith_24",
     "name": "2024/02/14 ソルジャー (ライダー接待)",
-    "leftTop": [ 0, 0 ],
-    "rightDown": [ 14, 14 ],
+    "mapSize": [ 15, 15 ],
     "allies": [
       {
         "fid": "A01",
@@ -2625,5 +2617,12 @@
         }
       }
     ]
+  },
+  {
+    "uid": "Guild_Ex_Zenith_25",
+    "name": "2024/03/13 グリフォン",
+    "mapSize": [ 25, 25 ],
+    "allies": [],
+    "enemies": []
   }
 ]
