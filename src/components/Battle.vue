@@ -133,7 +133,7 @@
       </div>
     </div>
 
-    <div v-if="simulation" class="content" style="margin-top: 20px" @click.stop="">
+    <div v-if="simulation" class="content sim-commands" @click.stop="">
       <div class="unit-panel">
         <div v-if="actionsToSelect.length" style="margin-bottom: 20px">
           <b-button size="sm" style="width: 45px; height: 45px; margin-right: 5px;" @click="pushTool(tools.confirm);">
@@ -1116,6 +1116,7 @@ export default {
 
       const divX = this.divX = battle.mapSize[0];
       const divY = this.divY = battle.mapSize[1];
+      const terrain = battle.terrain;
       let cells = new Array(divX * divY);
       for (let y = 0; y < divY; ++y) {
         for (let x = 0; x < divX; ++x) {
@@ -1123,6 +1124,7 @@ export default {
           cells[i] = {
             id: `c${this.zeroPad(x)}${this.zeroPad(y)}`,
             coord: [x, y],
+            obstacle: terrain ? terrain[y][x] != 0 : false,
           };
         }
       }
@@ -1725,6 +1727,14 @@ export default {
     font-weight: bold;
     text-align: center;
     background-color: rgba(0, 0, 0, 0.5);
+  }
+
+  .sim-commands {
+    position: fixed;
+    bottom: 10px;
+    border-radius: 0.3rem;
+    background: rgba(0, 0, 0, 0.4);
+    padding: 5px;
   }
 </style>
 <style>

@@ -673,11 +673,14 @@ def processItems(itemJson):
 def readJson(path):
     return json.load(open(path, encoding="utf-8"))
 
+def jsonize(obj):
+    options = jsbeautifier.default_options()
+    options.indent_size = 2
+    return jsbeautifier.beautify(json.dumps(obj, ensure_ascii=False), options)
+
 def writeJson(path, obj):
     with open(path, 'w', encoding="utf-8") as f:
-        options = jsbeautifier.default_options()
-        options.indent_size = 2
-        f.write(jsbeautifier.beautify(json.dumps(obj, ensure_ascii=False), options))
+        f.write(jsonize(obj))
 
 def dumpSkillData():
     writeJson(f"{outDir}/main_active_raw.json", mainActiveCsv)
@@ -930,8 +933,16 @@ def processBattleCsv():
 
 
 
+def processTerrainCsv():
+    terrainTable = {}
+    for t in readCsvTable(f"{csvDir}/BattleCommon/Terrain.csv"):
+        terrainTable[t["Id"]] = 0 if int(t["MovingCostDefault"]) < 99 else 1
+    field = []
+    for line in readCsv(f"{csvDir}/SimulationMap/Griffon_field.csv"):
+        field.append(list(map(lambda v: terrainTable[v], line)))
+    print(jsonize(field))
 
-
+#processTerrainCsv()
 
 
 os.makedirs("tmp/icon", exist_ok = True)
