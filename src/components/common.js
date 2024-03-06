@@ -967,6 +967,51 @@ export default {
         miscTags.push(tag);
       };
 
+      if (skill.isAttackSkill) {
+        if (skill.isSingleTarget) {
+          if (skill.isMainSkill) {
+            let opt = "";
+            if (skill.positionManipulate?.find(a => a.type == "引き寄せ")) {
+              opt = "(非戦闘)";
+            }
+            addTag(`単体攻撃${opt}`);
+            if (!opt && skill.range >= 3) {
+              addTag(`長射程攻撃`);
+            }
+          }
+          else {
+            addTag(`単体攻撃`);
+          }
+        }
+        else if (skill.isAreaTarget) {
+          const add = (opt) => {
+            if (skill.areaShape != "直線" && (skill.area >= 4 || (skill.area >= 3 && skill.areaShape == "周囲"))) {
+              addTag(`超広範囲攻撃${opt}`);
+            }
+            addTag(`範囲攻撃${opt}`);
+          };
+          if (skill.isRangedTarget) {
+            add("(中心指定)");
+          }
+          else if (skill.isRadialAreaTarget) {
+            add("(自分中心)");
+          }
+          else if (skill.isDirectionalAreaTarget) {
+            add("(直線)");
+          }
+        }
+        if (skill.damageRateSp) {
+          for (const v of skill.damageRateSp) {
+            for (const targetClass of v.condition?.onTargetClass ?? []) {
+              addTag(`特効(${targetClass})`);
+            }
+          }
+        }
+      }
+      if (skill.isPassive && skill.areaDamage) {
+        addTag(`範囲攻撃(自分中心)`);
+      }
+
       if (skill.multiAction) {
         let postfix = "";
         for (const ma of skill.multiAction) {
@@ -1037,9 +1082,6 @@ export default {
         if (skill.fixedDamage.find(a => !(typeof (target) == "string" && a.target?.startsWith("自身")))) {
           addTag(`固定ダメージ`);
         }
-      }
-      if (skill.areaDamage) {
-        addTag(`範囲攻撃(自分中心)`);
       }
 
       if (skill.shield) {
@@ -1189,8 +1231,15 @@ export default {
             skill.isRadialAreaTarget = true;
           }
         }
-        if (skill.area && skill.area != "単体") {
+        else if (typeof (skill.range) == "number") {
+          skill.isRangedTarget = true;
+        }
+
+        if (typeof (skill.area) == "number") {
           skill.isAreaTarget = true;
+        }
+        if (skill.damageRate) {
+          skill.isAttackSkill = true;
         }
 
         const hasAreaEffect = (effects) => {

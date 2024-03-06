@@ -579,8 +579,26 @@
         "type": { "enum": [ "引き寄せ", "後退", "テレポート" ] },
         "amount": { "type": "number" }
       }
-    }
+    },
 
+    "damageRateSp": {
+      "type": "object",
+      "required": [ "value", "condition" ],
+      "additionalProperties": false,
+      "properties": {
+        "value": {
+          "anyOf": [
+            { "type": "number" },
+            {
+              "type": "array",
+              "items": { "type": "number" }
+            }
+          ]
+        },
+        "condition": { "$ref": "#/$defs/condition" },
+        "todo": { "type": "string" }
+      }
+    }
   },
   "type": "array",
   "items": {
@@ -611,21 +629,8 @@
         ]
       },
       "damageRateSp": {
-        "type": "object",
-        "required": [ "value", "condition" ],
-        "additionalProperties": false,
-        "properties": {
-          "value": {
-            "anyOf": [
-              { "type": "number" },
-              {
-                "type": "array",
-                "items": { "type": "number" }
-              }
-            ]
-          },
-          "condition": { "$ref": "#/$defs/condition" }
-        }
+        "type": "array",
+        "items": { "$ref": "#/$defs/damageRateSp" }
       },
       "fixedDamage": {
         "type": "array",
