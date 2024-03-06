@@ -743,25 +743,25 @@ def processEquipments():
 
 def processEnemyMainChr():
     args = ChrArgs()
-    args.chrJson = readJson(f"{assetsDir}/enemy_main_characters.json")
+    args.chrJson = readJson(f"{assetsDir}/npc_main_characters.json")
     args.activeJson = readJson(f"{assetsDir}/main_active.json")
     args.passiveJson = readJson(f"{assetsDir}/main_passive.json")
     args.talentJson = readJson(f"{assetsDir}/main_talents.json")
     args.lvStatusCsv = enemyMainLvStatusCsv
     processCharacters(args)
-    writeJson(f"{outDir}/enemy_main_characters.json", args.chrJson)
+    writeJson(f"{outDir}/npc_main_characters.json", args.chrJson)
     writeJson(f"{outDir}/main_active.json", args.activeJson)
     writeJson(f"{outDir}/main_passive.json", args.passiveJson)
     writeJson(f"{outDir}/main_talents.json", args.talentJson)
 
 def processEnemySupChr():
     args = ChrArgs()
-    args.chrJson = readJson(f"{assetsDir}/enemy_support_characters.json")
+    args.chrJson = readJson(f"{assetsDir}/npc_support_characters.json")
     args.activeJson = readJson(f"{assetsDir}/support_active.json")
     args.passiveJson = readJson(f"{assetsDir}/support_passive.json")
     args.lvStatusCsv = enemySupportLvStatusCsv
     processCharacters(args)
-    writeJson(f"{outDir}/enemy_support_characters.json", args.chrJson)
+    writeJson(f"{outDir}/npc_support_characters.json", args.chrJson)
     writeJson(f"{outDir}/support_active.json", args.activeJson)
     writeJson(f"{outDir}/support_passive.json", args.passiveJson)
 
@@ -770,12 +770,12 @@ def processBattleCsv():
     eventCsv = readCsvTable(f"{csvDir}/SimulationEvent/SimulationEvent.csv")
     writeJson(f"{outDir}/guild_ex2.json", battleCsv)
 
-    mainJson = readJson(f"{assetsDir}/enemy_main_characters.json")
+    mainJson = readJson(f"{assetsDir}/npc_main_characters.json")
     mainActiveJson = readJson(f"{assetsDir}/main_active.json")
     mainPassiveJson = readJson(f"{assetsDir}/main_passive.json")
     mainTalentJson = readJson(f"{assetsDir}/main_talents.json")
 
-    supJson = readJson(f"{assetsDir}/enemy_support_characters.json")
+    supJson = readJson(f"{assetsDir}/npc_support_characters.json")
     supActiveJson = readJson(f"{assetsDir}/support_active.json")
     supPassiveJson = readJson(f"{assetsDir}/support_passive.json")
 
@@ -918,7 +918,7 @@ def processBattleCsv():
         args.passiveJson = mainPassiveJson
         args.talentJson = mainTalentJson
         addSkills(args, mainSkillIds)
-        writeJson(f"{outDir}/enemy_main_characters.json", args.chrJson)
+        writeJson(f"{outDir}/npc_main_characters.json", args.chrJson)
         writeJson(f"{outDir}/main_active.json", args.activeJson)
         writeJson(f"{outDir}/main_passive.json", args.passiveJson)
         writeJson(f"{outDir}/main_talents.json", args.talentJson)
@@ -929,7 +929,7 @@ def processBattleCsv():
         args.activeJson = supActiveJson
         args.passiveJson = supPassiveJson
         addSkills(args, supSkillIds)
-        writeJson(f"{outDir}/enemy_support_characters.json", args.chrJson)
+        writeJson(f"{outDir}/npc_support_characters.json", args.chrJson)
         writeJson(f"{outDir}/support_active.json", args.activeJson)
         writeJson(f"{outDir}/support_passive.json", args.passiveJson)
         processEnemySupChr()

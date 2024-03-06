@@ -438,8 +438,6 @@
 
 <script>
 import Navigation from './Navigation.vue'
-import jsonEnemyMainChrs from '../assets/enemy_main_characters.json'
-import jsonEnemySupportChrs from '../assets/enemy_support_characters.json'
 import jsonBattle from '../assets/battle.json'
 import commonjs from "./common.js";
 import lookupjs from "./simulator/lookup.js";
@@ -568,17 +566,12 @@ export default {
 
     this.setupDB();
 
-    this.enemyMainChrs = structuredClone(jsonEnemyMainChrs).filter(a => !a.hidden);
-    this.enemySupChrs = structuredClone(jsonEnemySupportChrs).filter(a => !a.hidden);
-    this.setupCharacters(this.enemyMainChrs, this.mainActive, this.mainPassive, this.mainTalents);
-    this.setupCharacters(this.enemySupChrs, this.supActive, this.supPassive);
-
     // 全クエストの全敵をここでセットアップ (大して重くもないのでとりあえず…)
     this.battleList = structuredClone(jsonBattle);
     for (let battle of this.battleList) {
       for (let enemy of battle.enemies) {
         {
-          const chr = this.enemyMainChrs.find(c => c.uid == enemy.main.cid);
+          const chr = this.npcMainChrs.find(c => c.uid == enemy.main.cid);
           lbt.mergeChrData(enemy.main, chr);
           enemy.main.skills = [
             this.searchTableWithUid.get(enemy.main.talent),
@@ -587,7 +580,7 @@ export default {
           enemy.main.status = this.getNPCChrStatus(chr, enemy.main.level, enemy.main.statusRate);
         }
         if (enemy.support) {
-          const chr = this.enemySupChrs.find(c => c.uid == enemy.support.cid);
+          const chr = this.npcSupChrs.find(c => c.uid == enemy.support.cid);
           lbt.mergeChrData(enemy.support, chr);
           enemy.support.status = this.getNPCChrStatus(chr, enemy.support.level, enemy.support.statusRate);
         }

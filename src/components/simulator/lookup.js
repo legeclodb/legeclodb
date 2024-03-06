@@ -6,6 +6,8 @@ import jsonMainChrs from '../../assets/main_characters.json'
 import jsonSupportActive from '../../assets/support_active.json'
 import jsonSupportPassive from '../../assets/support_passive.json'
 import jsonSupportChrs from '../../assets/support_characters.json'
+import jsonNpcMainChrs from '../../assets/npc_main_characters.json'
+import jsonNpcSupportChrs from '../../assets/npc_support_characters.json'
 import jsonItems from '../../assets/items.json'
 
 export default {
@@ -89,17 +91,19 @@ export default {
       g.mainActive = structuredClone(jsonMainActive);
       g.mainPassive = structuredClone(jsonMainPassive);
       g.mainTalents = structuredClone(jsonMainTalents);
-      g.mainChrs = structuredClone(jsonMainChrs).filter(a => !a.hidden);
-
       g.supActive = structuredClone(jsonSupportActive);
       g.supPassive = structuredClone(jsonSupportPassive);
+      g.mainChrs = structuredClone(jsonMainChrs).filter(a => !a.hidden);
+      g.npcMainChrs = structuredClone(jsonNpcMainChrs).filter(a => !a.hidden);
       g.supChrs = structuredClone(jsonSupportChrs).filter(a => !a.hidden);
-
+      g.npcSupChrs = structuredClone(jsonNpcSupportChrs).filter(a => !a.hidden);
       g.items = structuredClone(jsonItems).filter(a => !a.hidden);
 
-      this.setupCharacters(g.mainChrs, g.mainActive, g.mainPassive, g.mainTalents);
-      this.setupCharacters(g.supChrs, g.supActive, g.supPassive);
-      this.setupItems(g.items);
+      g.setupCharacters(g.npcMainChrs, g.mainActive, g.mainPassive, g.mainTalents, { npc: g.npcMainChrs });
+      g.setupCharacters(g.mainChrs, g.mainActive, g.mainPassive, g.mainTalents, { npc: g.npcMainChrs });
+      g.setupCharacters(g.npcSupChrs, g.supActive, g.supPassive);
+      g.setupCharacters(g.supChrs, g.supActive, g.supPassive);
+      g.setupItems(g.items);
 
       g.mainChrs.sort((a, b) => b.date.localeCompare(a.date));
       g.supChrs.sort((a, b) => b.date.localeCompare(a.date));

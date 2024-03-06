@@ -405,6 +405,7 @@ import jsonActive from '../assets/main_active.json'
 import jsonPassive from '../assets/main_passive.json'
 import jsonTalents from '../assets/main_talents.json'
 import jsonCharacters from '../assets/main_characters.json'
+import jsonNpcMainChrs from '../assets/npc_main_characters.json'
 import jsonConstants from '../assets/constants.json'
 import common from "./common"
 import * as lut from './utils.js'
@@ -421,6 +422,7 @@ export default {
       active: jsonActive,
       passive: jsonPassive,
       talents: jsonTalents,
+      npc: jsonNpcMainChrs,
       characters: jsonCharacters,
       constants: jsonConstants,
 
@@ -631,7 +633,8 @@ export default {
       this.active = structuredClone(this.active);
       this.passive = structuredClone(this.passive);
       this.talents = structuredClone(this.talents);
-      this.characters = structuredClone(this.characters).filter(a => !a.hidden);
+      this.npc = structuredClone(this.npc);
+      this.characters = structuredClone(this.characters);
 
       const tagFilter = (skill, effectCategory, effect) => {
         if (effectCategory == "バフ") {
@@ -647,11 +650,13 @@ export default {
         }
         return true;
       };
-      this.setupCharacters(this.characters, this.active, this.passive, this.talents,
-        {
-          includeSkillEffectTags: true,
-          tagFilter: tagFilter
-        });
+      const options = {
+        npc: this.npc,
+        includeSkillEffectTags: true,
+        tagFilter: tagFilter
+      };
+      this.setupCharacters(this.npc, this.active, this.passive, this.talents, options);
+      this.setupCharacters(this.characters, this.active, this.passive, this.talents, options);
 
       let chrId = 0;
       for (let chr of this.characters) {

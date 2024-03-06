@@ -390,6 +390,7 @@ import MessageBoard from './parts/MessageBoard.vue'
 import jsonMainActive from '../assets/main_active.json'
 import jsonMainPassive from '../assets/main_passive.json'
 import jsonMainTalents from '../assets/main_talents.json'
+import jsonNpcMainChrs from '../assets/npc_main_characters.json'
 import jsonMainChrs from '../assets/main_characters.json'
 import jsonSupportActive from '../assets/support_active.json'
 import jsonSupportPassive from '../assets/support_passive.json'
@@ -466,13 +467,15 @@ export default {
     this.mainActive = structuredClone(jsonMainActive);
     this.mainPassive = structuredClone(jsonMainPassive);
     this.mainTalents = structuredClone(jsonMainTalents);
+    this.npcMainChrs = structuredClone(jsonNpcMainChrs);
     this.mainChrs = structuredClone(jsonMainChrs);
     this.supActive = structuredClone(jsonSupportActive);
     this.supPassive = structuredClone(jsonSupportPassive);
     this.supChrs = structuredClone(jsonSupportChrs);
     this.items = structuredClone(jsonItems);
 
-    this.setupCharacters(this.mainChrs, this.mainActive, this.mainPassive, this.mainTalents);
+    this.setupCharacters(this.npcMainChrs, this.mainActive, this.mainPassive, this.mainTalents, { npc: this.npcMainChrs });
+    this.setupCharacters(this.mainChrs, this.mainActive, this.mainPassive, this.mainTalents, { npc: this.npcMainChrs });
     this.setupCharacters(this.supChrs, this.supActive, this.supPassive);
     this.setupItems(this.items);
 

@@ -42,6 +42,8 @@ export default {
         "100",
         "全て",
       ],
+
+      skillTable: new Map(),
     }
   },
 
@@ -1216,6 +1218,11 @@ export default {
     },
 
     setupSkill(skill, params) {
+      if (this.skillTable.get(skill.uid)) {
+        return;
+      }
+      this.skillTable.set(skill.uid, skill);
+
       if (skill.isActive) {
         if (skill.area == "単体") {
           skill.isSingleTarget = true;
@@ -1261,6 +1268,7 @@ export default {
         }
         if (skill.summon) {
           skill.isTargetCell = true;
+          skill.summon = skill.summon.map(uid => params.npc.find(npc => npc.uid == uid));
         }
       }
 
@@ -1391,6 +1399,7 @@ export default {
 
     // params:
     // {
+    //   npc: [], // 召喚ユニット検索用
     //   includeSelfTags: bool,
     //   includeSkillEffectTags: bool,
     //   includeAreaTags: bool,
@@ -1422,10 +1431,8 @@ export default {
           s.isSupportSkill = true;
       }
 
-      let skillTable = new Map();
       for (let s of [...activeSkills, ...passiveSkills, ...talents]) {
         this.setupSkill(s, params);
-        skillTable.set(s.uid, s);
       }
 
       const grabSkill = (id, chr) => {
@@ -1433,7 +1440,7 @@ export default {
           return id;
         }
 
-        let skill = skillTable.get(id);
+        let skill = this.skillTable.get(id);
         if (!skill) {
           console.error(`skill not found: ${id}`);
           return null;
@@ -1498,42 +1505,29 @@ export default {
         if (chr.supportType)
           chr.supportTypeId = consts.supportTypes.findIndex(v => v == chr.supportType);
 
-        const handleSummons = (skills) => {
-          for (let s of skills) {
-            if (Array.isArray(s.summon) && (typeof s.summon[0]) == "string") {
-              s.summon = s.summon.map(uid => chr.summon.find(sch => sch.uid == uid));
-            }
-          }
-        };
-
         if (chr.skills) {
           chr.skills = chr.skills.flatMap(id => grabSkill(id, chr));
-          if (chr.summon) {
-            for (let s of chr.summon) {
-              s.talent = grabSkill(s.talent, chr);
-              s.skills = s.skills.flatMap(id => grabSkill(id, chr));
-              if (!s.icon) {
-                s.icon = s.uid;
-              }
-            }
-            Object.defineProperty(chr, 'baseSkills', {
-              configurable: true,
-              get: () => chr.skills
-            });
+          chr.skillsAll = chr.skills;
 
-            handleSummons(chr.skills);
+          if (chr.skills.find(a => a.summon)) {
+            Object.defineProperty(chr, 'summon', {
+              configurable: true,
+              get: () => chr.skills.flatMap(a => a.summon ?? [])
+            });
             Object.defineProperty(chr, 'summonAll', {
               configurable: true,
-              get: () => chr.summon
+              get: () => chr.skillsAll.flatMap(a => a.summon ?? [])
             });
           }
         }
-
         if (chr.engage?.skills) {
+          chr.skillsAll = [...chr.skills];
           chr.engage.skills = chr.engage.skills.flatMap(id => grabSkill(id, chr));
+
           for (let i = 0; i < chr.skills.length; ++i) {
             if (chr.engage.skills[i] !== chr.skills[i]) {
               chr.engage.skills[i].isEngageSkill = true;
+              chr.skillsAll.push(chr.engage.skills[i]);
             }
           }
           this.$set(chr.engage, 'enabled', false);
@@ -1547,20 +1541,6 @@ export default {
             configurable: true,
             get: () => chr._skills,
           });
-
-          if (chr.summon) {
-            handleSummons(chr.engage.skills);
-
-            chr._summon = chr.summon;
-            Object.defineProperty(chr, 'summon', {
-              configurable: true,
-              get: () => chr.skills.find(a => a.summon).summon
-            });
-            Object.defineProperty(chr, 'summonAll', {
-              configurable: true,
-              get: () => chr._summon
-            });
-          }
         }
 
         if (params.includeSkillEffectTags && chr.isMain) {
