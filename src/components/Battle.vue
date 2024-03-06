@@ -133,7 +133,7 @@
       </div>
     </div>
 
-    <div v-if="simulation" class="content sim-commands" @click.stop="">
+    <div v-if="simulation" :class="`content sim-commands ${simulation.isPlayerTurn ? 'player-turn' : 'enemy-turn'}` " @click.stop="">
       <div class="unit-panel">
         <div v-if="actionsToSelect.length" style="margin-bottom: 20px">
           <b-button size="sm" style="width: 45px; height: 45px; margin-right: 5px;" @click="pushTool(tools.confirm);">
@@ -874,6 +874,7 @@ export default {
                   }
                   else {
                     self.targetUnit = unit;
+                    self.targetCell = cell;
                   }
                   confirm();
                 }
@@ -908,7 +909,7 @@ export default {
             let skill = self.selectedSkill;
             let pf = new lbt.PathFinder(self.divX, self.divY);
             pf.setStart(self.targetCell.coord);
-            pf.buildPath(0, skill.area, skill.areaShape);
+            pf.buildPath(0, self.selectedUnit.sim.getSkillArea(skill), skill.areaShape);
             self.skillArea = pf;
             this.pf = pf;
           },
@@ -1752,8 +1753,13 @@ export default {
     position: fixed;
     bottom: 10px;
     border-radius: 0.3rem;
-    background: rgba(0, 0, 0, 0.4);
     padding: 5px;
+  }
+  .sim-commands.player-turn {
+    background: rgba(0, 0, 160, 0.4);
+  }
+  .sim-commands.enemy-turn {
+    background: rgba(200, 0, 0, 0.4);
   }
 </style>
 <style>

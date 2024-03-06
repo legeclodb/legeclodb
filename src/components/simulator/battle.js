@@ -1,6 +1,6 @@
 export * from "./battle_unit.js";
 export * from "./battle_skill.js";
-import { makeSimSkill, makeSimEffect, callHandler } from "./battle_skill.js";
+import { makeSimSkill, makeSimEffect, callHandler, makeBattleContext } from "./battle_skill.js";
 import { BaseUnit, SimUnit } from "./battle_unit.js";
 
 export class ActionContext {
@@ -173,12 +173,10 @@ export class SimContext {
     };
 
     // 防御側コンテキスト
-    let dctx = {
-      onEnemyTurn: true,
-      onNormalAttack: true,
-      class: target.mainClass,
-      targetClass: unit.mainClass,
-    };
+    let dctx = makeBattleContext(target, unit);
+    dctx.onEnemyTurn = true;
+    dctx.onNormalAttack = true;
+
     const mergeProperties = function (dst, src, propNames) {
       for (const name of propNames) {
         if (name in src) {
@@ -258,54 +256,21 @@ export class SimContext {
       move = Math.abs(unit.coord[0] - unit.prevCoord[0]) + Math.abs(unit.coord[1] - unit.prevCoord[1]);
     }
     if (target) {
-      range = Math.abs(unit.coord[0] - target.coord[0]) + Math.abs(unit.coord[1] - target.coord[1]);
+      // NxN ボス対策として target.coord ではなく cell.coord との距離を取る
+      range = Math.abs(unit.coord[0] - cell.coord[0]) + Math.abs(unit.coord[1] - cell.coord[1]);
     }
 
     // 条件変数を設定
     // 攻撃側
-    let ctx = {
-      onOwnTurn: true,
-      move: move,
-      class: unit.mainClass,
-      hp: unit.hpRate,
-    };
-    if (skill) {
-      if (skill.isNormalAttack) {
-        ctx.onNormalAttack = true;
-      }
-      else {
-        ctx.onActiveSkill = true;
-        if (skill.isAreaTarget) {
-          ctx.onAreaSkill = true;
-        }
-        else {
-          ctx.onSingleSkill = true;
-        }
-      }
+    let ctx = makeBattleContext(unit, target);
+    ctx.onOwnTurn = true;
+    ctx.move = move;
+    ctx.range = range;
+    ctx.skill = skill;
 
-      if (target) {
-        // 単体スキルの場合
-        ctx.range = range;
-        ctx.targetClass = target.mainClass;
-        ctx.targetHp = target.hpRate;
-        if (skill.isTargetAlly) {
-          ctx.onTargetAlly = true;
-        }
-        if (skill.isTargetEnemy) {
-          ctx.onTargetEnemy = true;
-        }
-        if (range == 1) {
-          ctx.onCloseCombat = true;
-        }
-        else if (range > 1) {
-          ctx.onRangedCombat = true;
-        }
-      }
-
-      if (skill.isMainSkill && skill.damageRate) {
-        doAttack = true;
-        doBattle = ctx.onTargetEnemy;
-      }
+    if (skill && skill.isMainSkill && skill.damageRate) {
+      doAttack = true;
+      doBattle = ctx.onTargetEnemy;
     }
 
     if (doAction)

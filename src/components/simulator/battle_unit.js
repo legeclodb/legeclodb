@@ -361,6 +361,10 @@ export class SimUnit {
       return this.main.baseRange;
     }
   }
+  getSkillArea(skill) {
+    return skill.area;
+  }
+
   getAttackPower(ctx) {
     if (ctx?.onSupportAttack) {
       return this.support.baseAttackPower;

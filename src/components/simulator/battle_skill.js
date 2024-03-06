@@ -114,6 +114,63 @@ export function evaluateCondition(ctx, cond)
   return ok;
 }
 
+export function makeBattleContext(unit, target, base = null) {
+  let ctx = {
+    get class() { return unit.mainClass },
+    get hp() { return unit.hpRate },
+    get activeBuffCount() { return unit.activeBuffCount; },
+    get activeDebuffCount() { return unit.activeDebuffCount; },
+    isOnEffect(args) { return unit.isOnEffect(args); },
+    getToken(args) { return unit.getToken(args); },
+    getNearAllyCount(args) { return unit.getNearAllyCount(args); },
+    getNearEnemyCount(args) { return unit.getNearEnemyCount(args); },
+
+    get targetClass() { return target.mainClass },
+    get targetHp() { return target.hpRate },
+    get targetActiveBuffCount() { return target.activeBuffCount; },
+    get targetActiveDebuffCount() { return target.activeDebuffCount; },
+    getTargetToken(args) { return target.getToken(args); },
+
+    get skill() { return this.skill_; },
+    get range() { return this.range_; },
+
+    set skill(skill) {
+      this.skill_ = skill;
+      if (!skill || skill.isNormalAttack) {
+        this.onNormalAttack = true;
+        this.onTargetEnemy = true;
+      }
+      else {
+        this.onActiveSkill = true;
+        if (skill.isAreaTarget) {
+          this.onAreaSkill = true;
+        }
+        else {
+          this.onSingleSkill = true;
+        }
+
+        if (skill.isMainSkill && skill.isSingleTarget) {
+          if (skill.isTargetAlly) {
+            this.onTargetAlly = true;
+          }
+          if (skill.isTargetEnemy) {
+            this.onTargetEnemy = true;
+          }
+        }
+      }
+    },
+    set range(range) {
+      this.range_ = range;
+      if (range == 1) {
+        this.onCloseCombat = true;
+      }
+      else if (range > 1) {
+        this.onRangedCombat = true;
+      }
+    },
+  };
+  return ctx;
+}
 
 export function makeSimEffect(effect) {
   let self = Object.create(effect);
