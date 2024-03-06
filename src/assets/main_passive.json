@@ -1300,7 +1300,7 @@
         "type": "ディフェンス",
         "value": 20,
         "duration": 1,
-        "propagate": {
+        "trigger": {
           "target": "攻撃対象",
           "timing": "戦闘前",
           "condition": {
@@ -1371,7 +1371,7 @@
         "type": "ディフェンス",
         "value": 15,
         "duration": 1,
-        "propagate": {
+        "trigger": {
           "target": "範囲",
           "area": 2,
           "timing": "行動後"
@@ -1390,7 +1390,7 @@
         "type": "ランダム",
         "variant": "強",
         "amount": 1,
-        "propagate": {
+        "trigger": {
           "target": "範囲",
           "area": 2,
           "timing": "行動後",
@@ -1473,7 +1473,7 @@
         "type": "アタック",
         "value": 20,
         "duration": 1,
-        "propagate": {
+        "trigger": {
           "target": "攻撃対象",
           "timing": "戦闘前",
           "condition": {
@@ -1485,7 +1485,7 @@
         "type": "マジック",
         "value": 20,
         "duration": 1,
-        "propagate": {
+        "trigger": {
           "target": "攻撃対象",
           "timing": "戦闘前",
           "condition": {
@@ -1556,7 +1556,7 @@
         "type": "アタック",
         "value": 15,
         "duration": 1,
-        "propagate": {
+        "trigger": {
           "target": "範囲(ランダム)",
           "area": [ 1, "周囲" ],
           "unitCount": 1,
@@ -1567,7 +1567,7 @@
         "type": "マジック",
         "value": 15,
         "duration": 1,
-        "propagate": {
+        "trigger": {
           "target": "範囲(ランダム)",
           "area": [ 1, "周囲" ],
           "unitCount": 1,
@@ -1579,7 +1579,7 @@
       {
         "type": "アタックダウン",
         "duration": 1,
-        "propagate": {
+        "trigger": {
           "target": "範囲(ランダム)",
           "area": [ 1, "周囲" ],
           "unitCount": 1,
@@ -1589,7 +1589,7 @@
       {
         "type": "マジックダウン",
         "duration": 1,
-        "propagate": {
+        "trigger": {
           "target": "範囲(ランダム)",
           "area": [ 1, "周囲" ],
           "unitCount": 1,
@@ -1599,7 +1599,7 @@
       {
         "type": "アクティブスキル使用不可",
         "duration": 1,
-        "propagate": {
+        "trigger": {
           "target": "範囲(ランダム)",
           "area": [ 1, "周囲" ],
           "unitCount": 1,
@@ -1723,7 +1723,7 @@
       {
         "type": "パッシブスキル使用不可",
         "duration": 2,
-        "propagate": {
+        "trigger": {
           "target": "攻撃対象",
           "timing": "戦闘後",
           "condition": {
@@ -1802,7 +1802,7 @@
         "value": 5,
         "duration": 1,
         "stack": 3,
-        "propagate": {
+        "trigger": {
           "target": "自身",
           "timing": "戦闘前",
           "condition": {
@@ -1866,7 +1866,7 @@
         "type": "レジスト",
         "value": 20,
         "duration": 1,
-        "propagate": {
+        "trigger": {
           "target": "範囲(ランダム)",
           "area": [ 1, "周囲" ],
           "unitCount": 1,
@@ -1878,7 +1878,7 @@
       {
         "type": "スタン",
         "duration": 1,
-        "propagate": {
+        "trigger": {
           "target": "範囲(ランダム)",
           "area": [ 1, "周囲" ],
           "unitCount": 1,
@@ -1888,7 +1888,7 @@
       {
         "type": "強化不可",
         "duration": 1,
-        "propagate": {
+        "trigger": {
           "target": "範囲(ランダム)",
           "area": [ 1, "周囲" ],
           "unitCount": 1,
@@ -1898,7 +1898,7 @@
       {
         "type": "移動ダウン",
         "duration": 1,
-        "propagate": {
+        "trigger": {
           "target": "範囲(ランダム)",
           "area": [ 1, "周囲" ],
           "unitCount": 1,
@@ -1983,7 +1983,7 @@
         "type": "ディフェンス",
         "value": 20,
         "duration": 1,
-        "propagate": {
+        "trigger": {
           "target": "攻撃対象",
           "timing": "戦闘前",
           "condition": {
@@ -2031,7 +2031,7 @@
         "type": "アタック",
         "value": 10,
         "duration": 1,
-        "propagate": {
+        "trigger": {
           "target": "攻撃対象",
           "timing": "戦闘前",
           "condition": {
@@ -2043,7 +2043,7 @@
         "type": "ディフェンス",
         "value": 10,
         "duration": 1,
-        "propagate": {
+        "trigger": {
           "target": "攻撃対象",
           "timing": "戦闘前",
           "condition": {
@@ -2074,7 +2074,7 @@
         "type": "アタック",
         "value": 15,
         "duration": 2,
-        "propagate": {
+        "trigger": {
           "target": "自身",
           "timing": "戦闘前",
           "condition": {
@@ -2086,7 +2086,7 @@
         "type": "ディフェンス",
         "value": 15,
         "duration": 2,
-        "propagate": {
+        "trigger": {
           "target": "自身",
           "timing": "戦闘前",
           "condition": {
@@ -2100,7 +2100,7 @@
         "type": "アタック",
         "value": 15,
         "duration": 2,
-        "propagate": {
+        "trigger": {
           "target": "攻撃対象",
           "timing": "戦闘前",
           "condition": {
@@ -2112,7 +2112,7 @@
         "type": "ディフェンス",
         "value": 15,
         "duration": 2,
-        "propagate": {
+        "trigger": {
           "target": "攻撃対象",
           "timing": "戦闘前",
           "condition": {
@@ -2133,7 +2133,7 @@
         "type": "アタック",
         "value": 15,
         "duration": 1,
-        "propagate": {
+        "trigger": {
           "target": "範囲",
           "area": 2,
           "timing": "行動後"
@@ -2143,7 +2143,7 @@
         "type": "マジック",
         "value": 15,
         "duration": 1,
-        "propagate": {
+        "trigger": {
           "target": "範囲",
           "area": 2,
           "timing": "行動後"
@@ -2193,7 +2193,7 @@
         "type": "ダメージ耐性",
         "value": 30,
         "duration": 1,
-        "propagate": {
+        "trigger": {
           "target": "自身",
           "timing": "戦闘後",
           "condition": {
@@ -2273,7 +2273,7 @@
         "type": "アタック",
         "value": 20,
         "duration": 1,
-        "propagate": {
+        "trigger": {
           "target": "範囲",
           "area": [ 2, "周囲" ],
           "timing": "行動後"
@@ -2283,7 +2283,7 @@
         "type": "与ダメージ",
         "value": 10,
         "duration": 1,
-        "propagate": {
+        "trigger": {
           "target": "範囲",
           "area": [ 2, "周囲" ],
           "timing": "行動後"
@@ -2329,7 +2329,7 @@
         "type": "レジスト",
         "value": 20,
         "duration": 1,
-        "propagate": {
+        "trigger": {
           "target": "範囲",
           "area": 3,
           "timing": "行動後"
@@ -2382,7 +2382,7 @@
         "type": "ダメージ耐性",
         "value": 30,
         "duration": 1,
-        "propagate": {
+        "trigger": {
           "target": "自身",
           "timing": "戦闘後",
           "condition": {
@@ -2470,7 +2470,7 @@
         "type": "ディフェンス",
         "value": 20,
         "duration": 1,
-        "propagate": {
+        "trigger": {
           "target": "攻撃対象",
           "timing": "戦闘前",
           "condition": {
@@ -2925,7 +2925,7 @@
         "type": "ダメージ耐性(物理)",
         "value": 15,
         "duration": 1,
-        "propagate": {
+        "trigger": {
           "target": "攻撃対象",
           "timing": "戦闘前",
           "condition": {
@@ -3284,7 +3284,7 @@
         "type": "ディフェンス",
         "value": 10,
         "duration": 1,
-        "propagate": {
+        "trigger": {
           "target": "攻撃対象",
           "timing": "戦闘前",
           "condition": {
@@ -3296,7 +3296,7 @@
         "type": "レジスト",
         "value": 10,
         "duration": 1,
-        "propagate": {
+        "trigger": {
           "target": "攻撃対象",
           "timing": "戦闘前",
           "condition": {
@@ -3323,7 +3323,7 @@
         "type": "ディフェンス",
         "value": 20,
         "duration": 1,
-        "propagate": {
+        "trigger": {
           "target": "攻撃対象",
           "timing": "戦闘前",
           "condition": {
@@ -3335,7 +3335,7 @@
         "type": "レジスト",
         "value": 20,
         "duration": 1,
-        "propagate": {
+        "trigger": {
           "target": "攻撃対象",
           "timing": "戦闘前",
           "condition": {
@@ -3512,7 +3512,7 @@
         "type": "アタック",
         "value": 10,
         "duration": 1,
-        "propagate": {
+        "trigger": {
           "target": "自身",
           "timing": "行動後",
           "condition": {
@@ -3527,7 +3527,7 @@
         "type": "ダメージ耐性",
         "value": 20,
         "duration": 1,
-        "propagate": {
+        "trigger": {
           "target": "自身",
           "timing": "行動後",
           "condition": {
@@ -3659,7 +3659,7 @@
         "type": "ダメージ耐性(魔法)",
         "value": 10,
         "duration": 1,
-        "propagate": {
+        "trigger": {
           "target": "攻撃対象",
           "timing": "戦闘前"
         }
@@ -3762,7 +3762,7 @@
         "type": "ダメージ耐性",
         "value": 15,
         "duration": 2,
-        "propagate": {
+        "trigger": {
           "target": "自身",
           "timing": "戦闘後",
           "condition": {
@@ -3801,7 +3801,7 @@
         "type": "ダメージ耐性",
         "value": 15,
         "duration": 1,
-        "propagate": {
+        "trigger": {
           "target": "攻撃対象",
           "timing": "戦闘前",
           "condition": {
@@ -3874,7 +3874,7 @@
         "type": "ダメージ耐性",
         "value": 25,
         "duration": 1,
-        "propagate": {
+        "trigger": {
           "target": "自身",
           "timing": "戦闘後",
           "condition": {
@@ -3906,7 +3906,7 @@
         "type": "ディフェンス",
         "value": 20,
         "duration": 1,
-        "propagate": {
+        "trigger": {
           "target": "範囲",
           "area": [ 3, "周囲" ],
           "timing": "敵撃破時"
@@ -3916,7 +3916,7 @@
         "type": "レジスト",
         "value": 20,
         "duration": 1,
-        "propagate": {
+        "trigger": {
           "target": "範囲",
           "area": [ 3, "周囲" ],
           "timing": "敵撃破時"
@@ -3969,7 +3969,7 @@
         "type": "ディフェンス",
         "value": 10,
         "duration": 1,
-        "propagate": {
+        "trigger": {
           "target": "攻撃対象",
           "timing": "戦闘前"
         }
@@ -3978,7 +3978,7 @@
         "type": "レジスト",
         "value": 10,
         "duration": 1,
-        "propagate": {
+        "trigger": {
           "target": "攻撃対象",
           "timing": "戦闘前"
         }
@@ -4206,7 +4206,7 @@
         "type": "アタック",
         "value": 20,
         "duration": 2,
-        "propagate": {
+        "trigger": {
           "target": "攻撃対象",
           "timing": "戦闘前",
           "condition": {
@@ -4221,7 +4221,7 @@
         "type": "ディフェンス",
         "value": 20,
         "duration": 2,
-        "propagate": {
+        "trigger": {
           "target": "攻撃対象",
           "timing": "戦闘前",
           "condition": {
@@ -4236,7 +4236,7 @@
         "type": "与ダメージ",
         "value": 10,
         "duration": 1,
-        "propagate": {
+        "trigger": {
           "target": "範囲",
           "area": [ 3, "周囲" ],
           "timing": "行動後",
@@ -4249,7 +4249,7 @@
         "type": "ダメージ耐性",
         "value": 10,
         "duration": 1,
-        "propagate": {
+        "trigger": {
           "target": "範囲",
           "area": [ 3, "周囲" ],
           "timing": "行動後",
@@ -4325,7 +4325,7 @@
         "type": "ダメージ耐性",
         "value": 10,
         "duration": 2,
-        "propagate": {
+        "trigger": {
           "target": "自身",
           "timing": "戦闘後",
           "condition": {
@@ -4337,7 +4337,7 @@
         "type": "移動",
         "value": 1,
         "duration": 2,
-        "propagate": {
+        "trigger": {
           "target": "自身",
           "timing": "戦闘後",
           "condition": {
@@ -4395,7 +4395,7 @@
         "type": "移動",
         "value": 1,
         "duration": 2,
-        "propagate": {
+        "trigger": {
           "target": "自身",
           "timing": "敵撃破時"
         }
@@ -4406,7 +4406,7 @@
         "type": "与ダメージ",
         "value": 10,
         "duration": 1,
-        "propagate": {
+        "trigger": {
           "target": "範囲",
           "area": [ 1, "周囲" ],
           "timing": "行動後"
@@ -4416,7 +4416,7 @@
         "type": "ダメージ耐性",
         "value": 10,
         "duration": 1,
-        "propagate": {
+        "trigger": {
           "target": "範囲",
           "area": [ 1, "周囲" ],
           "timing": "行動後"
@@ -4441,7 +4441,7 @@
         "value": 10,
         "duration": 4,
         "stack": 3,
-        "propagate": {
+        "trigger": {
           "target": "自身",
           "timing": "戦闘前"
         }
@@ -4451,7 +4451,7 @@
         "value": 10,
         "duration": 4,
         "stack": 3,
-        "propagate": {
+        "trigger": {
           "target": "自身",
           "timing": "戦闘前"
         }
@@ -4651,7 +4651,7 @@
         "type": "クリティカル率",
         "value": 15,
         "duration": 3,
-        "propagate": {
+        "trigger": {
           "target": "自身",
           "timing": "敵撃破時"
         }
@@ -4788,7 +4788,7 @@
         "value": 8,
         "duration": 4,
         "stack": 3,
-        "propagate": {
+        "trigger": {
           "target": "自身",
           "timing": "戦闘前"
         }
@@ -4798,7 +4798,7 @@
         "value": 8,
         "duration": 4,
         "stack": 3,
-        "propagate": {
+        "trigger": {
           "target": "自身",
           "timing": "戦闘前"
         }
@@ -4880,7 +4880,7 @@
         "type": "ディフェンス",
         "value": 20,
         "duration": 1,
-        "propagate": {
+        "trigger": {
           "target": "自身",
           "timing": "戦闘前"
         }
@@ -4912,7 +4912,7 @@
         "type": "ディフェンス",
         "value": 25,
         "duration": 1,
-        "propagate": {
+        "trigger": {
           "target": "自身",
           "timing": "戦闘前"
         }
@@ -5104,7 +5104,7 @@
         "type": "ダメージ耐性",
         "value": 15,
         "duration": 2,
-        "propagate": {
+        "trigger": {
           "target": "攻撃対象",
           "timing": "戦闘前",
           "condition": {
@@ -5147,7 +5147,7 @@
         "type": "ダメージ耐性",
         "value": 20,
         "duration": 3,
-        "propagate": {
+        "trigger": {
           "target": "攻撃対象",
           "timing": "戦闘前",
           "condition": {
@@ -5244,7 +5244,7 @@
         "type": "クリティカル率",
         "value": 50,
         "duration": 2,
-        "propagate": {
+        "trigger": {
           "target": "自身",
           "timing": "行動後",
           "condition": {
@@ -5270,7 +5270,7 @@
         "type": "クリティカル率",
         "value": 60,
         "duration": 2,
-        "propagate": {
+        "trigger": {
           "target": "自身",
           "timing": "行動後",
           "condition": {
@@ -5282,7 +5282,7 @@
         "type": "移動",
         "value": 1,
         "duration": 2,
-        "propagate": {
+        "trigger": {
           "target": "自身",
           "timing": "行動後",
           "condition": {
@@ -5307,7 +5307,7 @@
         "type": "クリティカルダメージ倍率",
         "value": 20,
         "duration": 2,
-        "propagate": {
+        "trigger": {
           "target": "自身",
           "timing": "戦闘後",
           "condition": {
@@ -5421,7 +5421,7 @@
         "type": "ダメージ耐性",
         "value": 30,
         "duration": 2,
-        "propagate": {
+        "trigger": {
           "target": "自身",
           "timing": "戦闘後",
           "condition": {
@@ -5435,7 +5435,7 @@
         "type": "ディフェンス",
         "value": 20,
         "duration": 2,
-        "propagate": {
+        "trigger": {
           "target": "範囲",
           "area": 3,
           "timing": "行動後"
@@ -5445,7 +5445,7 @@
         "type": "レジスト",
         "value": 20,
         "duration": 2,
-        "propagate": {
+        "trigger": {
           "target": "範囲",
           "area": 3,
           "timing": "行動後"
@@ -5464,7 +5464,7 @@
         "type": "ダメージ耐性",
         "value": 30,
         "duration": 2,
-        "propagate": {
+        "trigger": {
           "target": "自身",
           "timing": "戦闘後",
           "condition": {
@@ -5476,7 +5476,7 @@
         "type": "ディフェンス",
         "value": 20,
         "duration": 2,
-        "propagate": {
+        "trigger": {
           "target": "範囲",
           "area": 3,
           "timing": "行動後"
@@ -5488,7 +5488,7 @@
         "type": "ディフェンス",
         "value": 20,
         "duration": 2,
-        "propagate": {
+        "trigger": {
           "target": "範囲",
           "area": 3,
           "timing": "行動後"
@@ -5498,7 +5498,7 @@
         "type": "レジスト",
         "value": 20,
         "duration": 2,
-        "propagate": {
+        "trigger": {
           "target": "範囲",
           "area": 3,
           "timing": "行動後"
@@ -5663,7 +5663,7 @@
         "type": "ダメージ耐性",
         "value": 15,
         "duration": 1,
-        "propagate": {
+        "trigger": {
           "target": "攻撃対象",
           "timing": "戦闘後",
           "condition": {
@@ -5693,7 +5693,7 @@
         "type": "ダメージ耐性",
         "value": 30,
         "duration": 2,
-        "propagate": {
+        "trigger": {
           "target": "自身",
           "timing": "戦闘後",
           "condition": {
@@ -5731,7 +5731,7 @@
         "type": "ダメージ耐性",
         "value": 40,
         "duration": 2,
-        "propagate": {
+        "trigger": {
           "target": "自身",
           "timing": "戦闘後",
           "condition": {
@@ -5882,7 +5882,7 @@
         "type": "範囲",
         "value": 1,
         "duration": 1,
-        "propagate": {
+        "trigger": {
           "target": "自身",
           "timing": "自ターン開始時",
           "condition": {
@@ -5915,7 +5915,7 @@
         "type": "範囲",
         "value": 1,
         "duration": 1,
-        "propagate": {
+        "trigger": {
           "target": "自身",
           "timing": "自ターン開始時",
           "condition": {
@@ -5944,7 +5944,7 @@
         "type": "クリティカルダメージ倍率",
         "value": 10,
         "duration": 2,
-        "propagate": {
+        "trigger": {
           "target": "自身",
           "timing": "戦闘前",
           "condition": {
@@ -5973,7 +5973,7 @@
         "type": "クリティカルダメージ倍率",
         "value": 10,
         "duration": 2,
-        "propagate": {
+        "trigger": {
           "target": "自身",
           "timing": "戦闘前",
           "condition": {
@@ -5994,7 +5994,7 @@
         "type": "移動",
         "value": 2,
         "duration": 1,
-        "propagate": {
+        "trigger": {
           "target": "自身",
           "timing": "自ターン開始時",
           "condition": {
@@ -6007,7 +6007,7 @@
       {
         "type": "全デバフ",
         "duration": 1,
-        "propagate": {
+        "trigger": {
           "target": "自身",
           "timing": "自ターン開始時",
           "condition": {
@@ -6043,7 +6043,7 @@
         "type": "与ダメージ(物理)",
         "value": 5,
         "duration": 1,
-        "propagate": {
+        "trigger": {
           "target": "自身",
           "timing": "自ターン開始時",
           "condition": {
@@ -6055,7 +6055,7 @@
         "type": "移動",
         "value": 2,
         "duration": 1,
-        "propagate": {
+        "trigger": {
           "target": "自身",
           "timing": "自ターン開始時",
           "condition": {
@@ -6068,7 +6068,7 @@
       {
         "type": "全デバフ",
         "duration": 1,
-        "propagate": {
+        "trigger": {
           "target": "自身",
           "timing": "自ターン開始時",
           "condition": {
@@ -6100,7 +6100,7 @@
         "type": "アタック",
         "value": 15,
         "duration": 2,
-        "propagate": {
+        "trigger": {
           "target": "範囲",
           "area": 3,
           "timing": "行動後"
@@ -6110,7 +6110,7 @@
         "type": "マジック",
         "value": 15,
         "duration": 2,
-        "propagate": {
+        "trigger": {
           "target": "範囲",
           "area": 3,
           "timing": "行動後"
@@ -6142,7 +6142,7 @@
         "type": "アタック",
         "value": 20,
         "duration": 2,
-        "propagate": {
+        "trigger": {
           "target": "範囲",
           "area": 3,
           "timing": "行動後"
@@ -6152,7 +6152,7 @@
         "type": "マジック",
         "value": 20,
         "duration": 2,
-        "propagate": {
+        "trigger": {
           "target": "範囲",
           "area": 3,
           "timing": "行動後"
@@ -6306,7 +6306,7 @@
         "type": "ディフェンス",
         "value": 25,
         "duration": 2,
-        "propagate": {
+        "trigger": {
           "target": "攻撃対象",
           "timing": "戦闘前",
           "condition": {
@@ -6334,7 +6334,7 @@
         "type": "アタック",
         "value": 30,
         "duration": 2,
-        "propagate": {
+        "trigger": {
           "target": "攻撃対象",
           "timing": "戦闘前",
           "condition": {
@@ -6346,7 +6346,7 @@
         "type": "ディフェンス",
         "value": 30,
         "duration": 2,
-        "propagate": {
+        "trigger": {
           "target": "攻撃対象",
           "timing": "戦闘前",
           "condition": {

@@ -5461,7 +5461,7 @@
         "tokenName": "黄金に輝くモノ",
         "duration": 4,
         "stack": 2,
-        "propagate": {
+        "trigger": {
           "target": "自身"
         }
       }

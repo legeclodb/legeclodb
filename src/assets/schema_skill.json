@@ -337,7 +337,7 @@
         "slot": { "type": "string" },
         "timing": { "$ref": "#/$defs/timingType" },
         "condition": { "$ref": "#/$defs/condition" },
-        "propagate": {
+        "trigger": {
           "type": "object",
           "required": [ "target" ],
           "additionalProperties": false,
@@ -364,7 +364,7 @@
           ]
         },
         "rate": { "type": [ "number", "array" ] },
-        "stack": { "$ref": "#/$defs/stack" },
+        "multiply": { "$ref": "#/$defs/multiply" },
         "target": { "$ref": "#/$defs/targetType" },
         "area": { "$ref": "#/$defs/areaType" },
         "unitCount": { "type": "number" },

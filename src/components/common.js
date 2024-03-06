@@ -942,18 +942,18 @@ export default {
     },
 
     isPublicTarget(effect) {
-      const propagate = effect.propagate;
-      if (propagate) {
-        return !propagate.target.startsWith("自身");
+      const trigger = effect.trigger;
+      if (trigger) {
+        return !trigger.target.startsWith("自身");
       }
       else {
         return !effect.target || (typeof (effect.target) == "string" && !effect.target.startsWith("自身"));
       }
     },
     isSelfTarget(effect) {
-      const propagate = effect.propagate;
-      if (propagate) {
-        return propagate.target.startsWith("自身");
+      const trigger = effect.trigger;
+      if (trigger) {
+        return trigger.target.startsWith("自身");
       }
       else {
         return !effect.target || (typeof (effect.target) == "string" && effect.target.startsWith("自身"));
@@ -1149,7 +1149,7 @@ export default {
       const buffToS = (effectCategory, effect) => {
         if (effect.type == "トークン") {
           let r = "トークン付与";
-          let target = effect.propagate?.target;
+          let target = effect.trigger?.target;
           if (target == "自身")
             r += "(自身)";
           else if (target == "味方全体")
@@ -1188,7 +1188,7 @@ export default {
         if (effect.ephemeral) {
           t += "(戦闘時)";
         }
-        else if (params.includeAreaTags && effect.isBuff && effect.propagate?.target == "範囲") {
+        else if (params.includeAreaTags && effect.isBuff && effect.trigger?.target == "範囲") {
           t += `(味方)`;
         }
         else if (effect.target) {
