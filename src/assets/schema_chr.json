@@ -27,32 +27,11 @@
       "statusInit": { "type": "array" },
       "statusLv": { "type": "array" },
       "statusStar": { "type": "array" },
+      "statusTable": { "type": "object" },
       "talent": { "type": "string" },
       "skills": {
         "type": "array",
         "items": { "type": "string" }
-      },
-      "summon": {
-        "type": "array",
-        "items": {
-          "type": "object",
-          "additionalProperties": false,
-          "properties": {
-            "uid": { "type": "string" },
-            "icon": { "type": "string" },
-            "name": { "type": "string" },
-            "class": { "$ref": "schema_skill.json#/$defs/unitType" },
-            "damageType": { "$ref": "schema_skill.json#/$defs/damageType" },
-            "range": { "type": "integer" },
-            "move": { "type": "integer" },
-            "statusLvs": { "type": "object" },
-            "talent": { "type": "string" },
-            "skills": {
-              "type": "array",
-              "items": { "type": "string" }
-            }
-          }
-        }
       },
       "engage": {
         "type": "object",

@@ -1530,7 +1530,7 @@ export default {
           chr.skillsAll = [...chr.skills];
           chr.engage.skills = chr.engage.skills.flatMap(id => grabSkill(id, chr));
 
-          for (let i = 0; i < chr.skills.length; ++i) {
+          for (let i = 0; i < chr.engage.skills; ++i) {
             if (chr.engage.skills[i] !== chr.skills[i]) {
               chr.engage.skills[i].isEngageSkill = true;
               chr.skillsAll.push(chr.engage.skills[i]);

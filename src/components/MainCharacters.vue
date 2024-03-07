@@ -319,7 +319,7 @@
                     <div class="param-box"><b-img-lazy :src="getImageURL('射程')" title="射程" width="18" height="18" /><span>{{summon.range}}</span></div>
                     <div class="param-box"><b-img-lazy :src="getImageURL('移動')" title="移動" width="18" height="18" /><span>{{summon.move}}</span></div>
                   </div>
-                  <div v-if="summon.statusLvs" class="status2" v-html="statusToHtml(summon.status)" />
+                  <div class="status2" v-html="statusToHtml(summon.status)" />
                 </div>
                 <div class="skills">
                   <div class="talent" :class="{ 'highlighted': isTalentHighlighted(summon.talent) }">
@@ -756,8 +756,10 @@ export default {
         }
 
         // 召喚ユニット
-        for (let sum of (chr.summonAll ?? [])) {
-          sum.status = this.getNPCChrStatus(sum, level);
+        if ('summonAll' in chr) {
+          for (let sum of chr.summonAll) {
+            sum.status = this.getNPCChrStatus(sum, level);
+          }
         }
       }
       this.$forceUpdate();

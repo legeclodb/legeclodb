@@ -487,7 +487,7 @@ def processCharacters(args):
                 stats[1] = getStatusValues(findByCid(initStatusCsv, cid))
                 for v in filterByCid(args.lvStatusCsv, cid):
                     stats[int(v["Lv"])] = getStatusValues(v)
-                ch["statusLvs"] = stats
+                ch["statusTable"] = stats
 
     # スキルシートから各キャラのスキル取得
     if not isEnemy:
@@ -937,7 +937,6 @@ def processBattleCsv():
     writeChrAndSkillData()
 
 
-
 def processTerrainCsv():
     terrainTable = {}
     for t in readCsvTable(f"{csvDir}/BattleCommon/Terrain.csv"):
@@ -948,6 +947,26 @@ def processTerrainCsv():
     print(jsonize(field))
 
 #processTerrainCsv()
+
+
+def writeSpecifiedSkills(skills):
+    mainSkillIds = set(skills)
+
+    args = ChrArgs()
+    mainActiveJson = readJson(f"{assetsDir}/main_active.json")
+    mainPassiveJson = readJson(f"{assetsDir}/main_passive.json")
+    mainTalentJson = readJson(f"{assetsDir}/main_talents.json")
+
+    args.activeJson = mainActiveJson
+    args.passiveJson = mainPassiveJson
+    args.talentJson = mainTalentJson
+    addSkills(args, mainSkillIds)
+    writeJson(f"{outDir}/main_active.json", args.activeJson)
+    writeJson(f"{outDir}/main_passive.json", args.passiveJson)
+    writeJson(f"{outDir}/main_talents.json", args.talentJson)
+    processEnemyMainChr()
+
+#writeSpecifiedSkills(["00000000"])
 
 
 os.makedirs("tmp/icon", exist_ok = True)

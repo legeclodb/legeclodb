@@ -12,7 +12,7 @@
   </PropertyGroup>
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties src_4assets_4items_1json__JsonSchema="schema_item.json" src_4assets_4main_3active_1json__JsonSchema="schema_skill.json" src_4assets_4main_3characters_1json__JsonSchema="schema_chr.json" src_4assets_4main_3passive_1json__JsonSchema="schema_skill.json" src_4assets_4main_3talents_1json__JsonSchema="schema_skill.json" src_4assets_4support_3active_1json__JsonSchema="schema_skill.json" src_4assets_4support_3characters_1json__JsonSchema="schema_chr.json" src_4assets_4support_3passive_1json__JsonSchema="schema_skill.json" />
+      <UserProperties src_4assets_4items_1json__JsonSchema="schema_item.json" src_4assets_4main_3active_1json__JsonSchema="schema_skill.json" src_4assets_4main_3characters_1json__JsonSchema="schema_chr.json" src_4assets_4main_3passive_1json__JsonSchema="schema_skill.json" src_4assets_4main_3talents_1json__JsonSchema="schema_skill.json" src_4assets_4npc_3main_3characters_1json__JsonSchema="schema_chr.json" src_4assets_4npc_3support_3characters_1json__JsonSchema="schema_chr.json" src_4assets_4support_3active_1json__JsonSchema="schema_skill.json" src_4assets_4support_3characters_1json__JsonSchema="schema_chr.json" src_4assets_4support_3passive_1json__JsonSchema="schema_skill.json" />
     </VisualStudio>
   </ProjectExtensions>
 </Project>
