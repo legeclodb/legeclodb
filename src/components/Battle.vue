@@ -71,7 +71,7 @@
                   </div>
                   <div class="detail" v-show="displayType >= 1">
                     <div class="info">
-                      <h5 v-html="chrNameToHtml(unit.main.name+' (メイン)')"></h5>
+                      <h5 v-html="chrNameToHtml(unit.main.name + (unit.isSummon ? ' (召喚ユニット)' : ' (メイン)'))"></h5>
                       <div class="status">
                         <b-img-lazy :src="getImageURL(unit.main.class)" :title="'クラス:'+unit.main.class" height="25" />
                         <div class="param-box"><b-img-lazy :src="getImageURL(unit.main.damageType)" :title="'攻撃タイプ:'+unit.main.damageType" width="20" height="20" /></div>
@@ -628,7 +628,23 @@ export default {
         return this.enemyUnits.filter(a => a.isActive);
       }
       else {
-        return this.enemyUnits.filter(a => a.phase == this.phase || a.fid == "E01");
+        let r = this.enemyUnits.filter(a => a.phase == this.phase || a.fid == "E01");
+        for (let unit of r) {
+          const chrToUnit = (chr) => {
+            chr.skills = [chr.talent, ...chr.skills];
+            chr.level = unit.main.level;
+            chr.status = this.getNPCChrStatus(chr, chr.level);
+            let u = new lbt.BaseUnit(false);
+            u.base.main = chr;
+            u.isSummon = true;
+            return u;
+          };
+          let summon = unit.main.skills.flatMap(a => a.summon ?? []).map(chrToUnit);
+          if (summon.length) {
+            r = r.concat(summon);
+          }
+        }
+        return r;
       }
     },
     allActiveUnits() {
