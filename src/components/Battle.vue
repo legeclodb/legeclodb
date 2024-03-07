@@ -566,9 +566,24 @@ export default {
 
     this.setupDB();
 
+    const summonToUnit = (chr, owner) => {
+      let main = Object.create(chr);
+      main.skills = [chr.talent, ...chr.skills];
+      main.level = owner.main.level;
+      main.status = this.getNPCChrStatus(main, owner.main.level);
+
+      let u = new lbt.BaseUnit(false);
+      u.base.main = main;
+      u.isSummon = true;
+      u.owner = owner;
+      u.setup();
+      return u;
+    };
+
     // 全クエストの全敵をここでセットアップ (大して重くもないのでとりあえず…)
     this.battleList = structuredClone(jsonBattle);
     for (let battle of this.battleList) {
+      battle.summon = [];
       for (let enemy of battle.enemies) {
         {
           const chr = this.npcMainChrs.find(c => c.uid == enemy.main.cid);
@@ -594,6 +609,11 @@ export default {
         unit.setup();
         enemy.unit = unit;
         //console.log(unit);
+
+        let s = unit.main.skills.flatMap(a => a.summon ?? []).map(a => summonToUnit(a, unit));
+        if (s.length) {
+          battle.summon = battle.summon.concat(s);
+        }
       }
     }
 
@@ -628,23 +648,10 @@ export default {
         return this.enemyUnits.filter(a => a.isActive);
       }
       else {
-        let r = this.enemyUnits.filter(a => a.phase == this.phase || a.fid == "E01");
-        for (let unit of r) {
-          const chrToUnit = (chr) => {
-            chr.skills = [chr.talent, ...chr.skills];
-            chr.level = unit.main.level;
-            chr.status = this.getNPCChrStatus(chr, chr.level);
-            let u = new lbt.BaseUnit(false);
-            u.base.main = chr;
-            u.isSummon = true;
-            return u;
-          };
-          let summon = unit.main.skills.flatMap(a => a.summon ?? []).map(chrToUnit);
-          if (summon.length) {
-            r = r.concat(summon);
-          }
-        }
-        return r;
+        return [
+          ...this.enemyUnits.filter(a => a.phase == this.phase || a.fid == "E01"),
+          ...(this.battleData?.summon ?? []),
+        ];
       }
     },
     allActiveUnits() {
@@ -682,6 +689,16 @@ export default {
       let self = this;
       const confirm = () => {
         self.pushTool(self.tools.confirm);
+      };
+      const setStart = (pf, unit) => {
+        pf.setStart(unit.coord);
+        if (self.battleData.bossArea && unit === self.enemyUnits[0]) {
+          for (let c of self.cells) {
+            if (c.boss) {
+              pf.setStart(c.coord);
+            }
+          }
+        }
       };
 
       this.tools = {
@@ -742,14 +759,7 @@ export default {
               pf.setObstacles(self.allActiveUnits.filter(a => a.isEnemy));
               pf.setOccupied(self.allActiveUnits.filter(a => a.isPlayer && a.main.cid && a !== unit));
             }
-            pf.setStart(unit.coord);
-            if (self.battleData.bossArea && unit === self.enemyUnits[0]) {
-              for (let c of self.cells) {
-                if (c.boss) {
-                  pf.setStart(c.coord);
-                }
-              }
-            }
+            setStart(pf, unit);
             pf.buildPath(unit.move, unit.range);
             self.path = pf;
           },
@@ -856,7 +866,7 @@ export default {
           onEnable() {
             let skill = self.selectedSkill;
             let pf = new lbt.PathFinder(self.divX, self.divY);
-            pf.setStart(self.selectedUnit.coord);
+            setStart(pf, self.selectedUnit);
             pf.buildPath(0, skill.range ?? 1, skill.rangeShape);
             self.skillRange = pf;
           },
@@ -919,6 +929,7 @@ export default {
           onEnable() {
             let skill = self.selectedSkill;
             let pf = new lbt.PathFinder(self.divX, self.divY);
+            setStart(pf, self.selectedUnit);
             pf.setStart(self.targetCell.coord);
             pf.buildPath(0, self.selectedUnit.sim.getSkillArea(skill), skill.areaShape);
             self.skillArea = pf;
