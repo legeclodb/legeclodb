@@ -809,11 +809,11 @@ export default {
 
       // NPC のステータスは大体 10 レベル毎にキーとなる値が設定されており、それ以外のレベルでは線形補間する必要がある
       let prevLv = null;
-      for (let lvStr in chr.statusLvs) {
+      for (let lvStr in chr.statusTable) {
         const lv = parseInt(lvStr);
         if (lv == level) {
           // キーレベルに一致する場合、その値を使う
-          status = [...chr.statusLvs[lv]];
+          status = [...chr.statusTable[lv]];
           break;
         }
         else if (lv < level) {
@@ -821,8 +821,8 @@ export default {
         }
         else {
           // ステータス補間
-          const ps = chr.statusLvs[prevLv];
-          const cs = chr.statusLvs[lv];
+          const ps = chr.statusTable[prevLv];
+          const cs = chr.statusTable[lv];
           status = new Array(cs.length);
           for (let i = 0; i < cs.length; ++i) {
             status[i] = ps[i] + Math.floor(((cs[i] - ps[i]) / (lv - prevLv)) * (level - prevLv));
@@ -832,7 +832,7 @@ export default {
       }
       if (!status) {
         // 最大キーレベルより高い場合は最大キーレベルの値を使う
-        status = [...chr.statusLvs[prevLv]];
+        status = [...chr.statusTable[prevLv]];
       }
 
       // ブースト適用
@@ -1272,6 +1272,46 @@ export default {
         }
       }
 
+      // todo: まともなレベル選択処理
+      if (!skill.desc && skill.descs) {
+        skill.current = "Lv 6";
+        this.$set(skill, 'desc', skill.descs[skill.current]);
+
+        const arrayToScalar = (obj, prop) => {
+          const v = obj[prop];
+          if (Array.isArray(v)) {
+            obj[`${prop}_`] = v;
+            obj[prop] = v[v.length - 1];
+          }
+        };
+
+        let effects = [
+          ...(skill.buff ? skill.buff : []),
+          ...(skill.debuff ? skill.debuff : []),
+          ...(skill.immune ? skill.immune : []),
+        ]
+        for (let effect of effects) {
+          arrayToScalar(effect, "value");
+          arrayToScalar(effect, "duration");
+          if (effect.add) {
+            arrayToScalar(effect.add, "rate");
+          }
+          let cond = effect.condition;
+          if (cond) {
+            arrayToScalar(cond, "probability");
+          }
+        }
+      }
+
+      skill.addOwner = (onwer) => {
+        if (!('owners' in skill)) {
+          skill.owners = [];
+        }
+        if (!skill.owners.includes(onwer)) {
+          skill.owners.push(onwer);
+        }
+      }
+
       const setupSlot = (effect) => {
         effect.typeId = this.getEffectIndex(effect.type);
         if (skill.isActive) {
@@ -1418,6 +1458,11 @@ export default {
       for (let s of talents)
         s.isTalent = true;
 
+      for (let chr of characters) {
+        if ('statusTable' in chr) {
+          chr.isNpc = true;
+        }
+      }
       if (isMain) {
         for (let chr of characters)
           chr.isMain = true;
@@ -1439,49 +1484,10 @@ export default {
         if (typeof (id) == "object") {
           return id;
         }
-
         let skill = this.skillTable.get(id);
         if (!skill) {
           console.error(`skill not found: ${id}`);
           return null;
-        }
-        if (!skill.owners)
-          Object.defineProperty(skill, 'owners', {
-            value: [],
-            writable: false,
-          });
-        if (!skill.owners.includes(chr))
-          skill.owners.push(chr);
-
-        // todo: まともなレベル選択処理
-        if (!skill.desc && skill.descs) {
-          skill.current = "Lv 6";
-          this.$set(skill, 'desc', skill.descs[skill.current]);
-
-          const arrayToScalar = (obj, prop) => {
-            const v = obj[prop];
-            if (Array.isArray(v)) {
-              obj[`${prop}_`] = v;
-              obj[prop] = v[v.length - 1];
-            }
-          };
-
-          let effects = [
-            ...(skill.buff ? skill.buff : []),
-            ...(skill.debuff ? skill.debuff : []),
-            ...(skill.immune ? skill.immune : []),
-          ]
-          for (let effect of effects) {
-            arrayToScalar(effect, "value");
-            arrayToScalar(effect, "duration");
-            if (effect.add) {
-              arrayToScalar(effect.add, "rate");
-            }
-            let cond = effect.condition;
-            if (cond) {
-              arrayToScalar(cond, "probability");
-            }
-          }
         }
         return skill;
       };
@@ -1541,6 +1547,21 @@ export default {
             configurable: true,
             get: () => chr._skills,
           });
+        }
+
+        if (!chr.isNpc) {
+          if ('skillsAll' in chr) {
+            for (let skill of chr.skillsAll) {
+              skill.addOwner(chr);
+            }
+          }
+          if ('summonAll' in chr) {
+            for (let sum of chr.summonAll) {
+              for (let skill of sum.skills) {
+                skill.addOwner(chr);
+              }
+            }
+          }
         }
 
         if (params.includeSkillEffectTags && chr.isMain) {

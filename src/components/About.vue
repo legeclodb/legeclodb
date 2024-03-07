@@ -527,6 +527,7 @@ export default {
 
 <style scoped>
 div.about {
+  max-width: 1200px;
   padding: 20px;
   margin: 5px;
   border: 1px solid rgba(0, 0, 0, 0.2);

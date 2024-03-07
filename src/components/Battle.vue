@@ -1749,10 +1749,10 @@ export default {
     padding: 5px;
   }
   .sim-commands.player-turn {
-    background: rgba(0, 0, 160, 0.4);
+    background: rgba(64, 64, 200, 0.4);
   }
   .sim-commands.enemy-turn {
-    background: rgba(200, 0, 0, 0.4);
+    background: rgba(200, 64, 64, 0.4);
   }
 </style>
 <style>

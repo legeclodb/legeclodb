@@ -458,7 +458,7 @@ def processCharacters(args):
                 stats[1] = getStatusValues(findByCid(initStatusCsv, sid))
                 for v in filterByCid(enemyMainLvStatusCsv, sid):
                     stats[int(v["Lv"])] = getStatusValues(v)
-                su["statusLvs"] = stats
+                su["statusTable"] = stats
 
                 # スキル
                 sec = findByCid(summonEffectCsv, sid)
