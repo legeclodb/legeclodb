@@ -225,14 +225,14 @@
       {
         "type": "ディフェンス",
         "value": 30,
-        "duration": 0,
+        "ephemeral": true,
         "target": "自身",
         "timing": "戦闘前"
       },
       {
         "type": "レジスト",
         "value": 30,
-        "duration": 0,
+        "ephemeral": true,
         "target": "自身",
         "timing": "戦闘前"
       }
@@ -377,7 +377,7 @@
       {
         "type": "ダメージ耐性",
         "value": 10,
-        "duration": 0,
+        "ephemeral": true,
         "timing": "戦闘前"
       }
     ]
@@ -467,7 +467,7 @@
       {
         "type": "与ダメージ(物理)",
         "value": 10,
-        "duration": 0,
+        "ephemeral": true,
         "target": "自身",
         "timing": "戦闘前"
       }
@@ -476,7 +476,7 @@
       {
         "type": "与ダメージ(物理)",
         "value": 10,
-        "duration": 0,
+        "ephemeral": true,
         "target": "自身",
         "timing": "戦闘前"
       }
@@ -618,7 +618,7 @@
       {
         "type": "アタック",
         "value": 15,
-        "duration": 0,
+        "ephemeral": true,
         "target": "自身",
         "timing": "戦闘前"
       }
@@ -1240,7 +1240,7 @@
       {
         "type": "クリティカル率",
         "value": 50,
-        "duration": 0,
+        "ephemeral": true,
         "target": "自身",
         "timing": "攻撃前"
       }
@@ -1269,7 +1269,7 @@
       {
         "type": "クリティカル率",
         "value": 60,
-        "duration": 0,
+        "ephemeral": true,
         "target": "自身",
         "timing": "攻撃前"
       }
@@ -1391,7 +1391,7 @@
       {
         "type": "クリティカル率",
         "value": 20,
-        "duration": 0,
+        "ephemeral": true,
         "target": "自身",
         "timing": "戦闘前"
       }
@@ -1455,7 +1455,7 @@
       {
         "type": "クリティカル率",
         "value": 20,
-        "duration": 0,
+        "ephemeral": true,
         "target": "自身",
         "timing": "戦闘前"
       }
@@ -3331,7 +3331,7 @@
       {
         "type": "クリティカル率",
         "value": 50,
-        "duration": 0,
+        "ephemeral": true,
         "target": "自身",
         "timing": "攻撃前"
       }
@@ -5271,7 +5271,7 @@
       {
         "type": "与ダメージ(物理)",
         "value": 10,
-        "duration": 0,
+        "ephemeral": true,
         "target": "自身",
         "timing": "戦闘前"
       }
@@ -5818,7 +5818,7 @@
       {
         "type": "与ダメージ",
         "value": 30,
-        "duration": 0,
+        "ephemeral": true,
         "target": "自身",
         "timing": "戦闘前"
       }
@@ -5972,7 +5972,7 @@
       {
         "type": "クリティカル率",
         "value": 50,
-        "duration": 0,
+        "ephemeral": true,
         "target": "自身",
         "timing": "攻撃前"
       }
@@ -6481,7 +6481,7 @@
       {
         "type": "ディフェンス無視",
         "value": 20,
-        "duration": 0,
+        "ephemeral": true,
         "target": "自身",
         "timing": "攻撃前"
       }
@@ -6977,7 +6977,7 @@
       {
         "type": "ダメージ耐性(魔法)",
         "value": 20,
-        "duration": 0,
+        "ephemeral": true,
         "timing": "戦闘前"
       }
     ]
@@ -7335,7 +7335,7 @@
       {
         "type": "クリティカルダメージ倍率",
         "value": 30,
-        "duration": 0,
+        "ephemeral": true,
         "target": "自身",
         "timing": "攻撃前"
       }
@@ -7386,7 +7386,7 @@
       {
         "type": "与ダメージ(範囲スキル)",
         "value": 30,
-        "duration": 0,
+        "ephemeral": true,
         "target": "自身",
         "timing": "攻撃前"
       }
@@ -10214,14 +10214,14 @@
       {
         "type": "アタック",
         "value": 25,
-        "duration": 0,
+        "ephemeral": true,
         "target": "自身",
         "timing": "戦闘前"
       },
       {
         "type": "ディフェンス",
         "value": 25,
-        "duration": 0,
+        "ephemeral": true,
         "target": "自身",
         "timing": "戦闘前"
       }

@@ -1168,7 +1168,7 @@ export default {
           // ランダムは扱いが特殊なので個別処理
           return `${effectCategory}:${effect.type}(${effect.variant})`;
         }
-        if (effect.isDebuff && !effect.duration) {
+        if (effect.isDebuff && effect.ephemeral) {
           return [];
         }
 
