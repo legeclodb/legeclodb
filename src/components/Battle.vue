@@ -784,8 +784,10 @@ export default {
             else {
               // ユニット移動処理
               // プレイヤーターンならプレイヤー側、敵ターンなら敵側のユニットだけ移動を許可
-              if (sim.isOwnTurn(self.selectedUnit)) {
-                self.selectedUnit.coord = cell.coord;
+              // 移動力以上の距離の移動を許容するが、移動力 0 の敵ユニットはおかしなことになるので禁止
+              let u = self.selectedUnit;
+              if (sim.isOwnTurn(u) && !(u.isEnemy && u.move == 0)) {
+                u.coord = cell.coord;
               }
             }
           },
