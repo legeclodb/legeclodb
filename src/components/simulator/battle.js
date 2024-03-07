@@ -482,6 +482,15 @@ export class PathFinder
   isInFireRange(pos) {
     return pos && (this.getCell(pos[0], pos[1])?.shootDistance ?? -1) >= 0;
   }
+  assignShape(shape) {
+    for (let y = 0; y < this.ydiv; ++y) {
+      for (let x = 0; x < this.xdiv; ++x) {
+        if (shape[y][x]) {
+          this.getCell(x, y).shootDistance = 0;
+        }
+      }
+    }
+  }
   setStart(pos) {
     let c = this.getCell(pos[0], pos[1]);
     if (c) {

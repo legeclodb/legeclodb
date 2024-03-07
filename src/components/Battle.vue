@@ -810,7 +810,7 @@ export default {
                 self.targetCell = self.findCellByCoord(self.selectedUnit.coord);
                 self.pushTools([self.tools.selectTarget, self.tools.confirm], this);
               }
-              else if (skill.isRadialAreaTarget) {
+              else if (skill.isRadialAreaTarget || skill.isSpecialAreaTarget) {
                 self.targetCell = self.findCellByCoord(self.selectedUnit.coord);
                 self.pushTools([self.tools.previewArea, self.tools.confirm], this);
               }
@@ -929,9 +929,14 @@ export default {
           onEnable() {
             let skill = self.selectedSkill;
             let pf = new lbt.PathFinder(self.divX, self.divY);
-            setStart(pf, self.selectedUnit);
-            pf.setStart(self.targetCell.coord);
-            pf.buildPath(0, self.selectedUnit.sim.getSkillArea(skill), skill.areaShape);
+            if (skill.shapeData) {
+              pf.assignShape(skill.shapeData);
+            }
+            else {
+              setStart(pf, self.selectedUnit);
+              pf.setStart(self.targetCell.coord);
+              pf.buildPath(0, self.selectedUnit.sim.getSkillArea(skill), skill.areaShape);
+            }
             self.skillArea = pf;
             this.pf = pf;
           },

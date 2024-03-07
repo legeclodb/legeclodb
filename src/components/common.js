@@ -1,6 +1,7 @@
 import jsonImageTable from '../assets/image_table.json'
 import jsonConstants from '../assets/constants.json'
 import jsonRandomEffectTable from '../assets/random_effect_table.json'
+import jsonShape from '../assets/shape.json'
 
 export default {
   data() {
@@ -1242,6 +1243,13 @@ export default {
           }
           else if (skill.areaShape == "直線") {
             skill.isDirectionalAreaTarget = true;
+          }
+          else if (skill.areaShape == "特殊") {
+            skill.isSpecialAreaTarget = true;
+            if (!(skill.areaShapeId in jsonShape)) {
+              throw `${skill.areaShapeId} not found in shape.json`;
+            }
+            skill.shapeData = jsonShape[skill.areaShapeId];
           }
           else {
             skill.isRadialAreaTarget = true;

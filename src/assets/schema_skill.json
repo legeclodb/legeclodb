@@ -154,7 +154,7 @@
       }
     },
     "areaShape": {
-      "enum": [ "範囲", "周囲", "直線" ]
+      "enum": [ "範囲", "周囲", "直線", "特殊" ]
     },
     "areaCenter": {
       "enum": [ "自分中心", "中心指定" ]
@@ -614,6 +614,7 @@
       "ct": { "type": [ "integer", "string" ] },
       "area": { "type": [ "integer", "string" ] },
       "areaShape": { "$ref": "#/$defs/areaShape" },
+      "areaShapeId": { "type": "string" },
       "range": { "type": [ "integer", "string" ] },
       "rangeShape": { "$ref": "#/$defs/areaShape" },
       "cost": { "type": "integer" },
