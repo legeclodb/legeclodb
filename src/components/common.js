@@ -509,18 +509,27 @@ export default {
     },
 
     ctToText(item) {
-      return item.ct == 0 ? "-" : item.ct;
+      if ('ct' in item) {
+        return item.ct == 0 ? "-" : `${item.ct}`;
+      }
+      return null;
     },
     areaToText(item) {
-      if (item.areaShape == "直線") {
-        return `直線${item.area}マス`
+      if ('area' in item) {
+        if (item.areaShape == "直線") {
+          return `直線${item.area}マス`
+        }
+        else {
+          return `${item.area}`;
+        }
       }
-      else {
-        return item.area;
-      }
+      return null;
     },
     rangeToText(item) {
-      return item.range;
+      if ('range' in item) {
+        return `${item.range}`;
+      }
+      return null;
     },
     removeMarkup(text) {
       if (!text) {
