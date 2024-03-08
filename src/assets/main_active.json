@@ -5465,9 +5465,7 @@
         "tokenName": "黄金に輝くモノ",
         "duration": 4,
         "stack": 2,
-        "trigger": {
-          "target": "自身"
-        }
+        "target": "自身"
       }
     ],
     "summon": [ "Ch508500499summon" ],

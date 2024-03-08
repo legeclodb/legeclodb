@@ -3886,7 +3886,8 @@
         "duration": 1,
         "trigger": {
           "target": "範囲",
-          "area": 2
+          "area": 2,
+          "timing": "行動後"
         }
       },
       {
@@ -3895,7 +3896,8 @@
         "duration": 1,
         "trigger": {
           "target": "範囲",
-          "area": 2
+          "area": 2,
+          "timing": "行動後"
         }
       }
     ]
@@ -6977,7 +6979,8 @@
         "duration": 2,
         "trigger": {
           "target": "範囲",
-          "area": 4
+          "area": 4,
+          "timing": "行動後"
         }
       },
       {
@@ -6986,7 +6989,8 @@
         "duration": 2,
         "trigger": {
           "target": "範囲",
-          "area": 4
+          "area": 4,
+          "timing": "行動後"
         }
       }
     ],

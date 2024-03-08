@@ -1167,7 +1167,7 @@ export default {
       const buffToS = (effectCategory, effect) => {
         if (effect.type == "トークン") {
           let r = "トークン付与";
-          let target = effect.trigger?.target;
+          let target = effect.trigger?.target ?? effect.target;
           if (target == "自身")
             r += "(自身)";
           else if (target == "味方全体")

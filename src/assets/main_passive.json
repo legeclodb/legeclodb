@@ -857,7 +857,7 @@
       {
         "base": "アタック",
         "rate": 0.7,
-        "stack": {
+        "multiply": {
           "max": 5,
           "by": "move"
         },

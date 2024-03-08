@@ -339,7 +339,7 @@
         "condition": { "$ref": "#/$defs/condition" },
         "trigger": {
           "type": "object",
-          "required": [ "target" ],
+          "required": [ "target", "timing" ],
           "additionalProperties": false,
           "properties": {
             "target": { "$ref": "#/$defs/targetEnum" },
