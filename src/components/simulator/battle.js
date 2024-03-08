@@ -2,6 +2,7 @@ export * from "./battle_unit.js";
 export * from "./battle_skill.js";
 import { makeSimSkill, makeSimEffect, callHandler, makeBattleContext } from "./battle_skill.js";
 import { BaseUnit, SimUnit } from "./battle_unit.js";
+import { $g } from "./battle_globals.js";
 
 export class ActionContext {
   attacker = null;
@@ -35,19 +36,19 @@ export class ActionContext {
 export class SimContext {
 
   //#region fields
-  static instance = null;
   battleId = "";
 
-  divX = 15;
-  divY = 15;
+  divX = 0;
+  divY = 0;
   maxTurn = 5;
 
   units = [];
   turn = 1;
   phase = Phase.Player;
 
-  attacker = null;
-  defender = null;
+  range = 0;
+  move = 0;
+
   results = []; // CombatResult
   //#endregion fields
 
@@ -63,7 +64,7 @@ export class SimContext {
 
   //#region methods
   constructor(xd, yd, baseUnits) {
-    SimContext.instance = this;
+    $g.sim = this;
     this.divX = xd;
     this.divY = yd;
     this.units = baseUnits.map(a => new SimUnit(a));
@@ -77,152 +78,148 @@ export class SimContext {
     return unit && ((unit.isPlayer && this.isPlayerTurn) || (unit.isEnemy && this.isEnemyTurn));
   }
 
-  getBattleResult(unit, skill, target, actx) {
-
-    const doAttack = (_ctx, attacker, targetQueue, skl = null) => {
-      let ctx = Object.create(_ctx);
-      if (!skl) {
-        // メインがスキル使用の場合もサポートは通常攻撃
-        // todo: もっとスマートに対処したい…
-        ctx.onNormalAttack = true;
-        ctx.onActiveSkill = false;
-        ctx.onAreaSkill = false;
-      }
-
-      let result = {
-        ctx: ctx,
-        damageToSupport: 0,
-        damageToMain: 0,
-        get total() { return this.damageToSupport + this.damageToMain; },
-        add(v) {
-          this.damageToSupport += v.damageToSupport;
-          this.damageToMain += v.damageToMain;
-        },
-      };
-
-      let aunit = attacker.unit;
-      {
-        if (attacker.isMain)
-          ctx.onMainAttack = true;
-        else
-          ctx.onSupportAttack = true;
-      }
-      {
-        if (attacker.damageType == "アタック")
-          ctx.onPhysicalDamage = true;
-        else
-          ctx.onMagicDamage = true;
-      }
-      {
-        if (attacker.baseRange > 1 && ctx.range <= 1)
-          ctx.onRangedPenarty = true;
-      }
-      // todo: サポート同時攻撃の考慮
-      if (!attacker.isAlive || ctx.range > aunit.getRange(ctx)) {
-        return result;
-      }
-
-      let attackCount = 10;
-      let atk = aunit.getAttackPower(ctx);
-      let damageRate = skl ? skl.getDamageRate(ctx) : 1.0;
-      let dmgDealtBuff = aunit.getDamageDealtBuff(ctx);
-      let critDmgRate = aunit.getCriticalDamageRate(ctx);
-      let rangedPenarty = ctx.onRangedPenarty ? 0.6 : 1.0;
-
-      const calcDamage = (t, breakOnKill) => {
-        let tunit = t.chr.unit;
-        let dctx = Object.create(ctx);
-        let addScore = null;
-        if (t.chr.isSupport) {
-          dctx.onSupportDefense = true;
-          addScore = (v) => { result.damageToSupport += v; }
-        }
-        else {
-          dctx.onMainDefense = true;
-          addScore = (v) => { result.damageToMain += v; }
-        }
-
-        let def = tunit.getDefensePower(dctx);
-        let baseDmg = Math.max(atk - def, 1);
-        let dmgTakenBuff = tunit.getDamageTakenBuff(dctx);
-        let finalDmg = baseDmg * damageRate * dmgDealtBuff * dmgTakenBuff * critDmgRate * rangedPenarty;
-
-        let totalDamage = 0;
-        while (attackCount) {
-          if (t.dealDamage(finalDmg)) {
-            totalDamage += finalDmg;
-          }
-          --attackCount;
-          if (breakOnKill && !t.isAlive) {
-            break;
-          }
-        }
-        addScore(Math.round(totalDamage));
-      };
-
-      while (attackCount) {
-        let t = targetQueue.at(-1);
-        if (!t.isAlive && targetQueue.length > 1) {
-          targetQueue.pop();
-          continue;
-        }
-        calcDamage(t, targetQueue.length > 1);
-      }
-
-      return result;
+  doAttack(_ctx, attacker, targetQueue, skl) {
+    let ctx = Object.create(_ctx);
+    let result = {
+      ctx: ctx,
+      damageToSupport: 0,
+      damageToMain: 0,
+      get total() { return this.damageToSupport + this.damageToMain; },
+      add(v) {
+        this.damageToSupport += v.damageToSupport;
+        this.damageToMain += v.damageToMain;
+      },
     };
 
+    if (!targetQueue.find(a => a.isValid)) {
+      return result;
+    }
+
+    if (!skl) {
+      // メインがスキル使用の場合もサポートは通常攻撃
+      // todo: もっとスマートに対処したい…
+      ctx.onNormalAttack = true;
+      ctx.onActiveSkill = false;
+      ctx.onAreaSkill = false;
+    }
+
+    let aunit = attacker.unit;
+    {
+      if (attacker.isMain)
+        ctx.onMainAttack = true;
+      else
+        ctx.onSupportAttack = true;
+    }
+    {
+      if (attacker.damageType == "アタック")
+        ctx.onPhysicalDamage = true;
+      else
+        ctx.onMagicDamage = true;
+    }
+    {
+      if (attacker.baseRange > 1 && ctx.range <= 1)
+        ctx.onRangedPenarty = true;
+    }
+    // todo: サポート同時攻撃の考慮
+    if (!attacker.isAlive || ctx.range > aunit.getRange(ctx)) {
+      return result;
+    }
+
+    let attackCount = 10;
+    let atk = aunit.getAttackPower(ctx);
+    let damageRate = skl ? skl.getDamageRate(ctx) : 1.0;
+    let dmgDealtBuff = aunit.getDamageDealtBuff(ctx);
+    let critDmgRate = aunit.getCriticalDamageRate(ctx);
+    let rangedPenarty = ctx.onRangedPenarty ? 0.6 : 1.0;
+
+    const calcDamage = (t, breakOnKill) => {
+      let tunit = t.chr.unit;
+      let dctx = Object.create(ctx);
+      let addScore = null;
+      if (t.chr.isSupport) {
+        dctx.onSupportDefense = true;
+        addScore = (v) => { result.damageToSupport += v; }
+      }
+      else {
+        dctx.onMainDefense = true;
+        addScore = (v) => { result.damageToMain += v; }
+      }
+
+      let def = tunit.getDefensePower(dctx);
+      let baseDmg = Math.max(atk - def, 1);
+      let dmgTakenBuff = tunit.getDamageTakenBuff(dctx);
+      let finalDmg = baseDmg * damageRate * dmgDealtBuff * dmgTakenBuff * critDmgRate * rangedPenarty;
+
+      let totalDamage = 0;
+      while (attackCount) {
+        if (t.dealDamage(finalDmg)) {
+          totalDamage += finalDmg;
+        }
+        --attackCount;
+        if (breakOnKill && !t.isAlive) {
+          break;
+        }
+      }
+      addScore(Math.round(totalDamage));
+    };
+
+    while (attackCount) {
+      let t = targetQueue.at(-1);
+      if (!t.isAlive && targetQueue.length > 1) {
+        targetQueue.pop();
+        continue;
+      }
+      calcDamage(t, targetQueue.length > 1);
+    }
+
+    return result;
+  }
+
+  makeTarget(chr) {
+    return {
+      chr: chr,
+      hp: chr.hp,
+      shield: 0,
+      get isValid() { return this.chr.maxHp > 0; },
+      get isAlive() { return this.hp > 0; },
+      dealDamage(v) {
+        if (this.shield > 0) {
+          this.shield -= v;
+          return false;
+        }
+        else {
+          this.hp -= v;
+          return true;
+        }
+      },
+    };
+  }
+
+  getBattleResult(unit, skill, target, actx) {
     // 防御側コンテキスト
     let dctx = makeBattleContext(target, unit);
     dctx.onEnemyTurn = true;
     dctx.onNormalAttack = true;
 
-    const mergeProperties = function (dst, src, propNames) {
-      for (const name of propNames) {
-        if (name in src) {
-          dst[name] = src[name];
-        }
-      }
-    };
-    mergeProperties(dctx, actx, ["range", "onCloseCombat", "onRangedCombat"]);
-
-    const makeTarget = (chr) => {
-      return {
-        chr: chr,
-        hp: chr.hp,
-        shield: 0,
-        get isAlive() { return this.hp > 0; },
-        dealDamage(v) {
-          if (this.shield > 0) {
-            this.shield -= v;
-            return false;
-          }
-          else {
-            this.hp -= v;
-            return true;
-          }
-        },
-      };
-    };
     let attacker = [
-      makeTarget(unit.main),
-      makeTarget(unit.support),
+      this.makeTarget(unit.main),
+      this.makeTarget(unit.support),
     ];
     let defender = [
-      makeTarget(target.main),
-      makeTarget(target.support),
+      this.makeTarget(target.main),
+      this.makeTarget(target.support),
     ];
 
-    let aSup = doAttack(actx, unit.support, defender);
-    let aMain = doAttack(actx, unit.main, defender, skill);
+    let aSup = this.doAttack(actx, unit.support, defender, null);
+    let aMain = this.doAttack(actx, unit.main, defender, skill);
     if (defender.at(-1).isAlive && unit.invokeDoubleAttack(actx)) {
-      aMain.add(doAttack(actx, unit.main, defender, skill));
+      aMain.add(this.doAttack(actx, unit.main, defender, skill));
     }
 
-    let dSup = doAttack(dctx, target.support, attacker);
-    let dMain = doAttack(dctx, target.main, attacker);
+    let dSup = this.doAttack(dctx, target.support, attacker, null);
+    let dMain = this.doAttack(dctx, target.main, attacker, null);
     if (attacker.at(-1).isAlive && target.invokeDoubleAttack(actx)) {
-      dMain.add(doAttack(dctx, target.main, attacker));
+      dMain.add(this.doAttack(dctx, target.main, attacker, null));
     }
     return {
       ctx: aMain.ctx,
@@ -237,6 +234,36 @@ export class SimContext {
     };
   }
 
+  getAreaAttackResult(unit, skill, targets, actx) {
+    let result = {
+      attackerScore: 0,
+      callbacks: [],
+      apply() {
+        for (let cb of this.callbacks) {
+          cb();
+        }
+      },
+    };
+    for (let target of targets ?? []) {
+      // 防御側コンテキスト
+      let dctx = makeBattleContext(target, unit);
+      dctx.onEnemyTurn = true;
+      dctx.onNormalAttack = true;
+
+      let r = [
+        this.doAttack(actx, unit.main, [this.makeTarget(target.main)], skill),
+        this.doAttack(actx, unit.main, [this.makeTarget(target.support)], skill),
+      ];
+      console.log(r);
+      result.attackerScore += r[0].total + r[1].total;
+      result.callbacks.push(() => {
+        target.support.hp -= r[0].damageToSupport + r[1].damageToSupport;
+        target.main.hp -= r[0].damageToMain + r[1].damageToMain;
+      });
+    }
+    return result;
+  }
+
   fireSkill(unit, skill, targets, cell) {
     unit = unit.sim ?? unit;
     // targets は配列なら複数、非配列なら単体
@@ -246,26 +273,24 @@ export class SimContext {
     else
       target = targets?.sim ?? targets;
 
-    let range = 0;
-    let move = 0;
+    this.range = 0;
+    this.move = 0;
 
     let doAction = skill?.isSupportSkill ? false : true;
     let doAttack = false;
     let doBattle = false;
     if (unit.prevCoord) {
-      move = Math.abs(unit.coord[0] - unit.prevCoord[0]) + Math.abs(unit.coord[1] - unit.prevCoord[1]);
+      this.move = Math.abs(unit.coord[0] - unit.prevCoord[0]) + Math.abs(unit.coord[1] - unit.prevCoord[1]);
     }
     if (target) {
       // NxN ボス対策として target.coord ではなく cell.coord との距離を取る
-      range = Math.abs(unit.coord[0] - cell.coord[0]) + Math.abs(unit.coord[1] - cell.coord[1]);
+      this.range = Math.abs(unit.coord[0] - cell.coord[0]) + Math.abs(unit.coord[1] - cell.coord[1]);
     }
 
     // 条件変数を設定
     // 攻撃側
     let ctx = makeBattleContext(unit, target);
     ctx.onOwnTurn = true;
-    ctx.move = move;
-    ctx.range = range;
     ctx.skill = skill;
 
     if (skill && skill.isMainSkill && skill.damageRate) {
@@ -285,6 +310,10 @@ export class SimContext {
       console.log(target ?? targets);
       if (doBattle) {
         let r = this.getBattleResult(unit, skill, target, ctx);
+        console.log(r);
+      }
+      else if (doAttack) {
+        let r = this.getAreaAttackResult(unit, skill, targets, ctx);
         console.log(r);
       }
       skill.onFire();
@@ -343,7 +372,9 @@ export class SimContext {
     for (let u of this.units) {
       u.onSimulationEnd();
     }
-    SimContext.instance = null;
+    if ($g.sim == this) {
+      $g.sim = null;
+    }
   }
 
   onPlayerTurnBegin() {
@@ -639,13 +670,6 @@ export function calcDirection(base, target) {
   return Direction.None; // base == target
 }
 
-
 function $vue() {
   return window.$vue;
-}
-function $sim() {
-  return SimContext.instance;
-}
-function $findObjectByUid(uid) {
-  return $vue().findObjectByUid(uid);
 }

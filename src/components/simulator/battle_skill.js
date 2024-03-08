@@ -1,3 +1,5 @@
+import { $g } from "./battle_globals.js";
+
 function $vue() {
   return window.$vue;
 }
@@ -114,8 +116,16 @@ export function evaluateCondition(ctx, cond)
   return ok;
 }
 
-export function makeBattleContext(unit, target, base = null) {
+export function makeBattleContext(unit, target) {
+  let sim = $g.sim;
   let ctx = {
+    get turn() { return sim.turn; },
+    get phase() { return sim.phase; },
+    get move() { return sim.move; },
+    get range() { return sim.range; },
+    get onCloseCombat() { return this.range == 1; },
+    get onRangedCombat() { return this.range > 1; },
+
     get class() { return unit.mainClass },
     get hp() { return unit.hpRate },
     get activeBuffCount() { return unit.activeBuffCount; },
@@ -132,7 +142,6 @@ export function makeBattleContext(unit, target, base = null) {
     getTargetToken(args) { return target.getToken(args); },
 
     get skill() { return this.skill_; },
-    get range() { return this.range_; },
 
     set skill(skill) {
       this.skill_ = skill;
@@ -157,15 +166,6 @@ export function makeBattleContext(unit, target, base = null) {
             this.onTargetEnemy = true;
           }
         }
-      }
-    },
-    set range(range) {
-      this.range_ = range;
-      if (range == 1) {
-        this.onCloseCombat = true;
-      }
-      else if (range > 1) {
-        this.onRangedCombat = true;
       }
     },
   };

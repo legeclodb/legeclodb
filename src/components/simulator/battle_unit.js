@@ -270,6 +270,7 @@ export class SimUnit {
       });
 
       let table = {
+        isValid: function () { return chr.maxHp > 0; },
         isAlive: function () { return chr.hp > 0; },
         baseHp: function () { return base.status[0]; },
         baseAtk: function () { return base.status[1]; },

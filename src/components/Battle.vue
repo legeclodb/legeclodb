@@ -1256,9 +1256,17 @@ export default {
     getTargetUnits() {
       let pf = this.skillDirection ?? this.skillArea;
       if (pf) {
-        return this.allActiveUnits.filter(u => {
-          return pf.isInFireRange(u.coord) && this.isValidTarget(this.selectedUnit, this.selectedSkill, u);
-        })
+        let targets = [];
+        // NxN ボスがいる都合上、ユニット毎ではなくセル毎に探索する必要がある
+        for (let c of this.cells) {
+          if (pf.isInFireRange(c.coord)) {
+            let u = this.findUnitByCoord(c.coord);
+            if (this.isValidTarget(this.selectedUnit, this.selectedSkill, u)) {
+              targets.push(u);
+            }
+          }
+        }
+        return targets;
       }
       else {
         return this.targetUnit;
