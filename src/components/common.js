@@ -1547,7 +1547,7 @@ export default {
           chr.skillsAll = [...chr.skills];
           chr.engage.skills = chr.engage.skills.flatMap(id => grabSkill(id, chr));
 
-          for (let i = 0; i < chr.engage.skills; ++i) {
+          for (let i = 0; i < chr.engage.skills.length; ++i) {
             if (chr.engage.skills[i] !== chr.skills[i]) {
               chr.engage.skills[i].isEngageSkill = true;
               chr.skillsAll.push(chr.engage.skills[i]);
@@ -1567,16 +1567,12 @@ export default {
         }
 
         if (!chr.isNpc) {
-          if ('skillsAll' in chr) {
-            for (let skill of chr.skillsAll) {
-              skill.addOwner(chr);
-            }
+          for (let skill of chr?.skillsAll ?? []) {
+            skill.addOwner(chr);
           }
-          if ('summonAll' in chr) {
-            for (let sum of chr.summonAll) {
-              for (let skill of sum.skills) {
-                skill.addOwner(chr);
-              }
+          for (let sum of chr?.summonAll ?? []) {
+            for (let skill of sum.skills) {
+              skill.addOwner(chr);
             }
           }
         }

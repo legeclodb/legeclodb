@@ -756,10 +756,8 @@ export default {
         }
 
         // 召喚ユニット
-        if ('summonAll' in chr) {
-          for (let sum of chr.summonAll) {
-            sum.status = this.getNPCChrStatus(sum, level);
-          }
+        for (let sum of chr?.summonAll ?? []) {
+          sum.status = this.getNPCChrStatus(sum, level);
         }
       }
       this.$forceUpdate();
