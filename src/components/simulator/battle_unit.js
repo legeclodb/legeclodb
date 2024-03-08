@@ -372,12 +372,16 @@ export class SimUnit {
   }
 
   getAttackPower(ctx) {
+    let base = 0, buff = 0;
     if (ctx?.onSupportAttack) {
-      return this.support.baseAttackPower;
+      base = this.support.baseAttackPower;
+      buff = this.evaluateEffects(ctx, this.support.damageType);
     }
     else {
-      return this.main.baseAttackPower;
+      base = this.main.baseAttackPower;
+      buff = this.evaluateEffects(ctx, this.main.damageType);
     }
+    return base * buff;
   }
   getDamageDealtBuff(ctx) {
     return 1.0;
@@ -437,8 +441,18 @@ export class SimUnit {
     return false;
   }
 
-  evaluateEffects(ctx) {
-
+  evaluateEffects(ctx, type) {
+    let r = 100;
+    for (let e of this.effects) {
+      if (e.type == type && evaluateCondition(ctx, e.condition)) {
+        if ((e.target == "自身(メイン)" && !ctx.onMainAttack) || (e.target == "自身(サポート)" && !ctx.onSupportAttack)) {
+          continue;
+        }
+        r += e.value;
+        console.log(e);
+      }
+    }
+    return r / 100.0;
   }
 
   invokeDoubleAttack(ctx) {
@@ -490,6 +504,15 @@ export class SimUnit {
   //#region callbacks
   onSimulationBegin() {
     this._callHandler("onSimulationBegin");
+    for (let passive of this.passives) {
+      for (let effect of passive.buff ?? []) {
+        if (!effect.trigger) {
+          this.effects.push(makeSimEffect(effect));
+        }
+      }
+    }
+    //console.log(this.effects);
+    //console.log(this.passives);
   }
   onSimulationEnd() {
     this._callHandler("onSimulationEnd");

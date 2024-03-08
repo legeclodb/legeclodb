@@ -117,7 +117,7 @@ export class SimContext {
         ctx.onMagicDamage = true;
     }
     {
-      if (attacker.baseRange > 1 && ctx.range <= 1)
+      if (ctx.onBattle && attacker.baseRange > 1 && ctx.range <= 1)
         ctx.onRangedPenarty = true;
     }
     // todo: サポート同時攻撃の考慮
@@ -195,7 +195,10 @@ export class SimContext {
     };
   }
 
-  getBattleResult(unit, skill, target, actx) {
+  getBattleResult(unit, skill, target, ctx) {
+    // 攻撃側コンテキスト
+    let actx = Object.create(ctx);
+
     // 防御側コンテキスト
     let dctx = makeBattleContext(target, unit);
     dctx.onEnemyTurn = true;
@@ -234,7 +237,7 @@ export class SimContext {
     };
   }
 
-  getAreaAttackResult(unit, skill, targets, actx) {
+  getAreaAttackResult(unit, skill, targets, ctx) {
     let result = {
       attackerScore: 0,
       callbacks: [],
@@ -245,6 +248,10 @@ export class SimContext {
       },
     };
     for (let target of targets ?? []) {
+      // 攻撃側コンテキスト
+      let actx = Object.create(ctx);
+      actx.target = target;
+
       // 防御側コンテキスト
       let dctx = makeBattleContext(target, unit);
       dctx.onEnemyTurn = true;
@@ -254,7 +261,6 @@ export class SimContext {
         this.doAttack(actx, unit.main, [this.makeTarget(target.main)], skill),
         this.doAttack(actx, unit.main, [this.makeTarget(target.support)], skill),
       ];
-      console.log(r);
       result.attackerScore += r[0].total + r[1].total;
       result.callbacks.push(() => {
         target.support.hp -= r[0].damageToSupport + r[1].damageToSupport;
@@ -289,9 +295,10 @@ export class SimContext {
 
     // 条件変数を設定
     // 攻撃側
-    let ctx = makeBattleContext(unit, target);
+    let ctx = makeBattleContext(unit, target, skill);
     ctx.onOwnTurn = true;
-    ctx.skill = skill;
+    if (doBattle)
+      ctx.onBattle = true;
 
     if (skill && skill.isMainSkill && skill.damageRate) {
       doAttack = true;
@@ -307,7 +314,7 @@ export class SimContext {
 
     // 待機の場合 skill は null
     if (skill) {
-      console.log(target ?? targets);
+      skill.onFire();
       if (doBattle) {
         let r = this.getBattleResult(unit, skill, target, ctx);
         console.log(r);
@@ -316,7 +323,6 @@ export class SimContext {
         let r = this.getAreaAttackResult(unit, skill, targets, ctx);
         console.log(r);
       }
-      skill.onFire();
     }
 
     //ctx.onCriticalhit = true;

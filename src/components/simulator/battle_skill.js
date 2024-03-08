@@ -44,7 +44,7 @@ export function evaluateCondition(ctx, cond)
     "onOwnTurn", "onEnemyTurn",
     "onTargetAlly", "onTargetEnemy",
     "onActiveSkill", "onSingleSkill", "onAreaSkill",
-    "onCloseCombat", "onRangedCombat",
+    "onBattle", "onCloseCombat", "onRangedCombat",
     "onDamage", "onCriticalHit", "onKill", "onClassAdvantage"
   ];
   for (const p of boolProps) {
@@ -60,6 +60,7 @@ export function evaluateCondition(ctx, cond)
     ["onClass", "class"],
     ["onTargetClass", "targetClass"],
     ["onSymbol", "symbol"],
+    ["onTerrain", "terrain"]
   ];
   for (const [cname, pname] of includesPros) {
     if (cname in cond) {
@@ -116,30 +117,16 @@ export function evaluateCondition(ctx, cond)
   return ok;
 }
 
-export function makeBattleContext(unit, target) {
+export function makeBattleContext(unit, target = null, skill = null) {
   let sim = $g.sim;
   let ctx = {
     get turn() { return sim.turn; },
     get phase() { return sim.phase; },
     get move() { return sim.move; },
     get range() { return sim.range; },
-    get onCloseCombat() { return this.range == 1; },
-    get onRangedCombat() { return this.range > 1; },
-
-    get class() { return unit.mainClass },
-    get hp() { return unit.hpRate },
-    get activeBuffCount() { return unit.activeBuffCount; },
-    get activeDebuffCount() { return unit.activeDebuffCount; },
-    isOnEffect(args) { return unit.isOnEffect(args); },
-    getToken(args) { return unit.getToken(args); },
-    getNearAllyCount(args) { return unit.getNearAllyCount(args); },
-    getNearEnemyCount(args) { return unit.getNearEnemyCount(args); },
-
-    get targetClass() { return target.mainClass },
-    get targetHp() { return target.hpRate },
-    get targetActiveBuffCount() { return target.activeBuffCount; },
-    get targetActiveDebuffCount() { return target.activeDebuffCount; },
-    getTargetToken(args) { return target.getToken(args); },
+    get onCloseCombat() { return this.onBattle && this.range == 1; },
+    get onRangedCombat() { return this.onBattle && this.range > 1; },
+    get terrain() { return ""; },
 
     get skill() { return this.skill_; },
 
@@ -168,7 +155,68 @@ export function makeBattleContext(unit, target) {
         }
       }
     },
+
+    get unit() { return this.unit_; },
+    set unit(u) {
+      this.unit_ = u;
+      Object.defineProperties(this, {
+        class: {
+          configurable: true,
+          get: () => u.mainClass
+        },
+        hp: {
+          configurable: true,
+          get: () => u.hpRate
+        },
+        activeBuffCount: {
+          configurable: true,
+          get: () => u.activeBuffCount
+        },
+        activeDebuffCount: {
+          configurable: true,
+          get: () => u.activeDebuffCount
+        },
+      });
+      this.isOnEffect = (args) => u.isOnEffect(args);
+      this.getToken = (args) => u.getToken(args);
+      this.getNearAllyCount = (args) => u.getNearAllyCount(args);
+      this.getNearEnemyCount = (args) => u.getNearEnemyCount(args);
+    },
+
+    get target() { return this.target_; },
+    set target(u) {
+      this.target_ = u;
+      Object.defineProperties(this, {
+        targetClass: {
+          configurable: true,
+          get: () => u.mainClass
+        },
+        targetHp: {
+          configurable: true,
+          get: () => u.hpRate
+        },
+        targetActiveBuffCount: {
+          configurable: true,
+          get: () => u.activeBuffCount
+        },
+        targetActiveDebuffCount: {
+          configurable: true,
+          get: () => u.activeDebuffCount
+        },
+      });
+      this.getTargetToken = (args) => u.getToken(args);
+    },
   };
+
+  if (unit) {
+    ctx.unit = unit;
+  }
+  if (target) {
+    ctx.target = target;
+  }
+  if (skill) {
+    ctx.skill = skill;
+  }
   return ctx;
 }
 
@@ -309,7 +357,7 @@ export function makeSimSkill(skill, ownerChr) {
 
   self.effects = []; // SimEffect
   for (let effect of [...(self.buff ?? []), ...(self.debuff ?? [])]) {
-    self.effects.push(makeSimEffect(effect));
+    //self.effects.push(makeSimEffect(effect));
   }
 
   self.serialize = function () {
