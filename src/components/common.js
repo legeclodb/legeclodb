@@ -954,21 +954,27 @@ export default {
     },
 
     isPublicTarget(effect) {
+      const checkTarget = (t) => {
+        return typeof (t) == "string" && (!t.startsWith("自身") && !t.startsWith("召喚"));
+      };
       const trigger = effect.trigger;
       if (trigger) {
-        return !trigger.target.startsWith("自身");
+        return checkTarget(trigger.target);
       }
       else {
-        return !effect.target || (typeof (effect.target) == "string" && !effect.target.startsWith("自身"));
+        return !effect.target || checkTarget(effect.target);
       }
     },
     isSelfTarget(effect) {
+      const checkTarget = (t) => {
+        return typeof (t) == "string" && t.startsWith("自身");
+      };
       const trigger = effect.trigger;
       if (trigger) {
-        return trigger.target.startsWith("自身");
+        return checkTarget(trigger.target);
       }
       else {
-        return !effect.target || (typeof (effect.target) == "string" && effect.target.startsWith("自身"));
+        return !effect.target || checkTarget(effect.target);
       }
 
     },
