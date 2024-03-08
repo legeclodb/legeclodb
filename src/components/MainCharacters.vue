@@ -667,7 +667,7 @@ export default {
         chr.damageTypeId = this.damageTypes.findIndex(v => v == chr.damageType);
         this.$set(chr, 'status', [0, 0, 0, 0, 0, 0, 0]);
         Object.defineProperty(chr, 'attackPower', {
-          get: chr.damageTypeId == 0 ? () => { return this.status[1]; } : () => { return this.status[3]; },
+          get: chr.damageTypeId == 0 ? () => { return chr.status[1]; } : () => { return chr.status[3]; },
         });
       }
       this.stat.defaults = [
