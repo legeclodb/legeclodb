@@ -7,7 +7,8 @@ function $vue() {
 export function mergeChrData(dst, src) {
   const props = [
     "isMain", "isSupport",
-    "name", "icon", "class", "rarity", "symbol", "supportType", "damageType", "range", "move",
+    "name", "icon", "class", "rarity", "symbol", "supportType", "damageType",
+    "range", "move", "shape",
   ];
   if (src) {
     for (const prop of props) {
@@ -305,14 +306,18 @@ export class SimUnit {
 
     let vue = $vue();
     if (unit) {
-      // 通常攻撃
-      let atk = makeSimSkill($vue().findItemByUid(this.main.damageType == "アタック" ? "9999999" : "9999998"), this);
-      Object.defineProperty(atk, 'range', {
-        get: () => this.main.baseRange,
-      });
+      let opt = [];
+      if (!('shape' in this.main)) {
+        // NxN ボス以外は通常攻撃追加
+        let atk = makeSimSkill($vue().findItemByUid(this.main.damageType == "アタック" ? "9999999" : "9999998"), this);
+        Object.defineProperty(atk, 'range', {
+          get: () => this.main.baseRange,
+        });
+        opt.push(atk);
+      }
 
       this.skills = [
-        atk,
+        ...opt,
         ...(unit.main.skills ?? []),
         ...(unit.main.items ?? []),
         ...(unit.main ? vue.getClassPassiveMain(unit.main.class) : []),

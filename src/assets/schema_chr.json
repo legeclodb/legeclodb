@@ -24,6 +24,7 @@
       "damageType": { "$ref": "schema_skill.json#/$defs/damageType" },
       "range": { "type": "integer" },
       "move": { "type": "integer" },
+      "shape": { "type": "array" },
       "statusInit": { "type": "array" },
       "statusLv": { "type": "array" },
       "statusStar": { "type": "array" },

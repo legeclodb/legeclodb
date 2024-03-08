@@ -585,27 +585,26 @@ export default {
     for (let battle of this.battleList) {
       battle.summon = [];
       for (let enemy of battle.enemies) {
-        {
-          const chr = this.npcMainChrs.find(c => c.uid == enemy.main.cid);
-          lbt.mergeChrData(enemy.main, chr);
-          enemy.main.skills = [
-            this.searchTableWithUid.get(enemy.main.talent),
-            ...enemy.main.skills.map(id => this.searchTableWithUid.get(id)),
-          ];
-          enemy.main.status = this.getNPCChrStatus(chr, enemy.main.level, enemy.main.statusRate);
-        }
-        if (enemy.support) {
-          const chr = this.npcSupChrs.find(c => c.uid == enemy.support.cid);
-          lbt.mergeChrData(enemy.support, chr);
-          enemy.support.status = this.getNPCChrStatus(chr, enemy.support.level, enemy.support.statusRate);
-        }
-
         let unit = new lbt.BaseUnit(false);
         unit.fid = enemy.fid;
         unit.phase = enemy.phase;
         unit.coord = enemy.coord;
-        this.moveProperty(unit.base, enemy, "main");
-        this.moveProperty(unit.base, enemy, "support");
+        {
+          let chr = Object.create(this.npcMainChrs.find(c => c.uid == enemy.main.cid));
+          Object.assign(chr, enemy.main);
+          chr.skills = [
+            this.searchTableWithUid.get(chr.talent),
+            ...chr.skills.map(id => this.searchTableWithUid.get(id)),
+          ];
+          chr.status = this.getNPCChrStatus(chr, chr.level, chr.statusRate);
+          unit.base.main = chr;
+        }
+        if (enemy.support) {
+          let chr = Object.create(this.npcSupChrs.find(c => c.uid == enemy.support.cid));
+          Object.assign(chr, enemy.support);
+          chr.status = this.getNPCChrStatus(chr, chr.level, chr.statusRate);
+          unit.base.support = chr;
+        }
         unit.setup();
         enemy.unit = unit;
         //console.log(unit);
@@ -690,14 +689,12 @@ export default {
       const confirm = () => {
         self.pushTool(self.tools.confirm);
       };
-      const setStart = (pf, unit) => {
-        pf.setStart(unit.coord);
-        if (self.battleData.bossArea && unit === self.enemyUnits[0]) {
-          for (let c of self.cells) {
-            if (c.boss) {
-              pf.setStart(c.coord);
-            }
-          }
+      const setStartCell = (pf, unit) => {
+        if ('shape' in unit.main) {
+          pf.setStartShape(unit.main.shape);
+        }
+        else {
+          pf.setStart(unit.coord);
         }
       };
 
@@ -759,7 +756,7 @@ export default {
               pf.setObstacles(self.allActiveUnits.filter(a => a.isEnemy));
               pf.setOccupied(self.allActiveUnits.filter(a => a.isPlayer && a.main.cid && a !== unit));
             }
-            setStart(pf, unit);
+            setStartCell(pf, unit);
             pf.buildPath(unit.move, unit.range);
             self.path = pf;
           },
@@ -866,7 +863,7 @@ export default {
           onEnable() {
             let skill = self.selectedSkill;
             let pf = new lbt.PathFinder(self.divX, self.divY);
-            setStart(pf, self.selectedUnit);
+            setStartCell(pf, self.selectedUnit);
             pf.buildPath(0, skill.range ?? 1, skill.rangeShape);
             self.skillRange = pf;
           },
@@ -916,7 +913,7 @@ export default {
                 }
               }
               else {
-                if ((unit && self.targetUnit === unit) || self.targetCell === cell) {
+                if (self.targetCell === cell) {
                   r.push("target-cell");
                 }
               }
@@ -930,11 +927,15 @@ export default {
             let skill = self.selectedSkill;
             let pf = new lbt.PathFinder(self.divX, self.divY);
             if (skill.shapeData) {
-              pf.assignShape(skill.shapeData);
+              pf.setShootRangeShape(skill.shapeData);
             }
             else {
-              setStart(pf, self.selectedUnit);
-              pf.setStart(self.targetCell.coord);
+              if (skill.isSelfTarget) {
+                setStartCell(pf, self.selectedUnit);
+              }
+              else {
+                pf.setStart(self.targetCell.coord);
+              }
               pf.buildPath(0, self.selectedUnit.sim.getSkillArea(skill), skill.areaShape);
             }
             self.skillArea = pf;
@@ -1176,10 +1177,13 @@ export default {
       });
 
       this.enemyUnits = battle.enemies?.map(a => a.unit) ?? [];
-      if (battle.bossArea) {
-        for (let c of cells) {
-          if (battle.bossArea[c.coord[1]][c.coord[0]]) {
-            c.boss = this.enemyUnits[0];
+      for (let e of this.enemyUnits) {
+        if (e.main.shape) {
+          const shape = e.main.shape;
+          for (let c of cells) {
+            if (shape[c.coord[1]][c.coord[0]]) {
+              c.boss = e;
+            }
           }
         }
       }

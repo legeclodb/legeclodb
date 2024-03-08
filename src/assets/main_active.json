@@ -5,6 +5,8 @@
     "name": "通常攻撃(物理)",
     "desc": "敵単体に1倍の物理ダメージを与える。",
     "ct": 0,
+    "area": "単体",
+    "range": 1,
     "damageRate": 1.0,
     "isNormalAttack": true
   },
@@ -14,6 +16,8 @@
     "name": "通常攻撃(魔法)",
     "desc": "敵単体に1倍の魔法ダメージを与える。",
     "ct": 0,
+    "area": "単体",
+    "range": 1,
     "damageRate": 1.0,
     "isNormalAttack": true
   },
