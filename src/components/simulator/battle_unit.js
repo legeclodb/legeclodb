@@ -195,8 +195,6 @@ export class SimUnit {
   base = null; // BaseUnit
   isDormant = false; // 配置前 (出現ターン前) のユニットは true
   coord = [0, 0];
-  affectedSkills = []; // SimSkill
-  effects = []; // SimEffect
   main = {
     bufRate: {},
     bufFixed: {},
@@ -209,7 +207,9 @@ export class SimUnit {
     hp: 0,
     maxHp: 0,
   };
-  data = {};
+  selfEffects = []; // SimEffect
+  areaEffects = []; // SimEffect
+  timedEffects = []; // SimEffect
   //#endregion fields
 
 
@@ -227,7 +227,7 @@ export class SimUnit {
   }
   get prevCoord() { return this.base.prevCoord; }
   get activeBuffCount() {
-    return this.effects.reduce((total, e) => {
+    return this.timedEffects.reduce((total, e) => {
       if (e.isBuff && e.parent.isActive) {
         total += 1;
       }
@@ -235,7 +235,7 @@ export class SimUnit {
     }, 0);
   }
   get activeDebuffCount() {
-    return this.effects.reduce((total, e) => {
+    return this.timedEffects.reduce((total, e) => {
       if (e.isDebuff && e.parent.isActive) {
         total += 1;
       }
@@ -247,6 +247,9 @@ export class SimUnit {
   }
   get passives() {
     return this.skills.filter(a => a.isPassive || a.isTalent || a.isItem);
+  }
+  get effects() {
+    return [...this.selfEffects, ...this.areaEffects, ...this.timedEffects];
   }
   //#endregion props
 
@@ -338,6 +341,8 @@ export class SimUnit {
     r.coord = [...this.coord];
     SimUnit.copyProps(r.main, this.main);
     SimUnit.copyProps(r.support, this.support);
+    r.skills = this.skills.map(a => { return { [a.uid]: a.data }; });
+    r.timedEffects = this.timedEffects.map(a => { return { [a.uid]: a.data }; });
     return r;
   }
   deserialize(r) {
@@ -346,18 +351,6 @@ export class SimUnit {
     SimUnit.copyProps(this.support, r.support);
   }
 
-  // ctx: {
-  //  onMainAttack: boolean,
-  //  onMainDefense: boolean,
-  //  onSupportAttack: boolean,
-  //  onSupportDefense: boolean,
-  //  onPhysicalDamage: boolean,
-  //  onMagicDamage: boolean,
-  //  onBattle: boolean,
-  //  onNormalAttack: boolean,
-  //  onActiveSkill: boolean,
-  //  onAreaSkill: boolean,
-  //}
   getMove(ctx) {
     return this.main.baseMove;
   }
@@ -371,6 +364,11 @@ export class SimUnit {
   }
   getSkillArea(skill) {
     return skill.area;
+  }
+
+  applyEffect(effect, stop = false) {
+    this.timedEffects.push(makeSimEffect(effect, stop));
+    console.log(this.timedEffects);
   }
 
   evaluateBuffs(ctx) {
@@ -528,7 +526,7 @@ export class SimUnit {
   }
   getTokenCount(tokenName) {
     let r = 0;
-    for (let e of this.effects) {
+    for (let e of this.timedEffects) {
       if (e.type == "トークン" && e.tokenName == tokenName) {
         ++r;
       }
@@ -580,10 +578,10 @@ export class SimUnit {
 
 
   reduceEffectDuration() {
-    for (let e of this.effects) {
+    for (let e of this.timedEffects) {
       e.decrementCount();
     }
-    this.effects = this.effects.filter(a => a.isAlive);
+    this.timedEffects = this.timedEffects.filter(a => a.isAlive);
   }
   // スキルの CT 減
   reduceSkillCT(n, excludeFunc = null) {
@@ -603,89 +601,89 @@ export class SimUnit {
     console.log(`${this.main.name}: ${message}`);
   }
 
-  _callHandler(funcName) {
+  _callHandler(funcName, ctx) {
     this._dbgLog(funcName);
-    callHandler(funcName, ...this.passives);
+    callHandler(funcName, ctx, ...this.passives);
   }
 
   //#region callbacks
-  onSimulationBegin() {
-    this._callHandler("onSimulationBegin");
+  onSimulationBegin(ctx) {
+    this._callHandler("onSimulationBegin", ctx);
     for (let passive of this.passives) {
       for (let effect of passive.buff ?? []) {
         if (!effect.trigger) {
-          this.effects.push(makeSimEffect(effect));
+          this.selfEffects.push(makeSimEffect(effect));
         }
       }
     }
     //console.log(this.effects);
     //console.log(this.passives);
   }
-  onSimulationEnd() {
-    this._callHandler("onSimulationEnd");
+  onSimulationEnd(ctx) {
+    this._callHandler("onSimulationEnd", ctx);
     this.base.sim = null;
   }
 
   // 自ターン開始前/後
-  onOwnTurnBegin() {
-    this._callHandler("onOwnTurnBegin");
+  onOwnTurnBegin(ctx) {
+    this._callHandler("onOwnTurnBegin", ctx);
   }
-  onOwnTurnEnd() {
-    this._callHandler("onOwnTurnEnd");
+  onOwnTurnEnd(ctx) {
+    this._callHandler("onOwnTurnEnd", ctx);
     this.reduceTurnCT();
   }
 
   // 相手ターン開始前/後
-  onOpponentTurnBegin() {
-    this._callHandler("onOpponentTurnBegin");
+  onOpponentTurnBegin(ctx) {
+    this._callHandler("onOpponentTurnBegin", ctx);
   }
-  onOpponentTurnEnd() {
-    this._callHandler("onOpponentTurnEnd");
+  onOpponentTurnEnd(ctx) {
+    this._callHandler("onOpponentTurnEnd", ctx);
   }
 
   // 移動後、行動確定時、戦闘開始前もしくは非戦闘を含むスキル使用前に呼ばれる
   // 攻撃の場合は直後に onAttackBegin() が、
   // 戦闘に入る場合は直後に onBattleBegin() が呼ばれる
-  onActionBegin() {
-    this._callHandler("onActionBegin");
+  onActionBegin(ctx) {
+    this._callHandler("onActionBegin", ctx);
   }
-  onActionEnd() {
-    this._callHandler("onActionEnd");
+  onActionEnd(ctx) {
+    this._callHandler("onActionEnd", ctx);
     this.reduceSkillCT(1);
     this.reduceEffectDuration();
   }
 
   // 移動後、行動確定時、戦闘非戦闘を問わず攻撃前に呼ばれる
   // 戦闘に入る場合は直後に onBattleBegin() が呼ばれる
-  onAttackBegin() {
-    this._callHandler("onAttackBegin");
+  onAttackBegin(ctx) {
+    this._callHandler("onAttackBegin", ctx);
   }
-  onAttackEnd() {
-    this._callHandler("onAttackEnd");
+  onAttackEnd(ctx) {
+    this._callHandler("onAttackEnd", ctx);
   }
 
   // 戦闘前 (非範囲攻撃、ゲーム中戦闘画面に入るもの) に呼ばれる
   // 攻撃される側も呼ばれる
-  onBattleBegin() {
-    this._callHandler("onBattleBegin");
+  onBattleBegin(ctx) {
+    this._callHandler("onBattleBegin", ctx);
   }
-  onBattleEnd() {
-    this._callHandler("onBattleEnd");
+  onBattleEnd(ctx) {
+    this._callHandler("onBattleEnd", ctx);
   }
 
   // 手段を問わず敵撃破時に呼ばれる
-  onKill() {
-    this._callHandler("onKill");
+  onKill(ctx) {
+    this._callHandler("onKill", ctx);
   }
 
   // 手段を問わず撃破されたとき呼ばれる
-  onDeath() {
-    this._callHandler("onDeath");
+  onDeath(ctx) {
+    this._callHandler("onDeath", ctx);
   }
 
   // ラストスタンドなどで復活した時呼ばれる
-  onRevive() {
-    this._callHandler("onRevive");
+  onRevive(ctx) {
+    this._callHandler("onRevive", ctx);
   }
   //#endregion callbacks
 

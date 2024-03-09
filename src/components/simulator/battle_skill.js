@@ -4,9 +4,9 @@ function $vue() {
   return window.$vue;
 }
 
-export function callHandler(funcName, ...callees) {
+export function callHandler(funcName, ctx, ...callees) {
   for (let c of callees) {
-    c[funcName]();
+    c[funcName](ctx);
   //  try {
   //    c[funcName]();
   //  }
@@ -117,7 +117,7 @@ export function evaluateCondition(ctx, cond)
   return ok;
 }
 
-export function makeBattleContext(unit, target = null, skill = null) {
+export function makeActionContext(unit, target = null, skill = null) {
   let sim = $g.sim;
   let ctx = {
     get turn() { return sim.turn; },
@@ -220,10 +220,29 @@ export function makeBattleContext(unit, target = null, skill = null) {
   return ctx;
 }
 
-export function makeSimEffect(effect) {
+export function makeSimEffect(effect, stop = false) {
   let self = Object.create(effect);
-  self.count = self.duration ?? Infinity; // 残有効時間
-  self.isStopped = true; // 自己バフはかけたターンは時間経過しない。そのためのフラグ。
+  let data = {};
+  self.data = data; // serializable data
+
+  if (self.duration) {
+    data.count = self.duration; // 残有効時間
+    data.isStopped = stop; // 自己バフはかけたターンは時間経過しない。そのためのフラグ。
+    Object.defineProperty(self, "count", {
+      get: () => data.count,
+      set: (v) => { data.count = v },
+    });
+    Object.defineProperty(self, "isStopped", {
+      get: () => data.isStopped,
+      set: (v) => { data.isStopped = v },
+    });
+  }
+  else {
+    Object.defineProperty(self, "count", {
+      get: () => Infinity,
+      set: (v) => { },
+    });
+  }
 
   Object.defineProperty(self, "isAlive", {
     get: () => self.count > 0,
@@ -231,17 +250,6 @@ export function makeSimEffect(effect) {
   Object.defineProperty(self, "isAdditive", {
     get: () => 'add' in self,
   });
-
-  self.serialize = function () {
-    return {
-      count: self.count,
-      isStopped: self.isStopped,
-    };
-  }
-  self.deserialize = function (r) {
-    self.count = r.count;
-    self.isStopped = r.isStopped;
-  }
 
   self.decrementCount = function () {
     if (!this.isStopped && this.count > 0) {
@@ -309,28 +317,28 @@ export function makeSimEffect(effect) {
   self.onOpponentTurnEnd = function () {
   }
 
-  self.onActionBegin = function () {
+  self.onActionBegin = function (ctx) {
   }
-  self.onActionEnd = function () {
-  }
-
-  self.onAttackBegin = function () {
-  }
-  self.onAttackEnd = function () {
+  self.onActionEnd = function (ctx) {
   }
 
-  self.onBattleBegin = function () {
+  self.onAttackBegin = function (ctx) {
   }
-  self.onBattleEnd = function () {
-  }
-
-  self.onKill = function () {
+  self.onAttackEnd = function (ctx) {
   }
 
-  self.onDeath = function () {
+  self.onBattleBegin = function (ctx) {
+  }
+  self.onBattleEnd = function (ctx) {
   }
 
-  self.onRevive = function () {
+  self.onKill = function (ctx) {
+  }
+
+  self.onDeath = function (ctx) {
+  }
+
+  self.onRevive = function (ctx) {
   }
   //#endregion callbacks
 
@@ -364,8 +372,9 @@ export function makeSimSkill(skill, ownerUnit) {
   let self = Object.create(skill);
   self.owner = ownerUnit;
 
-  let data = self.owner.data;
-  if (self.isActive) {
+  let data = {};
+  self.data = data; // serializable data
+  if (self.isActive && self.ct) {
     let pname = 'coolTime';
     let id = `${self.uid}.${pname}`;
     data[id] = 0;
@@ -389,7 +398,6 @@ export function makeSimSkill(skill, ownerUnit) {
     });
     for (let i = 0; i < list.length; ++i) {
       let obj = list[i];
-      console.log(obj);
       if ('ct' in obj) {
         let pname = 'coolTime';
         let id = `${self.uid}.${prefix}${i}.${pname}`;
@@ -410,29 +418,10 @@ export function makeSimSkill(skill, ownerUnit) {
       }
     }
   };
+  setupActions('ctReduction', 'cr');
   setupActions('doubleAttack', 'da');
   setupActions('multiAction', 'ma');
   setupActions('multiMove', 'mm');
-
-  self.serialize = function () {
-    let r = {
-      effects: this.effects.map(a => a.serialize()),
-    };
-    if (this.isActive) {
-      r.coolTime = this.coolTime;
-    }
-    return r;
-  }
-  self.deserialize = function (r) {
-    if (this.isActive) {
-      this.coolTime = r.coolTime;
-    }
-    this.effects = r.effects.map(function (data) {
-      let tmp = makeSimEffect();
-      tmp.deserialize(data);
-      return tmp;
-    });
-  }
 
   self.activate = function (bySelf) {
     for (let e of this.effects) {
@@ -498,45 +487,74 @@ export function makeSimSkill(skill, ownerUnit) {
     }
   }
 
+  self.trigger = function (ctx, timing) {
+    for (let e of [...(this?.buff ?? []), ...(this?.debuff ?? [])]) {
+      let tri = e?.trigger;
+      if (tri && tri.timing == timing && evaluateCondition(ctx, tri.condition)) {
+        console.log(e);
+        let targets = [];
+        if (tri.target == "攻撃対象") {
+          targets = ctx.targets;
+        }
+        for (let t of targets) {
+          t.applyEffect(e);
+        }
+      }
+    }
+  };
+
   //#region callbacks
-  self.onSimulationBegin = function () {
+  self.onSimulationBegin = function (ctx) {
   }
-  self.onSimulationEnd = function () {
+  self.onSimulationEnd = function (ctx) {
   }
-  self.onOwnTurnBegin = function () {
+  self.onOwnTurnBegin = function (ctx) {
+    this.trigger(ctx, "自ターン開始時");
   }
-  self.onOwnTurnEnd = function () {
+  self.onOwnTurnEnd = function (ctx) {
+    this.trigger(ctx, "自ターン終了時");
   }
-  self.onOpponentTurnBegin = function () {
+  self.onOpponentTurnBegin = function (ctx) {
+    this.trigger(ctx, "敵ターン開始時");
   }
-  self.onOpponentTurnEnd = function () {
+  self.onOpponentTurnEnd = function (ctx) {
+    this.trigger(ctx, "敵ターン終了時");
   }
 
-  self.onActionBegin = function () {
+  self.onActionBegin = function (ctx) {
+    this.trigger(ctx, "行動前");
   }
-  self.onActionEnd = function () {
+  self.onActionEnd = function (ctx) {
+    this.trigger(ctx, "行動後");
     if (this.coolTime > 0) {
       --this.coolTime;
     }
   }
 
-  self.onAttackBegin = function () {
+  self.onAttackBegin = function (ctx) {
+    this.trigger(ctx, "攻撃前");
   }
-  self.onAttackEnd = function () {
-  }
-
-  self.onBattleBegin = function () {
-  }
-  self.onBattleEnd = function () {
+  self.onAttackEnd = function (ctx) {
+    this.trigger(ctx, "攻撃後");
   }
 
-  self.onKill = function () {
+  self.onBattleBegin = function (ctx) {
+    this.trigger(ctx, "戦闘前");
+  }
+  self.onBattleEnd = function (ctx) {
+    this.trigger(ctx, "戦闘前");
   }
 
-  self.onDeath = function () {
+  self.onKill = function (ctx) {
+    this.trigger(ctx, "敵撃破時");
   }
 
-  self.onRevive = function () {
+  self.onDeath = function (ctx) {
+    this.trigger(ctx, "死亡時");
+  }
+
+  self.onRevive = function (ctx) {
+    this.trigger(ctx, "復活時");
   }
 
   //#endregion callbacks

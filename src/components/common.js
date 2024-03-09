@@ -1338,6 +1338,11 @@ export default {
       const setupSlot = (effect) => {
         effect.typeId = this.getEffectIndex(effect.type);
         if (skill.isActive) {
+          if (effect.type == "トークン") {
+            // トークンには種類毎に独立したスロットを与える
+            effect.slot = effect.tokenName;
+          }
+
           if (effect.slot) {
             effect.hasSpecialSlot = true;
           }
@@ -1375,45 +1380,43 @@ export default {
         }
       };
 
-      if (skill.buff) {
-        for (let v of skill.buff) {
-          v.isBuff = true;
-          if (!v.target && !skill.isActive) {
-            v.target = "自身";
+      const assignId = (list, prefix) => {
+        if (list) {
+          for (let i = 0; i < list.length; ++i) {
+            list[i].uid = `${skill.uid}.${prefix}${i}`;
           }
-          if (typeof (v.value) === 'number' && v.value < 0) {
-            if (!skill.negativeEffects)
-              skill.negativeEffects = [];
-            skill.negativeEffects.push(v);
-          }
-
-          setParent(v);
-          setupSlot(v);
-          setupRandomTable(v);
         }
+      };
+      assignId(skill?.buff, 'b');
+      assignId(skill?.debuff, 'd');
+
+      for (let v of skill?.buff ?? []) {
+        v.isBuff = true;
+        if (!v.target && !skill.isActive) {
+          v.target = "自身";
+        }
+        if (typeof (v.value) === 'number' && v.value < 0) {
+          if (!skill.negativeEffects)
+            skill.negativeEffects = [];
+          skill.negativeEffects.push(v);
+        }
+        setParent(v);
+        setupSlot(v);
+        setupRandomTable(v);
       }
-      if (skill.debuff) {
-        for (let v of skill.debuff) {
-          v.isDebuff = true;
-
-          setParent(v);
-          setupSlot(v);
-          setupRandomTable(v);
-        }
+      for (let v of skill?.debuff ?? []) {
+        v.isDebuff = true;
+        setParent(v);
+        setupSlot(v);
+        setupRandomTable(v);
       }
-      if (skill.statusEffects) {
-        for (let v of skill.statusEffects) {
-          v.isStatusEffect = true;
-
-          setParent(v);
-        }
+      for (let v of skill?.statusEffects ?? []) {
+        v.isStatusEffect = true;
+        setParent(v);
       }
-      if (skill.immune) {
-        for (let v of skill.immune) {
-          v.isImmune = true;
-
-          setParent(v);
-        }
+      for (let v of skill?.immune ?? []) {
+        v.isImmune = true;
+        setParent(v);
       }
 
       // 確認用

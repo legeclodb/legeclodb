@@ -1,6 +1,6 @@
 export * from "./battle_unit.js";
 export * from "./battle_skill.js";
-import { makeSimSkill, makeSimEffect, callHandler, makeBattleContext } from "./battle_skill.js";
+import { makeSimSkill, makeSimEffect, callHandler, makeActionContext } from "./battle_skill.js";
 import { BaseUnit, SimUnit } from "./battle_unit.js";
 import { $g } from "./battle_globals.js";
 
@@ -203,7 +203,7 @@ export class SimContext {
     unit.evaluateBuffs(actx);
 
     // 防御側コンテキスト
-    let dctx = makeBattleContext(target, unit);
+    let dctx = makeActionContext(target, unit);
     dctx.onEnemyTurn = true;
     dctx.onNormalAttack = true;
     target.evaluateBuffs(dctx);
@@ -259,7 +259,7 @@ export class SimContext {
       unit.evaluateBuffs(actx);
 
       // 防御側コンテキスト
-      let dctx = makeBattleContext(target, unit);
+      let dctx = makeActionContext(target, unit);
       dctx.onEnemyTurn = true;
       dctx.onNormalAttack = true;
       target.evaluateBuffs(dctx);
@@ -281,10 +281,13 @@ export class SimContext {
     unit = unit.sim ?? unit;
     // targets は配列なら複数、非配列なら単体
     let target = null;
-    if (Array.isArray(targets))
+    if (Array.isArray(targets)) {
       targets = targets.map(a => a.sim ?? a);
-    else
+    }
+    else {
       target = targets?.sim ?? targets;
+      targets = target ? [target] : [];
+    }
 
     this.range = 0;
     this.move = 0;
@@ -302,7 +305,8 @@ export class SimContext {
 
     // 条件変数を設定
     // 攻撃側
-    let ctx = makeBattleContext(unit, target, skill);
+    let ctx = makeActionContext(unit, target, skill);
+    ctx.targets = targets;
     ctx.onOwnTurn = true;
     if (skill && skill.isMainSkill && skill.damageRate) {
       doAttack = true;
@@ -311,14 +315,29 @@ export class SimContext {
     }
 
     if (doAction)
-      callHandler("onActionBegin", unit);
+      callHandler("onActionBegin", ctx, unit);
     if (doAttack)
-      callHandler("onAttackBegin", unit);
+      callHandler("onAttackBegin", ctx, unit);
     if (doBattle)
-      callHandler("onBattleBegin", unit, target);
+      callHandler("onBattleBegin", ctx, unit, target);
 
     // 待機の場合 skill は null
     if (skill) {
+      for (let t of targets.filter(a => a.isPlayer == unit.isPlayer)) {
+        for (let e of skill?.buff ?? []) {
+          if (!e.target || e.target == "スキル対象" ||(e.isSelfTarget && target === unit)) {
+            t.applyEffect(e, target === unit);
+          }
+        }
+      }
+      for (let t of targets.filter(a => a.isPlayer != unit.isPlayer)) {
+        for (let e of skill?.debuff ?? []) {
+          if (!e.target || e.target == "スキル対象") {
+            t.applyEffect(e);
+          }
+        }
+      }
+
       skill.onFire();
       if (doBattle) {
         let r = this.getBattleResult(unit, skill, target, ctx);
@@ -339,20 +358,20 @@ export class SimContext {
     }
 
     if (doBattle)
-      callHandler("onBattleEnd", unit, target);
+      callHandler("onBattleEnd", ctx, unit, target);
     if (doAttack)
-      callHandler("onAttackEnd", unit);
+      callHandler("onAttackEnd", ctx, unit);
     if (doAction)
-      callHandler("onActionEnd", unit);
+      callHandler("onActionEnd", ctx, unit);
 
     if (killed?.length) {
-      callHandler("onKill", unit);
+      callHandler("onKill", ctx, unit);
       for (let k of killed)
-        callHandler("onDeath", k);
+        callHandler("onDeath", ctx, k);
     }
 
     if (!unit.isAlive) {
-      callHandler("onDeath", unit);
+      callHandler("onDeath", ctx, unit);
     }
     else if (doAction) {
       if (!unit.invokeMultiAction(ctx)) {
@@ -398,24 +417,24 @@ export class SimContext {
   onPlayerTurnBegin() {
     for (let u of this.activeUnits) {
       if (u.isPlayer) {
-        u.onOwnTurnBegin();
+        u.onOwnTurnBegin(makeActionContext(u));
       }
     }
     for (let u of this.activeUnits) {
       if (!u.isPlayer) {
-        u.onOpponentTurnBegin();
+        u.onOpponentTurnBegin(makeActionContext(u));
       }
     }
   }
   onPlayerTurnEnd() {
     for (let u of this.activeUnits) {
       if (u.isPlayer) {
-        u.onOwnTurnEnd();
+        u.onOwnTurnEnd(makeActionContext(u));
       }
     }
     for (let u of this.activeUnits) {
       if (!u.isPlayer) {
-        u.onOpponentTurnEnd();
+        u.onOpponentTurnEnd(makeActionContext(u));
       }
     }
   }
@@ -431,24 +450,24 @@ export class SimContext {
 
     for (let u of this.activeUnits) {
       if (u.isEnemy) {
-        u.onOwnTurnBegin();
+        u.onOwnTurnBegin(makeActionContext(u));
       }
     }
     for (let u of this.activeUnits) {
       if (!u.isEnemy) {
-        u.onOpponentTurnBegin();
+        u.onOpponentTurnBegin(makeActionContext(u));
       }
     }
   }
   onEnemyTurnEnd() {
     for (let u of this.activeUnits) {
       if (u.isEnemy) {
-        u.onOwnTurnEnd();
+        u.onOwnTurnEnd(makeActionContext(u));
       }
     }
     for (let u of this.activeUnits) {
       if (!u.isEnemy) {
-        u.onOpponentTurnEnd();
+        u.onOpponentTurnEnd(makeActionContext(u));
       }
     }
   }
