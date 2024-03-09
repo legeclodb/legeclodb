@@ -4,6 +4,12 @@ function $vue() {
   return window.$vue;
 }
 
+export function unique(array) {
+  return array.filter((value, index, self) => {
+    return self.indexOf(value) === index;
+  });
+}
+
 export function callHandler(funcName, ctx, ...callees) {
   for (let c of callees) {
     c[funcName](ctx);
@@ -512,7 +518,7 @@ export function makeSimSkill(skill, ownerUnit) {
       if (tri && tri.timing == timing && evaluateCondition(ctx, tri.condition)) {
         console.log(tri);
         let self = ctx.unit;
-        for (let t of getTargetUnits(ctx, tri)) {
+        for (let t of unique(getTargetUnits(ctx, tri))) {
           if ((e.isBuff && t.isPlayer == self.isPlayer) || (e.isDebuff && t.isPlayer != self.isPlayer)) {
             t.applyEffect(e);
           }

@@ -1,7 +1,7 @@
 export * from "./battle_unit.js";
 export * from "./battle_skill.js";
-import { makeSimSkill, makeSimEffect, callHandler, makeActionContext } from "./battle_skill.js";
-import { BaseUnit, SimUnit } from "./battle_unit.js";
+import { callHandler, unique, makeActionContext } from "./battle_skill.js";
+import { BaseUnit, SimUnit, isInside } from "./battle_unit.js";
 import { $g } from "./battle_globals.js";
 
 export class ActionContext {
@@ -278,6 +278,7 @@ export class SimContext {
   }
 
   fireSkill(unit, skill, targets, cell) {
+    this.updateAreaEffectsAll();
     unit = unit.sim ?? unit;
     // targets は配列なら複数、非配列なら単体
     let target = null;
@@ -323,14 +324,15 @@ export class SimContext {
 
     // 待機の場合 skill は null
     if (skill) {
-      for (let t of targets.filter(a => a.isPlayer == unit.isPlayer)) {
+      let ut = unique(targets);
+      for (let t of ut.filter(a => a.isPlayer == unit.isPlayer)) {
         for (let e of skill?.buff ?? []) {
           if (!e.target || e.target == "スキル対象" ||(e.isSelfTarget && target === unit)) {
             t.applyEffect(e, target === unit);
           }
         }
       }
-      for (let t of targets.filter(a => a.isPlayer != unit.isPlayer)) {
+      for (let t of ut.filter(a => a.isPlayer != unit.isPlayer)) {
         for (let e of skill?.debuff ?? []) {
           if (!e.target || e.target == "スキル対象") {
             t.applyEffect(e);
@@ -379,7 +381,14 @@ export class SimContext {
       }
     }
 
+    this.updateAreaEffectsAll();
     console.log(ctx);
+  }
+
+  updateAreaEffectsAll() {
+    for (let u of this.activeUnits) {
+      u.updateAreaEffects();
+    }
   }
 
   passTurn() {
@@ -387,12 +396,14 @@ export class SimContext {
       this.phase = Phase.Enemy;
       this.onPlayerTurnEnd();
       this.onEnemyTurnBegin();
+      this.updateAreaEffectsAll();
     }
     else if (this.turn < this.maxTurn) {
       ++this.turn;
       this.phase = Phase.Player;
       this.onEnemyTurnEnd();
       this.onPlayerTurnBegin();
+      this.updateAreaEffectsAll();
     }
     else {
       console.log("End of Battle");
@@ -402,6 +413,9 @@ export class SimContext {
   onSimulationBegin() {
     for (let u of this.units) {
       u.onSimulationBegin();
+    }
+    for (let u of this.units) {
+      u.setup();
     }
     this.onPlayerTurnBegin();
   }
@@ -482,19 +496,10 @@ export class SimContext {
     }
     return null;
   }
-  enumerateUnitsInArea(pos, size, shape, callback) {
+  enumerateUnitsInArea(center, size, shape, callback) {
     for (const u of this.activeUnits) {
-      const dx = u.coord[0] - pos[0];
-      const dy = u.coord[1] - pos[1];
-      if (shape == 0) {
-        if (dx + dy <= size) {
-          callback(u);
-        }
-      }
-      if (shape == 1) {
-        if (Math.max(dx, dy) <= size) {
-          callback(u);
-        }
+      if (isInside(center, u.coord, size, shape)) {
+        callback(u);
       }
     }
   }

@@ -1,5 +1,5 @@
 import { $g } from "./battle_globals.js";
-import { makeSimSkill, makeSimEffect, callHandler, evaluateCondition } from "./battle_skill.js";
+import { callHandler, unique, makeSimSkill, makeSimEffect, evaluateCondition } from "./battle_skill.js";
 
 function $vue() {
   return window.$vue;
@@ -39,6 +39,16 @@ export function parseArea(args) {
     }
   }
   return [size, shape];
+}
+export function isInside(pos, center, size, shape) {
+  let dx = Math.abs(pos[0] - center[0]);
+  let dy = Math.abs(pos[1] - center[1]);
+  if (shape == 0) {
+    return (dx + dy) <= size;
+  }
+  else if (shape == 1) {
+    return Math.max(dx, dy) <= size;
+  }
 }
 
 
@@ -385,9 +395,44 @@ export class SimUnit {
 
   applyEffect(effect, stop = false) {
     this.timedEffects.push(makeSimEffect(effect, stop));
-    console.log(this.timedEffects);
+    //console.log(this.timedEffects);
+    console.log(`${effect.parent.name} ${effect.type}`);
   }
 
+  updateAreaEffects() {
+    this.areaEffects = [];
+    const add = (e) => {
+      if (!this.areaEffects.find(a => a.uid == e.uid)) {
+        this.areaEffects.push(makeSimEffect(e));
+      }
+    };
+
+    for (let u of $g.sim.activeUnits) {
+      if (u == this) { continue; }
+      for (let p of u.passives) {
+        if (u.isPlayer == this.isPlayer) {
+          for (let e of p?.buff ?? []) {
+            if (e.target == "味方全体") {
+              add(e);
+            }
+            else if (e.target == "範囲" && isInside(this.coord, u.coord, ...parseArea(e.area))) {
+              add(e);
+            }
+          }
+        }
+        else {
+          for (let e of p?.debuff ?? []) {
+            if (e.target == "敵全体") {
+              add(e);
+            }
+            else if (e.target == "範囲" && isInside(this.coord, u.coord, ...parseArea(e.area))) {
+              add(e);
+            }
+          }
+        }
+      }
+    }
+  }
   evaluateBuffs(ctx) {
     let mainRate = {};
     let mainFixed = {};
@@ -631,7 +676,9 @@ export class SimUnit {
     callHandler(funcName, ctx, ...this.passives);
   }
 
+
   //#region callbacks
+
   onSimulationBegin(ctx) {
     this._callHandler("onSimulationBegin", ctx);
     for (let passive of this.passives) {
@@ -641,9 +688,15 @@ export class SimUnit {
         }
       }
     }
-    //console.log(this.effects);
-    //console.log(this.passives);
   }
+
+  // onSimulationBegin() の直後に呼ばれる。ステータスの初期化を行う。
+  // onSimulationBegin() の中だと自キャラ以外への影響があるバフが対応できないケースがあるため、別パスにしている。
+  setup() {
+    this.updateAreaEffects();
+    console.log(unique(this.effects.map(a => a.parent.name)).join(", "));
+  }
+
   onSimulationEnd(ctx) {
     this._callHandler("onSimulationEnd", ctx);
     this.base.sim = null;
