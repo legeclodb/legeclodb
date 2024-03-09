@@ -198,14 +198,14 @@ export class SimUnit {
   affectedSkills = []; // SimSkill
   effects = []; // SimEffect
   main = {
-    bufP: [],
-    bufF: [],
+    bufRate: {},
+    bufFixed: {},
     hp: 0,
     maxHp: 0,
   };
   support = {
-    bufP: [],
-    bufF: [],
+    bufRate: {},
+    bufFixed: {},
     hp: 0,
     maxHp: 0,
   };
@@ -371,27 +371,105 @@ export class SimUnit {
     return skill.area;
   }
 
+  evaluateBuffs(ctx) {
+    let mainRate = {};
+    let mainFixed = {};
+    let supRate = {};
+    let supFixed = {};
+
+    const add = (e) => {
+      const doit = (e, tRate, rFixed) => {
+        if (e.isDebuff && e.ephemeral) {
+          // 戦闘時デバフは扱いが難しくて保留
+          console.log(e);
+        }
+        else if (e.isAdditive) {
+          if (!(e.type in rFixed)) {
+            rFixed[e.type] = 0;
+          }
+          rFixed[e.type] += e.getValue(ctx, this);
+        }
+        else {
+          if (!(e.type in tRate)) {
+            tRate[e.type] = 0;
+          }
+          tRate[e.type] += e.getValue(ctx, this);
+        }
+      };
+      if (e.target == "自身(メイン)") {
+        doit(e, mainRate, mainFixed);
+      }
+      else if (e.target == "自身(サポート)") {
+        doit(e, supRate, supFixed);
+      }
+      else {
+        doit(e, mainRate, mainFixed);
+        doit(e, supRate, supFixed);
+      }
+    };
+
+    for (const e of this.effects) {
+      if (evaluateCondition(ctx, e.condition)) {
+        add(e);
+      }
+    }
+    this.main.bufRate = mainRate;
+    this.main.bufFixed = mainFixed;
+    this.support.bufRate = supRate;
+    this.support.bufFixed = supFixed;
+    console.log(this);
+  }
+
   getAttackPower(ctx) {
-    let base = 0, buff = 0;
+    let base = 0, rate = 0, fixed = 0;
     if (ctx?.onSupportAttack) {
       base = this.support.baseAttackPower;
-      buff = this.evaluateEffects(ctx, this.support.damageType);
+      rate = (this.support.bufRate[this.support.damageType] ?? 0);
+      fixed = this.support.bufFixed[this.support.damageType] ?? 0;
     }
     else {
       base = this.main.baseAttackPower;
-      buff = this.evaluateEffects(ctx, this.main.damageType);
+      rate = (this.main.bufRate[this.main.damageType] ?? 0);
+      fixed = this.main.bufFixed[this.main.damageType] ?? 0;
     }
-    return base * buff;
+    return base * (rate / 100 + 1) + fixed;
   }
   getDamageDealtBuff(ctx) {
-    return 1.0;
+    let v = 0;
+    if (ctx?.onSupportAttack) {
+      v += this.support.bufRate["与ダメージ"] ?? 0;
+      if (this.support.damageType == "アタック")
+        v += this.support.bufRate["与ダメージ(物理)"] ?? 0;
+      else
+        v += this.support.bufRate["与ダメージ(魔法)"] ?? 0;
+      if(ctx.onActiveSkill)
+        v += this.support.bufRate["与ダメージ(スキル)"] ?? 0;
+      if (ctx.onAreaSkill)
+        v += this.support.bufRate["与ダメージ(範囲スキル)"] ?? 0;
+      if (ctx.onNormalAttack)
+        v += this.support.bufRate["与ダメージ(通常攻撃)"] ?? 0;
+    }
+    else {
+      v += this.main.bufRate["与ダメージ"] ?? 0;
+      if (this.main.damageType == "アタック")
+        v += this.main.bufRate["与ダメージ(物理)"] ?? 0;
+      else
+        v += this.main.bufRate["与ダメージ(魔法)"] ?? 0;
+      if (ctx.onActiveSkill)
+        v += this.main.bufRate["与ダメージ(スキル)"] ?? 0;
+      if (ctx.onAreaSkill)
+        v += this.main.bufRate["与ダメージ(範囲スキル)"] ?? 0;
+      if (ctx.onNormalAttack)
+        v += this.main.bufRate["与ダメージ(通常攻撃)"] ?? 0;
+    }
+    return v / 100 + 1;
   }
   getCriticalRate(ctx) {
     if (ctx?.onSupportAttack) {
       return 0;
     }
     else {
-      return this.main.baseTec / 10;
+      return (this.main.baseTec / 10) + this.evaluateEffects(ctx, "クリティカル率");
     }
   }
   getCriticalDamageRate(ctx) {
@@ -399,22 +477,41 @@ export class SimUnit {
       return 1.0;
     }
     else {
-      return 1.3;
+      let v = 1.3;
+      v += (this.main.bufRate["クリティカルダメージ倍率"] ?? 0) / 100;
+      return v;
     }
   }
   getDefensePower(ctx) {
     const get = (chr) => {
-      return ctx.onPhysicalDamage ? chr.baseDef : chr.baseRes;
+      return ctx.onPhysicalDamage ?
+        [chr.baseDef, chr.bufRate["ディフェンス"] ?? 0, chr.bufFixed["ディフェンス"] ?? 0] :
+        [chr.baseRes, chr.bufRate["レジスト"] ?? 0, chr.bufFixed["レジスト"] ?? 0];
     };
-    if (ctx?.onSupportDefense) {
-      return get(this.support);
-    }
-    else {
-      return get(this.main);
-    }
+    let [base, rate, fixed] = ctx?.onSupportDefense ? get(this.support) : get(this.main);
+    return base * (rate / 100 + 1) + fixed;
   }
   getDamageTakenBuff(ctx) {
-    return 1.0;
+    let v = 0;
+    if (ctx?.onSupportAttack) {
+      v += this.support.bufRate["ダメージ耐性"] ?? 0;
+      if (ctx.onPhysicalDamage)
+        v += this.support.bufRate["ダメージ耐性(物理)"] ?? 0;
+      else
+        v += this.support.bufRate["ダメージ耐性(魔法)"] ?? 0;
+      if (ctx.onAreaSkill)
+        v += this.support.bufRate["ダメージ耐性(範囲スキル)"] ?? 0;
+    }
+    else {
+      v += this.main.bufRate["ダメージ耐性"] ?? 0;
+      if (ctx.onPhysicalDamage)
+        v += this.main.bufRate["ダメージ耐性(物理)"] ?? 0;
+      else
+        v += this.main.bufRate["ダメージ耐性(魔法)"] ?? 0;
+      if (ctx.onAreaSkill)
+        v += this.main.bufRate["ダメージ耐性(範囲スキル)"] ?? 0;
+    }
+    return v / 100 + 1;
   }
 
   getNearAllyCount(args) {
@@ -449,7 +546,7 @@ export class SimUnit {
           continue;
         }
         r += e.value;
-        console.log(e);
+        //console.log(e);
       }
     }
     return r / 100.0;

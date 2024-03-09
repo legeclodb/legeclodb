@@ -80,6 +80,7 @@ export class SimContext {
 
   doAttack(_ctx, attacker, targetQueue, skl) {
     let ctx = Object.create(_ctx);
+
     let result = {
       ctx: ctx,
       damageToSupport: 0,
@@ -128,12 +129,13 @@ export class SimContext {
     let attackCount = 10;
     let atk = aunit.getAttackPower(ctx);
     let damageRate = skl ? skl.getDamageRate(ctx) : 1.0;
-    let dmgDealtBuff = aunit.getDamageDealtBuff(ctx);
+    let dmgDealtBuff = Math.max(aunit.getDamageDealtBuff(ctx), 0.3);
     let critDmgRate = aunit.getCriticalDamageRate(ctx);
     let rangedPenarty = ctx.onRangedPenarty ? 0.6 : 1.0;
 
     const calcDamage = (t, breakOnKill) => {
       let tunit = t.chr.unit;
+      // 防御側コンテキスト
       let dctx = Object.create(ctx);
       let addScore = null;
       if (t.chr.isSupport) {
@@ -147,7 +149,7 @@ export class SimContext {
 
       let def = tunit.getDefensePower(dctx);
       let baseDmg = Math.max(atk - def, 1);
-      let dmgTakenBuff = tunit.getDamageTakenBuff(dctx);
+      let dmgTakenBuff = Math.max(1.0 - tunit.getDamageTakenBuff(dctx), 0.3);
       let finalDmg = baseDmg * damageRate * dmgDealtBuff * dmgTakenBuff * critDmgRate * rangedPenarty;
 
       let totalDamage = 0;
@@ -198,11 +200,13 @@ export class SimContext {
   getBattleResult(unit, skill, target, ctx) {
     // 攻撃側コンテキスト
     let actx = Object.create(ctx);
+    unit.evaluateBuffs(actx);
 
     // 防御側コンテキスト
     let dctx = makeBattleContext(target, unit);
     dctx.onEnemyTurn = true;
     dctx.onNormalAttack = true;
+    target.evaluateBuffs(dctx);
 
     let attacker = [
       this.makeTarget(unit.main),
@@ -249,13 +253,16 @@ export class SimContext {
     };
     for (let target of targets ?? []) {
       // 攻撃側コンテキスト
+      // target に依存するバフなどがあるので、ループの内側である必要がある
       let actx = Object.create(ctx);
       actx.target = target;
+      unit.evaluateBuffs(actx);
 
       // 防御側コンテキスト
       let dctx = makeBattleContext(target, unit);
       dctx.onEnemyTurn = true;
       dctx.onNormalAttack = true;
+      target.evaluateBuffs(dctx);
 
       let r = [
         this.doAttack(actx, unit.main, [this.makeTarget(target.main)], skill),

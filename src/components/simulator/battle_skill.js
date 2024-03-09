@@ -228,6 +228,9 @@ export function makeSimEffect(effect) {
   Object.defineProperty(self, "isAlive", {
     get: () => self.count > 0,
   });
+  Object.defineProperty(self, "isAdditive", {
+    get: () => 'add' in self,
+  });
 
   self.serialize = function () {
     return {
@@ -254,9 +257,30 @@ export function makeSimEffect(effect) {
       }
     }
   }
-  self.evaluateBuff = function (target, caster, ctx) {
-  }
-  self.evaluateDebuff = function (target, caster, ctx) {
+  self.getValue = function (ctx, unit) {
+    let r = 0;
+    if ('value' in self) {
+      r = self.value;
+      // 効果が重複するタイプ
+      if (self.multiply?.max) {
+        r *= self.multiply.max;
+      }
+    }
+    else if ('variable' in self) {
+      // HP 割合などに応じて効果が上下するタイプ
+      if (Array.isArray(self.variable.max)) {
+        r = self.variable.max.at(-1);
+      }
+      else {
+        r = self.variable.max;
+      }
+    }
+    else if ('add' in self) {
+      // "アタックの n% をマジックに加算" など
+      // todo:
+      r = 0;
+    }
+    return self.isDebuff ? -r : r;
   }
 
   //#region callbacks
