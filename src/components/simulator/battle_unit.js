@@ -1,5 +1,5 @@
 import { $g } from "./battle_globals.js";
-import { callHandler, unique, makeSimSkill, makeSimEffect, evaluateCondition } from "./battle_skill.js";
+import { callHandler, unique, makeSimSkill, makeSimEffect, evaluateCondition, makeActionContext } from "./battle_skill.js";
 
 function $vue() {
   return window.$vue;
@@ -310,9 +310,19 @@ export class SimUnit {
         baseRes: function () { return base.status[4]; },
         baseTec: function () { return base.status[5]; },
         baseRange: function () { return base.range; },
+        status: function () {
+          const table = ["最大HP", "アタック", "ディフェンス", "マジック", "レジスト", "テクニック",];
+          let r = [...base.status];
+          for (let i = 0; i < r.length; ++i) {
+            const n = table[i];
+            r[i] = Math.round(r[i] * ((chr.bufRate[n] ?? 0) / 100 + 1) + (chr.bufFixed[n] ?? 0));
+          }
+          return r;
+        },
       };
       if (chr.isMain) {
         table.baseMove = function () { return base.move; };
+        table.move = function () { return base.move + (chr.bufRate["移動"] ?? 0); };
       }
       table.baseAttackPower = chr.damageType == "アタック" ?
         function () { return base.status[1]; } :
@@ -325,6 +335,8 @@ export class SimUnit {
         });
       }
       chr.hp = chr.maxHp = chr.baseHp;
+      chr.bufRate = {};
+      chr.bufFixed = {};
     };
     {
       this.main = Object.create(unit.base.main);
@@ -342,9 +354,6 @@ export class SimUnit {
       if (!('shape' in this.main)) {
         // NxN ボス以外は通常攻撃追加
         let atk = makeSimSkill($vue().findItemByUid(this.main.damageType == "アタック" ? "9999999" : "9999998"), this);
-        Object.defineProperty(atk, 'range', {
-          get: () => this.main.baseRange,
-        });
         opt.push(atk);
       }
 
@@ -378,19 +387,13 @@ export class SimUnit {
     SimUnit.copyProps(this.support, r.support);
   }
 
-  getMove(ctx) {
-    return this.main.baseMove;
-  }
   getRange(ctx) {
     if (ctx?.onSupportAttack) {
-      return this.support.baseRange;
+      return this.support.range;
     }
     else {
-      return this.main.baseRange;
+      return this.main.range;
     }
-  }
-  getSkillArea(skill) {
-    return skill.area;
   }
 
   applyEffect(effect, stop = false) {
@@ -433,7 +436,10 @@ export class SimUnit {
       }
     }
   }
-  evaluateBuffs(ctx) {
+  evaluateBuffs(ctx = null) {
+    if (!ctx) {
+      ctx = makeActionContext(this);
+    }
     let mainRate = {};
     let mainFixed = {};
     let supRate = {};
@@ -475,7 +481,7 @@ export class SimUnit {
     };
 
     for (const e of this.effects) {
-      if (evaluateCondition(ctx, e.condition)) {
+      if ((!e.ephemeral || ctx.onBattle) && evaluateCondition(ctx, e.condition)) {
         add(e);
       }
     }
@@ -693,8 +699,13 @@ export class SimUnit {
   // onSimulationBegin() の直後に呼ばれる。ステータスの初期化を行う。
   // onSimulationBegin() の中だと自キャラ以外への影響があるバフが対応できないケースがあるため、別パスにしている。
   setup() {
-    this.updateAreaEffects();
     console.log(unique(this.effects.map(a => a.parent.name)).join(", "));
+
+    const setupHp = (chr) => {
+      chr.hp = chr.maxHp = Math.round(chr.baseHp * ((chr.bufRate["最大HP"] ?? 0) / 100 + 1));
+    };
+    setupHp(this.main);
+    setupHp(this.support);
   }
 
   onSimulationEnd(ctx) {

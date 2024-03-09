@@ -318,9 +318,19 @@ export function makeSimEffect(effect, stop = false) {
       };
       r = table[v.from]() * (v.rate / 100);
     }
+
     // 効果が重複するタイプ
-    if (self.multiply?.max) {
-      r *= self.multiply.max;
+    if (self.multiply) {
+      const mul = self.multiply;
+      let table = {
+        "move": () => ctx.move,
+        "range": () => ctx.rannge,
+        "token": () => ctx.getTokenCount(mul.tokenName),
+        "targetToken": () => ctx.getTargetTokenCount(mul.tokenName),
+        "nearAllyCount": () => ctx.getNearAllyCount(mul.area),
+        "nearEnemyCount": () => ctx.getNearEnemyCount(mul.area),
+      };
+      r *= Math.min(table[mul.by](), mul.max);
     }
     return self.isDebuff ? -r : r;
   }
@@ -395,7 +405,31 @@ export function makeSimEffect(effect, stop = false) {
 
 export function makeSimSkill(skill, ownerUnit) {
   let self = Object.create(skill);
-  self.owner = ownerUnit;
+  self.owner = ownerUnit.sim;
+
+  Object.defineProperty(self, 'area', {
+    get: function () {
+      if (typeof (skill.area) != 'number') {
+        return skill.area;
+      }
+      return skill.area + (ownerUnit.main.bufRate["範囲"] ?? 0);
+    },
+  });
+  Object.defineProperty(self, 'range', {
+    get: function () {
+      if (typeof (skill.range) != 'number') {
+        return skill.range;
+      }
+      if (skill.isNormalAttack) {
+        let chr = ownerUnit.main;
+        return chr.range + (chr.bufRate["射程(通常攻撃)"] ?? 0);
+      }
+      else {
+        let chr = skill.isMainSkill ? ownerUnit.main : ownerUnit.support;
+        return skill.range + (chr.bufRate["射程(スキル)"] ?? 0);
+      }
+    },
+  });
 
   let data = {};
   self.data = data; // serializable data
@@ -516,7 +550,6 @@ export function makeSimSkill(skill, ownerUnit) {
     for (let e of [...(this?.buff ?? []), ...(this?.debuff ?? [])]) {
       let tri = e?.trigger;
       if (tri && tri.timing == timing && evaluateCondition(ctx, tri.condition)) {
-        console.log(tri);
         let self = ctx.unit;
         for (let t of unique(getTargetUnits(ctx, tri))) {
           if ((e.isBuff && t.isPlayer == self.isPlayer) || (e.isDebuff && t.isPlayer != self.isPlayer)) {

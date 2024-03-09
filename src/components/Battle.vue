@@ -936,7 +936,7 @@ export default {
               else {
                 pf.setStart(self.targetCell.coord);
               }
-              pf.buildPath(0, self.selectedUnit.sim.getSkillArea(skill), skill.areaShape);
+              pf.buildPath(0, skill.area, skill.areaShape);
             }
             self.skillArea = pf;
             this.pf = pf;

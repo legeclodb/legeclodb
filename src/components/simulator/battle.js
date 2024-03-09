@@ -312,7 +312,9 @@ export class SimContext {
     if (skill && skill.isMainSkill && skill.damageRate) {
       doAttack = true;
       doBattle = ctx.onTargetEnemy;
-      ctx.onBattle = true;
+      if (doBattle) {
+        ctx.onBattle = true;
+      }
     }
 
     if (doAction)
@@ -388,6 +390,7 @@ export class SimContext {
   updateAreaEffectsAll() {
     for (let u of this.activeUnits) {
       u.updateAreaEffects();
+      u.evaluateBuffs();
     }
   }
 
@@ -414,10 +417,12 @@ export class SimContext {
     for (let u of this.units) {
       u.onSimulationBegin();
     }
+    this.updateAreaEffectsAll();
     for (let u of this.units) {
       u.setup();
     }
     this.onPlayerTurnBegin();
+    this.updateAreaEffectsAll();
   }
   onSimulationEnd() {
     for (let u of this.units) {
