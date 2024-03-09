@@ -489,7 +489,7 @@ export class SimUnit {
     this.main.bufFixed = mainFixed;
     this.support.bufRate = supRate;
     this.support.bufFixed = supFixed;
-    console.log(this);
+    //console.log(this);
   }
 
   getAttackPower(ctx) {
@@ -634,9 +634,9 @@ export class SimUnit {
     this.timedEffects = this.timedEffects.filter(a => a.isAlive);
   }
   // スキルの CT 減
-  reduceSkillCT(n, excludeFunc = null) {
+  reduceSkillCT(n, condFunc = null) {
     for (let a of this.actions) {
-      if (a.coolTime && (!excludeFunc || !excludeFunc(a))) {
+      if (a.coolTime && (!condFunc || condFunc(a))) {
         a.coolTime = Math.max(a.coolTime - n, 0);
       }
     }
@@ -673,7 +673,7 @@ export class SimUnit {
   // onSimulationBegin() の直後に呼ばれる。ステータスの初期化を行う。
   // onSimulationBegin() の中だと自キャラ以外への影響があるバフが対応できないケースがあるため、別パスにしている。
   setup() {
-    console.log(unique(this.effects.map(a => a.parent.name)).join(", "));
+    console.log(`${this.main.name}: 影響下にあるスキル -> ${unique(this.effects.map(a => a.parent.name)).join(", ")}`);
 
     const setupHp = (chr) => {
       chr.hp = chr.maxHp = Math.round(chr.baseHp * ((chr.bufRate["最大HP"] ?? 0) / 100 + 1));
@@ -712,8 +712,10 @@ export class SimUnit {
   }
   onActionEnd(ctx) {
     this._callHandler("onActionEnd", ctx);
-    this.reduceSkillCT(1);
-    this.reduceEffectDuration();
+    if (!this.main.isNxNBoss) {
+      this.reduceSkillCT(1);
+      this.reduceEffectDuration();
+    }
   }
 
   // 移動後、行動確定時、戦闘非戦闘を問わず攻撃前に呼ばれる

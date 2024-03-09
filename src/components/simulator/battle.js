@@ -311,10 +311,12 @@ export class SimContext {
 
     // 待機の場合 skill は null
     if (skill) {
+      skill.onFire();
+
       let ut = unique(targets);
       for (let t of ut.filter(a => a.isPlayer == unit.isPlayer)) {
         for (let e of skill?.buff ?? []) {
-          if (!e.target || e.target == "スキル対象" ||(e.isSelfTarget && target === unit)) {
+          if (!e.target || e.target == "スキル対象" || (e.isSelfTarget && target === unit)) {
             t.applyEffect(e, target === unit);
           }
         }
@@ -326,8 +328,8 @@ export class SimContext {
           }
         }
       }
+      skill.invokeCtReduction();
 
-      skill.onFire();
       if (doBattle) {
         let r = this.getBattleResult(unit, skill, target, ctx);
         console.log(r);

@@ -421,27 +421,31 @@ export function makeSimEffect(effect, stop = false) {
 
 export function makeSimSkill(skill, ownerUnit) {
   let self = Object.create(skill);
-  self.owner = ownerUnit.sim;
+  self.owner = ownerUnit;
 
   Object.defineProperty(self, 'area', {
-    get: function () {
+    get: () => {
       if (typeof (skill.area) != 'number') {
         return skill.area;
       }
-      return skill.area + (ownerUnit.main.bufRate["範囲"] ?? 0);
+      let r = skill.area;
+      if (skill.isMainSkill) {
+        r += self.owner.main.bufRate["範囲"] ?? 0;
+      }
+      return r;
     },
   });
   Object.defineProperty(self, 'range', {
-    get: function () {
+    get: () => {
       if (typeof (skill.range) != 'number') {
         return skill.range;
       }
       if (skill.isNormalAttack) {
-        let chr = ownerUnit.main;
+        let chr = self.owner.main;
         return chr.range + (chr.bufRate["射程(通常攻撃)"] ?? 0);
       }
       else {
-        let chr = skill.isMainSkill ? ownerUnit.main : ownerUnit.support;
+        let chr = skill.isMainSkill ? self.owner.main : self.owner.support;
         return skill.range + (chr.bufRate["射程(スキル)"] ?? 0);
       }
     },
@@ -503,14 +507,73 @@ export function makeSimSkill(skill, ownerUnit) {
       e.activate(bySelf);
     }
   }
+
+  self.invokeHeal = function (ctx, timing = null) {
+    for (let act of self?.heal ?? []) {
+      if ((!timing || act.timing == timing) && !act.coolTime && evaluateCondition(ctx, act.condition)) {
+        if (act.ct) {
+          act.coolTime = act.ct;
+        }
+
+        let u = ctx.unit;
+        for (let t of unique(getTargetUnits(ctx, act))) {
+          // todo
+          console.log(`!! 回復 ${u.main.name} -> ${t.main.name}!!`);
+        }
+      }
+    }
+  }
+  self.invokeAreaDamage = function (ctx, timing = null) {
+    for (let act of self?.areaDamage ?? []) {
+      if ((!timing || act.timing == timing) && !act.coolTime && evaluateCondition(ctx, act.condition)) {
+        if (act.ct) {
+          act.coolTime = act.ct;
+        }
+
+        let u = ctx.unit;
+        for (let t of unique(getTargetUnits(ctx, act))) {
+          // todo
+          console.log(`!! エリアダメージ ${u.main.name} -> ${t.main.name}!!`);
+        }
+      }
+    }
+  }
+
+  self.invokeCtReduction = function (ctx, timing = null) {
+    let succeeded = false;
+    for (let act of self?.ctReduction ?? []) {
+      if ((!timing || act.timing == timing) && !act.coolTime && evaluateCondition(ctx, act.condition)) {
+        succeeded = true;
+        if (act.ct) {
+          act.coolTime = act.ct;
+        }
+
+        let u = ctx.unit;
+        for (let t of unique(getTargetUnits(ctx, act))) {
+          if (t.isPlayer == u.isPlayer) {
+            let cond = null;
+            if (act.targetSkill == "使用したスキル") {
+              cond = (skill) => skill === ctx.skill;
+            }
+            else {
+              cond = (skill) => skill !== self;
+            }
+            t.reduceSkillCT(act.value, cond);
+            console.log(`!! CT減 ${u.main.name} -> ${t.main.name}!!`);
+          }
+        }
+      }
+    }
+    return succeeded;
+  }
   self.invokeDoubleAttack = function (ctx) {
     let succeeded = false;
     if (ctx.onNormalAttack) {
-      for (let v of self?.doubleAttack ?? []) {
-        if (!v.coolTime && evaluateCondition(ctx, v.condition)) {
+      for (let act of self?.doubleAttack ?? []) {
+        if (!act.coolTime && evaluateCondition(ctx, act.condition)) {
           succeeded = true;
-          if (v.ct) {
-            v.coolTime = v.ct;
+          if (act.ct) {
+            act.coolTime = act.ct;
           }
         }
         if (succeeded) {
@@ -522,11 +585,11 @@ export function makeSimSkill(skill, ownerUnit) {
   }
   self.invokeMultiAction = function (ctx) {
     let succeeded = false;
-    for (let v of self?.multiAction ?? []) {
-      if (!v.coolTime &&evaluateCondition(ctx, v.condition)) {
+    for (let act of self?.multiAction ?? []) {
+      if (!act.coolTime && evaluateCondition(ctx, act.condition)) {
         succeeded = true;
-        if (v.ct) {
-          v.coolTime = v.ct;
+        if (act.ct) {
+          act.coolTime = act.ct;
         }
       }
       if (succeeded) {
@@ -537,11 +600,11 @@ export function makeSimSkill(skill, ownerUnit) {
   }
   self.invokeMultiMove = function (ctx) {
     let succeeded = false;
-    for (let v of skill?.multiMove ?? []) {
-      if (!v.coolTime &&evaluateCondition(ctx, v.condition)) {
+    for (let act of skill?.multiMove ?? []) {
+      if (!act.coolTime && evaluateCondition(ctx, act.condition)) {
         succeeded = true;
-        if (v.ct) {
-          v.coolTime = v.ct;
+        if (act.ct) {
+          act.coolTime = act.ct;
         }
       }
       if (succeeded) {
@@ -566,14 +629,17 @@ export function makeSimSkill(skill, ownerUnit) {
     for (let e of [...(this?.buff ?? []), ...(this?.debuff ?? [])]) {
       let tri = e?.trigger;
       if (tri && tri.timing == timing && evaluateCondition(ctx, tri.condition)) {
-        let self = ctx.unit;
+        let u = ctx.unit;
         for (let t of unique(getTargetUnits(ctx, tri))) {
-          if ((e.isBuff && t.isPlayer == self.isPlayer) || (e.isDebuff && t.isPlayer != self.isPlayer)) {
+          if ((e.isBuff && t.isPlayer == u.isPlayer) || (e.isDebuff && t.isPlayer != u.isPlayer)) {
             t.applyEffect(e);
           }
         }
       }
     }
+    self.invokeHeal(ctx, timing);
+    self.invokeAreaDamage(ctx, timing);
+    self.invokeCtReduction(ctx, timing);
   };
 
   //#region callbacks

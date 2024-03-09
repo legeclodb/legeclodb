@@ -479,6 +479,7 @@
 
     "ctReduction": {
       "type": "object",
+      "required": [ "target", "targetSkill", "value" ],
       "additionalProperties": false,
       "properties": {
         "value": {

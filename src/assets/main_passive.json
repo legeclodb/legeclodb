@@ -1097,7 +1097,10 @@
         "value": 1,
         "target": "自身",
         "targetSkill": "使用したスキル",
+        "timing": "攻撃後",
+        "ct": 2,
         "condition": {
+          "onActiveSkill": true,
           "onKill": true
         }
       }
@@ -3732,8 +3735,10 @@
     "ctReduction": [
       {
         "value": 1,
+        "target": "範囲",
         "area": 3,
-        "targetSkill": "全スキル"
+        "targetSkill": "全スキル",
+        "timing": "自ターン開始時"
       }
     ],
     "heal": [

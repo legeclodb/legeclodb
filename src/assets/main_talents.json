@@ -1783,6 +1783,7 @@
       {
         "target": "自身",
         "targetSkill": "使用したスキル",
+        "value": 1,
         "timing": "戦闘後",
         "condition": {
           "probability": [ 50, 60, 70, 80, 100 ]
