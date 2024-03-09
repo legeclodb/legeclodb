@@ -612,6 +612,7 @@
         "amount": 1,
         "trigger": {
           "target": "攻撃対象",
+          "timing": "戦闘後",
           "condition": {
             "onCriticalHit": true,
             "onOwnTurn": true
@@ -688,6 +689,7 @@
         "amount": 1,
         "trigger": {
           "target": "攻撃対象",
+          "timing": "戦闘後",
           "condition": {
             "onCriticalHit": true
           }
@@ -1980,7 +1982,8 @@
         "trigger": {
           "target": "範囲(ランダム)",
           "area": [ 1, "周囲" ],
-          "unitCount": 1
+          "unitCount": 1,
+          "timing": "行動後"
         }
       }
     ]

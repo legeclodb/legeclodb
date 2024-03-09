@@ -326,6 +326,7 @@ export class SimUnit {
         ...(unit.support?.items ?? []),
         ...(unit.support ? vue.getClassPassiveSupport(unit.support.class) : []),
       ].map(skill => makeSimSkill(skill, this));
+      //console.log(this.skills.map(s => s.name).join(", "));
     }
 
     //console.log(this);
@@ -379,6 +380,10 @@ export class SimUnit {
 
     const add = (e) => {
       const doit = (e, tRate, rFixed) => {
+        if (e.ephemeral && !ctx.onBattle) {
+          return;
+        }
+
         if (e.isDebuff && e.ephemeral) {
           // 戦闘時デバフは扱いが難しくて保留
           console.log(e);

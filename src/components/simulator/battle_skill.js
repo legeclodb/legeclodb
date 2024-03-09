@@ -261,24 +261,33 @@ export function makeSimEffect(effect) {
     let r = 0;
     if ('value' in self) {
       r = self.value;
-      // 効果が重複するタイプ
-      if (self.multiply?.max) {
-        r *= self.multiply.max;
-      }
     }
     else if ('variable' in self) {
       // HP 割合などに応じて効果が上下するタイプ
-      if (Array.isArray(self.variable.max)) {
-        r = self.variable.max.at(-1);
+      const v = self.variable;
+      if (Array.isArray(v.max)) {
+        r = v.max.at(-1);
       }
       else {
-        r = self.variable.max;
+        r = v.max;
       }
     }
     else if ('add' in self) {
       // "アタックの n% をマジックに加算" など
-      // todo:
-      r = 0;
+      const v = self.add;
+      let chr = v.source == "サポート" ? unit.support : unit.main;
+      let table = {
+        "最大HP": () => chr.baseHp,
+        "アタック": () => chr.baseAtk,
+        "ディフェンス": () => chr.baseDef,
+        "マジック": () => chr.baseMag,
+        "レジスト": () => chr.baseRes,
+      };
+      r = table[v.from]() * (v.rate / 100);
+    }
+    // 効果が重複するタイプ
+    if (self.multiply?.max) {
+      r *= self.multiply.max;
     }
     return self.isDebuff ? -r : r;
   }

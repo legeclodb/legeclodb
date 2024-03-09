@@ -304,12 +304,10 @@ export class SimContext {
     // 攻撃側
     let ctx = makeBattleContext(unit, target, skill);
     ctx.onOwnTurn = true;
-    if (doBattle)
-      ctx.onBattle = true;
-
     if (skill && skill.isMainSkill && skill.damageRate) {
       doAttack = true;
       doBattle = ctx.onTargetEnemy;
+      ctx.onBattle = true;
     }
 
     if (doAction)

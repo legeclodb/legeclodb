@@ -200,6 +200,7 @@
       "type": "object",
       "required": [ "from", "rate" ],
       "properties": {
+        "source": { "enum": [ "メイン", "サポート" ] },
         "from": { "$ref": "#/$defs/statusType" },
         "rate": {
           "anyOf": [
