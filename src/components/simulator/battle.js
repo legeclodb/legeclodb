@@ -78,11 +78,12 @@ export class SimContext {
     return unit && ((unit.isPlayer && this.isPlayerTurn) || (unit.isEnemy && this.isEnemyTurn));
   }
 
-  doAttack(_ctx, attacker, targetQueue, skl) {
-    let ctx = Object.create(_ctx);
+  doAttack(_ctx, attacker, targetQueue, skill) {
+    let actx = Object.create(_ctx);
+    actx.skill = skill;
 
     let result = {
-      ctx: ctx,
+      ctx: actx,
       damageToSupport: 0,
       damageToMain: 0,
       get total() { return this.damageToSupport + this.damageToMain; },
@@ -96,47 +97,40 @@ export class SimContext {
       return result;
     }
 
-    if (!skl) {
-      // メインがスキル使用の場合もサポートは通常攻撃
-      // todo: もっとスマートに対処したい…
-      ctx.onNormalAttack = true;
-      ctx.onActiveSkill = false;
-      ctx.onAreaSkill = false;
-    }
-
     let aunit = attacker.unit;
     {
       if (attacker.isMain)
-        ctx.onMainAttack = true;
+        actx.onMainAttack = true;
       else
-        ctx.onSupportAttack = true;
+        actx.onSupportAttack = true;
     }
     {
       if (attacker.damageType == "アタック")
-        ctx.onPhysicalDamage = true;
+        actx.onPhysicalDamage = true;
       else
-        ctx.onMagicDamage = true;
+        actx.onMagicDamage = true;
     }
     {
-      if (ctx.onBattle && attacker.baseRange > 1 && ctx.range <= 1)
-        ctx.onRangedPenarty = true;
+      if (actx.onBattle && attacker.baseRange > 1 && actx.range <= 1)
+        actx.onRangedPenarty = true;
     }
     // todo: サポート同時攻撃の考慮
-    if (!attacker.isAlive || ctx.range > aunit.getRange(ctx)) {
+    if (!attacker.isAlive || actx.range > aunit.getRange(actx)) {
       return result;
     }
+    aunit.evaluateBuffs(actx);
 
     let attackCount = 10;
-    let atk = aunit.getAttackPower(ctx);
-    let damageRate = skl ? skl.getDamageRate(ctx) : 1.0;
-    let dmgDealtBuff = Math.max(aunit.getDamageDealtBuff(ctx), 0.3);
-    let critDmgRate = aunit.getCriticalDamageRate(ctx);
-    let rangedPenarty = ctx.onRangedPenarty ? 0.6 : 1.0;
+    let atk = aunit.getAttackPower(actx);
+    let damageRate = skill ? skill.getDamageRate(actx) : 1.0;
+    let dmgDealtBuff = Math.max(1.0 + aunit.getDamageDealBuff(actx), 0.3);
+    let critDmgRate = aunit.getCriticalDamageRate(actx);
+    let rangedPenarty = actx.onRangedPenarty ? 0.6 : 1.0;
 
     const calcDamage = (t, breakOnKill) => {
-      let tunit = t.chr.unit;
+      let dunit = t.chr.unit;
       // 防御側コンテキスト
-      let dctx = Object.create(ctx);
+      let dctx = makeActionContext(dunit, aunit, null, actx);
       let addScore = null;
       if (t.chr.isSupport) {
         dctx.onSupportDefense = true;
@@ -146,10 +140,11 @@ export class SimContext {
         dctx.onMainDefense = true;
         addScore = (v) => { result.damageToMain += v; }
       }
+      dunit.evaluateBuffs(dctx);
 
-      let def = tunit.getDefensePower(dctx);
+      let def = dunit.getDefensePower(dctx);
       let baseDmg = Math.max(atk - def, 1);
-      let dmgTakenBuff = Math.max(1.0 - tunit.getDamageTakenBuff(dctx), 0.3);
+      let dmgTakenBuff = Math.max(1.0 - dunit.getDamageTakenBuff(dctx), 0.3);
       let finalDmg = baseDmg * damageRate * dmgDealtBuff * dmgTakenBuff * critDmgRate * rangedPenarty;
 
       let totalDamage = 0;
@@ -204,8 +199,6 @@ export class SimContext {
 
     // 防御側コンテキスト
     let dctx = makeActionContext(target, unit);
-    dctx.onEnemyTurn = true;
-    dctx.onNormalAttack = true;
     target.evaluateBuffs(dctx);
 
     let attacker = [
@@ -256,13 +249,6 @@ export class SimContext {
       // target に依存するバフなどがあるので、ループの内側である必要がある
       let actx = Object.create(ctx);
       actx.target = target;
-      unit.evaluateBuffs(actx);
-
-      // 防御側コンテキスト
-      let dctx = makeActionContext(target, unit);
-      dctx.onEnemyTurn = true;
-      dctx.onNormalAttack = true;
-      target.evaluateBuffs(dctx);
 
       let r = [
         this.doAttack(actx, unit.main, [this.makeTarget(target.main)], skill),
@@ -308,7 +294,6 @@ export class SimContext {
     // 攻撃側
     let ctx = makeActionContext(unit, target, skill);
     ctx.targets = targets;
-    ctx.onOwnTurn = true;
     if (skill && skill.isMainSkill && skill.damageRate) {
       doAttack = true;
       doBattle = ctx.onTargetEnemy;
@@ -502,6 +487,7 @@ export class SimContext {
     return null;
   }
   enumerateUnitsInArea(center, size, shape, callback) {
+    // todo: NxN ボス
     for (const u of this.activeUnits) {
       if (isInside(center, u.coord, size, shape)) {
         callback(u);

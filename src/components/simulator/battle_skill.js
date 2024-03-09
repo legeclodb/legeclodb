@@ -141,19 +141,18 @@ export function getTargetUnits(ctx, json) {
   }
 }
 
-export function makeActionContext(unit, target = null, skill = null) {
+// parent: 防御側の時に元となる攻撃側 ctx が来る
+export function makeActionContext(unit, target = null, skill = null, parent = null) {
   let sim = $g.sim;
   let ctx = {
     get turn() { return sim.turn; },
     get phase() { return sim.phase; },
-    get move() { return sim.move; },
     get range() { return sim.range; },
     get onCloseCombat() { return this.onBattle && this.range == 1; },
     get onRangedCombat() { return this.onBattle && this.range > 1; },
     get terrain() { return ""; },
 
     get skill() { return this.skill_; },
-
     set skill(skill) {
       this.skill_ = skill;
       if (!skill || skill.isNormalAttack) {
@@ -232,6 +231,23 @@ export function makeActionContext(unit, target = null, skill = null) {
       this.getTargetTokenCount = (args) => u.getTokenCount(args);
     },
   };
+
+  if (!parent) {
+    // move は攻撃側用のパラメータ
+    Object.defineProperties(ctx, {
+      "move": { get: () => sim.move },
+      "onOwnTurn": { get: () => true },
+    });
+  }
+  else {
+    Object.defineProperties(ctx, {
+      "move": { get: () => 0 },
+      "onEnemyTurn": { get: () => true },
+      "onNormalAttack": { get: () => true },
+      "onPhysicalDamage": { get: () => parent.onPhysicalDamage },
+      "onMagicDamage": { get: () => parent.onMagicDamage },
+    });
+  }
 
   if (unit) {
     ctx.unit = unit;
