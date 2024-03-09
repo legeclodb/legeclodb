@@ -330,8 +330,8 @@ export class SimContext {
       }
     }
 
-    //ctx.onCriticalhit = true;
-    //ctx.onDamage = true;
+    ctx.onCriticalhit = true;
+    ctx.onDamage = true;
 
     let killed = (target ? [target] : targets)?.filter(a => !a.isAlive);
     if (killed?.length) {
@@ -350,8 +350,15 @@ export class SimContext {
       for (let k of killed)
         callHandler("onDeath", k);
     }
-    if (!unit.isAlive)
+
+    if (!unit.isAlive) {
       callHandler("onDeath", unit);
+    }
+    else if (doAction) {
+      if (!unit.invokeMultiAction(ctx)) {
+        unit.invokeMultiMove(ctx);
+      }
+    }
 
     console.log(ctx);
   }

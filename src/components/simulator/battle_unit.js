@@ -209,6 +209,7 @@ export class SimUnit {
     hp: 0,
     maxHp: 0,
   };
+  data = {};
   //#endregion fields
 
 
@@ -557,22 +558,26 @@ export class SimUnit {
     return r / 100.0;
   }
 
-  invokeDoubleAttack(ctx) {
+  _invokeSkillAction(ctx, act) {
     let succeeded = false;
-    if (ctx.onNormalAttack) {
-      for (let skill of this.passives.filter(a => a.doubleAttack)) {
-        for (let da of skill.doubleAttack) {
-          if (evaluateCondition(ctx, da.condition)) {
-            succeeded = true;
-          }
-        }
+    for (let skill of this.passives) {
+      if (skill[act](ctx)) {
+        succeeded = true;
       }
-    }
-    if (succeeded) {
-      console.log("!! 2回攻撃 !!");
     }
     return succeeded;
   }
+
+  invokeDoubleAttack(ctx) {
+    return this._invokeSkillAction(ctx, "invokeDoubleAttack");
+  }
+  invokeMultiAction(ctx) {
+    return this._invokeSkillAction(ctx, "invokeMultiAction");
+  }
+  invokeMultiMove(ctx) {
+    return this._invokeSkillAction(ctx, "invokeMultiMove");
+  }
+
 
   reduceEffectDuration() {
     for (let e of this.effects) {

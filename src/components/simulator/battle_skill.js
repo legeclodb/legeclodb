@@ -101,8 +101,8 @@ export function evaluateCondition(ctx, cond)
   const getExpressionProps = [
     ["nearAllyCount", "area", "getNearAllyCount"],
     ["nearEnemyCount", "area", "getNearEnemyCount"],
-    ["token", "tokenName", "getToken"],
-    ["targetToken", "tokenName", "getTargetToken"],
+    ["token", "tokenName", "getTokenCount"],
+    ["targetToken", "tokenName", "getTargetTokenCount"],
   ];
   for (const [cname, pname, fname] of getExpressionProps) {
     if (cname in cond) {
@@ -178,7 +178,7 @@ export function makeBattleContext(unit, target = null, skill = null) {
         },
       });
       this.isOnEffect = (args) => u.isOnEffect(args);
-      this.getToken = (args) => u.getToken(args);
+      this.getTokenCount = (args) => u.getTokenCount(args);
       this.getNearAllyCount = (args) => u.getNearAllyCount(args);
       this.getNearEnemyCount = (args) => u.getNearEnemyCount(args);
     },
@@ -204,7 +204,7 @@ export function makeBattleContext(unit, target = null, skill = null) {
           get: () => u.activeDebuffCount
         },
       });
-      this.getTargetToken = (args) => u.getToken(args);
+      this.getTargetTokenCount = (args) => u.getTokenCount(args);
     },
   };
 
@@ -360,38 +360,59 @@ export function makeSimEffect(effect) {
   return self;
 }
 
-export function makeSimCustomEffect(type) {
-  let self = {
-    effectType: 0,
-    value: 0,
-  };
-  let vue = $vue();
-  self.effectType = typeof (type) === 'string' ? vue.getEffectIndex(type) : type;
-
-  self.serialize = function () {
-    return {
-      effectType: this.effectType,
-      value: this.value,
-    };
-  }
-  self.deserialize = function (r) {
-    this.effectType = r.effectType;
-    this.value = r.value;
-  }
-  return self;
-}
-
-export function makeSimSkill(skill, ownerChr) {
+export function makeSimSkill(skill, ownerUnit) {
   let self = Object.create(skill);
-  self.owner = ownerChr;
-  if (self.isActive) {
-    self.coolTime = 0;
-  }
+  self.owner = ownerUnit;
 
-  self.effects = []; // SimEffect
-  for (let effect of [...(self.buff ?? []), ...(self.debuff ?? [])]) {
-    //self.effects.push(makeSimEffect(effect));
+  let data = self.owner.data;
+  if (self.isActive) {
+    let pname = 'coolTime';
+    let id = `${self.uid}.${pname}`;
+    data[id] = 0;
+    Object.defineProperty(self, pname, {
+      get: () => { return data[id]; },
+      set: (v) => { data[id] = v; },
+    });
   }
+  Object.defineProperty(self, 'available', {
+    get: function () { return !this.isActive || this.coolTime <= 0; },
+  });
+
+  const setupActions = (name, prefix) => {
+    if (!(name in self)) {
+      return;
+    }
+
+    let list = self[name].map(a => Object.create(a));
+    Object.defineProperty(self, name, {
+      get: () => list,
+    });
+    for (let i = 0; i < list.length; ++i) {
+      let obj = list[i];
+      console.log(obj);
+      if ('ct' in obj) {
+        let pname = 'coolTime';
+        let id = `${self.uid}.${prefix}${i}.${pname}`;
+        data[id] = 0;
+        Object.defineProperty(obj, pname, {
+          get: () => { return data[id]; },
+          set: (v) => { data[id] = v; },
+        });
+      }
+      if ('count' in obj) {
+        let pname = 'remain';
+        let id = `${self.uid}.${prefix}${i}.${pname}`;
+        data[id] = obj.count;
+        Object.defineProperty(obj, pname, {
+          get: () => { return data[id]; },
+          set: (v) => { data[id] = v; },
+        });
+      }
+    }
+  };
+  setupActions('doubleAttack', 'da');
+  setupActions('multiAction', 'ma');
+  setupActions('multiMove', 'mm');
 
   self.serialize = function () {
     let r = {
@@ -413,15 +434,60 @@ export function makeSimSkill(skill, ownerChr) {
     });
   }
 
-  Object.defineProperty(self, 'available', {
-    get: function () { return !this.isActive || this.coolTime <= 0; },
-  });
-
   self.activate = function (bySelf) {
     for (let e of this.effects) {
       e.activate(bySelf);
     }
   }
+  self.invokeDoubleAttack = function (ctx) {
+    let succeeded = false;
+    if (ctx.onNormalAttack) {
+      for (let v of self?.doubleAttack ?? []) {
+        if (!v.coolTime && evaluateCondition(ctx, v.condition)) {
+          succeeded = true;
+          if (v.ct) {
+            v.coolTime = v.ct;
+          }
+        }
+        if (succeeded) {
+          console.log("!! 2回攻撃 !!");
+        }
+      }
+    }
+    return succeeded;
+  }
+  self.invokeMultiAction = function (ctx) {
+    let succeeded = false;
+    for (let v of self?.multiAction ?? []) {
+      if (!v.coolTime &&evaluateCondition(ctx, v.condition)) {
+        succeeded = true;
+        if (v.ct) {
+          v.coolTime = v.ct;
+        }
+      }
+      if (succeeded) {
+        console.log("!! 再行動 !!");
+      }
+    }
+    return succeeded;
+  }
+  self.invokeMultiMove = function (ctx) {
+    let succeeded = false;
+    for (let v of skill?.multiMove ?? []) {
+      if (!v.coolTime &&evaluateCondition(ctx, v.condition)) {
+        succeeded = true;
+        if (v.ct) {
+          v.coolTime = v.ct;
+        }
+      }
+      if (succeeded) {
+        console.log("!! 再移動 !!");
+      }
+    }
+    return succeeded;
+  }
+
+
   self.getDamageRate = function (ctx) {
     return self.damageRate;
   }
@@ -434,88 +500,43 @@ export function makeSimSkill(skill, ownerChr) {
 
   //#region callbacks
   self.onSimulationBegin = function () {
-    for (let e of this.effects) {
-      e.onSimulationBegin();
-    }
   }
   self.onSimulationEnd = function () {
-    for (let e of this.effects) {
-      e.onSimulationEnd();
-    }
   }
   self.onOwnTurnBegin = function () {
-    for (let e of this.effects) {
-      e.onOwnTurnBegin();
-    }
   }
   self.onOwnTurnEnd = function () {
-    for (let e of this.effects) {
-      e.onOwnTurnEnd();
-    }
   }
   self.onOpponentTurnBegin = function () {
-    for (let e of this.effects) {
-      e.onOpponentTurnBegin();
-    }
   }
   self.onOpponentTurnEnd = function () {
-    for (let e of this.effects) {
-      e.onOpponentTurnEnd();
-    }
   }
 
   self.onActionBegin = function () {
-    for (let e of this.effects) {
-      e.onActionBegin();
-    }
   }
   self.onActionEnd = function () {
     if (this.coolTime > 0) {
       --this.coolTime;
     }
-    for (let e of this.effects) {
-      e.onActionEnd();
-    }
   }
 
   self.onAttackBegin = function () {
-    for (let e of this.effects) {
-      e.onAttackBegin();
-    }
   }
   self.onAttackEnd = function () {
-    for (let e of this.effects) {
-      e.onAttackEnd();
-    }
   }
 
   self.onBattleBegin = function () {
-    for (let e of this.effects) {
-      e.onBattleBegin();
-    }
   }
   self.onBattleEnd = function () {
-    for (let e of this.effects) {
-      e.onBattleEnd();
-    }
   }
 
   self.onKill = function () {
-    for (let e of this.effects) {
-      e.onKill();
-    }
   }
 
   self.onDeath = function () {
-    for (let e of this.effects) {
-      e.onDeath();
-    }
   }
 
   self.onRevive = function () {
-    for (let e of this.effects) {
-      e.onRevive();
-    }
   }
 
   //#endregion callbacks
