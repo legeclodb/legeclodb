@@ -117,6 +117,24 @@ export function evaluateCondition(ctx, cond)
   return ok;
 }
 
+export function getTargetUnits(ctx, json) {
+  let targetTable = {
+    "自身": () => [ctx.unit],
+    "攻撃対象": () => ctx.targets,
+    "範囲": () => ctx.getUnitsInArea(json.area),
+    "範囲(ランダム)": () => ctx.getUnitsInArea(json.area),
+    "味方全体": () => $g.sim.activeUnits.filter(a => a.isPlayer == ctx.unit.isPlayer),
+    "敵全体": () => $g.sim.activeUnits.filter(a => a.isPlayer != ctx.unit.isPlayer),
+  };
+  if (json.target in targetTable) {
+    return targetTable[json.target]();
+  }
+  else {
+    console.log(`!! 未サポートの target ${json.target} !!`);
+    return [];
+  }
+}
+
 export function makeActionContext(unit, target = null, skill = null) {
   let sim = $g.sim;
   let ctx = {
@@ -179,8 +197,9 @@ export function makeActionContext(unit, target = null, skill = null) {
       });
       this.isOnEffect = (args) => u.isOnEffect(args);
       this.getTokenCount = (args) => u.getTokenCount(args);
-      this.getNearAllyCount = (args) => u.getNearAllyCount(args);
-      this.getNearEnemyCount = (args) => u.getNearEnemyCount(args);
+      this.getUnitsInArea = (args) => u.getUnitsInArea(args);
+      this.getNearAllyCount = (args) => u.getAlliesInArea(args).length;
+      this.getNearEnemyCount = (args) => u.getEnemiesInArea(args).length;
     },
 
     get target() { return this.target_; },
@@ -374,7 +393,7 @@ export function makeSimSkill(skill, ownerUnit) {
 
   let data = {};
   self.data = data; // serializable data
-  if (self.isActive && self.ct) {
+  if (self.isActive) {
     let pname = 'coolTime';
     let id = `${self.uid}.${pname}`;
     data[id] = 0;
@@ -491,13 +510,12 @@ export function makeSimSkill(skill, ownerUnit) {
     for (let e of [...(this?.buff ?? []), ...(this?.debuff ?? [])]) {
       let tri = e?.trigger;
       if (tri && tri.timing == timing && evaluateCondition(ctx, tri.condition)) {
-        console.log(e);
-        let targets = [];
-        if (tri.target == "攻撃対象") {
-          targets = ctx.targets;
-        }
-        for (let t of targets) {
-          t.applyEffect(e);
+        console.log(tri);
+        let self = ctx.unit;
+        for (let t of getTargetUnits(ctx, tri)) {
+          if ((e.isBuff && t.isPlayer == self.isPlayer) || (e.isDebuff && t.isPlayer != self.isPlayer)) {
+            t.applyEffect(e);
+          }
         }
       }
     }
@@ -542,7 +560,7 @@ export function makeSimSkill(skill, ownerUnit) {
     this.trigger(ctx, "戦闘前");
   }
   self.onBattleEnd = function (ctx) {
-    this.trigger(ctx, "戦闘前");
+    this.trigger(ctx, "戦闘後");
   }
 
   self.onKill = function (ctx) {

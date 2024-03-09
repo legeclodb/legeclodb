@@ -1286,7 +1286,7 @@ export default {
         if (skill.damageRate || hasAreaEffect(skill.debuff)) {
           skill.isTargetEnemy = true;
         }
-        if (skill.healRate || hasAreaEffect(skill.buff)) {
+        if (skill?.heal?.find(a => a.target == "スキル対象") || hasAreaEffect(skill.buff)) {
           skill.isTargetAlly = true;
         }
         if (skill.summon) {

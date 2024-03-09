@@ -482,6 +482,22 @@ export class SimContext {
     }
     return null;
   }
+  enumerateUnitsInArea(pos, size, shape, callback) {
+    for (const u of this.activeUnits) {
+      const dx = u.coord[0] - pos[0];
+      const dy = u.coord[1] - pos[1];
+      if (shape == 0) {
+        if (dx + dy <= size) {
+          callback(u);
+        }
+      }
+      if (shape == 1) {
+        if (Math.max(dx, dy) <= size) {
+          callback(u);
+        }
+      }
+    }
+  }
   isValidCoord(coord) {
     return (coord[0] >= 0 && coord[0] < this.divX) &&
       (coord[1] >= 0 && coord[1] < this.divY);

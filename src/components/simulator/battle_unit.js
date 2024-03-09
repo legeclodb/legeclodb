@@ -1,3 +1,4 @@
+import { $g } from "./battle_globals.js";
 import { makeSimSkill, makeSimEffect, callHandler, evaluateCondition } from "./battle_skill.js";
 
 function $vue() {
@@ -24,6 +25,22 @@ export function mergeChrData(dst, src) {
     }
   }
 }
+
+export function parseArea(args) {
+  let size = 0;
+  let shape = 0;
+  if (typeof (args) === 'number') {
+    size = args;
+  }
+  else if (Array.isArray(args)) {
+    size = args[0];
+    if (args[1] == '周囲') {
+      shape = 1;
+    }
+  }
+  return [size, shape];
+}
+
 
 export class BaseUnit {
   isEnemy = false;
@@ -518,11 +535,19 @@ export class SimUnit {
     return v / 100 + 1;
   }
 
-  getNearAllyCount(args) {
-    return 0;
+  getUnitsInArea(args) {
+    let r = [];
+    let [size, shape] = parseArea(args);
+    $g.sim.enumerateUnitsInArea(this.coord, size, shape, (u) => {
+      r.push(u);
+    });
+    return r;
   }
-  getNearEnemyCount(args) {
-    return 0;
+  getAlliesInArea(args) {
+    return this.getUnitsInArea(args).filter(u => u.isPlayer == this.isPlayer);
+  }
+  getEnemiesInArea(args) {
+    return this.getUnitsInArea(args).filter(u => u.isPlayer != this.isPlayer);
   }
   getTokenCount(tokenName) {
     let r = 0;
