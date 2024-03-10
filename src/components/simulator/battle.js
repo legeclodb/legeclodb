@@ -121,8 +121,13 @@ export class SimContext {
       if (actx.onBattle && attacker.baseRange > 1 && actx.range <= 1)
         actx.onRangedPenarty = true;
     }
-    // todo: サポート同時攻撃の考慮
-    if (!attacker.isAlive || actx.range > aunit.getRange(actx)) {
+
+    if (!attacker.isAlive) {
+      // 既に死んでたら何もしない (反撃側サポートが死んでる場合ここに来る)
+      return result;
+    }
+    if (actx.range > aunit.getRange(actx) && !actx.forceJoinSupport) {
+      // 射程外でサポート同時攻撃もない場合何もしない
       return result;
     }
     aunit.evaluateBuffs(actx);
@@ -217,6 +222,9 @@ export class SimContext {
       this.makeTarget(target.support),
     ];
 
+    if (unit.invokeSupportAttack(actx)) {
+      actx.forceJoinSupport = true;
+    }
     let aSup = this.doAttack(actx, unit.support, defender, null);
     let aMain = this.doAttack(actx, unit.main, defender, skill);
     if (defender.at(-1).isAlive && unit.invokeDoubleAttack(actx)) {
@@ -323,16 +331,25 @@ export class SimContext {
     if (skill) {
       skill.onFire();
 
+      let result = null;
       if (doBattle) {
-        let r = this.getBattleResult(unit, skill, target, ctx);
-        unit.score += r.attackerScore;
-        target.score += r.defenderScore;
-        console.log(r);
+        result = this.getBattleResult(unit, skill, target, ctx);
+        ctx.damageDealt = result.attackerScore;
+        ctx.damageTaken = result.defenderScore;
       }
       else if (doAttack) {
-        let r = this.getAreaAttackResult(unit, skill, targets, ctx);
-        unit.score += r.attackerScore;
-        console.log(r);
+        result = this.getAreaAttackResult(unit, skill, targets, ctx);
+        ctx.damageDealt = result.attackerScore;
+      }
+      console.log(result);
+
+      unit.score += ctx.damageDealt;
+      if (target) {
+        target.score += ctx.damageTaken;
+      }
+      if (ctx.damageDealt) {
+        ctx.onCriticalHit = true; // とりあえず
+        ctx.onDamage = true;
       }
 
       let ut = unique(targets);
@@ -354,16 +371,7 @@ export class SimContext {
       skill.invokeFixedDamage(ctx);
       skill.invokeHeal(ctx);
       skill.invokeCtReduction(ctx);
-      if (skill.invokeMultiAction(ctx)) {
-        multiAction = true;
-      }
-      if (skill.invokeMultiMove(ctx)) {
-        multiMove = true;
-      }
     }
-
-    ctx.onCriticalHit = true;
-    ctx.onDamage = true;
 
     let killed = (target ? [target] : targets)?.filter(a => !a.isAlive);
     if (killed?.length) {

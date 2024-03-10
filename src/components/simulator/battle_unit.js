@@ -425,6 +425,9 @@ export class SimUnit {
   }
 
   getRange(ctx) {
+    if (ctx.skill) {
+      return ctx.skill.range;
+    }
     if (ctx?.onSupportAttack) {
       return this.support.range;
     }
@@ -693,7 +696,8 @@ export class SimUnit {
 
   _invokeSkillAction(ctx, act) {
     let succeeded = false;
-    for (let skill of this.passives) {
+    let skills = ctx.skill ? [...this.passives, ctx.skill] : this.passives;
+    for (let skill of skills) {
       if (skill[act](ctx)) {
         succeeded = true;
       }
@@ -701,6 +705,9 @@ export class SimUnit {
     return succeeded;
   }
 
+  invokeSupportAttack(ctx) {
+    return this._invokeSkillAction(ctx, "invokeSupportAttack");
+  }
   invokeDoubleAttack(ctx) {
     return this._invokeSkillAction(ctx, "invokeDoubleAttack");
   }

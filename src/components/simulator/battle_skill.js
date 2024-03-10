@@ -232,6 +232,9 @@ export function makeActionContext(unit, target = null, skill = null, parent = nu
       });
       this.getTargetTokenCount = (args) => u.getTokenCount(args);
     },
+
+    damageDealt: 0,
+    damageTaken: 0,
   };
 
   if (!parent) {
@@ -629,6 +632,22 @@ export function makeSimSkill(skill, ownerUnit) {
             console.log(`!! CT減 ${u.main.name} (${self.name}) -> ${t.main.name}!!`);
           }
         }
+      }
+    }
+    return succeeded;
+  }
+
+  self.invokeSupportAttack = function (ctx) {
+    let succeeded = false;
+    for (let act of self?.supportAttack ?? []) {
+      if (!act.coolTime && evaluateCondition(ctx, act.condition)) {
+        succeeded = true;
+        if (act.ct) {
+          act.coolTime = act.ct;
+        }
+      }
+      if (succeeded) {
+        console.log(`!! サポート同時攻撃 ${ctx.unit.main.name} (${self.name}) !!`);
       }
     }
     return succeeded;
