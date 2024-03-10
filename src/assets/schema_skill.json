@@ -355,7 +355,7 @@
 
     "fixedDamage": {
       "type": "object",
-      "required": [ "base", "rate" ],
+      "required": [ "base", "rate", "target" ],
       "additionalProperties": false,
       "properties": {
         "base": {
@@ -376,7 +376,7 @@
 
     "areaDamage": {
       "type": "object",
-      "required": [ "rate", "area" ],
+      "required": [ "rate", "area", "target" ],
       "additionalProperties": false,
       "properties": {
         "rate": { "type": [ "number", "array" ] },

@@ -251,7 +251,12 @@ export class SimUnit {
   get symbol() { return this.main.symbol; }
   get mainClass() { return this.main.class; }
   get hpRate() {
-    return (this.main.hp + this.support.hp) / (this.main.maxHp + this.support.maxHp) * 100;
+    if (!isFinite(this.main.hp)) {
+      return 100;
+    }
+    else {
+      return (this.main.hp + this.support.hp) / (this.main.maxHp + this.support.maxHp) * 100;
+    }
   }
   get prevCoord() { return this.base.prevCoord; }
   get activeBuffCount() {

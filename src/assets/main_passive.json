@@ -861,6 +861,7 @@
           "max": 5,
           "by": "move"
         },
+        "target": "攻撃対象",
         "timing": "戦闘前",
         "condition": {
           "onOwnTurn": true
@@ -869,6 +870,7 @@
       {
         "base": "アタック",
         "rate": 3.0,
+        "target": "攻撃対象",
         "timing": "戦闘前",
         "condition": {
           "onEnemyTurn": true
@@ -1407,6 +1409,7 @@
     "areaDamage": [
       {
         "rate": 0.3,
+        "target": "範囲",
         "area": 2,
         "timing": "行動後",
         "condition": {
@@ -2607,6 +2610,7 @@
       {
         "base": "アタック",
         "rate": 1.0,
+        "target": "攻撃対象",
         "timing": "戦闘後",
         "condition": {
           "onOwnTurn": true
@@ -2654,6 +2658,7 @@
       {
         "base": "アタック",
         "rate": 1.25,
+        "target": "攻撃対象",
         "timing": "戦闘後",
         "condition": {
           "onOwnTurn": true
@@ -2856,6 +2861,7 @@
     "areaDamage": [
       {
         "rate": 0.2,
+        "target": "範囲",
         "area": 2,
         "timing": "行動後"
       }
@@ -2880,6 +2886,7 @@
     "areaDamage": [
       {
         "rate": 0.3,
+        "target": "範囲",
         "area": 3,
         "timing": "行動後"
       }
@@ -4474,6 +4481,8 @@
       {
         "ct": 3,
         "condition": {
+          "onOwnTurn": true,
+          "onBattle": true,
           "onCriticalHit": true
         }
       }
@@ -4500,6 +4509,8 @@
       {
         "ct": 3,
         "condition": {
+          "onOwnTurn": true,
+          "onBattle": true,
           "onCriticalHit": true
         }
       }
@@ -6371,6 +6382,7 @@
     "areaDamage": [
       {
         "rate": 0.5,
+        "target": "範囲",
         "area": 8,
         "timing": "行動後"
       }

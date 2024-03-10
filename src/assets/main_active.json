@@ -4511,6 +4511,7 @@
       {
         "base": "アタック",
         "rate": 2.0,
+        "target": "攻撃対象",
         "timing": "戦闘前",
         "condition": {
           "token": {

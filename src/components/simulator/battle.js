@@ -282,6 +282,8 @@ export class SimContext {
     let doAction = skill?.isSupportSkill ? false : true;
     let doAttack = false;
     let doBattle = false;
+    let multiAction = false;
+    let multiMove = false;
     if (unit.prevCoord) {
       this.move = Math.abs(unit.coord[0] - unit.prevCoord[0]) + Math.abs(unit.coord[1] - unit.prevCoord[1]);
     }
@@ -313,6 +315,15 @@ export class SimContext {
     if (skill) {
       skill.onFire();
 
+      if (doBattle) {
+        let r = this.getBattleResult(unit, skill, target, ctx);
+        console.log(r);
+      }
+      else if (doAttack) {
+        let r = this.getAreaAttackResult(unit, skill, targets, ctx);
+        console.log(r);
+      }
+
       let ut = unique(targets);
       for (let t of ut.filter(a => a.isPlayer == unit.isPlayer)) {
         for (let e of skill?.buff ?? []) {
@@ -328,19 +339,18 @@ export class SimContext {
           }
         }
       }
-      skill.invokeCtReduction();
-
-      if (doBattle) {
-        let r = this.getBattleResult(unit, skill, target, ctx);
-        console.log(r);
+      skill.invokeFixedDamage(ctx);
+      skill.invokeHeal(ctx);
+      skill.invokeCtReduction(ctx);
+      if (skill.invokeMultiAction(ctx)) {
+        multiAction = true;
       }
-      else if (doAttack) {
-        let r = this.getAreaAttackResult(unit, skill, targets, ctx);
-        console.log(r);
+      if (skill.invokeMultiMove(ctx)) {
+        multiMove = true;
       }
     }
 
-    ctx.onCriticalhit = true;
+    ctx.onCriticalHit = true;
     ctx.onDamage = true;
 
     let killed = (target ? [target] : targets)?.filter(a => !a.isAlive);
@@ -357,22 +367,35 @@ export class SimContext {
 
     if (killed?.length) {
       callHandler("onKill", ctx, unit);
-      for (let k of killed)
+
+      for (let k of killed) {
         callHandler("onDeath", ctx, k);
+        if (k.isAlive) {
+          callHandler("onRevive", ctx, k);
+        }
+      }
     }
 
     if (!unit.isAlive) {
       callHandler("onDeath", ctx, unit);
+      if (unit.isAlive) {
+        callHandler("onRevive", ctx, unit);
+      }
     }
     else if (doAction && !unit.main.isNxNBoss) {
       if (unit.invokeMultiAction(ctx)) {
+        multiAction = true;
+      }
+      if (unit.invokeMultiMove(ctx)) {
+        multiMove = true;
+      }
+
+      unit.readyToAction = false;
+      if (multiAction) {
         unit.readyToAction = true;
       }
-      else {
-        unit.readyToAction = false;
-        if (unit.invokeMultiMove(ctx)) {
-          // todo
-        }
+      else if (multiMove) {
+        // todo
       }
     }
 

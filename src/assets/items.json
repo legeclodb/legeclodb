@@ -159,7 +159,8 @@
       {
         "base": "アタック",
         "rate": 1.0,
-        "timing": "戦闘後"
+        "timing": "戦闘後",
+        "target": "攻撃対象"
       }
     ]
   },
@@ -338,6 +339,7 @@
         "base": "アタック",
         "rate": 1.0,
         "timing": "攻撃後",
+        "target": "攻撃対象",
         "condition": {
           "onOwnTurn": true
         }
@@ -422,6 +424,7 @@
         "base": "アタック",
         "rate": 1.0,
         "timing": "戦闘前",
+        "target": "攻撃対象",
         "condition": {
           "onOwnTurn": true
         }
@@ -1769,6 +1772,7 @@
       {
         "base": "レジスト",
         "rate": 3.0,
+        "target": "攻撃対象",
         "timing": "戦闘後",
         "condition": {
           "onOwnTurn": true
@@ -1798,8 +1802,10 @@
         "base": "ディフェンス",
         "rate": 3.0,
         "timing": "戦闘後",
+        "target": "攻撃対象",
         "condition": {
-          "onOwnTurn": true
+          "onEnemyTurn": true,
+          "onCloseCombat": true
         }
       }
     ]
@@ -2009,6 +2015,7 @@
       {
         "base": "レジスト",
         "rate": 2.5,
+        "target": "範囲",
         "area": 2,
         "timing": "敵撃破時"
       }
@@ -2146,7 +2153,8 @@
       {
         "base": "レジスト",
         "rate": 3.0,
-        "timing": "戦闘後",
+        "target": "攻撃対象",
+        "timing": "戦闘前",
         "condition": {
           "onEnemyTurn": true,
           "onRangedCombat": true
@@ -3536,6 +3544,7 @@
       {
         "base": "アタック",
         "rate": 1.0,
+        "target": "攻撃対象",
         "timing": "戦闘後",
         "condition": {
           "onOwnTurn": true
@@ -4865,7 +4874,8 @@
       {
         "base": "アタック",
         "rate": 1.0,
-        "timing": "戦闘後",
+        "target": "攻撃対象",
+        "timing": "攻撃後",
         "condition": {
           "onOwnTurn": true,
           "onDamage": true
@@ -4874,6 +4884,7 @@
       {
         "base": "アタック",
         "rate": 1.0,
+        "target": "攻撃対象",
         "timing": "戦闘後"
       }
     ],
@@ -5282,6 +5293,7 @@
       {
         "base": "マジック",
         "rate": 1.5,
+        "target": "攻撃対象",
         "timing": "戦闘前"
       }
     ],
@@ -5348,6 +5360,7 @@
       {
         "base": "与ダメージ",
         "rate": 0.1,
+        "target": "攻撃対象",
         "timing": "攻撃後",
         "condition": {
           "onActiveSkill": true,
@@ -5575,6 +5588,7 @@
       {
         "base": "与ダメージ",
         "rate": 0.1,
+        "target": "攻撃対象",
         "timing": "攻撃後",
         "condition": {
           "onActiveSkill": true,

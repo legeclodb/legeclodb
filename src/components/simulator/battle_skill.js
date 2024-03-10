@@ -420,17 +420,42 @@ export function makeSimEffect(effect, stop = false) {
 }
 
 export function makeSimSkill(skill, ownerUnit) {
-  const subactionTable = {
-    heal: { prefix: 'cr' },
-    areaDamage: { prefix: 'ad' },
-    ctReduction: { prefix: 'cr' },
-    doubleAttack: { prefix: 'da' },
-    multiAction: { prefix: 'ma' },
-    multiMove: { prefix: 'mm' },
-  };
-
   let self = Object.create(skill);
   self.owner = ownerUnit;
+
+  const subactionTable = {
+    heal: {
+      prefix: 'cr',
+      invoke: (ctx) => self.invokeHeal(ctx),
+      triggerOnMultiMove: true
+    },
+    areaDamage: {
+      prefix: 'ad',
+      invoke: (ctx) => self.invokeAreaDamage(ctx),
+      triggerOnMultiMove: true
+    },
+    fixedDamage: {
+      prefix: 'fd',
+      invoke: (ctx) => self.invokeFixedDamage(ctx),
+      triggerOnMultiMove: true
+    },
+    ctReduction: {
+      prefix: 'cr',
+      invoke: (ctx) => self.invokeCtReduction(ctx),
+    },
+    doubleAttack: {
+      prefix: 'da',
+      invoke: (ctx) => self.invokeDoubleAttack(ctx),
+    },
+    multiAction: {
+      prefix: 'ma',
+      invoke: (ctx) => self.invokeMultiAction(ctx),
+    },
+    multiMove: {
+      prefix: 'mm',
+      invoke: (ctx) => self.invokeMultiMove(ctx),
+    },
+  };
 
   Object.defineProperty(self, 'area', {
     get: () => {
@@ -547,6 +572,21 @@ export function makeSimSkill(skill, ownerUnit) {
       }
     }
   }
+  self.invokeFixedDamage = function (ctx, timing = null) {
+    for (let act of self?.fixedDamage ?? []) {
+      if ((!timing || act.timing == timing) && !act.coolTime && evaluateCondition(ctx, act.condition)) {
+        if (act.ct) {
+          act.coolTime = act.ct;
+        }
+
+        let u = ctx.unit;
+        for (let t of unique(getTargetUnits(ctx, act))) {
+          // todo
+          console.log(`!! 固定値ダメージ ${u.main.name} -> ${t.main.name}!!`);
+        }
+      }
+    }
+  }
 
   self.invokeCtReduction = function (ctx, timing = null) {
     let succeeded = false;
@@ -623,14 +663,27 @@ export function makeSimSkill(skill, ownerUnit) {
     return succeeded;
   }
 
+  self.invokeBattleSubactions = function (ctx) {
+    for (const [name, info] of Object.entries(subactionTable)) {
+      if (info.triggerOnMultiMove) {
+        info.invoe(ctx);
+      }
+    }
+  }
+
 
   self.getDamageRate = function (ctx) {
     return self.damageRate;
   }
   self.onFire = function () {
     console.log(this);
-    if (this.isActive && this.ct) {
-      this.coolTime = this.ct + 1 ?? Infinity;
+    if (this.isActive) {
+      if (this.isSupportSkill) {
+        this.coolTime = Infinity;
+      }
+      else if (this.ct) {
+        this.coolTime = this.ct + 1;
+      }
     }
   }
 
