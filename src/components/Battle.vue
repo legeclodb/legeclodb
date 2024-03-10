@@ -63,6 +63,21 @@
           </div>
 
           <div ref="enemyList" class="enemy-list">
+            <div v-if="simulation" class="character">
+              <div class="info">
+                <h5>スコア</h5>
+                <template v-for="unit in playerUnits">
+                  <div :key="unit.fid" class="flex">
+                    <b-img-lazy :src="getImageURL(unit.main.icon)" :title="unit.main.name" width="50" height="50" rounded />
+                    <div style="font-size: 18pt; margin-left: 10px;">{{unit.sim.score}}</div>
+                  </div>
+                </template>
+                <div class="flex">
+                  <h5 style="font-size: 18pt; margin-left: 0px;">合計: {{totalScore}}</h5>
+                </div>
+              </div>
+            </div>
+
             <template v-for="unit in activeEnemyUnits">
               <div class="character" :class="{ 'highlighted': isUnitHighlighted(unit) }" :id="'unit_'+unit.fid" :key="unit.fid">
                 <div class="flex">
@@ -670,6 +685,10 @@ export default {
     },
     prevTool() {
       return this.toolStack.at(-2);
+    },
+
+    totalScore() {
+      return this.playerUnits.reduce((p, c) => p + c.sim.score, 0);
     },
   },
 

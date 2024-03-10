@@ -317,10 +317,13 @@ export class SimContext {
 
       if (doBattle) {
         let r = this.getBattleResult(unit, skill, target, ctx);
+        unit.score += r.attackerScore;
+        target.score += r.defenderScore;
         console.log(r);
       }
       else if (doAttack) {
         let r = this.getAreaAttackResult(unit, skill, targets, ctx);
+        unit.score += r.attackerScore;
         console.log(r);
       }
 

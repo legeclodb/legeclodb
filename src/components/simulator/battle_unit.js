@@ -238,6 +238,7 @@ export class SimUnit {
   selfEffects = []; // SimEffect
   areaEffects = []; // SimEffect
   timedEffects = []; // SimEffect
+  score = 0;
   //#endregion fields
 
 
@@ -386,11 +387,13 @@ export class SimUnit {
     SimUnit.copyProps(r.support, this.support);
     r.skills = this.skills.map(a => { return { [a.uid]: a.data }; });
     r.timedEffects = this.timedEffects.map(a => { return { [a.uid]: a.data }; });
+    r.score = this.score;
     return r;
   }
   deserialize(r) {
     this.coord = [...r.coord];
     this.readyToAction = r.readyToAction;
+    this.score = r.score;
     SimUnit.copyProps(this.main, r.main);
     SimUnit.copyProps(this.support, r.support);
   }
