@@ -75,8 +75,6 @@ export class SimContext {
     simUnit.onSimulationBegin();
     simUnit.setup();
     this.updateAreaEffectsAll();
-    console.log("addUnit");
-    console.log(simUnit);
   }
 
   findUnitByBase(baseUnit) {

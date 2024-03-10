@@ -128,6 +128,7 @@ export function getTargetUnits(ctx, json) {
   let targetTable = {
     "自身": () => [ctx.unit],
     "攻撃対象": () => ctx.targets,
+    "スキル対象": () => ctx.targets,
     "範囲": () => ctx.getUnitsInArea(json.area),
     "範囲(ランダム)": () => ctx.getUnitsInArea(json.area),
     "味方全体": () => $g.sim.activeUnits.filter(a => a.isPlayer == ctx.unit.isPlayer),
