@@ -550,9 +550,11 @@ export function makeSimSkill(skill, ownerUnit) {
         }
 
         let u = ctx.unit;
-        for (let t of unique(getTargetUnits(ctx, act))) {
-          // todo
-          console.log(`!! 回復 ${u.main.name} (${self.name}) -> ${t.main.name}!!`);
+        for (let t of getTargetUnits(ctx, act)) {
+          if (u.isPlayer == t.isPlayer) {
+            // todo
+            console.log(`!! 回復 ${u.main.name} (${self.name}) -> ${t.main.name}!!`);
+          }
         }
       }
     }
@@ -565,9 +567,11 @@ export function makeSimSkill(skill, ownerUnit) {
         }
 
         let u = ctx.unit;
-        for (let t of unique(getTargetUnits(ctx, act))) {
-          // todo
-          console.log(`!! エリアダメージ ${u.main.name} (${self.name}) -> ${t.main.name}!!`);
+        for (let t of getTargetUnits(ctx, act)) {
+          if (u.isPlayer != t.isPlayer) {
+            // todo
+            console.log(`!! エリアダメージ ${u.main.name} (${self.name}) -> ${t.main.name}!!`);
+          }
         }
       }
     }
@@ -580,9 +584,11 @@ export function makeSimSkill(skill, ownerUnit) {
         }
 
         let u = ctx.unit;
-        for (let t of unique(getTargetUnits(ctx, act))) {
-          // todo
-          console.log(`!! 固定値ダメージ ${u.main.name} (${self.name}) -> ${t.main.name}!!`);
+        for (let t of getTargetUnits(ctx, act)) {
+          if (u.isPlayer != t.isPlayer) {
+            // todo
+            console.log(`!! 固定値ダメージ ${u.main.name} (${self.name}) -> ${t.main.name}!!`);
+          }
         }
       }
     }

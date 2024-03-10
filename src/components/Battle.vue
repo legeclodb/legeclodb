@@ -48,7 +48,7 @@
               <template v-if="unit?.isEnemy && unit?.hasSupport">
                 <b-img :src="getImageURL(unit.main.class)" class="center" :class="getUnitIconClass(unit)"
                        width="30" height="30" style="position: relative; left: 8px; top: -8px; z-index: 1;" />
-                <b-img :src="getImageURL(unit.support.class)" class="center"
+                <b-img :src="getImageURL(unit.support.class)" class="center" :class="getUnitIconClass(unit)"
                        width="30" height="30" style="position: relative; left: -8px; top: 8px; z-index: 0;" />
               </template>
               <template v-else-if="unit?.isEnemy && unit?.main">

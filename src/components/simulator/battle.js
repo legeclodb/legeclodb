@@ -515,15 +515,33 @@ export class SimContext {
   //#region impl
   findUnitByCoord(coord) {
     for (const u of this.activeUnits) {
-      if (u.coord[0] == coord[0] && u.coord[1] == coord[1])
+      if (u.main.shape) {
+        // NxN ボス
+        if (u.main.shape[coord[1]][coord[0]]) {
+          return u;
+        }
+      }
+      else if (u.coord[0] == coord[0] && u.coord[1] == coord[1]) {
         return u;
+      }
     }
     return null;
   }
   enumerateUnitsInArea(center, size, shape, callback) {
-    // todo: NxN ボス
     for (const u of this.activeUnits) {
-      if (isInside(center, u.coord, size, shape)) {
+      if (u.main.shape) {
+        // NxN ボスは該当マス分コールバックを呼ぶ
+        for (let y = 0; y < u.main.shape.length; ++y) {
+          let l = u.main.shape[y];
+          for (let x = 0; x < l.length; ++x) {
+            const pos = [x, y];
+            if (l[x] && isInside(center, pos, size, shape)) {
+              callback(u, pos);
+            }
+          }
+        }
+      }
+      else if (isInside(center, u.coord, size, shape)) {
         callback(u);
       }
     }
