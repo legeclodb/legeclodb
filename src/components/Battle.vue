@@ -597,6 +597,9 @@ export default {
             ...chr.skills.map(id => this.searchTableWithUid.get(id)),
           ];
           chr.status = this.getNPCChrStatus(chr, chr.level, chr.statusRate);
+          if (enemy.invulnerable) {
+            chr.status[0] = Infinity;
+          }
           unit.base.main = chr;
         }
         if (enemy.support) {

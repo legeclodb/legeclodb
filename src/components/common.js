@@ -602,10 +602,12 @@ export default {
       const conv = (n, v, i) => {
         if (!v)
           return [];
+
+        let s = typeof (v) == "number" && !Number.isFinite(v) ? '∞' : v;
         if (i < 6)
-          return `<div class="param-box"><img src="${this.getImageURL(n)}" title="${n}" width="18" height="18" /><span>${prefix}${v}</span></div>`;
+          return `<div class="param-box"><img src="${this.getImageURL(n)}" title="${n}" width="18" height="18" /><span>${prefix}${s}</span></div>`;
         else
-          return `<div class="param-box"><span class="param-name">${n}:</span><span class="param-value">${v}</span></div>`;
+          return `<div class="param-box"><span class="param-name">${n}:</span><span class="param-value">${s}</span></div>`;
       };
       let list = ["HP", "アタック", "ディフェンス", "マジック", "レジスト", "テクニック", "戦闘力"].flatMap((n, i) => conv(n, status[i], i));
 

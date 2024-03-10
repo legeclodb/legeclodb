@@ -399,7 +399,7 @@ export class SimUnit {
   applyEffect(effect, stop = false) {
     this.timedEffects.push(makeSimEffect(effect, stop));
     //console.log(this.timedEffects);
-    console.log(`${effect.parent.name} ${effect.type}`);
+    console.log(`${effect.type} ${effect.value} ${effect.duration}T (by ${effect.parent.name}) -> ${this.main.name}`);
   }
 
   updateAreaEffects() {

@@ -420,6 +420,15 @@ export function makeSimEffect(effect, stop = false) {
 }
 
 export function makeSimSkill(skill, ownerUnit) {
+  const subactionTable = {
+    heal: { prefix: 'cr' },
+    areaDamage: { prefix: 'ad' },
+    ctReduction: { prefix: 'cr' },
+    doubleAttack: { prefix: 'da' },
+    multiAction: { prefix: 'ma' },
+    multiMove: { prefix: 'mm' },
+  };
+
   let self = Object.create(skill);
   self.owner = ownerUnit;
 
@@ -466,7 +475,7 @@ export function makeSimSkill(skill, ownerUnit) {
     get: function () { return !this.isActive || this.coolTime <= 0; },
   });
 
-  const setupActions = (name, prefix) => {
+  const setupSubaction = (name, prefix) => {
     if (!(name in self)) {
       return;
     }
@@ -497,10 +506,10 @@ export function makeSimSkill(skill, ownerUnit) {
       }
     }
   };
-  setupActions('ctReduction', 'cr');
-  setupActions('doubleAttack', 'da');
-  setupActions('multiAction', 'ma');
-  setupActions('multiMove', 'mm');
+  for (const [name, info] of Object.entries(subactionTable)) {
+    setupSubaction(name, info.prefix);
+  }
+
 
   self.activate = function (bySelf) {
     for (let e of this.effects) {
@@ -652,6 +661,15 @@ export function makeSimSkill(skill, ownerUnit) {
   }
   self.onOwnTurnEnd = function (ctx) {
     this.trigger(ctx, "自ターン終了時");
+
+    // 再行動などのクールタイム減
+    for (const [name, info] of Object.entries(subactionTable)) {
+      for (let act of self[name] ?? []) {
+        if (act.coolTime) {
+          --act.coolTime;
+        }
+      }
+    }
   }
   self.onOpponentTurnBegin = function (ctx) {
     this.trigger(ctx, "敵ターン開始時");
