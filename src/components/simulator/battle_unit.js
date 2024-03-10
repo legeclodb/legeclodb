@@ -405,8 +405,56 @@ export class SimUnit {
   }
 
   applyEffect(effect, stop = false) {
-    this.timedEffects.push(makeSimEffect(effect, stop));
-    //console.log(this.timedEffects);
+    if (effect.stack) {
+      let pos = -1, count = 0;
+      for (let i = 0; i < this.timedEffects.length; ++i) {
+        if (this.timedEffects[i].uid == effect.uid) {
+          ++count;
+          if (pos == -1)
+            pos = i;
+        }
+      }
+      if (count >= effect.stack) {
+        this.timedEffects.splice(pos, 1);
+      }
+      this.timedEffects.push(makeSimEffect(effect, stop));
+    }
+    else if (effect.slot) {
+      if (effect.hasSpecialSlot) {
+        // 特殊スロットの場合、同系統のバフであれば上書き。
+        // ゲーム中の挙動と同じではないが、大体近い挙動ではあるはず。
+        for (let i = 0; i < this.timedEffects.length; ++i) {
+          const e = this.timedEffects[i];
+          if (e.slot == effect.slot && e.type == effect.type) {
+            this.timedEffects.splice(i, 1);
+            break;
+          }
+        }
+        this.timedEffects.push(makeSimEffect(effect, stop));
+      }
+      else {
+        for (let i = 0; i < this.timedEffects.length; ++i) {
+          const e = this.timedEffects[i];
+          if (e.slot == effect.slot && e.type == effect.type) {
+            if (e.value > effect.value) {
+              return;
+            }
+            else {
+              this.timedEffects.splice(i, 1);
+              break;
+            }
+          }
+        }
+        this.timedEffects.push(makeSimEffect(effect, stop));
+      }
+    }
+    else {
+      let pos = this.timedEffects.findIndex(a => a.uid == effect.uid);
+      if (pos != -1) {
+        this.timedEffects.splice(pos, 1);
+      }
+      this.timedEffects.push(makeSimEffect(effect, stop));
+    }
     console.log(`${effect.type} ${effect.value} ${effect.duration}T (by ${effect.parent.name}) -> ${this.main.name}`);
   }
 
