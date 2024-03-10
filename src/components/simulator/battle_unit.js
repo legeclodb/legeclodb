@@ -136,13 +136,13 @@ export class BaseUnit {
     defineStatusGetter(this.base.main);
     defineStatusGetter(this.base.support);
 
-    const summonToUnit = (chr) => {
+    const makeSummonUnit = (chr) => {
       let main = Object.create(chr);
       main.skills = [chr.talent, ...chr.skills];
       main.level = this.main.level ?? 114;
       main.status = $vue().getNPCChrStatus(main, main.level);
 
-      let u = new BaseUnit(false);
+      let u = new BaseUnit(this.isPlayer);
       u.base.main = main;
       u.isSummon = true;
       u.owner = this;
@@ -152,9 +152,8 @@ export class BaseUnit {
     this.base.summon = [];
     for (let skill of this.base.main.skills) {
       if (skill.summon) {
-        //console.log(skill.summon);
-        skill.summon = skill.summon.map(a => summonToUnit(a));
-        this.base.summon = this.base.summon.concat(skill.summon); 
+        skill.makeSummonUnit = skill.summon.map(a => { return () => makeSummonUnit(a); });
+        this.base.summon = this.base.summon.concat(skill.makeSummonUnit.map(a => a())); 
       }
     }
     //console.log(this);

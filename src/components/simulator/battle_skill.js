@@ -1,4 +1,5 @@
 import { $g } from "./battle_globals.js";
+import { SimUnit } from "./battle_unit.js";
 
 function $vue() {
   return window.$vue;
@@ -343,6 +344,8 @@ export function makeSimEffect(effect, stop = false) {
         "range": () => ctx.rannge,
         "token": () => ctx.getTokenCount(mul.tokenName),
         "targetToken": () => ctx.getTargetTokenCount(mul.tokenName),
+        "activeBuffCount": () => ctx.activeBuffCount,
+        "targetActiveBuffCount": () => ctx.targetActiveBuffCount,
         "nearAllyCount": () => ctx.getNearAllyCount(mul.area),
         "nearEnemyCount": () => ctx.getNearEnemyCount(mul.area),
       };
@@ -542,6 +545,14 @@ export function makeSimSkill(skill, ownerUnit) {
     }
   }
 
+  self.invokeSummon = function (ctx) {
+    for (let summon of self?.makeSummonUnit ?? []) {
+      let unit = new SimUnit(summon());
+      unit.coord = ctx.targetCell.coord;
+      $g.sim.addUnit(unit);
+      break;
+    }
+  }
   self.invokeHeal = function (ctx, timing = null) {
     for (let act of self?.heal ?? []) {
       if ((!timing || act.timing == timing) && !act.coolTime && evaluateCondition(ctx, act.condition)) {

@@ -658,7 +658,7 @@ export default {
     },
     allActiveUnits() {
       if (this.simulation) {
-        return [...this.playerUnits, ...this.enemyUnits].filter(a => a.isActive);
+        return [...this.simulation.units].map(a => a.base).filter(a => a.isActive);
       }
       else {
         return [...this.playerUnits, ...this.enemyUnits].filter(a => a.phase == this.phase || a.fid == "E01");

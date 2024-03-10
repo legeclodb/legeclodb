@@ -70,6 +70,15 @@ export class SimContext {
     this.units = baseUnits.map(a => new SimUnit(a));
   }
 
+  addUnit(simUnit) {
+    this.units.push(simUnit);
+    simUnit.onSimulationBegin();
+    simUnit.setup();
+    this.updateAreaEffectsAll();
+    console.log("addUnit");
+    console.log(simUnit);
+  }
+
   findUnitByBase(baseUnit) {
     return this.units.find(a => a.base === baseUnit);
   }
@@ -295,6 +304,7 @@ export class SimContext {
     // 条件変数を設定
     // 攻撃側
     let ctx = makeActionContext(unit, target, skill);
+    ctx.targetCell = cell;
     ctx.targets = targets;
     if (skill && skill.isMainSkill && skill.damageRate) {
       doAttack = true;
@@ -342,6 +352,7 @@ export class SimContext {
           }
         }
       }
+      skill.invokeSummon(ctx);
       skill.invokeFixedDamage(ctx);
       skill.invokeHeal(ctx);
       skill.invokeCtReduction(ctx);
