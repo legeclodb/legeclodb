@@ -807,6 +807,7 @@ export default {
 
             if (skill) {
               if (skill.isSelfTarget) {
+                self.targetUnit = self.selectedUnit;
                 self.targetCell = self.findCellByCoord(self.selectedUnit.coord);
                 self.pushTools([self.tools.selectTarget, self.tools.confirm], this);
               }

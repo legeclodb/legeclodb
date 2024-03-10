@@ -327,7 +327,7 @@ export class SimContext {
       let ut = unique(targets);
       for (let t of ut.filter(a => a.isPlayer == unit.isPlayer)) {
         for (let e of skill?.buff ?? []) {
-          if (!e.target || e.target == "スキル対象" || (e.isSelfTarget && target === unit)) {
+          if (!e.target || e.target == "スキル対象" || (skill.isSelfTarget && t === unit)) {
             t.applyEffect(e, target === unit);
           }
         }

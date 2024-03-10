@@ -552,7 +552,7 @@ export function makeSimSkill(skill, ownerUnit) {
         let u = ctx.unit;
         for (let t of unique(getTargetUnits(ctx, act))) {
           // todo
-          console.log(`!! 回復 ${u.main.name} -> ${t.main.name}!!`);
+          console.log(`!! 回復 ${u.main.name} (${self.name}) -> ${t.main.name}!!`);
         }
       }
     }
@@ -567,7 +567,7 @@ export function makeSimSkill(skill, ownerUnit) {
         let u = ctx.unit;
         for (let t of unique(getTargetUnits(ctx, act))) {
           // todo
-          console.log(`!! エリアダメージ ${u.main.name} -> ${t.main.name}!!`);
+          console.log(`!! エリアダメージ ${u.main.name} (${self.name}) -> ${t.main.name}!!`);
         }
       }
     }
@@ -582,7 +582,7 @@ export function makeSimSkill(skill, ownerUnit) {
         let u = ctx.unit;
         for (let t of unique(getTargetUnits(ctx, act))) {
           // todo
-          console.log(`!! 固定値ダメージ ${u.main.name} -> ${t.main.name}!!`);
+          console.log(`!! 固定値ダメージ ${u.main.name} (${self.name}) -> ${t.main.name}!!`);
         }
       }
     }
@@ -608,7 +608,7 @@ export function makeSimSkill(skill, ownerUnit) {
               cond = (skill) => skill !== self;
             }
             t.reduceSkillCT(act.value, cond);
-            console.log(`!! CT減 ${u.main.name} -> ${t.main.name}!!`);
+            console.log(`!! CT減 ${u.main.name} (${self.name}) -> ${t.main.name}!!`);
           }
         }
       }
@@ -626,7 +626,7 @@ export function makeSimSkill(skill, ownerUnit) {
           }
         }
         if (succeeded) {
-          console.log("!! 2回攻撃 !!");
+          console.log(`!! 2回攻撃 ${ctx.unit.main.name} (${self.name}) !!`);
         }
       }
     }
@@ -642,7 +642,7 @@ export function makeSimSkill(skill, ownerUnit) {
         }
       }
       if (succeeded) {
-        console.log("!! 再行動 !!");
+        console.log(`!! 再行動 ${ctx.unit.main.name} (${self.name}) !!`);
       }
     }
     return succeeded;
@@ -657,7 +657,7 @@ export function makeSimSkill(skill, ownerUnit) {
         }
       }
       if (succeeded) {
-        console.log("!! 再移動 !!");
+        console.log(`!! 再移動 ${ctx.unit.main.name} (${self.name}) !!`);
       }
     }
     return succeeded;

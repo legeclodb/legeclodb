@@ -455,7 +455,7 @@ export class SimUnit {
       }
       this.timedEffects.push(makeSimEffect(effect, stop));
     }
-    console.log(`${effect.type} ${effect.value} ${effect.duration}T (by ${effect.parent.name}) -> ${this.main.name}`);
+    console.log(`${effect.type} ${effect.value ?? effect.variant ?? effect.tokenName} ${effect.duration ?? ''}T (by ${effect.parent.name}) -> ${this.main.name}`);
   }
 
   updateAreaEffects() {
@@ -704,7 +704,7 @@ export class SimUnit {
   //#endregion methods
 
   _dbgLog(message) {
-    console.log(`${this.main.name}: ${message}`);
+    //console.log(`${this.main.name}: ${message}`);
   }
 
   _callHandler(funcName, ctx) {
