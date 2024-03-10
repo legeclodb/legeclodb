@@ -1476,7 +1476,12 @@ export default {
 
     onChange() {
       if (this.embed) {
-        this.$emit('change', this);
+        if (!this.cooldown) {
+          this.$emit('change', this);
+          // 非常に美しくないが、連打を防ぐため少し間を置く
+          this.cooldown = true;
+          setTimeout(() => { this.cooldown = false }, 100);
+        }
       }
       if (this.prevMainEngage != this.main.engage.value) {
         this.prevMainEngage = this.main.engage.value;

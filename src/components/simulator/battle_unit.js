@@ -76,6 +76,7 @@ export class BaseUnit {
         items: [],
         status: [0, 0, 0, 0, 0, 0], // 基礎ステ
       },
+      summon: [],
     };
   }
 
@@ -134,6 +135,28 @@ export class BaseUnit {
     };
     defineStatusGetter(this.base.main);
     defineStatusGetter(this.base.support);
+
+    const summonToUnit = (chr) => {
+      let main = Object.create(chr);
+      main.skills = [chr.talent, ...chr.skills];
+      main.level = this.main.level ?? 114;
+      main.status = $vue().getNPCChrStatus(main, main.level);
+
+      let u = new BaseUnit(false);
+      u.base.main = main;
+      u.isSummon = true;
+      u.owner = this;
+      u.setup();
+      return u;
+    };
+    this.base.summon = [];
+    for (let skill of this.base.main.skills) {
+      if (skill.summon) {
+        //console.log(skill.summon);
+        skill.summon = skill.summon.map(a => summonToUnit(a));
+        this.base.summon = this.base.summon.concat(skill.summon); 
+      }
+    }
     //console.log(this);
   }
   swap(v) {
@@ -157,6 +180,7 @@ export class BaseUnit {
         skills: src.skills.map(a => a.uid),
         items: src.items.map(a => a.uid),
         status: src.status,
+        level: src.level,
       };
     };
     let r = {
@@ -175,6 +199,7 @@ export class BaseUnit {
       dst.skills = src.skills.map(findItemByUid);
       dst.items = src.items.map(findItemByUid);
       dst.status = [...src.status];
+      dst.level = src.level;
     };
     deserializeChr(this.base.main, r.main);
     deserializeChr(this.base.support, r.support);
@@ -196,6 +221,7 @@ export class BaseUnit {
     }
     main.items = [...ss.mainEnchantPassive, ...ss.mainItems].filter(a => a).map(a => findItemByUid(a.uid));
     main.status = ss.statMainResult.slice(0, 6);
+    main.level = ss.main.level.value;
 
     let support = this.base.support;
     const supChr = findItemByUid(ss.support.character.value?.uid);
@@ -207,6 +233,7 @@ export class BaseUnit {
     }
     support.items = ss.supportItems.filter(a => a).map(a => findItemByUid(a.uid));
     support.status = ss.statSupportResult.slice(0, 6);
+    support.level = ss.support.level.value;
 
     copyArray(this.editorData, ss.serialize());
 

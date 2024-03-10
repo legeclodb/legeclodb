@@ -581,20 +581,6 @@ export default {
 
     this.setupDB();
 
-    const summonToUnit = (chr, owner) => {
-      let main = Object.create(chr);
-      main.skills = [chr.talent, ...chr.skills];
-      main.level = owner.main.level;
-      main.status = this.getNPCChrStatus(main, owner.main.level);
-
-      let u = new lbt.BaseUnit(false);
-      u.base.main = main;
-      u.isSummon = true;
-      u.owner = owner;
-      u.setup();
-      return u;
-    };
-
     // 全クエストの全敵をここでセットアップ (大して重くもないのでとりあえず…)
     this.battleList = structuredClone(jsonBattle);
     for (let battle of this.battleList) {
@@ -627,9 +613,8 @@ export default {
         enemy.unit = unit;
         //console.log(unit);
 
-        let s = unit.main.skills.flatMap(a => a.summon ?? []).map(a => summonToUnit(a, unit));
-        if (s.length) {
-          battle.summon = battle.summon.concat(s);
+        if (unit.base?.summon) {
+          battle.summon = battle.summon.concat(unit.base.summon);
         }
       }
     }
@@ -1406,11 +1391,13 @@ export default {
       }
     },
     endSimulation() {
-      this.resetTools();
-      if (this.simulation) {
-        this.simulation.onSimulationEnd();
-        this.simulation = null;
-        this.resetTools(this.tools.nonSimulation);
+      if (window.confirm(`シミュレーションを終了します。よろしいですか？`)) {
+        this.resetTools();
+        if (this.simulation) {
+          this.simulation.onSimulationEnd();
+          this.simulation = null;
+          this.resetTools(this.tools.nonSimulation);
+        }
       }
     },
 
