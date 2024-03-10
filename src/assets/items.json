@@ -3768,7 +3768,7 @@
         "rate": 0.15,
         "target": "範囲",
         "area": [ 1, "周囲" ],
-        "timing": "戦闘後",
+        "timing": "攻撃後",
         "condition": {
           "onOwnTurn": true,
           "onDamage": true

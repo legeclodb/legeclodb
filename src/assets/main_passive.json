@@ -1398,9 +1398,10 @@
         "trigger": {
           "target": "範囲",
           "area": 2,
-          "timing": "行動後",
+          "timing": "攻撃後",
           "condition": {
             "probability": 50,
+            "onOwnTurn": true,
             "onDamage": true
           }
         }
@@ -1411,8 +1412,9 @@
         "rate": 0.3,
         "target": "範囲",
         "area": 2,
-        "timing": "行動後",
+        "timing": "攻撃後",
         "condition": {
+          "onOwnTurn": true,
           "onDamage": true
         }
       }

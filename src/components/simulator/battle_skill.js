@@ -133,6 +133,8 @@ export function getTargetUnits(ctx, json) {
     "範囲(ランダム)": () => ctx.getUnitsInArea(json.area),
     "味方全体": () => $g.sim.activeUnits.filter(a => a.isPlayer == ctx.unit.isPlayer),
     "敵全体": () => $g.sim.activeUnits.filter(a => a.isPlayer != ctx.unit.isPlayer),
+    "召喚先": () => ctx.unit.summon,
+    "召喚元": () => ctx.unit.summoner ? [ctx.unit.summoner] : [],
   };
   if (json.target in targetTable) {
     return targetTable[json.target]();
@@ -553,7 +555,9 @@ export function makeSimSkill(skill, ownerUnit) {
     for (let summon of self?.makeSummonUnit ?? []) {
       let unit = new SimUnit(summon());
       unit.coord = ctx.targetCell.coord;
+      unit.setSummoner(ctx.unit);
       $g.sim.addUnit(unit);
+      console.log(`!! 召喚 ${ctx.unit.main.name} (${self.name}) -> ${unit.main.name}!!`);
       break;
     }
   }

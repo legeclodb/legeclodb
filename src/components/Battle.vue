@@ -172,8 +172,11 @@
           </b-button>
         </div>
         <div style="margin-top: 20px">
-          <b-button size="sm" @click="eraseWeakEnemies()" style="width: 10em;">
+          <b-button v-if="0" size="sm" @click="eraseWeakEnemies()" style="width: 10em;">
             ザコ敵を除去
+          </b-button>
+          <b-button v-if="selectedUnit" size="sm" @click="eraseSelectedUnit()">
+            このユニットを撃破
           </b-button>
         </div>
       </div>
@@ -1402,8 +1405,13 @@ export default {
     },
 
     eraseWeakEnemies() {
-      this.resetTools();
       this.simulation?.eraseWeakEnemies();
+      this.resetTools();
+      this.$forceUpdate();
+    },
+    eraseSelectedUnit() {
+      this.simulation?.eraseUnit(this.selectedUnit);
+      this.resetTools();
       this.$forceUpdate();
     },
 

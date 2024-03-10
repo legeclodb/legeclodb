@@ -123,7 +123,7 @@ export class SimContext {
     }
 
     if (!attacker.isAlive) {
-      // 既に死んでたら何もしない (反撃側サポートが死んでる場合ここに来る)
+      // 既に死んでたら何もしない (サポートが死んでる場合ここに来る)
       return result;
     }
     if (actx.range > aunit.getRange(actx) && !actx.forceJoinSupport) {
@@ -334,23 +334,24 @@ export class SimContext {
       let result = null;
       if (doBattle) {
         result = this.getBattleResult(unit, skill, target, ctx);
-        ctx.damageDealt = result.attackerScore;
-        ctx.damageTaken = result.defenderScore;
       }
       else if (doAttack) {
         result = this.getAreaAttackResult(unit, skill, targets, ctx);
+      }
+      if (result) {
         ctx.damageDealt = result.attackerScore;
+        unit.score += result.attackerScore;
+        if (ctx.damageDealt) {
+          ctx.onCriticalHit = true; // とりあえずダメージを与えたらクリティカル扱い
+          ctx.onDamage = true;
+        }
+        if (target) {
+          ctx.damageTaken = result.defenderScore;
+          target.score += result.defenderScore;
+        }
+        console.log(result);
       }
-      console.log(result);
 
-      unit.score += ctx.damageDealt;
-      if (target) {
-        target.score += ctx.damageTaken;
-      }
-      if (ctx.damageDealt) {
-        ctx.onCriticalHit = true; // とりあえず
-        ctx.onDamage = true;
-      }
 
       let ut = unique(targets);
       for (let t of ut.filter(a => a.isPlayer == unit.isPlayer)) {
@@ -591,6 +592,13 @@ export class SimContext {
         u.main.hp = 0;
         u.support.hp = 0;
       }
+    }
+  }
+  eraseUnit(unit) {
+    let u = unit?.sim;
+    if (u) {
+      u.main.hp = 0;
+      u.onDeath(makeActionContext(u));
     }
   }
   //#endregion impl

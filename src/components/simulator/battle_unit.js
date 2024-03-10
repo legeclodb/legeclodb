@@ -138,14 +138,15 @@ export class BaseUnit {
 
     const makeSummonUnit = (chr) => {
       let main = Object.create(chr);
-      main.skills = [chr.talent, ...chr.skills];
+      Object.defineProperty(main, "skills", {
+        get: () => [chr.talent, ...chr.skills],
+      });
       main.level = this.main.level ?? 114;
       main.status = $vue().getNPCChrStatus(main, main.level);
 
       let u = new BaseUnit(this.isPlayer);
       u.base.main = main;
       u.isSummon = true;
-      u.owner = this;
       u.setup();
       return u;
     };
@@ -261,6 +262,7 @@ export class SimUnit {
     hp: 0,
     maxHp: 0,
   };
+  summon = [];
   selfEffects = []; // SimEffect
   areaEffects = []; // SimEffect
   timedEffects = []; // SimEffect
@@ -275,6 +277,7 @@ export class SimUnit {
   get isActive() { return !this.isDormant && this.isAlive; }
   get isPlayer() { return this.base.isPlayer; }
   get isEnemy() { return this.base.isEnemy; }
+  get isSummon() { return this.base.isSummon; }
   get symbol() { return this.main.symbol; }
   get mainClass() { return this.main.class; }
   get hpRate() {
@@ -413,15 +416,28 @@ export class SimUnit {
     SimUnit.copyProps(r.support, this.support);
     r.skills = this.skills.map(a => { return { [a.uid]: a.data }; });
     r.timedEffects = this.timedEffects.map(a => { return { [a.uid]: a.data }; });
-    r.score = this.score;
+    if (!this.isSummon) {
+      r.score = this.score;
+    }
     return r;
   }
   deserialize(r) {
     this.coord = [...r.coord];
     this.readyToAction = r.readyToAction;
-    this.score = r.score;
     SimUnit.copyProps(this.main, r.main);
     SimUnit.copyProps(this.support, r.support);
+    if (r?.score) {
+      this.score = r.score;
+    }
+  }
+
+  setSummoner(summoner) {
+    this.summoner = summoner;
+    summoner.summon.push(this);
+    Object.defineProperty(this, "score", {
+      get: () => { return summoner.score },
+      set: (v) => { summoner.score = v },
+    });
   }
 
   getRange(ctx) {
@@ -507,6 +523,12 @@ export class SimUnit {
               add(e);
             }
             else if (e.target == "範囲" && isInside(this.coord, u.coord, ...parseArea(e.area))) {
+              add(e);
+            }
+            else if (e.target == "召喚先" && u.summon.find(a => a === this)) {
+              add(e);
+            }
+            else if (e.target == "召喚元" && u.summoner === this) {
               add(e);
             }
           }
@@ -837,6 +859,12 @@ export class SimUnit {
   // 手段を問わず撃破されたとき呼ばれる
   onDeath(ctx) {
     this._callHandler("onDeath", ctx);
+    if (this.summoner) {
+      let pos = this.summoner.summon.findIndex(a => a == this);
+      if (pos != -1) {
+        this.summoner.summon.splice(pos, 1);
+      }
+    }
   }
 
   // ラストスタンドなどで復活した時呼ばれる
