@@ -46,17 +46,17 @@
                  @click.right.prevent.stop="onCellRClick(cell)"
                  @mouseover="onEnterCell(cell)" @mouseleave="onLeaveCell(cell)">
               <template v-if="unit?.isEnemy && unit?.hasSupport">
-                <b-img :src="getImageURL(unit.main.class)" class="center"
+                <b-img :src="getImageURL(unit.main.class)" class="center" :class="getUnitIconClass(unit)"
                        width="30" height="30" style="position: relative; left: 8px; top: -8px; z-index: 1;" />
                 <b-img :src="getImageURL(unit.support.class)" class="center"
                        width="30" height="30" style="position: relative; left: -8px; top: 8px; z-index: 0;" />
               </template>
               <template v-else-if="unit?.isEnemy && unit?.main">
-                <b-img :src="getImageURL(unit.main.class)" class="center" width="40" height="40" />
+                <b-img :src="getImageURL(unit.main.class)" class="center" :class="getUnitIconClass(unit)" width="40" height="40" />
               </template>
               <template v-else-if="unit?.isPlayer">
                 <div draggable @dragstart="onDragCell(cell)" @drop="onDropCell(cell)" @dragover.prevent="dummyHandler()">
-                  <b-img :src="getImageURL(unit.main.icon)" class="center" width="50" height="50" />
+                  <b-img :src="getImageURL(unit.main.icon)" class="center" :class="getUnitIconClass(unit)" width="50" height="50" />
                 </div>
               </template>
             </div>
@@ -933,7 +933,7 @@ export default {
               pf.setShootRangeShape(skill.shapeData);
             }
             else {
-              if (skill.isSelfTarget) {
+              if (skill.isSelfTarget || skill.isRadialAreaTarget) {
                 setStartCell(pf, self.selectedUnit);
               }
               else {
@@ -1326,6 +1326,14 @@ export default {
         r.push("selected");
       }
       if (!skill.available) {
+        r.push("grayscale");
+      }
+      return r;
+    },
+    getUnitIconClass(unit) {
+      let r = [];
+      let sim = unit.sim;
+      if (sim && sim.readyToAction === false) {
         r.push("grayscale");
       }
       return r;
@@ -1778,7 +1786,7 @@ export default {
     background-color: rgba(255, 0, 0, 255);
   }
   .grayscale {
-    filter: grayscale(100%);
+    filter: grayscale(100%) brightness(90%);
   }
   .text-overlay {
     position: absolute;

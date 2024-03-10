@@ -221,6 +221,7 @@ export class SimUnit {
   //#region fields
   base = null; // BaseUnit
   isDormant = false; // 配置前 (出現ターン前) のユニットは true
+  readyToAction = true;
   coord = [0, 0];
   main = {
     bufRate: {},
@@ -375,6 +376,7 @@ export class SimUnit {
   serialize() {
     let r = {};
     r.coord = [...this.coord];
+    r.readyToAction = this.readyToAction;
     SimUnit.copyProps(r.main, this.main);
     SimUnit.copyProps(r.support, this.support);
     r.skills = this.skills.map(a => { return { [a.uid]: a.data }; });
@@ -383,6 +385,7 @@ export class SimUnit {
   }
   deserialize(r) {
     this.coord = [...r.coord];
+    this.readyToAction = r.readyToAction;
     SimUnit.copyProps(this.main, r.main);
     SimUnit.copyProps(this.support, r.support);
   }
@@ -694,6 +697,7 @@ export class SimUnit {
   onOwnTurnEnd(ctx) {
     this._callHandler("onOwnTurnEnd", ctx);
     this.reduceTurnCT();
+    this.readyToAction = true;
   }
 
   // 相手ターン開始前/後

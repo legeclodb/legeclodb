@@ -364,9 +364,15 @@ export class SimContext {
     if (!unit.isAlive) {
       callHandler("onDeath", ctx, unit);
     }
-    else if (doAction) {
-      if (!unit.invokeMultiAction(ctx)) {
-        unit.invokeMultiMove(ctx);
+    else if (doAction && !unit.main.isNxNBoss) {
+      if (unit.invokeMultiAction(ctx)) {
+        unit.readyToAction = true;
+      }
+      else {
+        unit.readyToAction = false;
+        if (unit.invokeMultiMove(ctx)) {
+          // todo
+        }
       }
     }
 

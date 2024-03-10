@@ -488,7 +488,7 @@ export function makeSimSkill(skill, ownerUnit) {
       let obj = list[i];
       if ('ct' in obj) {
         let pname = 'coolTime';
-        let id = `${self.uid}.${prefix}${i}.${pname}`;
+        let id = `${prefix}${i}.${pname}`;
         data[id] = 0;
         Object.defineProperty(obj, pname, {
           get: () => { return data[id]; },
@@ -497,7 +497,7 @@ export function makeSimSkill(skill, ownerUnit) {
       }
       if ('count' in obj) {
         let pname = 'remain';
-        let id = `${self.uid}.${prefix}${i}.${pname}`;
+        let id = `${prefix}${i}.${pname}`;
         data[id] = obj.count;
         Object.defineProperty(obj, pname, {
           get: () => { return data[id]; },
@@ -629,7 +629,7 @@ export function makeSimSkill(skill, ownerUnit) {
   }
   self.onFire = function () {
     console.log(this);
-    if (this.isActive) {
+    if (this.isActive && this.ct) {
       this.coolTime = this.ct + 1 ?? Infinity;
     }
   }
