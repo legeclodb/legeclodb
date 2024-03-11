@@ -4964,7 +4964,7 @@
         "condition": {
           "nearAllyCount": {
             "area": [ 2, "周囲" ],
-            "compare": [ "==", 0 ]
+            "compare": [ ">", 0 ]
           }
         }
       }

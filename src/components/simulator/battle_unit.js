@@ -26,28 +26,49 @@ export function mergeChrData(dst, src) {
   }
 }
 
+export const Shape = {
+  Diamond: 0x00, // 菱形(範囲)
+  Square: 0x01, // 正方形(周囲)
+  Directional: 0x02, // 直線
+  Special: 0x03, // 特殊形状指定
+  HollowDiamond: 0x10, // 自身を除く範囲
+  HollowSquare: 0x11, // 自身を除く周囲
+};
 export function parseArea(args) {
   let size = 0;
-  let shape = 0;
+  let shape = Shape.Diamond;
   if (typeof (args) === 'number') {
     size = args;
   }
   else if (Array.isArray(args)) {
-    size = args[0];
-    if (args[1] == '周囲') {
-      shape = 1;
-    }
+    size = Array.isArray(args[0]) ? args[0].at(-1) : args[0];
+    if (args[1] == '範囲') { shape = Shape.Diamond; }
+    else if (args[1] == '周囲') { shape = Shape.Square; }
+    else if (args[1] == '直線') { shape = Shape.Directional; }
+    else if (args[1] == '特殊') { shape = Shape.Special; }
+    else if (args[1] == '範囲(自身を除く)') { shape = Shape.HollowDiamond; }
+    else if (args[1] == '周囲(自身を除く)') { shape = Shape.HollowSquare; }
   }
   return [size, shape];
 }
+
 export function isInside(pos, center, size, shape) {
   let dx = Math.abs(pos[0] - center[0]);
   let dy = Math.abs(pos[1] - center[1]);
-  if (shape == 0) {
+  if ((shape & 0x10) != 0 && (dx + dy == 0)) {
+    return false;
+  }
+  if ((shape & 0x0f) == Shape.Diamond) {
     return (dx + dy) <= size;
   }
-  else if (shape == 1) {
+  else if ((shape & 0x0f) == Shape.Square) {
     return Math.max(dx, dy) <= size;
+  }
+  else if (shape == Shape.Directional) {
+    return Math.max(dx, dy) <= size && (pos[0] == center[0] || pos[1] == center[1]);
+  }
+  else if (shape == Shape.Special) {
+    throw new Error("isInside(): 未対応");
   }
 }
 
@@ -765,7 +786,7 @@ export class SimUnit {
     return r;
   }
   getAlliesInArea(args) {
-    return this.getUnitsInArea(args).filter(u => u.isPlayer == this.isPlayer);
+    return this.getUnitsInArea(args).filter(u => u.isPlayer == this.isPlayer && u !== this);
   }
   getEnemiesInArea(args) {
     return this.getUnitsInArea(args).filter(u => u.isPlayer != this.isPlayer);
@@ -827,12 +848,25 @@ export class SimUnit {
   }
 
 
+  // バフ・デバフの効果時間減
   reduceEffectDuration() {
     for (let e of this.timedEffects) {
-      e.decrementCount();
+      if (!e.isStopped && e.count > 0) {
+        --e.count;
+      }
     }
     this.timedEffects = this.timedEffects.filter(a => a.isAlive);
   }
+  reduceStoppedEffectDuration() {
+    for (let e of this.timedEffects) {
+      if (e.isStopped) {
+        e.isStopped = false;
+        --e.count;
+      }
+    }
+    this.timedEffects = this.timedEffects.filter(a => a.isAlive);
+  }
+
   // スキルの CT 減
   reduceSkillCT(n, condFunc = null) {
     for (let a of this.actions) {
@@ -840,10 +874,6 @@ export class SimUnit {
         a.coolTime = Math.max(a.coolTime - n, 0);
       }
     }
-  }
-  // ターン経過を要する系の CT 減 (ソルジャーの再行動など)
-  reduceTurnCT(n) {
-
   }
   //#endregion methods
 
@@ -893,7 +923,7 @@ export class SimUnit {
   }
   onOwnTurnEnd(ctx) {
     this._callHandler("onOwnTurnEnd", ctx);
-    this.reduceTurnCT();
+    this.reduceStoppedEffectDuration();
     this.readyToAction = true;
   }
 

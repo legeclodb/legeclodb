@@ -299,12 +299,6 @@ export function makeSimEffect(effect, stop = false) {
     get: () => 'add' in self,
   });
 
-  self.decrementCount = function () {
-    if (!this.isStopped && this.count > 0) {
-      --this.count;
-    }
-  }
-
   self.activate = function (bySelf) {
     if (self.duration) {
       self.count = self.duration;
@@ -359,48 +353,6 @@ export function makeSimEffect(effect, stop = false) {
     }
     return self.isDebuff ? -r : r;
   }
-
-  //#region callbacks
-  self.onSimulationBegin = function () {
-  }
-  self.onSimulationEnd = function () {
-  }
-
-  self.onOwnTurnBegin = function () {
-  }
-  self.onOwnTurnEnd = function () {
-    self.isStopped = false;
-  }
-
-  self.onOpponentTurnBegin = function () {
-  }
-  self.onOpponentTurnEnd = function () {
-  }
-
-  self.onActionBegin = function (ctx) {
-  }
-  self.onActionEnd = function (ctx) {
-  }
-
-  self.onAttackBegin = function (ctx) {
-  }
-  self.onAttackEnd = function (ctx) {
-  }
-
-  self.onBattleBegin = function (ctx) {
-  }
-  self.onBattleEnd = function (ctx) {
-  }
-
-  self.onKill = function (ctx) {
-  }
-
-  self.onDeath = function (ctx) {
-  }
-
-  self.onRevive = function (ctx) {
-  }
-  //#endregion callbacks
 
   self._getValue = function (ctx, baseStat) {
     let r = 0;
@@ -735,7 +687,7 @@ export function makeSimSkill(skill, ownerUnit) {
         let u = ctx.unit;
         for (let t of unique(getTargetUnits(ctx, tri))) {
           if ((e.isBuff && t.isPlayer == u.isPlayer) || (e.isDebuff && t.isPlayer != u.isPlayer)) {
-            t.applyEffect(e);
+            t.applyEffect(e, u === t);
           }
         }
       }

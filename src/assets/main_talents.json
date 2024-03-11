@@ -1063,7 +1063,7 @@
           "target": "範囲",
           "area": [
             [ 1, 1, 1, 2, 2, 3 ],
-            "自身を除く"
+            "範囲(自身を除く)"
           ],
           "timing": "行動後"
         }
@@ -3898,7 +3898,7 @@
         "condition": {
           "onOwnTurn": true,
           "nearAllyCount": {
-            "area": 2,
+            "area": [ 2, "範囲(自身を除く)" ],
             "compare": [ ">", 0 ]
           }
         }
@@ -5011,7 +5011,7 @@
         "duration": 2,
         "trigger": {
           "target": "範囲",
-          "area": [ 3, "範囲", "自身を除く" ],
+          "area": [ 3, "範囲(自身を除く)" ],
           "timing": "行動後"
         }
       },
@@ -7140,9 +7140,12 @@
         "value": 15,
         "ephemeral": true,
         "duration": 2,
+        "condition": {
+          "hp": [ ">=", 50 ]
+        },
         "trigger": {
           "target": "範囲",
-          "area": [ 3, "周囲", "自身を除く" ],
+          "area": [ 3, "周囲(自身を除く)" ],
           "timing": "行動後",
           "condition": {
             "onActiveSkill": true
@@ -7154,9 +7157,12 @@
         "value": 15,
         "ephemeral": true,
         "duration": 2,
+        "condition": {
+          "hp": [ ">=", 50 ]
+        },
         "trigger": {
           "target": "範囲",
-          "area": [ 3, "周囲", "自身を除く" ],
+          "area": [ 3, "周囲(自身を除く)" ],
           "timing": "行動後",
           "condition": {
             "onActiveSkill": true
