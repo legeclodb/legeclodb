@@ -450,7 +450,7 @@ export function makeSimSkill(skill, ownerUnit) {
   self.data = data; // serializable data
   if (self.isActive) {
     let pname = 'coolTime';
-    let id = `${self.uid}.${pname}`;
+    let id = `${pname}`;
     data[id] = 0;
     Object.defineProperty(self, pname, {
       get: () => { return data[id]; },
@@ -504,13 +504,13 @@ export function makeSimSkill(skill, ownerUnit) {
   }
 
   self.invokeSummon = function (ctx) {
-    for (let summon of self?.makeSummonUnit ?? []) {
-      let unit = new SimUnit(summon());
+    if ('makeSummonUnit' in self) {
+      // todo: 召喚候補が複数いる場合の対応 (土方)
+      let unit = new SimUnit(self.makeSummonUnit[0].make());
       unit.coord = ctx.targetCell.coord;
       unit.setSummoner(ctx.unit);
       $g.sim.addUnit(unit);
       console.log(`!! 召喚 ${ctx.unit.main.name} (${self.name}) -> ${unit.main.name}!!`);
-      break;
     }
   }
   self.invokeHeal = function (ctx, timing = null) {

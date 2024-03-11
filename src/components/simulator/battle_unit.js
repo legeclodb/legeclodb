@@ -174,8 +174,15 @@ export class BaseUnit {
     this.base.summon = [];
     for (let skill of this.base.main.skills) {
       if (skill.summon) {
-        skill.makeSummonUnit = skill.summon.map(a => { return () => makeSummonUnit(a); });
-        this.base.summon = this.base.summon.concat(skill.makeSummonUnit.map(a => a())); 
+        if (!skill.makeSummonUnit) {
+          skill.makeSummonUnit = skill.summon.map(chr => {
+            return {
+              uid: chr.uid,
+              make: () => makeSummonUnit(chr),
+            };
+          });
+        }
+        this.base.summon = this.base.summon.concat(skill.makeSummonUnit.map(a => a.make()));
       }
     }
     //console.log(this);
@@ -466,7 +473,8 @@ export class SimUnit {
     }
 
     if (this.isSummon) {
-      r.summoner = r.summoner.fid;
+      r.summoner = this.summoner.fid;
+      r.summonUid = this.main.uid;
     }
     else {
       r.score = this.score;

@@ -36,11 +36,6 @@ export class ActionContext {
 export class SimContext {
 
   //#region fields (serializable)
-  battleId = "";
-  maxTurn = 0;
-  divX = 0;
-  divY = 0;
-
   turn = 1;
   phase = Phase.Player;
   unitIdSeed = 0; // 追加ユニットの ID 生成用の数
@@ -54,6 +49,10 @@ export class SimContext {
   //#endregion fields (serializable)
 
   //#region fields (non-serializable)
+  battleId = "";
+  maxTurn = 0;
+  divX = 0;
+  divY = 0;
   fidTable = {};
   range = 0;
   move = 0;
@@ -84,10 +83,6 @@ export class SimContext {
 
   serialize() {
     let r = {
-      battleId: this.battleId,
-      maxTurn: this.maxTurn,
-      divX: this.divX,
-      divY: this.divY,
       turn: this.turn,
       phase: this.phase,
       unitIdSeed: this.unitIdSeed,
@@ -97,14 +92,32 @@ export class SimContext {
     return r;
   }
   deserialize(r) {
-    this.battleId = r.battleId;
-    this.maxTurn = r.maxTurn;
-    this.divX = r.divX;
-    this.divY = r.divY;
     this.turn = r.turn;
     this.phase = r.phase;
     this.unitIdSeed = r.unitIdSeed;
-    this.units = [];
+
+    const constructUnit = (json) => {
+      let base = this.findBaseUnit(json.fid);
+      if (!base && json.summoner) {
+        let summoner = this.findBaseUnit(json.summoner);
+        for (let skill of summoner.main.skills) {
+          for (let maker of skill.makeSummonUnit ?? []) {
+            if (maker.uid == json.summonUid) {
+              base = maker.make();
+              break;
+            }
+          }
+        }
+      }
+      let r = new SimUnit(base);
+      this.fidTable[r.fid] = r;
+      return r;
+    };
+    this.units = r.units.map(a => constructUnit(a));
+    for (let i = 0; i < r.units.length; ++i) {
+      let u = this.units[i];
+      u.deserialize(r.units[i]);
+    }
   }
 
   addUnit(unit) {
@@ -128,8 +141,11 @@ export class SimContext {
   findUnit(fid) {
     return this.fidTable[fid];
   }
-  findUnitByBase(baseUnit) {
-    return this.units.find(a => a.base === baseUnit);
+  findBaseUnit(fid) {
+    let r = window.$vue.playerUnits.find(a => a.fid == fid) ?? window.$vue.enemyUnits.find(a => a.fid == fid);
+    console.log(fid);
+    console.log(r);
+    return r;
   }
 
   isOwnTurn(unit) {

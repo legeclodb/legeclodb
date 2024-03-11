@@ -175,8 +175,15 @@
           <b-button v-if="0" size="sm" @click="eraseWeakEnemies()" style="width: 10em;">
             ザコ敵を除去
           </b-button>
-          <b-button v-if="selectedUnit" size="sm" @click="eraseSelectedUnit()">
+          <b-button v-if="selectedUnit" size="sm" style="margin-right: 0.25em;" @click="eraseSelectedUnit()">
             このユニットを撃破
+          </b-button>
+
+          <b-button size="sm" style="margin-right: 0.25em;" @click="saveBattleLog()">
+            ステートセーブ
+          </b-button>
+          <b-button size="sm" style="margin-right: 0.25em;" @click="loadBattleLog()">
+            ステートロード
           </b-button>
         </div>
       </div>
@@ -1400,14 +1407,22 @@ export default {
         this.resetTools(this.tools.selectUnit);
       }
     },
-    endSimulation() {
-      if (window.confirm(`シミュレーションを終了します。よろしいですか？`)) {
+    endSimulation(prompt = true) {
+      const body = () => {
         this.resetTools();
         if (this.simulation) {
           this.simulation.onSimulationEnd();
           this.simulation = null;
           this.resetTools(this.tools.nonSimulation);
         }
+      };
+      if (prompt) {
+        if (window.confirm(`シミュレーションを終了します。よろしいですか？`)) {
+          body();
+        }
+      }
+      else {
+        body();
       }
     },
 
@@ -1631,6 +1646,29 @@ export default {
       this.removePo(mb.anchors);
     },
 
+    saveBattleLog() {
+      let r = {};
+      r.battle = this.battleId;
+      r.loadout = this.serializeLoadout();
+      r.state = this.simulation.serialize();
+
+      this.battlelog = r;
+      console.log(JSON.stringify(r));
+    },
+    loadBattleLog() {
+      let r = this.battlelog;
+      if (!r) {
+        return;
+      }
+
+      this.endSimulation(false);
+
+      this.selectBattle(r.battle);
+      this.deserializeLoadout(r.loadout);
+      this.beginSimulation();
+      this.simulation.deserialize(r.state);
+      this.$forceUpdate();
+    },
 
     updateURL() {
       let seri = new lut.URLSerializer();
