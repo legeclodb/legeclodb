@@ -291,7 +291,7 @@ export class SimUnit {
   get prevCoord() { return this.base.prevCoord; }
   get activeBuffCount() {
     return this.timedEffects.reduce((total, e) => {
-      if (e.isBuff && e.parent.isActive) {
+      if (e.isActiveBuff) {
         total += 1;
       }
       return total;
@@ -299,7 +299,7 @@ export class SimUnit {
   }
   get activeDebuffCount() {
     return this.timedEffects.reduce((total, e) => {
-      if (e.isDebuff && e.parent.isActive) {
+      if (e.isActiveDebuff) {
         total += 1;
       }
       return total;
@@ -420,22 +420,73 @@ export class SimUnit {
 
   serialize() {
     let r = {};
+    r.fid = this.fid;
     r.coord = [...this.coord];
     r.readyToAction = this.readyToAction;
-    SimUnit.copyProps(r.main, this.main);
-    SimUnit.copyProps(r.support, this.support);
-    r.skills = this.skills.map(a => { return { [a.uid]: a.data }; });
-    r.timedEffects = this.timedEffects.map(a => { return { [a.uid]: a.data }; });
-    if (!this.isSummon) {
+
+    r.skills = {};
+    for (let a of this.skills) {
+      r.skills[a.uid] = a.data;
+    }
+    r.timedEffects = {};
+    for (let a of this.timedEffects) {
+      r.timedEffects[a.uid] = a.data;
+    }
+
+    if (this.main) {
+      r.main = {
+        hp: this.main.hp
+      };
+    }
+    if (this.support) {
+      r.support = {
+        hp: this.support.hp
+      };
+    }
+
+    if (this.isSummon) {
+      r.summoner = r.summoner.fid;
+    }
+    else {
       r.score = this.score;
+      if (this.summon) {
+        r.summon = this.summon.map(a => a.fid);
+      }
     }
     return r;
   }
   deserialize(r) {
     this.coord = [...r.coord];
     this.readyToAction = r.readyToAction;
-    SimUnit.copyProps(this.main, r.main);
-    SimUnit.copyProps(this.support, r.support);
+
+    for (let [uid, data] of Object.entries(r.skills)) {
+      let skill = this.skills.find(a => a.uid == uid);
+      if (skill) {
+        Object.assign(skill.data, data);
+      }
+    }
+
+    this.timedEffects = [];
+    for (let [uid, data] of Object.entries(r.timedEffects)) {
+      let e = makeSimEffect($g.sim.findItem(uid));
+      Object.assign(e.data, data);
+      this.timedEffects.push(e);
+    }
+
+    if (this.main && r.main) {
+      this.main.hp = r.main.hp;
+    }
+    if (this.support && r.support) {
+      this.support.hp = r.support.hp;
+    }
+
+    if (r.summoner) {
+      this.summoner = $g.sim.findUnit(r.summoner);
+    }
+    if (r.summon) {
+      this.summon = r.summon.map(fid => $g.sim.findUnit(fid));
+    }
+
     if (r?.score) {
       this.score = r.score;
     }
@@ -448,6 +499,31 @@ export class SimUnit {
       get: () => { return summoner.score },
       set: (v) => { summoner.score = v },
     });
+  }
+
+  eraseActiveBuff(count) {
+    let erased = 0;
+    for (let i = 0; i < this.timedEffects.length && erased < count; /**/) {
+      if (this.timedEffects[i].isActiveBuff) {
+        this.timedEffects.splice(i, 1);
+        ++erased;
+      }
+      else {
+        ++i;
+      }
+    }
+  }
+  eraseActiveDebuff(count) {
+    let erased = 0;
+    for (let i = 0; i < this.timedEffects.length && erased < count; /**/) {
+      if (this.timedEffects[i].isActiveDebuff) {
+        this.timedEffects.splice(i, 1);
+        ++erased;
+      }
+      else {
+        ++i;
+      }
+    }
   }
 
   getRange(ctx) {

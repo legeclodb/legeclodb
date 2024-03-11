@@ -576,12 +576,11 @@ export default {
   },
 
   beforeCreate() {
+    document.title = "れじぇくろDB: ギルドクエストEX";
     window.$vue = this;
   },
 
   created() {
-    document.title = "れじぇくろDB: ギルドクエストEX";
-
     this.setupDB();
 
     // 全クエストの全敵をここでセットアップ (大して重くもないのでとりあえず…)
@@ -1396,7 +1395,7 @@ export default {
     beginSimulation() {
       this.resetTools();
       if (!this.simulation) {
-        this.simulation = new lbt.SimContext(this.divX, this.divY, [...this.playerUnits, ...this.enemyUnits]);
+        this.simulation = new lbt.SimContext(this.battleData, [...this.playerUnits, ...this.enemyUnits]);
         this.simulation.onSimulationBegin();
         this.resetTools(this.tools.selectUnit);
       }

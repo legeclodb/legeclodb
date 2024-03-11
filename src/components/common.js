@@ -1394,6 +1394,9 @@ export default {
 
       for (let v of skill?.buff ?? []) {
         v.isBuff = true;
+        if (skill.isActive) {
+          v.isActiveBuff = true;
+        }
         if (!v.target && !skill.isActive) {
           v.target = "自身";
         }
@@ -1408,6 +1411,9 @@ export default {
       }
       for (let v of skill?.debuff ?? []) {
         v.isDebuff = true;
+        if (skill.isActive) {
+          v.isActiveDebuff = true;
+        }
         setParent(v);
         setupSlot(v);
         setupRandomTable(v);

@@ -35,27 +35,33 @@ export class ActionContext {
 
 export class SimContext {
 
-  //#region fields
+  //#region fields (serializable)
   battleId = "";
-
+  maxTurn = 0;
   divX = 0;
   divY = 0;
-  maxTurn = 5;
 
-  units = [];
   turn = 1;
   phase = Phase.Player;
+  unitIdSeed = 0; // 追加ユニットの ID 生成用の数
+  units = [];
 
+  desc = { // プレイバック用のアイコン
+    unitIcon: "",
+    skillIcon: "",
+    targetIcon: "",
+  };
+  //#endregion fields (serializable)
+
+  //#region fields (non-serializable)
+  fidTable = {};
   range = 0;
   move = 0;
-
-  results = []; // CombatResult
-  //#endregion fields
+  //#endregion fields (non-serializable)
 
 
   //#region props
   get activeUnits() { return this.units.filter(u => !u.isDormant); }
-
   get isPlayerTurn() { return this.phase == Phase.Player; }
   get isEnemyTurn() { return this.phase == Phase.Enemy; }
   get phaseId() { return `${this.turn}${this.isPlayerTurn ? 'P' : 'E'}`; }
@@ -63,20 +69,65 @@ export class SimContext {
 
 
   //#region methods
-  constructor(xd, yd, baseUnits) {
+  constructor(battleData, baseUnits) {
     $g.sim = this;
-    this.divX = xd;
-    this.divY = yd;
+    this.battleId = battleData.uid;
+    this.maxTurn = battleData.turn;
+    [this.divX, this.divY] = battleData.mapSize;
+
     this.units = baseUnits.map(a => new SimUnit(a)).filter(a => a.isAlive);
+    for (let u of this.units) {
+      this.fidTable[u.fid] = u;
+    }
+    //console.log(this);
   }
 
-  addUnit(simUnit) {
-    this.units.push(simUnit);
-    simUnit.onSimulationBegin();
-    simUnit.setup();
+  serialize() {
+    let r = {
+      battleId: this.battleId,
+      maxTurn: this.maxTurn,
+      divX: this.divX,
+      divY: this.divY,
+      turn: this.turn,
+      phase: this.phase,
+      unitIdSeed: this.unitIdSeed,
+      units: this.units.map(a => a.serialize()),
+      desc: this.desc,
+    };
+    return r;
+  }
+  deserialize(r) {
+    this.battleId = r.battleId;
+    this.maxTurn = r.maxTurn;
+    this.divX = r.divX;
+    this.divY = r.divY;
+    this.turn = r.turn;
+    this.phase = r.phase;
+    this.unitIdSeed = r.unitIdSeed;
+    this.units = [];
+  }
+
+  addUnit(unit) {
+    ++this.unitIdSeed;
+    unit.base.fid = `X${this.unitIdSeed}`;
+    this.fidTable[unit.fid] = unit;
+    this.units.push(unit);
+
+    unit.onSimulationBegin();
+    unit.setup();
     this.updateAreaEffectsAll();
   }
+  notifyDead(unit) {
+    this.units = this.units.filter(a => a !== unit);
+    delete this.fidTable[unit.fid];
+  }
 
+  findItem(uid) {
+    return window.$vue.findItemByUid(uid);
+  }
+  findUnit(fid) {
+    return this.fidTable[fid];
+  }
   findUnitByBase(baseUnit) {
     return this.units.find(a => a.base === baseUnit);
   }
@@ -374,9 +425,15 @@ export class SimContext {
       skill.invokeCtReduction(ctx);
     }
 
-    let killed = (target ? [target] : targets)?.filter(a => !a.isAlive);
-    if (killed?.length) {
+    let killed = targets.filter(a => !a.isAlive);
+    if (killed.length) {
       ctx.onKill = true;
+      for (let u of killed) {
+        this.notifyDead(u);
+      }
+    }
+    if (!unit.isAlive) {
+      this.notifyDead(unit);
     }
 
     if (doBattle)
@@ -599,6 +656,7 @@ export class SimContext {
     if (u) {
       u.main.hp = 0;
       u.onDeath(makeActionContext(u));
+      this.notifyDead(u);
     }
   }
   //#endregion impl

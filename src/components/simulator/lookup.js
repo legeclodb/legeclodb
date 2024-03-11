@@ -128,6 +128,10 @@ export default {
           item.index = ++idx;
           g.searchTableWithUid.set(item.uid, item);
           g.searchTableWithName.set(item.name, item);
+
+          for (let e of [...(item.buff ?? []), ...(item.debuff ?? [])]) {
+            g.searchTableWithUid.set(e.uid, e);
+          }
         }
       }
       g.itemCount = idx;
