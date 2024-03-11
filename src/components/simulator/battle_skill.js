@@ -604,7 +604,7 @@ export function makeSimSkill(skill, ownerUnit) {
 
         let u = ctx.unit;
         for (let t of getTargetUnits(ctx, act)) {
-          if (u.isPlayer != t.isPlayer) {
+          if (u.isPlayer != t.isPlayer || act.target == "自身") {
             // todo
             console.log(`!! 固定値ダメージ ${u.main.name} (${self.name}) -> ${t.main.name}!!`);
           }
@@ -742,6 +742,7 @@ export function makeSimSkill(skill, ownerUnit) {
     }
     self.invokeHeal(ctx, timing);
     self.invokeAreaDamage(ctx, timing);
+    self.invokeFixedDamage(ctx, timing);
     self.invokeCtReduction(ctx, timing);
   };
 

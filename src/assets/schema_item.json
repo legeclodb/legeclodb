@@ -53,7 +53,7 @@
       },
       "multiMove": {
         "type": "array",
-        "items": { "$ref": "schema_skill.json#/$defs/multiMove" },
+        "items": { "$ref": "schema_skill.json#/$defs/multiMove" }
       },
       "buffCancel": {
         "type": "array",

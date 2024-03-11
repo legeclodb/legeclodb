@@ -2874,7 +2874,8 @@
       {
         "base": "最大HP",
         "rate": 1.0,
-        "target": "自身"
+        "target": "自身",
+        "timing": "行動後"
       }
     ]
   },
