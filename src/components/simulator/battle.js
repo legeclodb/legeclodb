@@ -67,7 +67,7 @@ export class SimContext {
     $g.sim = this;
     this.divX = xd;
     this.divY = yd;
-    this.units = baseUnits.map(a => new SimUnit(a));
+    this.units = baseUnits.map(a => new SimUnit(a)).filter(a => a.isAlive);
   }
 
   addUnit(simUnit) {

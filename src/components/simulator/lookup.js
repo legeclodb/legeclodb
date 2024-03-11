@@ -196,13 +196,27 @@ export default {
       const find = (uid) => this.searchTableWithUid.get(uid);
       const table = {
         "ソルジャー": [find("x001"), find("x201")],
-        "ランサー": [find("x002"), find("x202")],
-        "ライダー": [find("x003"), find("x203")],
+        "ランサー":   [find("x002"), find("x202")],
+        "ライダー":   [find("x003"), find("x203")],
         "エアリアル": [find("x004"), find("x204")],
         "ソーサラー": [find("x005"), find("x205")],
-        "セイント": [find("x006"), find("x206")],
+        "セイント":   [find("x006"), find("x206")],
         "シューター": [find("x007"), find("x207")],
-        "アサシン": [find("x008"), find("x208")],
+        "アサシン":   [find("x008"), find("x208")],
+      };
+      return className in table ? table[className] : [];
+    },
+    getClassPassiveNpcMain(className) {
+      const find = (uid) => this.searchTableWithUid.get(uid);
+      const table = {
+        "ソルジャー": [find("x101")],
+        "ランサー":   [find("x102")],
+        "ライダー":   [find("x103")],
+        "エアリアル": [find("x104")],
+        "ソーサラー": [find("x105")],
+        "セイント":   [find("x106")],
+        "シューター": [find("x107")],
+        "アサシン":   [find("x108")],
       };
       return className in table ? table[className] : [];
     },
@@ -210,13 +224,27 @@ export default {
       const find = (uid) => this.searchTableWithUid.get(uid);
       const table = {
         "ソルジャー": [find("x301"), find("4100001"), find("4100002"), find("4100003")],
-        "ランサー": [find("x302"), find("4100004"), find("4100005"), find("4100006")],
-        "ライダー": [find("x303"), find("4100007"), find("4100008"), find("4100009")],
+        "ランサー":   [find("x302"), find("4100004"), find("4100005"), find("4100006")],
+        "ライダー":   [find("x303"), find("4100007"), find("4100008"), find("4100009")],
         "エアリアル": [find("x304"), find("4100010"), find("4100011"), find("4100012")],
         "ソーサラー": [find("x305"), find("4100016"), find("4100018"), find("4100017")],
-        "セイント": [find("x306"), find("4100016"), find("4100008"), find("4100017")],
+        "セイント":   [find("x306"), find("4100016"), find("4100008"), find("4100017")],
         "シューター": [find("x307"), find("4100015"), find("4100014"), find("4100012")],
-        "アサシン": [find("x308"), find("4100013"), find("4100014"), find("4100012")],
+        "アサシン":   [find("x308"), find("4100013"), find("4100014"), find("4100012")],
+      };
+      return className in table ? table[className] : [];
+    },
+    getClassPassiveNpcSupport(className) {
+      const find = (uid) => this.searchTableWithUid.get(uid);
+      const table = {
+        "ソルジャー": [find("x401")],
+        "ランサー":   [find("x402")],
+        "ライダー":   [find("x403")],
+        "エアリアル": [find("x404")],
+        "ソーサラー": [find("x405")],
+        "セイント":   [find("x406")],
+        "シューター": [find("x407")],
+        "アサシン":   [find("x408")],
       };
       return className in table ? table[className] : [];
     },

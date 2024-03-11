@@ -66,7 +66,7 @@
             <div v-if="simulation" class="character">
               <div class="info">
                 <h5>スコア</h5>
-                <template v-for="unit in playerUnits">
+                <template v-for="unit in activePlayerUnits">
                   <div :key="unit.fid" class="flex">
                     <b-img-lazy :src="getImageURL(unit.main.icon)" :title="unit.main.name" width="50" height="50" rounded />
                     <div style="font-size: 18pt; margin-left: 10px;">{{unit.sim.score}}</div>
@@ -648,9 +648,17 @@ export default {
   },
 
   computed: {
+    activePlayerUnits() {
+      if (this.simulation) {
+        return this.simulation.units.filter(a => a.isPlayer && !a.isSummon && a.isActive).map(a => a.base);
+      }
+      else {
+        return this.playerUnits;
+      }
+    },
     activeEnemyUnits() {
       if (this.simulation) {
-        return this.enemyUnits.filter(a => a.isActive);
+        return this.simulation.units.filter(a => a.isEnemy && a.isActive).map(a => a.base);
       }
       else {
         return [
@@ -661,7 +669,7 @@ export default {
     },
     allActiveUnits() {
       if (this.simulation) {
-        return [...this.simulation.units].map(a => a.base).filter(a => a.isActive);
+        return this.simulation.units.filter(a => a.isActive).map(a => a.base);
       }
       else {
         return [...this.playerUnits, ...this.enemyUnits].filter(a => a.phase == this.phase || a.fid == "E01");

@@ -393,14 +393,24 @@ export class SimUnit {
         opt.push(atk);
       }
 
+      let classPassiveMain = [];
+      let classPassiveSup = [];
+      if (unit.isEnemy || unit.isSummon) {
+        classPassiveMain = vue.getClassPassiveNpcMain(unit.main?.class);
+        classPassiveSup = vue.getClassPassiveNpcSupport(unit.support?.class);
+      }
+      else {
+        classPassiveMain = vue.getClassPassiveMain(unit.main?.class);
+        classPassiveSup = vue.getClassPassiveSupport(unit.support?.class);
+      }
       this.skills = [
         ...opt,
         ...(unit.main.skills ?? []),
         ...(unit.main.items ?? []),
-        ...(unit.main ? vue.getClassPassiveMain(unit.main.class) : []),
+        ...classPassiveMain,
         ...(unit.support?.skills ?? []),
         ...(unit.support?.items ?? []),
-        ...(unit.support ? vue.getClassPassiveSupport(unit.support.class) : []),
+        ...classPassiveSup,
       ].map(skill => makeSimSkill(skill, this));
       //console.log(this.skills.map(s => s.name).join(", "));
     }
