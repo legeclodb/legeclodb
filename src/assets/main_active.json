@@ -7334,6 +7334,7 @@
     "area": 5,
     "range": "自ユニット",
     "cost": 2,
+    "damageRate": 0.6,
     "buff": [
       {
         "type": "クリティカルダメージ倍率",
