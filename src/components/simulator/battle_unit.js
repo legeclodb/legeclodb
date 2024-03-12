@@ -454,11 +454,11 @@ export class SimUnit {
 
     r.skills = {};
     for (let a of this.skills) {
-      r.skills[a.uid] = a.data;
+      r.skills[a.uid] = { ...a.data };
     }
     r.timedEffects = {};
     for (let a of this.timedEffects) {
-      r.timedEffects[a.uid] = a.data;
+      r.timedEffects[a.uid] = { ...a.data };
     }
 
     if (this.main) {

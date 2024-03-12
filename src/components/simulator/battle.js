@@ -46,6 +46,7 @@ export class SimContext {
     skillIcon: "",
     targetIcon: "",
   };
+  states = [];
   //#endregion fields (serializable)
 
   //#region fields (non-serializable)
@@ -56,6 +57,7 @@ export class SimContext {
   fidTable = {};
   range = 0;
   move = 0;
+  statePos_ = -1;
   //#endregion fields (non-serializable)
 
 
@@ -64,6 +66,12 @@ export class SimContext {
   get isPlayerTurn() { return this.phase == Phase.Player; }
   get isEnemyTurn() { return this.phase == Phase.Enemy; }
   get phaseId() { return `${this.turn}${this.isPlayerTurn ? 'P' : 'E'}`; }
+
+  get statePos() { return this.statePos_; }
+  set statePos(v) {
+    this.loadState(this.states.at(v));
+    this.statePos_ = v;
+  }
   //#endregion props
 
 
@@ -82,6 +90,14 @@ export class SimContext {
   }
 
   serialize() {
+    return this.states;
+  }
+  deserialize(r) {
+    this.states = r;
+    this.statePos = -1;
+  }
+
+  saveState() {
     let r = {
       turn: this.turn,
       phase: this.phase,
@@ -91,7 +107,11 @@ export class SimContext {
     };
     return r;
   }
-  deserialize(r) {
+  loadState(r) {
+    if (!r) {
+      return;
+    }
+
     this.turn = r.turn;
     this.phase = r.phase;
     this.unitIdSeed = r.unitIdSeed;
@@ -99,6 +119,7 @@ export class SimContext {
     const constructUnit = (json) => {
       let base = this.findBaseUnit(json.fid);
       if (!base && json.summoner) {
+        // 召喚ユニットは召喚元ユニットのスキルから BaseUnit を作成する必要がある
         let summoner = this.findBaseUnit(json.summoner);
         for (let skill of summoner.main.skills) {
           for (let maker of skill.makeSummonUnit ?? []) {
@@ -118,6 +139,21 @@ export class SimContext {
       let u = this.units[i];
       u.deserialize(r.units[i]);
     }
+  }
+  // unit, skill, target: 説明用
+  pushState(unit = null, skill = null, target = null) {
+    // リプレイ再生中の場合現在位置以降のレコードを切り捨てる
+    if (this.statePos_ != -1) {
+      this.states.splice(this.statePos_ + 1, this.states.length);
+      this.statePos_ = -1;
+    }
+
+    this.desc = {
+      unitIcon: unit ? unit.main.icon : "",
+      skillIcon: skill ? skill.icon : "",
+      targetIcon: target ? target.main.icon : "",
+    };
+    this.states.push(this.saveState());
   }
 
   addUnit(unit) {
@@ -143,8 +179,6 @@ export class SimContext {
   }
   findBaseUnit(fid) {
     let r = window.$vue.playerUnits.find(a => a.fid == fid) ?? window.$vue.enemyUnits.find(a => a.fid == fid);
-    console.log(fid);
-    console.log(r);
     return r;
   }
 
@@ -494,6 +528,7 @@ export class SimContext {
     }
 
     this.updateAreaEffectsAll();
+    this.pushState(unit, skill, target);
     console.log(ctx);
   }
 
@@ -554,6 +589,7 @@ export class SimContext {
         u.onOpponentTurnBegin(makeActionContext(u));
       }
     }
+    this.pushState();
   }
   onPlayerTurnEnd() {
     for (let u of this.activeUnits) {
@@ -587,6 +623,7 @@ export class SimContext {
         u.onOpponentTurnBegin(makeActionContext(u));
       }
     }
+    this.pushState();
   }
   onEnemyTurnEnd() {
     for (let u of this.activeUnits) {
