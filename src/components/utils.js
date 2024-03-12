@@ -133,8 +133,10 @@ export function openFileDialog(fileType, callback) {
   input.click();
 }
 
+// data: String or Uint8Array or Object
+// Object の場合 json 化される。
 export function download(filename, data) {
-  if (typeof (data) == 'string') {
+  if (typeof (data) == 'string' || data instanceof Uint8Array) {
     data = new Blob([data]);
   }
   else if (typeof (data) == 'object') {
@@ -148,4 +150,55 @@ export function download(filename, data) {
   document.body.appendChild(a);
   a.click();
   window.URL.revokeObjectURL(u);
+}
+
+// data: String or Uint8Array
+export async function compressGzip(data) {
+  if (typeof (data) == 'string') {
+    const encoder = new TextEncoder();
+    data = encoder.encode(data);
+  }
+
+  const inputStream = new ReadableStream({
+    start(controller) {
+      controller.enqueue(data);
+      controller.close();
+    }
+  });
+  // eslint-disable-next-line
+  const outputStream = inputStream.pipeThrough(new CompressionStream('gzip'));
+  const reader = outputStream.getReader();
+  let chunks = [];
+
+  try {
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      chunks.push(value);
+    }
+    const concatenatedChunks = new Uint8Array(chunks.reduce((acc, chunk) => acc.concat(Array.from(chunk)), []));
+    return concatenatedChunks;
+  }
+  finally {
+    reader.releaseLock();
+  }
+}
+
+// data: Uint8Array
+export async function decompressGzip(data) {
+  // eslint-disable-next-line
+  const stream = new Response(data).body.pipeThrough(new DecompressionStream('gzip'));
+  const reader = stream.getReader();
+  let chunks = [];
+
+  try {
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      chunks.push(value);
+    }
+    return new Uint8Array(chunks);
+  } finally {
+    reader.releaseLock();
+  }
 }
