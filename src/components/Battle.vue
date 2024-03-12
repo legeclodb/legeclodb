@@ -73,7 +73,7 @@
                   </div>
                 </template>
                 <div class="flex">
-                  <h5 style="font-size: 18pt; margin-left: 0px;">合計: {{totalScore}}</h5>
+                  <h5 style="font-size: 18pt; margin-left: 0px;">合計: {{simulation.score}}</h5>
                 </div>
               </div>
             </div>
@@ -167,22 +167,22 @@
                     :disabled="simulation.turn == simulation.maxTurn && simulation.isEnemyTurn">
             ターン終了
           </b-button>
-          <b-button size="sm" @click="endSimulation()" style="width: 14em;">
-            シミュレーション終了
-          </b-button>
         </div>
         <div style="margin-top: 20px">
-          <b-button v-if="0" size="sm" @click="eraseWeakEnemies()" style="width: 10em;">
-            ザコ敵を除去
-          </b-button>
           <b-button v-if="selectedUnit" size="sm" style="margin-right: 0.25em;" @click="eraseSelectedUnit()">
             このユニットを撃破
           </b-button>
+          <b-button size="sm" @click="endSimulation()" style="width: 14em;">
+            シミュレーション終了
+          </b-button>
 
-          <b-button size="sm" style="margin-right: 0.25em;" @click="saveBattleLog()">
+          <b-button v-if="0" size="sm" @click="eraseWeakEnemies()" style="width: 10em;">
+            ザコ敵を除去
+          </b-button>
+          <b-button v-if="0" size="sm" style="margin-right: 0.25em;" @click="serializeReplay()">
             ステートセーブ
           </b-button>
-          <b-button size="sm" style="margin-right: 0.25em;" @click="loadBattleLog()">
+          <b-button v-if="0" size="sm" style="margin-right: 0.25em;" @click="deserializeReplay()">
             ステートロード
           </b-button>
         </div>
@@ -207,10 +207,10 @@
       </div>
     </div>
 
-    <div v-if="simulation" class="content sim-replay" @click.stop="">
+    <div v-if="simulation" class="content sim-replay" @click.stop="" tabindex="0" @keydown.up.stop="onKeyReplay($event)" @keydown.down.stop="onKeyReplay($event)">
       <div class="unit-panel" style="max-height: 300px; overflow-y: scroll;">
         <template v-for="(r, i) of simulation.states.toReversed()">
-          <div class="flex" style="margin: 2px 0px 2px 0px;" :key="i">
+          <div class="flex" :style="`margin: 2px 0px 2px 0px; ${ simulation.statePos==-i-1 ? 'background: rgb(220,220,230)': '' }`" :key="i">
             <b-button size="sm" style="padding: 0px; width: 30px; height: 30px; margin-right: 0.25em;" @click="resetTools(); simulation.statePos=-i-1;">▶</b-button>
             <template v-if="r.desc.unitIcon">
               <b-img :src="getImageURL(r.desc.unitIcon)" width="35px" height="35px" />
@@ -707,10 +707,6 @@ export default {
     prevTool() {
       return this.toolStack.at(-2);
     },
-
-    totalScore() {
-      return this.playerUnits.reduce((p, c) => p + c.sim.score, 0);
-    },
   },
 
   watch: {
@@ -719,7 +715,9 @@ export default {
     },
   },
 
-  methods: {
+    methods: {
+
+    //#region ユニット操作
     setupTools() {
       // tool 変遷：
       // nonSimulation (非シミュレーション時)
@@ -1182,7 +1180,10 @@ export default {
       console.log(i);
       return this.toolStack.at(i - 1);
     },
+    //#endregion ユニット操作
 
+
+    //#region シミュレーション
     zeroPad(num, pad = 2) {
       return String(num).padStart(pad, '0');
     },
@@ -1380,15 +1381,6 @@ export default {
       return r;
     },
 
-    scrollTo(id) {
-      this.$nextTick(() => {
-        let e = document.getElementById(id);
-        if (e) {
-          e.scrollIntoView({ block: "nearest" });
-        }
-      });
-    },
-
     onEnterCell(cell) {
       this.hoveredCell = cell;
       const unit = this.findUnitByCoord(cell.coord);
@@ -1422,7 +1414,7 @@ export default {
       this.resetTools();
       if (!this.simulation) {
         this.simulation = new lbt.SimContext(this.battleData, [...this.playerUnits, ...this.enemyUnits]);
-        this.simulation.onSimulationBegin();
+        this.simulation.start();
         this.resetTools(this.tools.selectUnit);
       }
     },
@@ -1430,7 +1422,7 @@ export default {
       const body = () => {
         this.resetTools();
         if (this.simulation) {
-          this.simulation.onSimulationEnd();
+          this.simulation.finish();
           this.simulation = null;
           this.resetTools(this.tools.nonSimulation);
         }
@@ -1481,21 +1473,10 @@ export default {
     },
     dummyHandler() {
     },
+    //#endregion シミュレーション
 
 
-    // in-place array copy
-    copyArray(dst, src) {
-      dst.length = src.length;
-      for (let i = 0; i < src.length; ++i)
-        dst[i] = src[i];
-    },
-    appendArray(dst, src) {
-      let pos = dst.length;
-      dst.length = dst.length + src.length;
-      for (let i = 0; i < src.length; ++i)
-        dst[pos++] = src[i];
-    },
-
+    //#region 編成
     serializeLoadout() {
       let r = {
         name: this.slotName,
@@ -1549,8 +1530,6 @@ export default {
     },
     importLoadoutFromUrl(url, callback = null) {
       if (url.match(/^https?:\/\//)) {
-        // dropbox 対策
-        url = url.replace("www.dropbox.com", "dl.dropboxusercontent.com");
       }
       else {
         // http で始まらない場合は hash とみなす
@@ -1664,29 +1643,100 @@ export default {
     onMessageDiscard(mb) {
       this.removePo(mb.anchors);
     },
+    //#endregion 編成
 
-    saveBattleLog() {
+
+    //#region リプレイ
+    serializeReplay() {
       let r = {};
       r.battle = this.battleId;
       r.loadout = this.serializeLoadout();
       r.states = this.simulation.serialize();
-
-      this.battlelog = r;
-      console.log(JSON.stringify(r));
+      return r;
     },
-    loadBattleLog() {
-      let r = this.battlelog;
+    deserializeReplay(r) {
       if (!r) {
         return;
       }
-
       this.endSimulation(false);
-
       this.selectBattle(r.battle);
       this.deserializeLoadout(r.loadout);
       this.beginSimulation();
       this.simulation.deserialize(r.states);
       this.$forceUpdate();
+    },
+    exportReplayAsFile() {
+      const data = this.serializeReplay();
+      lut.download(`${data.loadout.name}${data.states.at(-1).score}.replay`, data);
+    },
+    importReplayFromFile() {
+      lut.openFileDialog(".replay", (file) => {
+        file.text().then((text) => {
+          this.deserializeReplay(JSON.parse(text));
+        });
+      });
+    },
+    importReplayFromUrl(url, callback = null) {
+      if (url.match(/^https?:\/\//)) {
+      }
+      else {
+        // http で始まらない場合は hash とみなす
+        url = `${lut.ReplayServer}?mode=get&hash=${url}`;
+      }
+      fetch(url).then((res) => {
+        res.json().then((obj) => {
+          this.deserializeReplay(obj);
+          if (callback) {
+            callback();
+          }
+        })
+      });
+    },
+    onDropReplay(event) {
+      if (event?.dataTransfer?.files?.length) {
+        let file = event.dataTransfer.files[0];
+        file.text().then((text) => {
+          this.deserializeReplay(JSON.parse(text));
+        });
+      }
+    },
+    onKeyReplay(evt) {
+      evt.preventDefault();
+      if (evt.key == 'ArrowDown') {
+        if (this.simulation.statePos > -this.simulation.states.length) {
+          this.simulation.statePos--;
+        }
+      }
+      else if (evt.key == 'ArrowUp') {
+        if (this.simulation.statePos < -1) {
+          this.simulation.statePos++;
+        }
+      }
+    },
+    //#endregion リプレイ
+
+
+    //#region Misc
+    // in-place array copy
+    copyArray(dst, src) {
+      dst.length = src.length;
+      for (let i = 0; i < src.length; ++i)
+        dst[i] = src[i];
+    },
+    appendArray(dst, src) {
+      let pos = dst.length;
+      dst.length = dst.length + src.length;
+      for (let i = 0; i < src.length; ++i)
+        dst[pos++] = src[i];
+    },
+
+    scrollTo(id) {
+      this.$nextTick(() => {
+        let e = document.getElementById(id);
+        if (e) {
+          e.scrollIntoView({ block: "nearest" });
+        }
+      });
     },
 
     updateURL() {
@@ -1732,6 +1782,7 @@ export default {
     },
     dbgTest() {
     },
+    //#endregion Misc
   },
 }
 </script>
@@ -1898,6 +1949,9 @@ export default {
     border-radius: 0.3rem;
     padding: 5px;
     max-height: 300px;
+  }
+  .sim-replay:focus {
+    outline: none;
   }
 </style>
 <style>

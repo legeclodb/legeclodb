@@ -38,6 +38,7 @@ export class SimContext {
   //#region fields (serializable)
   turn = 1;
   phase = Phase.Player;
+  score = 0; // 途中でプレイヤーユニットが死ぬことがあるため、ユニット毎のスコアの合計ではなく別に持つ必要がある
   unitIdSeed = 0; // 追加ユニットの ID 生成用の数
   units = [];
 
@@ -101,6 +102,7 @@ export class SimContext {
     let r = {
       turn: this.turn,
       phase: this.phase,
+      score: this.score,
       unitIdSeed: this.unitIdSeed,
       units: this.units.map(a => a.serialize()),
       desc: this.desc,
@@ -114,6 +116,7 @@ export class SimContext {
 
     this.turn = r.turn;
     this.phase = r.phase;
+    this.score = r.score;
     this.unitIdSeed = r.unitIdSeed;
 
     const constructUnit = (json) => {
@@ -139,6 +142,7 @@ export class SimContext {
       let u = this.units[i];
       u.deserialize(r.units[i]);
     }
+    this.onSimulationBegin();
   }
   // unit, skill, target: 説明用
   pushState(unit = null, skill = null, target = null) {
@@ -164,6 +168,7 @@ export class SimContext {
 
     unit.onSimulationBegin();
     unit.setup();
+    unit.onPlayerTurnBegin();
     this.updateAreaEffectsAll();
   }
   notifyDead(unit) {
@@ -442,6 +447,10 @@ export class SimContext {
       if (result) {
         ctx.damageDealt = result.attackerScore;
         unit.score += result.attackerScore;
+        if (unit.isPlayer) {
+          this.score += result.attackerScore;
+        }
+
         if (ctx.damageDealt) {
           ctx.onCriticalHit = true; // とりあえずダメージを与えたらクリティカル扱い
           ctx.onDamage = true;
@@ -449,6 +458,9 @@ export class SimContext {
         if (target) {
           ctx.damageTaken = result.defenderScore;
           target.score += result.defenderScore;
+          if (target.isPlayer) {
+            this.score += result.defenderScore;
+          }
         }
         console.log(result);
       }
@@ -539,6 +551,13 @@ export class SimContext {
     }
   }
 
+  start() {
+    this.onSimulationBegin();
+    this.onPlayerTurnBegin();
+  }
+  finish() {
+    this.onSimulationEnd();
+  }
   passTurn() {
     if (this.isPlayerTurn) {
       this.phase = Phase.Enemy;
@@ -566,7 +585,6 @@ export class SimContext {
     for (let u of this.units) {
       u.setup();
     }
-    this.onPlayerTurnBegin();
     this.updateAreaEffectsAll();
   }
   onSimulationEnd() {

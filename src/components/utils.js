@@ -1,6 +1,6 @@
-export const MessageServer = "https://primitive-games.jp/legeclodb/loadout/index.cgi";
-export const LoadoutServer = "https://primitive-games.jp/legeclodb/loadout/index.cgi";
-export const BattleLogServer = "https://primitive-games.jp/legeclodb/battlelog/index.cgi";
+export const MessageServer = "https://i-saint.skr.jp/legeclodb/loadout/index.cgi";
+export const LoadoutServer = "https://i-saint.skr.jp/legeclodb/loadout/index.cgi";
+export const ReplayServer = "https://i-saint.skr.jp/legeclodb/replay/index.cgi";
 
 export class BitFlags {
   constructor(arg) {

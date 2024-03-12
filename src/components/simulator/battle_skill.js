@@ -1,10 +1,6 @@
 import { $g } from "./battle_globals.js";
 import { SimUnit } from "./battle_unit.js";
 
-function $vue() {
-  return window.$vue;
-}
-
 export function unique(array) {
   return array.filter((value, index, self) => {
     return self.indexOf(value) === index;
