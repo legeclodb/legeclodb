@@ -726,9 +726,6 @@ export function makeSimSkill(skill, ownerUnit) {
   }
   self.onActionEnd = function (ctx) {
     this.trigger(ctx, "行動後");
-    if (this.coolTime > 0) {
-      --this.coolTime;
-    }
   }
 
   self.onAttackBegin = function (ctx) {

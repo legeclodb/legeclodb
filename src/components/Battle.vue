@@ -212,7 +212,7 @@
         <div style="max-height: 350px; overflow-y: auto;">
           <template v-if="simulation ?? replay">
             <template v-for="(r, i) of (simulation ?? replay).states.toReversed()">
-              <div class="flex" :style="`margin: 2px 0px 2px 0px; ${ simulation?.statePos==-i-1 ? 'background: rgb(220,220,230)': '' }`" :key="i">
+              <div class="flex" :style="`margin: 2px 0px 2px 0px; ${ simulation?.statePos==-i-1 ? 'background: rgb(220,220,230)': '' }`" :key="i" :id="`sim-state-${-i-1}`">
                 <b-button size="sm" style="padding: 0px; width: 30px; height: 30px; margin-right: 0.25em;" @click="setReplayState(-i-1);">▶</b-button>
                 <template v-if="r.desc.unitIcon">
                   <b-img :src="getImageURL(r.desc.unitIcon)" width="35px" height="35px" />
@@ -1769,6 +1769,7 @@ export default {
           this.simulation.statePos++;
         }
       }
+      this.scrollTo(`sim-state-${this.simulation.statePos}`);
     },
     setReplayState(idx) {
       this.resetTools();
@@ -1909,7 +1910,7 @@ export default {
           this.importLoadoutFromUrl(data.loadout);
         }
         if (data.replay) {
-          this.importReplayUrl(data.replay);
+          this.importReplayFromUrl(data.replay);
         }
       }
     },

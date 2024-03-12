@@ -42,6 +42,7 @@ export class SimContext {
   unitIdSeed = 0; // 追加ユニットの ID 生成用の数
   units = [];
 
+  targetCell = [0, 0]; // リプレイに対象マスを記録する用
   desc = { // プレイバック用のアイコン
     unitIcon: "",
     skillIcon: "",
@@ -105,6 +106,7 @@ export class SimContext {
       score: this.score,
       unitIdSeed: this.unitIdSeed,
       units: this.units.map(a => a.serialize()),
+      targetCell: this.targetCell,
       desc: this.desc,
     };
     return r;
@@ -118,6 +120,7 @@ export class SimContext {
     this.phase = r.phase;
     this.score = r.score;
     this.unitIdSeed = r.unitIdSeed;
+    this.targetCell = r.targetCell;
 
     const constructUnit = (json) => {
       let base = this.findBaseUnit(json.fid);
@@ -128,6 +131,7 @@ export class SimContext {
           for (let maker of skill.makeSummonUnit ?? []) {
             if (maker.uid == json.summonUid) {
               base = maker.make();
+              base.fid = json.fid;
               break;
             }
           }
@@ -540,6 +544,17 @@ export class SimContext {
     }
 
     this.updateAreaEffectsAll();
+
+    if (cell) {
+      this.targetCell = [...cell.coord];
+      let t = this.findUnitByCoord(cell.coord);
+      if (t !== unit) {
+        target = t;
+      }
+    }
+    else {
+      this.targetCell = [-1, -1]
+    }
     this.pushState(unit, skill, target);
     console.log(ctx);
   }
