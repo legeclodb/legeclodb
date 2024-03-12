@@ -450,16 +450,21 @@ export class SimUnit {
     let r = {};
     r.fid = this.fid;
     r.coord = [...this.coord];
+    r.isDormant = this.isDormant;
     r.readyToAction = this.readyToAction;
 
-    r.skills = {};
-    for (let a of this.skills) {
-      r.skills[a.uid] = { ...a.data };
-    }
-    r.timedEffects = {};
-    for (let a of this.timedEffects) {
-      r.timedEffects[a.uid] = { ...a.data };
-    }
+    r.skills = this.skills.map(a => {
+      return {
+        uid: a.uid,
+        data: { ...a.data },
+      };
+    });
+    r.timedEffects = this.timedEffects.map(a => {
+      return {
+        uid: a.uid,
+        data: { ...a.data },
+      };
+    });
 
     if (this.main) {
       r.main = {
@@ -486,19 +491,20 @@ export class SimUnit {
   }
   deserialize(r) {
     this.coord = [...r.coord];
+    this.isDormant = r.isDormant;
     this.readyToAction = r.readyToAction;
 
-    for (let [uid, data] of Object.entries(r.skills)) {
-      let skill = this.skills.find(a => a.uid == uid);
+    for (const so of r.skills) {
+      let skill = this.skills.find(a => a.uid == so.uid);
       if (skill) {
-        Object.assign(skill.data, data);
+        Object.assign(skill.data, so.data);
       }
     }
 
     this.timedEffects = [];
-    for (let [uid, data] of Object.entries(r.timedEffects)) {
-      let e = makeSimEffect($g.sim.findItem(uid));
-      Object.assign(e.data, data);
+    for (const so of r.timedEffects) {
+      let e = makeSimEffect($g.sim.findItem(so.uid));
+      Object.assign(e.data, so.data);
       this.timedEffects.push(e);
     }
 
