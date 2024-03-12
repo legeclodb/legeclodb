@@ -865,14 +865,12 @@ export class SimUnit {
     }
     this.timedEffects = this.timedEffects.filter(a => a.isAlive);
   }
-  reduceStoppedEffectDuration() {
+  resumeEffectDuration() {
     for (let e of this.timedEffects) {
       if (e.isStopped) {
         e.isStopped = false;
-        --e.count;
       }
     }
-    this.timedEffects = this.timedEffects.filter(a => a.isAlive);
   }
 
   // スキルの CT 減
@@ -931,7 +929,7 @@ export class SimUnit {
   }
   onOwnTurnEnd(ctx) {
     this._callHandler("onOwnTurnEnd", ctx);
-    this.reduceStoppedEffectDuration();
+    this.resumeEffectDuration();
     this.readyToAction = true;
   }
 

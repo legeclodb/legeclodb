@@ -211,7 +211,7 @@
       <div class="unit-panel" style="max-height: 300px; overflow-y: scroll;">
         <template v-for="(r, i) of simulation.states.toReversed()">
           <div class="flex" style="margin: 2px 0px 2px 0px;" :key="i">
-            <b-button size="sm" style="padding: 0px; width: 30px; height: 30px; margin-right: 0.25em;" @click="simulation.statePos=-i-1">▶</b-button>
+            <b-button size="sm" style="padding: 0px; width: 30px; height: 30px; margin-right: 0.25em;" @click="resetTools(); simulation.statePos=-i-1;">▶</b-button>
             <template v-if="r.desc.unitIcon">
               <b-img :src="getImageURL(r.desc.unitIcon)" width="35px" height="35px" />
               <b-img :src="getImageURL(r.desc.skillIcon)" width="35px" height="35px" />
