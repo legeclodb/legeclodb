@@ -915,7 +915,7 @@ export class SimUnit {
   // onSimulationBegin() の直後に呼ばれる。ステータスの初期化を行う。
   // onSimulationBegin() の中だと自キャラ以外への影響があるバフが対応できないケースがあるため、別パスにしている。
   setup() {
-    console.log(`${this.main.name}: 影響下にあるスキル -> ${unique(this.effects.map(a => a.parent.name)).join(", ")}`);
+    //console.log(`${this.main.name}: 影響下にあるスキル -> ${unique(this.effects.map(a => a.parent.name)).join(", ")}`);
 
     const setupHp = (chr) => {
       chr.hp = chr.maxHp = Math.round(chr.baseHp * ((chr.bufRate["最大HP"] ?? 0) / 100 + 1));

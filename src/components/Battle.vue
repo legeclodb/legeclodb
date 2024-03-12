@@ -207,225 +207,211 @@
       </div>
     </div>
 
-    <div v-if="simulation" class="content sim-replay" @click.stop="" tabindex="0" @keydown.up.stop="onKeyReplay($event)" @keydown.down.stop="onKeyReplay($event)">
-      <div class="unit-panel" style="max-height: 300px; overflow-y: scroll;">
-        <template v-for="(r, i) of simulation.states.toReversed()">
-          <div class="flex" :style="`margin: 2px 0px 2px 0px; ${ simulation.statePos==-i-1 ? 'background: rgb(220,220,230)': '' }`" :key="i">
-            <b-button size="sm" style="padding: 0px; width: 30px; height: 30px; margin-right: 0.25em;" @click="resetTools(); simulation.statePos=-i-1;">▶</b-button>
-            <template v-if="r.desc.unitIcon">
-              <b-img :src="getImageURL(r.desc.unitIcon)" width="35px" height="35px" />
-              <b-img :src="getImageURL(r.desc.skillIcon)" width="35px" height="35px" />
-              <b-img :src="getImageURL(r.desc.targetIcon)" width="35px" height="35px" />
+    <div class="content sim-replay" @click.stop="" tabindex="0" @keydown.up.stop="onKeyReplay($event)" @keydown.down.stop="onKeyReplay($event)">
+      <div class="unit-panel" style="max-height: 350px; overflow-y: scroll;">
+        <template v-if="simulation ?? replay">
+          <template v-for="(r, i) of (simulation ?? replay).states.toReversed()">
+            <div class="flex" :style="`margin: 2px 0px 2px 0px; ${ simulation?.statePos==-i-1 ? 'background: rgb(220,220,230)': '' }`" :key="i">
+              <b-button size="sm" style="padding: 0px; width: 30px; height: 30px; margin-right: 0.25em;" @click="setReplayState(-i-1);">▶</b-button>
+              <template v-if="r.desc.unitIcon">
+                <b-img :src="getImageURL(r.desc.unitIcon)" width="35px" height="35px" />
+                <b-img :src="getImageURL(r.desc.skillIcon)" width="35px" height="35px" />
+                <b-img :src="getImageURL(r.desc.targetIcon)" width="35px" height="35px" />
+              </template>
+              <template v-else>
+                <span>{{`T${r.turn} ${r.phase==0?'(プレイヤー)':'(エネミー)'}`}} 開始</span>
+              </template>
+            </div>
+          </template>
+        </template>
+
+        <b-button size="sm" id="btn-replay-op" style="min-width: 10em; margin-top: 0.5em; ">
+          リプレイ
+          <b-popover :target="`btn-replay-op`" triggers="click" custom-class="loadout-popover" @show="fetchReplayList()" ref="replay_popover" placement="lefttop" boundary="window">
+            <h5>公開されているリプレイ</h5>
+            <template v-if="fetching">
+              <div style="padding: 10px;">
+                <b-spinner small label="Spinning"></b-spinner>
+              </div>
             </template>
             <template v-else>
-              <span>{{`T${r.turn} ${r.phase==0?'(プレイヤー)':'(エネミー)'}`}} 開始</span>
+              <b-table small outlined sticky-header :items="replayList" :fields="replayFields" style="min-width: 90%;">
+                <template #cell(name)="row">
+                  <span>{{row.item.name}}</span>
+                </template>
+                <template #cell(actions)="row">
+                  <div class="flex" style="">
+                    <b-button size="sm" @click="downloadReplay(row.item)">
+                      ロード
+                    </b-button>
+                    <b-button size="sm" :id="`replay-${row.item.hash}`" @click="copyReplayUrl(row.item)" style="margin-left: 0.25em">
+                      URL コピー
+                    </b-button>
+                    <b-button v-if="row.item.delkey" size="sm" @click="deleteReplay(row.item)" style="margin-left: 0.25em">
+                      削除(確認あり)
+                    </b-button>
+                  </div>
+                </template>
+              </b-table>
             </template>
-          </div>
-        </template>
+            <div v-if="simulation ?? replay" class="flex" style="margin-bottom: 0.5em;">
+              <b-button size="sm" @click="uploadReplay()" style="min-width: 12em;">
+                現在のリプレイを公開
+              </b-button>
+              <b-form-input size="sm" v-model="userName" placeholder="投稿者名" style="width: 8em; margin-left: 0.25em;"></b-form-input>
+              <span style="margin-left: 0.5em; color: rgb(160,160,160) ">(投稿者本人は投稿したデータを削除可能)</span>
+            </div>
+            <div class="flex" style="margin-bottom: 0.5em;">
+              <b-button v-if="simulation ?? replay" size="sm" @click="exportReplayAsFile()" style="min-width: 12em;">
+                ファイルにエクスポート
+              </b-button>
+              <b-button size="sm" @click="importReplayFromFile()" style="min-width: 12em; margin-left: 0.25em;">
+                ファイルからインポート
+              </b-button>
+            </div>
+            <div class="flex">
+              <b-button size="sm" @click="$refs.replay_popover.$emit('close')">閉じる</b-button>
+            </div>
+          </b-popover>
+        </b-button>
       </div>
     </div>
 
-      <div v-else class="content" style="margin-top: 30px">
-        <div class="unit-panel">
-          <div class="flex">
-            <b-dropdown text="編成をセーブ" style="min-width: 10em;">
-              <b-dropdown-item v-for="(name, i) in slotNames" :key=i @click="saveLoadout(i)">スロット{{i}}: {{name}}</b-dropdown-item>
-            </b-dropdown>
-            <b-dropdown text="編成をロード" style="min-width: 10em; margin-left: 0.5em; ">
-              <b-dropdown-item v-for="(name, i) in slotNames" :key=i @click="loadLoadout(i)">スロット{{i}}: {{name}}</b-dropdown-item>
-              <b-dropdown-item @click="loadLoadout(99)">バックアップ</b-dropdown-item>
-            </b-dropdown>
+    <div v-if="!simulation" class="content" style="margin-top: 30px">
+      <div class="unit-panel">
+        <div class="flex">
+          <b-dropdown text="編成をセーブ" style="min-width: 10em;">
+            <b-dropdown-item v-for="(name, i) in slotNames" :key=i @click="saveLoadout(i)">スロット{{i}}: {{name}}</b-dropdown-item>
+          </b-dropdown>
+          <b-dropdown text="編成をロード" style="min-width: 10em; margin-left: 0.5em; ">
+            <b-dropdown-item v-for="(name, i) in slotNames" :key=i @click="loadLoadout(i)">スロット{{i}}: {{name}}</b-dropdown-item>
+            <b-dropdown-item @click="loadLoadout(99)">バックアップ</b-dropdown-item>
+          </b-dropdown>
 
-            <b-button size="sm" id="btn-loadout-op" style="min-width: 10em; margin-left: 0.5em; ">
-              編成を共有
-              <b-popover :target="`btn-loadout-op`" triggers="click" custom-class="loadout-popover" @show="fetchLoadoutList()" ref="loadout_popover" boundary="window">
-                <h5>公開されている編成</h5>
-                <template v-if="fetching">
-                  <div style="padding: 10px;">
-                    <b-spinner small label="Spinning"></b-spinner>
-                  </div>
-                </template>
-                <template v-else>
-                  <b-table small outlined sticky-header :items="loadoutList" :fields="loadoutFields" style="min-width: 90%;">
-                    <template #cell(name)="row">
-                      <span>{{row.item.name}}</span>
-                    </template>
-                    <template #cell(actions)="row">
-                      <div class="flex" style="">
-                        <b-button size="sm" @click="downloadLoadoutFromServer(row.item)">
-                          ロード
-                        </b-button>
-                        <b-button size="sm" :id="`loadout-${row.item.hash}`" @click="copyLoadoutUrl(row.item)" style="margin-left: 0.25em">
-                          URL コピー
-                        </b-button>
-                        <b-button v-if="row.item.delkey" size="sm" @click="deleteLoadoutFromServer(row.item)" style="margin-left: 0.25em">
-                          削除(確認あり)
-                        </b-button>
-                      </div>
-                    </template>
-                  </b-table>
-                </template>
-                <div class="flex" style="margin-bottom: 0.5em;">
-                  <b-button size="sm" @click="exportLoadoutToServer()" style="min-width: 12em;" id="btn-loadout-publish">
-                    現在の編成を公開
-                  </b-button>
-                  <b-form-input size="sm" v-model="userName" placeholder="投稿者名" style="width: 8em; margin-left: 0.25em;"></b-form-input>
-                  <span style="margin-left: 0.5em; color: rgb(160,160,160) ">(投稿者本人は投稿したデータを削除可能)</span>
+          <b-button size="sm" id="btn-loadout-op" style="min-width: 10em; margin-left: 0.5em; ">
+            編成を共有
+            <b-popover :target="`btn-loadout-op`" triggers="click" custom-class="loadout-popover" @show="fetchLoadoutList()" ref="loadout_popover" boundary="window">
+              <h5>公開されている編成</h5>
+              <template v-if="fetching">
+                <div style="padding: 10px;">
+                  <b-spinner small label="Spinning"></b-spinner>
                 </div>
-                <div class="flex" style="margin-bottom: 0.5em;">
-                  <b-button size="sm" @click="exportLoadoutAsFile()" style="min-width: 12em;">
-                    ファイルにエクスポート
-                  </b-button>
-                  <b-button size="sm" @click="importLoadoutFromFile()" style="min-width: 12em; margin-left: 0.25em;">
-                    ファイルからインポート
-                  </b-button>
-                </div>
-                <div class="flex">
-                  <b-button size="sm" @click="$refs.loadout_popover.$emit('close')">閉じる</b-button>
-                </div>
-              </b-popover>
-            </b-button>
+              </template>
+              <template v-else>
+                <b-table small outlined sticky-header :items="loadoutList" :fields="loadoutFields" style="min-width: 90%;">
+                  <template #cell(name)="row">
+                    <span>{{row.item.name}}</span>
+                  </template>
+                  <template #cell(actions)="row">
+                    <div class="flex" style="">
+                      <b-button size="sm" @click="downloadLoadoutFromServer(row.item)">
+                        ロード
+                      </b-button>
+                      <b-button size="sm" :id="`loadout-${row.item.hash}`" @click="copyLoadoutUrl(row.item)" style="margin-left: 0.25em">
+                        URL コピー
+                      </b-button>
+                      <b-button v-if="row.item.delkey" size="sm" @click="deleteLoadoutFromServer(row.item)" style="margin-left: 0.25em">
+                        削除(確認あり)
+                      </b-button>
+                    </div>
+                  </template>
+                </b-table>
+              </template>
+              <div class="flex" style="margin-bottom: 0.5em;">
+                <b-button size="sm" @click="exportLoadoutToServer()" style="min-width: 12em;">
+                  現在の編成を公開
+                </b-button>
+                <b-form-input size="sm" v-model="userName" placeholder="投稿者名" style="width: 8em; margin-left: 0.25em;"></b-form-input>
+                <span style="margin-left: 0.5em; color: rgb(160,160,160) ">(投稿者本人は投稿したデータを削除可能)</span>
+              </div>
+              <div class="flex" style="margin-bottom: 0.5em;">
+                <b-button size="sm" @click="exportLoadoutAsFile()" style="min-width: 12em;">
+                  ファイルにエクスポート
+                </b-button>
+                <b-button size="sm" @click="importLoadoutFromFile()" style="min-width: 12em; margin-left: 0.25em;">
+                  ファイルからインポート
+                </b-button>
+              </div>
+              <div class="flex">
+                <b-button size="sm" @click="$refs.loadout_popover.$emit('close')">閉じる</b-button>
+              </div>
+            </b-popover>
+          </b-button>
 
-            <b-button @click="clearLoadout()" style="min-width: 10em; margin-left: 0.5em; ">
-              編成をクリア
-            </b-button>
+          <b-button @click="clearLoadout()" style="min-width: 10em; margin-left: 0.5em; ">
+            編成をクリア
+          </b-button>
 
-            <b-button style="width: 14em; margin-left: 4em;" @click="beginSimulation()">
-              シミュレーション開始
-            </b-button>
-          </div>
+          <b-button style="width: 14em; margin-left: 4em;" @click="beginSimulation()">
+            シミュレーション開始
+          </b-button>
         </div>
       </div>
+    </div>
 
-      <div class="content" :style="style">
-        <div class="main-panel" style="margin-top: 10px; margin-bottom: 10px;">
-          <div v-if="!simulation" class="flex" style="margin: 0px 10px 10px 10px;">
-            <b-form-input size="sm" v-model="slotName" placeholder="編成名" style="width: 16em"></b-form-input>
-            <b-form-input size="sm" v-model="slotDesc" placeholder="説明など" style="flex: 1; margin-left: 0.25em; "></b-form-input>
-            <b-button size="sm" v-if="loadoutHash" id="btn-loadout-message" style="margin-left: 0.25em; ">
-              <b-icon icon="chat-text" title="この編成へのコメントを表示" />
-              <b-popover target="btn-loadout-message" triggers="click" custom-class="comment-popover" ref="message_popover">
-                <MessageBoard :thread="loadoutHash" @change="onMessageChange" @discard="onMessageDiscard" />
-                <div class="flex">
-                  <b-button size="sm" @click="$refs.message_popover.$emit('close')">閉じる</b-button>
-                </div>
-              </b-popover>
-            </b-button>
-          </div>
+    <div class="content" :style="style">
+      <div class="main-panel" style="margin-top: 10px; margin-bottom: 10px;">
+        <div v-if="!simulation" class="flex" style="margin: 0px 10px 10px 10px;">
+          <b-form-input size="sm" v-model="slotName" placeholder="編成名" style="width: 16em"></b-form-input>
+          <b-form-input size="sm" v-model="slotDesc" placeholder="説明など" style="flex: 1; margin-left: 0.25em; "></b-form-input>
+          <b-button size="sm" v-if="loadoutHash" id="btn-loadout-message" style="margin-left: 0.25em; ">
+            <b-icon icon="chat-text" title="この編成へのコメントを表示" />
+            <b-popover target="btn-loadout-message" triggers="click" custom-class="comment-popover" ref="message_popover">
+              <MessageBoard :thread="loadoutHash" @change="onMessageChange" @discard="onMessageDiscard" />
+              <div class="flex">
+                <b-button size="sm" @click="$refs.message_popover.$emit('close')">閉じる</b-button>
+              </div>
+            </b-popover>
+          </b-button>
+        </div>
 
-          <b-tabs v-model="unitTabIndex">
-            <b-tab v-for="(unit, ui) in playerUnits" :key="ui" style="background-color: white;">
-              <template #title>
-                <h2 style="font-size: 1em;" draggable @dragstart="onDragUnit(unit)" @drop="onDropUnit(unit)" @dragover.prevent="dummyHandler()">
-                  ユニット{{ui+1}}
-                  <b-img-lazy :src="getImageURL(unit.main?.icon)" width="30" />
-                  <b-img-lazy :src="getImageURL(unit.support?.icon)" width="30" />
-                </h2>
-              </template>
+        <b-tabs v-model="unitTabIndex">
+          <b-tab v-for="(unit, ui) in playerUnits" :key="ui" style="background-color: white;">
+            <template #title>
+              <h2 style="font-size: 1em;" draggable @dragstart="onDragUnit(unit)" @drop="onDropUnit(unit)" @dragover.prevent="dummyHandler()">
+                ユニット{{ui+1}}
+                <b-img-lazy :src="getImageURL(unit.main?.icon)" width="30" />
+                <b-img-lazy :src="getImageURL(unit.support?.icon)" width="30" />
+              </h2>
+            </template>
 
-              <div @dragover.prevent @drop.prevent="onDropLoadout($event)" style="min-width: 1520px; min-height: 500px;">
-                <div v-if="!simulation" style="padding: 10px; display: flex">
-                  <b-button :id="`btn-edit-unit${ui}`" @click="unit.showEditor=!unit.showEditor" style="width: 12em;">編集</b-button>
-                  <b-popover :target="`btn-edit-unit${ui}`" custom-class="status-simulator-popover" :show.sync="unit.showEditor" :delay="{show:0, hide:250}" no-fade>
-                    <StatusSimulator embed :data="unit.editorData" @change="unit.edit($event)" />
-                    <div class="flex" style="margin: 0 0 10px 10px;">
-                      <b-button size="sm" @click="unit.showEditor=false">閉じる</b-button>
-                    </div>
-                  </b-popover>
-                </div>
-
-                <div class="flex" style="align-items: flex-start;">
-                  <div v-if="unit.main.cid" class="character">
-                    <div class="flex">
-                      <div class="portrait">
-                        <b-img-lazy :src="getImageURL(unit.main.icon)" :title="unit.main.name" width="100" height="100" rounded />
-                      </div>
-                      <div class="detail" v-show="displayType >= 1">
-                        <div class="info">
-                          <h5 v-html="chrNameToHtml(unit.main.name)"></h5>
-                          <div class="status">
-                            <b-img-lazy :src="getImageURL(unit.main.class)" :title="'クラス:'+unit.main.class" height="25" />
-                            <b-img-lazy :src="getImageURL(unit.main.symbol)" :title="'シンボル:'+unit.main.symbol" height="25" />
-                            <b-img-lazy :src="getImageURL(unit.main.rarity)" :title="'レアリティ:'+unit.main.rarity" height="20" />
-                            <div class="param-box"><b-img-lazy :src="getImageURL(unit.main.damageType)" :title="'攻撃タイプ:'+unit.main.damageType" width="20" height="20" /></div>
-                            <div class="param-box"><b-img-lazy :src="getImageURL('射程')" title="射程" width="18" height="18" /><span>{{unit.main.range}}</span></div>
-                            <div class="param-box"><b-img-lazy :src="getImageURL('移動')" title="移動" width="18" height="18" /><span>{{unit.main.move}}</span></div>
-                          </div>
-                          <div class="status2" v-html="statusToHtml(unit.main.status)" />
-                        </div>
-                        <div class="skills">
-                          <template v-for="(skill, si) in unit.main.skills">
-                            <div class="skill" v-if="!skill.isNormalAttack" :class="getSkillClass(skill)" :key="`skill${si}`">
-                              <div class="flex">
-                                <div class="icon" :id="`unit${ui}_main_skill${si}`">
-                                  <b-img-lazy :src="getImageURL(skill.icon)" with="50" height="50" />
-                                  <b-popover v-if="displayType==1" :target="`unit${ui}_main_skill${si}`" triggers="hover focus" :delay="{show:0, hide:250}" no-fade :title="skill.name" placement="top">
-                                    <div class="flex">
-                                      <div v-html="descToHtml(skill)"></div>
-                                    </div>
-                                  </b-popover>
-                                </div>
-                                <div class="desc" v-show="displayType >= 2">
-                                  <div class="flex">
-                                    <h6>{{ skill.name }}</h6>
-                                    <div class="param-group" v-html="skillParamsToHtml(skill)"></div>
-                                  </div>
-                                  <p><span v-html="descToHtml(skill)"></span><span v-if="skill.note" class="note" v-html="noteToHtml(skill)"></span></p>
-                                </div>
-                              </div>
-                            </div>
-                          </template>
-                        </div>
-                        <div class="skills">
-                          <div class="skill" v-for="(skill, si) in unit.main.items" :class="getSkillClass(skill)" :key="`item${si}`">
-                            <div class="flex">
-                              <div class="icon" :id="`unit${ui}_main_item${si}`">
-                                <b-img-lazy :src="getImageURL(skill.icon)" with="50" height="50" />
-                                <b-popover v-if="displayType==1" :target="`unit${ui}_main_item${si}`" triggers="hover focus" :delay="{show:0, hide:250}" no-fade :title="skill.name" placement="top">
-                                  <div class="flex">
-                                    <div v-html="descToHtml(skill)"></div>
-                                  </div>
-                                </b-popover>
-                              </div>
-                              <div class="desc" v-show="displayType >= 2">
-                                <div class="flex">
-                                  <h6>
-                                    <b-img-lazy v-if="skill.slot" :src="getImageURL(skill.slot)" :title="'部位:'+skill.slot" height="20" />
-                                    {{ skill.name }}
-                                  </h6>
-                                </div>
-                                <p><span v-html="descToHtml(skill)"></span><span v-if="skill.note" class="note" v-html="noteToHtml(skill)"></span></p>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
+            <div @dragover.prevent @drop.prevent="onDropLoadout($event)" style="min-width: 1520px; min-height: 500px;">
+              <div v-if="!simulation" style="padding: 10px; display: flex">
+                <b-button :id="`btn-edit-unit${ui}`" @click="unit.showEditor=!unit.showEditor" style="width: 12em;">編集</b-button>
+                <b-popover :target="`btn-edit-unit${ui}`" custom-class="status-simulator-popover" :show.sync="unit.showEditor" :delay="{show:0, hide:250}" no-fade>
+                  <StatusSimulator embed :data="unit.editorData" @change="unit.edit($event)" />
+                  <div class="flex" style="margin: 0 0 10px 10px;">
+                    <b-button size="sm" @click="unit.showEditor=false">閉じる</b-button>
                   </div>
+                </b-popover>
+              </div>
 
-                  <div v-if="unit.support.cid" class="character">
-                    <div class="flex">
-                      <div class="portrait">
-                        <b-img-lazy :src="getImageURL(unit.support.icon)" :title="unit.support.name" width="100" height="100" rounded />
-                      </div>
-                      <div class="detail" v-show="displayType >= 1">
-                        <div class="info">
-                          <h5 v-html="chrNameToHtml(unit.support.name)"></h5>
-                          <div class="status">
-                            <b-img-lazy :src="getImageURL(unit.support.class)" :title="'クラス:'+unit.support.class" height="25" />
-                            <b-img-lazy :src="getImageURL(unit.support.supportType)" :title="'サポートタイプ:'+unit.support.supportType" height="25" />
-                            <b-img-lazy :src="getImageURL(unit.support.rarity)" :title="'レアリティ:'+unit.support.rarity" height="20" />
-                            <div class="param-box"><b-img-lazy :src="getImageURL(unit.support.damageType)" :title="'攻撃タイプ:'+unit.support.damageType" width="20" height="20" /></div>
-                            <div class="param-box"><b-img-lazy :src="getImageURL('射程')" title="射程" width="18" height="18" /><span>{{unit.support.range}}</span></div>
-                          </div>
-                          <div class="status2" v-html="statusToHtml(unit.support.status)" />
+              <div class="flex" style="align-items: flex-start;">
+                <div v-if="unit.main.cid" class="character">
+                  <div class="flex">
+                    <div class="portrait">
+                      <b-img-lazy :src="getImageURL(unit.main.icon)" :title="unit.main.name" width="100" height="100" rounded />
+                    </div>
+                    <div class="detail" v-show="displayType >= 1">
+                      <div class="info">
+                        <h5 v-html="chrNameToHtml(unit.main.name)"></h5>
+                        <div class="status">
+                          <b-img-lazy :src="getImageURL(unit.main.class)" :title="'クラス:'+unit.main.class" height="25" />
+                          <b-img-lazy :src="getImageURL(unit.main.symbol)" :title="'シンボル:'+unit.main.symbol" height="25" />
+                          <b-img-lazy :src="getImageURL(unit.main.rarity)" :title="'レアリティ:'+unit.main.rarity" height="20" />
+                          <div class="param-box"><b-img-lazy :src="getImageURL(unit.main.damageType)" :title="'攻撃タイプ:'+unit.main.damageType" width="20" height="20" /></div>
+                          <div class="param-box"><b-img-lazy :src="getImageURL('射程')" title="射程" width="18" height="18" /><span>{{unit.main.range}}</span></div>
+                          <div class="param-box"><b-img-lazy :src="getImageURL('移動')" title="移動" width="18" height="18" /><span>{{unit.main.move}}</span></div>
                         </div>
-                        <div class="skills">
-                          <div class="skill" v-for="(skill, si) in unit.support.skills" :class="getSkillClass(skill)" :key="`skill${si}`">
+                        <div class="status2" v-html="statusToHtml(unit.main.status)" />
+                      </div>
+                      <div class="skills">
+                        <template v-for="(skill, si) in unit.main.skills">
+                          <div class="skill" v-if="!skill.isNormalAttack" :class="getSkillClass(skill)" :key="`skill${si}`">
                             <div class="flex">
-                              <div class="icon" :id="`unit${ui}_sup_skill${si}`">
+                              <div class="icon" :id="`unit${ui}_main_skill${si}`">
                                 <b-img-lazy :src="getImageURL(skill.icon)" with="50" height="50" />
-                                <b-popover v-if="displayType==1" :target="`unit${ui}_sup_skill${si}`" triggers="hover focus" :delay="{show:0, hide:250}" no-fade :title="skill.name" placement="top">
+                                <b-popover v-if="displayType==1" :target="`unit${ui}_main_skill${si}`" triggers="hover focus" :delay="{show:0, hide:250}" no-fade :title="skill.name" placement="top">
                                   <div class="flex">
                                     <div v-html="descToHtml(skill)"></div>
                                   </div>
@@ -440,27 +426,92 @@
                               </div>
                             </div>
                           </div>
-                        </div>
-                        <div class="skills">
-                          <div class="skill" v-for="(skill, si) in unit.support.items" :class="getSkillClass(skill)" :key="`item${si}`">
-                            <div class="flex">
-                              <div class="icon" :id="`unit${ui}_sup_item${si}`">
-                                <b-img-lazy :src="getImageURL(skill.icon)" with="50" height="50" />
-                                <b-popover v-if="displayType==1" :target="`unit${ui}_sup_item${si}`" triggers="hover focus" :delay="{show:0, hide:250}" no-fade :title="skill.name" placement="top">
-                                  <div class="flex">
-                                    <div v-html="descToHtml(skill)"></div>
-                                  </div>
-                                </b-popover>
-                              </div>
-                              <div class="desc" v-show="displayType >= 2">
+                        </template>
+                      </div>
+                      <div class="skills">
+                        <div class="skill" v-for="(skill, si) in unit.main.items" :class="getSkillClass(skill)" :key="`item${si}`">
+                          <div class="flex">
+                            <div class="icon" :id="`unit${ui}_main_item${si}`">
+                              <b-img-lazy :src="getImageURL(skill.icon)" with="50" height="50" />
+                              <b-popover v-if="displayType==1" :target="`unit${ui}_main_item${si}`" triggers="hover focus" :delay="{show:0, hide:250}" no-fade :title="skill.name" placement="top">
                                 <div class="flex">
-                                  <h6>
-                                    <b-img-lazy :src="getImageURL(skill.slot)" :title="'部位:'+skill.slot" height="20" />
-                                    {{ skill.name }}
-                                  </h6>
+                                  <div v-html="descToHtml(skill)"></div>
                                 </div>
-                                <p><span v-html="descToHtml(skill)"></span><span v-if="skill.note" class="note" v-html="noteToHtml(skill)"></span></p>
+                              </b-popover>
+                            </div>
+                            <div class="desc" v-show="displayType >= 2">
+                              <div class="flex">
+                                <h6>
+                                  <b-img-lazy v-if="skill.slot" :src="getImageURL(skill.slot)" :title="'部位:'+skill.slot" height="20" />
+                                  {{ skill.name }}
+                                </h6>
                               </div>
+                              <p><span v-html="descToHtml(skill)"></span><span v-if="skill.note" class="note" v-html="noteToHtml(skill)"></span></p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div v-if="unit.support.cid" class="character">
+                  <div class="flex">
+                    <div class="portrait">
+                      <b-img-lazy :src="getImageURL(unit.support.icon)" :title="unit.support.name" width="100" height="100" rounded />
+                    </div>
+                    <div class="detail" v-show="displayType >= 1">
+                      <div class="info">
+                        <h5 v-html="chrNameToHtml(unit.support.name)"></h5>
+                        <div class="status">
+                          <b-img-lazy :src="getImageURL(unit.support.class)" :title="'クラス:'+unit.support.class" height="25" />
+                          <b-img-lazy :src="getImageURL(unit.support.supportType)" :title="'サポートタイプ:'+unit.support.supportType" height="25" />
+                          <b-img-lazy :src="getImageURL(unit.support.rarity)" :title="'レアリティ:'+unit.support.rarity" height="20" />
+                          <div class="param-box"><b-img-lazy :src="getImageURL(unit.support.damageType)" :title="'攻撃タイプ:'+unit.support.damageType" width="20" height="20" /></div>
+                          <div class="param-box"><b-img-lazy :src="getImageURL('射程')" title="射程" width="18" height="18" /><span>{{unit.support.range}}</span></div>
+                        </div>
+                        <div class="status2" v-html="statusToHtml(unit.support.status)" />
+                      </div>
+                      <div class="skills">
+                        <div class="skill" v-for="(skill, si) in unit.support.skills" :class="getSkillClass(skill)" :key="`skill${si}`">
+                          <div class="flex">
+                            <div class="icon" :id="`unit${ui}_sup_skill${si}`">
+                              <b-img-lazy :src="getImageURL(skill.icon)" with="50" height="50" />
+                              <b-popover v-if="displayType==1" :target="`unit${ui}_sup_skill${si}`" triggers="hover focus" :delay="{show:0, hide:250}" no-fade :title="skill.name" placement="top">
+                                <div class="flex">
+                                  <div v-html="descToHtml(skill)"></div>
+                                </div>
+                              </b-popover>
+                            </div>
+                            <div class="desc" v-show="displayType >= 2">
+                              <div class="flex">
+                                <h6>{{ skill.name }}</h6>
+                                <div class="param-group" v-html="skillParamsToHtml(skill)"></div>
+                              </div>
+                              <p><span v-html="descToHtml(skill)"></span><span v-if="skill.note" class="note" v-html="noteToHtml(skill)"></span></p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="skills">
+                        <div class="skill" v-for="(skill, si) in unit.support.items" :class="getSkillClass(skill)" :key="`item${si}`">
+                          <div class="flex">
+                            <div class="icon" :id="`unit${ui}_sup_item${si}`">
+                              <b-img-lazy :src="getImageURL(skill.icon)" with="50" height="50" />
+                              <b-popover v-if="displayType==1" :target="`unit${ui}_sup_item${si}`" triggers="hover focus" :delay="{show:0, hide:250}" no-fade :title="skill.name" placement="top">
+                                <div class="flex">
+                                  <div v-html="descToHtml(skill)"></div>
+                                </div>
+                              </b-popover>
+                            </div>
+                            <div class="desc" v-show="displayType >= 2">
+                              <div class="flex">
+                                <h6>
+                                  <b-img-lazy :src="getImageURL(skill.slot)" :title="'部位:'+skill.slot" height="20" />
+                                  {{ skill.name }}
+                                </h6>
+                              </div>
+                              <p><span v-html="descToHtml(skill)"></span><span v-if="skill.note" class="note" v-html="noteToHtml(skill)"></span></p>
                             </div>
                           </div>
                         </div>
@@ -469,15 +520,16 @@
                   </div>
                 </div>
               </div>
+            </div>
 
-            </b-tab>
-          </b-tabs>
+          </b-tab>
+        </b-tabs>
 
-        </div>
       </div>
-
-      <ItemPopovers />
     </div>
+
+    <ItemPopovers />
+  </div>
 </template>
 
 <script>
@@ -561,18 +613,6 @@ export default {
       ],
       unitTabIndex: 0,
 
-      simPhaseList: [
-        { index: 0, id: "1P", desc: "1Tプレイヤー" },
-        { index: 1, id: "1E", desc: "1Tエネミー" },
-        { index: 2, id: "2P", desc: "2Tプレイヤー" },
-        { index: 3, id: "2E", desc: "2Tエネミー" },
-        { index: 4, id: "3P", desc: "3Tプレイヤー" },
-        { index: 5, id: "3E", desc: "3Tエネミー" },
-        { index: 6, id: "4P", desc: "4Tプレイヤー" },
-        { index: 7, id: "4E", desc: "4Tエネミー" },
-        { index: 8, id: "5P", desc: "5Tプレイヤー" },
-        { index: 9, id: "5E", desc: "5Tエネミー" },
-      ],
       simulation: null,
 
       loadoutList: [],
@@ -596,7 +636,26 @@ export default {
       ],
       loadoutHash: "",
 
-      battlelogList: [],
+      replay: null,
+      replayList: [],
+      replayFields: [
+        {
+          key: "name",
+          label: "マップ＆スコア",
+        },
+        {
+          key: "author",
+          label: "投稿者",
+        },
+        {
+          key: "date",
+          label: "日付",
+        },
+        {
+          key: "actions",
+          label: "操作",
+        }
+      ],
       fetching: false,
     };
   },
@@ -715,7 +774,7 @@ export default {
     },
   },
 
-    methods: {
+  methods: {
 
     //#region ユニット操作
     setupTools() {
@@ -749,7 +808,7 @@ export default {
               // 空セル、もしくは自身が選択されたらキャンセル
               this.onCancel();
             }
-            else if(unit) {
+            else if (unit) {
               // ユニット選択処理
               self.selectUnit(unit);
               if (unit) {
@@ -1422,6 +1481,7 @@ export default {
       const body = () => {
         this.resetTools();
         if (this.simulation) {
+          this.replay = this.serializeReplay();
           this.simulation.finish();
           this.simulation = null;
           this.resetTools(this.tools.nonSimulation);
@@ -1535,7 +1595,6 @@ export default {
         // http で始まらない場合は hash とみなす
         url = `${lut.LoadoutServer}?mode=get&hash=${url}`;
       }
-
       fetch(url).then((res) => {
         res.json().then((obj) => {
           this.deserializeLoadout(obj);
@@ -1652,6 +1711,7 @@ export default {
       r.battle = this.battleId;
       r.loadout = this.serializeLoadout();
       r.states = this.simulation.serialize();
+      r.name = `${this.battleData.name} ${r.states.at(-1).score}`;
       return r;
     },
     deserializeReplay(r) {
@@ -1666,8 +1726,13 @@ export default {
       this.$forceUpdate();
     },
     exportReplayAsFile() {
-      const data = this.serializeReplay();
-      lut.download(`${data.loadout.name}${data.states.at(-1).score}.replay`, data);
+      if (this.simulation) {
+        this.replay = this.serializeReplay();
+      }
+      if (this.replay) {
+        const data = this.replay;
+        lut.download(`${data.loadout.name}${data.states.at(-1).score}.replay`, data);
+      }
     },
     importReplayFromFile() {
       lut.openFileDialog(".replay", (file) => {
@@ -1712,6 +1777,82 @@ export default {
           this.simulation.statePos++;
         }
       }
+    },
+    setReplayState(idx) {
+      this.resetTools();
+      if (!this.simulation && this.replay) {
+        this.deserializeReplay(this.replay);
+      }
+      this.simulation.statePos = idx;
+    },
+
+    fetchReplayList() {
+      this.fetching = true;
+      fetch(lut.ReplayServer).then((res) => {
+        res.json().then((obj) => {
+          this.fetching = false;
+          this.replayList = obj.sort((a, b) => b.date.localeCompare(a.date));
+          for (let e of this.replayList) {
+            // 長すぎる名前は切り詰めておく
+            const maxNameLen = 24;
+            if (e.name.length > maxNameLen) {
+              e.name = e.name.substring(0, maxNameLen);
+            }
+            const delkey = localStorage.getItem(`delkey.${e.hash}`);
+            if (delkey) {
+              e.delkey = delkey;
+            }
+          }
+        })
+      });
+    },
+    uploadReplay() {
+      const data = this.serializeReplay();
+      var form = new FormData()
+      form.append('mode', 'put');
+      form.append('data', new Blob([JSON.stringify(data, null, 2)]));
+      form.append('author', this.userName.trim());
+      fetch(lut.ReplayServer, { method: "POST", body: form }).then((res) => {
+        res.json().then((obj) => {
+          if (obj.succeeded) {
+            localStorage.setItem(`delkey.${obj.hash}`, obj.delkey);
+            localStorage.setItem(`subscribe.${obj.hash}`, 'true');
+            this.fetchReplayList();
+          }
+          if (obj.message) {
+            this.toast(obj.message);
+          }
+        })
+      });
+    },
+    downloadReplay(rec) {
+      this.importReplayFromUrl(`${lut.ReplayServer}?mode=get&hash=${rec.hash}`, () => {
+        this.replayHash = rec.hash;
+      });
+    },
+    deleteReplay(rec) {
+      if (window.confirm(`"${rec.name}" をサーバーから削除します。よろしいですか？`)) {
+        fetch(`${lut.ReplayServer}?mode=del&hash=${rec.hash}&delkey=${rec.delkey}`).then((res) => {
+          res.json().then((obj) => {
+            if (obj.succeeded) {
+              localStorage.removeItem(`delkey.${rec.hash}`);
+              if (rec.hash == this.replayHash) {
+                this.replayHash = null;
+              }
+              this.fetchReplayList();
+            }
+            if (obj.message) {
+              this.toast(obj.message);
+            }
+          });
+        });
+      }
+    },
+    copyReplayUrl(rec) {
+      let url = window.location.href.replace(/\?.+/, '').replace(/#.+/, '');
+      url += `?replay=${rec.hash}`;
+      this.copyToClipboard(url);
+      this.toast(`コピーしました：${url}`);
     },
     //#endregion リプレイ
 
@@ -1775,8 +1916,8 @@ export default {
         if (data.loadout) {
           this.importLoadoutFromUrl(data.loadout);
         }
-        if (data.battlelog) {
-          this.importBattleLogUrl(data.battlelog);
+        if (data.replay) {
+          this.importReplayUrl(data.replay);
         }
       }
     },

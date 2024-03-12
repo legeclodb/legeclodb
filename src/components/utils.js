@@ -116,7 +116,7 @@ export function download(filename, data) {
     data = new Blob([data]);
   }
   else if (typeof (data) == 'object') {
-    data = new Blob([JSON.stringify(data, null, 2)]);
+    data = new Blob([JSON.stringify(data)]);
   }
 
   let u = window.URL.createObjectURL(data);
