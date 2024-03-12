@@ -98,6 +98,28 @@ export function getSubscribeLastCheckTime() {
   return v ? new Date(parseInt(v)) : null;
 }
 
+
+// Infinity 対応版 JSON.stringify()
+export function toJson(data) {
+  const conv = (k, v) => {
+    if (v === Number.POSITIVE_INFINITY) {
+      return "Infinity";
+    }
+    return v;
+  };
+  return JSON.stringify(data, conv);
+}
+// Infinity 対応版 JSON.parse()
+export function fromJson(str) {
+  const conv = (k, v) => {
+    if (v === "Infinity") {
+      return Number.POSITIVE_INFINITY;
+    }
+    return v;
+  };
+  return JSON.parse(str, conv);
+}
+
 // fileType: ".json" など
 export function openFileDialog(fileType, callback) {
   let input = window.document.createElement("input");
@@ -116,7 +138,7 @@ export function download(filename, data) {
     data = new Blob([data]);
   }
   else if (typeof (data) == 'object') {
-    data = new Blob([JSON.stringify(data)]);
+    data = new Blob([toJson(data)]);
   }
 
   let u = window.URL.createObjectURL(data);

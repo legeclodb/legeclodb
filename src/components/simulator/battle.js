@@ -168,7 +168,7 @@ export class SimContext {
 
     unit.onSimulationBegin();
     unit.setup();
-    unit.onPlayerTurnBegin();
+    unit.onOwnTurnBegin();
     this.updateAreaEffectsAll();
   }
   notifyDead(unit) {

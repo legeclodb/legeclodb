@@ -208,22 +208,24 @@
     </div>
 
     <div class="content sim-replay" @click.stop="" tabindex="0" @keydown.up.stop="onKeyReplay($event)" @keydown.down.stop="onKeyReplay($event)">
-      <div class="unit-panel" style="max-height: 350px; overflow-y: scroll;">
-        <template v-if="simulation ?? replay">
-          <template v-for="(r, i) of (simulation ?? replay).states.toReversed()">
-            <div class="flex" :style="`margin: 2px 0px 2px 0px; ${ simulation?.statePos==-i-1 ? 'background: rgb(220,220,230)': '' }`" :key="i">
-              <b-button size="sm" style="padding: 0px; width: 30px; height: 30px; margin-right: 0.25em;" @click="setReplayState(-i-1);">▶</b-button>
-              <template v-if="r.desc.unitIcon">
-                <b-img :src="getImageURL(r.desc.unitIcon)" width="35px" height="35px" />
-                <b-img :src="getImageURL(r.desc.skillIcon)" width="35px" height="35px" />
-                <b-img :src="getImageURL(r.desc.targetIcon)" width="35px" height="35px" />
-              </template>
-              <template v-else>
-                <span>{{`T${r.turn} ${r.phase==0?'(プレイヤー)':'(エネミー)'}`}} 開始</span>
-              </template>
-            </div>
+      <div class="unit-panel">
+        <div style="max-height: 350px; overflow-y: auto;">
+          <template v-if="simulation ?? replay">
+            <template v-for="(r, i) of (simulation ?? replay).states.toReversed()">
+              <div class="flex" :style="`margin: 2px 0px 2px 0px; ${ simulation?.statePos==-i-1 ? 'background: rgb(220,220,230)': '' }`" :key="i">
+                <b-button size="sm" style="padding: 0px; width: 30px; height: 30px; margin-right: 0.25em;" @click="setReplayState(-i-1);">▶</b-button>
+                <template v-if="r.desc.unitIcon">
+                  <b-img :src="getImageURL(r.desc.unitIcon)" width="35px" height="35px" />
+                  <b-img :src="getImageURL(r.desc.skillIcon)" width="35px" height="35px" />
+                  <b-img :src="getImageURL(r.desc.targetIcon)" width="35px" height="35px" />
+                </template>
+                <template v-else>
+                  <span>{{`T${r.turn} ${r.phase==0?'(プレイヤー)':'(エネミー)'}`}} 開始</span>
+                </template>
+              </div>
+            </template>
           </template>
-        </template>
+        </div>
 
         <b-button size="sm" id="btn-replay-op" style="min-width: 10em; margin-top: 0.5em; ">
           リプレイ
@@ -707,7 +709,7 @@ export default {
     }
 
     for (let i = 0; i <= 9; ++i) {
-      let data = JSON.parse(localStorage.getItem(`battle.slot${i}`));
+      let data = lut.fromJson(localStorage.getItem(`battle.slot${i}`));
       if (data?.name) {
         this.setArrayElement(this.slotNames, i, data.name);
       }
@@ -1477,23 +1479,13 @@ export default {
         this.resetTools(this.tools.selectUnit);
       }
     },
-    endSimulation(prompt = true) {
-      const body = () => {
-        this.resetTools();
-        if (this.simulation) {
-          this.replay = this.serializeReplay();
-          this.simulation.finish();
-          this.simulation = null;
-          this.resetTools(this.tools.nonSimulation);
-        }
-      };
-      if (prompt) {
-        if (window.confirm(`シミュレーションを終了します。よろしいですか？`)) {
-          body();
-        }
-      }
-      else {
-        body();
+    endSimulation() {
+      this.resetTools();
+      if (this.simulation) {
+        this.replay = this.serializeReplay();
+        this.simulation.finish();
+        this.simulation = null;
+        this.resetTools(this.tools.nonSimulation);
       }
     },
 
@@ -1554,18 +1546,18 @@ export default {
       }
     },
     saveLoadout(slot = 0) {
-      let old = JSON.parse(localStorage.getItem(`battle.slot${slot}`));
+      let old = lut.fromJson(localStorage.getItem(`battle.slot${slot}`));
       if (old?.units?.find(a => a.main.cid)) {
-        localStorage.setItem(`battle.slot99`, JSON.stringify(old));
+        localStorage.setItem(`battle.slot99`, lut.toJson(old));
         this.toast("上書き前の編成をバックアップスロットに保存しました。");
       }
 
       this.setArrayElement(this.slotNames, slot, this.slotName);
       let data = this.serializeLoadout();
-      localStorage.setItem(`battle.slot${slot}`, JSON.stringify(data));
+      localStorage.setItem(`battle.slot${slot}`, lut.toJson(data));
     },
     loadLoadout(slot = 0) {
-      let data = JSON.parse(localStorage.getItem(`battle.slot${slot}`));
+      let data = lut.fromJson(localStorage.getItem(`battle.slot${slot}`));
       if (data) {
         this.deserializeLoadout(data);
       }
@@ -1584,7 +1576,7 @@ export default {
     importLoadoutFromFile() {
       lut.openFileDialog(".loadout", (file) => {
         file.text().then((text) => {
-          this.deserializeLoadout(JSON.parse(text));
+          this.deserializeLoadout(lut.fromJson(text));
         });
       });
     },
@@ -1608,14 +1600,14 @@ export default {
       if (event?.dataTransfer?.files?.length) {
         let file = event.dataTransfer.files[0];
         file.text().then((text) => {
-          this.deserializeLoadout(JSON.parse(text));
+          this.deserializeLoadout(lut.fromJson(text));
         });
       }
     },
     clearLoadout() {
       if (this.playerUnits.find(a => a.main.cid)) {
         let old = this.serializeLoadout();
-        localStorage.setItem(`battle.slot99`, JSON.stringify(old));
+        localStorage.setItem(`battle.slot99`, lut.toJson(old));
         this.toast("クリア前の編成をバックアップスロットに保存しました。");
       }
 
@@ -1650,7 +1642,7 @@ export default {
       const data = this.serializeLoadout();
       var form = new FormData()
       form.append('mode', 'put');
-      form.append('data', new Blob([JSON.stringify(data, null, 2)]));
+      form.append('data', new Blob([lut.toJson(data, null, 2)]));
       form.append('author', this.userName.trim());
       fetch(lut.LoadoutServer, { method: "POST", body: form }).then((res) => {
         res.json().then((obj) => {
@@ -1737,7 +1729,7 @@ export default {
     importReplayFromFile() {
       lut.openFileDialog(".replay", (file) => {
         file.text().then((text) => {
-          this.deserializeReplay(JSON.parse(text));
+          this.deserializeReplay(lut.fromJson(text));
         });
       });
     },
@@ -1761,7 +1753,7 @@ export default {
       if (event?.dataTransfer?.files?.length) {
         let file = event.dataTransfer.files[0];
         file.text().then((text) => {
-          this.deserializeReplay(JSON.parse(text));
+          this.deserializeReplay(lut.fromJson(text));
         });
       }
     },
@@ -1810,7 +1802,7 @@ export default {
       const data = this.serializeReplay();
       var form = new FormData()
       form.append('mode', 'put');
-      form.append('data', new Blob([JSON.stringify(data, null, 2)]));
+      form.append('data', new Blob([lut.toJson(data, null, 2)]));
       form.append('author', this.userName.trim());
       fetch(lut.ReplayServer, { method: "POST", body: form }).then((res) => {
         res.json().then((obj) => {
@@ -2085,11 +2077,10 @@ export default {
 
   .sim-replay {
     position: fixed;
-    bottom: 10px;
+    bottom: 5px;
     right: 10px;
     border-radius: 0.3rem;
     padding: 5px;
-    max-height: 300px;
   }
   .sim-replay:focus {
     outline: none;
