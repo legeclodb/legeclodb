@@ -367,7 +367,7 @@
           </b-button>
         </div>
 
-        <b-tabs v-model="unitTabIndex">
+        <b-tabs v-if="!simulation" v-model="unitTabIndex">
           <b-tab v-for="(unit, ui) in playerUnits" :key="ui" style="background-color: white;">
             <template #title>
               <h2 style="font-size: 1em;" draggable @dragstart="onDragUnit(unit)" @drop="onDropUnit(unit)" @dragover.prevent="dummyHandler()">
@@ -411,15 +411,10 @@
                         <template v-for="(skill, si) in unit.main.skills">
                           <div class="skill" v-if="!skill.isNormalAttack" :class="getSkillClass(skill)" :key="`skill${si}`">
                             <div class="flex">
-                              <div class="icon" :id="`unit${ui}_main_skill${si}`">
+                              <div class="icon">
                                 <b-img-lazy :src="getImageURL(skill.icon)" with="50" height="50" />
-                                <b-popover v-if="displayType==1" :target="`unit${ui}_main_skill${si}`" triggers="hover focus" :delay="{show:0, hide:250}" no-fade :title="skill.name" placement="top">
-                                  <div class="flex">
-                                    <div v-html="descToHtml(skill)"></div>
-                                  </div>
-                                </b-popover>
                               </div>
-                              <div class="desc" v-show="displayType >= 2">
+                              <div class="desc">
                                 <div class="flex">
                                   <h6>{{ skill.name }}</h6>
                                   <div class="param-group" v-html="skillParamsToHtml(skill)"></div>
@@ -433,15 +428,10 @@
                       <div class="skills">
                         <div class="skill" v-for="(skill, si) in unit.main.items" :class="getSkillClass(skill)" :key="`item${si}`">
                           <div class="flex">
-                            <div class="icon" :id="`unit${ui}_main_item${si}`">
+                            <div class="icon">
                               <b-img-lazy :src="getImageURL(skill.icon)" with="50" height="50" />
-                              <b-popover v-if="displayType==1" :target="`unit${ui}_main_item${si}`" triggers="hover focus" :delay="{show:0, hide:250}" no-fade :title="skill.name" placement="top">
-                                <div class="flex">
-                                  <div v-html="descToHtml(skill)"></div>
-                                </div>
-                              </b-popover>
                             </div>
-                            <div class="desc" v-show="displayType >= 2">
+                            <div class="desc">
                               <div class="flex">
                                 <h6>
                                   <b-img-lazy v-if="skill.slot" :src="getImageURL(skill.slot)" :title="'部位:'+skill.slot" height="20" />
@@ -477,13 +467,8 @@
                       <div class="skills">
                         <div class="skill" v-for="(skill, si) in unit.support.skills" :class="getSkillClass(skill)" :key="`skill${si}`">
                           <div class="flex">
-                            <div class="icon" :id="`unit${ui}_sup_skill${si}`">
+                            <div class="icon">
                               <b-img-lazy :src="getImageURL(skill.icon)" with="50" height="50" />
-                              <b-popover v-if="displayType==1" :target="`unit${ui}_sup_skill${si}`" triggers="hover focus" :delay="{show:0, hide:250}" no-fade :title="skill.name" placement="top">
-                                <div class="flex">
-                                  <div v-html="descToHtml(skill)"></div>
-                                </div>
-                              </b-popover>
                             </div>
                             <div class="desc" v-show="displayType >= 2">
                               <div class="flex">
@@ -498,13 +483,8 @@
                       <div class="skills">
                         <div class="skill" v-for="(skill, si) in unit.support.items" :class="getSkillClass(skill)" :key="`item${si}`">
                           <div class="flex">
-                            <div class="icon" :id="`unit${ui}_sup_item${si}`">
+                            <div class="icon">
                               <b-img-lazy :src="getImageURL(skill.icon)" with="50" height="50" />
-                              <b-popover v-if="displayType==1" :target="`unit${ui}_sup_item${si}`" triggers="hover focus" :delay="{show:0, hide:250}" no-fade :title="skill.name" placement="top">
-                                <div class="flex">
-                                  <div v-html="descToHtml(skill)"></div>
-                                </div>
-                              </b-popover>
                             </div>
                             <div class="desc" v-show="displayType >= 2">
                               <div class="flex">
@@ -522,43 +502,88 @@
                   </div>
                 </div>
               </div>
-
-              <div v-if="simulation && selectedUnit" class="character" style="align-items: flex-start; width: 1510px; max-width: 1510px;">
-                <h5>影響下にあるスキル</h5>
-                <div class="skills" style=" display: flex;">
-                  <template v-for="(skill, si) in selectedUnit.sim.affectedSkills">
-                    <div class="skill" style="width: 745px; max-width: 745px;" v-if="!skill.isNormalAttack" :class="getSkillClass(skill)" :key="`skill${si}`">
-                      <div class="flex">
-                        <div class="icon" :id="`unit${ui}_main_skill${si}`">
-                          <b-img-lazy :src="getImageURL(skill.icon)" with="50" height="50" />
-                        </div>
-                        <div class="desc">
-                          <div class="flex">
-                            <h6>{{ skill.name }}</h6>
-                            <div class="param-group" v-html="skillParamsToHtml(skill)"></div>
-                          </div>
-                          <p><span v-html="descToHtml(skill)"></span><span v-if="skill.note" class="note" v-html="noteToHtml(skill)"></span></p>
-                          <span class="note">
-                            <div class="effect-group">
-                              <template v-for="(e, ei) in skill.effects">
-                                <div v-for="(d, di) in (selectedUnit.sim.affectedEffects[e.uid] ?? [])" class="effect-box" :key="`effect${ei}${di}`">
-                                  <span :class="`effect ${d.effect.enabled ? 'caution' : ''}`">{{d.desc}}</span>
-                                </div>
-                              </template>
-                            </div>
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  </template>
-                </div>
-              </div>
-
-              <div style="height: 300px;"></div>
             </div>
 
           </b-tab>
         </b-tabs>
+
+
+        <div v-if="simulation && selectedUnit" class="flex" style="align-items: flex-start;" :set="unit=selectedUnit">
+          <div v-if="unit.main.cid" class="character">
+            <div class="flex">
+              <div class="portrait">
+                <b-img-lazy :src="getImageURL(unit.main.icon)" :title="unit.main.name" width="100" height="100" rounded />
+              </div>
+              <div class="detail" v-show="displayType >= 1">
+                <div class="info">
+                  <h5 v-html="chrNameToHtml(unit.main.name)"></h5>
+                  <div class="status">
+                    <b-img-lazy :src="getImageURL(unit.main.class)" :title="'クラス:'+unit.main.class" height="25" />
+                    <b-img-lazy v-if="unit.main?.symbol" :src="getImageURL(unit.main.symbol)" :title="'シンボル:'+unit.main.symbol" height="25" />
+                    <b-img-lazy v-if="unit.main?.rarity" :src="getImageURL(unit.main.rarity)" :title="'レアリティ:'+unit.main.rarity" height="20" />
+                    <div class="param-box"><b-img-lazy :src="getImageURL(unit.main.damageType)" :title="'攻撃タイプ:'+unit.main.damageType" width="20" height="20" /></div>
+                    <div class="param-box"><b-img-lazy :src="getImageURL('射程')" title="射程" width="18" height="18" /><span>{{unit.main.range}}</span></div>
+                    <div class="param-box"><b-img-lazy :src="getImageURL('移動')" title="移動" width="18" height="18" /><span>{{unit.main.move}}</span></div>
+                  </div>
+                  <div class="status2" v-html="statusToHtml(unit.main.status)" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div v-if="unit.support.cid" class="character">
+            <div class="flex">
+              <div class="portrait">
+                <b-img-lazy :src="getImageURL(unit.support.icon)" :title="unit.support.name" width="100" height="100" rounded />
+              </div>
+              <div class="detail" v-show="displayType >= 1">
+                <div class="info">
+                  <h5 v-html="chrNameToHtml(unit.support.name)"></h5>
+                  <div class="status">
+                    <b-img-lazy :src="getImageURL(unit.support.class)" :title="'クラス:'+unit.support.class" height="25" />
+                    <b-img-lazy v-if="unit.support?.supportType" :src="getImageURL(unit.support.supportType)" :title="'サポートタイプ:'+unit.support.supportType" height="25" />
+                    <b-img-lazy v-if="unit.support?.rarity" :src="getImageURL(unit.support.rarity)" :title="'レアリティ:'+unit.support.rarity" height="20" />
+                    <div class="param-box"><b-img-lazy :src="getImageURL(unit.support.damageType)" :title="'攻撃タイプ:'+unit.support.damageType" width="20" height="20" /></div>
+                    <div class="param-box"><b-img-lazy :src="getImageURL('射程')" title="射程" width="18" height="18" /><span>{{unit.support.range}}</span></div>
+                  </div>
+                  <div class="status2" v-html="statusToHtml(unit.support.status)" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div v-if="simulation && selectedUnit" class="character" style="align-items: flex-start; width: 1510px; max-width: 1510px;">
+          <h5>影響下にあるスキル</h5>
+          <div class="skills" style=" display: flex;">
+            <template v-for="(skill, si) in selectedUnit.sim.affectedSkills">
+              <div class="skill" style="width: 745px; max-width: 745px;" v-if="!skill.isNormalAttack" :class="getSkillClass(skill)" :key="`skill${si}`">
+                <div class="flex">
+                  <div class="icon">
+                    <b-img-lazy :src="getImageURL(skill.icon)" with="50" height="50" />
+                  </div>
+                  <div class="desc">
+                    <div class="flex">
+                      <h6>{{ skill.name }}</h6>
+                      <div class="param-group" v-html="skillParamsToHtml(skill)"></div>
+                    </div>
+                    <p><span v-html="descToHtml(skill)"></span><span v-if="skill.note" class="note" v-html="noteToHtml(skill)"></span></p>
+                    <span class="note">
+                      <div class="effect-group">
+                        <template v-for="(e, ei) in skill.effects">
+                          <div v-for="(d, di) in (selectedUnit.sim.affectedEffects[e.uid] ?? [])" class="effect-box" :key="`effect${ei}${di}`">
+                            <span :class="`effect ${d.effect.enabled ? 'caution' : ''}`">{{d.desc}}</span>
+                          </div>
+                        </template>
+                      </div>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </template>
+          </div>
+          <div style="height: 300px;"></div>
+        </div>
 
       </div>
     </div>

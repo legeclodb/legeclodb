@@ -162,6 +162,7 @@ export class BaseUnit {
       Object.defineProperty(main, "skills", {
         get: () => [chr.talent, ...chr.skills],
       });
+      main.cid = chr.uid;
       main.level = this.main.level ?? 114;
       main.status = $vue().getNPCChrStatus(main, main.level);
 
@@ -389,7 +390,7 @@ export class SimUnit {
       };
       if (chr.isMain) {
         table.baseMove = function () { return base.move; };
-        table.move = function () { return base.move + (chr.bufRate["移動"] ?? 0); };
+        table.move = function () { return Math.max(base.move + (chr.bufFixed["移動"] ?? 0), 0); };
       }
       table.baseAttackPower = chr.damageType == "アタック" ?
         function () { return base.status[1]; } :
@@ -681,7 +682,7 @@ export class SimUnit {
 
     const add = (e) => {
       const doit = (e, tRate, rFixed) => {
-        if (e.ephemeral && !ctx.onBattle) {
+        if ((e.ephemeral && !ctx.onBattle) || ["ランダム", "トークン"].includes(e.type)) {
           return;
         }
 
@@ -689,7 +690,7 @@ export class SimUnit {
           // 戦闘時デバフは扱いが難しくて保留
           console.log(e);
         }
-        else if (e.isAdditive) {
+        else if (e.isAdditive || ["移動", "射程(通常攻撃)", "射程(スキル)", "範囲"].includes(e.type)) {
           if (!(e.type in rFixed)) {
             rFixed[e.type] = 0;
           }
@@ -722,7 +723,7 @@ export class SimUnit {
       }
     }
 
-    this.affectedSkills = unique(this.effects.flatMap(a => a.enabled ? a.parent : []));
+    this.affectedSkills = unique([...this.passives.map(a => a.__proto__), ...this.effects.flatMap(a => a.enabled ? a.parent : [])]);
     this.affectedEffects = {};
     for (let e of this.effects) {
       if (["ランダム"].includes(e.type)) {

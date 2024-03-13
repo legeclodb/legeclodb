@@ -429,33 +429,37 @@ export function makeSimSkill(skill, ownerUnit) {
     },
   };
 
-  Object.defineProperty(self, 'area', {
-    get: () => {
-      if (typeof (skill.area) != 'number') {
-        return skill.area;
-      }
-      let r = skill.area;
-      if (skill.isMainSkill) {
-        r += self.owner.main.bufRate["範囲"] ?? 0;
-      }
-      return r;
-    },
-  });
-  Object.defineProperty(self, 'range', {
-    get: () => {
-      if (typeof (skill.range) != 'number') {
-        return skill.range;
-      }
-      if (skill.isNormalAttack) {
-        let chr = self.owner.main;
-        return chr.range + (chr.bufRate["射程(通常攻撃)"] ?? 0);
-      }
-      else {
-        let chr = skill.isMainSkill ? self.owner.main : self.owner.support;
-        return skill.range + (chr.bufRate["射程(スキル)"] ?? 0);
-      }
-    },
-  });
+  if (skill?.area) {
+    Object.defineProperty(self, 'area', {
+      get: () => {
+        if (typeof (skill.area) != 'number') {
+          return skill.area;
+        }
+        let r = skill.area;
+        if (skill.isMainSkill) {
+          r += self.owner.main.bufFixed["範囲"] ?? 0;
+        }
+        return r;
+      },
+    });
+  }
+  if (skill?.range) {
+    Object.defineProperty(self, 'range', {
+      get: () => {
+        if (typeof (skill.range) != 'number') {
+          return skill.range;
+        }
+        if (skill.isNormalAttack) {
+          let chr = self.owner.main;
+          return chr.range + (chr.bufFixed["射程(通常攻撃)"] ?? 0);
+        }
+        else {
+          let chr = skill.isMainSkill ? self.owner.main : self.owner.support;
+          return skill.range + (chr.bufFixed["射程(スキル)"] ?? 0);
+        }
+      },
+    });
+  }
 
   let data = {};
   self.data = data; // serializable data

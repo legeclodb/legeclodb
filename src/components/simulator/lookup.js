@@ -221,6 +221,7 @@ export default {
         "セイント":   [find("x106")],
         "シューター": [find("x107")],
         "アサシン":   [find("x108")],
+        "ヴォイド":   [find("x109")],
       };
       return className in table ? table[className] : [];
     },
