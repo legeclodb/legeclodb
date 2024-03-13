@@ -4,12 +4,12 @@
       <Navigation />
     </div>
     <div class="about" style="margin-top: 55px;">
-      <div class="menu-content" style="flex-wrap: nowrap">
+      <div v-if="!simulation" class="menu-content" style="flex-wrap: nowrap">
         <div class="menu-panel" id="cb-settings">
           <div class="menu-widgets flex">
             <div class="widget">
               <span>クエストデータ：</span>
-              <b-dropdown :text="battleData ? battleData.name : ''" size="sm" id="battle_selector" :disabled="simulation!=null">
+              <b-dropdown :text="battleData ? battleData.name : ''" size="sm" id="battle_selector">
                 <b-dropdown-item v-for="(battle, i) in battleList" class="d-flex flex-column" :key="i" @click="selectBattle(battle.uid, true); updateURL();">
                   {{ battle.name }}
                 </b-dropdown-item>
@@ -174,16 +174,6 @@
           </b-button>
           <b-button size="sm" @click="endSimulation()" style="width: 14em;">
             シミュレーション終了
-          </b-button>
-
-          <b-button v-if="0" size="sm" @click="eraseWeakEnemies()" style="width: 10em;">
-            ザコ敵を除去
-          </b-button>
-          <b-button v-if="0" size="sm" style="margin-right: 0.25em;" @click="serializeReplay()">
-            ステートセーブ
-          </b-button>
-          <b-button v-if="0" size="sm" style="margin-right: 0.25em;" @click="deserializeReplay()">
-            ステートロード
           </b-button>
         </div>
       </div>
@@ -552,38 +542,52 @@
             </div>
           </div>
         </div>
-
         <div v-if="simulation && selectedUnit" class="character" style="align-items: flex-start; width: 1510px; max-width: 1510px;">
-          <h5>影響下にあるスキル</h5>
-          <div class="skills" style=" display: flex;">
-            <template v-for="(skill, si) in selectedUnit.sim.affectedSkills">
-              <div class="skill" style="width: 745px; max-width: 745px;" v-if="!skill.isNormalAttack" :class="getSkillClass(skill)" :key="`skill${si}`">
-                <div class="flex">
-                  <div class="icon">
-                    <b-img-lazy :src="getImageURL(skill.icon)" with="50" height="50" />
-                  </div>
-                  <div class="desc">
-                    <div class="flex">
-                      <h6>{{ skill.name }}</h6>
-                      <div class="param-group" v-html="skillParamsToHtml(skill)"></div>
+          <template :set="unit=selectedUnit.sim">
+            <h5 style="margin: 5px;">影響下にあるスキル</h5>
+            <div class="flex info">
+              <div><h6>メイン合計: </h6></div>
+              <template v-for="(l, li) in effectValuesToHtml(unit.main.bufRate, unit.main.bufFixed)">
+                <div :key="li" v-html="l" />
+              </template>
+            </div>
+            <div v-if="unit.support.isAlive" class="flex info">
+              <div><h6>サポート合計: </h6></div>
+              <template v-for="(l, li) in effectValuesToHtml(unit.support.bufRate, unit.support.bufFixed)">
+                <div :key="li" v-html="l" />
+              </template>
+            </div>
+
+            <div class="skills" style=" display: flex; margin-top: 5px;">
+              <template v-for="(skill, si) in selectedUnit.sim.affectedSkills">
+                <div class="skill" style="width: 745px; max-width: 745px;" v-if="!skill.isNormalAttack" :class="getSkillClass(skill)" :key="`skill${si}`">
+                  <div class="flex">
+                    <div class="icon">
+                      <b-img-lazy :src="getImageURL(skill.icon)" with="50" height="50" />
                     </div>
-                    <p><span v-html="descToHtml(skill)"></span><span v-if="skill.note" class="note" v-html="noteToHtml(skill)"></span></p>
-                    <span class="note">
-                      <div class="effect-group">
-                        <template v-for="(e, ei) in skill.effects">
-                          <div v-for="(d, di) in (selectedUnit.sim.affectedEffects[e.uid] ?? [])" class="effect-box" :key="`effect${ei}${di}`">
-                            <span :class="`effect ${d.effect.enabled ? 'caution' : ''}`">{{d.desc}}</span>
-                          </div>
-                        </template>
+                    <div class="desc">
+                      <div class="flex">
+                        <h6>{{ skill.name }}</h6>
+                        <div class="param-group" v-html="skillParamsToHtml(skill)"></div>
                       </div>
-                    </span>
+                      <p><span v-html="descToHtml(skill)"></span><span v-if="skill.note" class="note" v-html="noteToHtml(skill)"></span></p>
+                      <span class="note">
+                        <div class="effect-group">
+                          <template v-for="(e, ei) in skill.effects">
+                            <div v-for="(d, di) in (selectedUnit.sim.affectedEffects[e.uid] ?? [])" class="effect-box" :key="`effect${ei}${di}`">
+                              <span :class="`effect ${d.effect.enabled ? 'caution' : ''}`">{{d.desc}}</span>
+                            </div>
+                          </template>
+                        </div>
+                      </span>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </template>
-          </div>
-          <div style="height: 300px;"></div>
+              </template>
+            </div>
+          </template>
         </div>
+        <div v-if="simulation" style="height: 300px;"></div>
 
       </div>
     </div>
@@ -1582,6 +1586,21 @@ export default {
       this.onDropUnit(this.findUnitByCoord(cell.coord));
     },
     dummyHandler() {
+    },
+
+    effectValuesToHtml(rate, fixed) {
+      let list = [];
+      for (const [name, value] of Object.entries(rate)) {
+        list.push(`${name}${value > 0 ? '+' : ''}${value}%`);
+      }
+      for (const [name, value] of Object.entries(fixed)) {
+        list.push(`${name}${value > 0 ? '+' : ''}${value}`);
+      }
+      return list.map(a => `
+<div class="effect-box">
+<span class="effect caution">${a}</span>
+</div>
+`);
     },
     //#endregion シミュレーション
 

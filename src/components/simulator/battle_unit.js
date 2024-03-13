@@ -703,15 +703,19 @@ export class SimUnit {
           tRate[e.type] += e.getValue(ctx, this);
         }
       };
+
+      const notForSupport = ["テクニック", "クリティカル率", "クリティカルダメージ倍率", "移動", "範囲"].includes(e.type);
       if (e.target == "自身(メイン)") {
         doit(e, mainRate, mainFixed);
       }
       else if (e.target == "自身(サポート)") {
-        doit(e, supRate, supFixed);
+        if (!notForSupport)
+          doit(e, supRate, supFixed);
       }
       else {
         doit(e, mainRate, mainFixed);
-        doit(e, supRate, supFixed);
+        if (!notForSupport)
+          doit(e, supRate, supFixed);
       }
     };
 
@@ -759,10 +763,19 @@ export class SimUnit {
       this.affectedEffects[uid].push(gen()); 
     }
 
-    this.main.bufRate = mainRate;
-    this.main.bufFixed = mainFixed;
-    this.support.bufRate = supRate;
-    this.support.bufFixed = supFixed;
+    const reorder = (dst) => {
+      let r = {};
+      for (const v of $vue().effectTypes) {
+        if (v in dst) {
+          r[v] = dst[v];
+        }
+      }
+      return r;
+    };
+    this.main.bufRate = reorder(mainRate);
+    this.main.bufFixed = reorder(mainFixed);
+    this.support.bufRate = reorder(supRate);
+    this.support.bufFixed = reorder(supFixed);
     //console.log(this);
   }
 
