@@ -1297,6 +1297,12 @@ export default {
         }
       }
 
+      Object.defineProperty(skill, 'effects', {
+        get: () => {
+          return [...(skill.buff ?? []), ...(skill.debuff ?? [])]
+        },
+      });
+
       // todo: まともなレベル選択処理
       if (!skill.desc && skill.descs) {
         skill.current = "Lv 6";

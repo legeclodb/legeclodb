@@ -522,6 +522,39 @@
                   </div>
                 </div>
               </div>
+
+              <div v-if="simulation && selectedUnit" class="character" style="align-items: flex-start; width: 1510px; max-width: 1510px;">
+                <h5>影響下にあるスキル</h5>
+                <div class="skills" style=" display: flex;">
+                  <template v-for="(skill, si) in selectedUnit.sim.affectedSkills">
+                    <div class="skill" style="width: 745px; max-width: 745px;" v-if="!skill.isNormalAttack" :class="getSkillClass(skill)" :key="`skill${si}`">
+                      <div class="flex">
+                        <div class="icon" :id="`unit${ui}_main_skill${si}`">
+                          <b-img-lazy :src="getImageURL(skill.icon)" with="50" height="50" />
+                        </div>
+                        <div class="desc">
+                          <div class="flex">
+                            <h6>{{ skill.name }}</h6>
+                            <div class="param-group" v-html="skillParamsToHtml(skill)"></div>
+                          </div>
+                          <p><span v-html="descToHtml(skill)"></span><span v-if="skill.note" class="note" v-html="noteToHtml(skill)"></span></p>
+                          <span class="note">
+                            <div class="effect-group">
+                              <template v-for="(e, ei) in skill.effects">
+                                <div v-for="(d, di) in (selectedUnit.sim.affectedEffects[e.uid] ?? [])" class="effect-box" :key="`effect${ei}${di}`">
+                                  <span :class="`effect ${d.effect.enabled ? 'caution' : ''}`">{{d.desc}}</span>
+                                </div>
+                              </template>
+                            </div>
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </template>
+                </div>
+              </div>
+
+              <div style="height: 300px;"></div>
             </div>
 
           </b-tab>

@@ -6,6 +6,15 @@ export function unique(array) {
     return self.indexOf(value) === index;
   });
 }
+export function count(enumerable, cond) {
+  let r = 0;
+  for (const e of enumerable) {
+    if (cond(e)) {
+      ++r;
+    }
+  }
+  return r;
+}
 
 export function callHandler(funcName, ctx, ...callees) {
   for (let c of callees) {
@@ -187,6 +196,10 @@ export function makeActionContext(unit, target = null, skill = null, parent = nu
           configurable: true,
           get: () => u.mainClass
         },
+        symbol: {
+          configurable: true,
+          get: () => u.symbol
+        },
         hp: {
           configurable: true,
           get: () => u.hpRate
@@ -266,6 +279,8 @@ export function makeActionContext(unit, target = null, skill = null, parent = nu
 
 export function makeSimEffect(effect, stop = false) {
   let self = Object.create(effect);
+  self.enabled = false; // シリアライズ不要
+
   let data = {};
   self.data = data; // serializable data
 

@@ -1,5 +1,5 @@
 import { $g } from "./battle_globals.js";
-import { callHandler, unique, makeSimSkill, makeSimEffect, evaluateCondition, makeActionContext } from "./battle_skill.js";
+import { callHandler, unique, count, makeSimSkill, makeSimEffect, evaluateCondition, makeActionContext } from "./battle_skill.js";
 
 function $vue() {
   return window.$vue;
@@ -295,6 +295,9 @@ export class SimUnit {
   areaEffects = []; // SimEffect
   timedEffects = []; // SimEffect
   score = 0;
+
+  affectedEffects = {};
+  affectedSkills = [];
   //#endregion fields
 
 
@@ -712,10 +715,49 @@ export class SimUnit {
     };
 
     for (const e of this.effects) {
+      e.enabled = false;
       if ((!e.ephemeral || ctx.onBattle) && evaluateCondition(ctx, e.condition)) {
+        e.enabled = true;
         add(e);
       }
     }
+
+    this.affectedSkills = unique(this.effects.flatMap(a => a.enabled ? a.parent : []));
+    this.affectedEffects = {};
+    for (let e of this.effects) {
+      if (["ランダム"].includes(e.type)) {
+        continue;
+      }
+      const uid = e.uid;
+      const gen = () => {
+        let type = e.type;
+        if (e.ephemeral) {
+          type += "(戦闘時)";
+        }
+        let value = `${e.isDebuff ? "" : "+"}${e.getValue(ctx, this)}`;
+        if (!e.add && !["移動", "射程(通常攻撃)", "射程(スキル)", "範囲", "トークン"].includes(e.type)) {
+          value += "%";
+        }
+        if (e.type == "トークン") {
+          type = e.tokenName;
+          value = "";
+        }
+        let cnt = "";
+        if (isFinite(e.count)) {
+          cnt = ` (${e.count}T)`
+        }
+        return {
+          desc: `${type}${value}${cnt}`,
+          effect: e,
+        };
+      };
+
+      if (!(uid in this.affectedEffects)) {
+        this.affectedEffects[uid] = [];
+      }
+      this.affectedEffects[uid].push(gen()); 
+    }
+
     this.main.bufRate = mainRate;
     this.main.bufFixed = mainFixed;
     this.support.bufRate = supRate;
@@ -936,6 +978,11 @@ export class SimUnit {
   onOwnTurnEnd(ctx) {
     this._callHandler("onOwnTurnEnd", ctx);
     this.resumeEffectDuration();
+    if (this.main.isNxNBoss) {
+      // NxN ボスは一連の行動が終わった直後にスキルのカウントが進むっぽいのだが、面倒なので自ターン終了時で代替する。
+      this.reduceSkillCT(1);
+      this.reduceEffectDuration();
+    }
     this.readyToAction = true;
   }
 
