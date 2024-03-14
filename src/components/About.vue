@@ -487,9 +487,10 @@ export default {
     this.specialBuffSkillsMulti = [];
     for (const skill of this.mainActive) {
       if (!skill.isSymbolSkill) {
-        for (const effect of skill.buff ?? []) {
-          if (effect.hasSpecialSlot) {
-            if (effect.target == "自身" || effect.target == "単体")
+        for (const e of skill.buff ?? []) {
+          if (e.type != "トークン" && e.hasSpecialSlot) {
+            const target = e.trigger?.target ?? e.target;
+            if (target == "自身" || (!target && skill.area == "単体"))
               this.specialBuffSkillsSingle.push(skill);
             else
               this.specialBuffSkillsMulti.push(skill);

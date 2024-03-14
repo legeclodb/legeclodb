@@ -2,6 +2,7 @@ import jsonImageTable from '../assets/image_table.json'
 import jsonConstants from '../assets/constants.json'
 import jsonRandomEffectTable from '../assets/random_effect_table.json'
 import jsonShape from '../assets/shape.json'
+import { download } from './utils'
 
 export default {
   data() {
@@ -1334,12 +1335,21 @@ export default {
         }
       }
 
-      skill.addOwner = (onwer) => {
+      skill.addOwner = (owner) => {
         if (!('owners' in skill)) {
           skill.owners = [];
         }
-        if (!skill.owners.includes(onwer)) {
-          skill.owners.push(onwer);
+        if (!skill.owners.includes(owner)) {
+          skill.owners.push(owner);
+        }
+
+        // シンボルスキルに条件を設定
+        if (skill.isSymbolSkill && owner.symbol) {
+          for (let e of skill.buff) {
+            if (!e.condition)
+              e.condition = {};
+            e.condition.onSymbol = [owner.symbol];
+          }
         }
       }
 

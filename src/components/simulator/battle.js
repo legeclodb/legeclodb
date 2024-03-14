@@ -1,6 +1,6 @@
 export * from "./battle_unit.js";
 export * from "./battle_skill.js";
-import { callHandler, unique, makeActionContext } from "./battle_skill.js";
+import { callHandler, unique, makeActionContext, evaluateCondition } from "./battle_skill.js";
 import { BaseUnit, SimUnit, isInside } from "./battle_unit.js";
 import { $g } from "./battle_globals.js";
 
@@ -314,6 +314,27 @@ export class SimContext {
     if (attacker.at(-1).isAlive && target.invokeDoubleAttack(actx)) {
       dMain.add(this.doAttack(dctx, target.main, attacker, null));
     }
+
+    let result = {
+      ctx: aMain.ctx,
+      attackerScore: aSup.total + aMain.total,
+      defenderScore: dSup.total + dMain.total,
+      apply() {
+        target.support.hp -= aSup.damageToSupport + aMain.damageToSupport;
+        target.main.hp -= aSup.damageToMain + aMain.damageToMain;
+        unit.support.hp -= dSup.damageToSupport + dMain.damageToSupport;
+        unit.main.hp -= dSup.damageToMain + dMain.damageToMain;
+      },
+    };
+    if (result.attackerScore) {
+      ctx.onCriticalHit = true; // とりあえずダメージを与えたらクリティカル扱い
+      ctx.onDamage = true;
+    }
+    if (result.defenderScore) {
+      dctx.onCriticalHit = true;
+      dctx.onDamage = true;
+    }
+
     callHandler("onAttackEnd", actx, unit);
     callHandler("onBattleEnd", actx, unit);
     callHandler("onAttackEnd", dctx, target);
@@ -321,18 +342,7 @@ export class SimContext {
 
     unit.eraseExpiredEffects();
     target.eraseExpiredEffects();
-
-    return {
-      ctx: aMain.ctx,
-      attackerScore: aSup.total + aMain.total,
-      defenderScore: dSup.total + dMain.total,
-      apply() {
-        target.support.hp -= aSup.damageToSupport + aMain.damageToSupport;
-        target.main.hp    -= aSup.damageToMain + aMain.damageToMain;
-        unit.support.hp   -= dSup.damageToSupport + dMain.damageToSupport;
-        unit.main.hp      -= dSup.damageToMain + dMain.damageToMain;
-      },
-    };
+    return result;
   }
 
   getAreaAttackResult(unit, skill, targets, ctx) {
@@ -364,7 +374,12 @@ export class SimContext {
         target.main.hp -= r[0].damageToMain + r[1].damageToMain;
       });
     }
+    if (result.attackerScore) {
+      ctx.onCriticalHit = true; // とりあえずダメージを与えたらクリティカル扱い
+      ctx.onDamage = true;
+    }
     callHandler("onAttackEnd", ctx, unit);
+
     unit.eraseExpiredEffects();
     return result;
   }
@@ -400,7 +415,7 @@ export class SimContext {
 
     // 条件変数を設定
     // 攻撃側
-    let ctx = makeActionContext(unit, target, skill);
+    let ctx = makeActionContext(unit, target, skill, true);
     ctx.targetCell = cell;
     ctx.targets = targets;
     if (skill && skill.isMainSkill && skill.damageRate) {
@@ -417,7 +432,7 @@ export class SimContext {
 
     // 待機の場合 skill は null
     if (skill) {
-      skill.onFire();
+      skill.startCoolTime();
 
       // 攻撃処理
       let result = null;
@@ -437,10 +452,6 @@ export class SimContext {
           this.score += result.attackerScore;
         }
 
-        if (ctx.damageDealt) {
-          ctx.onCriticalHit = true; // とりあえずダメージを与えたらクリティカル扱い
-          ctx.onDamage = true;
-        }
         if (target) {
           ctx.damageTaken = result.defenderScore;
           target.score += result.defenderScore;
@@ -451,28 +462,7 @@ export class SimContext {
         console.log(result);
       }
 
-      // バフ・デバフ発動
-      // ここで処理するのはスキル発動時効果のみで、攻撃前後や戦闘前後に発動するものは別途処理される
-      let ut = unique(targets);
-      for (let t of ut.filter(a => a.isPlayer == unit.isPlayer)) {
-        for (let e of skill?.buff ?? []) {
-          if (!e.trigger && (!e.target || e.target == "スキル対象" || (skill.isSelfTarget && t === unit))) {
-            t.applyEffect(e, target === unit);
-          }
-        }
-      }
-      for (let t of ut.filter(a => a.isPlayer != unit.isPlayer)) {
-        for (let e of skill?.debuff ?? []) {
-          if (!e.trigger && (!e.target || e.target == "スキル対象")) {
-            t.applyEffect(e);
-          }
-        }
-      }
-
-      skill.invokeSummon(ctx);
-      skill.invokeFixedDamage(ctx);
-      skill.invokeHeal(ctx);
-      skill.invokeCtReduction(ctx);
+      skill.onFire(ctx);
     }
 
     let killed = targets.filter(a => !a.isAlive);

@@ -644,7 +644,13 @@ export function makeSimSkill(skill, ownerUnit) {
     let succeeded = false;
     for (let act of self?.multiAction ?? []) {
       if (!act.coolTime && evaluateCondition(ctx, act.condition)) {
-        succeeded = true;
+        if (act.target == "スキル対象") {
+          ctx.target.readyToAction = true;
+          // 他者への再行動の場合 succeeded は false
+        }
+        else {
+          succeeded = true;
+        }
         if (act.ct) {
           act.coolTime = act.ct;
         }
@@ -683,8 +689,8 @@ export function makeSimSkill(skill, ownerUnit) {
   self.getDamageRate = function (ctx) {
     return self.damageRate;
   }
-  self.onFire = function () {
-    console.log(this);
+
+  self.startCoolTime = function () {
     if (this.isActive) {
       if (this.isSupportSkill) {
         this.coolTime = Infinity;
@@ -695,13 +701,40 @@ export function makeSimSkill(skill, ownerUnit) {
     }
   }
 
+  self.onFire = function (ctx) {
+    // バフ・デバフ発動
+    // ここで処理するのはスキル発動時効果のみで、攻撃前後や戦闘前後に発動するものは別途 trigger で処理される
+    let u = ctx.unit;
+    for (let t of unique(ctx.targets)) {
+      let tctx = makeActionContext(t);
+      // trigger がない効果を即時起動していく
+      for (let e of this.effects) {
+        if (!e.trigger && ((e.isBuff && t.isPlayer == u.isPlayer) || (e.isDebuff && t.isPlayer != u.isPlayer))) {
+          if ([undefined, "スキル対象", "攻撃対象"].includes(e.target) || (this.isSelfTarget && t === u)) {
+            if (evaluateCondition(tctx, e.condition)) {
+              t.applyEffect(e, u === t);
+            }
+          }
+        }
+      }
+    }
+
+    this.invokeSummon(ctx);
+    this.invokeFixedDamage(ctx);
+    this.invokeAreaDamage(ctx);
+    this.invokeHeal(ctx);
+    this.invokeCtReduction(ctx);
+    //console.log(this);
+  }
+
   self.trigger = function (ctx, timing) {
+    let u = ctx.unit;
     for (let e of this.effects) {
-      let tri = e?.trigger;
-      if (tri && tri.timing == timing && evaluateCondition(ctx, tri.condition)) {
-        let u = ctx.unit;
+      let tri = e.trigger;
+      if (tri && tri.timing == timing) {
         for (let t of unique(getTargetUnits(ctx, tri))) {
-          if ((e.isBuff && t.isPlayer == u.isPlayer) || (e.isDebuff && t.isPlayer != u.isPlayer)) {
+          ctx.target = t;
+          if (((e.isBuff && t.isPlayer == u.isPlayer) || (e.isDebuff && t.isPlayer != u.isPlayer)) && evaluateCondition(ctx, tri.condition)) {
             t.applyEffect(e, u === t);
           }
         }
