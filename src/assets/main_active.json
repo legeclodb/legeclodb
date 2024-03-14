@@ -472,7 +472,6 @@
         "type": "与ダメージ(物理)",
         "value": 10,
         "ephemeral": true,
-        "target": "自身",
         "timing": "戦闘前"
       }
     ],
@@ -6027,13 +6026,19 @@
         "type": "ディフェンス",
         "value": 15,
         "duration": 2,
-        "timing": "戦闘前"
+        "trigger": {
+          "target": "攻撃対象",
+          "timing": "戦闘前"
+        }
       },
       {
         "type": "レジスト",
         "value": 15,
         "duration": 2,
-        "timing": "戦闘前"
+        "trigger": {
+          "target": "攻撃対象",
+          "timing": "戦闘前"
+        }
       }
     ]
   },
@@ -6052,19 +6057,28 @@
         "type": "アタック",
         "value": 20,
         "duration": 2,
-        "timing": "戦闘前"
+        "trigger": {
+          "target": "攻撃対象",
+          "timing": "戦闘前"
+        }
       },
       {
         "type": "マジック",
         "value": 20,
         "duration": 2,
-        "timing": "戦闘前"
+        "trigger": {
+          "target": "攻撃対象",
+          "timing": "戦闘前"
+        }
       },
       {
         "type": "与ダメージ(スキル)",
         "value": 20,
         "duration": 2,
-        "timing": "戦闘後"
+        "trigger": {
+          "target": "攻撃対象",
+          "timing": "戦闘後"
+        }
       }
     ]
   },
@@ -6102,15 +6116,19 @@
         "type": "クリティカル率",
         "value": 15,
         "duration": 1,
-        "target": "自身",
-        "timing": "戦闘前"
+        "trigger": {
+          "target": "自身",
+          "timing": "戦闘前"
+        }
       },
       {
         "type": "クリティカルダメージ倍率",
         "value": 15,
         "duration": 1,
-        "target": "自身",
-        "timing": "戦闘前"
+        "trigger": {
+          "target": "自身",
+          "timing": "戦闘前"
+        }
       }
     ],
     "heal": [
@@ -6160,20 +6178,24 @@
         "type": "ダメージ耐性(物理)",
         "value": 15,
         "duration": 1,
-        "target": "自身",
-        "timing": "戦闘後",
-        "condition": {
-          "hp": [ "<=", 50 ]
+        "trigger": {
+          "target": "自身",
+          "timing": "戦闘後",
+          "condition": {
+            "hp": [ "<=", 50 ]
+          }
         }
       },
       {
         "type": "ダメージ耐性(魔法)",
         "value": 15,
         "duration": 1,
-        "target": "自身",
-        "timing": "戦闘後",
-        "condition": {
-          "hp": [ "<=", 50 ]
+        "trigger": {
+          "target": "自身",
+          "timing": "戦闘後",
+          "condition": {
+            "hp": [ "<=", 50 ]
+          }
         }
       }
     ],
@@ -6182,7 +6204,10 @@
         "type": "ダメージ耐性",
         "value": 20,
         "duration": 1,
-        "timing": "戦闘前"
+        "trigger": {
+          "target": "攻撃対象",
+          "timing": "戦闘前"
+        }
       }
     ],
     "heal": [
@@ -6212,20 +6237,24 @@
         "type": "ダメージ耐性(物理)",
         "value": 15,
         "duration": 2,
-        "target": "自身",
-        "timing": "戦闘後",
-        "condition": {
-          "hp": [ "<=", 65 ]
+        "trigger": {
+          "target": "自身",
+          "timing": "戦闘後",
+          "condition": {
+            "hp": [ "<=", 65 ]
+          }
         }
       },
       {
         "type": "ダメージ耐性(魔法)",
         "value": 15,
         "duration": 2,
-        "target": "自身",
-        "timing": "戦闘後",
-        "condition": {
-          "hp": [ "<=", 65 ]
+        "trigger": {
+          "target": "自身",
+          "timing": "戦闘後",
+          "condition": {
+            "hp": [ "<=", 65 ]
+          }
         }
       }
     ],
@@ -6234,7 +6263,10 @@
         "type": "ダメージ耐性",
         "value": 20,
         "duration": 1,
-        "timing": "戦闘前"
+        "trigger": {
+          "target": "攻撃対象",
+          "timing": "戦闘前"
+        }
       }
     ],
     "heal": [
@@ -6328,19 +6360,28 @@
         "type": "アタック",
         "value": 10,
         "duration": 2,
-        "timing": "戦闘前"
+        "trigger": {
+          "target": "攻撃対象",
+          "timing": "戦闘前"
+        }
       },
       {
         "type": "マジック",
         "value": 10,
         "duration": 2,
-        "timing": "戦闘前"
+        "trigger": {
+          "target": "攻撃対象",
+          "timing": "戦闘前"
+        }
       },
       {
         "type": "ダメージ耐性",
         "value": 10,
         "duration": 2,
-        "timing": "戦闘前"
+        "trigger": {
+          "target": "攻撃対象",
+          "timing": "戦闘前"
+        }
       }
     ]
   },
@@ -6359,8 +6400,10 @@
         "type": "クリティカルダメージ倍率",
         "value": 30,
         "duration": 1,
-        "target": "自身",
-        "timing": "戦闘前"
+        "trigger": {
+          "target": "自身",
+          "timing": "戦闘前"
+        }
       }
     ],
     "ctReduction": [
@@ -6434,18 +6477,18 @@
         "timing": "戦闘前"
       }
     ],
-    "ctReduction": [
+    "supportAttack": [
       {
-        "value": 3,
-        "target": "自身",
-        "targetSkill": "使用したスキル",
         "condition": {
           "targetHp": [ ">=", 50 ]
         }
       }
     ],
-    "supportAttack": [
+    "ctReduction": [
       {
+        "value": 3,
+        "target": "自身",
+        "targetSkill": "使用したスキル",
         "condition": {
           "targetHp": [ ">=", 50 ]
         }
@@ -6485,8 +6528,10 @@
         "type": "ディフェンス無視",
         "value": 20,
         "ephemeral": true,
-        "target": "自身",
-        "timing": "攻撃前"
+        "trigger": {
+          "target": "自身",
+          "timing": "攻撃前"
+        }
       }
     ]
   },
@@ -6511,13 +6556,19 @@
         "type": "ディフェンス",
         "value": 20,
         "duration": 2,
-        "timing": "戦闘前"
+        "trigger": {
+          "target": "攻撃対象",
+          "timing": "戦闘前"
+        }
       },
       {
         "type": "レジスト",
         "value": 20,
         "duration": 2,
-        "timing": "戦闘前"
+        "trigger": {
+          "target": "攻撃対象",
+          "timing": "戦闘前"
+        }
       }
     ],
     "multiAction": [
@@ -6543,7 +6594,10 @@
         "type": "与ダメージ",
         "value": 10,
         "duration": 2,
-        "timing": "戦闘前"
+        "trigger": {
+          "target": "自身",
+          "timing": "戦闘前"
+        }
       }
     ]
   },
@@ -6563,15 +6617,19 @@
         "type": "アタック",
         "value": 20,
         "duration": 2,
-        "target": "自身",
-        "timing": "攻撃前"
+        "trigger": {
+          "target": "自身",
+          "timing": "戦闘前"
+        }
       },
       {
         "type": "ディフェンス",
         "value": 20,
         "duration": 2,
-        "target": "自身",
-        "timing": "攻撃前"
+        "trigger": {
+          "target": "自身",
+          "timing": "戦闘前"
+        }
       }
     ]
   },
@@ -6590,19 +6648,28 @@
         "type": "アタック",
         "value": 15,
         "duration": 2,
-        "timing": "戦闘後"
+        "trigger": {
+          "target": "攻撃対象",
+          "timing": "戦闘後"
+        }
       },
       {
         "type": "マジック",
         "value": 15,
         "duration": 2,
-        "timing": "戦闘後"
+        "trigger": {
+          "target": "攻撃対象",
+          "timing": "戦闘後"
+        }
       },
       {
         "type": "ダメージ耐性",
         "value": 15,
         "duration": 2,
-        "timing": "戦闘後"
+        "trigger": {
+          "target": "攻撃対象",
+          "timing": "戦闘後"
+        }
       }
     ]
   },
@@ -6707,7 +6774,7 @@
     ],
     "multiAction": [
       {
-        "target": "単体"
+        "target": "スキル対象"
       }
     ]
   },
@@ -6726,15 +6793,20 @@
         "type": "クリティカル率",
         "value": 30,
         "duration": 1,
-        "target": "自身",
-        "timing": "戦闘前"
+        "trigger": {
+          "target": "自身",
+          "timing": "戦闘前"
+        }
       }
     ],
     "statusEffects": [
       {
         "type": "パッシブスキル使用不可",
         "duration": 2,
-        "timing": "戦闘後"
+        "trigger": {
+          "target": "攻撃対象",
+          "timing": "戦闘後"
+        }
       }
     ]
   },
@@ -6753,8 +6825,10 @@
         "type": "クリティカル率",
         "value": 40,
         "duration": 2,
-        "target": "自身",
-        "timing": "戦闘前"
+        "trigger": {
+          "target": "自身",
+          "timing": "戦闘前"
+        }
       }
     ],
     "statusEffects": [
@@ -6779,15 +6853,21 @@
         "type": "クリティカル率",
         "value": 20,
         "duration": 1,
-        "target": "自身",
-        "timing": "敵撃破時"
+        "trigger": {
+          "target": "自身",
+          "timing": "敵撃破時"
+        }
       }
     ],
     "debuff": [
       {
         "type": "レジスト",
         "value": 10,
-        "duration": 1
+        "duration": 1,
+        "trigger": {
+          "target": "攻撃対象",
+          "timing": "戦闘前"
+        }
       }
     ]
   },
@@ -6806,22 +6886,30 @@
         "type": "クリティカルダメージ倍率",
         "value": 20,
         "duration": 1,
-        "target": "自身",
-        "timing": "敵撃破時"
+        "trigger": {
+          "target": "自身",
+          "timing": "敵撃破時"
+        }
       },
       {
         "type": "クリティカル率",
         "value": 20,
         "duration": 1,
-        "target": "自身",
-        "timing": "敵撃破時"
+        "trigger": {
+          "target": "自身",
+          "timing": "敵撃破時"
+        }
       }
     ],
     "debuff": [
       {
         "type": "レジスト",
         "value": 20,
-        "duration": 1
+        "duration": 1,
+        "trigger": {
+          "target": "攻撃対象",
+          "timing": "戦闘前"
+        }
       }
     ]
   },
@@ -6981,7 +7069,10 @@
         "type": "ダメージ耐性(魔法)",
         "value": 20,
         "ephemeral": true,
-        "timing": "戦闘前"
+        "trigger": {
+          "target": "攻撃対象",
+          "timing": "戦闘前"
+        }
       }
     ]
   },
@@ -7000,9 +7091,12 @@
         "type": "ダメージ耐性",
         "value": 10,
         "duration": 1,
-        "timing": "戦闘後",
-        "condition": {
-          "targetHp": [ ">=", 50 ]
+        "trigger": {
+          "target": "攻撃対象",
+          "timing": "戦闘後",
+          "condition": {
+            "targetHp": [ ">=", 50 ]
+          }
         }
       }
     ]
@@ -7051,7 +7145,10 @@
         "type": "与ダメージ",
         "value": 20,
         "duration": 2,
-        "timing": "戦闘後"
+        "trigger": {
+          "target": "攻撃対象",
+          "timing": "戦闘後"
+        }
       }
     ]
   },
@@ -7070,7 +7167,10 @@
         "type": "ダメージ耐性(物理)",
         "value": 20,
         "duration": 1,
-        "timing": "戦闘前"
+        "trigger": {
+          "target": "攻撃対象",
+          "timing": "戦闘前"
+        }
       }
     ]
   },
@@ -7115,12 +7215,20 @@
       {
         "type": "アタック",
         "value": 10,
-        "duration": 1
+        "duration": 1,
+        "trigger": {
+          "target": "攻撃対象",
+          "timing": "戦闘前"
+        }
       },
       {
         "type": "マジック",
         "value": 10,
-        "duration": 1
+        "duration": 1,
+        "trigger": {
+          "target": "攻撃対象",
+          "timing": "戦闘前"
+        }
       }
     ]
   },
@@ -7138,12 +7246,20 @@
       {
         "type": "レジスト",
         "value": 30,
-        "duration": 1
+        "duration": 1,
+        "trigger": {
+          "target": "攻撃対象",
+          "timing": "戦闘前"
+        }
       },
       {
         "type": "ダメージ耐性(魔法)",
         "value": 10,
-        "duration": 1
+        "duration": 1,
+        "trigger": {
+          "target": "攻撃対象",
+          "timing": "戦闘前"
+        }
       }
     ],
     "multiAction": [
@@ -7203,7 +7319,6 @@
         "ephemeral": true,
         "duration": 4,
         "slot": "加護",
-        "timing": "戦闘前",
         "condition": {
           "onOwnTurn": true
         }
@@ -7214,7 +7329,6 @@
         "ephemeral": true,
         "duration": 4,
         "slot": "加護",
-        "timing": "戦闘前",
         "condition": {
           "onOwnTurn": true
         }
@@ -7243,8 +7357,10 @@
         "type": "アタック",
         "value": 20,
         "duration": 1,
-        "target": "自身",
-        "timing": "戦闘前"
+        "trigger": {
+          "target": "自身",
+          "timing": "戦闘前"
+        }
       }
     ]
   },
@@ -7290,13 +7406,19 @@
         "type": "ディフェンス",
         "value": 10,
         "duration": 1,
-        "timing": "戦闘前"
+        "trigger": {
+          "target": "攻撃対象",
+          "timing": "戦闘前"
+        }
       },
       {
         "type": "レジスト",
         "value": 10,
         "duration": 1,
-        "timing": "戦闘前"
+        "trigger": {
+          "target": "攻撃対象",
+          "timing": "戦闘前"
+        }
       }
     ]
   },
@@ -7316,7 +7438,7 @@
         "value": 10,
         "duration": 1,
         "trigger": {
-          "target": "スキル対象",
+          "target": "攻撃対象",
           "timing": "戦闘前"
         }
       },
@@ -7325,7 +7447,7 @@
         "value": 10,
         "duration": 1,
         "trigger": {
-          "target": "スキル対象",
+          "target": "攻撃対象",
           "timing": "戦闘前"
         }
       }
@@ -7378,7 +7500,10 @@
         "type": "ダメージ耐性(物理)",
         "value": 10,
         "duration": 1,
-        "timing": "戦闘前"
+        "trigger": {
+          "target": "攻撃対象",
+          "timing": "戦闘前"
+        }
       }
     ],
     "ctReduction": [
@@ -7409,8 +7534,10 @@
         "type": "与ダメージ(範囲スキル)",
         "value": 30,
         "ephemeral": true,
-        "target": "自身",
-        "timing": "攻撃前"
+        "trigger": {
+          "target": "自身",
+          "timing": "攻撃前"
+        }
       }
     ],
     "debuff": [
@@ -7437,13 +7564,19 @@
         "type": "ディフェンス",
         "value": 10,
         "duration": 1,
-        "timing": "戦闘前"
+        "trigger": {
+          "target": "攻撃対象",
+          "timing": "戦闘前"
+        }
       },
       {
         "type": "ダメージ耐性(物理)",
         "value": 10,
         "duration": 1,
-        "timing": "戦闘前"
+        "trigger": {
+          "target": "攻撃対象",
+          "timing": "戦闘前"
+        }
       }
     ],
     "multiAction": [
@@ -7498,8 +7631,10 @@
         "type": "クリティカル率",
         "value": 30,
         "duration": 2,
-        "target": "自身",
-        "timing": "攻撃前"
+        "trigger": {
+          "target": "自身",
+          "timing": "攻撃前"
+        }
       }
     ]
   },
@@ -7518,7 +7653,10 @@
         "type": "ダメージ耐性(魔法)",
         "value": 20,
         "duration": 1,
-        "timing": "戦闘前"
+        "trigger": {
+          "target": "攻撃対象",
+          "timing": "戦闘前"
+        }
       }
     ]
   },
@@ -7612,8 +7750,10 @@
         "type": "クリティカル率",
         "value": 20,
         "duration": 2,
-        "target": "自身",
-        "timing": "戦闘前"
+        "trigger": {
+          "target": "自身",
+          "timing": "戦闘前"
+        }
       }
     ],
     "multiAction": [ {} ]
@@ -7724,8 +7864,10 @@
         "type": "クリティカル率",
         "value": 25,
         "duration": 2,
-        "target": "自身",
-        "timing": "戦闘前"
+        "trigger": {
+          "target": "自身",
+          "timing": "戦闘前"
+        }
       },
       {
         "type": "クリティカルダメージ倍率",
@@ -7815,8 +7957,10 @@
         "type": "与ダメージ",
         "value": 20,
         "duration": 2,
-        "target": "味方全体",
-        "timing": "戦闘後"
+        "trigger": {
+          "target": "味方全体",
+          "timing": "戦闘後"
+        }
       }
     ],
     "heal": [
@@ -7947,7 +8091,7 @@
         "ephemeral": true,
         "duration": 4,
         "slot": "加護",
-        "timing": "行動前",
+        "timing": "攻撃前",
         "condition": {
           "onActiveSkill": true
         }
@@ -7958,7 +8102,7 @@
         "ephemeral": true,
         "duration": 4,
         "slot": "加護",
-        "timing": "行動前",
+        "timing": "攻撃前",
         "condition": {
           "onActiveSkill": true
         }
@@ -7980,7 +8124,10 @@
         "type": "ダメージ耐性(物理)",
         "value": 20,
         "duration": 1,
-        "timing": "戦闘前"
+        "trigger": {
+          "target": "攻撃対象",
+          "timing": "戦闘前"
+        }
       }
     ],
     "supportAttack": [ {} ]
@@ -8034,7 +8181,6 @@
         "ephemeral": true,
         "duration": 4,
         "slot": "加護",
-        "timing": "戦闘前",
         "condition": {
           "hp": [ ">=", 50 ]
         }
@@ -8045,7 +8191,6 @@
         "ephemeral": true,
         "duration": 4,
         "slot": "加護",
-        "timing": "戦闘前",
         "condition": {
           "hp": [ ">=", 50 ]
         }
@@ -8066,7 +8211,8 @@
       {
         "type": "ダメージ割合",
         "rate": 0.3,
-        "target": "自身"
+        "target": "自身",
+        "timing": "戦闘後"
       }
     ],
     "buff": [
@@ -8074,8 +8220,10 @@
         "type": "クリティカル率",
         "value": 20,
         "duration": 1,
-        "target": "自身",
-        "timing": "戦闘前"
+        "trigger": {
+          "target": "自身",
+          "timing": "戦闘前"
+        }
       }
     ]
   },
@@ -8193,15 +8341,19 @@
         "type": "与ダメージ",
         "value": 10,
         "duration": 2,
-        "target": "自身",
-        "timing": "敵撃破時"
+        "trigger": {
+          "target": "自身",
+          "timing": "敵撃破時"
+        }
       },
       {
         "type": "移動",
         "value": 1,
         "duration": 2,
-        "target": "自身",
-        "timing": "敵撃破時"
+        "trigger": {
+          "target": "自身",
+          "timing": "敵撃破時"
+        }
       }
     ],
     "debuff": [
@@ -8209,7 +8361,10 @@
         "type": "レジスト",
         "value": 20,
         "duration": 2,
-        "timing": "戦闘前"
+        "trigger": {
+          "target": "攻撃対象",
+          "timing": "戦闘前"
+        }
       }
     ],
     "tags": [ "移動+" ]
@@ -8247,15 +8402,19 @@
         "type": "クリティカル率",
         "value": 20,
         "duration": 2,
-        "target": "自身",
-        "timing": "攻撃前"
+        "trigger": {
+          "target": "自身",
+          "timing": "攻撃前"
+        }
       },
       {
         "type": "クリティカルダメージ倍率",
         "value": 20,
         "duration": 2,
-        "target": "自身",
-        "timing": "攻撃前"
+        "trigger": {
+          "target": "自身",
+          "timing": "攻撃前"
+        }
       }
     ]
   },
@@ -8274,7 +8433,10 @@
         "type": "ディフェンス",
         "value": 30,
         "duration": 2,
-        "timing": "戦闘前"
+        "trigger": {
+          "target": "攻撃対象",
+          "timing": "戦闘前"
+        }
       }
     ],
     "multiAction": [ {} ],
@@ -8294,7 +8456,8 @@
       {
         "type": "ダメージ割合",
         "rate": 0.3,
-        "target": "自身"
+        "target": "自身",
+        "timing": "戦闘後"
       }
     ]
   },
@@ -8360,27 +8523,32 @@
     "range": 1,
     "cost": 2,
     "damageRate": 1.8,
-    "heal": [
-      {
-        "type": "ダメージ割合",
-        "rate": 0.25,
-        "target": "自身"
-      }
-    ],
     "buff": [
       {
         "type": "ディフェンス",
         "value": 25,
         "duration": 2,
-        "target": "自身",
-        "timing": "戦闘前"
+        "trigger": {
+          "target": "自身",
+          "timing": "戦闘前"
+        }
       },
       {
         "type": "レジスト",
         "value": 25,
         "duration": 2,
+        "trigger": {
+          "target": "自身",
+          "timing": "戦闘前"
+        }
+      }
+    ],
+    "heal": [
+      {
+        "type": "ダメージ割合",
+        "rate": 0.25,
         "target": "自身",
-        "timing": "戦闘前"
+        "timing": "戦闘後"
       }
     ]
   },
@@ -8399,15 +8567,19 @@
         "type": "クリティカル率",
         "value": 20,
         "duration": 2,
-        "target": "自身",
-        "timing": "戦闘前"
+        "trigger": {
+          "target": "自身",
+          "timing": "戦闘前"
+        }
       },
       {
         "type": "クリティカルダメージ倍率",
         "value": 20,
         "duration": 2,
-        "target": "自身",
-        "timing": "戦闘前"
+        "trigger": {
+          "target": "自身",
+          "timing": "戦闘前"
+        }
       }
     ],
     "ctReduction": [
@@ -8436,8 +8608,10 @@
         "type": "与ダメージ(魔法)",
         "value": 20,
         "duration": 2,
-        "target": "自身",
-        "timing": "戦闘前"
+        "trigger": {
+          "target": "自身",
+          "timing": "戦闘前"
+        }
       }
     ],
     "supportAttack": [ {} ]
@@ -8491,7 +8665,6 @@
         "ephemeral": true,
         "duration": 4,
         "slot": "加護",
-        "timing": "戦闘前",
         "condition": {
           "hp": [ ">=", 50 ]
         }
@@ -8502,7 +8675,6 @@
         "ephemeral": true,
         "duration": 4,
         "slot": "加護",
-        "timing": "戦闘前",
         "condition": {
           "hp": [ ">=", 50 ]
         }
@@ -8524,7 +8696,10 @@
         "type": "レジスト",
         "value": 15,
         "duration": 1,
-        "timing": "戦闘前"
+        "trigger": {
+          "target": "攻撃対象",
+          "timing": "戦闘前"
+        }
       }
     ]
   },
@@ -8543,15 +8718,19 @@
         "type": "ディフェンス",
         "value": 30,
         "duration": 1,
-        "target": "自身",
-        "timing": "戦闘後"
+        "trigger": {
+          "target": "自身",
+          "timing": "戦闘後"
+        }
       },
       {
         "type": "レジスト",
         "value": 30,
         "duration": 1,
-        "target": "自身",
-        "timing": "戦闘後"
+        "trigger": {
+          "target": "自身",
+          "timing": "戦闘後"
+        }
       }
     ],
     "debuff": [
@@ -8559,7 +8738,10 @@
         "type": "レジスト",
         "value": 25,
         "duration": 2,
-        "timing": "戦闘前"
+        "trigger": {
+          "target": "攻撃対象",
+          "timing": "戦闘前"
+        }
       }
     ]
   },
@@ -8665,15 +8847,19 @@
         "type": "クリティカル率",
         "value": 20,
         "duration": 2,
-        "target": "自身",
-        "timing": "攻撃前"
+        "trigger": {
+          "target": "自身",
+          "timing": "戦闘前"
+        }
       },
       {
         "type": "クリティカルダメージ倍率",
         "value": 20,
         "duration": 2,
-        "target": "自身",
-        "timing": "攻撃前"
+        "trigger": {
+          "target": "自身",
+          "timing": "戦闘前"
+        }
       }
     ],
     "statusEffects": [
@@ -8701,8 +8887,10 @@
         "type": "与ダメージ(スキル)",
         "value": 15,
         "duration": 2,
-        "target": "自身",
-        "timing": "戦闘前"
+        "trigger": {
+          "target": "自身",
+          "timing": "戦闘前"
+        }
       }
     ],
     "multiAction": [
@@ -8728,8 +8916,10 @@
         "type": "与ダメージ(スキル)",
         "value": 20,
         "duration": 2,
-        "target": "自身",
-        "timing": "戦闘前"
+        "trigger": {
+          "target": "自身",
+          "timing": "戦闘前"
+        }
       }
     ],
     "multiAction": [
@@ -8825,15 +9015,19 @@
         "type": "ダメージ耐性",
         "value": 20,
         "duration": 2,
-        "target": "自身",
-        "timing": "戦闘前"
+        "trigger": {
+          "target": "自身",
+          "timing": "戦闘前"
+        }
       },
       {
         "type": "クリティカルダメージ倍率",
         "value": 20,
         "duration": 2,
-        "target": "自身",
-        "timing": "戦闘前"
+        "trigger": {
+          "target": "自身",
+          "timing": "戦闘前"
+        }
       }
     ]
   },
@@ -8852,8 +9046,10 @@
         "type": "クリティカル率",
         "value": 20,
         "duration": 2,
-        "target": "自身",
-        "timing": "戦闘後"
+        "trigger": {
+          "target": "自身",
+          "timing": "戦闘後"
+        }
       }
     ],
     "supportAttack": [ {} ]
@@ -8873,15 +9069,19 @@
         "type": "ダメージ耐性",
         "value": 20,
         "duration": 3,
-        "target": "自身",
-        "timing": "戦闘前"
+        "trigger": {
+          "target": "自身",
+          "timing": "戦闘前"
+        }
       },
       {
         "type": "与ダメージ(通常攻撃)",
         "value": 20,
         "duration": 3,
-        "target": "自身",
-        "timing": "戦闘前"
+        "trigger": {
+          "target": "自身",
+          "timing": "戦闘前"
+        }
       }
     ]
   },
@@ -8931,15 +9131,19 @@
         "type": "アタック",
         "value": 30,
         "duration": 2,
-        "target": "自身",
-        "timing": "戦闘前"
+        "trigger": {
+          "target": "自身",
+          "timing": "戦闘前"
+        }
       },
       {
         "type": "ディフェンス",
         "value": 30,
         "duration": 2,
-        "target": "自身",
-        "timing": "戦闘前"
+        "trigger": {
+          "target": "自身",
+          "timing": "戦闘前"
+        }
       }
     ]
   },
@@ -8958,7 +9162,10 @@
         "type": "ダメージ耐性",
         "value": 10,
         "duration": 1,
-        "timing": "戦闘前"
+        "trigger": {
+          "target": "攻撃対象",
+          "timing": "戦闘前"
+        }
       }
     ]
   },
@@ -9267,6 +9474,7 @@
         "type": "ダメージ割合",
         "rate": 0.1,
         "target": "味方全体",
+        "timing": "戦闘後",
         "condition": {
           "onCriticalHit": true
         }
@@ -9289,8 +9497,10 @@
         "type": "クリティカル率",
         "value": 20,
         "duration": 1,
-        "target": "自身",
-        "timing": "戦闘前"
+        "trigger": {
+          "target": "自身",
+          "timing": "戦闘前"
+        }
       }
     ],
     "heal": [
@@ -9386,8 +9596,10 @@
         "type": "クリティカル率",
         "value": 15,
         "duration": 1,
-        "target": "自身",
-        "timing": "戦闘前"
+        "trigger": {
+          "target": "自身",
+          "timing": "戦闘前"
+        }
       }
     ]
   },
@@ -9431,9 +9643,16 @@
         "type": "ダメージ耐性",
         "value": 15,
         "duration": 1,
-        "timing": "戦闘前",
-        "condition": {
-          "targetHp": [ ">=", 75 ]
+        "trigger": {
+          "target": "攻撃対象",
+          "timing": "戦闘前",
+          "condition": {
+            "token": {
+              "tokenName": "オシリス神の啓示",
+              "compare": [ ">=", 3 ]
+            },
+            "targetHp": [ ">=", 75 ]
+          }
         }
       }
     ]
@@ -9453,14 +9672,20 @@
         "type": "ダメージ耐性",
         "value": 20,
         "duration": 2,
-        "timing": "戦闘後"
+        "trigger": {
+          "target": "攻撃対象",
+          "timing": "戦闘後"
+        }
       }
     ],
     "statusEffects": [
       {
         "type": "スタン",
         "duration": 2,
-        "timing": "戦闘後"
+        "trigger": {
+          "target": "攻撃対象",
+          "timing": "戦闘後"
+        }
       }
     ]
   },
@@ -9479,13 +9704,19 @@
         "type": "レジスト",
         "value": 30,
         "duration": 1,
-        "timing": "戦闘前"
+        "trigger": {
+          "target": "攻撃対象",
+          "timing": "戦闘前"
+        }
       },
       {
         "type": "ダメージ耐性(魔法)",
         "value": 30,
         "duration": 1,
-        "timing": "戦闘前"
+        "trigger": {
+          "target": "攻撃対象",
+          "timing": "戦闘前"
+        }
       }
     ]
   },
@@ -9665,7 +9896,10 @@
         "type": "ディフェンス",
         "value": 30,
         "duration": 1,
-        "timing": "戦闘前"
+        "trigger": {
+          "target": "攻撃対象",
+          "timing": "戦闘前"
+        }
       }
     ]
   },
@@ -9975,7 +10209,10 @@
         "type": "与ダメージ(スキル)",
         "value": 30,
         "duration": 2,
-        "target": "自身"
+        "trigger": {
+          "target": "自身",
+          "timing": "戦闘前"
+        }
       }
     ]
   },
@@ -9994,13 +10231,19 @@
         "type": "与ダメージ(スキル)",
         "value": 30,
         "duration": 2,
-        "target": "自身"
+        "trigger": {
+          "target": "自身",
+          "timing": "戦闘前"
+        }
       },
       {
         "type": "ダメージ耐性",
         "value": 20,
         "duration": 2,
-        "target": "自身"
+        "trigger": {
+          "target": "自身",
+          "timing": "戦闘前"
+        }
       }
     ]
   },
@@ -10018,7 +10261,11 @@
       {
         "type": "ダメージ耐性",
         "value": 10,
-        "duration": 2
+        "duration": 2,
+        "trigger": {
+          "target": "攻撃対象",
+          "timing": "戦闘前"
+        }
       }
     ]
   },
@@ -10043,15 +10290,19 @@
         "type": "アタック",
         "value": 20,
         "duration": 2,
-        "target": "自身",
-        "timing": "戦闘前"
+        "trigger": {
+          "target": "自身",
+          "timing": "戦闘前"
+        }
       },
       {
         "type": "マジック",
         "value": 20,
         "duration": 2,
-        "target": "自身",
-        "timing": "戦闘前"
+        "trigger": {
+          "target": "自身",
+          "timing": "戦闘前"
+        }
       }
     ],
     "debuff": [
@@ -10059,7 +10310,10 @@
         "type": "ダメージ耐性",
         "value": 15,
         "duration": 2,
-        "timing": "戦闘前"
+        "trigger": {
+          "target": "攻撃対象",
+          "timing": "戦闘前"
+        }
       }
     ],
     "multiMove": [
@@ -10236,15 +10490,19 @@
         "type": "アタック",
         "value": 25,
         "ephemeral": true,
-        "target": "自身",
-        "timing": "戦闘前"
+        "trigger": {
+          "target": "自身",
+          "timing": "戦闘前"
+        }
       },
       {
         "type": "ディフェンス",
         "value": 25,
         "ephemeral": true,
-        "target": "自身",
-        "timing": "戦闘前"
+        "trigger": {
+          "target": "自身",
+          "timing": "戦闘前"
+        }
       }
     ],
     "supportAttack": [ {} ]
@@ -10264,7 +10522,10 @@
         "type": "ダメージ耐性",
         "value": 30,
         "duration": 3,
-        "timing": "戦闘前"
+        "trigger": {
+          "target": "攻撃対象",
+          "timing": "戦闘前"
+        }
       }
     ]
   },
@@ -10283,8 +10544,10 @@
         "type": "与ダメージ",
         "value": 10,
         "duration": 3,
-        "target": "自身",
-        "timing": "戦闘前"
+        "trigger": {
+          "target": "自身",
+          "timing": "戦闘前"
+        }
       }
     ],
     "debuff": [
@@ -10292,7 +10555,10 @@
         "type": "ダメージ耐性",
         "value": 30,
         "duration": 3,
-        "timing": "戦闘前"
+        "trigger": {
+          "target": "攻撃対象",
+          "timing": "戦闘前"
+        }
       }
     ]
   },
@@ -10411,7 +10677,7 @@
         "value": 15,
         "duration": 1,
         "trigger": {
-          "target": "スキル対象",
+          "target": "攻撃対象",
           "timing": "戦闘前"
         }
       }
@@ -10775,7 +11041,7 @@
         "value": 10,
         "duration": 1,
         "trigger": {
-          "target": "スキル対象",
+          "target": "攻撃対象",
           "timing": "攻撃後"
         }
       },
@@ -10784,7 +11050,7 @@
         "value": 10,
         "duration": 1,
         "trigger": {
-          "target": "スキル対象",
+          "target": "攻撃対象",
           "timing": "攻撃後"
         }
       },
@@ -10793,7 +11059,7 @@
         "value": 2,
         "duration": 1,
         "trigger": {
-          "target": "スキル対象",
+          "target": "攻撃対象",
           "timing": "攻撃後"
         }
       }
@@ -11202,7 +11468,7 @@
         "value": 20,
         "duration": 2,
         "trigger": {
-          "target": "スキル対象",
+          "target": "攻撃対象",
           "timing": "戦闘前"
         }
       }
@@ -11224,7 +11490,7 @@
         "value": 25,
         "duration": 2,
         "trigger": {
-          "target": "スキル対象",
+          "target": "攻撃対象",
           "timing": "戦闘前"
         }
       }
@@ -11675,7 +11941,7 @@
         "value": 20,
         "duration": 2,
         "trigger": {
-          "target": "スキル対象",
+          "target": "攻撃対象",
           "timing": "戦闘前"
         }
       },
@@ -11684,7 +11950,7 @@
         "value": 20,
         "duration": 2,
         "trigger": {
-          "target": "スキル対象",
+          "target": "攻撃対象",
           "timing": "戦闘前"
         }
       }
@@ -11706,7 +11972,7 @@
         "value": 30,
         "duration": 2,
         "trigger": {
-          "target": "スキル対象",
+          "target": "攻撃対象",
           "timing": "戦闘前"
         }
       },
@@ -11715,7 +11981,7 @@
         "value": 30,
         "duration": 2,
         "trigger": {
-          "target": "スキル対象",
+          "target": "攻撃対象",
           "timing": "戦闘前"
         }
       }
@@ -11754,7 +12020,7 @@
         "value": 15,
         "duration": 2,
         "trigger": {
-          "target": "スキル対象",
+          "target": "攻撃対象",
           "timing": "戦闘前"
         }
       },
@@ -11763,7 +12029,7 @@
         "value": 15,
         "duration": 2,
         "trigger": {
-          "target": "スキル対象",
+          "target": "攻撃対象",
           "timing": "戦闘前"
         }
       },
@@ -11772,7 +12038,7 @@
         "value": 2,
         "duration": 2,
         "trigger": {
-          "target": "スキル対象",
+          "target": "攻撃対象",
           "timing": "戦闘前"
         }
       }
@@ -11876,7 +12142,7 @@
         "value": 20,
         "duration": 2,
         "trigger": {
-          "target": "スキル対象",
+          "target": "攻撃対象",
           "timing": "戦闘前"
         }
       },
@@ -11885,7 +12151,7 @@
         "value": 20,
         "duration": 2,
         "trigger": {
-          "target": "スキル対象",
+          "target": "攻撃対象",
           "timing": "戦闘前"
         }
       }
@@ -11907,7 +12173,7 @@
         "value": 30,
         "duration": 2,
         "trigger": {
-          "target": "スキル対象",
+          "target": "攻撃対象",
           "timing": "戦闘前"
         }
       },
@@ -11916,7 +12182,7 @@
         "value": 25,
         "duration": 2,
         "trigger": {
-          "target": "スキル対象",
+          "target": "攻撃対象",
           "timing": "戦闘前"
         }
       }
@@ -12197,7 +12463,7 @@
         "value": 15,
         "duration": 1,
         "trigger": {
-          "target": "スキル対象",
+          "target": "攻撃対象",
           "timing": "戦闘前"
         }
       }
@@ -12227,7 +12493,7 @@
         "value": 20,
         "duration": 2,
         "trigger": {
-          "target": "スキル対象",
+          "target": "攻撃対象",
           "timing": "戦闘前"
         }
       }
@@ -12376,7 +12642,7 @@
         "value": 20,
         "duration": 1,
         "trigger": {
-          "target": "スキル対象",
+          "target": "攻撃対象",
           "timing": "戦闘前"
         }
       }

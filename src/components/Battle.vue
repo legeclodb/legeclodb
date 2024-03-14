@@ -1,5 +1,5 @@
 <template>
-  <div class="root" @mousemove="onMouseMove" @click="onCellRClick(null)">
+  <div class="root" @mousemove="onMouseMove">
     <div class="header" :class="{ 'hidden': !showHeader }">
       <Navigation />
     </div>

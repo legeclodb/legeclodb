@@ -143,7 +143,6 @@ export class SimContext {
 
     unit.onSimulationBegin();
     unit.setup();
-    unit.onOwnTurnBegin();
     this.updateAreaEffectsAll();
   }
   notifyDead(unit) {
@@ -595,12 +594,12 @@ export class SimContext {
   onPlayerTurnBegin() {
     for (let u of this.activeUnits) {
       if (u.isPlayer) {
-        u.onOwnTurnBegin(makeActionContext(u));
+        u.onOwnTurnBegin();
       }
     }
     for (let u of this.activeUnits) {
       if (!u.isPlayer) {
-        u.onOpponentTurnBegin(makeActionContext(u));
+        u.onOpponentTurnBegin();
       }
     }
     this.pushState();
@@ -608,12 +607,12 @@ export class SimContext {
   onPlayerTurnEnd() {
     for (let u of this.activeUnits) {
       if (u.isPlayer) {
-        u.onOwnTurnEnd(makeActionContext(u));
+        u.onOwnTurnEnd();
       }
     }
     for (let u of this.activeUnits) {
       if (!u.isPlayer) {
-        u.onOpponentTurnEnd(makeActionContext(u));
+        u.onOpponentTurnEnd();
       }
     }
   }
@@ -629,12 +628,12 @@ export class SimContext {
 
     for (let u of this.activeUnits) {
       if (u.isEnemy) {
-        u.onOwnTurnBegin(makeActionContext(u));
+        u.onOwnTurnBegin();
       }
     }
     for (let u of this.activeUnits) {
       if (!u.isEnemy) {
-        u.onOpponentTurnBegin(makeActionContext(u));
+        u.onOpponentTurnBegin();
       }
     }
     this.pushState();
@@ -642,12 +641,12 @@ export class SimContext {
   onEnemyTurnEnd() {
     for (let u of this.activeUnits) {
       if (u.isEnemy) {
-        u.onOwnTurnEnd(makeActionContext(u));
+        u.onOwnTurnEnd();
       }
     }
     for (let u of this.activeUnits) {
       if (!u.isEnemy) {
-        u.onOpponentTurnEnd(makeActionContext(u));
+        u.onOpponentTurnEnd();
       }
     }
   }
@@ -722,7 +721,7 @@ export class SimContext {
     let u = unit?.sim;
     if (u) {
       u.main.hp = 0;
-      u.onDeath(makeActionContext(u));
+      u.onDeath();
       this.notifyDead(u);
     }
   }

@@ -954,6 +954,9 @@ export class SimUnit {
 
   _callHandler(funcName, ctx) {
     this._dbgLog(funcName);
+    if (!ctx) {
+      ctx = makeActionContext(this);
+    }
     let skills = ctx?.skill ? [...this.passives, ctx.skill] : this.passives;
     callHandler(funcName, ctx, ...skills);
   }
