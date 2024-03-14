@@ -150,8 +150,7 @@ export function getTargetUnits(ctx, json) {
   }
 }
 
-// parent: 防御側の時に元となる攻撃側 ctx が来る
-export function makeActionContext(unit, target = null, skill = null, parent = null) {
+export function makeActionContext(unit, target, skill, isAttacker, parent) {
   let sim = $g.sim;
   let ctx = {
     get turn() { return sim.turn; },
@@ -248,21 +247,22 @@ export function makeActionContext(unit, target = null, skill = null, parent = nu
     damageTaken: 0,
   };
 
-  if (!parent) {
-    // move は攻撃側用のパラメータ
+  if (isAttacker) {
     Object.defineProperties(ctx, {
       "move": { get: () => sim.move },
-      "onOwnTurn": { get: () => true },
     });
+    ctx.onOwnTurn = true;
   }
   else {
     Object.defineProperties(ctx, {
       "move": { get: () => 0 },
-      "onEnemyTurn": { get: () => true },
-      "onNormalAttack": { get: () => true },
-      "onPhysicalDamage": { get: () => parent.onPhysicalDamage },
-      "onMagicDamage": { get: () => parent.onMagicDamage },
     });
+    ctx.onEnemyTurn = true;
+    ctx.onNormalAttack = true;
+    if (parent) {
+      ctx.onPhysicalDamage = parent.onPhysicalDamage;
+      ctx.onMagicDamage = parent.onMagicDamage;
+    }
   }
 
   if (unit) {
@@ -284,7 +284,7 @@ export function makeSimEffect(effect, stop = false) {
   let data = {};
   self.data = data; // serializable data
 
-  if (self.duration) {
+  if ('duration' in self) {
     data.count = self.duration; // 残有効時間
     data.isStopped = stop; // 自己バフはかけたターンは時間経過しない。そのためのフラグ。
     Object.defineProperty(self, "count", {
@@ -303,15 +303,15 @@ export function makeSimEffect(effect, stop = false) {
     });
   }
 
-  Object.defineProperty(self, "isAlive", {
-    get: () => self.count > 0,
+  Object.defineProperty(self, "isExpired", {
+    get: () => self.count <= 0,
   });
   Object.defineProperty(self, "isAdditive", {
     get: () => 'add' in self,
   });
 
   self.activate = function (bySelf) {
-    if (self.duration) {
+    if ('duration' in self) {
       self.count = self.duration;
       if (bySelf) {
         self.isStopped = false;
@@ -696,7 +696,7 @@ export function makeSimSkill(skill, ownerUnit) {
   }
 
   self.trigger = function (ctx, timing) {
-    for (let e of [...(this?.buff ?? []), ...(this?.debuff ?? [])]) {
+    for (let e of this.effects) {
       let tri = e?.trigger;
       if (tri && tri.timing == timing && evaluateCondition(ctx, tri.condition)) {
         let u = ctx.unit;

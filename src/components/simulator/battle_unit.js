@@ -369,16 +369,16 @@ export class SimUnit {
       });
 
       let table = {
-        isValid: function () { return chr.maxHp > 0; },
-        isAlive: function () { return chr.hp > 0; },
-        baseHp: function () { return base.status[0]; },
-        baseAtk: function () { return base.status[1]; },
-        baseDef: function () { return base.status[2]; },
-        baseMag: function () { return base.status[3]; },
-        baseRes: function () { return base.status[4]; },
-        baseTec: function () { return base.status[5]; },
-        baseRange: function () { return base.range; },
-        status: function () {
+        isValid: () => { return chr.maxHp > 0; },
+        isAlive: () => { return chr.hp > 0; },
+        baseHp:  () => { return base.status[0]; },
+        baseAtk: () => { return base.status[1]; },
+        baseDef: () => { return base.status[2]; },
+        baseMag: () => { return base.status[3]; },
+        baseRes: () => { return base.status[4]; },
+        baseTec: () => { return base.status[5]; },
+        baseRange: () => { return base.range; },
+        status: () => {
           const table = ["最大HP", "アタック", "ディフェンス", "マジック", "レジスト", "テクニック",];
           let r = [...base.status];
           for (let i = 0; i < r.length; ++i) {
@@ -387,14 +387,15 @@ export class SimUnit {
           }
           return r;
         },
+        range: () => { return Math.max(base.range + (chr.bufFixed["射程(通常攻撃)"] ?? 0), 0); },
       };
       if (chr.isMain) {
-        table.baseMove = function () { return base.move; };
-        table.move = function () { return Math.max(base.move + (chr.bufFixed["移動"] ?? 0), 0); };
+        table.baseMove = () => { return base.move; };
+        table.move = () => { return Math.max(base.move + (chr.bufFixed["移動"] ?? 0), 0); };
       }
       table.baseAttackPower = chr.damageType == "アタック" ?
-        function () { return base.status[1]; } :
-        function () { return base.status[3]; };
+        () => { return base.status[1]; } :
+        () => { return base.status[3]; };
 
       for (const [key, func] of Object.entries(table)) {
         Object.defineProperty(chr, key, {
@@ -565,18 +566,6 @@ export class SimUnit {
     }
   }
 
-  getRange(ctx) {
-    if (ctx.skill) {
-      return ctx.skill.range;
-    }
-    if (ctx?.onSupportAttack) {
-      return this.support.range;
-    }
-    else {
-      return this.main.range;
-    }
-  }
-
   applyEffect(effect, stop = false) {
     if (effect.stack) {
       let pos = -1, count = 0;
@@ -682,7 +671,7 @@ export class SimUnit {
 
     const add = (e) => {
       const doit = (e, tRate, rFixed) => {
-        if ((e.ephemeral && !ctx.onBattle) || ["ランダム", "トークン"].includes(e.type)) {
+        if (["ランダム", "トークン"].includes(e.type)) {
           return;
         }
 
@@ -690,6 +679,7 @@ export class SimUnit {
           // 戦闘時デバフは扱いが難しくて保留
           console.log(e);
         }
+
         else if (e.isAdditive || ["移動", "射程(通常攻撃)", "射程(スキル)", "範囲"].includes(e.type)) {
           if (!(e.type in rFixed)) {
             rFixed[e.type] = 0;
@@ -721,7 +711,7 @@ export class SimUnit {
 
     for (const e of this.effects) {
       e.enabled = false;
-      if ((!e.ephemeral || ctx.onBattle) && evaluateCondition(ctx, e.condition)) {
+      if ((!e.ephemeral || (e.ephemeralOnBattle && ctx.onBattle) || (e.ephemeralOnAttack && ctx.onAttack)) && evaluateCondition(ctx, e.condition)) {
         e.enabled = true;
         add(e);
       }
@@ -737,9 +727,10 @@ export class SimUnit {
       const gen = () => {
         let type = e.type;
         if (e.ephemeral) {
-          type += "(戦闘時)";
+          type += e.ephemeralOnAttack ? "(攻撃時)" : "(戦闘時)";
         }
-        let value = `${e.isDebuff ? "" : "+"}${e.getValue(ctx, this)}`;
+        let value = e.getValue(ctx, this);
+        value = `${value > 0 ? '+' : ''}${value}`;
         if (!e.add && !["移動", "射程(通常攻撃)", "射程(スキル)", "範囲", "トークン"].includes(e.type)) {
           value += "%";
         }
@@ -777,6 +768,15 @@ export class SimUnit {
     this.support.bufRate = reorder(supRate);
     this.support.bufFixed = reorder(supFixed);
     //console.log(this);
+  }
+
+
+  getRange(ctx) {
+    if (ctx.skill) {
+      return ctx.skill.range;
+    }
+    let chr = ctx?.onSupportAttack ? this.support : this.main;
+    return chr.range;
   }
 
   getAttackPower(ctx) {
@@ -925,7 +925,7 @@ export class SimUnit {
         --e.count;
       }
     }
-    this.timedEffects = this.timedEffects.filter(a => a.isAlive);
+    this.eraseExpiredEffects();
   }
   resumeEffectDuration() {
     for (let e of this.timedEffects) {
@@ -933,6 +933,9 @@ export class SimUnit {
         e.isStopped = false;
       }
     }
+  }
+  eraseExpiredEffects() {
+    this.timedEffects = this.timedEffects.filter(a => !a.isExpired);
   }
 
   // スキルの CT 減
@@ -951,7 +954,8 @@ export class SimUnit {
 
   _callHandler(funcName, ctx) {
     this._dbgLog(funcName);
-    callHandler(funcName, ctx, ...this.passives);
+    let skills = ctx?.skill ? [...this.passives, ctx.skill] : this.passives;
+    callHandler(funcName, ctx, ...skills);
   }
 
 

@@ -690,10 +690,6 @@ export default {
           label: "投稿者",
         },
         {
-          key: "date",
-          label: "日付",
-        },
-        {
           key: "actions",
           label: "操作",
         }
@@ -710,10 +706,6 @@ export default {
         {
           key: "author",
           label: "投稿者",
-        },
-        {
-          key: "date",
-          label: "日付",
         },
         {
           key: "actions",
@@ -1703,7 +1695,7 @@ export default {
           this.loadoutList = obj.sort((a, b) => b.date.localeCompare(a.date));
           for (let e of this.loadoutList) {
             // 長すぎる名前は切り詰めておく
-            const maxNameLen = 24;
+            const maxNameLen = 64;
             if (e.name.length > maxNameLen) {
               e.name = e.name.substring(0, maxNameLen);
             }
@@ -1864,7 +1856,7 @@ export default {
           this.replayList = obj.sort((a, b) => b.date.localeCompare(a.date));
           for (let e of this.replayList) {
             // 長すぎる名前は切り詰めておく
-            const maxNameLen = 24;
+            const maxNameLen = 64;
             if (e.name.length > maxNameLen) {
               e.name = e.name.substring(0, maxNameLen);
             }

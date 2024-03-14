@@ -4,35 +4,6 @@ import { callHandler, unique, makeActionContext } from "./battle_skill.js";
 import { BaseUnit, SimUnit, isInside } from "./battle_unit.js";
 import { $g } from "./battle_globals.js";
 
-export class ActionContext {
-  attacker = null;
-  defender = null;
-  skill = null;
-  move = 0;
-  range = 1;
-  dmgAttacker = {
-    main: 0,
-    support: 0,
-  };
-  dmgDefender = {
-    main: 0,
-    support: 0,
-  };
-
-  constructor(attacker, defender, skill) {
-    this.attacker = attacker;
-    this.defender = defender;
-    this.skill = skill;
-  }
-
-  serialize() {
-    let r = {};
-    return r;
-  }
-  deserialize(r) {
-  }
-}
-
 export class SimContext {
 
   //#region fields (serializable)
@@ -215,23 +186,18 @@ export class SimContext {
     }
 
     let aunit = attacker.unit;
-    {
-      if (attacker.isMain)
-        actx.onMainAttack = true;
-      else
-        actx.onSupportAttack = true;
-    }
-    {
-      if (attacker.damageType == "アタック")
-        actx.onPhysicalDamage = true;
-      else
-        actx.onMagicDamage = true;
-    }
-    {
-      if (actx.onBattle && attacker.baseRange > 1 && actx.range <= 1)
-        actx.onRangedPenarty = true;
-    }
+    if (attacker.isMain)
+      actx.onMainAttack = true;
+    else
+      actx.onSupportAttack = true;
+    if (attacker.damageType == "アタック")
+      actx.onPhysicalDamage = true;
+    else
+      actx.onMagicDamage = true;
+    if (actx.onBattle && attacker.baseRange > 1 && actx.range <= 1)
+      actx.onRangedPenarty = true;
 
+    aunit.evaluateBuffs(actx);
     if (!attacker.isAlive) {
       // 既に死んでたら何もしない (サポートが死んでる場合ここに来る)
       return result;
@@ -240,7 +206,6 @@ export class SimContext {
       // 射程外でサポート同時攻撃もない場合何もしない
       return result;
     }
-    aunit.evaluateBuffs(actx);
 
     let attackCount = 10;
     let atk = aunit.getAttackPower(actx);
@@ -252,7 +217,7 @@ export class SimContext {
     const calcDamage = (t, breakOnKill) => {
       let dunit = t.chr.unit;
       // 防御側コンテキスト
-      let dctx = makeActionContext(dunit, aunit, null, actx);
+      let dctx = makeActionContext(dunit, aunit, null, false, actx);
       let addScore = null;
       if (t.chr.isSupport) {
         dctx.onSupportDefense = true;
@@ -316,12 +281,12 @@ export class SimContext {
 
   getBattleResult(unit, skill, target, ctx) {
     // 攻撃側コンテキスト
+    ctx.onAttack = ctx.onBattle = true;
     let actx = Object.create(ctx);
-    unit.evaluateBuffs(actx);
 
     // 防御側コンテキスト
-    let dctx = makeActionContext(target, unit);
-    target.evaluateBuffs(dctx);
+    let dctx = makeActionContext(target, unit, null, false);
+    dctx.onAttack = dctx.onBattle = true;
 
     let attacker = [
       this.makeTarget(unit.main),
@@ -332,6 +297,10 @@ export class SimContext {
       this.makeTarget(target.support),
     ];
 
+    callHandler("onAttackBegin", actx, unit);
+    callHandler("onBattleBegin", actx, unit);
+    callHandler("onAttackBegin", dctx, target);
+    callHandler("onBattleBegin", dctx, target);
     if (unit.invokeSupportAttack(actx)) {
       actx.forceJoinSupport = true;
     }
@@ -346,6 +315,14 @@ export class SimContext {
     if (attacker.at(-1).isAlive && target.invokeDoubleAttack(actx)) {
       dMain.add(this.doAttack(dctx, target.main, attacker, null));
     }
+    callHandler("onAttackEnd", actx, unit);
+    callHandler("onBattleEnd", actx, unit);
+    callHandler("onAttackEnd", dctx, target);
+    callHandler("onBattleEnd", dctx, target);
+
+    unit.eraseExpiredEffects();
+    target.eraseExpiredEffects();
+
     return {
       ctx: aMain.ctx,
       attackerScore: aSup.total + aMain.total,
@@ -369,6 +346,9 @@ export class SimContext {
         }
       },
     };
+
+    ctx.onAttack = true;
+    callHandler("onAttackBegin", ctx, unit);
     for (let target of targets ?? []) {
       // 攻撃側コンテキスト
       // target に依存するバフなどがあるので、ループの内側である必要がある
@@ -385,6 +365,8 @@ export class SimContext {
         target.main.hp -= r[0].damageToMain + r[1].damageToMain;
       });
     }
+    callHandler("onAttackEnd", ctx, unit);
+    unit.eraseExpiredEffects();
     return result;
   }
 
@@ -425,29 +407,30 @@ export class SimContext {
     if (skill && skill.isMainSkill && skill.damageRate) {
       doAttack = true;
       doBattle = ctx.onTargetEnemy;
-      if (doBattle) {
+
+      ctx.onAttack = true;
+      if (doBattle)
         ctx.onBattle = true;
-      }
     }
 
     if (doAction)
       callHandler("onActionBegin", ctx, unit);
-    if (doAttack)
-      callHandler("onAttackBegin", ctx, unit);
-    if (doBattle)
-      callHandler("onBattleBegin", ctx, unit, target);
 
     // 待機の場合 skill は null
     if (skill) {
       skill.onFire();
 
+      // 攻撃処理
       let result = null;
       if (doBattle) {
         result = this.getBattleResult(unit, skill, target, ctx);
       }
       else if (doAttack) {
-        result = this.getAreaAttackResult(unit, skill, targets, ctx);
+        // 敵にダメージ味方にバフ系のスキルの場合 targets には両陣営のユニットが入っている
+        let enemies = targets.filter(a => a.isPlayer != unit.isPlayer);
+        result = this.getAreaAttackResult(unit, skill, enemies, ctx);
       }
+
       if (result) {
         ctx.damageDealt = result.attackerScore;
         unit.score += result.attackerScore;
@@ -469,22 +452,24 @@ export class SimContext {
         console.log(result);
       }
 
-
+      // バフ・デバフ発動
+      // ここで処理するのはスキル発動時効果のみで、攻撃前後や戦闘前後に発動するものは別途処理される
       let ut = unique(targets);
       for (let t of ut.filter(a => a.isPlayer == unit.isPlayer)) {
         for (let e of skill?.buff ?? []) {
-          if (!e.target || e.target == "スキル対象" || (skill.isSelfTarget && t === unit)) {
+          if (!e.trigger && (!e.target || e.target == "スキル対象" || (skill.isSelfTarget && t === unit))) {
             t.applyEffect(e, target === unit);
           }
         }
       }
       for (let t of ut.filter(a => a.isPlayer != unit.isPlayer)) {
         for (let e of skill?.debuff ?? []) {
-          if (!e.target || e.target == "スキル対象") {
+          if (!e.trigger && (!e.target || e.target == "スキル対象")) {
             t.applyEffect(e);
           }
         }
       }
+
       skill.invokeSummon(ctx);
       skill.invokeFixedDamage(ctx);
       skill.invokeHeal(ctx);
@@ -502,10 +487,6 @@ export class SimContext {
       this.notifyDead(unit);
     }
 
-    if (doBattle)
-      callHandler("onBattleEnd", ctx, unit, target);
-    if (doAttack)
-      callHandler("onAttackEnd", ctx, unit);
     if (doAction)
       callHandler("onActionEnd", ctx, unit);
 

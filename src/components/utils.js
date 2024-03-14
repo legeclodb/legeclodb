@@ -176,8 +176,7 @@ export async function compressGzip(data) {
       if (done) break;
       chunks.push(value);
     }
-    const concatenatedChunks = new Uint8Array(chunks.reduce((acc, chunk) => acc.concat(Array.from(chunk)), []));
-    return concatenatedChunks;
+    return new Uint8Array(chunks.reduce((acc, chunk) => acc.concat(Array.from(chunk)), []));
   }
   finally {
     reader.releaseLock();
@@ -201,4 +200,10 @@ export async function decompressGzip(data) {
   } finally {
     reader.releaseLock();
   }
+}
+
+// data: Uint8Array
+export function isGzipData(data) {
+  // gzip 圧縮されたデータは最初の 2 byte が 0x1F 0x8B になっている
+  return data instanceof Uint8Array && data.length >= 2 && data[0] === 0x1F && data[1] === 0x8B;
 }

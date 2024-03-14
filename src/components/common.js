@@ -1364,8 +1364,6 @@ export default {
               slot += "(メイン)";
             else if (skill.isSupportSkill)
               slot += "(サポート)";
-            if (effect.ephemeral)
-              slot += "(戦闘時)";
             effect.slot = slot;
           }
         }
@@ -1411,19 +1409,30 @@ export default {
             skill.negativeEffects = [];
           skill.negativeEffects.push(v);
         }
-        setParent(v);
-        setupSlot(v);
-        setupRandomTable(v);
       }
       for (let v of skill?.debuff ?? []) {
         v.isDebuff = true;
         if (skill.isActive) {
           v.isActiveDebuff = true;
         }
+      }
+      for (let v of skill.effects) {
+        if (v.ephemeral) {
+          if ((v.trigger?.timing ?? v.timing) == "攻撃前") {
+            v.ephemeralOnAttack = true;
+          }
+          else {
+            v.ephemeralOnBattle = true;
+          }
+          if (skill.isActive && !('duration' in v)) {
+            v.duration = 0;
+          }
+        }
         setParent(v);
         setupSlot(v);
         setupRandomTable(v);
       }
+
       for (let v of skill?.statusEffects ?? []) {
         v.isStatusEffect = true;
         setParent(v);
