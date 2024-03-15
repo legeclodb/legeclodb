@@ -694,12 +694,11 @@ export function makeSimSkill(skill, ownerUnit) {
     for (let t of unique(ctx.targets)) {
       let tctx = makeActionContext(t);
       // trigger がない効果を即時起動していく
+      // condition は付与時ではなく発動時の条件なのでここでは評価不要
       for (let e of this.effects) {
         if (!e.trigger && ((e.isBuff && t.isPlayer == u.isPlayer) || (e.isDebuff && t.isPlayer != u.isPlayer))) {
           if ([undefined, "スキル対象", "攻撃対象"].includes(e.target) || (this.isSelfTarget && t === u)) {
-            if (evaluateCondition(tctx, e.condition)) {
-              t.applyEffect(e, u === t);
-            }
+            t.applyEffect(e, u === t);
           }
         }
       }
