@@ -1,6 +1,6 @@
 export * from "./battle_unit.js";
 export * from "./battle_skill.js";
-import { callHandler, unique, makeActionContext, evaluateCondition } from "./battle_skill.js";
+import { callHandler, makeActionContext, evaluateCondition } from "./battle_skill.js";
 import { BaseUnit, SimUnit, isInside } from "./battle_unit.js";
 import { $g } from "./battle_globals.js";
 

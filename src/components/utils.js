@@ -69,17 +69,6 @@ export class URLSerializer {
   }
 }
 
-
-export function toSQLDateTime(date) {
-  let time = typeof (date) === 'number' ? date : date.getTime();
-  let a9h = new Date(time + (9 * 60 * 60 * 1000)); // +9H
-  return a9h.toISOString().slice(0, -5).replace('T', ' '); // YYYY-MM-DD HH:mm:ss
-}
-
-export function updateSubscribeLastCheck() {
-  localStorage.setItem('subscribe.lastcheck', new Date().getTime());
-}
-
 export function getSubscribedThreads() {
   let r = [];
   for (let i = 0; i < localStorage.length; i++) {
@@ -96,6 +85,31 @@ export function getSubscribedThreads() {
 export function getSubscribeLastCheckTime() {
   let v = localStorage.getItem('subscribe.lastcheck');
   return v ? new Date(parseInt(v)) : null;
+}
+export function updateSubscribeLastCheck() {
+  localStorage.setItem('subscribe.lastcheck', new Date().getTime());
+}
+
+
+export function unique(array) {
+  return array.filter((value, index, self) => {
+    return self.indexOf(value) === index;
+  });
+}
+export function count(enumerable, cond) {
+  let r = 0;
+  for (const e of enumerable) {
+    if (cond(e)) {
+      ++r;
+    }
+  }
+  return r;
+}
+
+export function toSQLDateTime(date) {
+  let time = typeof (date) === 'number' ? date : date.getTime();
+  let a9h = new Date(time + (9 * 60 * 60 * 1000)); // +9H
+  return a9h.toISOString().slice(0, -5).replace('T', ' '); // YYYY-MM-DD HH:mm:ss
 }
 
 

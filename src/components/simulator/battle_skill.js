@@ -1,20 +1,6 @@
 import { $g } from "./battle_globals.js";
 import { SimUnit } from "./battle_unit.js";
-
-export function unique(array) {
-  return array.filter((value, index, self) => {
-    return self.indexOf(value) === index;
-  });
-}
-export function count(enumerable, cond) {
-  let r = 0;
-  for (const e of enumerable) {
-    if (cond(e)) {
-      ++r;
-    }
-  }
-  return r;
-}
+import { unique, count } from "../utils.js";
 
 export function callHandler(funcName, ctx, ...callees) {
   for (let c of callees) {

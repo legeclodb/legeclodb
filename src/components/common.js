@@ -2,7 +2,7 @@ import jsonImageTable from '../assets/image_table.json'
 import jsonConstants from '../assets/constants.json'
 import jsonRandomEffectTable from '../assets/random_effect_table.json'
 import jsonShape from '../assets/shape.json'
-import { download } from './utils'
+import { count } from './utils'
 
 export default {
   data() {
@@ -979,7 +979,25 @@ export default {
       else {
         return !effect.target || checkTarget(effect.target);
       }
-
+    },
+    isSingleTarget(effect) {
+      const isSkillTarget = (t) => {
+        return [undefined, "攻撃対象", "スキル対象"].includes(t);
+      };
+      const tri = effect.trigger;
+      if (tri) {
+        const t = tri.target;
+        if (t == "自身" || (tri.target == "範囲(ランダム)" && tri.unitCount == 1)) {
+          return true;
+        }
+        if (effect.parent.isSingleTarget && isSkillTarget(t)) {
+          return true;
+        }
+      }
+      if (effect.parent.isActive && effect.parent.isSingleTarget && isSkillTarget(effect.target)) {
+        return true;
+      }
+      return false;
     },
 
     effectParamsToTags(skill, params) {

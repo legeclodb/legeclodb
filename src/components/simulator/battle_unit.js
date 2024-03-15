@@ -1,5 +1,6 @@
 import { $g } from "./battle_globals.js";
-import { callHandler, unique, count, makeSimSkill, makeSimEffect, evaluateCondition, makeActionContext } from "./battle_skill.js";
+import { callHandler, makeSimSkill, makeSimEffect, evaluateCondition, makeActionContext } from "./battle_skill.js";
+import { unique, count } from "../utils.js";
 
 function $vue() {
   return window.$vue;

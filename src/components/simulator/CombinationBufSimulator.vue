@@ -203,14 +203,15 @@
           例えば「与ダメージバフ＋クリティカルダメージ倍率バフ＋ダメージ耐性デバフ」のいい感じの組み合わせを探したい、というようなケースで役立ちます。<br />
           <br />
           味方全体の強化の最適化が目的であるため、自己バフは考慮しません。単体のバフも「<b-link @mouseenter="highlight('cb-p-allowSingleUnitBuff', true)" @mouseleave="highlight('cb-p-allowSingleUnitBuff', false)">単体バフを含める</b-link>」にチェックしていない限り考慮しません。<br />
-          マスターキャラのクラス対象バフや、ゼニス/オリジン/ナディア のシンボル対象バフ、特定のクラスへの追加効果 (<b-link :ref="po">みんな！丸太は持った！？</b-link> のスキル与ダメージなど) は除外しています。<br />
-          シンボルスキルに関しては「<b-link @mouseenter="highlight('cb-p-allowSymbolSkill', true)" @mouseleave="highlight('cb-p-allowSymbolSkill', false)">シンボルスキルを含める</b-link>」をチェックすると含めるようになります。<br />
+          マスターキャラのクラス対象バフや、特定のクラスへの追加効果 (<b-link :ref="po">みんな！丸太は持った！？</b-link> のスキル与ダメージなど) は除外しています。<br />
+          シンボルスキル、および ゼニス/オリジン/ナディア のシンボル対象バフは「<b-link @mouseenter="highlight('cb-p-allowSymbolSkill', true)" @mouseleave="highlight('cb-p-allowSymbolSkill', false)">シンボルスキルを含める</b-link>」をチェックすると含めるようになります。<br />
+
           特定のキャラやスキルを除外or優先採用したい場合、アイコンをマウスオーバーすると出てくるポップアップから可能です。<br />
           特定の効果を優先したい場合は優先度を高めると優先的に選択されます。<br />
           <br />
           なお、必ずしも本当に最適な結果になるとは限らないことに注意が必要です。<br />
           完璧に解くには時間がかかりすぎるため、若干正確性を犠牲にしつつ高速に解く方法を用いています。<br />
-          (アルゴリズムは随時改良中: 2024/03/02)<br />
+          (アルゴリズムは随時改良中: 2024/03/14)<br />
         </div>
       </div>
 
@@ -488,7 +489,7 @@ export default {
     const excludeEffect = (effect) => {
       const cond = effect.condition;
       if (!this.isPublicTarget(effect) ||
-        (cond && (cond.onClass || cond.onSymbol)) ||
+        (cond && (cond.onClass)) ||
         (effect.isDebuff && effect.ephemeral && !effect.duration)
       ) {
         return true;
@@ -666,10 +667,11 @@ export default {
           return (opt.allowOnBattle || !effect.ephemeral) &&
             (opt.allowProbability || !probability);
         }
-        else {
-          return (opt.allowSingleUnitBuff || !effect.isSingleTarget) &&
+        else if (effect.isBuff){
+          return (opt.allowSingleUnitBuff || !this.isSingleTarget(effect)) &&
             (opt.allowOnBattle || !effect.ephemeral) &&
-            (opt.allowProbability || !probability);
+            (opt.allowProbability || !probability) &&
+            (opt.allowSymbolSkill || !cond?.onSymbol);
         }
       };
       const skillCondition = (skill) => {
