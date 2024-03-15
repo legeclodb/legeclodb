@@ -731,7 +731,7 @@ export class SimUnit {
           type += e.ephemeralOnAttack ? "(攻撃時)" : "(戦闘時)";
         }
         let value = e.getValue(ctx, this);
-        value = `${value > 0 ? '+' : ''}${value}`;
+        value = `${value >= 0 ? '+' : ''}${value}`;
         if (!e.add && !["移動", "射程(通常攻撃)", "射程(スキル)", "範囲", "トークン"].includes(e.type)) {
           value += "%";
         }

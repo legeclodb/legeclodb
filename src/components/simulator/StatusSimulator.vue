@@ -1416,6 +1416,10 @@ export default {
         else
           v.value = params.shift();
       }
+      if (this.main.character.value?.engage) {
+        this.main.character.value.engage.enabled = this.main.engage.value;
+      }
+
       for (let v of Object.values(this.mainBoosts))
         v.value = params.shift();
       for (let v of Object.values(this.mainEnchants)) {

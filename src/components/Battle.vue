@@ -1583,10 +1583,10 @@ export default {
     effectValuesToHtml(rate, fixed) {
       let list = [];
       for (const [name, value] of Object.entries(rate)) {
-        list.push(`${name}${value > 0 ? '+' : ''}${value}%`);
+        list.push(`${name}${value >= 0 ? '+' : ''}${value}%`);
       }
       for (const [name, value] of Object.entries(fixed)) {
-        list.push(`${name}${value > 0 ? '+' : ''}${value}`);
+        list.push(`${name}${value >= 0 ? '+' : ''}${value}`);
       }
       return list.map(a => `
 <div class="effect-box">

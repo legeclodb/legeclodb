@@ -548,14 +548,12 @@ export class SimContext {
       this.phase = Phase.Enemy;
       this.onPlayerTurnEnd();
       this.onEnemyTurnBegin();
-      this.updateAreaEffectsAll();
     }
     else if (this.turn < this.maxTurn) {
       ++this.turn;
       this.phase = Phase.Player;
       this.onEnemyTurnEnd();
       this.onPlayerTurnBegin();
-      this.updateAreaEffectsAll();
     }
     else {
       console.log("End of Battle");
@@ -592,6 +590,7 @@ export class SimContext {
         u.onOpponentTurnBegin();
       }
     }
+    this.updateAreaEffectsAll();
     this.pushState();
   }
   onPlayerTurnEnd() {
@@ -626,6 +625,7 @@ export class SimContext {
         u.onOpponentTurnBegin();
       }
     }
+    this.updateAreaEffectsAll();
     this.pushState();
   }
   onEnemyTurnEnd() {
