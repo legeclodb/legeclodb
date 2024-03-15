@@ -1297,7 +1297,7 @@
     "area": "単体",
     "range": 3,
     "cost": 2,
-    "summon": [ "Ch904300305" ]
+    "summon": [ { "uid": "Ch904300305" } ]
   },
   {
     "uid": "1100733",
@@ -1316,7 +1316,7 @@
         "target": "自身"
       }
     ],
-    "summon": [ "Ch904300305ex1" ]
+    "summon": [ { "uid": "Ch904300305ex1" } ]
   },
   {
     "uid": "1100039",
@@ -1950,7 +1950,7 @@
     "area": "単体",
     "range": 3,
     "cost": 2,
-    "summon": [ "Ch903700305" ]
+    "summon": [ { "uid": "Ch903700305" } ]
   },
   {
     "uid": "1100069",
@@ -5440,7 +5440,7 @@
         "target": "自身"
       }
     ],
-    "summon": [ "Ch508500499summon" ],
+    "summon": [ { "uid": "Ch508500499summon" } ],
     "multiAction": [ {} ]
   },
   {
@@ -5999,7 +5999,7 @@
     "area": "単体",
     "range": 3,
     "cost": 2,
-    "summon": [ "Ch905200303" ],
+    "summon": [ { "uid": "Ch905200303" } ],
     "multiAction": [ {} ]
   },
   {
@@ -6269,7 +6269,26 @@
     "area": "単体",
     "range": 2,
     "cost": 2,
-    "summon": [ "Ch905300301", "Ch905400301" ],
+    "summon": [
+      {
+        "uid": "Ch905300301",
+        "condition": {
+          "token": {
+            "tokenName": "誠の矜持",
+            "compare": [ "<", 3 ]
+          }
+        }
+      },
+      {
+        "uid": "Ch905400301",
+        "condition": {
+          "token": {
+            "tokenName": "誠の矜持",
+            "compare": [ ">=", 3 ]
+          }
+        }
+      }
+    ],
     "multiAction": [ {} ]
   },
   {
@@ -6281,7 +6300,26 @@
     "area": "単体",
     "range": 2,
     "cost": 2,
-    "summon": [ "Ch905300301eg", "Ch905400301eg" ],
+    "summon": [
+      {
+        "uid": "Ch905300301eg",
+        "condition": {
+          "token": {
+            "tokenName": "誠の矜持",
+            "compare": [ "<", 3 ]
+          }
+        }
+      },
+      {
+        "uid": "Ch905400301eg",
+        "condition": {
+          "token": {
+            "tokenName": "誠の矜持",
+            "compare": [ ">=", 3 ]
+          }
+        }
+      }
+    ],
     "buff": [
       {
         "type": "ダメージ耐性",
@@ -7771,7 +7809,7 @@
         "target": "自身"
       }
     ],
-    "summon": [ "Ch516200499" ],
+    "summon": [ { "uid": "Ch516200499" } ],
     "multiAction": [ {} ]
   },
   {
@@ -9603,7 +9641,7 @@
         "duration": 2
       }
     ],
-    "summon": [ "Ch906000300" ],
+    "summon": [ { "uid": "Ch906000300" } ],
     "multiAction": [ {} ]
   },
   {
@@ -9781,7 +9819,7 @@
         "target": "自身"
       }
     ],
-    "summon": [ "Ch906200300" ],
+    "summon": [ { "uid": "Ch906200300" } ],
     "multiAction": [ {} ]
   },
   {
@@ -12784,7 +12822,7 @@
     "area": "単体",
     "range": 15,
     "cost": 0,
-    "summon": [ "Ch905800307" ]
+    "summon": [ { "uid": "Ch905800307" } ]
   },
   {
     "uid": "1100300",

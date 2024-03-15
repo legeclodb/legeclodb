@@ -1312,7 +1312,9 @@ export default {
         }
         if (skill.summon) {
           skill.isTargetCell = true;
-          skill.summon = skill.summon.map(uid => params.npc.find(npc => npc.uid == uid));
+          for (let s of skill.summon) {
+            s.chr = params.npc.find(c => c.uid == s.uid);
+          }
         }
       }
 
@@ -1596,13 +1598,17 @@ export default {
           chr.skillsAll = chr.skills;
 
           if (chr.skills.find(a => a.summon)) {
+            const toSummonChrs = (skill) => {
+              return (skill.summon ?? []).map(a => a.chr);
+            };
+
             Object.defineProperty(chr, 'summon', {
               configurable: true,
-              get: () => chr.skills.flatMap(a => a.summon ?? [])
+              get: () => chr.skills.flatMap(toSummonChrs)
             });
             Object.defineProperty(chr, 'summonAll', {
               configurable: true,
-              get: () => chr.skillsAll.flatMap(a => a.summon ?? [])
+              get: () => chr.skillsAll.flatMap(toSummonChrs)
             });
           }
         }

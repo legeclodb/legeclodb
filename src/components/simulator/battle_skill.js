@@ -505,13 +505,15 @@ export function makeSimSkill(skill, ownerUnit) {
   }
 
   self.invokeSummon = function (ctx) {
-    if ('makeSummonUnit' in self) {
-      // todo: 召喚候補が複数いる場合の対応 (土方)
-      let unit = new SimUnit(self.makeSummonUnit[0].make());
-      unit.coord = ctx.targetCell.coord;
-      unit.setSummoner(ctx.unit);
-      $g.sim.addUnit(unit);
-      console.log(`!! 召喚 ${ctx.unit.main.name} (${self.name}) -> ${unit.main.name}!!`);
+    for (let sum of this.summon ?? []) {
+      if (evaluateCondition(ctx, sum.condition)) {
+        let unit = new SimUnit(sum.makeUnit());
+        unit.coord = ctx.targetCell.coord;
+        unit.setSummoner(ctx.unit);
+        $g.sim.addUnit(unit);
+        console.log(`!! 召喚 ${ctx.unit.main.name} (${self.name}) -> ${unit.main.name}!!`);
+        break;
+      }
     }
   }
   self.invokeHeal = function (ctx, timing = null) {

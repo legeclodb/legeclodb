@@ -176,15 +176,12 @@ export class BaseUnit {
     this.base.summon = [];
     for (let skill of this.base.main.skills) {
       if (skill.summon) {
-        if (!skill.makeSummonUnit) {
-          skill.makeSummonUnit = skill.summon.map(chr => {
-            return {
-              uid: chr.uid,
-              make: () => makeSummonUnit(chr),
-            };
-          });
+        for (let sum of skill.summon) {
+          if (!sum.makeUnit) {
+            sum.makeUnit = () => makeSummonUnit(sum.chr);
+          }
         }
-        this.base.summon = this.base.summon.concat(skill.makeSummonUnit.map(a => a.make()));
+        this.base.summon = this.base.summon.concat(skill.summon.map(a => a.makeUnit()));
       }
     }
     //console.log(this);

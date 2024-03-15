@@ -439,6 +439,16 @@
       }
     },
 
+    "summon": {
+      "type": "object",
+      "required": [ "uid" ],
+      "additionalProperties": false,
+      "properties": {
+        "uid": { "type": "string" },
+        "condition": { "$ref": "#/$defs/condition" }
+      }
+    },
+
     "buffCancel": {
       "type": "object",
       "additionalProperties": false,
@@ -655,7 +665,10 @@
         "type": "array",
         "items": { "$ref": "#/$defs/revive" }
       },
-      "summon": { "type": [ "array" ] },
+      "summon": {
+        "type": "array",
+        "items": { "$ref": "#/$defs/summon" }
+      },
       "baseStatusBoost": {
         "type": "object",
         "additionalProperties": false,

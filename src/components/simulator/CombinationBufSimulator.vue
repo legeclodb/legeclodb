@@ -792,7 +792,7 @@ export default {
               }
             }
             if (skill.summon) {
-              let sch = skill.summon[0];
+              let sch = skill.summon[0].chr;
               for (const s of [sch.talent, ...sch.skills]) {
                 score += this.prepassSkill(s);
               }
@@ -894,7 +894,7 @@ export default {
           }
 
           if (skill.summon) {
-            let sch = skill.summon[0];
+            let sch = skill.summon[0].chr;
             r.summon = {
               character: sch,
               skills: [],

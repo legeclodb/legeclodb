@@ -99,12 +99,11 @@ export class SimContext {
         // 召喚ユニットは召喚元ユニットのスキルから BaseUnit を作成する必要がある
         let summoner = this.findBaseUnit(json.summoner);
         for (let skill of summoner.main.skills) {
-          for (let maker of skill.makeSummonUnit ?? []) {
-            if (maker.uid == json.summonUid) {
-              base = maker.make();
-              base.fid = json.fid;
-              break;
-            }
+          let so = (skill.summon ?? []).find(o => o.uid == json.summonUid);
+          if (so) {
+            base = so.makeUnit();
+            base.fid = json.fid;
+            break;
           }
         }
       }
