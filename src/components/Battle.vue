@@ -219,7 +219,7 @@
 
         <b-button size="sm" id="btn-replay-op" style="min-width: 10em; margin-top: 0.5em; ">
           リプレイ
-          <b-popover :target="`btn-replay-op`" triggers="click" custom-class="loadout-popover" @show="fetchReplayList()" ref="replay_popover" placement="lefttop" boundary="window">
+          <b-popover :target="`btn-replay-op`" triggers="click" custom-class="replay-popover" @show="fetchReplayList()" ref="replay_popover" placement="lefttop" boundary="window">
             <h5>公開されているリプレイ</h5>
             <template v-if="fetching">
               <div style="padding: 10px;">
@@ -246,12 +246,17 @@
                 </template>
               </b-table>
             </template>
-            <div v-if="simulation ?? replay" class="flex" style="margin-bottom: 0.5em;">
-              <b-button size="sm" @click="uploadReplay()" style="min-width: 12em;">
-                現在のリプレイを公開
-              </b-button>
-              <b-form-input size="sm" v-model="userName" placeholder="投稿者名" style="width: 8em; margin-left: 0.25em;"></b-form-input>
-              <span style="margin-left: 0.5em; color: rgb(160,160,160) ">(投稿者本人は投稿したデータを削除可能)</span>
+            <div v-if="simulation ?? replay" style="margin-bottom: 0.75em;">
+              <div class="flex" style="margin-bottom: 0.25em;">
+                <b-button size="sm" @click="uploadReplay()">
+                  現在のリプレイを公開
+                </b-button>
+                <b-form-input size="sm" v-model="userName" placeholder="投稿者名" style="width: 8em; margin-left: 0.25em;"></b-form-input>
+                <b-form-input size="sm" v-model="commentReplay" placeholder="コメント" style="flex: 1; margin-left: 0.25em;"></b-form-input>
+              </div>
+              <div class="flex">
+                <span style="margin-left: 0.5em; color: rgb(160,160,160) ">(投稿者本人は投稿したデータを削除可能)</span>
+              </div>
             </div>
             <div class="flex" style="margin-bottom: 0.5em;">
               <b-button v-if="simulation ?? replay" size="sm" @click="exportReplayAsFile()" style="min-width: 12em;">
@@ -665,6 +670,7 @@ export default {
       slotNames: ["", "", "", "", "", "", "", "", "", ""],
       slotName: "",
       slotDesc: "",
+      commentReplay: "",
       userName: "",
 
       enemyUnits: [],
@@ -702,6 +708,10 @@ export default {
         {
           key: "name",
           label: "マップ＆スコア",
+        },
+        {
+          key: "comment",
+          label: "コメント",
         },
         {
           key: "author",
@@ -1892,13 +1902,15 @@ export default {
       const data = await lut.compressGzip(lut.toJson(this.serializeReplay()));
       var form = new FormData()
       form.append('mode', 'put');
-      form.append('data', new Blob([lut.toJson(data, null, 2)]));
+      form.append('data', new Blob([data]));
       form.append('author', this.userName.trim());
+      form.append('comment', this.commentReplay.trim());
       fetch(lut.ReplayServer, { method: "POST", body: form }).then((res) => {
         res.json().then((obj) => {
           if (obj.succeeded) {
             localStorage.setItem(`delkey.${obj.hash}`, obj.delkey);
             localStorage.setItem(`subscribe.${obj.hash}`, 'true');
+            this.commentReplay = "";
             this.fetchReplayList();
           }
           if (obj.message) {
@@ -2210,6 +2222,10 @@ export default {
   .loadout-popover {
     max-width: 1000px !important;
     min-width: 800px !important;
+  }
+  .replay-popover {
+    max-width: 1100px !important;
+    min-width: 1100px !important;
   }
   .comment-popover {
     max-width: 800px !important;
