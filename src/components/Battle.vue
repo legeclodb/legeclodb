@@ -1775,30 +1775,48 @@ export default {
       r.name = `${this.battleData.name} ${r.states.at(-1).score}`;
       return r;
     },
-    deserializeReplay(r) {
-      if (!r) {
-        return;
+    deserializeReplay(data) {
+      const body = (r) => {
+        this.endSimulation(false);
+        this.selectBattle(r.battle);
+        this.deserializeLoadout(r.loadout);
+        this.beginSimulation();
+        this.simulation.deserialize(r.states);
+        this.$forceUpdate();
+      };
+
+      if (typeof (data) === 'string') {
+        body(lut.fromJson(data));
       }
-      this.endSimulation(false);
-      this.selectBattle(r.battle);
-      this.deserializeLoadout(r.loadout);
-      this.beginSimulation();
-      this.simulation.deserialize(r.states);
-      this.$forceUpdate();
+      else if (data instanceof ArrayBuffer || data instanceof Uint8Array) {
+        body(lut.fromJson(lut.binaryToString(data)));
+      }
+      else if (typeof (data) === 'object') {
+        body(data);
+      }
     },
     exportReplayAsFile() {
       if (this.simulation) {
         this.replay = this.serializeReplay();
       }
       if (this.replay) {
-        const data = this.replay;
-        lut.download(`${data.loadout.name}${data.states.at(-1).score}.replay`, data);
+        let r = this.replay;
+        lut.compressGzip(lut.toJson(r)).then(data => {
+          lut.download(`${r.loadout.name}${r.states.at(-1).score}.replay`, data);
+        });
       }
     },
     importReplayFromFile() {
       lut.openFileDialog(".replay", (file) => {
-        file.text().then((text) => {
-          this.deserializeReplay(lut.fromJson(text));
+        file.arrayBuffer().then((bin) => {
+          if (lut.isGzipData(bin)) {
+            lut.decompressGzip(bin).then(data => {
+              this.deserializeReplay(data);
+            })
+          }
+          else {
+            this.deserializeReplay(bin);
+          }
         });
       });
     },
@@ -1810,11 +1828,13 @@ export default {
         url = `${lut.ReplayServer}?mode=get&hash=${url}`;
       }
       fetch(url).then((res) => {
-        res.json().then((obj) => {
-          this.deserializeReplay(obj);
-          if (callback) {
-            callback();
-          }
+        res.arrayBuffer().then((gz) => {
+          lut.decompressGzip(gz).then(bin => {
+            this.deserializeReplay(bin);
+            if (callback) {
+              callback();
+            }
+          })
         })
       });
     },
@@ -1868,8 +1888,8 @@ export default {
         })
       });
     },
-    uploadReplay() {
-      const data = this.serializeReplay();
+    async uploadReplay() {
+      const data = await lut.compressGzip(lut.toJson(this.serializeReplay()));
       var form = new FormData()
       form.append('mode', 'put');
       form.append('data', new Blob([lut.toJson(data, null, 2)]));

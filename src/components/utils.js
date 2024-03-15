@@ -166,11 +166,28 @@ export function download(filename, data) {
   window.URL.revokeObjectURL(u);
 }
 
-// data: String or Uint8Array
+export function stringToBinary(str) {
+  return (new TextEncoder()).encode(str);
+}
+export function binaryToString(bin) {
+  return (new TextDecoder()).decode(bin);
+}
+
+export function concatenateUint8Arrays(arrays) {
+  const len = arrays.reduce((acc, arr) => acc + arr.length, 0);
+  const result = new Uint8Array(len);
+  let offset = 0;
+  for (const arr of arrays) {
+    result.set(arr, offset);
+    offset += arr.length;
+  }
+  return result;
+}
+
+// data: String or ArrayBuffer
 export async function compressGzip(data) {
   if (typeof (data) == 'string') {
-    const encoder = new TextEncoder();
-    data = encoder.encode(data);
+    data = stringToBinary(data);
   }
 
   const inputStream = new ReadableStream({
@@ -190,14 +207,14 @@ export async function compressGzip(data) {
       if (done) break;
       chunks.push(value);
     }
-    return new Uint8Array(chunks.reduce((acc, chunk) => acc.concat(Array.from(chunk)), []));
+    return concatenateUint8Arrays(chunks);
   }
   finally {
     reader.releaseLock();
   }
 }
 
-// data: Uint8Array
+// data: ArrayBuffer
 export async function decompressGzip(data) {
   // eslint-disable-next-line
   const stream = new Response(data).body.pipeThrough(new DecompressionStream('gzip'));
@@ -210,14 +227,23 @@ export async function decompressGzip(data) {
       if (done) break;
       chunks.push(value);
     }
-    return new Uint8Array(chunks);
-  } finally {
+    return concatenateUint8Arrays(chunks);
+  }
+  finally {
     reader.releaseLock();
   }
 }
 
-// data: Uint8Array
+// data: ArrayByffer
 export function isGzipData(data) {
-  // gzip 圧縮されたデータは最初の 2 byte が 0x1F 0x8B になっている
-  return data instanceof Uint8Array && data.length >= 2 && data[0] === 0x1F && data[1] === 0x8B;
+  const check = (bytes) => {
+    // gzip 圧縮されたデータは最初の 2 byte が 0x1F 0x8B になっている
+    return bytes.length >= 2 && bytes[0] === 0x1F && bytes[1] === 0x8B;
+  };
+  if (data instanceof Uint8Array) {
+    return check(data);
+  }
+  else {
+    return check(new Uint8Array(data));
+  }
 }
