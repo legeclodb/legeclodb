@@ -309,7 +309,6 @@
         "type": "与ダメージ",
         "value": [ 20, 25, 30, 35, 40 ],
         "duration": 2,
-        "target": "単体",
         "condition": {
           "onTargetClass": [ "ソルジャー", "ランサー", "ライダー" ]
         }
@@ -482,8 +481,7 @@
       {
         "type": "アタック",
         "value": [ 5, 10, 13, 16, 20, 25 ],
-        "duration": 2,
-        "target": "単体"
+        "duration": 2
       }
     ]
   },
@@ -505,8 +503,7 @@
       {
         "type": "マジック",
         "value": [ 5, 10, 13, 16, 20, 25 ],
-        "duration": 2,
-        "target": "単体"
+        "duration": 2
       }
     ]
   },
@@ -549,8 +546,7 @@
       {
         "type": "ランダム",
         "variant": "弱",
-        "amount": 1,
-        "target": "単体"
+        "amount": 1
       }
     ],
     "note": "ランダムデバフ内訳: `randomTableToString('ランダムデバフ:弱')`"
@@ -573,8 +569,7 @@
       {
         "type": "レジスト",
         "value": [ 5, 10, 15, 18, 20, 25 ],
-        "duration": 2,
-        "target": "単体"
+        "duration": 2
       }
     ]
   },
@@ -641,8 +636,7 @@
       {
         "type": "クリティカル率",
         "value": [ 5, 10, 13, 16, 20, 25 ],
-        "duration": 2,
-        "target": "単体"
+        "duration": 2
       }
     ]
   },
@@ -664,14 +658,12 @@
       {
         "type": "アタック",
         "value": [ 10, 12, 14, 16, 18, 20 ],
-        "duration": 2,
-        "target": "単体"
+        "duration": 2
       },
       {
         "type": "クリティカル率",
         "value": [ 10, 12, 14, 16, 18, 20 ],
-        "duration": 2,
-        "target": "単体"
+        "duration": 2
       }
     ]
   },
@@ -693,8 +685,7 @@
       {
         "type": "ディフェンス",
         "value": [ 5, 10, 13, 16, 20, 25 ],
-        "duration": 2,
-        "target": "単体"
+        "duration": 2
       }
     ]
   },
