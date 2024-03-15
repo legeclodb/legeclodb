@@ -870,24 +870,36 @@ export default {
         nonSimulation: {
           onClickCell(cell) {
             const unit = self.findUnitByCoord(cell.coord);
-            if (!unit || self.selectedUnit === unit) {
-              // 空セル、もしくは自身が選択されたらキャンセル
-              this.onCancel();
+            self.selectUnit(unit);
+            if (unit) {
+              self.pushTool(self.tools.showMoveRange);
             }
-            else if (unit) {
-              // ユニット選択処理
-              self.selectUnit(unit);
-              if (unit) {
-                self.tools.moveUnit.buildPath(unit);
-              }
-            }
+          },
+          onRenderCell(cell, r) {
+            self.tools.moveUnit.onRenderCell(cell, r);
+          },
+        },
+        // 移動範囲表示
+        showMoveRange: {
+          onEnable() {
+            self.tools.moveUnit.buildPath(self.selectedUnit);
           },
           onDisable() {
-            this.onCancel();
-          },
-          onCancel() {
             self.selectUnit(null);
             self.path = null;
+          },
+          onClickCell(cell) {
+            const unit = self.findUnitByCoord(cell.coord);
+            if (!unit || self.selectedUnit === unit) {
+              // 空セル、もしくは自身が選択されたらキャンセル
+              self.cancelTools(self.tools.nonSimulation);
+            }
+            else if (unit) {
+              // 別のユニットが選択されたらそちらに切り替え
+              self.cancelTools(self.tools.nonSimulation);
+              self.selectUnit(unit);
+              self.pushTool(self.tools.showMoveRange);
+            }
           },
           onRenderCell(cell, r) {
             self.tools.moveUnit.onRenderCell(cell, r);
@@ -1325,6 +1337,7 @@ export default {
       const battle = this.battleList.find(a => a.uid == bid);
       if (!battle)
         return;
+      this.resetTools();
       this.battleId = bid;
       this.battleData = battle;
 
