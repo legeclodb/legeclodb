@@ -151,7 +151,7 @@
     <div v-if="simulation" :class="`content sim-commands ${simulation.isPlayerTurn ? 'player-turn' : 'enemy-turn'}` " @click.stop="">
       <div class="unit-panel">
         <div v-if="actionsToSelect.length" style="margin-bottom: 20px">
-          <b-button size="sm" style="width: 45px; height: 45px; margin-right: 5px;" @click="pushTool(tools.confirm);">
+          <b-button size="sm" style="width: 45px; height: 45px; margin-right: 5px;" @click="onClickWait();">
             待機
           </b-button>
           <div v-for="(skill, si) of actionsToSelect" :key="si" :class="getActionClass(skill)" :title="descToTitle(skill)" @click="onClickAction(skill)">
@@ -970,21 +970,29 @@ export default {
 
             if (skill) {
               if (skill.isSelfTarget) {
+                // 自己バフスキル
                 self.targetUnit = self.selectedUnit;
                 self.targetCell = self.findCellByCoord(self.selectedUnit.coord);
                 self.pushTools([self.tools.selectTarget, self.tools.confirm], this);
               }
               else if (skill.isRadialAreaTarget || skill.isSpecialAreaTarget) {
+                // 範囲スキル (自分中心 or 特殊範囲)
                 self.targetCell = self.findCellByCoord(self.selectedUnit.coord);
                 self.pushTools([self.tools.previewArea, self.tools.confirm], this);
               }
               else if (skill.isDirectionalAreaTarget) {
+                // 範囲スキル (直線)
                 self.targetCell = self.findCellByCoord(self.selectedUnit.coord);
                 self.pushTool(self.tools.previewArea);
               }
               else {
+                // 対象指定スキル
                 self.pushTool(self.tools.selectTarget);
               }
+            }
+            else {
+              // 待機
+              self.pushTool(self.tools.confirm);
             }
           },
           onCancel() {
@@ -1526,6 +1534,12 @@ export default {
     },
     onCellRClick(cell) {
       this.cancelAction();
+    },
+    onClickWait() {
+      let tool = this.currentTool;
+      if (tool && tool.onClickAction) {
+        tool.onClickAction(null);
+      }
     },
     onClickAction(skill) {
       let tool = this.currentTool;
