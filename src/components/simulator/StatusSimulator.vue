@@ -25,7 +25,7 @@
                   <b-form-checkbox v-if="param.type == 'bool'" style="width: 5em" :id="`ss${uid}-main-${name}`" v-model="param.value" size="sm" plain></b-form-checkbox>
                   <b-button v-if="param.type == 'character'" variant="outline-secondary" class="paddingless small-margin" :id="`ss${uid}-main-${name}`">
                     <b-img-lazy :src="getSkillIcon(param.value)" :title="descToTitle(param.value)" width="100" height="100" />
-                    <ChrSelector :target="`ss${uid}-main-${name}`" :chrs="mainChrs" classfilter symbolfilter closeonclick @click="setMainChr" />
+                    <ChrSelector :target="`ss${uid}-main-${name}`" :chrs="mainChrs" :nullable="embed ? true : false" classfilter symbolfilter closeonclick @click="setMainChr" />
                   </b-button>
                 </b-col>
               </b-form-row>
@@ -140,7 +140,7 @@
                   <b-form-checkbox v-if="param.type == 'bool'" style="width: 5em" :id="`ss${uid}-sup-${name}`" v-model="param.value" size="sm" plain></b-form-checkbox>
                   <b-button v-if="param.type == 'character'" variant="outline-secondary" class="paddingless small-margin" :id="`ss${uid}-sup-${name}`">
                     <b-img-lazy :src="getSkillIcon(param.value)" :title="descToTitle(param.value)" width="100" height="100" />
-                    <ChrSelector :target="`ss${uid}-sup-${name}`" :chrs="supChrs" nullable classfilter closeonclick @click="setSupChr($event)" />
+                    <ChrSelector v-if="main.character.value" :target="`ss${uid}-sup-${name}`" :chrs="supChrs" nullable classfilter closeonclick @click="setSupChr($event)" />
                   </b-button>
                 </b-col>
               </b-form-row>
@@ -514,15 +514,15 @@ export default {
         "レジスト優先",
         "リセット",
       ],
-      AUTO_EQUIP_TYPE: {
-        BATTLE_POWER: 0,
-        DAMAGE: 1,
-        DEBUF: 2,
-        ATTACK_POWER: 3,
+      AutoEquipType: {
+        BattlePower: 0,
+        Damage: 1,
+        Debuf: 2,
+        AttackPower: 3,
         HP: 4,
-        DEF: 5,
-        RES: 6,
-        RESET: 7,
+        Def: 5,
+        Res: 6,
+        Reset: 7,
       },
 
       tabIndex: 0,
@@ -579,6 +579,9 @@ export default {
   methods: {
     setMainChr(chr) {
       this.main.character.value = chr;
+      if (!chr) {
+        this.support.character.value = null;
+      }
       this.validateItems();
 
       for (let k in this.mainEnchants) {
@@ -720,7 +723,7 @@ export default {
     },
 
     matchClass(item, chr) {
-      if (item) {
+      if (item && chr) {
         if (!item.classes || item.classes.includes(chr.class))
           return true;
       }
@@ -756,10 +759,6 @@ export default {
     },
 
     autoEquipImpl(ma, sa, type) {
-      if (!ma.character)
-        return;
-
-      this.updateItemScore();
       let result = {
         main: {
           items: [null, null, null, null],
@@ -771,13 +770,16 @@ export default {
           enchants: [0, 0, 0, 0, 0],
         },
       };
+
+      this.updateItemScore();
       const mapi = ma.character ? ma.character.damageType == "アタック" ? 1 : 3 : 0;
       const sapi = sa.character ? sa.character.damageType == "アタック" ? 1 : 3 : 0;
-      const symbol = ma.character.symbol;
+      const symbol = ma.character?.symbol;
       const tec = ma.status[5];
       let ap = Math.round(ma.status[mapi] * 1.35);
-      if (sa.character)
+      if (sa.character) {
         ap += sa.status[sapi];
+      }
       //console.log(`ap: ${ap}`);
 
       const getHp = item => item.status[0];
@@ -815,8 +817,9 @@ export default {
       const pickItem = (items, filter, sortf) => {
         if (filter) {
           let filtered = items.filter(filter);
-          if (filtered.length)
+          if (filtered.length) {
             items = filtered;
+          }
         }
         items.sort(sortf);
         return items[0];
@@ -832,6 +835,8 @@ export default {
       };
 
       const pickItemsMain = (filter = null, sortf = null) => {
+        if (!ma.character)
+          return;
         const cond = a => this.matchClass(a, ma.character);
         if (!sortf)
           sortf = (a, b) => cmpPow(a, b, mapi);
@@ -846,6 +851,8 @@ export default {
       };
 
       const pickItemsSupport = (filter = null) => {
+        if (!sa.character)
+          return;
         const sortf = (a, b) => cmpPow(a, b, sapi);
         let amulet1 = pickItem(this.amulets1, filter, sortf);
         let amulet2 = pickItem(this.amulets2, filter, sortf);
@@ -853,6 +860,8 @@ export default {
       };
 
       const pickOptimalEnchants = (filterFunc = null, scoreBooster = null) => {
+        if (!ma.character)
+          return;
         const s = ma.status;
         let r = [0.05, 0, 2, 0, 2]; // score rate
         r[mapi] = 2 * (1.0 + tec * 0.0003);
@@ -923,6 +932,8 @@ export default {
       };
 
       const pickOptialAmuletSkills = (filterFunc = null, scoreBooster = null) => {
+        if (!sa.character)
+          return;
         const s = sa.status;
         let r = [0.05, 0, 2, 0, 2]; // score rate
         r[sapi] = 2 * (1.0 + tec * 0.0003); // リンク前提でテクニックも考慮
@@ -978,14 +989,14 @@ export default {
 
       let enchant = "バスター";
 
-      const AUTO_EQUIP_TYPE = this.AUTO_EQUIP_TYPE;
-      if (type == AUTO_EQUIP_TYPE.BATTLE_POWER) { // 戦闘力優先
+      const AutoEquipType = this.AutoEquipType;
+      if (type == AutoEquipType.BattlePower) { // 戦闘力優先
         pickItemsMain();
         pickOptimalEnchants();
         pickItemsSupport();
         pickOptialAmuletSkills();
       }
-      else if (type == AUTO_EQUIP_TYPE.DAMAGE) { // ダメージ優先
+      else if (type == AutoEquipType.Damage) { // ダメージ優先
         const sortf = (a, b) => {
           const sa = getDmg(a);
           const sb = getDmg(b);
@@ -998,7 +1009,7 @@ export default {
         enchant = "ストライク";
 
       }
-      else if (type == AUTO_EQUIP_TYPE.DEBUF) { // デバフ優先
+      else if (type == AutoEquipType.Debuf) { // デバフ優先
         const sortf = (a, b) => {
           const sa = getDebuf(a);
           const sb = getDebuf(b);
@@ -1010,34 +1021,34 @@ export default {
         pickOptialAmuletSkills(enAPSup);
         enchant = "ストライク";
       }
-      else if (type == AUTO_EQUIP_TYPE.ATTACK_POWER) { // 攻撃力優先
+      else if (type == AutoEquipType.AttackPower) { // 攻撃力優先
         pickItemsMain(getAPMain);
         pickOptimalEnchants(enAPMain);
         pickItemsSupport(getAPSup);
         pickOptialAmuletSkills(enAPSup);
       }
-      else if (type == AUTO_EQUIP_TYPE.HP) { // HP 優先
+      else if (type == AutoEquipType.HP) { // HP 優先
         pickItemsMain(getHp);
         pickOptimalEnchants(c => c.name.match(/^hp/));
         pickItemsSupport(getHp);
         pickOptialAmuletSkills(c => c.name.match(/^hp/));
         enchant = "アイアン";
       }
-      else if (type == AUTO_EQUIP_TYPE.DEF) { // ディフェンス優先
+      else if (type == AutoEquipType.Def) { // ディフェンス優先
         pickItemsMain(getDef);
         pickOptimalEnchants(c => c.name.match(/^def/));
         pickItemsSupport(getDef);
         pickOptialAmuletSkills(c => c.name.match(/^def/));
         enchant = "アイス";
       }
-      else if (type == AUTO_EQUIP_TYPE.RES) { // レジスト優先
+      else if (type == AutoEquipType.Res) { // レジスト優先
         pickItemsMain(getRes);
         pickOptimalEnchants(c => c.name.match(/^res/));
         pickItemsSupport(getRes);
         pickOptialAmuletSkills(c => c.name.match(/^res/));
         enchant = "アイス";
       }
-      if (type != AUTO_EQUIP_TYPE.RESET) {
+      if (type != AutoEquipType.Reset && ma.character) {
         result.main.enchantPassive = [this.getEnchantPassive(enchant)];
       }
 
@@ -1061,7 +1072,7 @@ export default {
       };
       const r = this.autoEquipImpl(ma, sa, type);
 
-      if (this.tabIndex == 0 && ma.character) {
+      if (this.tabIndex == 0 || !ma.character) {
         for (const v of Object.values(this.mainEnchants)) {
           v.valueP = r.main.enchants.shift();
           v.valueF = r.main.enchants.shift();
@@ -1069,7 +1080,7 @@ export default {
         this.mainItems = [...r.main.items];
         this.mainEnchantPassive = [...r.main.enchantPassive];
       }
-      if (this.tabIndex == 1 && sa.character) {
+      if (this.tabIndex == 1 || !sa.character) {
         for (const v of Object.values(this.supportEnchants))
           v.valueP = r.support.enchants.shift();
         this.supportItems = [...r.support.items];
