@@ -1227,7 +1227,7 @@ export default {
 
         let t = effectCategory + ":" + effect.type;
 
-        if (effect.ephemeral) {
+        if (effect.ephemeralOnBattle) {
           t += "(戦闘時)";
         }
         else if (params.includeAreaTags && effect.isBuff && effect.trigger?.target == "範囲") {

@@ -669,7 +669,7 @@ export default {
         }
         else if (effect.isBuff){
           return (opt.allowSingleUnitBuff || !this.isSingleTarget(effect)) &&
-            (opt.allowOnBattle || !effect.ephemeral) &&
+            (opt.allowOnBattle || !effect.ephemeralOnBattle) &&
             (opt.allowProbability || !probability) &&
             (opt.allowSymbolSkill || !cond?.onSymbol);
         }

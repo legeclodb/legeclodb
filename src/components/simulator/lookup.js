@@ -301,7 +301,7 @@ export default {
         const countEffect = (effect) => {
           let count = 0;
           for (const e of effects) {
-            if (e.type == effect.type && e.target == effect.target && e.ephemeral == effect.ephemeral && e.slot == effect.slot &&
+            if (e.type == effect.type && e.target == effect.target && e.slot == effect.slot &&
               e.timing == effect.timing && Math.sign(e.value) == Math.sign(effect.value)) {
               ++count;
             }
@@ -353,7 +353,7 @@ export default {
 
         let additionalClass = "";
         let prefix = effect.isDebuff ? "-" : "+";
-        let onBattle = effect.ephemeral ? "(戦闘時)" : "";
+        let onBattle = effect.ephemeralOnBattle ? "(戦闘時)" : "";
         let unit = "";
         let title = "";
         if (ctx.usedEffects.includes(effect)) {
