@@ -503,19 +503,31 @@ export class SimContext {
         }
         if (unit.invokeMultiMove(ctx)) {
           multiMove = true;
+          unit.move = ctx.multiMoveValue;
         }
 
-        unit.state = UnitState.End;
         if (multiAction) {
           unit.state = UnitState.MultiAction;
         }
         else if (multiMove) {
           unit.state = UnitState.MultiMove;
         }
+        else {
+          unit.state = UnitState.End;
+        }
       }
     }
     else {
-      unit.state = UnitState.End;
+      if (skill?.isSupportSkill) {
+        unit.move = unit.main.move - ctx.move;
+      }
+      else if (unit.isOnMultiMove) {
+        unit.state = UnitState.End;
+      }
+    }
+
+    if (unit.state == UnitState.MultiAction || unit.state == UnitState.End) {
+      unit.move = unit.main.move;
     }
 
     this.updateAreaEffectsAll();

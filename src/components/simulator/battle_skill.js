@@ -657,6 +657,19 @@ export function makeSimSkill(skill, ownerUnit) {
       if (!act.coolTime && evaluateCondition(ctx, act.condition)) {
         succeeded = true;
         ctx.onMultiMove = true;
+
+        let m = 0;
+        if (act.type == "基本移動力") {
+          m = ctx.unit.main.move;
+        }
+        else if (act.type == "固定値移動力") {
+          m = act.value;
+        }
+        else if (act.type == "残移動力") {
+          m = ctx.unit.main.move - ctx.move;
+        }
+        ctx.multiMoveValue = Math.max(m, ctx.multiMoveValue ?? 0);
+
         if (act.ct) {
           act.coolTime = act.ct;
         }

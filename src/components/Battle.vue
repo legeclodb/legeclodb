@@ -150,17 +150,15 @@
 
     <div v-if="simulation" :class="`content sim-commands ${simulation.isPlayerTurn ? 'player-turn' : 'enemy-turn'}` " @click.stop="">
       <div class="unit-panel">
-        <div v-if="actionsToSelect.length" style="margin-bottom: 20px; display: flex">
+        <div v-if="actionsToSelect.length" style="margin-bottom: 20px; display: flex; flex-wrap: wrap;">
+          <div v-if="selectedUnit.sim.isOnMultiMove" style="font-size: 16pt; color: gray; width: 100%;">再移動中</div>
+          <div v-if="selectedUnit.sim.isOnMultiAction" style="font-size: 16pt; color: gray; width: 100%;">再行動中</div>
           <b-button size="sm" style="width: 45px; height: 45px; margin-right: 5px;" @click="onClickWait();">
             待機
           </b-button>
-          <div style="display: flex; flex-wrap: wrap;">
-            <div v-if="selectedUnit.sim.isOnMultiMove" style="font-size: 16pt; color: gray; width: 100%;">再移動中</div>
-            <div v-if="selectedUnit.sim.isOnMultiAction" style="font-size: 16pt; color: gray; width: 100%;">再行動中</div>
-            <div v-for="(skill, si) of actionsToSelect" :key="si" :class="getActionClass(skill, selectedUnit)" :title="descToTitle(skill)" @click="onClickAction(skill)">
-              <b-img :src="getImageURL(skill.icon)" style="width: 100%; height: 100%;" />
-              <div v-if="!skill.available" class="text-overlay">CT{{isFinite(skill.coolTime) ? skill.coolTime : "∞"}}</div>
-            </div>
+          <div v-for="(skill, si) of actionsToSelect" :key="si" :class="getActionClass(skill, selectedUnit)" :title="descToTitle(skill)" @click="onClickAction(skill)">
+            <b-img :src="getImageURL(skill.icon)" style="width: 100%; height: 100%;" />
+            <div v-if="!skill.available" class="text-overlay">CT{{isFinite(skill.coolTime) ? skill.coolTime : "∞"}}</div>
           </div>
         </div>
         <div>
