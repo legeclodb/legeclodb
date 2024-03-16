@@ -270,12 +270,19 @@ export class BaseUnit {
 }
 
 
+export const UnitState = {
+  End: 0,
+  Ready: 1,
+  MultiAction: 2,
+  MultiMove: 3,
+}
+
 export class SimUnit {
 
   //#region fields
   base = null; // BaseUnit
   isDormant = false; // 配置前 (出現ターン前) のユニットは true
-  readyToAction = true;
+  state = UnitState.Ready;
   coord = [0, 0];
   main = {
     bufRate: {},
@@ -318,6 +325,12 @@ export class SimUnit {
       return (this.main.hp + this.support.hp) / (this.main.maxHp + this.support.maxHp) * 100;
     }
   }
+
+  get isReady() { return this.state == UnitState.Ready || this.state == UnitState.MultiAction; }
+  get isEnded() { return this.state == UnitState.End; }
+  get isOnMultiAction() { return this.state == UnitState.MultiAction; }
+  get isOnMultiMove() { return this.state == UnitState.MultiMove; }
+
   get prevCoord() { return this.base.prevCoord; }
   get activeBuffCount() {
     return this.timedEffects.reduce((total, e) => {
@@ -454,7 +467,7 @@ export class SimUnit {
     r.fid = this.fid;
     r.coord = [...this.coord];
     r.isDormant = this.isDormant;
-    r.readyToAction = this.readyToAction;
+    r.state = this.state;
 
     r.skills = this.skills.map(a => {
       return {
@@ -495,7 +508,12 @@ export class SimUnit {
   deserialize(r) {
     this.coord = [...r.coord];
     this.isDormant = r.isDormant;
-    this.readyToAction = r.readyToAction;
+    if ('state' in r) {
+      this.state = r.state;
+    }
+    else if ('readyToAction' in r) { // 旧フォーマット
+      this.state = r.readyToAction ? UnitState.Ready : UnitState.End;
+    }
 
     for (const so of r.skills) {
       let skill = this.skills.find(a => a.uid == so.uid);
@@ -1002,7 +1020,7 @@ export class SimUnit {
       this.reduceSkillCT(1);
       this.reduceEffectDuration();
     }
-    this.readyToAction = true;
+    this.state = UnitState.Ready;
   }
 
   // 相手ターン開始前/後

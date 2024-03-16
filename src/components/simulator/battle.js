@@ -1,7 +1,7 @@
 export * from "./battle_unit.js";
 export * from "./battle_skill.js";
 import { callHandler, makeActionContext, evaluateCondition } from "./battle_skill.js";
-import { BaseUnit, SimUnit, isInside } from "./battle_unit.js";
+import { BaseUnit, SimUnit, UnitState, isInside } from "./battle_unit.js";
 import { $g } from "./battle_globals.js";
 
 export class SimContext {
@@ -399,7 +399,7 @@ export class SimContext {
     this.range = 0;
     this.move = 0;
 
-    let doAction = skill?.isSupportSkill ? false : true;
+    let doAction = (skill?.isSupportSkill || unit.isOnMultiMove) ? false : true;
     let doAttack = false;
     let doBattle = false;
     let multiAction = false;
@@ -494,22 +494,28 @@ export class SimContext {
       if (unit.isAlive) {
         callHandler("onRevive", ctx, unit);
       }
+      unit.state = UnitState.End;
     }
-    else if (doAction && !unit.main.isNxNBoss) {
-      if (unit.invokeMultiAction(ctx)) {
-        multiAction = true;
-      }
-      if (unit.invokeMultiMove(ctx)) {
-        multiMove = true;
-      }
+    else if (doAction) {
+      if (!unit.main.isNxNBoss) {
+        if (unit.invokeMultiAction(ctx)) {
+          multiAction = true;
+        }
+        if (unit.invokeMultiMove(ctx)) {
+          multiMove = true;
+        }
 
-      unit.readyToAction = false;
-      if (multiAction) {
-        unit.readyToAction = true;
+        unit.state = UnitState.End;
+        if (multiAction) {
+          unit.state = UnitState.MultiAction;
+        }
+        else if (multiMove) {
+          unit.state = UnitState.MultiMove;
+        }
       }
-      else if (multiMove) {
-        // todo
-      }
+    }
+    else {
+      unit.state = UnitState.End;
     }
 
     this.updateAreaEffectsAll();

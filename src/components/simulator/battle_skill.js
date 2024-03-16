@@ -1,5 +1,5 @@
 import { $g } from "./battle_globals.js";
-import { SimUnit } from "./battle_unit.js";
+import { SimUnit, UnitState } from "./battle_unit.js";
 import { unique, count } from "../utils.js";
 
 export function callHandler(funcName, ctx, ...callees) {
@@ -634,7 +634,7 @@ export function makeSimSkill(skill, ownerUnit) {
     for (let act of self?.multiAction ?? []) {
       if (!act.coolTime && evaluateCondition(ctx, act.condition)) {
         if (act.target == "スキル対象") {
-          ctx.target.readyToAction = true;
+          ctx.target.state = UnitState.Ready;
           // 他者への再行動の場合 succeeded は false
         }
         else {
