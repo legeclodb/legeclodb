@@ -43,24 +43,25 @@ export function evaluateCondition(ctx, cond)
     "onTargetAlly", "onTargetEnemy",
     "onActiveSkill", "onSingleSkill", "onAreaSkill",
     "onBattle", "onCloseCombat", "onRangedCombat",
-    "onDamage", "onCriticalHit", "onKill", "onClassAdvantage"
+    "onDamage", "onCriticalHit", "onKill", "onClassAdvantage",
+    "onMultiMove", "onMultiAction", "onIdle"
   ];
   for (const p of boolProps) {
     if (p in cond) {
-      if (!ctx[p]) {
+      if (Boolean(ctx[p]) != cond[p]) {
         ok = false;
         break;
       }
     }
   }
 
-  const includesPros = [
+  const includesProps = [
     ["onClass", "class"],
     ["onTargetClass", "targetClass"],
     ["onSymbol", "symbol"],
     ["onTerrain", "terrain"]
   ];
-  for (const [cname, pname] of includesPros) {
+  for (const [cname, pname] of includesProps) {
     if (cname in cond) {
       if (!cond[cname].includes(ctx[pname])) {
         ok = false;
@@ -637,6 +638,7 @@ export function makeSimSkill(skill, ownerUnit) {
           // 他者への再行動の場合 succeeded は false
         }
         else {
+          ctx.onMultiAction = true;
           succeeded = true;
         }
         if (act.ct) {
@@ -654,6 +656,7 @@ export function makeSimSkill(skill, ownerUnit) {
     for (let act of skill?.multiMove ?? []) {
       if (!act.coolTime && evaluateCondition(ctx, act.condition)) {
         succeeded = true;
+        ctx.onMultiMove = true;
         if (act.ct) {
           act.coolTime = act.ct;
         }

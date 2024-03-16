@@ -893,7 +893,7 @@ export class SimUnit {
 
   _invokeSkillAction(ctx, act) {
     let succeeded = false;
-    let skills = ctx.skill ? [...this.passives, ctx.skill] : this.passives;
+    let skills = ctx.skill ? [ctx.skill, ...this.passives] : this.passives;
     for (let skill of skills) {
       if (skill[act](ctx)) {
         succeeded = true;
@@ -955,7 +955,7 @@ export class SimUnit {
     if (!ctx) {
       ctx = makeActionContext(this);
     }
-    let skills = ctx?.skill ? [...this.passives, ctx.skill] : this.passives;
+    let skills = ctx?.skill ? [ctx.skill, ...this.passives] : this.passives;
     callHandler(funcName, ctx, ...skills);
   }
 

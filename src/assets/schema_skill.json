@@ -274,6 +274,9 @@
         "onTargetEnemy": { "type": "boolean" },
         "onOwnTurn": { "type": "boolean" },
         "onEnemyTurn": { "type": "boolean" },
+        "onMultiAction": { "type": "boolean" },
+        "onMultiMove": { "type": "boolean" },
+        "onIdle": { "type": "boolean" },
         "onSymbol": {
           "type": "array",
           "uniqueItems": true,
