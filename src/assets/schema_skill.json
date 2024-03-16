@@ -29,7 +29,7 @@
       "enum": [ "平地", "草原", "森", "水中", "荒地", "崖", "空", "山岳", "洞窟", "砂地", "砂丘", "積雪", "置物", "砦", "壁", "柵", "溶岩" ]
     },
     "targetEnum": {
-      "enum": [ "自身", "自身(メイン)", "自身(サポート)", "味方(低HP)", "範囲", "範囲(ランダム)", "味方全体", "敵全体", "スキル対象", "攻撃対象", "召喚元", "召喚先" ]
+      "enum": [ "自身", "自身(メイン)", "自身(サポート)", "味方(低HP)", "範囲", "乱択", "味方全体", "敵全体", "スキル対象", "攻撃対象", "召喚元", "召喚先" ]
     },
     "targetType": {
       "anyOf": [
@@ -394,6 +394,17 @@
       "properties": {
         "base": { "$ref": "#/$defs/statusType" },
         "rate": { "type": [ "number", "array" ] },
+        "target": { "$ref": "#/$defs/targetType" },
+        "condition": { "$ref": "#/$defs/condition" }
+      }
+    },
+
+    "reflection": {
+      "type": "object",
+      "required": [ "rate" ],
+      "additionalProperties": false,
+      "properties": {
+        "rate": { "type": [ "number", "array" ] },
         "condition": { "$ref": "#/$defs/condition" }
       }
     },
@@ -656,6 +667,10 @@
       "shield": {
         "type": "array",
         "items": { "$ref": "#/$defs/shield" }
+      },
+      "reflection": {
+        "type": "array",
+        "items": { "$ref": "#/$defs/reflection" }
       },
       "heal": {
         "type": "array",

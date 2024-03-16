@@ -692,6 +692,7 @@ export class SimContext {
       if (this.isValidCoord(c) && !this.findUnitByCoord(c)) {
         unit.coord = c;
         unit.isDormant = false;
+        this.updateAreaEffectsAll();
         return true;
       }
     }
@@ -700,11 +701,12 @@ export class SimContext {
 
   eraseWeakEnemies() {
     for (const u of this.activeUnits) {
-      if (u.isEnemy && u.fid != "E01") {
+      if (u.isEnemy && !u.invulnerable) {
         u.main.hp = 0;
         u.support.hp = 0;
       }
     }
+    this.updateAreaEffectsAll();
   }
   eraseUnit(unit) {
     let u = unit?.sim;
@@ -713,6 +715,7 @@ export class SimContext {
       u.onDeath();
       this.notifyDead(u);
     }
+    this.updateAreaEffectsAll();
   }
   //#endregion impl
 }

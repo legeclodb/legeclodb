@@ -1023,7 +1023,6 @@
         "value": 15,
         "ephemeral": true,
         "target": "自身(メイン)",
-        "timing": "戦闘前",
         "condition": {
           "onOwnTurn": true
         }
@@ -1033,7 +1032,6 @@
         "value": 15,
         "ephemeral": true,
         "target": "自身(メイン)",
-        "timing": "戦闘前",
         "condition": {
           "onOwnTurn": true
         }
@@ -1098,6 +1096,19 @@
         "type": "与ダメージ",
         "value": 10,
         "target": "自身(メイン)"
+      },
+      {
+        "type": "移動",
+        "value": 1,
+        "target": "自身(メイン)",
+        "duration": 1,
+        "trigger": {
+          "target": "自身",
+          "timing": "行動後",
+          "condition": {
+            "probability": 40
+          }
+        }
       }
     ]
   },
@@ -1169,7 +1180,16 @@
     "desc": "最大HPの基本ステータス+10%。\n敵ターンでの戦闘時、その戦闘後、確率(40%)で自ユニットの受けたダメージの40%を反射する。",
     "baseStatusBoost": {
       "hp": 10
-    }
+    },
+    "reflection": [
+      {
+        "rate": 0.4,
+        "condition": {
+          "onEnemyTurn": true,
+          "probability": 40
+        }
+      }
+    ]
   },
   {
     "uid": "107",
@@ -1183,14 +1203,14 @@
       {
         "type": "ディフェンス",
         "value": 5,
-        "area": 3,
-        "target": "自身(メイン)"
+        "target": "範囲",
+        "area": 3
       },
       {
         "type": "レジスト",
         "value": 5,
-        "area": 3,
-        "target": "自身(メイン)"
+        "target": "範囲",
+        "area": 3
       }
     ]
   },
@@ -1248,10 +1268,12 @@
     "name": "エンチャント:ストライク",
     "icon": "ストライク",
     "desc": "クリティカル率+7%。\nクリティカルダメージ倍率+30%。",
-    "baseStatusBoost": {
-      "cri": 7
-    },
     "buff": [
+      {
+        "type": "クリティカル率",
+        "value": 7,
+        "target": "自身(メイン)"
+      },
       {
         "type": "クリティカルダメージ倍率",
         "value": 30,
@@ -1264,10 +1286,12 @@
     "name": "エンチャント:ブレイク",
     "icon": "ブレイク",
     "desc": "クリティカル率+7%。\n味方ターンでの戦闘時、かつ敵ユニットのHPが50%以上の時、与ダメージ+20%。",
-    "baseStatusBoost": {
-      "cri": 7
-    },
     "buff": [
+      {
+        "type": "クリティカル率",
+        "value": 7,
+        "target": "自身(メイン)"
+      },
       {
         "type": "与ダメージ",
         "value": 20,
@@ -1581,7 +1605,7 @@
         "value": 15,
         "duration": 1,
         "trigger": {
-          "target": "範囲(ランダム)",
+          "target": "乱択",
           "area": [ 1, "周囲" ],
           "unitCount": 1,
           "timing": "行動後"
@@ -1592,7 +1616,7 @@
         "value": 15,
         "duration": 1,
         "trigger": {
-          "target": "範囲(ランダム)",
+          "target": "乱択",
           "area": [ 1, "周囲" ],
           "unitCount": 1,
           "timing": "行動後"
@@ -1604,7 +1628,7 @@
         "type": "アタックダウン",
         "duration": 1,
         "trigger": {
-          "target": "範囲(ランダム)",
+          "target": "乱択",
           "area": [ 1, "周囲" ],
           "unitCount": 1,
           "timing": "行動後"
@@ -1614,7 +1638,7 @@
         "type": "マジックダウン",
         "duration": 1,
         "trigger": {
-          "target": "範囲(ランダム)",
+          "target": "乱択",
           "area": [ 1, "周囲" ],
           "unitCount": 1,
           "timing": "行動後"
@@ -1624,7 +1648,7 @@
         "type": "アクティブスキル使用不可",
         "duration": 1,
         "trigger": {
-          "target": "範囲(ランダム)",
+          "target": "乱択",
           "area": [ 1, "周囲" ],
           "unitCount": 1,
           "timing": "行動後"
@@ -1891,7 +1915,7 @@
         "value": 20,
         "duration": 1,
         "trigger": {
-          "target": "範囲(ランダム)",
+          "target": "乱択",
           "area": [ 1, "周囲" ],
           "unitCount": 1,
           "timing": "行動後"
@@ -1903,7 +1927,7 @@
         "type": "スタン",
         "duration": 1,
         "trigger": {
-          "target": "範囲(ランダム)",
+          "target": "乱択",
           "area": [ 1, "周囲" ],
           "unitCount": 1,
           "timing": "行動後"
@@ -1913,7 +1937,7 @@
         "type": "強化不可",
         "duration": 1,
         "trigger": {
-          "target": "範囲(ランダム)",
+          "target": "乱択",
           "area": [ 1, "周囲" ],
           "unitCount": 1,
           "timing": "行動後"
@@ -1923,7 +1947,7 @@
         "type": "移動ダウン",
         "duration": 1,
         "trigger": {
-          "target": "範囲(ランダム)",
+          "target": "乱択",
           "area": [ 1, "周囲" ],
           "unitCount": 1,
           "timing": "行動後"
@@ -3814,6 +3838,7 @@
     "name": "目には目を、歯には歯を",
     "desc": "自ユニットに付与されている「対等な存在」の数に応じて以下の効果を得る。\n1個以上の時：自ユニットのクリティカルダメージ倍率+10%、戦闘後、自ユニットが受けたダメージの50%分を反射する。\n2個以上の時：戦闘前、敵ユニットのダメージ耐性-15%(1ターン)。\n3個以上の時：1度だけ、味方メインのHPが0になった時、戦闘不能にならず、自ユニットのメイン、サポートそれぞれのHPが最大HPの50%分回復する。",
     "cost": 2,
+    "reflection": [ { "rate": 0.5 } ],
     "buff": [
       {
         "type": "クリティカルダメージ倍率",
@@ -3846,10 +3871,15 @@
     "revive": [
       {
         "rate": 0.5,
-        "count": 1
+        "count": 1,
+        "condition": {
+          "token": {
+            "tokenName": "対等な存在",
+            "compare": [ ">=", 3 ]
+          }
+        }
       }
-    ],
-    "tags": [ "反射" ]
+    ]
   },
   {
     "uid": "1200131",

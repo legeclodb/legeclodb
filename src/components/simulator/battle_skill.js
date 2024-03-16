@@ -121,7 +121,7 @@ export function getTargetUnits(ctx, json) {
     "攻撃対象": () => ctx.targets,
     "スキル対象": () => ctx.targets,
     "範囲": () => ctx.getUnitsInArea(json.area),
-    "範囲(ランダム)": () => ctx.getUnitsInArea(json.area),
+    "乱択": () => ctx.getUnitsInArea(json.area),
     "味方全体": () => $g.sim.activeUnits.filter(a => a.isPlayer == ctx.unit.isPlayer),
     "敵全体": () => $g.sim.activeUnits.filter(a => a.isPlayer != ctx.unit.isPlayer),
     "召喚先": () => ctx.unit.summon,

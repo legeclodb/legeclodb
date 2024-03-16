@@ -987,7 +987,7 @@ export default {
       const tri = effect.trigger;
       if (tri) {
         const t = tri.target;
-        if (t == "自身" || (tri.target == "範囲(ランダム)" && tri.unitCount == 1)) {
+        if (t == "自身" || (tri.target == "乱択" && tri.unitCount == 1)) {
           return true;
         }
         if (effect.parent.isSingleTarget && isSkillTarget(t)) {
@@ -1125,6 +1125,9 @@ export default {
 
       if (skill.shield) {
         addTag(`シールド付与`);
+      }
+      if (skill.reflection) {
+        addTag(`反射`);
       }
       if (skill.heal) {
         for (const heal of skill.heal) {

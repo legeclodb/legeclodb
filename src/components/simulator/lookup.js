@@ -162,7 +162,7 @@ export default {
             effectType += "-";
           effect.effectType = effectType;
 
-          if (effect.target == "単体" || effect.target == "範囲(ランダム)") {
+          if (effect.target == "単体" || effect.target == "乱択") {
             effect.isSingleTarget = true;
           }
 

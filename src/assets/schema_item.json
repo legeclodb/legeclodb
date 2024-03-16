@@ -51,6 +51,10 @@
         "type": "array",
         "items": { "$ref": "schema_skill.json#/$defs/heal" }
       },
+      "reflection": {
+        "type": "array",
+        "items": { "$ref": "schema_skill.json#/$defs/reflection" }
+      },
       "multiMove": {
         "type": "array",
         "items": { "$ref": "schema_skill.json#/$defs/multiMove" }

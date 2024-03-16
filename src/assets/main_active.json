@@ -9522,6 +9522,7 @@
       {
         "base": "アタック",
         "rate": 2,
+        "target": "自身(メイン)",
         "condition": {
           "token": {
             "tokenName": "オシリス神の啓示",

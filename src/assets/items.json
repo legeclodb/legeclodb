@@ -1986,7 +1986,7 @@
         "value": 20,
         "duration": 1,
         "trigger": {
-          "target": "範囲(ランダム)",
+          "target": "乱択",
           "area": [ 1, "周囲" ],
           "unitCount": 1,
           "timing": "行動後"
@@ -2693,7 +2693,7 @@
         "type": "アクティブスキル使用不可",
         "duration": 1,
         "trigger": {
-          "target": "範囲(ランダム)",
+          "target": "乱択",
           "area": 3,
           "unitCount": 1,
           "timing": "行動後",
@@ -2726,7 +2726,7 @@
         "duration": 1,
         "target": "自身",
         "trigger": {
-          "target": "範囲(ランダム)",
+          "target": "乱択",
           "area": 2,
           "unitCount": 1,
           "timing": "行動後"
@@ -2757,7 +2757,7 @@
         "value": 20,
         "duration": 1,
         "trigger": {
-          "target": "範囲(ランダム)",
+          "target": "乱択",
           "area": 2,
           "unitCount": 1,
           "timing": "行動後",
@@ -2944,7 +2944,7 @@
         "duration": 1,
         "target": "自身",
         "trigger": {
-          "target": "範囲(ランダム)",
+          "target": "乱択",
           "area": [ 1, "周囲" ],
           "unitCount": 1,
           "timing": "行動後"
@@ -3000,7 +3000,7 @@
       {
         "base": "アタック",
         "rate": 1.5,
-        "target": "範囲(ランダム)",
+        "target": "乱択",
         "area": [ 1, "周囲" ],
         "unitCount": 1,
         "timing": "行動後"
@@ -3102,7 +3102,7 @@
       {
         "base": "レジスト",
         "rate": 2.5,
-        "target": "範囲(ランダム)",
+        "target": "乱択",
         "area": [ 2, "範囲" ],
         "unitCount": 1,
         "timing": "行動後"
@@ -3164,7 +3164,7 @@
         "variant": "弱",
         "amount": 1,
         "trigger": {
-          "target": "範囲(ランダム)",
+          "target": "乱択",
           "area": 2,
           "unitCount": 1,
           "timing": "行動後"
@@ -3195,7 +3195,7 @@
         "duration": 2,
         "target": "自身",
         "trigger": {
-          "target": "範囲(ランダム)",
+          "target": "乱択",
           "area": 2,
           "unitCount": 1,
           "timing": "行動後"
@@ -3207,7 +3207,7 @@
         "duration": 2,
         "target": "自身",
         "trigger": {
-          "target": "範囲(ランダム)",
+          "target": "乱択",
           "area": 2,
           "unitCount": 1,
           "timing": "行動後"
@@ -3907,7 +3907,15 @@
         "target": "自身(メイン)"
       }
     ],
-    "tags": [ "反射" ]
+    "reflection": [
+      {
+        "rate": 0.3,
+        "condition": {
+          "onEnemyTurn": true,
+          "onRangedCombat": true
+        }
+      }
+    ]
   },
   {
     "uid": "Item_Equipment_SSR_0094",
@@ -3925,7 +3933,15 @@
         "target": "自身(メイン)"
       }
     ],
-    "tags": [ "反射" ]
+    "reflection": [
+      {
+        "rate": 0.3,
+        "condition": {
+          "onEnemyTurn": true,
+          "onCloseCombat": true
+        }
+      }
+    ]
   },
   {
     "uid": "Item_Equipment_SSR_0093",
@@ -6147,7 +6163,8 @@
         "timing": "戦闘前"
       }
     ],
-    "tags": [ "分類:遺跡装備", "反射" ]
+    "reflection": [ { "rate": 0.8 } ],
+    "tags": [ "分類:遺跡装備" ]
   },
   {
     "uid": "Item_Equipment_SSR_0150",
