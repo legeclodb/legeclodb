@@ -5379,8 +5379,7 @@
         "target": "攻撃対象",
         "timing": "攻撃後",
         "condition": {
-          "onActiveSkill": true,
-          "onDamage": true
+          "onActiveSkill": true
         }
       }
     ],
@@ -5607,8 +5606,7 @@
         "target": "攻撃対象",
         "timing": "攻撃後",
         "condition": {
-          "onActiveSkill": true,
-          "onDamage": true
+          "onActiveSkill": true
         }
       }
     ],

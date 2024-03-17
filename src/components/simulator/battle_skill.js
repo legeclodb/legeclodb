@@ -139,6 +139,11 @@ export function getTargetUnits(ctx, json) {
 
 export function makeActionContext(unit, target, skill, isAttacker, parent) {
   let sim = $g.sim;
+
+  const damageProps = [
+    "damageToSupport", "damageToMain",
+    "additionalDamageToSupport", "additionalDamageToMain",
+  ];
   let ctx = {
     get turn() { return sim.turn; },
     get phase() { return sim.phase; },
@@ -232,6 +237,19 @@ export function makeActionContext(unit, target, skill, isAttacker, parent) {
 
     damageDealt: 0,
     damageTaken: 0,
+
+    damageToSupport: 0,
+    damageToMain: 0,
+    additionalDamageToSupport: 0, // 固定値ダメージなどによる追加ダメージ
+    additionalDamageToMain: 0,    // 
+    addDamage: function (v) {
+      for (const p of damageProps) {
+        this[p] += v[p];
+      }
+    },
+    get totalDamage() {
+      return damageProps.reduce((v, p) => v + this[p], 0);
+    },
   };
 
   if (isAttacker) {
@@ -553,11 +571,19 @@ export function makeSimSkill(skill, ownerUnit) {
   }
   self.invokeFixedDamage = function (ctx, timing = null) {
     for (let act of self?.fixedDamage ?? []) {
-      if ((!timing || act.timing == timing) && !act.coolTime && evaluateCondition(ctx, act.condition)) {
+      if (act.base == "与ダメージ") {
+        if (!timing) {
+          let u = ctx.unit;
+          let t = ctx.target;
+          ctx.additionalDamageToSupport += Math.round(ctx.damageToSupport * act.rate);
+          ctx.additionalDamageToMain += Math.round(ctx.damageToMain * act.rate);
+          console.log(`!! 固定値ダメージ ${u.main.name} (${self.name}) -> ${t.main.name}!!`);
+        }
+      }
+      else if (act.timing == timing && !act.coolTime && evaluateCondition(ctx, act.condition)) {
         if (act.ct) {
           act.coolTime = act.ct;
         }
-
         let u = ctx.unit;
         for (let t of getTargetUnits(ctx, act)) {
           if (u.isPlayer != t.isPlayer || act.target == "自身") {

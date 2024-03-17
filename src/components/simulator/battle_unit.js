@@ -925,6 +925,13 @@ export class SimUnit {
     return succeeded;
   }
 
+  invokeFixedDamage(ctx) {
+    return this._invokeSkillAction(ctx, "invokeFixedDamage");
+  }
+  invokeAreaDamage(ctx) {
+    return this._invokeSkillAction(ctx, "invokeAreaDamage");
+  }
+
   invokeSupportAttack(ctx) {
     return this._invokeSkillAction(ctx, "invokeSupportAttack");
   }

@@ -167,15 +167,6 @@ export class SimContext {
   doAttack(_ctx, attacker, targetQueue, skill) {
     let actx = Object.create(_ctx);
     actx.skill = skill;
-    actx.damageToSupport = 0;
-    actx.damageToMain = 0;
-    actx.addDamage = (v) => {
-      actx.damageToSupport += v.damageToSupport;
-      actx.damageToMain += v.damageToMain;
-    },
-    Object.defineProperty(actx, "totalDamage", {
-      get: () => actx.damageToSupport + actx.damageToMain,
-    });
 
     if (!targetQueue.find(a => a.isValid)) {
       return actx;
@@ -369,15 +360,19 @@ export class SimContext {
       let actx = Object.create(ctx);
       actx.target = target;
 
-      let r = [
+      let rs = [
         this.doAttack(actx, attacker, [this.makeTarget(target.main)], skill),
         this.doAttack(actx, attacker, [this.makeTarget(target.support)], skill),
       ];
-      result.attackerScore += r[0].totalDamage + r[1].totalDamage;
-      result.callbacks.push(() => {
-        target.support.hp -= r[0].damageToSupport + r[1].damageToSupport;
-        target.main.hp -= r[0].damageToMain + r[1].damageToMain;
-      });
+      for (let r of rs) {
+        unit.invokeFixedDamage(r); // ライトマキシマスカ と 八咫鏡 のためとりあえず
+
+        result.attackerScore += r.totalDamage;
+        result.callbacks.push(() => {
+          target.support.hp -= r.damageToSupport + r.additionalDamageToSupport;
+          target.main.hp -= r.damageToMain + r.additionalDamageToMain;
+        });
+      }
       result.contexts.push(ctx);
     }
 
