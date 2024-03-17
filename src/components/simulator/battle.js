@@ -540,7 +540,7 @@ export class SimContext {
     }
 
     if (unit.state == UnitState.MultiAction || unit.state == UnitState.End) {
-      unit.move = unit.main.move;
+      unit.move = -1;
     }
 
     this.updateAreaEffectsAll();

@@ -117,7 +117,14 @@ export class BaseUnit {
   get hasSupport() { return this.base.support.cid; }
   get actions() { return this.sim ? this.sim.actions : []; }
 
-  get move() { return this.sim ? this.sim.move : this.main.move; }
+  get move() {
+    if (this.sim) {
+      return this.sim.move < 0 ? this.sim.main.move : this.sim.move;
+    }
+    else {
+      return this.main.move;
+    }
+  }
   get range() { return this.sim ? this.sim.main.range : this.main.range; }
   get isAlive() { return this.sim ? this.sim.isAlive : false; }
   get isActive() { return this.sim ? this.sim.isActive : false; }
@@ -283,7 +290,7 @@ export class SimUnit {
   base = null; // BaseUnit
   isDormant = false; // 配置前 (出現ターン前) のユニットは true
   state = UnitState.Ready;
-  move = 0; // 再移動やサポートスキル後などで元の move より少なくなることがある
+  move = -1; // 残移動量。-1 だと main.move。
   coord = [0, 0];
   main = {
     bufRate: {},
@@ -1013,9 +1020,6 @@ export class SimUnit {
     };
     setupHp(this.main);
     setupHp(this.support);
-    if (!this.move) {
-      this.move = this.main.move;
-    }
   }
 
   onSimulationEnd(ctx) {
