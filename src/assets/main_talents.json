@@ -4668,6 +4668,8 @@
       {
         "ct": [ 3, 3, 2, 2 ],
         "condition": {
+          "onOwnTurn": true,
+          "onBattle": true,
           "onCriticalHit": true
         }
       }
@@ -4984,6 +4986,7 @@
       {
         "ct": [ 4, 4, 3, 3 ],
         "condition": {
+          "onAction": true,
           "activeBuffCount": [ ">=", 6 ]
         }
       }
@@ -7352,6 +7355,8 @@
       {
         "ct": 2,
         "condition": {
+          "onOwnTurn": true,
+          "onBattle": true,
           "onCriticalHit": true
         }
       }
@@ -7514,6 +7519,7 @@
       {
         "ct": 3,
         "condition": {
+          "onBattle": true,
           "token": {
             "tokenName": "スイーツメイカー",
             "compare": [ ">=", 1 ]
@@ -8821,6 +8827,8 @@
       {
         "ct": 2,
         "condition": {
+          "onOwnTurn": true,
+          "onBattle": true,
           "onCriticalHit": true
         }
       }
@@ -9536,6 +9544,8 @@
       {
         "ct": 3,
         "condition": {
+          "onOwnTurn": true,
+          "onBattle": true,
           "onCriticalHit": true
         }
       }

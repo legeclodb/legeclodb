@@ -420,14 +420,14 @@ export class SimContext {
     if (skill && skill.isMainSkill && skill.damageRate) {
       doAttack = true;
       doBattle = ctx.onTargetEnemy;
-
-      ctx.onAttack = true;
-      if (doBattle)
-        ctx.onBattle = true;
     }
+    if (doAction) { ctx.onAction = true; }
+    if (doAttack) { ctx.onAttack = true; }
+    if (doBattle) { ctx.onBattle = true; }
 
-    if (doAction)
+    if (doAction) {
       callHandler("onActionBegin", ctx, unit);
+    }
 
     // 待機の場合 skill は null
     if (skill) {
@@ -463,6 +463,9 @@ export class SimContext {
 
       skill.onFire(ctx);
     }
+    else {
+      ctx.onWait = true;
+    }
 
     let killed = targets.filter(a => !a.isAlive);
     if (killed.length) {
@@ -475,8 +478,9 @@ export class SimContext {
       this.notifyDead(unit);
     }
 
-    if (doAction)
+    if (doAction) {
       callHandler("onActionEnd", ctx, unit);
+    }
 
     if (killed?.length) {
       callHandler("onKill", ctx, unit);

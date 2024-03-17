@@ -5121,6 +5121,8 @@
       {
         "ct": 3,
         "condition": {
+          "onOwnTurn": true,
+          "onBattle": true,
           "onCriticalHit": true
         }
       }

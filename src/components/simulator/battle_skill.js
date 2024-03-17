@@ -632,7 +632,7 @@ export function makeSimSkill(skill, ownerUnit) {
   self.invokeMultiAction = function (ctx) {
     let succeeded = false;
     for (let act of self?.multiAction ?? []) {
-      if (!act.coolTime && evaluateCondition(ctx, act.condition)) {
+      if (!act.coolTime && ctx.onOwnTurn && evaluateCondition(ctx, act.condition)) {
         if (act.target == "スキル対象") {
           ctx.target.state = UnitState.Ready;
           // 他者への再行動の場合 succeeded は false
@@ -654,7 +654,7 @@ export function makeSimSkill(skill, ownerUnit) {
   self.invokeMultiMove = function (ctx) {
     let succeeded = false;
     for (let act of skill?.multiMove ?? []) {
-      if (!act.coolTime && evaluateCondition(ctx, act.condition)) {
+      if (!act.coolTime && !ctx.onWait && evaluateCondition(ctx, act.condition)) {
         succeeded = true;
         ctx.onMultiMove = true;
 
