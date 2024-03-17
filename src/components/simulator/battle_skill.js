@@ -691,7 +691,20 @@ export function makeSimSkill(skill, ownerUnit) {
 
 
   self.getDamageRate = function (ctx) {
-    return self.damageRate;
+    const getValue = (v) => {
+      if (Array.isArray(v)) {
+        return v.at(-1);
+      }
+      else {
+        return v;
+      }
+    }
+    for (const s of self.damageRateSp ?? []) {
+      if (evaluateCondition(ctx, s.condition)) {
+        return getValue(s.value);
+      }
+    }
+    return getValue(self.damageRate);
   }
 
   self.startCoolTime = function () {
