@@ -584,7 +584,7 @@
                             <div v-for="(d, di) in (selectedUnit.sim.affectedEffects[e.uid] ?? [])" class="effect-box" :key="`effect${ei}${di}`">
                               <span :class="`effect ${d.effect.enabled ? 'caution' : ''}`">
                                 {{d.desc}}
-                                <b-badge v-if="isFinite(d.effect.count)" class="tag" variant="secondary" pill @click="selectedUnit.sim.removeEffect(d.effect); $forceUpdate();">×</b-badge>
+                                <b-badge v-if="isFinite(d.effect.count)" class="tag" variant="secondary" pill @click="selectedUnit.sim.removeEffect(d.effect)">×</b-badge>
                               </span>
                             </div>
                           </template>
@@ -2078,6 +2078,7 @@ export default {
   }
 
   .grid-container {
+    user-select: none;
     display: grid;
     /*
       grid-gap によるボーダーの描画は、どうも画面のスケールが 100% でないときにムラができるっぽいので、
