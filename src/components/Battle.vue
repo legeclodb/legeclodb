@@ -582,7 +582,10 @@
                         <div class="effect-group">
                           <template v-for="(e, ei) in skill.effects">
                             <div v-for="(d, di) in (selectedUnit.sim.affectedEffects[e.uid] ?? [])" class="effect-box" :key="`effect${ei}${di}`">
-                              <span :class="`effect ${d.effect.enabled ? 'caution' : ''}`">{{d.desc}}</span>
+                              <span :class="`effect ${d.effect.enabled ? 'caution' : ''}`">
+                                {{d.desc}}
+                                <b-badge v-if="isFinite(d.effect.count)" class="tag" variant="secondary" pill @click="selectedUnit.sim.removeEffect(d.effect); $forceUpdate();">×</b-badge>
+                              </span>
                             </div>
                           </template>
                         </div>

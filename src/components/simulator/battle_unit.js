@@ -648,6 +648,14 @@ export class SimUnit {
     console.log(`${effect.type} ${effect.value ?? effect.variant ?? effect.tokenName} ${effect.duration ?? ''}T (by ${effect.parent.name}) -> ${this.main.name}`);
   }
 
+  removeEffect(effect) {
+    let i = this.timedEffects.findIndex(a => a === effect);
+    if (i != -1) {
+      this.timedEffects.splice(i, 1);
+      this.evaluateBuffs();
+    }
+  }
+
   updateAreaEffects() {
     this.areaEffects = [];
     const add = (e) => {
