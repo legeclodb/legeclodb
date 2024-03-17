@@ -738,7 +738,7 @@ export class SimUnit {
       }
     }
 
-    this.affectedSkills = unique([...this.passives.map(a => a.__proto__), ...this.effects.flatMap(a => a.enabled ? a.parent : [])]);
+    this.affectedSkills = unique([...this.passives.map(a => a.__proto__), ...this.effects.map(a => a.parent)]);
     this.affectedEffects = {};
     for (let e of this.effects) {
       if (["ランダム"].includes(e.type)) {

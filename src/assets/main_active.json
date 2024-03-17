@@ -197,7 +197,7 @@
         "duration": 2,
         "trigger": {
           "target": "自身",
-          "timing": "戦闘後"
+          "timing": "攻撃後"
         }
       },
       {
@@ -206,7 +206,7 @@
         "duration": 2,
         "trigger": {
           "target": "自身",
-          "timing": "戦闘後"
+          "timing": "攻撃後"
         }
       }
     ],
@@ -1823,11 +1823,7 @@
       {
         "type": "ダメージ耐性(魔法)",
         "value": 20,
-        "duration": 2,
-        "trigger": {
-          "target": "攻撃対象",
-          "timing": "戦闘後"
-        }
+        "duration": 2
       }
     ]
   },
@@ -1932,11 +1928,7 @@
       {
         "type": "与ダメージ",
         "value": 20,
-        "duration": 2,
-        "trigger": {
-          "target": "攻撃対象",
-          "timing": "戦闘後"
-        }
+        "duration": 2
       }
     ],
     "note": "対象がエアリアルの場合、0.8倍のダメージ"
@@ -5602,7 +5594,7 @@
         "condition": { "onEnemyTurn": true },
         "trigger": {
           "target": "自身",
-          "timing": "戦闘前"
+          "timing": "行動後"
         }
       }
     ],
@@ -8794,7 +8786,7 @@
         "duration": 2,
         "trigger": {
           "target": "自身",
-          "timing": "戦闘前"
+          "timing": "攻撃前"
         }
       },
       {
@@ -8803,7 +8795,7 @@
         "duration": 2,
         "trigger": {
           "target": "自身",
-          "timing": "戦闘前"
+          "timing": "攻撃前"
         }
       }
     ],
