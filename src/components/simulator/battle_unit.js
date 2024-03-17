@@ -875,6 +875,8 @@ export class SimUnit {
     return v / 100;
   }
 
+  // NxN ボスは範囲内のマス分返す。
+  // 1 体としてカウントしたい場合 unique() を使うこと。
   getUnitsInArea(args) {
     let r = [];
     let [size, shape] = parseArea(args);

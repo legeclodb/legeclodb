@@ -207,8 +207,8 @@ export function makeActionContext(unit, target, skill, isAttacker, parent) {
       this.isOnEffect = (args) => u.isOnEffect(args);
       this.getTokenCount = (args) => u.getTokenCount(args);
       this.getUnitsInArea = (args) => u.getUnitsInArea(args);
-      this.getNearAllyCount = (args) => u.getAlliesInArea(args).length;
-      this.getNearEnemyCount = (args) => u.getEnemiesInArea(args).length;
+      this.getNearAllyCount = (args) => unique(u.getAlliesInArea(args)).length;
+      this.getNearEnemyCount = (args) => unique(u.getEnemiesInArea(args)).length;
     },
 
     get target() { return this.target_; },
