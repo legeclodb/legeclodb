@@ -958,8 +958,10 @@ export default {
             let sim = self.simulation;
             if (unit) {
               if (self.selectedUnit === unit) {
-                // 自身が選択されたらキャンセル
-                self.cancelTools(self.tools.selectUnit);
+                // 移動後再度そのユニットがクリックされたら待機
+                if (sim && (unit.coord[0] != unit.prevCoord[0] || unit.coord[1] != unit.prevCoord[1])) {
+                  self.onClickWait();
+                }
               }
               else {
                 // 別のユニットが選択されたらそちらに切り替え
@@ -1219,6 +1221,11 @@ export default {
           },
           onDisable() {
             self.showConfirm = false;
+          },
+          onClickCell(cell) {
+            if (cell === self.targetCell) {
+              self.confirmAction();
+            }
           },
           onClickAction(skill) {
             self.tools.moveUnit.onClickAction(skill);
