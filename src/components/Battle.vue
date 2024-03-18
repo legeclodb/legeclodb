@@ -554,13 +554,13 @@
             <h5 style="margin: 5px;">影響下にあるスキル</h5>
             <div class="flex info">
               <div><h6>メイン合計: </h6></div>
-              <template v-for="(l, li) in effectValuesToHtml(unit.main.bufRate, unit.main.bufFixed)">
+              <template v-for="(l, li) in effectValuesToHtml(unit.main.buf, unit.main.bufCv)">
                 <div :key="li" v-html="l" />
               </template>
             </div>
             <div v-if="unit.support.isAlive" class="flex info">
               <div><h6>サポート合計: </h6></div>
-              <template v-for="(l, li) in effectValuesToHtml(unit.support.bufRate, unit.support.bufFixed)">
+              <template v-for="(l, li) in effectValuesToHtml(unit.support.buf, unit.support.bufCv)">
                 <div :key="li" v-html="l" />
               </template>
             </div>

@@ -164,6 +164,7 @@ export class SimContext {
     return unit && ((unit.isPlayer && this.isPlayerTurn) || (unit.isEnemy && this.isEnemyTurn));
   }
 
+  // attacker: chr
   doAttack(_ctx, attacker, targetQueue, skill) {
     let actx = Object.create(_ctx);
     actx.skill = skill;
@@ -196,9 +197,9 @@ export class SimContext {
 
     let attackCount = 10;
     let atk = aunit.getAttackPower(actx);
-    let damageRate = skill ? skill.getDamageRate(actx) : 1.0;
-    let dmgDealtBuff = Math.max(1.0 + aunit.getDamageDealBuff(actx), 0.3);
+    let dmgDealBuff = aunit.getDamageDealBuff(actx);
     let critDmgRate = aunit.getCriticalDamageRate(actx);
+    let damageRate = skill ? skill.getDamageRate(actx) : 1.0;
     let rangedPenarty = actx.onRangedPenarty ? 0.6 : 1.0;
 
     const calcDamage = (t, breakOnKill) => {
@@ -218,8 +219,8 @@ export class SimContext {
 
       let def = dunit.getDefensePower(dctx);
       let baseDmg = Math.max(atk - def, 1);
-      let dmgTakenBuff = Math.max(1.0 - dunit.getDamageTakenBuff(dctx), 0.3);
-      let finalDmg = baseDmg * damageRate * dmgDealtBuff * dmgTakenBuff * critDmgRate * rangedPenarty;
+      let dmgTakenBuff = dunit.getDamageTakenBuff(dctx);
+      let finalDmg = baseDmg * damageRate * dmgDealBuff * dmgTakenBuff * critDmgRate * rangedPenarty;
 
       let totalDamage = 0;
       while (attackCount) {

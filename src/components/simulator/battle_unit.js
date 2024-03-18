@@ -288,27 +288,29 @@ export class SimUnit {
 
   //#region fields
   base = null; // BaseUnit
-  isDormant = false; // 配置前 (出現ターン前) のユニットは true
-  state = UnitState.Ready;
-  move = -1; // 残移動量。-1 だと main.move。
-  coord = [0, 0];
+  isDormant = false; // serializable 配置前 (出現ターン前) のユニットは true
+  state = UnitState.Ready; // serializable
+  move = -1; // serializable 残移動量。-1 だと main.move。
+  coord = [0, 0]; // serializable
   main = {
-    bufRate: {},
-    bufFixed: {},
-    hp: 0,
+    buf: {},
+    bufCv: {}, // 変換系バフ (アタックの n% をマジックに加算 など)。内容は {"アタック": 100} などでそのまま加算する
+    hp: 0, // serializable
     maxHp: 0,
   };
   support = {
-    bufRate: {},
-    bufFixed: {},
-    hp: 0,
+    buf: {},
+    bufCv: {},
+    hp: 0, // serializable
     maxHp: 0,
   };
-  summon = [];
+  ephemeralDebuf = {}; // 戦闘時に相手にかけるデバフ
+
+  summon = []; // 召喚したユニット
   selfEffects = []; // SimEffect
   areaEffects = []; // SimEffect
-  timedEffects = []; // SimEffect
-  score = 0;
+  timedEffects = []; // serializable SimEffect
+  score = 0; // serializable
 
   affectedEffects = {};
   affectedSkills = [];
@@ -398,19 +400,19 @@ export class SimUnit {
         baseTec: () => { return base.status[5]; },
         baseRange: () => { return base.range; },
         status: () => {
-          const table = ["最大HP", "アタック", "ディフェンス", "マジック", "レジスト", "テクニック",];
+          const props = ["最大HP", "アタック", "ディフェンス", "マジック", "レジスト", "テクニック",];
           let r = [...base.status];
           for (let i = 0; i < r.length; ++i) {
-            const n = table[i];
-            r[i] = Math.round(r[i] * ((chr.bufRate[n] ?? 0) / 100 + 1) + (chr.bufFixed[n] ?? 0));
+            const prop = props[i];
+            r[i] = Math.round(r[i] * ((chr.buf[prop] ?? 0) / 100 + 1) + (chr.bufCv[prop] ?? 0));
           }
           return r;
         },
-        range: () => { return Math.max(base.range + (chr.bufFixed["射程(通常攻撃)"] ?? 0), 0); },
+        range: () => { return Math.max(base.range + (chr.buf["射程(通常攻撃)"] ?? 0), 0); },
       };
       if (chr.isMain) {
         table.baseMove = () => { return base.move; };
-        table.move = () => { return Math.max(base.move + (chr.bufFixed["移動"] ?? 0), 0); };
+        table.move = () => { return Math.max(base.move + (chr.buf["移動"] ?? 0), 0); };
       }
       table.baseAttackPower = chr.damageType == "アタック" ?
         () => { return base.status[1]; } :
@@ -423,8 +425,15 @@ export class SimUnit {
         });
       }
       chr.hp = chr.maxHp = chr.baseHp;
-      chr.bufRate = {};
-      chr.bufFixed = {};
+      chr.buf = {};
+      chr.bufCv = {};
+
+      chr.getBuffValue = (type) => {
+        return chr.buf[type] ?? 0;
+      }
+      chr.getConvertedBuffValue = (type) => {
+        return chr.bufCv[type] ?? 0;
+      }
     };
     {
       this.main = Object.create(unit.base.main);
@@ -675,48 +684,61 @@ export class SimUnit {
     if (!ctx) {
       ctx = makeActionContext(this);
     }
-    let mainRate = {};
-    let mainFixed = {};
-    let supRate = {};
-    let supFixed = {};
+    let bufMain = {};
+    let bufMainCv = {};
+    let bufSup= {};
+    let bufSupCv = {};
+    let epDebuf = {};
 
-    const add = (e) => {
-      const doit = (e, tRate, rFixed) => {
-        if (["ランダム", "トークン"].includes(e.type)) {
-          return;
-        }
+    const addValue = (obj, prop, value) => {
+      if (!(prop in obj)) {
+        obj[prop] = 0;
+      }
+      obj[prop] += value;
+    }
 
-        if (e.isDebuff && e.ephemeral) {
-          // 戦闘時デバフは扱いが難しくて保留
-          console.log(e);
-        }
-
-        else if (e.isAdditive || ["移動", "射程(通常攻撃)", "射程(スキル)", "範囲"].includes(e.type)) {
-          if (!(e.type in rFixed)) {
-            rFixed[e.type] = 0;
-          }
-          rFixed[e.type] += e.getValue(ctx, this);
-        }
-        else {
-          if (!(e.type in tRate)) {
-            tRate[e.type] = 0;
-          }
-          tRate[e.type] += e.getValue(ctx, this);
-        }
+    const processEffect = (e) => {
+      // ディフェンス無視, レジスト無視, クリティカル率耐性 は戦闘時に相手にかけるデバフとして扱う
+      const specialDebuffTypes = {
+        "ディフェンス無視": "ディフェンス",
+        "レジスト無視": "レジスト",
+        "クリティカル率耐性": "クリティカル率",
       };
 
-      const notForSupport = ["テクニック", "クリティカル率", "クリティカルダメージ倍率", "移動", "範囲"].includes(e.type);
-      if (e.target == "自身(メイン)") {
-        doit(e, mainRate, mainFixed);
+      if (["ランダム", "トークン"].includes(e.type)) {
+        // do nothing
       }
-      else if (e.target == "自身(サポート)") {
-        if (!notForSupport)
-          doit(e, supRate, supFixed);
+      else if ((e.isDebuff && e.ephemeral) || Object.keys(specialDebuffTypes).includes(e.type)) {
+        if (e.isDebuff) {
+          addValue(epDebuf, e.type, e.getValue(ctx, this));
+        }
+        else {
+          addValue(epDebuf, specialDebuffTypes[e.type], -e.getValue(ctx, this));
+        }
       }
       else {
-        doit(e, mainRate, mainFixed);
-        if (!notForSupport)
-          doit(e, supRate, supFixed);
+        const add = (e, dstRate, dstConverted) => {
+          if (e.isAdditive) {
+            addValue(dstConverted, e.type, e.getValue(ctx, this));
+          }
+          else {
+            addValue(dstRate, e.type, e.getValue(ctx, this));
+          }
+        };
+
+        const notForSupport = ["テクニック", "クリティカル率", "クリティカルダメージ倍率", "移動", "範囲", "射程(通常攻撃)", "射程(スキル)"].includes(e.type);
+        if (e.target == "自身(メイン)") {
+          add(e, bufMain, bufMainCv);
+        }
+        else if (e.target == "自身(サポート)") {
+          if (!notForSupport)
+            add(e, bufSup, bufSupCv);
+        }
+        else {
+          add(e, bufMain, bufMainCv);
+          if (!notForSupport)
+            add(e, bufSup, bufSupCv);
+        }
       }
     };
 
@@ -724,7 +746,7 @@ export class SimUnit {
       e.enabled = false;
       if ((!e.ephemeral || (e.ephemeralOnBattle && ctx.onBattle) || (e.ephemeralOnAttack && ctx.onAttack)) && evaluateCondition(ctx, e.condition)) {
         e.enabled = true;
-        add(e);
+        processEffect(e);
       }
     }
 
@@ -806,13 +828,18 @@ export class SimUnit {
       }
       return r;
     };
-    this.main.bufRate = reorder(mainRate);
-    this.main.bufFixed = reorder(mainFixed);
-    this.support.bufRate = reorder(supRate);
-    this.support.bufFixed = reorder(supFixed);
+    this.main.buf = reorder(bufMain);
+    this.main.bufCv = reorder(bufMainCv);
+    this.support.buf = reorder(bufSup);
+    this.support.bufCv = reorder(bufSupCv);
+    this.ephemeralDebuf = reorder(epDebuf);
     //console.log(this);
   }
 
+
+  getEphemeralDebuffValue(type) {
+    return this.ephemeralDebuf[type] ?? 0;
+  }
 
   getRange(ctx) {
     if (ctx.skill) {
@@ -821,43 +848,108 @@ export class SimUnit {
     let chr = ctx?.onSupportAttack ? this.support : this.main;
     return chr.range;
   }
-
   getAttackPower(ctx) {
-    let chr = ctx?.onSupportAttack ? this.support : this.main;
+    let chr = ctx.onSupportAttack ? this.support : this.main;
+    let target = ctx.target;
+    let base = 0, rate = 0, add = 0;
     if (ctx.onPhysicalDamage) {
-      return chr.baseAtk * ((chr.bufRate["アタック"] ?? 0) / 100 + 1) + (chr.bufFixed["アタック"] ?? 0);
+      base = chr.baseAtk;
+      rate = chr.getBuffValue("アタック")
+      add = chr.getConvertedBuffValue("アタック");
+      if (target) {
+        rate += target.getEphemeralDebuffValue("アタック");
+      }
     }
     else {
-      return chr.baseMag * ((chr.bufRate["マジック"] ?? 0) / 100 + 1) + (chr.bufFixed["マジック"] ?? 0);
+      base = chr.baseMag;
+      rate = chr.getBuffValue("マジック");
+      add = chr.getConvertedBuffValue("マジック");
+      if (target) {
+        rate += target.getEphemeralDebuffValue("マジック");
+      }
     }
+    return base * Math.max(rate / 100 + 1, 0.3) + add;
+  }
+  getDefensePower(ctx) {
+    let chr = ctx.onSupportDefense ? this.support : this.main;
+    let target = ctx.target;
+    let base = 0, rate = 0, add = 0;
+    if (ctx.onPhysicalDamage) {
+      base = chr.baseDef;
+      rate = chr.getBuffValue("ディフェンス");
+      add = chr.getConvertedBuffValue("ディフェンス");
+      if (target) {
+        rate += target.getEphemeralDebuffValue("ディフェンス");
+      }
+    }
+    else {
+      base = chr.baseRes;
+      rate = chr.getBuffValue("レジスト");
+      add = chr.getConvertedBuffValue("レジスト");
+      if (target) {
+        rate += target.getEphemeralDebuffValue("レジスト");
+      }
+    }
+    return base * Math.max(rate / 100 + 1, 0.3) + add;
   }
   getDamageDealBuff(ctx) {
-    let chr = ctx?.onSupportAttack ? this.support : this.main;
+    let chr = ctx.onSupportAttack ? this.support : this.main;
+    let target = ctx.target;
     let v = 0;
-    v += chr.bufRate["与ダメージ"] ?? 0;
+    v += chr.getBuffValue("与ダメージ");
+    v -= target ? target.getEphemeralDebuffValue("与ダメージ") : 0;
     if (ctx.onPhysicalDamage) {
-      v += chr.bufRate["与ダメージ(物理)"] ?? 0;
+      v += chr.getBuffValue("与ダメージ(物理)");
+      v += target ? target.getEphemeralDebuffValue("与ダメージ(物理)") : 0;
     }
     else {
-      v += chr.bufRate["与ダメージ(魔法)"] ?? 0;
+      v += chr.getBuffValue("与ダメージ(魔法)");
+      v += target ? target.getEphemeralDebuffValue("与ダメージ(魔法)") : 0;
     }
     if (ctx.onActiveSkill) {
-      v += chr.bufRate["与ダメージ(スキル)"] ?? 0;
+      v += chr.getBuffValue("与ダメージ(スキル)");
+      v += target ? target.getEphemeralDebuffValue("与ダメージ(スキル)") : 0;
       if (ctx.onAreaSkill) {
-        v += chr.bufRate["与ダメージ(範囲スキル)"] ?? 0;
+        v += chr.getBuffValue("与ダメージ(範囲スキル)");
+        v += target ? target.getEphemeralDebuffValue("与ダメージ(範囲スキル)") : 0;
       }
     }
     else if (ctx.onNormalAttack) {
-      v += chr.bufRate["与ダメージ(通常攻撃)"] ?? 0;
+      v += chr.getBuffValue("与ダメージ(通常攻撃)");
+      v += target ? target.getEphemeralDebuffValue("与ダメージ(通常攻撃)") : 0;
     }
-    return v / 100;
+    return Math.max(v / 100 + 1, 0.3);
+  }
+  getDamageTakenBuff(ctx) {
+    let chr = ctx.onSupportDefense ? this.support : this.main;
+    let target = ctx.target;
+    let v = 0;
+    v += chr.getBuffValue("ダメージ耐性");
+    v += target ? target.getEphemeralDebuffValue("ダメージ耐性") : 0;
+    if (ctx.onPhysicalDamage) {
+      v += chr.getBuffValue("ダメージ耐性(物理)");
+      v += target ? target.getEphemeralDebuffValue("ダメージ耐性(物理)") : 0;
+    }
+    else {
+      v += chr.getBuffValue("ダメージ耐性(魔法)");
+      v += target ? target.getEphemeralDebuffValue("ダメージ耐性(魔法)") : 0;
+    }
+    if (ctx.onAreaSkill) {
+      v += chr.getBuffValue("ダメージ耐性(範囲スキル)");
+      v += target ? target.getEphemeralDebuffValue("ダメージ耐性(範囲スキル)") : 0;
+    }
+    return 1.0 - Math.min(v / 100, 0.7);
   }
   getCriticalRate(ctx) {
-    if (ctx?.onSupportAttack) {
+    if (ctx.onSupportAttack) {
       return 0;
     }
     else {
-      return (this.main.baseTec / 10) + this.evaluateEffects(ctx, "クリティカル率");
+      let chr = this.main;
+      let target = ctx.target;
+      let tec = chr.baseTec * (chr.getBuffValue("テクニック") / 100 + 1);
+      let buf = chr.getBuffValue("クリティカル率") + (target ? target.getEphemeralDebuffValue("クリティカル率") : 0);
+      return ((tec / 10) + buf) / 100;
     }
   }
   getCriticalDamageRate(ctx) {
@@ -865,29 +957,11 @@ export class SimUnit {
       return 1.0;
     }
     else {
-      return 1.3 + ((this.main.bufRate["クリティカルダメージ倍率"] ?? 0) / 100);
+      let chr = this.main;
+      let target = ctx.target;
+      let buf = chr.getBuffValue("クリティカルダメージ倍率") + (target ? target.getEphemeralDebuffValue("クリティカルダメージ倍率") : 0);
+      return 1.3 + (buf / 100);
     }
-  }
-  getDefensePower(ctx) {
-    let chr = ctx?.onSupportDefense ? this.support : this.main;
-    if (ctx.onPhysicalDamage) {
-      return chr.baseDef * ((chr.bufRate["ディフェンス"] ?? 0) / 100 + 1) + (chr.bufFixed["ディフェンス"] ?? 0);
-    }
-    else {
-      return chr.baseDef * ((chr.bufRate["レジスト"] ?? 0) / 100 + 1) + (chr.bufFixed["レジスト"] ?? 0);
-    }
-  }
-  getDamageTakenBuff(ctx) {
-    let chr = ctx?.onSupportDefense ? this.support : this.main;
-    let v = 0;
-    v += chr.bufRate["ダメージ耐性"] ?? 0;
-    if (ctx.onPhysicalDamage)
-      v += chr.bufRate["ダメージ耐性(物理)"] ?? 0;
-    else
-      v += chr.bufRate["ダメージ耐性(魔法)"] ?? 0;
-    if (ctx.onAreaSkill)
-      v += chr.bufRate["ダメージ耐性(範囲スキル)"] ?? 0;
-    return v / 100;
   }
 
   // NxN ボスは範囲内のマス分返す。
@@ -922,20 +996,6 @@ export class SimUnit {
       }
     }
     return false;
-  }
-
-  evaluateEffects(ctx, type) {
-    let r = 100;
-    for (let e of this.effects) {
-      if (e.type == type && evaluateCondition(ctx, e.condition)) {
-        if ((e.target == "自身(メイン)" && !ctx.onMainAttack) || (e.target == "自身(サポート)" && !ctx.onSupportAttack)) {
-          continue;
-        }
-        r += e.value;
-        //console.log(e);
-      }
-    }
-    return r / 100.0;
   }
 
   _invokeSkillAction(ctx, act) {
@@ -1033,7 +1093,7 @@ export class SimUnit {
     //console.log(`${this.main.name}: 影響下にあるスキル -> ${unique(this.effects.map(a => a.parent.name)).join(", ")}`);
 
     const setupHp = (chr) => {
-      chr.hp = chr.maxHp = Math.round(chr.baseHp * ((chr.bufRate["最大HP"] ?? 0) / 100 + 1));
+      chr.hp = chr.maxHp = Math.round(chr.baseHp * (chr.getBuffValue("最大HP") / 100 + 1));
     };
     setupHp(this.main);
     setupHp(this.support);

@@ -264,10 +264,6 @@ export function makeActionContext(unit, target, skill, isAttacker, parent) {
     });
     ctx.onEnemyTurn = true;
     ctx.onNormalAttack = true;
-    if (parent) {
-      ctx.onPhysicalDamage = parent.onPhysicalDamage;
-      ctx.onMagicDamage = parent.onMagicDamage;
-    }
   }
 
   if (unit) {
@@ -279,6 +275,17 @@ export function makeActionContext(unit, target, skill, isAttacker, parent) {
   if (skill) {
     ctx.skill = skill;
   }
+  if (parent) {
+    const propsToInherit = [
+      "onAttack", "onBattle", "onPhysicalDamage", "onMagicDamage"
+    ];
+    for (const p of propsToInherit) {
+      if (p in parent) {
+        ctx[p] = parent[p];
+      }
+    }
+  }
+
   return ctx;
 }
 
@@ -448,7 +455,7 @@ export function makeSimSkill(skill, ownerUnit) {
         }
         let r = skill.area;
         if (skill.isMainSkill) {
-          r += self.owner.main.bufFixed["範囲"] ?? 0;
+          r += self.owner.main.getBuffValue("範囲");
         }
         return r;
       },
@@ -462,11 +469,11 @@ export function makeSimSkill(skill, ownerUnit) {
         }
         if (skill.isNormalAttack) {
           let chr = self.owner.main;
-          return chr.range + (chr.bufFixed["射程(通常攻撃)"] ?? 0);
+          return chr.range + chr.getBuffValue("射程(通常攻撃)");
         }
         else {
           let chr = skill.isMainSkill ? self.owner.main : self.owner.support;
-          return skill.range + (chr.bufFixed["射程(スキル)"] ?? 0);
+          return skill.range + chr.getBuffValue("射程(スキル)");
         }
       },
     });
@@ -780,12 +787,14 @@ export function makeSimSkill(skill, ownerUnit) {
     for (let e of this.effects) {
       let tri = e.trigger;
       if (tri && tri.timing == timing) {
+        let prevTarget = ctx.target;
         for (let t of unique(getTargetUnits(ctx, tri))) {
           ctx.target = t;
           if (((e.isBuff && t.isPlayer == u.isPlayer) || (e.isDebuff && t.isPlayer != u.isPlayer)) && evaluateCondition(ctx, tri.condition)) {
             t.applyEffect(e, u === t);
           }
         }
+        ctx.target = prevTarget;
       }
     }
     self.invokeHeal(ctx, timing);
