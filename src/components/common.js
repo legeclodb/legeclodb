@@ -2,7 +2,7 @@ import jsonImageTable from '../assets/image_table.json'
 import jsonConstants from '../assets/constants.json'
 import jsonRandomEffectTable from '../assets/random_effect_table.json'
 import jsonShape from '../assets/shape.json'
-import { count } from './utils'
+import { count, enumerate } from './utils'
 
 export default {
   data() {
@@ -1326,6 +1326,21 @@ export default {
           return [...(skill.buff ?? []), ...(skill.debuff ?? [])]
         },
       });
+      Object.defineProperty(skill, 'randomBuff', {
+        get: () => {
+          return (skill.buff ?? []).flatMap(a => a.randomTable ?? []);
+        },
+      });
+      Object.defineProperty(skill, 'randomDebuff', {
+        get: () => {
+          return (skill.debuff ?? []).flatMap(a => a.randomTable ?? []);
+        },
+      });
+      Object.defineProperty(skill, 'randomEffects', {
+        get: () => {
+          return skill.effects.flatMap(a => a.randomTable ?? []);
+        },
+      });
 
       // todo: まともなレベル選択処理
       if (!skill.desc && skill.descs) {
@@ -1407,18 +1422,6 @@ export default {
           get: () => skill,
         });
       };
-      const setupRandomTable = (effect) => {
-        if (effect.type == "ランダム") {
-          const tableName = effect.isBuff ? `ランダムバフ:${effect.variant}` : `ランダムデバフ:${effect.variant}`;
-          if (tableName in jsonRandomEffectTable) {
-            effect.randomTable = jsonRandomEffectTable[tableName].map(a => Object.assign({}, a)); // shallow copy
-          }
-          else {
-            throw `ランダム効果がテーブルから見つかりませんでした: ${skill.name} ${effect.variant}`;
-          }
-        }
-      };
-
       const assignId = (list, prefix) => {
         if (list) {
           for (let i = 0; i < list.length; ++i) {
@@ -1426,10 +1429,31 @@ export default {
           }
         }
       };
+      const setupRandomTable = (effect) => {
+        if (effect.type == "ランダム") {
+          const tableName = effect.isBuff ? `ランダムバフ:${effect.variant}` : `ランダムデバフ:${effect.variant}`;
+          if (tableName in jsonRandomEffectTable) {
+            effect.randomTable = jsonRandomEffectTable[tableName].map(a => Object.assign({}, a)); // shallow copy
+            for (let re of effect.randomTable) {
+              setParent(re);
+            }
+
+            let prefix = effect.isBuff ? 'rb' : 'rd';
+            assignId(effect.randomTable, prefix);
+          }
+          else {
+            throw `ランダム効果がテーブルから見つかりませんでした: ${skill.name} ${effect.variant}`;
+          }
+        }
+      };
       assignId(skill?.buff, 'b');
       assignId(skill?.debuff, 'd');
 
-      for (let v of skill?.buff ?? []) {
+      for (let v of skill.effects) {
+        setupRandomTable(v);
+      }
+
+      for (let v of enumerate(skill.buff, skill.randomBuff)) {
         v.isBuff = true;
         if (skill.isActive) {
           v.isActiveBuff = true;
@@ -1443,7 +1467,7 @@ export default {
           skill.negativeEffects.push(v);
         }
       }
-      for (let v of skill?.debuff ?? []) {
+      for (let v of enumerate(skill.debuff, skill.randomDebuff)) {
         v.isDebuff = true;
         if (skill.isActive) {
           v.isActiveDebuff = true;
@@ -1463,7 +1487,6 @@ export default {
         }
         setParent(v);
         setupSlot(v);
-        setupRandomTable(v);
       }
 
       for (let v of skill?.statusEffects ?? []) {

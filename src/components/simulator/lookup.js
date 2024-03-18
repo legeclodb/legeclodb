@@ -9,6 +9,7 @@ import jsonSupportChrs from '../../assets/support_characters.json'
 import jsonNpcMainChrs from '../../assets/npc_main_characters.json'
 import jsonNpcSupportChrs from '../../assets/npc_support_characters.json'
 import jsonItems from '../../assets/items.json'
+import { enumerate } from '../utils.js'
 
 export default {
   data() {
@@ -41,38 +42,6 @@ export default {
   },
 
   methods: {
-    BitFlags: class {
-      constructor(arg) {
-        if (typeof arg == "number") {
-          const size = arg;
-          // (size / 32) + (size % 32 ? 1 : 0)
-          // 整数のまま処理するためビット演算
-          const n = (size >> 5) + (size & 31 ? 1 : 0);
-          this.data_ = new Uint32Array(n);
-        }
-        else if (arg.constructor === this.constructor) {
-          const parent = arg;
-          this.data_ = new Uint32Array(parent.data_);
-        }
-        else {
-          throw "BitFlags(??????)";
-        }
-      }
-      get(i) {
-        const byte = i >> 5;
-        const bit = i & 31;
-        return (this.data_[byte] & (1 << bit)) != 0;
-      }
-      set(i, v) {
-        const byte = i >> 5;
-        const bit = i & 31;
-        if (v)
-          this.data_[byte] |= 1 << bit;
-        else
-          this.data_[byte] &= ~(1 << bit);
-      }
-    },
-
     isGetSet(obj, name) {
       const desc = Object.getOwnPropertyDescriptor(obj, name);
       if (desc) {
@@ -131,6 +100,9 @@ export default {
 
           for (let e of [...(item.buff ?? []), ...(item.debuff ?? [])]) {
             g.searchTableWithUid.set(e.uid, e);
+            for (let re of e.randomTable ?? []) {
+              g.searchTableWithUid.set(re.uid, re);
+            }
           }
         }
       }
@@ -153,8 +125,8 @@ export default {
         effectTypeNames.push(key);
         effectTypeIndex++;
       }
-      for (let skill of this.enumerate(g.mainActive, g.mainPassive, g.mainTalents, g.supActive, g.supPassive, g.items)) {
-        for (let effect of this.enumerateEffects(skill)) {
+      for (let skill of enumerate(g.mainActive, g.mainPassive, g.mainTalents, g.supActive, g.supPassive, g.items)) {
+        for (let effect of skill.effects) {
           let effectType = effect.type;
           if (effect.isBuff)
             effectType += "+";
@@ -341,7 +313,7 @@ export default {
       if (skill.multiAction) {
         lines.push(`<div class="effect-box"><span class="effect">再行動</span></div>`);
       }
-      for (const effect of this.enumerate(skill.buff, skill.debuff)) {
+      for (const effect of enumerate(skill.buff, skill.debuff)) {
         if (["ランダム", "トークン"].includes(effect.type)) {
           continue;
         }
@@ -480,17 +452,6 @@ export default {
         r = effect.add.rate * 0.25;
       }
       return r;
-    },
-
-    *enumerate(...arrays) {
-      for (let array of arrays) {
-        if (array)
-          yield* array;
-      }
-    },
-
-    *enumerateEffects(skill) {
-      yield* this.enumerate(skill.buff, skill.debuff);
     },
 
     findItemByUid(uid) {

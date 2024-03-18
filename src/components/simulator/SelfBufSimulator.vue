@@ -304,6 +304,7 @@
 <script>
 import commonjs from "../common.js";
 import lookupjs from "./lookup.js";
+import { BitFlags } from "../utils.js";
 
 export default {
   name: 'SelfBufSimulator',
@@ -449,7 +450,7 @@ export default {
           this.activeCount = 0;
           this.usedEffects = [];
           this.conflictedEffects = [];
-          this.usedSlots = new vue.BitFlags(vue.effectTypeIndex);
+          this.usedSlots = new BitFlags(vue.effectTypeIndex);
         }
       };
 

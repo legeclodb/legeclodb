@@ -394,7 +394,7 @@
             </div>
             <div v-if="r.support" class="detail" v-show="displayType >= 1">
               <div class="skills">
-                <div class="skill" v-for="(skill, si) in enumerate(r.support.skills)" :class="getSkillClass(skill)" :key="si">
+                <div class="skill" v-for="(skill, si) in r.support.skills" :class="getSkillClass(skill)" :key="si">
                   <div class="flex">
                     <div class="icon">
                       <b-img-lazy :src="getImageURL(skill.icon)" :title="skill.name" with="50" height="50" :id="'skill_s_'+ri+'_'+si" />
@@ -429,7 +429,7 @@
 import ChrSelector from '../parts/ChrSelector.vue'
 import commonjs from "../common.js";
 import lookupjs from "./lookup.js";
-import * as lut from '../utils.js'
+import { BitFlags, enumerate } from '../utils.js'
 
 import ItemPopovers from '../parts/ItemPopovers.vue'
 import ItemPopoversJs from "../parts/ItemPopovers.js";
@@ -496,7 +496,7 @@ export default {
       }
       return false;
     };
-    for (let skill of this.enumerate(this.mainActive, this.mainPassive, this.mainTalents, this.supActive, this.supPassive, this.items)) {
+    for (let skill of enumerate(this.mainActive, this.mainPassive, this.mainTalents, this.supActive, this.supPassive, this.items)) {
       if (skill.buff)
         skill.buff = skill.buff.filter(s => !excludeEffect(s));
       if (skill.debuff)
@@ -610,10 +610,10 @@ export default {
   methods: {
     createUsedFlags(parent = null) {
       if (parent) {
-        return new lut.BitFlags(parent);
+        return new BitFlags(parent);
       }
       else {
-        return new lut.BitFlags(this.itemCount);
+        return new BitFlags(this.itemCount);
       }
     },
 
@@ -703,7 +703,7 @@ export default {
           return false;
         if (item.isSupport) {
           for (const skill of item.skills) {
-            for (const v of this.enumerateEffects(skill)) {
+            for (const v of skill.effects) {
               let p = targets[v.effectTypeIndex];
               if (p && effectCondition(v))
                 return true;
@@ -711,7 +711,7 @@ export default {
           }
         }
         else {
-          for (const v of this.enumerateEffects(item)) {
+          for (const v of item.effects) {
             let p = targets[v.effectTypeIndex];
             if (p && effectCondition(v))
               return true;
@@ -785,7 +785,7 @@ export default {
               return 0;
             }
             let score = 0;
-            for (const v of vue.enumerateEffects(skill)) {
+            for (const v of skill.effects) {
               let p = this.getEffectValue(v);
               if (p) {
                 score += p[0] * (p[1].weight * 0.1);
@@ -873,7 +873,7 @@ export default {
           }
 
           let sctx = createContext(ctx);
-          for (const effect of this.enumerateEffects(skill)) {
+          for (const effect of skill.effects) {
             const ev = sctx.getEffectValue(effect);
             if (!ev)
               continue;
@@ -1122,7 +1122,7 @@ export default {
             for (let v of [r.main, r.summon, r.support]) {
               if (v) {
                 mctx.markAsUsed(v.character);
-                for (const s of this.enumerate(v.skills, v.equipments)) {
+                for (const s of enumerate(v.skills, v.equipments)) {
                   mctx.markAsUsed(s);
                 }
               }

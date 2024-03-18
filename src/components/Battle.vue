@@ -580,13 +580,28 @@
                       <p><span v-html="descToHtml(skill)"></span><span v-if="skill.note" class="note" v-html="noteToHtml(skill)"></span></p>
                       <span class="note">
                         <div class="effect-group">
-                          <template v-for="(e, ei) in skill.effects">
-                            <div v-for="(d, di) in (selectedUnit.sim.affectedEffects[e.uid] ?? [])" class="effect-box" :key="`effect${ei}${di}`">
-                              <span :class="`effect ${d.effect.enabled ? 'caution' : ''}`">
-                                {{d.desc}}
-                                <b-badge v-if="isFinite(d.effect.count)" class="tag" variant="secondary" pill @click="selectedUnit.sim.removeEffect(d.effect)">×</b-badge>
-                              </span>
-                            </div>
+                          <template v-for="(e, ei) in [...skill.randomEffects, ...skill.effects]">
+                            <template v-for="(d, di) in (selectedUnit.sim.affectedEffects[e.uid] ?? [])">
+                              <div v-if="d.isRandom" :key="`effect${ei}${di}`">
+                                <b-badge class="tag" variant="secondary" pill :id="`${selectedUnit.fid}.${e.uid}`" style="padding: 5px;">ランダム効果を追加</b-badge>
+                                <b-popover :target="`${selectedUnit.fid}.${e.uid}`" triggers="hover focus" :delay="{show:0, hide:250}" no-fade placement="top">
+                                  <div class="effect-group">
+                                    <div v-for="(r, ri) in d.randomTable" class="effect-box" :key="`effect${ei}${di}${ri}`">
+                                      <span :class="`effect caution`">
+                                        {{r.desc}}
+                                        <b-badge class="tag" variant="secondary" pill @click="r.append()">＋</b-badge>
+                                      </span>
+                                    </div>
+                                  </div>
+                                </b-popover>
+                              </div>
+                              <div v-else class="effect-box" :key="`effect${ei}${di}`">
+                                <span :class="`effect ${d.effect.enabled ? 'caution' : ''}`">
+                                  {{d.desc}}
+                                  <b-badge v-if="d.isTimed" class="tag" variant="secondary" pill @click="d.remove()">×</b-badge>
+                                </span>
+                              </div>
+                            </template>
                           </template>
                         </div>
                       </span>

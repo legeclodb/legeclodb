@@ -106,6 +106,15 @@ export function count(enumerable, cond) {
   return r;
 }
 
+export function *enumerate(...arrays) {
+  for (let array of arrays) {
+    if (array) {
+      yield* array;
+    }
+  }
+}
+
+
 export function toSQLDateTime(date) {
   let time = typeof (date) === 'number' ? date : date.getTime();
   let a9h = new Date(time + (9 * 60 * 60 * 1000)); // +9H

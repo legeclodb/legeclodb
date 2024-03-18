@@ -282,6 +282,53 @@ export function makeActionContext(unit, target, skill, isAttacker, parent) {
   return ctx;
 }
 
+export function getEffectValue(self, ctx, unit) {
+  let r = 0;
+  if ('value' in self) {
+    r = self.value;
+  }
+  else if ('variable' in self) {
+    // HP 割合などに応じて効果が上下するタイプ
+    const v = self.variable;
+    if (Array.isArray(v.max)) {
+      r = v.max.at(-1);
+    }
+    else {
+      r = v.max;
+    }
+  }
+  else if ('add' in self) {
+    // "アタックの n% をマジックに加算" など
+    const v = self.add;
+    let chr = v.source == "サポート" ? unit.support : unit.main;
+    let table = {
+      "最大HP": () => chr.baseHp,
+      "アタック": () => chr.baseAtk,
+      "ディフェンス": () => chr.baseDef,
+      "マジック": () => chr.baseMag,
+      "レジスト": () => chr.baseRes,
+    };
+    r = table[v.from]() * (v.rate / 100);
+  }
+
+  // 効果が重複するタイプ
+  if (self.multiply) {
+    const mul = self.multiply;
+    let table = {
+      "move": () => ctx.move,
+      "range": () => ctx.rannge,
+      "token": () => ctx.getTokenCount(mul.tokenName),
+      "targetToken": () => ctx.getTargetTokenCount(mul.tokenName),
+      "activeBuffCount": () => ctx.activeBuffCount,
+      "targetActiveBuffCount": () => ctx.targetActiveBuffCount,
+      "nearAllyCount": () => ctx.getNearAllyCount(mul.area),
+      "nearEnemyCount": () => ctx.getNearEnemyCount(mul.area),
+    };
+    r *= Math.min(table[mul.by](), mul.max);
+  }
+  return self.isDebuff ? -r : r;
+}
+
 export function makeSimEffect(effect, stop = false) {
   let self = Object.create(effect);
   self.enabled = false; // シリアライズ不要
@@ -307,7 +354,9 @@ export function makeSimEffect(effect, stop = false) {
       set: (v) => { },
     });
   }
-
+  Object.defineProperty(self, "isTimed", {
+    get: () => isFinite(self.count),
+  });
   Object.defineProperty(self, "isExpired", {
     get: () => self.count <= 0,
   });
@@ -324,50 +373,7 @@ export function makeSimEffect(effect, stop = false) {
     }
   }
   self.getValue = function (ctx, unit) {
-    let r = 0;
-    if ('value' in self) {
-      r = self.value;
-    }
-    else if ('variable' in self) {
-      // HP 割合などに応じて効果が上下するタイプ
-      const v = self.variable;
-      if (Array.isArray(v.max)) {
-        r = v.max.at(-1);
-      }
-      else {
-        r = v.max;
-      }
-    }
-    else if ('add' in self) {
-      // "アタックの n% をマジックに加算" など
-      const v = self.add;
-      let chr = v.source == "サポート" ? unit.support : unit.main;
-      let table = {
-        "最大HP": () => chr.baseHp,
-        "アタック": () => chr.baseAtk,
-        "ディフェンス": () => chr.baseDef,
-        "マジック": () => chr.baseMag,
-        "レジスト": () => chr.baseRes,
-      };
-      r = table[v.from]() * (v.rate / 100);
-    }
-
-    // 効果が重複するタイプ
-    if (self.multiply) {
-      const mul = self.multiply;
-      let table = {
-        "move": () => ctx.move,
-        "range": () => ctx.rannge,
-        "token": () => ctx.getTokenCount(mul.tokenName),
-        "targetToken": () => ctx.getTargetTokenCount(mul.tokenName),
-        "activeBuffCount": () => ctx.activeBuffCount,
-        "targetActiveBuffCount": () => ctx.targetActiveBuffCount,
-        "nearAllyCount": () => ctx.getNearAllyCount(mul.area),
-        "nearEnemyCount": () => ctx.getNearEnemyCount(mul.area),
-      };
-      r *= Math.min(table[mul.by](), mul.max);
-    }
-    return self.isDebuff ? -r : r;
+    return getEffectValue(self, ctx, unit);
   }
 
   self._getValue = function (ctx, baseStat) {

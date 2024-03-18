@@ -1,5 +1,5 @@
 import { $g } from "./battle_globals.js";
-import { callHandler, makeSimSkill, makeSimEffect, evaluateCondition, makeActionContext } from "./battle_skill.js";
+import { callHandler, makeSimSkill, makeSimEffect, evaluateCondition, makeActionContext, getEffectValue } from "./battle_skill.js";
 import { unique, count } from "../utils.js";
 
 function $vue() {
@@ -569,31 +569,7 @@ export class SimUnit {
     });
   }
 
-  eraseActiveBuff(count) {
-    let erased = 0;
-    for (let i = 0; i < this.timedEffects.length && erased < count; /**/) {
-      if (this.timedEffects[i].isActiveBuff) {
-        this.timedEffects.splice(i, 1);
-        ++erased;
-      }
-      else {
-        ++i;
-      }
-    }
-  }
-  eraseActiveDebuff(count) {
-    let erased = 0;
-    for (let i = 0; i < this.timedEffects.length && erased < count; /**/) {
-      if (this.timedEffects[i].isActiveDebuff) {
-        this.timedEffects.splice(i, 1);
-        ++erased;
-      }
-      else {
-        ++i;
-      }
-    }
-  }
-
+  // effect: BaseEffect (SimEffect ではない)
   applyEffect(effect, stop = false) {
     if (effect.stack) {
       let pos = -1, count = 0;
@@ -652,7 +628,6 @@ export class SimUnit {
     let i = this.timedEffects.findIndex(a => a === effect);
     if (i != -1) {
       this.timedEffects.splice(i, 1);
-      this.evaluateBuffs();
     }
   }
 
@@ -755,17 +730,17 @@ export class SimUnit {
 
     this.affectedSkills = unique([...this.passives.map(a => a.__proto__), ...this.effects.map(a => a.parent)]);
     this.affectedEffects = {};
+
+    let deferred = [];
+    // 表示用のエフェクトのリストを構築
     for (let e of this.effects) {
-      if (["ランダム"].includes(e.type)) {
-        continue;
-      }
       const uid = e.uid;
-      const gen = () => {
+      const makeDesc = (e) => {
         let type = e.type;
         if (e.ephemeral) {
           type += e.ephemeralOnAttack ? "(攻撃時)" : "(戦闘時)";
         }
-        let value = e.getValue(ctx, this);
+        let value = getEffectValue(e, ctx, this);
         value = `${value >= 0 ? '+' : ''}${value}`;
         if (!e.add && !["移動", "射程(通常攻撃)", "射程(スキル)", "範囲", "トークン"].includes(e.type)) {
           value += "%";
@@ -775,19 +750,51 @@ export class SimUnit {
           value = "";
         }
         let cnt = "";
-        if (isFinite(e.count)) {
+        if (e?.isTimed) {
           cnt = ` (${e.count}T)`
         }
-        return {
-          desc: `${type}${value}${cnt}`,
-          effect: e,
-        };
+        else if (e?.duration) {
+          cnt = ` (${e.duration}T)`
+        }
+        return `${type}${value}${cnt}`;
       };
 
       if (!(uid in this.affectedEffects)) {
         this.affectedEffects[uid] = [];
       }
-      this.affectedEffects[uid].push(gen()); 
+      if (e.type == "ランダム") {
+        let table = e.randomTable.map(re => {
+          return {
+            desc: makeDesc(re),
+            append: () => {
+              this.applyEffect(re);
+              this.evaluateBuffs();
+            },
+          };
+        });
+        // 末尾に追加したいのでここでは追加する関数を登録
+        deferred.push(() => {
+          this.affectedEffects[uid].push({
+            effect: e,
+            isRandom: true,
+            randomTable: table,
+          });
+        });
+      }
+      else {
+        this.affectedEffects[uid].push({
+          effect: e,
+          isTimed: isFinite(e.count),
+          remove: () => {
+            this.removeEffect(e);
+            this.evaluateBuffs();
+          },
+          desc: makeDesc(e),
+        });
+      }
+    }
+    for (let d of deferred) {
+      d();
     }
 
     const reorder = (dst) => {
