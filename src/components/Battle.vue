@@ -1898,13 +1898,11 @@ export default {
         url = `${lut.ReplayServer}?mode=get&hash=${url}`;
       }
       fetch(url).then((res) => {
-        res.arrayBuffer().then((gz) => {
-          lut.decompressGzip(gz).then(bin => {
-            this.deserializeReplay(bin);
-            if (callback) {
-              callback();
-            }
-          })
+        res.json().then((json) => {
+          this.deserializeReplay(json);
+          if (callback) {
+            callback();
+          }
         })
       });
     },
