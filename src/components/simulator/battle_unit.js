@@ -855,18 +855,14 @@ export class SimUnit {
     if (ctx.onPhysicalDamage) {
       base = chr.baseAtk;
       rate = chr.getBuffValue("アタック")
+      rate += target ? target.getEphemeralDebuffValue("アタック") : 0;
       add = chr.getConvertedBuffValue("アタック");
-      if (target) {
-        rate += target.getEphemeralDebuffValue("アタック");
-      }
     }
     else {
       base = chr.baseMag;
       rate = chr.getBuffValue("マジック");
+      rate += target ? target.getEphemeralDebuffValue("マジック") : 0;
       add = chr.getConvertedBuffValue("マジック");
-      if (target) {
-        rate += target.getEphemeralDebuffValue("マジック");
-      }
     }
     return base * Math.max(rate / 100 + 1, 0.3) + add;
   }
@@ -877,18 +873,14 @@ export class SimUnit {
     if (ctx.onPhysicalDamage) {
       base = chr.baseDef;
       rate = chr.getBuffValue("ディフェンス");
+      rate += target ? target.getEphemeralDebuffValue("ディフェンス") : 0;
       add = chr.getConvertedBuffValue("ディフェンス");
-      if (target) {
-        rate += target.getEphemeralDebuffValue("ディフェンス");
-      }
     }
     else {
       base = chr.baseRes;
       rate = chr.getBuffValue("レジスト");
+      rate += target ? target.getEphemeralDebuffValue("レジスト") : 0;
       add = chr.getConvertedBuffValue("レジスト");
-      if (target) {
-        rate += target.getEphemeralDebuffValue("レジスト");
-      }
     }
     return base * Math.max(rate / 100 + 1, 0.3) + add;
   }
@@ -897,7 +889,7 @@ export class SimUnit {
     let target = ctx.target;
     let v = 0;
     v += chr.getBuffValue("与ダメージ");
-    v -= target ? target.getEphemeralDebuffValue("与ダメージ") : 0;
+    v += target ? target.getEphemeralDebuffValue("与ダメージ") : 0;
     if (ctx.onPhysicalDamage) {
       v += chr.getBuffValue("与ダメージ(物理)");
       v += target ? target.getEphemeralDebuffValue("与ダメージ(物理)") : 0;
