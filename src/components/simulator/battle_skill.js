@@ -315,7 +315,7 @@ export function getEffectValue(self, ctx, unit) {
       "マジック": () => chr.baseMag,
       "レジスト": () => chr.baseRes,
     };
-    r = table[v.from]() * (v.rate / 100);
+    r = Math.round(table[v.from]() * (v.rate / 100));
   }
 
   // 効果が重複するタイプ

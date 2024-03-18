@@ -840,7 +840,6 @@
           "from": "ディフェンス",
           "rate": 30
         },
-        "ephemeral": true,
         "target": "自身(メイン)"
       }
     ],

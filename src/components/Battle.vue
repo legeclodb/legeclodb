@@ -1479,7 +1479,7 @@ export default {
         for (let c of this.cells) {
           if (pf.isInFireRange(c.coord)) {
             let u = this.findUnitByCoord(c.coord);
-            if (this.isValidTarget(this.selectedUnit, this.selectedSkill, u)) {
+            if (this.isValidTarget(this.selectedUnit, this.selectedSkill, u, false)) {
               targets.push(u);
             }
           }

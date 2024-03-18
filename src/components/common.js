@@ -1299,7 +1299,7 @@ export default {
         const hasAreaEffect = (effects) => {
           if (effects) {
             for (const e of effects) {
-              if (e.target != "自身") {
+              if ((e.trigger?.target ?? e.target) != "自身") {
                 return true;
               }
             }
