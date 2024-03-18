@@ -206,7 +206,7 @@
             <template v-for="(r, i) of (simulation ?? replay).states.toReversed()">
               <div class="flex" :style="`margin: 2px 0px 2px 0px; ${ simulation?.statePos==-i-1 ? 'background: rgb(220,220,230)': '' }`" :key="i" :id="`sim-state-${-i-1}`">
                 <b-button size="sm" style="padding: 0px; width: 30px; height: 30px; margin-right: 0.25em;" @click="setReplayState(-i-1);">▶</b-button>
-                <template v-if="r.desc.unitIcon">
+                <template v-if="r.desc.isAction">
                   <b-img :src="getImageURL(r.desc.unitIcon)" width="35px" height="35px" />
                   <b-img :src="getImageURL(r.desc.skillIcon)" width="35px" height="35px" />
                   <b-img :src="getImageURL(r.desc.targetIcon)" width="35px" height="35px" />
@@ -383,6 +383,8 @@
                     <b-button size="sm" @click="unit.showEditor=false">閉じる</b-button>
                   </div>
                 </b-popover>
+
+                <b-button v-if="replay" @click="followReplay(replay)" style="margin-left: 1.0em;">現在の構成でリプレイをなぞる</b-button>
               </div>
 
               <div class="flex" style="align-items: flex-start;">
@@ -1493,7 +1495,7 @@ export default {
 
     confirmAction() {
       let unit = this.selectedUnit;
-      this.simulation.fireSkill(this.selectedUnit, this.selectedSkill, this.getTargetUnits(), this.targetCell);
+      this.simulation.fireSkill(this.selectedUnit, this.selectedSkill, this.getTargetUnits(), this.targetCell?.coord);
       this.resetTools();
 
       if (unit.isAlive && !unit?.sim.isEnded) {
@@ -1865,6 +1867,19 @@ export default {
         body(data);
       }
     },
+    followReplay(r) {
+      this.endSimulation(false);
+      this.selectBattle(r.battle);
+      // this.deserializeLoadout(r.loadout); // はしない
+      this.beginSimulation();
+      for (let state of r.states) {
+        if (!this.simulation.playback(state)) {
+          break;
+        }
+      }
+      this.$forceUpdate();
+    },
+
     exportReplayAsFile() {
       if (this.simulation) {
         this.replay = this.serializeReplay();

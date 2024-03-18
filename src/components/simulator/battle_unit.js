@@ -104,14 +104,15 @@ export class BaseUnit {
 
   get coord() {
     //return this.base.coord;
-    return this.sim ? this.sim.coord : this.base.coord;
+    return [...(this.sim ? this.sim.coord : this.base.coord)];
   }
   set coord(v) {
     if (this.sim)
-      this.sim.coord = v;
+      this.sim.coord = [...v];
     else
-      this.base.coord = v;
+      this.base.coord = [...v];
   }
+  get isValid() { return this.main.cid; }
   get main() { return this.sim ? this.sim.main : this.base.main; }
   get support() { return this.sim ? this.sim.support : this.base.support; }
   get hasSupport() { return this.base.support.cid; }
@@ -341,7 +342,8 @@ export class SimUnit {
   get isOnMultiAction() { return this.state == UnitState.MultiAction; }
   get isOnMultiMove() { return this.state == UnitState.MultiMove; }
 
-  get prevCoord() { return this.base.prevCoord; }
+  get prevCoord() { return [...this.base.prevCoord]; }
+  set prevCoord(v) { this.base.prevCoord = [...v]; }
   get activeBuffCount() {
     return this.timedEffects.reduce((total, e) => {
       if (e.isActiveBuff) {
@@ -390,7 +392,6 @@ export class SimUnit {
       });
 
       let table = {
-        isValid: () => { return chr.maxHp > 0; },
         isAlive: () => { return chr.hp > 0; },
         baseHp:  () => { return base.status[0]; },
         baseAtk: () => { return base.status[1]; },

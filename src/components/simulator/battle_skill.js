@@ -540,7 +540,7 @@ export function makeSimSkill(skill, ownerUnit) {
     for (let sum of this.summon ?? []) {
       if (evaluateCondition(ctx, sum.condition)) {
         let unit = new SimUnit(sum.makeUnit());
-        unit.coord = ctx.targetCell.coord;
+        unit.coord = [...ctx.targetCell];
         unit.setSummoner(ctx.unit);
         $g.sim.addUnit(unit);
         console.log(`!! 召喚 ${ctx.unit.main.name} (${self.name}) -> ${unit.main.name}!!`);

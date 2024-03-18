@@ -13,11 +13,12 @@ export class SimContext {
   unitIdSeed = 0; // 追加ユニットの ID 生成用の数
   units = [];
 
-  targetCell = [0, 0]; // リプレイに対象マスを記録する用
-  desc = { // プレイバック用のアイコン
-    unitIcon: "",
-    skillIcon: "",
-    targetIcon: "",
+  desc = { // プレイバック用データ
+    unit: "", // fid
+    skill: "", // uid
+    target: "", // fid or [fid]
+    cell: [-1, -1],
+    comment: "",
   };
   states = [];
   //#endregion fields (serializable)
@@ -55,7 +56,7 @@ export class SimContext {
     this.maxTurn = battleData.turn;
     [this.divX, this.divY] = battleData.mapSize;
 
-    this.units = baseUnits.map(a => new SimUnit(a)).filter(a => a.isAlive);
+    this.units = baseUnits.filter(a => a.isValid).map(a => new SimUnit(a));
     for (let u of this.units) {
       this.fidTable[u.fid] = u;
     }
@@ -68,8 +69,22 @@ export class SimContext {
   deserialize(r) {
     this.states = r;
     this.statePos = -1;
+    for (let s of this.states) {
+      s.desc = this.makeDesc(s.desc);
+    }
   }
 
+  makeDesc(desc) {
+    let r = { ...desc };
+    if (typeof(r.unit) == "string") {
+      r.unitIcon = $g.sim.findUnit(r.unit)?.main?.icon;
+      r.skillIcon = $g.sim.findItem(r.skill)?.icon;
+      let t = Array.isArray(r.target) ? r.target[0] : r.target;
+      r.targetIcon = $g.sim.findUnit(r.target)?.main?.icon;
+    }
+    r.isAction = Boolean(r.unitIcon);
+    return r;
+  }
   saveState() {
     let r = {
       turn: this.turn,
@@ -77,8 +92,7 @@ export class SimContext {
       score: this.score,
       unitIdSeed: this.unitIdSeed,
       units: this.units.map(a => a.serialize()),
-      targetCell: this.targetCell,
-      desc: this.desc,
+      desc: this.makeDesc(this.desc),
     };
     return r;
   }
@@ -91,7 +105,6 @@ export class SimContext {
     this.phase = r.phase;
     this.score = r.score;
     this.unitIdSeed = r.unitIdSeed;
-    this.targetCell = r.targetCell;
 
     const constructUnit = (json) => {
       let base = this.findBaseUnit(json.fid);
@@ -119,19 +132,68 @@ export class SimContext {
     this.onSimulationBegin();
   }
   // unit, skill, target: 説明用
-  pushState(unit = null, skill = null, target = null) {
+  pushState(unit = null, skill = null, target = null, cell = null) {
     // リプレイ再生中の場合現在位置以降のレコードを切り捨てる
     if (this.statePos_ != -1) {
       this.states.splice(this.statePos_ + 1, this.states.length);
       this.statePos_ = -1;
     }
 
-    this.desc = {
-      unitIcon: unit ? unit.main.icon : "",
-      skillIcon: skill ? skill.icon : "",
-      targetIcon: target ? target.main.icon : "",
-    };
+    this.desc.unit = unit ? unit.fid : "";
+    this.desc.skill = skill ? skill.uid : "";
+    this.desc.target = target ? (Array.isArray(target) ? target.map(a => a.fid) : target.fid) : "";
+    this.desc.cell = cell ? [...cell] : null;
     this.states.push(this.saveState());
+
+    this.desc.comment = "";
+  }
+  playback(state) {
+    const desc = state.desc;
+    if (desc.unit) {
+      let unit = this.findUnit(desc.unit);
+      if (!unit) {
+        console.log("ユニットが見つからないため中断しました。");
+        return false;
+      }
+
+      const pos = state.units.find(u => u.fid == desc.unit).coord;
+      unit.prevCoord = unit.coord;
+      unit.coord = [...pos];
+
+      let skill = null;
+      if (desc.skill) {
+        skill = unit.skills.find(a => a.uid == desc.skill);
+        if (!skill) {
+          console.log("スキルが見つからないため中断しました。");
+          return false;
+        }
+      }
+
+      let target = null;
+      if (Array.isArray(desc.target)) {
+        target = desc.target.map(fid => this.findUnit(fid));
+        if (target.find(a => a == null)) {
+          console.log("スキル対象が見つからないため中断しました。");
+          return false;
+        }
+      }
+      else if (desc.target) {
+        target = this.findUnit(desc.target);
+        if (!target) {
+          console.log("スキル対象が見つからないため中断しました。");
+          return false;
+        }
+      }
+      this.fireSkill(unit, skill, target, desc.cell);
+
+      // todo: ランダムバフなどの追跡
+    }
+    else {
+      if (state.turn != this.turn || state.phase != this.phase) {
+        this.passTurn();
+      }
+    }
+    return true;
   }
 
   addUnit(unit) {
@@ -389,7 +451,7 @@ export class SimContext {
     return result;
   }
 
-  fireSkill(unit, skill, targets, cell) {
+  fireSkill(unit, skill, targets, targetCell) {
     this.updateAreaEffectsAll();
     unit = unit.sim ?? unit;
     // targets は配列なら複数、非配列なら単体
@@ -415,14 +477,14 @@ export class SimContext {
       this.move = Math.abs(unit.coord[0] - unit.prevCoord[0]) + Math.abs(unit.coord[1] - unit.prevCoord[1]);
     }
     if (target) {
-      // NxN ボス対策として target.coord ではなく cell.coord との距離を取る
-      this.range = Math.abs(unit.coord[0] - cell.coord[0]) + Math.abs(unit.coord[1] - cell.coord[1]);
+      // NxN ボス対策として target.coord ではなく targetCell との距離を取る
+      this.range = Math.abs(unit.coord[0] - targetCell[0]) + Math.abs(unit.coord[1] - targetCell[1]);
     }
 
     // 条件変数を設定
     // 攻撃側
     let ctx = makeActionContext(unit, target, skill, true);
-    ctx.targetCell = cell;
+    ctx.targetCell = targetCell ? [...targetCell] : null;
     ctx.targets = targets;
     if (skill && skill.isMainSkill && skill.isAttackSkill) {
       doAttack = true;
@@ -546,17 +608,7 @@ export class SimContext {
 
     this.updateAreaEffectsAll();
 
-    if (cell) {
-      this.targetCell = [...cell.coord];
-      let t = this.findUnitByCoord(cell.coord);
-      if (t !== unit) {
-        target = t;
-      }
-    }
-    else {
-      this.targetCell = [-1, -1]
-    }
-    this.pushState(unit, skill, target);
+    this.pushState(unit, skill, target ?? targets, targetCell);
     console.log(ctx);
   }
 
