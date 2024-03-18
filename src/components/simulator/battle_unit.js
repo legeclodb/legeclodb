@@ -633,11 +633,35 @@ export class SimUnit {
     }
     console.log(`${effect.type} ${effect.value ?? effect.variant ?? effect.tokenName} ${effect.duration ?? ''}T (by ${effect.parent.name}) -> ${this.main.name}`);
   }
+  // ユーザーイベント版
+  applyEffect_(effect) {
+    this.applyEffect(effect);
+    this.evaluateBuffs();
+    $g.sim.addUserEvent({
+      type: "applyEffect",
+      target: this.fid,
+      effect: effect.uid,
+    });
+
+  }
 
   removeEffect(effect) {
     let i = this.timedEffects.findIndex(a => a === effect);
     if (i != -1) {
       this.timedEffects.splice(i, 1);
+    }
+    return i;
+  }
+  // ユーザーイベント版
+  removeEffect_(i) {
+    if (i != -1) {
+      this.timedEffects.splice(i, 1);
+      this.evaluateBuffs();
+      $g.sim.addUserEvent({
+        type: "removeEffect",
+        target: this.fid,
+        index: i,
+      });
     }
   }
 
@@ -790,8 +814,7 @@ export class SimUnit {
           return {
             desc: makeDesc(re),
             append: () => {
-              this.applyEffect(re);
-              this.evaluateBuffs();
+              this.applyEffect_(re);
             },
           };
         });
@@ -809,8 +832,7 @@ export class SimUnit {
           effect: e,
           isTimed: isFinite(e.count),
           remove: () => {
-            this.removeEffect(e);
-            this.evaluateBuffs();
+            this.removeEffect_(this.timedEffects.findIndex(a => a === e));
           },
           desc: makeDesc(e),
         });

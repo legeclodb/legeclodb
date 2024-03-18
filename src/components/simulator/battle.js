@@ -13,6 +13,7 @@ export class SimContext {
   unitIdSeed = 0; // 追加ユニットの ID 生成用の数
   units = [];
 
+  userEvents = [];
   desc = { // プレイバック用データ
     unit: "", // fid
     skill: "", // uid
@@ -76,7 +77,7 @@ export class SimContext {
 
   makeDesc(desc) {
     let r = { ...desc };
-    if (typeof(r.unit) == "string") {
+    if (!r.unitIcon) {
       r.unitIcon = $g.sim.findUnit(r.unit)?.main?.icon;
       r.skillIcon = $g.sim.findItem(r.skill)?.icon;
       let t = Array.isArray(r.target) ? r.target[0] : r.target;
@@ -92,6 +93,7 @@ export class SimContext {
       score: this.score,
       unitIdSeed: this.unitIdSeed,
       units: this.units.map(a => a.serialize()),
+      userEvents: this.userEvents,
       desc: this.makeDesc(this.desc),
     };
     return r;
@@ -146,8 +148,30 @@ export class SimContext {
     this.states.push(this.saveState());
 
     this.desc.comment = "";
+    this.userEvents = [];
   }
   playback(state) {
+    const handlers = {
+      eraseUnit: (e) => {
+        this.eraseUnit(this.findUnit(e.target));
+      },
+      applyEffect: (e) => {
+        let u = this.findUnit(e.target);
+        if (u) {
+          u.applyEffect_(this.findItem(e.effect));
+        }
+      },
+      removeEffect: (e) => {
+        let u = this.findUnit(e.target);
+        if (u) {
+          u.removeEffect_(e.index);
+        }
+      },
+    };
+    for (let evt of state.userEvents ?? []) {
+      handlers[evt.type](evt);
+    }
+
     const desc = state.desc;
     if (desc.unit) {
       let unit = this.findUnit(desc.unit);
@@ -185,8 +209,6 @@ export class SimContext {
         }
       }
       this.fireSkill(unit, skill, target, desc.cell);
-
-      // todo: ランダムバフなどの追跡
     }
     else {
       if (state.turn != this.turn || state.phase != this.phase) {
@@ -194,6 +216,11 @@ export class SimContext {
       }
     }
     return true;
+  }
+
+  addUserEvent(e) {
+    this.userEvents.push(e);
+    //console.log(e);
   }
 
   addUnit(unit) {
@@ -207,6 +234,7 @@ export class SimContext {
     this.updateAreaEffectsAll();
   }
   notifyDead(unit) {
+    unit.onSimulationEnd();
     this.units = this.units.filter(a => a !== unit);
     delete this.fidTable[unit.fid];
   }
@@ -783,23 +811,20 @@ export class SimContext {
     return false;
   }
 
-  eraseWeakEnemies() {
-    for (const u of this.activeUnits) {
-      if (u.isEnemy && !u.invulnerable) {
-        u.main.hp = 0;
-        u.support.hp = 0;
-      }
-    }
-    this.updateAreaEffectsAll();
-  }
+  // ユーザー操作により呼ばれる
   eraseUnit(unit) {
-    let u = unit?.sim;
+    let u = unit?.sim ?? unit;
     if (u) {
       u.main.hp = 0;
       u.onDeath();
       this.notifyDead(u);
+      this.updateAreaEffectsAll();
+
+      this.addUserEvent({
+        type: "eraseUnit",
+        target: u.fid
+      });
     }
-    this.updateAreaEffectsAll();
   }
   //#endregion impl
 }
