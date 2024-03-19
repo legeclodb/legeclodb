@@ -290,19 +290,18 @@ export function makeActionContext(unit, target, skill, isAttacker, parent) {
 }
 
 export function getEffectValue(self, ctx, unit) {
+  const scalar = (v) => {
+    return Array.isArray(v) ? v.at(-1) : v;
+  };
+
   let r = 0;
   if ('value' in self) {
     r = self.value;
   }
   else if ('variable' in self) {
     // HP 割合などに応じて効果が上下するタイプ
-    const v = self.variable;
-    if (Array.isArray(v.max)) {
-      r = v.max.at(-1);
-    }
-    else {
-      r = v.max;
-    }
+    // とりあえず常に最大値を返すようにしておく
+    r = scalar(self.variable.max);
   }
   else if ('add' in self) {
     // "アタックの n% をマジックに加算" など
@@ -315,7 +314,7 @@ export function getEffectValue(self, ctx, unit) {
       "マジック": () => chr.baseMag,
       "レジスト": () => chr.baseRes,
     };
-    r = Math.round(table[v.from]() * (v.rate / 100));
+    r = Math.round(table[v.from]() * scalar(v.rate));
   }
 
   // 効果が重複するタイプ

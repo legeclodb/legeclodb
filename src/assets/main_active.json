@@ -552,6 +552,20 @@
     "range": 1,
     "cost": 2,
     "damageRate": 1.7,
+    "buff": [
+      {
+        "type": "ディフェンス",
+        "add": {
+          "from": "アタック",
+          "rate": 0.2
+        },
+        "ephemeral": true,
+        "trigger": {
+          "target": "自身",
+          "timing": "戦闘前"
+        }
+      }
+    ],
     "statusEffects": [
       {
         "type": "パッシブスキル使用不可",

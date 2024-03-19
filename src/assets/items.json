@@ -158,7 +158,7 @@
     "fixedDamage": [
       {
         "base": "アタック",
-        "rate": 1.0,
+        "rate": 1,
         "timing": "戦闘後",
         "target": "攻撃対象"
       }
@@ -337,7 +337,7 @@
     "fixedDamage": [
       {
         "base": "アタック",
-        "rate": 1.0,
+        "rate": 1,
         "timing": "攻撃後",
         "target": "攻撃対象",
         "condition": {
@@ -422,7 +422,7 @@
     "fixedDamage": [
       {
         "base": "アタック",
-        "rate": 1.0,
+        "rate": 1,
         "timing": "戦闘前",
         "target": "攻撃対象",
         "condition": {
@@ -895,7 +895,7 @@
     "heal": [
       {
         "type": "マジック",
-        "rate": 3.0,
+        "rate": 3,
         "target": "味方(低HP)",
         "timing": "戦闘後",
         "condition": {
@@ -1771,7 +1771,7 @@
     "fixedDamage": [
       {
         "base": "レジスト",
-        "rate": 3.0,
+        "rate": 3,
         "target": "攻撃対象",
         "timing": "戦闘後",
         "condition": {
@@ -1800,7 +1800,7 @@
     "fixedDamage": [
       {
         "base": "ディフェンス",
-        "rate": 3.0,
+        "rate": 3,
         "timing": "戦闘後",
         "target": "攻撃対象",
         "condition": {
@@ -2152,7 +2152,7 @@
     "fixedDamage": [
       {
         "base": "レジスト",
-        "rate": 3.0,
+        "rate": 3,
         "target": "攻撃対象",
         "timing": "戦闘前",
         "condition": {
@@ -2788,7 +2788,7 @@
     "fixedDamage": [
       {
         "base": "アタック",
-        "rate": 1.0,
+        "rate": 1,
         "target": "範囲",
         "area": [ 1, "周囲" ],
         "timing": "行動後"
@@ -3543,7 +3543,7 @@
     "fixedDamage": [
       {
         "base": "アタック",
-        "rate": 1.0,
+        "rate": 1,
         "target": "攻撃対象",
         "timing": "戦闘後",
         "condition": {
@@ -4889,7 +4889,7 @@
     "fixedDamage": [
       {
         "base": "アタック",
-        "rate": 1.0,
+        "rate": 1,
         "target": "攻撃対象",
         "timing": "攻撃後",
         "condition": {
@@ -4899,7 +4899,7 @@
       },
       {
         "base": "アタック",
-        "rate": 1.0,
+        "rate": 1,
         "target": "攻撃対象",
         "timing": "戦闘後"
       }
