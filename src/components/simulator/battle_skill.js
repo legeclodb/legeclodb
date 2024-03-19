@@ -306,8 +306,8 @@ export function getEffectValue(self, ctx, unit) {
   else if ('add' in self) {
     // "アタックの n% をマジックに加算" など
     const v = self.add;
-    let chr = v.source == "サポート" ? unit.support : unit.main;
-    let table = {
+    const chr = v.source == "サポート" ? unit.support : unit.main;
+    const table = {
       "最大HP": () => chr.baseHp,
       "アタック": () => chr.baseAtk,
       "ディフェンス": () => chr.baseDef,
@@ -320,7 +320,7 @@ export function getEffectValue(self, ctx, unit) {
   // 効果が重複するタイプ
   if (self.multiply) {
     const mul = self.multiply;
-    let table = {
+    const table = {
       "move": () => ctx.move,
       "range": () => ctx.rannge,
       "token": () => ctx.getTokenCount(mul.tokenName),

@@ -4,6 +4,11 @@ import { callHandler, makeActionContext, evaluateCondition } from "./battle_skil
 import { BaseUnit, SimUnit, UnitState, isInside } from "./battle_unit.js";
 import { $g } from "./battle_globals.js";
 
+export const Phase = {
+  Player: 0,
+  Enemy: 1,
+}
+
 export class SimContext {
 
   //#region fields (serializable)
@@ -999,11 +1004,6 @@ export class PathFinder
       }
     }
   }
-}
-
-export const Phase = {
-  Player: 0,
-  Enemy: 1,
 }
 
 export const Direction = {

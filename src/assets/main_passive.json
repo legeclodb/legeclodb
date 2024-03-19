@@ -841,6 +841,15 @@
           "rate": 0.3
         },
         "target": "自身(メイン)"
+      },
+      {
+        "type": "ディフェンス",
+        "value": 10,
+        "ephemeral": true,
+        "target": "自身(メイン)",
+        "condition": {
+          "onEnemyTurn": true
+        }
       }
     ],
     "doubleAttack": [
