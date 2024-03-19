@@ -124,7 +124,9 @@
         "trigger": {
           "target": "自身",
           "timing": "戦闘前",
-          "condition": { "hp": [ ">=", 50 ] }
+          "condition": {
+            "hp": [ ">=", 50 ]
+          }
         }
       }
     ]
@@ -320,7 +322,9 @@
     "damageRateSp": [
       {
         "value": 2,
-        "condition": { "onTargetClass": [ "エアリアル" ] }
+        "condition": {
+          "onTargetClass": [ "エアリアル" ]
+        }
       }
     ],
     "statusEffects": [
@@ -328,7 +332,9 @@
         "type": "アクティブスキル使用不可",
         "duration": 1,
         "timing": "戦闘後",
-        "condition": { "probability": 50 }
+        "condition": {
+          "probability": 50
+        }
       }
     ],
     "note": "対象がエアリアルの場合、2倍のダメージ"
@@ -358,7 +364,9 @@
     "damageRateSp": [
       {
         "value": 0.8,
-        "condition": { "onTargetClass": [ "エアリアル" ] }
+        "condition": {
+          "onTargetClass": [ "エアリアル" ]
+        }
       }
     ],
     "multiMove": [
@@ -420,7 +428,9 @@
         "ephemeral": true,
         "duration": 2,
         "slot": "崩天画撃",
-        "condition": { "hp": [ ">=", 50 ] },
+        "condition": {
+          "hp": [ ">=", 50 ]
+        },
         "trigger": {
           "target": "自身",
           "timing": "戦闘後"
@@ -551,6 +561,38 @@
     ]
   },
   {
+    "uid": "1100810",
+    "icon": "sk_a083",
+    "name": "♥ドラゴニック・ロアー♥",
+    "desc": "戦闘前、自ユニットのディフェンスに基本ステータスのアタックの[b]35%[/b]を加算し、敵ユニットに「パッシブスキル使用不可(2ターン)」を付与する。敵単体に[b]2.2倍[/b]のダメージを与える。",
+    "ct": 4,
+    "area": "単体",
+    "range": 1,
+    "cost": 2,
+    "damageRate": 2.2,
+    "buff": [
+      {
+        "type": "ディフェンス",
+        "add": {
+          "from": "アタック",
+          "rate": 0.35
+        },
+        "ephemeral": true,
+        "trigger": {
+          "target": "自身",
+          "timing": "戦闘前"
+        }
+      }
+    ],
+    "statusEffects": [
+      {
+        "type": "パッシブスキル使用不可",
+        "duration": 2,
+        "timing": "戦闘前"
+      }
+    ]
+  },
+  {
     "uid": "1100012",
     "icon": "sk_ae002",
     "name": "哀を断つ刃",
@@ -600,7 +642,76 @@
         "duration": 4,
         "slot": "加護",
         "timing": "戦闘前",
-        "condition": { "hp": [ ">=", 80 ] }
+        "condition": {
+          "hp": [ ">=", 80 ]
+        }
+      }
+    ]
+  },
+  {
+    "uid": "1100809",
+    "icon": "sk_ae002",
+    "name": "♥哀を断つ刃♥",
+    "desc": "【シンボルスキル】※加護の効果は同一シンボルにて最大1つまで適用される。\nシンボルが「ナディア」の全ての味方ユニットのアタック[b]+30%[/b]、マジック[b]+30%[/b]、ディフェンス[b]+30%[/b]、レジスト+30%(4ターン)。更に【ナディアの加護】を付与する。\n【ナディアの加護】「自ユニットのHPが[b]50%[/b]以上のとき、戦闘前、自ユニットの与ダメージ/[b]ダメージ耐性+20%[/b]」の効果(4ターン)を付与する。",
+    "ct": 3,
+    "area": "全体",
+    "range": "自ユニット",
+    "cost": 2,
+    "isSymbolSkill": true,
+    "buff": [
+      {
+        "type": "アタック",
+        "value": 30,
+        "duration": 4
+      },
+      {
+        "type": "マジック",
+        "value": 30,
+        "duration": 4
+      },
+      {
+        "type": "ディフェンス",
+        "value": 30,
+        "duration": 4
+      },
+      {
+        "type": "レジスト",
+        "value": 30,
+        "duration": 4
+      },
+      {
+        "type": "与ダメージ",
+        "value": 12,
+        "duration": 4,
+        "slot": "シンボルスキル"
+      },
+      {
+        "type": "ダメージ耐性",
+        "value": 12,
+        "duration": 4,
+        "slot": "シンボルスキル"
+      },
+      {
+        "type": "与ダメージ",
+        "value": 20,
+        "ephemeral": true,
+        "duration": 4,
+        "slot": "加護",
+        "timing": "戦闘前",
+        "condition": {
+          "hp": [ ">=", 50 ]
+        }
+      },
+      {
+        "type": "ダメージ耐性",
+        "value": 20,
+        "ephemeral": true,
+        "duration": 4,
+        "slot": "加護",
+        "timing": "戦闘前",
+        "condition": {
+          "hp": [ ">=", 50 ]
+        }
       }
     ]
   },
@@ -620,6 +731,24 @@
         "timing": "戦闘前"
       }
     ]
+  },
+  {
+    "uid": "1100811",
+    "icon": "sk_a015",
+    "name": "♥滅竜剣♥",
+    "desc": "戦闘前、敵ユニットの強化効果を3個解除し、敵単体に[b]2.2倍[/b]のダメージを与える[b](ガード不可)[/b]。",
+    "ct": 3,
+    "area": "単体",
+    "range": 1,
+    "cost": 2,
+    "damageRate": 2.2,
+    "buffCancel": [
+      {
+        "value": 3,
+        "timing": "戦闘前"
+      }
+    ],
+    "ignoreGuard": [ {} ]
   },
   {
     "uid": "1100019",
@@ -902,7 +1031,9 @@
         "duration": 4,
         "slot": "加護",
         "timing": "戦闘前",
-        "condition": { "onEnemyTurn": true }
+        "condition": {
+          "onEnemyTurn": true
+        }
       }
     ]
   },
@@ -954,14 +1085,18 @@
         "value": 20,
         "duration": 4,
         "slot": "加護",
-        "condition": { "hp": [ ">=", 80 ] }
+        "condition": {
+          "hp": [ ">=", 80 ]
+        }
       },
       {
         "type": "ダメージ耐性",
         "value": 20,
         "duration": 4,
         "slot": "加護",
-        "condition": { "hp": [ "<=", 80 ] }
+        "condition": {
+          "hp": [ "<=", 80 ]
+        }
       }
     ],
     "tags": [ "バフ:与ダメ回復" ]
@@ -1057,7 +1192,7 @@
     "uid": "1100030",
     "icon": "sk_a158",
     "name": "メンタルグレース",
-    "desc": "範囲内の全ての味方ユニットのレジスト+30%、アクティブによる「スタン/アクティブ強化不可/移動ダウン」無効(2ターン)を付与する。",
+    "desc": "範囲内の全ての味方ユニットのレジスト+30%、アクティブによる「スタン」「アクティブ強化不可」「移動ダウン」無効(2ターン)を付与する。",
     "ct": 2,
     "area": 3,
     "range": 3,
@@ -1118,7 +1253,9 @@
         "ephemeral": true,
         "duration": 2,
         "slot": "ロサ・センティフォリア",
-        "condition": { "onOwnTurn": true }
+        "condition": {
+          "onOwnTurn": true
+        }
       },
       {
         "type": "ダメージ耐性",
@@ -1126,7 +1263,9 @@
         "ephemeral": true,
         "duration": 2,
         "slot": "ロサ・センティフォリア",
-        "condition": { "onOwnTurn": true }
+        "condition": {
+          "onOwnTurn": true
+        }
       }
     ],
     "note": "このバフは他のアクティブと競合せず加算になる。"
@@ -1201,7 +1340,9 @@
     "damageRateSp": [
       {
         "value": 2,
-        "condition": { "onTargetClass": [ "ライダー" ] }
+        "condition": {
+          "onTargetClass": [ "ライダー" ]
+        }
       }
     ],
     "note": "対象がライダーの場合、2倍のダメージ"
@@ -1219,7 +1360,9 @@
     "damageRateSp": [
       {
         "value": 0.8,
-        "condition": { "onTargetClass": [ "ランサー" ] }
+        "condition": {
+          "onTargetClass": [ "ランサー" ]
+        }
       }
     ],
     "statusEffects": [
@@ -1244,7 +1387,9 @@
     "damageRateSp": [
       {
         "value": 0.8,
-        "condition": { "onTargetClass": [ "ソーサラー" ] }
+        "condition": {
+          "onTargetClass": [ "ソーサラー" ]
+        }
       }
     ],
     "buff": [
@@ -1273,7 +1418,9 @@
     "damageRateSp": [
       {
         "value": 1.05,
-        "condition": { "onTargetClass": [ "ソーサラー" ] }
+        "condition": {
+          "onTargetClass": [ "ソーサラー" ]
+        }
       }
     ],
     "buff": [
@@ -1297,7 +1444,11 @@
     "area": "単体",
     "range": 3,
     "cost": 2,
-    "summon": [ { "uid": "Ch904300305" } ]
+    "summon": [
+      {
+        "uid": "Ch904300305"
+      }
+    ]
   },
   {
     "uid": "1100733",
@@ -1316,7 +1467,11 @@
         "target": "自身"
       }
     ],
-    "summon": [ { "uid": "Ch904300305ex1" } ]
+    "summon": [
+      {
+        "uid": "Ch904300305ex1"
+      }
+    ]
   },
   {
     "uid": "1100039",
@@ -1359,7 +1514,9 @@
         "value": 1,
         "target": "自身",
         "targetSkill": "使用したスキル",
-        "condition": { "onKill": true }
+        "condition": {
+          "onKill": true
+        }
       }
     ],
     "note": "ランダムデバフ内訳: `randomTableToString('ランダムデバフ:強')`"
@@ -1727,7 +1884,7 @@
     "uid": "1100058",
     "icon": "sk_a008",
     "name": "ディフェンドグレース",
-    "desc": "範囲内の全ての味方ユニットのディフェンス+20%、アクティブによる「ディフェンスダウン/レジストダウン/HP回復不可」無効(2ターン)を付与する。",
+    "desc": "範囲内の全ての味方ユニットのディフェンス+20%、アクティブによる「ディフェンスダウン」「レジストダウン」「HP回復不可」無効(2ターン)を付与する。",
     "ct": 2,
     "area": 3,
     "range": 3,
@@ -1886,7 +2043,9 @@
       {
         "type": "アクティブスキル使用不可",
         "duration": 2,
-        "condition": { "probability": 50 }
+        "condition": {
+          "probability": 50
+        }
       }
     ]
   },
@@ -1903,7 +2062,9 @@
     "damageRateSp": [
       {
         "value": 2,
-        "condition": { "onTargetClass": [ "エアリアル" ] }
+        "condition": {
+          "onTargetClass": [ "エアリアル" ]
+        }
       }
     ],
     "note": "対象がエアリアルの場合、2倍のダメージ"
@@ -1921,7 +2082,9 @@
     "damageRateSp": [
       {
         "value": 0.8,
-        "condition": { "onTargetClass": [ "エアリアル" ] }
+        "condition": {
+          "onTargetClass": [ "エアリアル" ]
+        }
       }
     ],
     "debuff": [
@@ -1942,7 +2105,11 @@
     "area": "単体",
     "range": 3,
     "cost": 2,
-    "summon": [ { "uid": "Ch903700305" } ]
+    "summon": [
+      {
+        "uid": "Ch903700305"
+      }
+    ]
   },
   {
     "uid": "1100069",
@@ -1976,7 +2143,9 @@
     "damageRateSp": [
       {
         "value": 0.8,
-        "condition": { "onTargetClass": [ "エアリアル" ] }
+        "condition": {
+          "onTargetClass": [ "エアリアル" ]
+        }
       }
     ],
     "buffCancel": [
@@ -1985,14 +2154,18 @@
         "timing": "攻撃後"
       }
     ],
-    "multiMove": [ { "type": "基本移動力" } ],
+    "multiMove": [
+      {
+        "type": "基本移動力"
+      }
+    ],
     "note": "対象がエアリアルの場合、0.8倍のダメージ"
   },
   {
     "uid": "1100054",
     "icon": "sk_a007",
     "name": "アサルト",
-    "desc": "味方ユニット1隊のアタック+20%、マジック+20%、アクティブによる「アタックダウン/マジックダウン/アクティブスキル使用不可」無効(2ターン)を付与する。",
+    "desc": "味方ユニット1隊のアタック+20%、マジック+20%、アクティブによる「アタックダウン」「マジックダウン」「アクティブスキル使用不可」無効(2ターン)を付与する。",
     "ct": 1,
     "area": "単体",
     "range": 3,
@@ -2027,7 +2200,7 @@
     "uid": "1100071",
     "icon": "sk_a030",
     "name": "アサルトグレース",
-    "desc": "範囲内の全ての味方ユニットのアタック+20%、マジック+20%、アクティブによる「アタックダウン/マジックダウン/アクティブスキル使用不可」無効(2ターン)を付与する。",
+    "desc": "範囲内の全ての味方ユニットのアタック+20%、マジック+20%、アクティブによる「アタックダウン」「マジックダウン」「アクティブスキル使用不可」無効(2ターン)を付与する。",
     "ct": 2,
     "area": 3,
     "range": 3,
@@ -2072,7 +2245,9 @@
     "damageRateSp": [
       {
         "value": 1.8,
-        "condition": { "onTargetClass": [ "エアリアル" ] }
+        "condition": {
+          "onTargetClass": [ "エアリアル" ]
+        }
       }
     ],
     "debuff": [
@@ -2399,7 +2574,11 @@
         }
       }
     ],
-    "positionManipulate": [ { "type": "引き寄せ" } ]
+    "positionManipulate": [
+      {
+        "type": "引き寄せ"
+      }
+    ]
   },
   {
     "uid": "1100627",
@@ -2450,13 +2629,17 @@
         }
       }
     ],
-    "positionManipulate": [ { "type": "引き寄せ" } ]
+    "positionManipulate": [
+      {
+        "type": "引き寄せ"
+      }
+    ]
   },
   {
     "uid": "1100077",
     "icon": "sk_a024",
     "name": "クレードル",
-    "desc": "味方ユニットのディフェンス+20%、アクティブによる「ディフェンスダウン/レジストダウン/HP回復不可」無効(2ターン)を付与する。",
+    "desc": "味方ユニットのディフェンス+20%、アクティブによる「ディフェンスダウン」「レジストダウン」「HP回復不可」無効(2ターン)を付与する。",
     "ct": 1,
     "area": "単体",
     "range": 3,
@@ -2568,7 +2751,11 @@
     "area": "単体",
     "range": 2,
     "cost": 2,
-    "positionManipulate": [ { "type": "テレポート" } ]
+    "positionManipulate": [
+      {
+        "type": "テレポート"
+      }
+    ]
   },
   {
     "uid": "1100082",
@@ -2628,7 +2815,9 @@
     "damageRateSp": [
       {
         "value": 0.8,
-        "condition": { "onTargetClass": [ "ソルジャー" ] }
+        "condition": {
+          "onTargetClass": [ "ソルジャー" ]
+        }
       }
     ],
     "statusEffects": [
@@ -2654,7 +2843,9 @@
     "damageRateSp": [
       {
         "value": 2,
-        "condition": { "onTargetClass": [ "ランサー" ] }
+        "condition": {
+          "onTargetClass": [ "ランサー" ]
+        }
       }
     ],
     "note": "対象がランサーの場合、2倍のダメージ"
@@ -2672,7 +2863,9 @@
     "damageRateSp": [
       {
         "value": 0.8,
-        "condition": { "onTargetClass": [ "ライダー" ] }
+        "condition": {
+          "onTargetClass": [ "ライダー" ]
+        }
       }
     ],
     "debuff": [
@@ -2745,7 +2938,11 @@
         "target": "スキル対象"
       }
     ],
-    "multiAction": [ { "target": "スキル対象" } ]
+    "multiAction": [
+      {
+        "target": "スキル対象"
+      }
+    ]
   },
   {
     "uid": "1100692",
@@ -2770,7 +2967,11 @@
         "target": "スキル対象"
       }
     ],
-    "multiAction": [ { "target": "スキル対象" } ]
+    "multiAction": [
+      {
+        "target": "スキル対象"
+      }
+    ]
   },
   {
     "uid": "1100125",
@@ -2966,7 +3167,9 @@
         "duration": 4,
         "slot": "加護",
         "timing": "戦闘前",
-        "condition": { "targetActiveDebuffCount": [ ">=", 3 ] }
+        "condition": {
+          "targetActiveDebuffCount": [ ">=", 3 ]
+        }
       }
     ]
   },
@@ -3020,7 +3223,9 @@
         "duration": 4,
         "slot": "加護",
         "timing": "戦闘前",
-        "condition": { "targetActiveDebuffCount": [ ">=", 3 ] }
+        "condition": {
+          "targetActiveDebuffCount": [ ">=", 3 ]
+        }
       },
       {
         "type": "与ダメージ(通常攻撃)",
@@ -3029,7 +3234,9 @@
         "duration": 4,
         "slot": "加護",
         "timing": "戦闘前",
-        "condition": { "targetActiveDebuffCount": [ ">=", 3 ] }
+        "condition": {
+          "targetActiveDebuffCount": [ ">=", 3 ]
+        }
       }
     ]
   },
@@ -3117,7 +3324,9 @@
     "damageRateSp": [
       {
         "value": 2,
-        "condition": { "onTargetClass": [ "アサシン" ] }
+        "condition": {
+          "onTargetClass": [ "アサシン" ]
+        }
       }
     ],
     "heal": [
@@ -3134,7 +3343,7 @@
     "uid": "1100137",
     "icon": "sk_a204",
     "name": "メンタルプロテクト",
-    "desc": "味方ユニット1隊のレジスト+30%、アクティブによる「スタン/強化不可」無効(2ターン)を付与する。",
+    "desc": "味方ユニット1隊のレジスト+30%、アクティブによる「スタン」「アクティブ強化不可」無効(2ターン)を付与する。",
     "ct": 1,
     "area": "単体",
     "range": 3,
@@ -3195,7 +3404,9 @@
     "damageRateSp": [
       {
         "value": 2,
-        "condition": { "onTargetClass": [ "アサシン" ] }
+        "condition": {
+          "onTargetClass": [ "アサシン" ]
+        }
       }
     ],
     "buffCancel": [
@@ -3221,7 +3432,9 @@
         "type": "アクティブスキル使用不可",
         "duration": 2,
         "timing": "戦闘後",
-        "condition": { "probability": 50 }
+        "condition": {
+          "probability": 50
+        }
       }
     ]
   },
@@ -3273,7 +3486,9 @@
         "value": 15,
         "duration": 4,
         "slot": "加護",
-        "condition": { "onOwnTurn": true }
+        "condition": {
+          "onOwnTurn": true
+        }
       }
     ]
   },
@@ -3290,7 +3505,9 @@
     "damageRateSp": [
       {
         "value": 0.8,
-        "condition": { "onTargetClass": [ "ソーサラー" ] }
+        "condition": {
+          "onTargetClass": [ "ソーサラー" ]
+        }
       }
     ],
     "buff": [
@@ -3356,7 +3573,9 @@
         "duration": 4,
         "slot": "加護",
         "timing": "戦闘前",
-        "condition": { "onOwnTurn": true }
+        "condition": {
+          "onOwnTurn": true
+        }
       },
       {
         "type": "ダメージ耐性(物理)",
@@ -3365,7 +3584,9 @@
         "duration": 4,
         "slot": "加護",
         "timing": "戦闘前",
-        "condition": { "onOwnTurn": true }
+        "condition": {
+          "onOwnTurn": true
+        }
       }
     ]
   },
@@ -3459,7 +3680,9 @@
         "duration": 3,
         "slot": "ハゴイタイガー闘法",
         "target": "自身",
-        "condition": { "onGuard": true }
+        "condition": {
+          "onGuard": true
+        }
       },
       {
         "type": "ダメージ耐性(魔法)",
@@ -3468,7 +3691,9 @@
         "duration": 3,
         "slot": "ハゴイタイガー闘法",
         "target": "自身",
-        "condition": { "onGuard": true }
+        "condition": {
+          "onGuard": true
+        }
       }
     ],
     "statusEffects": [
@@ -3518,7 +3743,9 @@
         "duration": 3,
         "slot": "♥ハゴイタイガー闘法♥",
         "target": "自身",
-        "condition": { "onGuard": true }
+        "condition": {
+          "onGuard": true
+        }
       },
       {
         "type": "ダメージ耐性(魔法)",
@@ -3527,7 +3754,9 @@
         "duration": 3,
         "slot": "♥ハゴイタイガー闘法♥",
         "target": "自身",
-        "condition": { "onGuard": true }
+        "condition": {
+          "onGuard": true
+        }
       }
     ],
     "guard": [
@@ -3700,7 +3929,9 @@
         "type": "強化不可",
         "duration": 2,
         "timing": "戦闘後",
-        "condition": { "probability": 50 }
+        "condition": {
+          "probability": 50
+        }
       }
     ]
   },
@@ -3767,7 +3998,9 @@
         "type": "アクティブスキル使用不可",
         "duration": 2,
         "timing": "戦闘後",
-        "condition": { "probability": 50 }
+        "condition": {
+          "probability": 50
+        }
       }
     ]
   },
@@ -3784,7 +4017,9 @@
     "damageRateSp": [
       {
         "value": 2.2,
-        "condition": { "onTargetClass": [ "ライダー" ] }
+        "condition": {
+          "onTargetClass": [ "ライダー" ]
+        }
       }
     ],
     "debuff": [
@@ -3848,7 +4083,9 @@
         "value": 15,
         "duration": 4,
         "slot": "加護",
-        "condition": { "onOwnTurn": true }
+        "condition": {
+          "onOwnTurn": true
+        }
       }
     ]
   },
@@ -4194,7 +4431,9 @@
       {
         "type": "スタン",
         "duration": 1,
-        "condition": { "probability": 25 }
+        "condition": {
+          "probability": 25
+        }
       }
     ],
     "damageRate": 0.4
@@ -4256,7 +4495,9 @@
     "damageRateSp": [
       {
         "value": 2,
-        "condition": { "onTargetClass": [ "ソルジャー" ] }
+        "condition": {
+          "onTargetClass": [ "ソルジャー" ]
+        }
       }
     ],
     "note": "対象がソルジャーの場合、2倍のダメージ"
@@ -4313,7 +4554,9 @@
         "type": "ダメージ割合",
         "rate": 0.5,
         "target": "自身",
-        "condition": { "hp": [ "<=", 50 ] }
+        "condition": {
+          "hp": [ "<=", 50 ]
+        }
       }
     ],
     "ctReduction": [
@@ -4321,10 +4564,18 @@
         "value": 2,
         "target": "自身",
         "targetSkill": "使用したスキル",
-        "condition": { "hp": [ "<=", 50 ] }
+        "condition": {
+          "hp": [ "<=", 50 ]
+        }
       }
     ],
-    "supportAttack": [ { "condition": { "hp": [ ">=", 50 ] } } ]
+    "supportAttack": [
+      {
+        "condition": {
+          "hp": [ ">=", 50 ]
+        }
+      }
+    ]
   },
   {
     "uid": "1100184",
@@ -4562,7 +4813,13 @@
     "range": 1,
     "cost": 2,
     "damageRate": 1.5,
-    "multiAction": [ { "condition": { "onKill": true } } ]
+    "multiAction": [
+      {
+        "condition": {
+          "onKill": true
+        }
+      }
+    ]
   },
   {
     "uid": "1100198",
@@ -4614,7 +4871,9 @@
         "duration": 4,
         "slot": "加護",
         "timing": "戦闘前",
-        "condition": { "onEnemyTurn": true }
+        "condition": {
+          "onEnemyTurn": true
+        }
       },
       {
         "type": "ダメージ耐性(魔法)",
@@ -4623,7 +4882,9 @@
         "duration": 4,
         "slot": "加護",
         "timing": "戦闘前",
-        "condition": { "onEnemyTurn": true }
+        "condition": {
+          "onEnemyTurn": true
+        }
       }
     ]
   },
@@ -4675,7 +4936,9 @@
     "damageRateSp": [
       {
         "value": 2,
-        "condition": { "onTargetClass": [ "ソルジャー", "ランサー", "ライダー" ] }
+        "condition": {
+          "onTargetClass": [ "ソルジャー", "ランサー", "ライダー" ]
+        }
       }
     ],
     "note": "対象がソルジャー/ランサー/ライダーの場合、2倍のダメージ"
@@ -4745,7 +5008,9 @@
     "damageRateSp": [
       {
         "value": 2,
-        "condition": { "onTargetClass": [ "アサシン" ] }
+        "condition": {
+          "onTargetClass": [ "アサシン" ]
+        }
       }
     ],
     "buffCancel": [
@@ -4907,7 +5172,9 @@
         "value": 3,
         "target": "自身",
         "targetSkill": "使用したスキル",
-        "condition": { "onKill": true }
+        "condition": {
+          "onKill": true
+        }
       }
     ],
     "ignoreGuard": [ {} ]
@@ -4934,7 +5201,9 @@
         "value": 3,
         "target": "自身",
         "targetSkill": "使用したスキル",
-        "condition": { "onKill": true }
+        "condition": {
+          "onKill": true
+        }
       }
     ],
     "ignoreGuard": [ {} ]
@@ -5002,19 +5271,25 @@
         "type": "スタン",
         "duration": 1,
         "timing": "戦闘後",
-        "condition": { "probability": 33 }
+        "condition": {
+          "probability": 33
+        }
       },
       {
         "type": "アクティブスキル使用不可",
         "duration": 1,
         "timing": "戦闘後",
-        "condition": { "probability": 33 }
+        "condition": {
+          "probability": 33
+        }
       },
       {
         "type": "パッシブスキル使用不可",
         "duration": 1,
         "timing": "戦闘後",
-        "condition": { "probability": 33 }
+        "condition": {
+          "probability": 33
+        }
       }
     ],
     "supportAttack": [ {} ]
@@ -5411,7 +5686,11 @@
     "rangeShape": "直線",
     "cost": 2,
     "damageRate": 0.2,
-    "positionManipulate": [ { "type": "引き寄せ" } ],
+    "positionManipulate": [
+      {
+        "type": "引き寄せ"
+      }
+    ],
     "multiAction": [ {} ]
   },
   {
@@ -5432,7 +5711,11 @@
         "target": "自身"
       }
     ],
-    "summon": [ { "uid": "Ch508500499summon" } ],
+    "summon": [
+      {
+        "uid": "Ch508500499summon"
+      }
+    ],
     "multiAction": [ {} ]
   },
   {
@@ -5591,7 +5874,9 @@
         "ephemeral": true,
         "duration": 2,
         "slot": "手の平で踊り、穿たれよ",
-        "condition": { "onEnemyTurn": true },
+        "condition": {
+          "onEnemyTurn": true
+        },
         "trigger": {
           "target": "自身",
           "timing": "行動後"
@@ -5620,7 +5905,9 @@
     "damageRateSp": [
       {
         "value": 1.8,
-        "condition": { "onTargetClass": [ "ランサー" ] }
+        "condition": {
+          "onTargetClass": [ "ランサー" ]
+        }
       }
     ],
     "note": "対象がランサーの場合、1.8倍のダメージ"
@@ -5638,7 +5925,9 @@
     "damageRateSp": [
       {
         "value": 2.3,
-        "condition": { "onTargetClass": [ "ランサー" ] }
+        "condition": {
+          "onTargetClass": [ "ランサー" ]
+        }
       }
     ]
   },
@@ -5692,7 +5981,9 @@
         "duration": 4,
         "slot": "加護",
         "timing": "戦闘前",
-        "condition": { "hp": [ "<=", 80 ] }
+        "condition": {
+          "hp": [ "<=", 80 ]
+        }
       }
     ]
   },
@@ -5793,7 +6084,9 @@
     "damageRateSp": [
       {
         "value": 1.8,
-        "condition": { "onTargetClass": [ "エアリアル" ] }
+        "condition": {
+          "onTargetClass": [ "エアリアル" ]
+        }
       }
     ],
     "buff": [
@@ -5894,7 +6187,9 @@
         "value": 1,
         "target": "自身",
         "targetSkill": "使用したスキル",
-        "condition": { "onKill": true }
+        "condition": {
+          "onKill": true
+        }
       }
     ]
   },
@@ -5936,7 +6231,9 @@
       {
         "type": "スタン",
         "duration": 1,
-        "condition": { "probability": 15 }
+        "condition": {
+          "probability": 15
+        }
       }
     ]
   },
@@ -5991,7 +6288,11 @@
     "area": "単体",
     "range": 3,
     "cost": 2,
-    "summon": [ { "uid": "Ch905200303" } ],
+    "summon": [
+      {
+        "uid": "Ch905200303"
+      }
+    ],
     "multiAction": [ {} ]
   },
   {
@@ -6164,7 +6465,9 @@
         "trigger": {
           "target": "自身",
           "timing": "戦闘後",
-          "condition": { "hp": [ "<=", 50 ] }
+          "condition": {
+            "hp": [ "<=", 50 ]
+          }
         }
       },
       {
@@ -6174,7 +6477,9 @@
         "trigger": {
           "target": "自身",
           "timing": "戦闘後",
-          "condition": { "hp": [ "<=", 50 ] }
+          "condition": {
+            "hp": [ "<=", 50 ]
+          }
         }
       }
     ],
@@ -6195,7 +6500,9 @@
         "rate": 0.3,
         "target": "自身",
         "timing": "戦闘後",
-        "condition": { "hp": [ "<=", 50 ] }
+        "condition": {
+          "hp": [ "<=", 50 ]
+        }
       }
     ]
   },
@@ -6217,7 +6524,9 @@
         "trigger": {
           "target": "自身",
           "timing": "戦闘後",
-          "condition": { "hp": [ "<=", 65 ] }
+          "condition": {
+            "hp": [ "<=", 65 ]
+          }
         }
       },
       {
@@ -6227,7 +6536,9 @@
         "trigger": {
           "target": "自身",
           "timing": "戦闘後",
-          "condition": { "hp": [ "<=", 65 ] }
+          "condition": {
+            "hp": [ "<=", 65 ]
+          }
         }
       }
     ],
@@ -6248,7 +6559,9 @@
         "rate": 0.35,
         "target": "自身",
         "timing": "戦闘後",
-        "condition": { "hp": [ "<=", 65 ] }
+        "condition": {
+          "hp": [ "<=", 65 ]
+        }
       }
     ]
   },
@@ -6420,7 +6733,9 @@
         "value": 1,
         "target": "自身",
         "targetSkill": "使用したスキル",
-        "condition": { "hp": [ ">=", 70 ] }
+        "condition": {
+          "hp": [ ">=", 70 ]
+        }
       }
     ]
   },
@@ -6439,7 +6754,9 @@
         "value": 1,
         "target": "自身",
         "targetSkill": "使用したスキル",
-        "condition": { "targetHp": [ "<=", 50 ] }
+        "condition": {
+          "targetHp": [ "<=", 50 ]
+        }
       }
     ]
   },
@@ -6482,13 +6799,21 @@
         "timing": "戦闘前"
       }
     ],
-    "supportAttack": [ { "condition": { "targetHp": [ ">=", 50 ] } } ],
+    "supportAttack": [
+      {
+        "condition": {
+          "targetHp": [ ">=", 50 ]
+        }
+      }
+    ],
     "ctReduction": [
       {
         "value": 3,
         "target": "自身",
         "targetSkill": "使用したスキル",
-        "condition": { "targetHp": [ ">=", 50 ] }
+        "condition": {
+          "targetHp": [ ">=", 50 ]
+        }
       }
     ]
   },
@@ -6511,19 +6836,41 @@
     ]
   },
   {
+    "uid": "1100272",
+    "icon": "sk_a311",
     "name": "パーティー・ナイト",
     "desc": "攻撃前、自ユニットが敵ユニットのディフェンス20%分を無視して攻撃できる。\n自身を中心とした範囲5マス以内の全ての敵ユニットに0.55倍の範囲ダメージを与える。",
     "ct": 5,
     "area": 5,
     "range": "自ユニット",
     "cost": 2,
-    "uid": "1100272",
-    "icon": "sk_a311",
     "damageRate": 0.55,
     "buff": [
       {
         "type": "ディフェンス無視",
         "value": 20,
+        "ephemeral": true,
+        "trigger": {
+          "target": "自身",
+          "timing": "攻撃前"
+        }
+      }
+    ]
+  },
+  {
+    "uid": "1100812",
+    "icon": "sk_a311",
+    "name": "♥パーティー・ナイト♥",
+    "desc": "攻撃前、自ユニットが敵ユニットのディフェンス[b]30%[/b]分を無視して攻撃できる。\n自身を中心とした範囲5マス以内の全ての敵ユニットに[b]0.9倍[/b]の範囲ダメージを与える。",
+    "ct": 5,
+    "area": 5,
+    "range": "自ユニット",
+    "cost": 2,
+    "damageRate": 0.9,
+    "buff": [
+      {
+        "type": "ディフェンス無視",
+        "value": 30,
         "ephemeral": true,
         "trigger": {
           "target": "自身",
@@ -6568,7 +6915,57 @@
         }
       }
     ],
-    "multiAction": [ { "condition": { "onKill": true } } ]
+    "multiAction": [
+      {
+        "condition": {
+          "onKill": true
+        }
+      }
+    ]
+  },
+  {
+    "uid": "1100813",
+    "icon": "sk_a312",
+    "name": "♥ゲスト以外はお断り♥",
+    "desc": "戦闘前、敵ユニットの強化効果を2個解除し、ディフェンス[b]-30%[/b]、レジスト[b]-30%[/b](2ターン)。\n敵単体に[b]2.3倍[/b]のダメージを与える。\n敵ユニットに固定ダメージを与えて倒したとき、再行動できる。\nこのスキルで敵ユニットを倒したとき、再行動できる。\nこのスキルを使用する前、味方サポートのアクティブスキルで敵ユニットを倒していたとき、再行動できる。",
+    "ct": 4,
+    "area": "単体",
+    "range": 1,
+    "cost": 2,
+    "damageRate": 2.3,
+    "buffCancel": [
+      {
+        "value": 2,
+        "timing": "戦闘前"
+      }
+    ],
+    "debuff": [
+      {
+        "type": "ディフェンス",
+        "value": 30,
+        "duration": 2,
+        "trigger": {
+          "target": "攻撃対象",
+          "timing": "戦闘前"
+        }
+      },
+      {
+        "type": "レジスト",
+        "value": 30,
+        "duration": 2,
+        "trigger": {
+          "target": "攻撃対象",
+          "timing": "戦闘前"
+        }
+      }
+    ],
+    "multiAction": [
+      {
+        "condition": {
+          "onKill": true
+        }
+      }
+    ]
   },
   {
     "uid": "1100275",
@@ -6740,7 +7137,11 @@
         "target": "自身"
       }
     ],
-    "multiAction": [ { "target": "スキル対象" } ]
+    "multiAction": [
+      {
+        "target": "スキル対象"
+      }
+    ]
   },
   {
     "uid": "1100688",
@@ -6759,7 +7160,11 @@
         "target": "自身"
       }
     ],
-    "multiAction": [ { "target": "スキル対象" } ]
+    "multiAction": [
+      {
+        "target": "スキル対象"
+      }
+    ]
   },
   {
     "uid": "1100282",
@@ -6946,7 +7351,9 @@
         "duration": 4,
         "slot": "加護",
         "timing": "戦闘前",
-        "condition": { "onOwnTurn": true }
+        "condition": {
+          "onOwnTurn": true
+        }
       },
       {
         "type": "クリティカルダメージ倍率",
@@ -6955,7 +7362,9 @@
         "duration": 4,
         "slot": "加護",
         "timing": "戦闘前",
-        "condition": { "onOwnTurn": true }
+        "condition": {
+          "onOwnTurn": true
+        }
       }
     ]
   },
@@ -7009,7 +7418,9 @@
         "duration": 4,
         "slot": "加護",
         "timing": "戦闘前",
-        "condition": { "onOwnTurn": true }
+        "condition": {
+          "onOwnTurn": true
+        }
       },
       {
         "type": "クリティカルダメージ倍率",
@@ -7018,7 +7429,9 @@
         "duration": 4,
         "slot": "加護",
         "timing": "戦闘前",
-        "condition": { "onOwnTurn": true }
+        "condition": {
+          "onOwnTurn": true
+        }
       }
     ]
   },
@@ -7069,7 +7482,9 @@
         "trigger": {
           "target": "攻撃対象",
           "timing": "戦闘後",
-          "condition": { "targetHp": [ ">=", 50 ] }
+          "condition": {
+            "targetHp": [ ">=", 50 ]
+          }
         }
       }
     ]
@@ -7078,7 +7493,7 @@
     "uid": "1100287",
     "icon": "sk_a323",
     "name": "リトルマロース",
-    "desc": "自身を中心とした範囲5マス以内の全ての味方ユニットのスキル与ダメージ/魔法与ダメージ+30%（4ターン）。\nスキル使用後、再行動ができる。",
+    "desc": "自身を中心とした範囲5マス以内の全ての味方ユニットのスキル与ダメージ+30%、魔法与ダメージ+30%(4ターン)。\nスキルを使用した後、再行動できる。",
     "ct": 5,
     "area": 5,
     "range": "自ユニット",
@@ -7211,7 +7626,7 @@
     "uid": "1100312",
     "icon": "sk_a329",
     "name": "本日のラッキーアイテム！",
-    "desc": "味方ターンでの戦闘時、その戦闘前、敵ユニットのレジスト-30%/魔法ダメージ耐性-10%(1ターン)。\n敵単体に1.8倍のダメージを与える。\n敵ユニットに固定ダメージを与えて倒したとき、再行動できる。\nこのスキルで敵ユニットを倒したとき、再行動できる。\nこのスキルを使用する前、味方サポートのアクティブスキルで敵ユニットを倒していたとき、再行動できる。",
+    "desc": "味方ターンでの戦闘時、その戦闘前、敵ユニットのレジスト-30%、魔法ダメージ耐性-10%(1ターン)。\n敵単体に1.8倍のダメージを与える。\n敵ユニットに固定ダメージを与えて倒したとき、再行動できる。\nこのスキルで敵ユニットを倒したとき、再行動できる。\nこのスキルを使用する前、味方サポートのアクティブスキルで敵ユニットを倒していたとき、再行動できる。",
     "ct": 3,
     "area": "単体",
     "range": 2,
@@ -7237,7 +7652,13 @@
         }
       }
     ],
-    "multiAction": [ { "condition": { "onKill": true } } ]
+    "multiAction": [
+      {
+        "condition": {
+          "onKill": true
+        }
+      }
+    ]
   },
   {
     "uid": "1100313",
@@ -7288,7 +7709,9 @@
         "ephemeral": true,
         "duration": 4,
         "slot": "加護",
-        "condition": { "onOwnTurn": true }
+        "condition": {
+          "onOwnTurn": true
+        }
       },
       {
         "type": "ダメージ耐性",
@@ -7296,7 +7719,9 @@
         "ephemeral": true,
         "duration": 4,
         "slot": "加護",
-        "condition": { "onOwnTurn": true }
+        "condition": {
+          "onOwnTurn": true
+        }
       }
     ]
   },
@@ -7444,7 +7869,9 @@
         "value": 2,
         "target": "自身",
         "targetSkill": "使用したスキル",
-        "condition": { "probability": 80 }
+        "condition": {
+          "probability": 80
+        }
       }
     ]
   },
@@ -7474,7 +7901,9 @@
         "value": 1,
         "target": "自身",
         "targetSkill": "使用したスキル",
-        "condition": { "onKill": true }
+        "condition": {
+          "onKill": true
+        }
       }
     ],
     "supportAttack": [ {} ]
@@ -7540,7 +7969,13 @@
         }
       }
     ],
-    "multiAction": [ { "condition": { "onKill": true } } ]
+    "multiAction": [
+      {
+        "condition": {
+          "onKill": true
+        }
+      }
+    ]
   },
   {
     "uid": "1100355",
@@ -7619,7 +8054,7 @@
     "uid": "1100358",
     "icon": "sk_a342",
     "name": "兄さんは私が守ります！",
-    "desc": "自身を中心とした範囲5マス以内の全ての敵ユニットに0.55倍の範囲ダメージを与え、ディフェンス/レジスト-10%(2ターン)。",
+    "desc": "自身を中心とした範囲5マス以内の全ての敵ユニットに0.55倍の範囲ダメージを与え、ディフェンス-10%、レジスト-10%(2ターン)。",
     "ct": 3,
     "area": 5,
     "range": "自ユニット",
@@ -7801,7 +8236,11 @@
         "target": "自身"
       }
     ],
-    "summon": [ { "uid": "Ch516200499" } ],
+    "summon": [
+      {
+        "uid": "Ch516200499"
+      }
+    ],
     "multiAction": [ {} ]
   },
   {
@@ -7933,7 +8372,7 @@
     "uid": "1100391",
     "icon": "sk_a370",
     "name": "ホットストリーク",
-    "desc": "自身を中心とした範囲3マス以内に味方ユニットがいるとき、1隊につき、自ユニットのクリティカル率/スキル与ダメージ+10%(最大+50%)。\n敵単体に2倍のダメージを与える。\nこのスキルで敵ユニットを倒したとき、全ての味方ユニットの全スキルのクールタイム-1(このスキルは効果対象外)。\nこのスキルを使用する前、味方サポートのアクティブスキルで敵ユニットを倒していたとき、全ての味方ユニットの全スキルのクールタイム-1(このスキルは効果対象外)。",
+    "desc": "戦闘前、自身を中心とした範囲3マス以内に味方ユニットがいるとき、1隊につき、自ユニットのクリティカル率+10%、スキル与ダメージ+10%(最大+50%)。\n敵単体に2倍のダメージを与える。\nこのスキルで敵ユニットを倒したとき、全ての味方ユニットの全スキルのクールタイム-1(このスキルは効果対象外)。\nこのスキルを使用する前、味方サポートのアクティブスキルで敵ユニットを倒していたとき、全ての味方ユニットの全スキルのクールタイム-1(このスキルは効果対象外)。",
     "ct": 5,
     "area": "単体",
     "range": 2,
@@ -7968,7 +8407,9 @@
         "value": 1,
         "target": "味方全体",
         "targetSkill": "全スキル",
-        "condition": { "onKill": true }
+        "condition": {
+          "onKill": true
+        }
       }
     ]
   },
@@ -8047,7 +8488,9 @@
         "duration": 4,
         "slot": "加護",
         "timing": "攻撃前",
-        "condition": { "onActiveSkill": true }
+        "condition": {
+          "onActiveSkill": true
+        }
       },
       {
         "type": "クリティカルダメージ倍率",
@@ -8056,7 +8499,9 @@
         "duration": 4,
         "slot": "加護",
         "timing": "攻撃前",
-        "condition": { "onActiveSkill": true }
+        "condition": {
+          "onActiveSkill": true
+        }
       }
     ]
   },
@@ -8132,7 +8577,9 @@
         "ephemeral": true,
         "duration": 4,
         "slot": "加護",
-        "condition": { "hp": [ ">=", 50 ] }
+        "condition": {
+          "hp": [ ">=", 50 ]
+        }
       },
       {
         "type": "クリティカルダメージ倍率",
@@ -8140,7 +8587,9 @@
         "ephemeral": true,
         "duration": 4,
         "slot": "加護",
-        "condition": { "hp": [ ">=", 50 ] }
+        "condition": {
+          "hp": [ ">=", 50 ]
+        }
       }
     ]
   },
@@ -8257,7 +8706,9 @@
       {
         "type": "アクティブスキル使用不可",
         "duration": 1,
-        "condition": { "probability": 50 }
+        "condition": {
+          "probability": 50
+        }
       },
       {
         "type": "スタン",
@@ -8275,7 +8726,7 @@
     "uid": "1100420",
     "icon": "sk_a385",
     "name": "初めての共同作業",
-    "desc": "戦闘前、敵ユニットのレジスト-20%(2ターン)。\n敵単体に2倍のダメージを与える。\nこのスキルで敵ユニットを倒したとき、自ユニットの与ダメージ+10%/移動+1(2ターン)。\nこのスキルを使用する前、味方サポートのアクティブスキルで敵ユニットを倒していたとき、自ユニットの与ダメージ+10%/移動+1(2ターン)。",
+    "desc": "戦闘前、敵ユニットのレジスト-20%(2ターン)。\n敵単体に2倍のダメージを与える。\nこのスキルで敵ユニットを倒したとき、自ユニットの与ダメージ+10%、移動+1(2ターン)。\nこのスキルを使用する前、味方サポートのアクティブスキルで敵ユニットを倒していたとき、自ユニットの与ダメージ+10%、移動+1(2ターン)。",
     "ct": 2,
     "area": "単体",
     "range": 2,
@@ -8313,6 +8764,48 @@
       }
     ],
     "tags": [ "移動+" ]
+  },
+  {
+    "uid": "1100814",
+    "icon": "sk_a385",
+    "name": "♥初めての共同作業♥",
+    "desc": "戦闘前、敵ユニットのレジスト[b]-30%[/b](2ターン)。\n敵単体に[b]2.2倍[/b]のダメージを与える。\nこのスキルで敵ユニットを倒したとき、自ユニットの与ダメージ[b]+20%[/b]、移動+1(2ターン)。\nこのスキルを使用する前、味方サポートのアクティブスキルで敵ユニットを倒していたとき、自ユニットの与ダメージ[b]+20%[/b]、移動+1(2ターン)。",
+    "ct": 2,
+    "area": "単体",
+    "range": 2,
+    "cost": 2,
+    "damageRate": 2.2,
+    "buff": [
+      {
+        "type": "与ダメージ",
+        "value": 20,
+        "duration": 2,
+        "trigger": {
+          "target": "自身",
+          "timing": "敵撃破時"
+        }
+      },
+      {
+        "type": "移動",
+        "value": 1,
+        "duration": 2,
+        "trigger": {
+          "target": "自身",
+          "timing": "敵撃破時"
+        }
+      }
+    ],
+    "debuff": [
+      {
+        "type": "レジスト",
+        "value": 30,
+        "duration": 2,
+        "trigger": {
+          "target": "攻撃対象",
+          "timing": "戦闘前"
+        }
+      }
+    ]
   },
   {
     "uid": "1100418",
@@ -8532,7 +9025,9 @@
         "value": 1,
         "target": "自身",
         "targetSkill": "使用したスキル",
-        "condition": { "onCriticalHit": true }
+        "condition": {
+          "onCriticalHit": true
+        }
       }
     ]
   },
@@ -8608,7 +9103,9 @@
         "ephemeral": true,
         "duration": 4,
         "slot": "加護",
-        "condition": { "hp": [ ">=", 50 ] }
+        "condition": {
+          "hp": [ ">=", 50 ]
+        }
       },
       {
         "type": "与ダメージ",
@@ -8616,7 +9113,9 @@
         "ephemeral": true,
         "duration": 4,
         "slot": "加護",
-        "condition": { "hp": [ ">=", 50 ] }
+        "condition": {
+          "hp": [ ">=", 50 ]
+        }
       }
     ]
   },
@@ -8712,7 +9211,7 @@
     "uid": "1100784",
     "icon": "sk_a397",
     "name": "♥民の為の祈り♥",
-    "desc": "全ての味方ユニットのHPをスキル使用者のマジックの[b]2.5倍[/b]回復し、全スキルのクールタイム-1(このスキルは効果対象外)、[b]アクティブによる「ディフェンスダウン/レジストダウン/HP回復不可」無効(1ターン)を付与する。[/b]",
+    "desc": "全ての味方ユニットのHPをスキル使用者のマジックの[b]2.5倍[/b]回復し、全スキルのクールタイム-1(このスキルは効果対象外)、[b]アクティブによる「ディフェンスダウン」「レジストダウン」「HP回復不可」無効(1ターン)を付与する。[/b]",
     "ct": 3,
     "area": "全体",
     "range": "自ユニット",
@@ -8764,7 +9263,9 @@
       {
         "type": "スタン",
         "duration": 1,
-        "condition": { "probability": 50 }
+        "condition": {
+          "probability": 50
+        }
       }
     ]
   },
@@ -8803,7 +9304,9 @@
       {
         "type": "スタン",
         "duration": 1,
-        "condition": { "probability": 60 }
+        "condition": {
+          "probability": 60
+        }
       }
     ]
   },
@@ -8828,7 +9331,13 @@
         }
       }
     ],
-    "multiAction": [ { "condition": { "onKill": true } } ]
+    "multiAction": [
+      {
+        "condition": {
+          "onKill": true
+        }
+      }
+    ]
   },
   {
     "uid": "1100753",
@@ -8851,7 +9360,13 @@
         }
       }
     ],
-    "multiAction": [ { "condition": { "onKill": true } } ]
+    "multiAction": [
+      {
+        "condition": {
+          "onKill": true
+        }
+      }
+    ]
   },
   {
     "uid": "1100449",
@@ -8877,7 +9392,9 @@
         "type": "与ダメージ(スキル)",
         "value": 30,
         "duration": 4,
-        "condition": { "onClass": [ "ランサー" ] }
+        "condition": {
+          "onClass": [ "ランサー" ]
+        }
       }
     ],
     "multiAction": [ {} ]
@@ -8906,13 +9423,17 @@
         "type": "与ダメージ(スキル)",
         "value": 30,
         "duration": 4,
-        "condition": { "onClass": [ "ランサー" ] }
+        "condition": {
+          "onClass": [ "ランサー" ]
+        }
       },
       {
         "type": "ダメージ耐性(魔法)",
         "value": 20,
         "duration": 4,
-        "condition": { "onClass": [ "ランサー" ] }
+        "condition": {
+          "onClass": [ "ランサー" ]
+        }
       }
     ],
     "multiAction": [ {} ]
@@ -9026,7 +9547,9 @@
         "type": "クリティカル率",
         "value": 30,
         "duration": 4,
-        "condition": { "onClass": [ "エアリアル" ] }
+        "condition": {
+          "onClass": [ "エアリアル" ]
+        }
       }
     ],
     "multiAction": [ {} ]
@@ -9173,21 +9696,27 @@
         "value": 10,
         "duration": 4,
         "slot": "加護",
-        "condition": { "hp": [ ">=", 50 ] }
+        "condition": {
+          "hp": [ ">=", 50 ]
+        }
       },
       {
         "type": "クリティカルダメージ倍率",
         "value": 10,
         "duration": 4,
         "slot": "加護",
-        "condition": { "hp": [ ">=", 50 ] }
+        "condition": {
+          "hp": [ ">=", 50 ]
+        }
       },
       {
         "type": "移動",
         "value": 1,
         "duration": 4,
         "slot": "加護",
-        "condition": { "hp": [ ">=", 50 ] }
+        "condition": {
+          "hp": [ ">=", 50 ]
+        }
       }
     ]
   },
@@ -9239,21 +9768,27 @@
         "value": 15,
         "duration": 4,
         "slot": "加護",
-        "condition": { "hp": [ ">=", 30 ] }
+        "condition": {
+          "hp": [ ">=", 30 ]
+        }
       },
       {
         "type": "クリティカルダメージ倍率",
         "value": 15,
         "duration": 4,
         "slot": "加護",
-        "condition": { "hp": [ ">=", 30 ] }
+        "condition": {
+          "hp": [ ">=", 30 ]
+        }
       },
       {
         "type": "移動",
         "value": 1,
         "duration": 4,
         "slot": "加護",
-        "condition": { "hp": [ ">=", 30 ] }
+        "condition": {
+          "hp": [ ">=", 30 ]
+        }
       }
     ]
   },
@@ -9272,7 +9807,9 @@
         "value": 1,
         "target": "自身",
         "targetSkill": "全スキル",
-        "condition": { "onCriticalHit": true }
+        "condition": {
+          "onCriticalHit": true
+        }
       }
     ]
   },
@@ -9376,7 +9913,9 @@
         "rate": 0.1,
         "target": "味方全体",
         "timing": "戦闘後",
-        "condition": { "onCriticalHit": true }
+        "condition": {
+          "onCriticalHit": true
+        }
       }
     ],
     "supportAttack": [ {} ]
@@ -9407,7 +9946,9 @@
         "type": "ダメージ割合",
         "rate": 0.1,
         "target": "味方全体",
-        "condition": { "onCriticalHit": true }
+        "condition": {
+          "onCriticalHit": true
+        }
       }
     ],
     "supportAttack": [ {} ]
@@ -9634,7 +10175,11 @@
         "duration": 2
       }
     ],
-    "summon": [ { "uid": "Ch906000300" } ],
+    "summon": [
+      {
+        "uid": "Ch906000300"
+      }
+    ],
     "multiAction": [ {} ]
   },
   {
@@ -9647,7 +10192,13 @@
     "range": 2,
     "cost": 2,
     "damageRate": 1.8,
-    "multiAction": [ { "condition": { "targetHp": [ ">=", 50 ] } } ]
+    "multiAction": [
+      {
+        "condition": {
+          "targetHp": [ ">=", 50 ]
+        }
+      }
+    ]
   },
   {
     "uid": "1100554",
@@ -9812,7 +10363,11 @@
         "target": "自身"
       }
     ],
-    "summon": [ { "uid": "Ch906200300" } ],
+    "summon": [
+      {
+        "uid": "Ch906200300"
+      }
+    ],
     "multiAction": [ {} ]
   },
   {
@@ -10208,7 +10763,11 @@
         }
       }
     ],
-    "multiMove": [ { "type": "残移動力" } ],
+    "multiMove": [
+      {
+        "type": "残移動力"
+      }
+    ],
     "heal": [
       {
         "type": "マジック",
@@ -10638,7 +11197,9 @@
         "ephemeral": true,
         "duration": 4,
         "slot": "加護",
-        "condition": { "hp": [ ">=", 50 ] }
+        "condition": {
+          "hp": [ ">=", 50 ]
+        }
       },
       {
         "type": "クリティカルダメージ倍率",
@@ -10646,7 +11207,9 @@
         "ephemeral": true,
         "duration": 4,
         "slot": "加護",
-        "condition": { "hp": [ ">=", 50 ] }
+        "condition": {
+          "hp": [ ">=", 50 ]
+        }
       }
     ]
   },
@@ -10692,7 +11255,7 @@
     "uid": "1100676",
     "icon": "sk_a443",
     "name": "♥お洒落は我慢！♥",
-    "desc": "自ユニットのアタック[b]+50%[/b]、[caution]ディフェンス[b]-10%[/b]、レジスト[b]-10%[/b][/caution]、移動[b]+2[/b](2ターン)。\nスキルを使用した後、再行動できる。",
+    "desc": "自ユニットのアタック[b]+50%[/b]、ディフェンス[b]-10%[/b]、レジスト[b]-10%[/b]、移動[b]+2[/b](2ターン)。\nスキルを使用した後、再行動できる。",
     "ct": 3,
     "area": "単体",
     "range": "自ユニット",
@@ -10783,7 +11346,9 @@
     "damageRateSp": [
       {
         "value": 2.5,
-        "condition": { "onTargetClass": [ "ソルジャー" ] }
+        "condition": {
+          "onTargetClass": [ "ソルジャー" ]
+        }
       }
     ],
     "buff": [
@@ -10820,7 +11385,9 @@
     "damageRateSp": [
       {
         "value": 2.6,
-        "condition": { "onTargetClass": [ "ソルジャー" ] }
+        "condition": {
+          "onTargetClass": [ "ソルジャー" ]
+        }
       }
     ],
     "buff": [
@@ -10944,7 +11511,11 @@
         }
       }
     ],
-    "positionManipulate": [ { "type": "引き寄せ" } ]
+    "positionManipulate": [
+      {
+        "type": "引き寄せ"
+      }
+    ]
   },
   {
     "uid": "1100115",
@@ -11074,7 +11645,9 @@
         "value": 1,
         "target": "自身",
         "targetSkill": "全スキル",
-        "condition": { "onKill": true }
+        "condition": {
+          "onKill": true
+        }
       }
     ]
   },
@@ -11099,7 +11672,9 @@
       {
         "type": "アクティブスキル使用不可",
         "duration": 1,
-        "condition": { "probability": 50 }
+        "condition": {
+          "probability": 50
+        }
       }
     ],
     "ctReduction": [
@@ -11107,7 +11682,9 @@
         "value": 1,
         "target": "自身",
         "targetSkill": "全スキル",
-        "condition": { "onKill": true }
+        "condition": {
+          "onKill": true
+        }
       }
     ]
   },
@@ -11126,7 +11703,9 @@
         "value": 1,
         "target": "味方全体",
         "targetSkill": "全スキル",
-        "condition": { "onKill": true }
+        "condition": {
+          "onKill": true
+        }
       }
     ]
   },
@@ -11152,7 +11731,9 @@
         "value": 1,
         "target": "味方全体",
         "targetSkill": "全スキル",
-        "condition": { "onKill": true }
+        "condition": {
+          "onKill": true
+        }
       }
     ]
   },
@@ -11292,7 +11873,9 @@
       {
         "type": "パッシブスキル使用不可",
         "duration": 2,
-        "condition": { "probability": 50 }
+        "condition": {
+          "probability": 50
+        }
       }
     ]
   },
@@ -11310,7 +11893,9 @@
       {
         "type": "パッシブスキル使用不可",
         "duration": 2,
-        "condition": { "probability": 75 }
+        "condition": {
+          "probability": 75
+        }
       }
     ]
   },
@@ -11716,7 +12301,9 @@
         "value": -30,
         "duration": 1,
         "target": "自身",
-        "condition": { "probability": 50 }
+        "condition": {
+          "probability": 50
+        }
       }
     ],
     "debuff": [
@@ -11748,21 +12335,27 @@
         "value": -20,
         "duration": 1,
         "target": "自身",
-        "condition": { "probability": 50 }
+        "condition": {
+          "probability": 50
+        }
       },
       {
         "type": "ダメージ耐性",
         "value": 20,
         "duration": 1,
         "target": "自身",
-        "condition": { "probability": 40 }
+        "condition": {
+          "probability": 40
+        }
       },
       {
         "type": "与ダメージ",
         "value": 20,
         "duration": 1,
         "target": "自身",
-        "condition": { "probability": 30 }
+        "condition": {
+          "probability": 30
+        }
       }
     ],
     "debuff": [
@@ -12045,7 +12638,9 @@
       {
         "type": "アクティブスキル使用不可",
         "duration": 1,
-        "condition": { "probability": 75 }
+        "condition": {
+          "probability": 75
+        }
       }
     ]
   },
@@ -12084,7 +12679,7 @@
     "uid": "1100769",
     "icon": "sk_a465",
     "name": "♥逃れられぬ眼差し♥",
-    "desc": "自ユニットのクリティカルダメージ倍率[b]+35%[/b]、物理与ダメージ[b]+20%[/b]、移動+1(2ターン)。[b]更に、アクティブによる「スタン/アクティブ強化不可/移動ダウン」無効(2ターン)を付与する。[/b]\nスキルを使用した後、再行動できる。",
+    "desc": "自ユニットのクリティカルダメージ倍率[b]+35%[/b]、物理与ダメージ[b]+20%[/b]、移動+1(2ターン)。[b]更に、アクティブによる「スタン」「アクティブ強化不可」「移動ダウン」無効(2ターン)を付与する。[/b]\nスキルを使用した後、再行動できる。",
     "ct": 2,
     "area": "単体",
     "range": "自ユニット",
@@ -12144,7 +12739,9 @@
         "rate": 0.1,
         "target": "自身",
         "timing": "戦闘後",
-        "condition": { "onCriticalHit": true }
+        "condition": {
+          "onCriticalHit": true
+        }
       }
     ]
   },
@@ -12164,7 +12761,9 @@
         "rate": 0.1,
         "target": "自身",
         "timing": "戦闘後",
-        "condition": { "onCriticalHit": true }
+        "condition": {
+          "onCriticalHit": true
+        }
       }
     ],
     "tags": [ "デバフ解除(自身)" ]
@@ -12601,7 +13200,9 @@
         "target": "自身",
         "targetSkill": "使用したスキル",
         "value": 1,
-        "condition": { "probability": 50 }
+        "condition": {
+          "probability": 50
+        }
       }
     ]
   },
@@ -12633,7 +13234,9 @@
         "target": "自身",
         "targetSkill": "使用したスキル",
         "value": 1,
-        "condition": { "probability": 75 }
+        "condition": {
+          "probability": 75
+        }
       }
     ]
   },
@@ -12685,14 +13288,18 @@
         "value": 20,
         "duration": 4,
         "slot": "加護",
-        "condition": { "hp": [ ">=", 50 ] }
+        "condition": {
+          "hp": [ ">=", 50 ]
+        }
       },
       {
         "type": "クリティカルダメージ倍率",
         "value": 20,
         "duration": 4,
         "slot": "加護",
-        "condition": { "hp": [ ">=", 50 ] }
+        "condition": {
+          "hp": [ ">=", 50 ]
+        }
       }
     ]
   },
@@ -12744,14 +13351,18 @@
         "value": 25,
         "duration": 4,
         "slot": "加護",
-        "condition": { "hp": [ ">=", 25 ] }
+        "condition": {
+          "hp": [ ">=", 25 ]
+        }
       },
       {
         "type": "クリティカルダメージ倍率",
         "value": 25,
         "duration": 4,
         "slot": "加護",
-        "condition": { "hp": [ ">=", 25 ] }
+        "condition": {
+          "hp": [ ">=", 25 ]
+        }
       }
     ]
   },
@@ -12815,7 +13426,11 @@
     "area": "単体",
     "range": 15,
     "cost": 0,
-    "summon": [ { "uid": "Ch905800307" } ]
+    "summon": [
+      {
+        "uid": "Ch905800307"
+      }
+    ]
   },
   {
     "uid": "1100300",
@@ -12864,5 +13479,240 @@
       }
     ],
     "note": "1マス範囲攻撃"
+  },
+  {
+    "uid": "1100797",
+    "icon": "sk_a477",
+    "name": "竜炎剣",
+    "desc": "敵単体に1.7倍のダメージを与える。\nサポートの射程に関わらず、サポートも通常攻撃を行う。\n戦闘後、味方メインが与えたダメージの20%分HPを回復する。\n自ユニットに付与されている「疾走せし竜の勇者」の数に応じて威力が変化する。\n5個のとき：2倍に威力が上がる。",
+    "ct": 1,
+    "area": "単体",
+    "range": 2,
+    "cost": 2,
+    "damageRate": 1.7,
+    "damageRateSp": [
+      {
+        "value": 2,
+        "condition": {
+          "token": {
+            "tokenName": "疾走せし竜の勇者",
+            "compare": [ ">=", 5 ]
+          }
+        }
+      }
+    ],
+    "supportAttack": [ {} ],
+    "heal": [
+      {
+        "type": "ダメージ割合",
+        "rate": 0.2,
+        "target": "自身",
+        "timing": "戦闘後"
+      }
+    ]
+  },
+  {
+    "uid": "1100806",
+    "icon": "sk_a477",
+    "name": "♥竜炎剣♥",
+    "desc": "敵単体に[b]1.8倍[/b]のダメージを与える[b](ガード不可)[/b]。\nサポートの射程に関わらず、サポートも通常攻撃を行う。\n戦闘後、味方メインが与えたダメージの[b]25%[/b]分HPを回復する。\n自ユニットに付与されている「疾走せし竜の勇者」の数に応じて威力が変化し追加効果が発生する。\n5個のとき：[b]2.1倍[/b]に威力が上がる。[b]戦闘後、敵ユニットのディフェンス-20%、被治療効果-30%(2ターン)。[/b]",
+    "ct": 1,
+    "area": "単体",
+    "range": 2,
+    "cost": 2,
+    "damageRate": 1.8,
+    "damageRateSp": [
+      {
+        "value": 2.1,
+        "condition": {
+          "token": {
+            "tokenName": "疾走せし竜の勇者",
+            "compare": [ ">=", 5 ]
+          }
+        }
+      }
+    ],
+    "ignoreGuard": [ {} ],
+    "supportAttack": [ {} ],
+    "heal": [
+      {
+        "type": "ダメージ割合",
+        "rate": 0.25,
+        "target": "自身",
+        "timing": "戦闘後"
+      }
+    ],
+    "debuff": [
+      {
+        "type": "ディフェンス",
+        "value": 20,
+        "duration": 2,
+        "trigger": {
+          "timing": "戦闘後",
+          "target": "攻撃対象",
+          "condition": {
+            "token": {
+              "tokenName": "疾走せし竜の勇者",
+              "compare": [ ">=", 5 ]
+            }
+          }
+        }
+      },
+      {
+        "type": "被治療効果",
+        "value": 30,
+        "duration": 2,
+        "trigger": {
+          "timing": "戦闘後",
+          "target": "攻撃対象",
+          "condition": {
+            "token": {
+              "tokenName": "疾走せし竜の勇者",
+              "compare": [ ">=", 5 ]
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "uid": "1100798",
+    "icon": "sk_a479",
+    "name": "真っ向より打ち砕く",
+    "desc": "戦闘前、自ユニットの物理与ダメージ+20%(2ターン)。\n敵単体に1.7倍のダメージを与える。\n自ユニットに付与されている「疾走せし竜の勇者」の数に応じて威力が変化する。\n5個のとき：2倍に威力が上がる。",
+    "ct": 2,
+    "area": "単体",
+    "range": 1,
+    "cost": 2,
+    "damageRate": 1.7,
+    "damageRateSp": [
+      {
+        "value": 2.0,
+        "condition": {
+          "token": {
+            "tokenName": "疾走せし竜の勇者",
+            "compare": [ ">=", 5 ]
+          }
+        }
+      }
+    ],
+    "buff": [
+      {
+        "type": "与ダメージ(物理)",
+        "value": 20,
+        "duration": 2,
+        "trigger": {
+          "timing": "戦闘前",
+          "target": "自身"
+        }
+      }
+    ]
+  },
+  {
+    "uid": "1100807",
+    "icon": "sk_a479",
+    "name": "♥真っ向より打ち砕く♥",
+    "desc": "戦闘前、自ユニットの物理与ダメージ[b]+25%[/b](2ターン)。\n敵単体に[b]1.8倍[/b]のダメージを与える[b](ガード不可)[/b]。\n自ユニットに付与されている「疾走せし竜の勇者」の数に応じて威力が変化し追加効果が発生する。\n5個のとき：[b]2.1倍[/b]に威力が上がる。[b]戦闘後、敵ユニットの物理ダメージ耐性-10%(2ターン)。[/b]",
+    "ct": 2,
+    "area": "単体",
+    "range": 1,
+    "cost": 2,
+    "damageRate": 1.8,
+    "damageRateSp": [
+      {
+        "value": 2.1,
+        "condition": {
+          "token": {
+            "tokenName": "疾走せし竜の勇者",
+            "compare": [ ">=", 5 ]
+          }
+        }
+      }
+    ],
+    "buff": [
+      {
+        "type": "与ダメージ(物理)",
+        "value": 25,
+        "duration": 2,
+        "trigger": {
+          "timing": "戦闘前",
+          "target": "自身"
+        }
+      }
+    ],
+    "debuff": [
+      {
+        "type": "ダメージ耐性(物理)",
+        "value": 10,
+        "duration": 2,
+        "trigger": {
+          "timing": "戦闘後",
+          "target": "攻撃対象",
+          "condition": {
+            "token": {
+              "tokenName": "疾走せし竜の勇者",
+              "compare": [ ">=", 5 ]
+            }
+          }
+        }
+      }
+    ],
+    "ignoreGuard": [ {} ]
+  },
+  {
+    "uid": "1100799",
+    "icon": "sk_a478",
+    "name": "強く、疾く、どこまでも",
+    "desc": "自ユニットのクリティカル率+20%、クリティカルダメージ倍率+20%(2ターン)。\nスキルを使用した後、再行動できる。",
+    "ct": 2,
+    "area": "単体",
+    "range": "自ユニット",
+    "cost": 2,
+    "buff": [
+      {
+        "type": "クリティカル率",
+        "value": 20,
+        "duration": 2,
+        "target": "自身"
+      },
+      {
+        "type": "クリティカルダメージ倍率",
+        "value": 20,
+        "duration": 2,
+        "target": "自身"
+      }
+    ],
+    "multiAction": [ {} ]
+  },
+  {
+    "uid": "1100808",
+    "icon": "sk_a478",
+    "name": "♥強く、疾く、どこまでも♥",
+    "desc": "自ユニットの[b]レジスト+25%[/b]、クリティカル率[b]+25%[/b]、クリティカルダメージ倍率[b]+25%[/b](2ターン)。\nスキルを使用した後、再行動できる。",
+    "ct": 2,
+    "area": "単体",
+    "range": "自ユニット",
+    "cost": 2,
+    "buff": [
+      {
+        "type": "レジスト",
+        "value": 25,
+        "duration": 2,
+        "target": "自身"
+      },
+      {
+        "type": "クリティカル率",
+        "value": 25,
+        "duration": 2,
+        "target": "自身"
+      },
+      {
+        "type": "クリティカルダメージ倍率",
+        "value": 25,
+        "duration": 2,
+        "target": "自身"
+      }
+    ],
+    "multiAction": [ {} ]
   }
 ]
