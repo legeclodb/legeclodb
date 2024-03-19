@@ -665,46 +665,60 @@ export class SimUnit {
     }
   }
 
-  updateAreaEffects() {
+  _addAreaEffect(e) {
+    // スタックするエリアエフェクトはないので単純に uid で競合を除外できる
+    if (!this.areaEffects.find(a => a.uid == e.uid)) {
+      this.areaEffects.push(makeSimEffect(e));
+    }
+  }
+  beforeUpdateAreaEffects() {
     this.areaEffects = [];
-    const add = (e) => {
-      if (!this.areaEffects.find(a => a.uid == e.uid)) {
-        this.areaEffects.push(makeSimEffect(e));
+  }
+  updateAreaEffects() {
+    const apply = (effect, cond) => {
+      for (let u of $g.sim.activeUnits) {
+        if (u !== this && cond(u)) {
+          u._addAreaEffect(effect);
+        }
       }
     };
-
-    for (let u of $g.sim.activeUnits) {
-      if (u == this) { continue; }
-      for (let p of u.passives) {
-        if (u.isPlayer == this.isPlayer) {
-          for (let e of p?.buff ?? []) {
-            if (e.target == "味方全体") {
-              add(e);
-            }
-            else if (e.target == "範囲" && isInside(this.coord, u.coord, ...parseArea(e.area))) {
-              add(e);
-            }
-            else if (e.target == "召喚先" && u.summon.find(a => a === this)) {
-              add(e);
-            }
-            else if (e.target == "召喚元" && u.summoner === this) {
-              add(e);
-            }
-          }
+    const applyArea = (effect, cond) => {
+      $g.sim.enumerateUnitsInArea(this.coord, ...parseArea(effect.area), (u) => {
+        if (u !== this && cond(u)) {
+          u._addAreaEffect(effect);
         }
-        else {
-          for (let e of p?.debuff ?? []) {
-            if (e.target == "敵全体") {
-              add(e);
-            }
-            else if (e.target == "範囲" && isInside(this.coord, u.coord, ...parseArea(e.area))) {
-              add(e);
-            }
-          }
+      }, true);
+    };
+
+    for (let p of this.passives) {
+      for (let e of p?.buff ?? []) {
+        if (e.target == "味方全体") {
+          apply(e, u => u.isPlayer == this.isPlayer)
+        }
+        else if (e.target == "範囲") {
+          applyArea(e, u => u.isPlayer == this.isPlayer);
+        }
+        else if (e.target == "召喚先") {
+          apply(e, u => u.summoner === this)
+        }
+        else if (e.target == "召喚元") {
+          apply(e, u => u.summon.find(a => a === this))
+        }
+      }
+      for (let e of p?.debuff ?? []) {
+        if (e.target == "敵全体") {
+          apply(e, u => u.isPlayer != this.isPlayer)
+        }
+        else if (e.target == "範囲") {
+          applyArea(e, u => u.isPlayer != this.isPlayer);
         }
       }
     }
   }
+  afterUpdateAreaEffects() {
+    this.evaluateBuffs();
+  }
+
   evaluateBuffs(ctx = null) {
     if (!ctx) {
       ctx = makeActionContext(this);

@@ -10885,7 +10885,14 @@
         "type": "トークン",
         "tokenName": "疾走せし竜の勇者",
         "duration": 5,
-        "stack": 5
+        "stack": 5,
+        "trigger": {
+          "target": "自身",
+          "timing": "行動後",
+          "condition": {
+            "onActiveSkill": true
+          }
+        }
       },
       {
         "type": "与ダメージ(物理)",

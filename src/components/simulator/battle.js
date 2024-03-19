@@ -642,8 +642,13 @@ export class SimContext {
 
   updateAreaEffectsAll() {
     for (let u of this.activeUnits) {
+      u.beforeUpdateAreaEffects();
+    }
+    for (let u of this.activeUnits) {
       u.updateAreaEffects();
-      u.evaluateBuffs();
+    }
+    for (let u of this.activeUnits) {
+      u.afterUpdateAreaEffects();
     }
   }
 
@@ -769,16 +774,20 @@ export class SimContext {
     }
     return null;
   }
-  enumerateUnitsInArea(center, size, shape, callback) {
+  enumerateUnitsInArea(center, size, shape, callback, once = false) {
     for (const u of this.activeUnits) {
       if (u.main.shape) {
         // NxN ボスは該当マス分コールバックを呼ぶ
-        for (let y = 0; y < u.main.shape.length; ++y) {
+        // ただし once == true の場合 1 回で切り上げる
+        out: for (let y = 0; y < u.main.shape.length; ++y) {
           let l = u.main.shape[y];
           for (let x = 0; x < l.length; ++x) {
             const pos = [x, y];
             if (l[x] && isInside(center, pos, size, shape)) {
               callback(u, pos);
+              if (once) {
+                break out;
+              }
             }
           }
         }
@@ -793,7 +802,7 @@ export class SimContext {
       (coord[1] >= 0 && coord[1] < this.divY);
   }
   placeUnit(unit, coord) {
-    // 指定座標が専有されていた場合はずらす
+    // 指定座標が占有されていた場合はずらす
     const subCoord = [
       [0, 0],
       [0, -1], [1, 0], [0, 1], [-1, 0],
