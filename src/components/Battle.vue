@@ -1,5 +1,5 @@
 <template>
-  <div class="root" @mousemove="onMouseMove">
+  <div class="root" id="root" @mousemove="onMouseMove">
     <div class="header" :class="{ 'hidden': !showHeader }">
       <Navigation />
     </div>
@@ -1868,16 +1868,15 @@ export default {
       }
     },
     followReplay(r) {
+      this.scrollTo("root", true);
       this.endSimulation(false);
       this.selectBattle(r.battle);
-      // this.deserializeLoadout(r.loadout); // はしない
+      // deserializeLoadout はしない。これにより構成を変えてリプレイをなぞる
       this.beginSimulation();
-      for (let state of r.states) {
-        if (!this.simulation.playback(state)) {
-          break;
-        }
-      }
-      this.$forceUpdate();
+      lut.timedEach(r.states, 100, (state) => {
+        this.simulation.playback(state);
+        this.$forceUpdate();
+      });
     },
 
     exportReplayAsFile() {
@@ -2038,11 +2037,11 @@ export default {
         dst[pos++] = src[i];
     },
 
-    scrollTo(id) {
+    scrollTo(id, opt) {
       this.$nextTick(() => {
         let e = document.getElementById(id);
         if (e) {
-          e.scrollIntoView({ block: "nearest" });
+          e.scrollIntoView(opt ?? { block: "nearest" });
         }
       });
     },

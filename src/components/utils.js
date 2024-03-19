@@ -114,6 +114,29 @@ export function *enumerate(...arrays) {
   }
 }
 
+export function timedEach(iterable, interval, callback, onEnd = null) {
+  let iter = iterable[Symbol.iterator]();
+  let result = iter.next();
+  const body = () => {
+    let end = false;
+    if (!result.done) {
+      if (callback(result.value) === false) {
+        end = true;
+      }
+      else {
+        result = iter.next();
+        setTimeout(body, interval);
+      }
+    }
+    else {
+      end = true;
+    }
+    if (end && onEnd) {
+      onEnd();
+    }
+  }
+  body();
+}
 
 export function toSQLDateTime(date) {
   let time = typeof (date) === 'number' ? date : date.getTime();
