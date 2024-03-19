@@ -1099,6 +1099,12 @@ export class SimUnit {
           this.selfEffects.push(makeSimEffect(effect));
         }
       }
+      for (let effect of passive.debuff ?? []) {
+        // 戦闘時デバフはエフェクトは自身に付与され、戦闘時に相手に効果を発揮 (ややこしい…)
+        if (!effect.trigger && effect.ephemeral) {
+          this.selfEffects.push(makeSimEffect(effect));
+        }
+      }
     }
   }
 
