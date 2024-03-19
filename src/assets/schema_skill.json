@@ -117,7 +117,7 @@
     "conditionVariable": {
       "enum": [
         "move",
-        "range",
+        "distance",
         "stack",
         "token",
         "targetToken",

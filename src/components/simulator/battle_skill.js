@@ -322,7 +322,7 @@ export function getEffectValue(self, ctx, unit) {
     const mul = self.multiply;
     const table = {
       "move": () => ctx.move,
-      "range": () => ctx.rannge,
+      "distance": () => Math.max(ctx.range - 1, 0),
       "token": () => ctx.getTokenCount(mul.tokenName),
       "targetToken": () => ctx.getTargetTokenCount(mul.tokenName),
       "activeBuffCount": () => ctx.activeBuffCount,

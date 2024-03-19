@@ -3789,7 +3789,7 @@
         "ephemeral": true,
         "multiply": {
           "max": 3,
-          "by": "range"
+          "by": "distance"
         },
         "condition": {
           "onRangedCombat": true
@@ -3801,7 +3801,7 @@
         "ephemeral": true,
         "multiply": {
           "max": 3,
-          "by": "range"
+          "by": "distance"
         },
         "condition": {
           "onRangedCombat": true

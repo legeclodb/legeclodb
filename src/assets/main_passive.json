@@ -5563,7 +5563,7 @@
         "value": 10,
         "multiply": {
           "max": 3,
-          "by": "range"
+          "by": "distance"
         },
         "ephemeral": true,
         "condition": {
@@ -5575,7 +5575,7 @@
         "value": 10,
         "multiply": {
           "max": 3,
-          "by": "range"
+          "by": "distance"
         },
         "ephemeral": true,
         "condition": {
