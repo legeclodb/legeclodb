@@ -43,7 +43,7 @@
               @mousedown.middle.prevent.stop=""
               @click.middle.prevent.stop="onCellRClick()" 
               @click.right.prevent.stop="onCellRClick()">
-            <div v-for="(cell, i) in cells" :key="`c${i}`" :class="getCellClass(cell)" :id="cell.id"
+            <div v-for="(cell, i) in cells" :key="`c${i}`" :class="getCellClass(cell)" :style="cell.style" :id="cell.id"
                  @click.stop="onClickCell(cell)"
                  @mouseover="onEnterCell(cell)" @mouseleave="onLeaveCell(cell)"
                  :draggable=isCellDraggable(cell) @dragstart="onDragCell(cell)" @drop="onDropCell(cell)" @dragover.prevent="">
@@ -898,6 +898,7 @@ export default {
           pf.setStart(unit.coord);
         }
       };
+      const colorDelay = 10;
 
       this.tools = {
         // 非シミュレーション時
@@ -910,8 +911,8 @@ export default {
               self.pushTool(self.tools.showMoveRange);
             }
           },
-          onRenderCell(cell, r) {
-            self.tools.moveUnit.onRenderCell(cell, r);
+          onRenderCell(cell, classes, styles) {
+            self.tools.moveUnit.onRenderCell(cell, classes, styles);
           },
         },
         // 移動範囲表示
@@ -936,8 +937,8 @@ export default {
               self.pushTool(self.tools.showMoveRange);
             }
           },
-          onRenderCell(cell, r) {
-            self.tools.moveUnit.onRenderCell(cell, r);
+          onRenderCell(cell, classes, styles) {
+            self.tools.moveUnit.onRenderCell(cell, classes, styles);
           },
         },
 
@@ -951,8 +952,8 @@ export default {
               self.pushTool(self.tools.moveUnit);
             }
           },
-          onRenderCell(cell, r) {
-            self.tools.moveUnit.onRenderCell(cell, r);
+          onRenderCell(cell, classes, styles) {
+            self.tools.moveUnit.onRenderCell(cell, classes, styles);
           },
         },
 
@@ -1047,33 +1048,36 @@ export default {
           onCancel() {
             self.selectedUnit.coord = self.selectedUnit.prevCoord;
           },
-          onRenderCell(cell, r) {
+          onRenderCell(cell, classes, styles) {
             let sim = self.simulation;
             let unit = self.findUnitByCoord(cell.coord);
             let selected = self.selectedUnit;
             if (unit) {
               if (unit.isEnemy)
-                r.push("enemy-cell");
+                classes.push("enemy-cell");
               if (unit.isPlayer)
-                r.push("player-cell");
+                classes.push("player-cell");
               if (unit === selected)
-                r.push("selected");
+                classes.push("selected");
             }
             if (self.path) {
               if (self.path.isInMoveRange(cell.coord)) {
                 if (!unit) {
-                  r.push("move-range");
+                  classes.push("move-range");
                   if (sim?.isOwnTurn(selected)) {
-                    r.push("click-to-move");
+                    classes.push("click-to-move");
                   }
                   if (sim?.isOwnTurn(selected)) {
-                    r.push("hovered");
+                    classes.push("hovered");
                   }
                 }
               }
               else if (self.path.isInFireRange(cell.coord)) {
-                r.push("attack-range");
+                classes.push("attack-range");
               }
+
+              const d = self.path.getDistance(cell.coord);
+              styles.push(`transition-delay: ${colorDelay * d}ms`);
             }
           },
         },
@@ -1126,21 +1130,23 @@ export default {
           onClickAction(skill) {
             self.tools.moveUnit.onClickAction(skill);
           },
-          onRenderCell(cell, r) {
+          onRenderCell(cell, classes, styles) {
             let unit = self.findUnitByCoord(cell.coord);
             let selected = self.selectedUnit;
             if (self.skillRange.isInFireRange(cell.coord)) {
-              r.push("area-range");
+              classes.push("area-range");
               if (!self.showConfirm) {
                 if (self.isValidTarget(selected, self.selectedSkill, unit)) {
-                  r.push("click-to-fire");
+                  classes.push("click-to-fire");
                 }
               }
               else {
                 if (self.targetCell === cell) {
-                  r.push("target-cell");
+                  classes.push("target-cell");
                 }
               }
+              const d = self.skillRange.getDistance(cell.coord);
+              styles.push(`transition-delay: ${colorDelay * d}ms`);
             }
           },
         },
@@ -1190,19 +1196,21 @@ export default {
           onClickAction(skill) {
             self.tools.moveUnit.onClickAction(skill);
           },
-          onRenderCell(cell, r) {
+          onRenderCell(cell, classes, styles) {
             const unit = self.findUnitByCoord(cell.coord);
             const selected = self.selectedUnit;
             if (self.skillArea.isInFireRange(cell.coord)) {
-              r.push("attack-range");
+              classes.push("attack-range");
               if (self.isValidTarget(selected, self.selectedSkill, unit)) {
                 if (!self.showConfirm) {
-                  r.push("click-to-fire");
+                  classes.push("click-to-fire");
                 }
                 else {
-                  r.push("target-cell");
+                  classes.push("target-cell");
                 }
               }
+              const d = self.skillArea.getDistance(cell.coord);
+              styles.push(`transition-delay: ${colorDelay * d}ms`);
             }
           },
         },
@@ -1236,14 +1244,16 @@ export default {
           onClickAction(skill) {
             self.tools.moveUnit.onClickAction(skill);
           },
-          onRenderCell(cell, r) {
+          onRenderCell(cell, classes, styles) {
             const unit = self.findUnitByCoord(cell.coord);
             const selected = self.selectedUnit;
             if (self.skillArea.isInFireRange(cell.coord)) {
-              r.push("attack-range");
+              classes.push("attack-range");
               if (self.isValidTarget(selected, self.selectedSkill, unit, false)) {
-                r.push("target-cell");
+                classes.push("target-cell");
               }
+              const d = self.skillArea.getDistance(cell.coord);
+              styles.push(`transition-delay: ${colorDelay * d}ms`);
             }
           },
         },
@@ -1263,8 +1273,8 @@ export default {
           onClickAction(skill) {
             self.tools.moveUnit.onClickAction(skill);
           },
-          onRenderCell(cell, r) {
-            self.prevTool.onRenderCell(cell, r);
+          onRenderCell(cell, classes, styles) {
+            self.prevTool.onRenderCell(cell, classes, styles);
           },
         },
       };
@@ -1538,22 +1548,25 @@ export default {
     },
 
     getCellClass(cell) {
-      let r = ["grid-cell", "border-l", "border-t"];
+      let classes = ["grid-cell", "border-l", "border-t"];
+      let styles = [];
       if (cell.coord[0] == this.divX - 1) {
-        r.push("border-r");
+        classes.push("border-r");
       }
       if (cell.coord[1] == this.divY - 1) {
-        r.push("border-b");
+        classes.push("border-b");
       }
       if (cell.obstacle && !cell.boss) {
-        r.push("obstacle");
+        classes.push("obstacle");
       }
 
       let tool = this.currentTool;
       if (tool?.onRenderCell) {
-        tool.onRenderCell(cell, r);
+        tool.onRenderCell(cell, classes, styles);
       }
-      return r;
+      cell.classes = classes;
+      cell.style = styles.join(";");
+      return classes;
     },
     getActionClass(skill, unit) {
       let r = ["action-button"];
@@ -1573,7 +1586,6 @@ export default {
         "position: absolute",
         `left: ${pos[0] * 50}px`,
         `top: ${pos[1] * 50}px`,
-        `transition: 0.1s all ease`,
       ];
       return r.join(";");
     },
@@ -2152,11 +2164,13 @@ export default {
     display: flex;
     justify-content: center;
     background: white;
+    transition: all 0.1s ease,
   }
   .unit-cell {
     width: 50px;
     height: 50px;
     pointer-events: none;
+    transition: all 0.1s ease;
   }
   .bordered {
     border: 1px solid rgb(180,185,195);
@@ -2281,6 +2295,7 @@ export default {
     bottom: 10px;
     border-radius: 0.3rem;
     padding: 5px;
+    transition: all 0.25s ease;
   }
   .sim-commands.player-turn {
     background: rgba(64, 64, 200, 0.4);
@@ -2295,6 +2310,7 @@ export default {
     right: 10px;
     border-radius: 0.3rem;
     padding: 5px;
+    transition: all 0.25s ease;
   }
   .sim-replay:focus {
     outline: none;

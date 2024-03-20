@@ -863,6 +863,9 @@ export class PathFinder
     return null;
   }
 
+  getDistance(pos) {
+    return this.getCell(pos[0], pos[1])?.shootDistance ?? -1;
+  }
   isInMoveRange(pos) {
     return pos && (this.getCell(pos[0], pos[1])?.moveDistance ?? -1) >= 0;
   }
@@ -955,9 +958,10 @@ export class PathFinder
     }
 
     const fillCell = function (rx, ry, distance) {
-      let c = this.getCell(x + rx, y + ry);
-      if (c && (c.shootDistance < 0 || distance < c.shootDistance)) {
-        c.shootDistance = distance;
+      let tc = this.getCell(x + rx, y + ry);
+      if (tc) {
+        let d = c.moveDistance + distance;
+        tc.shootDistance = tc.shootDistance == -1 ? d : Math.min(tc.shootDistance, d);
       }
     }.bind(this);
 
