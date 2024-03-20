@@ -16,17 +16,13 @@
         "type": "アタック",
         "value": [ 10, 10, 10, 15, 15, 20 ],
         "ephemeral": true,
-        "condition": {
-          "probability": [ 30, 40, 50, 60, 80, 100 ]
-        }
+        "condition": { "probability": [ 30, 40, 50, 60, 80, 100 ] }
       },
       {
         "type": "ディフェンス",
         "value": [ 10, 10, 10, 15, 15, 20 ],
         "ephemeral": true,
-        "condition": {
-          "probability": [ 30, 40, 50, 60, 80, 100 ]
-        }
+        "condition": { "probability": [ 30, 40, 50, 60, 80, 100 ] }
       }
     ]
   },
@@ -121,20 +117,16 @@
         "type": "与ダメージ",
         "value": [ 10, 15, 20, 30 ],
         "ephemeral": true,
-        "condition": {
-          "onOwnTurn": true
-        }
+        "condition": { "onOwnTurn": true }
       }
     ],
     "heal": [
       {
-        "type": "ダメージ割合",
+        "base": "ダメージ割合",
         "rate": 0.3,
         "target": "自身",
         "timing": "戦闘後",
-        "condition": {
-          "probability": [ 40, 60, 80, 100 ]
-        }
+        "condition": { "probability": [ 40, 60, 80, 100 ] }
       }
     ]
   },
@@ -202,11 +194,7 @@
         }
       }
     ],
-    "multiMove": [
-      {
-        "type": "基本移動力"
-      }
-    ]
+    "multiMove": [ { "type": "基本移動力" } ]
   },
   {
     "uid": "3100012",
@@ -327,9 +315,7 @@
           "target": "範囲",
           "area": 2,
           "timing": "戦闘後",
-          "condition": {
-            "probability": 50
-          }
+          "condition": { "probability": 50 }
         }
       },
       {
@@ -340,9 +326,7 @@
           "target": "範囲",
           "area": 2,
           "timing": "戦闘後",
-          "condition": {
-            "probability": 50
-          }
+          "condition": { "probability": 50 }
         }
       }
     ],
@@ -398,9 +382,7 @@
     "multiAction": [
       {
         "ct": [ 4, 3, 3, 2 ],
-        "condition": {
-          "onKill": true
-        }
+        "condition": { "onKill": true }
       }
     ]
   },
@@ -460,9 +442,7 @@
     "multiMove": [
       {
         "type": "基本移動力",
-        "condition": {
-          "onKill": true
-        }
+        "condition": { "onKill": true }
       }
     ],
     "tags": [ "蓄積バフ" ]
@@ -503,9 +483,7 @@
     "multiMove": [
       {
         "type": "基本移動力",
-        "condition": {
-          "onKill": true
-        }
+        "condition": { "onKill": true }
       }
     ],
     "tags": [ "デメリット付き", "蓄積バフ" ]
@@ -529,13 +507,11 @@
     ],
     "heal": [
       {
-        "type": "ダメージ割合",
+        "base": "ダメージ割合",
         "rate": 0.2,
         "target": "自身",
         "timing": "戦闘後",
-        "condition": {
-          "probability": [ 30, 35, 40, 45, 50 ]
-        }
+        "condition": { "probability": [ 30, 35, 40, 45, 50 ] }
       }
     ]
   },
@@ -556,17 +532,13 @@
         "type": "アタック",
         "value": [ 5, 10, 15, 20, 25, 30 ],
         "ephemeral": true,
-        "condition": {
-          "onCloseCombat": true
-        }
+        "condition": { "onCloseCombat": true }
       },
       {
         "type": "ディフェンス",
         "value": [ 5, 10, 15, 20, 25, 30 ],
         "ephemeral": true,
-        "condition": {
-          "onRangedCombat": true
-        }
+        "condition": { "onRangedCombat": true }
       }
     ]
   },
@@ -732,7 +704,7 @@
     "fixedDamage": [
       {
         "base": "マジック",
-        "rate": [ 1.0, 1.2, 1.4, 1.6, 2.0 ],
+        "rate": [ 1, 1.2, 1.4, 1.6, 2 ],
         "timing": "攻撃後",
         "target": "攻撃対象"
       }
@@ -805,17 +777,13 @@
         "type": "アタック",
         "value": [ 10, 15, 20, 25, 30 ],
         "ephemeral": true,
-        "condition": {
-          "onTargetClass": [ "エアリアル", "ライダー" ]
-        }
+        "condition": { "onTargetClass": [ "エアリアル", "ライダー" ] }
       },
       {
         "type": "ディフェンス",
         "value": [ 10, 15, 20, 25, 30 ],
         "ephemeral": true,
-        "condition": {
-          "onTargetClass": [ "エアリアル", "ライダー" ]
-        }
+        "condition": { "onTargetClass": [ "エアリアル", "ライダー" ] }
       }
     ]
   },
@@ -851,9 +819,7 @@
     "buffSteal": [
       {
         "value": [ 1, 1, 2, 2, 2 ],
-        "condition": {
-          "onCriticalHit": true
-        },
+        "condition": { "onCriticalHit": true },
         "timing": "戦闘後"
       }
     ],
@@ -904,9 +870,7 @@
         "trigger": {
           "target": "自身",
           "timing": "戦闘前",
-          "condition": {
-            "onOwnTurn": true
-          }
+          "condition": { "onOwnTurn": true }
         }
       },
       {
@@ -916,21 +880,17 @@
         "trigger": {
           "target": "自身",
           "timing": "戦闘前",
-          "condition": {
-            "onOwnTurn": true
-          }
+          "condition": { "onOwnTurn": true }
         }
       }
     ],
     "heal": [
       {
-        "type": "HP割合",
+        "base": "HP割合",
         "rate": 0.15,
         "target": "自身",
         "timing": "戦闘後",
-        "condition": {
-          "probability": [ 40, 50, 60, 70, 80, 100 ]
-        }
+        "condition": { "probability": [ 40, 50, 60, 70, 80, 100 ] }
       }
     ]
   },
@@ -951,28 +911,22 @@
         "type": "アタック",
         "value": [ 3, 5, 7, 9, 12, 15 ],
         "ephemeral": true,
-        "condition": {
-          "onTerrain": [ "水中" ]
-        }
+        "condition": { "onTerrain": [ "水中" ] }
       },
       {
         "type": "ディフェンス",
         "value": [ 3, 5, 7, 9, 12, 15 ],
         "ephemeral": true,
-        "condition": {
-          "onTerrain": [ "水中" ]
-        }
+        "condition": { "onTerrain": [ "水中" ] }
       }
     ],
     "heal": [
       {
-        "type": "HP割合",
+        "base": "HP割合",
         "rate": [ 0.15, 0.2, 0.25, 0.3, 0.35, 0.4 ],
         "target": "自身",
         "timing": "戦闘後",
-        "condition": {
-          "onTerrain": [ "水中" ]
-        }
+        "condition": { "onTerrain": [ "水中" ] }
       }
     ]
   },
@@ -1029,9 +983,7 @@
       {
         "type": "マジック",
         "value": [ 3, 5, 7, 9, 12, 15 ],
-        "condition": {
-          "hp": [ ">=", 100 ]
-        }
+        "condition": { "hp": [ ">=", 100 ] }
       }
     ]
   },
@@ -1114,9 +1066,7 @@
         "type": "ダメージ耐性(物理)",
         "value": [ 12, 15, 18, 22, 26, 30 ],
         "ephemeral": true,
-        "condition": {
-          "onEnemyTurn": true
-        }
+        "condition": { "onEnemyTurn": true }
       }
     ]
   },
@@ -1180,8 +1130,8 @@
     },
     "heal": [
       {
-        "type": "マジック",
-        "rate": [ 1.5, 2.0, 2.5, 3.0 ],
+        "base": "マジック",
+        "rate": [ 1.5, 2, 2.5, 3 ],
         "timing": "行動後",
         "target": "範囲",
         "area": 2
@@ -1247,8 +1197,8 @@
     ],
     "heal": [
       {
-        "type": "マジック",
-        "rate": [ 1.5, 1.8, 2.0, 2.3, 2.5 ],
+        "base": "マジック",
+        "rate": [ 1.5, 1.8, 2, 2.3, 2.5 ],
         "timing": "行動後",
         "target": "味方(低HP)"
       }
@@ -1306,17 +1256,13 @@
         "type": "アタック",
         "value": [ 10, 12, 15, 15, 20 ],
         "ephemeral": true,
-        "condition": {
-          "onOwnTurn": true
-        }
+        "condition": { "onOwnTurn": true }
       },
       {
         "type": "ダメージ耐性",
         "value": [ 10, 12, 15, 15, 20 ],
         "ephemeral": true,
-        "condition": {
-          "onOwnTurn": true
-        }
+        "condition": { "onOwnTurn": true }
       }
     ],
     "debuff": [
@@ -1328,9 +1274,7 @@
           "target": "範囲",
           "area": 2,
           "timing": "行動後",
-          "condition": {
-            "probability": 50
-          }
+          "condition": { "probability": 50 }
         }
       }
     ],
@@ -1376,16 +1320,12 @@
         {
           "type": "ダメージ耐性",
           "value": [ 10, 11, 12, 13, 15 ],
-          "condition": {
-            "terrainDef": [ ">", 0 ]
-          }
+          "condition": { "terrainDef": [ ">", 0 ] }
         },
         {
           "type": "アタック",
           "value": [ 10, 11, 12, 13, 15 ],
-          "condition": {
-            "terrainDef": [ "==", 0 ]
-          }
+          "condition": { "terrainDef": [ "==", 0 ] }
         }
       ]
     }
@@ -1491,9 +1431,7 @@
       {
         "type": "アタック",
         "value": [ 10, 10, 15, 20, 30 ],
-        "condition": {
-          "hp": [ ">=", 100 ]
-        }
+        "condition": { "hp": [ ">=", 100 ] }
       },
       {
         "type": "ダメージ耐性",
@@ -1591,32 +1529,24 @@
       {
         "type": "与ダメージ",
         "value": [ 10, 13, 16, 20 ],
-        "condition": {
-          "hp": [ ">=", 100 ]
-        }
+        "condition": { "hp": [ ">=", 100 ] }
       },
       {
         "type": "移動",
         "value": 1,
-        "condition": {
-          "hp": [ ">=", 100 ]
-        }
+        "condition": { "hp": [ ">=", 100 ] }
       },
       {
         "type": "アタック",
         "value": [ 10, 13, 16, 20 ],
         "ephemeral": true,
-        "condition": {
-          "onTargetClass": [ "ランサー", "ライダー" ]
-        }
+        "condition": { "onTargetClass": [ "ランサー", "ライダー" ] }
       },
       {
         "type": "ディフェンス",
         "value": [ 10, 13, 16, 20 ],
         "ephemeral": true,
-        "condition": {
-          "onTargetClass": [ "ランサー", "ライダー" ]
-        }
+        "condition": { "onTargetClass": [ "ランサー", "ライダー" ] }
       }
     ],
     "debuff": [
@@ -1624,9 +1554,7 @@
         "type": "与ダメージ",
         "value": [ 10, 13, 16, 20 ],
         "ephemeral": true,
-        "condition": {
-          "onEnemyTurn": true
-        }
+        "condition": { "onEnemyTurn": true }
       }
     ],
     "tags": [ "移動+" ]
@@ -1687,7 +1615,7 @@
     ],
     "heal": [
       {
-        "type": "HP割合",
+        "base": "HP割合",
         "rate": [ 0.1, 0.12, 0.12, 0.15 ],
         "target": "自身",
         "timing": "戦闘後",
@@ -1808,7 +1736,7 @@
     ],
     "heal": [
       {
-        "type": "HP割合",
+        "base": "HP割合",
         "rate": [ 0.15, 0.15, 0.2, 0.2 ],
         "target": "自身",
         "timing": "戦闘後",
@@ -1838,13 +1766,11 @@
     ],
     "heal": [
       {
-        "type": "ダメージ割合",
+        "base": "ダメージ割合",
         "rate": [ 0.15, 0.15, 0.15, 0.2, 0.2 ],
         "target": "自身",
         "timing": "戦闘後",
-        "condition": {
-          "onCriticalHit": true
-        }
+        "condition": { "onCriticalHit": true }
       }
     ],
     "ctReduction": [
@@ -1853,9 +1779,7 @@
         "targetSkill": "使用したスキル",
         "value": 1,
         "timing": "戦闘後",
-        "condition": {
-          "probability": [ 50, 60, 70, 80, 100 ]
-        }
+        "condition": { "probability": [ 50, 60, 70, 80, 100 ] }
       }
     ]
   },
@@ -1987,9 +1911,7 @@
         "trigger": {
           "target": "攻撃対象",
           "timing": "攻撃後",
-          "condition": {
-            "onDamage": true
-          }
+          "condition": { "onDamage": true }
         }
       },
       {
@@ -2022,9 +1944,7 @@
         "trigger": {
           "target": "自身",
           "timing": "戦闘後",
-          "condition": {
-            "onCriticalHit": true
-          }
+          "condition": { "onCriticalHit": true }
         }
       },
       {
@@ -2047,20 +1967,14 @@
     ],
     "heal": [
       {
-        "type": "ダメージ割合",
+        "base": "ダメージ割合",
         "rate": 0.25,
         "target": "自身",
         "timing": "戦闘後",
-        "condition": {
-          "onOwnTurn": true
-        }
+        "condition": { "onOwnTurn": true }
       }
     ],
-    "multiMove": [
-      {
-        "type": "基本移動力"
-      }
-    ]
+    "multiMove": [ { "type": "基本移動力" } ]
   },
   {
     "uid": "3100195",
@@ -2081,17 +1995,13 @@
         "trigger": {
           "target": "味方全体",
           "timing": "戦闘後",
-          "condition": {
-            "onSingleSkill": true
-          }
+          "condition": { "onSingleSkill": true }
         }
       },
       {
         "type": "与ダメージ(スキル)",
         "value": [ 10, 15, 20, 25 ],
-        "condition": {
-          "hp": [ ">=", 50 ]
-        }
+        "condition": { "hp": [ ">=", 50 ] }
       },
       {
         "type": "アタック",
@@ -2196,13 +2106,11 @@
     ],
     "heal": [
       {
-        "type": "HP割合",
+        "base": "HP割合",
         "rate": [ 0.15, 0.2, 0.25, 0.3 ],
         "target": "味方全体",
         "timing": "戦闘後",
-        "condition": {
-          "onSingleSkill": true
-        }
+        "condition": { "onSingleSkill": true }
       }
     ],
     "tags": [ "デバフ解除" ]
@@ -2223,17 +2131,13 @@
         "type": "ディフェンス",
         "value": [ 10, 12, 14, 16, 20 ],
         "ephemeral": true,
-        "condition": {
-          "onRangedCombat": true
-        }
+        "condition": { "onRangedCombat": true }
       },
       {
         "type": "レジスト",
         "value": [ 10, 12, 14, 16, 20 ],
         "ephemeral": true,
-        "condition": {
-          "onRangedCombat": true
-        }
+        "condition": { "onRangedCombat": true }
       },
       {
         "type": "被治療効果",
@@ -2266,9 +2170,7 @@
         "trigger": {
           "target": "自身",
           "timing": "戦闘後",
-          "condition": {
-            "onSingleSkill": true
-          }
+          "condition": { "onSingleSkill": true }
         }
       },
       {
@@ -2348,14 +2250,12 @@
         "type": "ダメージ耐性(魔法)",
         "value": [ 10, 12, 15, 15 ],
         "ephemeral": true,
-        "condition": {
-          "onOwnTurn": true
-        }
+        "condition": { "onOwnTurn": true }
       }
     ],
     "heal": [
       {
-        "type": "ダメージ割合",
+        "base": "ダメージ割合",
         "rate": 0.15,
         "target": "自身",
         "timing": "戦闘後",
@@ -2395,41 +2295,31 @@
         "type": "アタック",
         "value": [ 5, 6, 7, 10 ],
         "target": "味方全体",
-        "condition": {
-          "onClass": [ "ソルジャー" ]
-        }
+        "condition": { "onClass": [ "ソルジャー" ] }
       },
       {
         "type": "ディフェンス",
         "value": [ 5, 6, 7, 10 ],
         "target": "味方全体",
-        "condition": {
-          "onClass": [ "ソルジャー" ]
-        }
+        "condition": { "onClass": [ "ソルジャー" ] }
       },
       {
         "type": "マジック",
         "value": [ 5, 6, 7, 10 ],
         "target": "味方全体",
-        "condition": {
-          "onClass": [ "ソルジャー" ]
-        }
+        "condition": { "onClass": [ "ソルジャー" ] }
       },
       {
         "type": "レジスト",
         "value": [ 5, 6, 7, 10 ],
         "target": "味方全体",
-        "condition": {
-          "onClass": [ "ソルジャー" ]
-        }
+        "condition": { "onClass": [ "ソルジャー" ] }
       },
       {
         "type": "テクニック",
         "value": [ 5, 6, 7, 10 ],
         "target": "味方全体",
-        "condition": {
-          "onClass": [ "ソルジャー" ]
-        }
+        "condition": { "onClass": [ "ソルジャー" ] }
       }
     ],
     "debuff": [
@@ -2477,9 +2367,7 @@
         "type": "与ダメージ(物理)",
         "value": [ 10, 13, 16, 20 ],
         "ephemeral": true,
-        "condition": {
-          "onEnemyTurn": true
-        }
+        "condition": { "onEnemyTurn": true }
       }
     ],
     "debuff": [
@@ -2523,41 +2411,31 @@
         "type": "アタック",
         "value": [ 5, 6, 7, 10 ],
         "target": "味方全体",
-        "condition": {
-          "onClass": [ "ライダー" ]
-        }
+        "condition": { "onClass": [ "ライダー" ] }
       },
       {
         "type": "ディフェンス",
         "value": [ 5, 6, 7, 10 ],
         "target": "味方全体",
-        "condition": {
-          "onClass": [ "ライダー" ]
-        }
+        "condition": { "onClass": [ "ライダー" ] }
       },
       {
         "type": "マジック",
         "value": [ 5, 6, 7, 10 ],
         "target": "味方全体",
-        "condition": {
-          "onClass": [ "ライダー" ]
-        }
+        "condition": { "onClass": [ "ライダー" ] }
       },
       {
         "type": "レジスト",
         "value": [ 5, 6, 7, 10 ],
         "target": "味方全体",
-        "condition": {
-          "onClass": [ "ライダー" ]
-        }
+        "condition": { "onClass": [ "ライダー" ] }
       },
       {
         "type": "テクニック",
         "value": [ 5, 6, 7, 10 ],
         "target": "味方全体",
-        "condition": {
-          "onClass": [ "ライダー" ]
-        }
+        "condition": { "onClass": [ "ライダー" ] }
       },
       {
         "type": "トークン",
@@ -2567,9 +2445,7 @@
         "trigger": {
           "target": "自身",
           "timing": "攻撃後",
-          "condition": {
-            "onActiveSkill": true
-          }
+          "condition": { "onActiveSkill": true }
         }
       },
       {
@@ -2622,9 +2498,7 @@
         "trigger": {
           "target": "攻撃対象",
           "timing": "戦闘前",
-          "condition": {
-            "onOwnTurn": true
-          }
+          "condition": { "onOwnTurn": true }
         }
       }
     ],
@@ -2684,9 +2558,7 @@
         "target": "自身",
         "targetSkill": "使用したスキル",
         "timing": "敵撃破時",
-        "condition": {
-          "onActiveSkill": true
-        }
+        "condition": { "onActiveSkill": true }
       }
     ],
     "tags": [ "蓄積バフ" ]
@@ -2714,9 +2586,7 @@
         "type": "与ダメージ",
         "value": 10,
         "ephemeral": true,
-        "condition": {
-          "onOwnTurn": true
-        }
+        "condition": { "onOwnTurn": true }
       },
       {
         "type": "ダメージ耐性",
@@ -2740,41 +2610,31 @@
         "type": "アタック",
         "value": [ 5, 6, 7, 10 ],
         "target": "味方全体",
-        "condition": {
-          "onClass": [ "エアリアル" ]
-        }
+        "condition": { "onClass": [ "エアリアル" ] }
       },
       {
         "type": "ディフェンス",
         "value": [ 5, 6, 7, 10 ],
         "target": "味方全体",
-        "condition": {
-          "onClass": [ "エアリアル" ]
-        }
+        "condition": { "onClass": [ "エアリアル" ] }
       },
       {
         "type": "マジック",
         "value": [ 5, 6, 7, 10 ],
         "target": "味方全体",
-        "condition": {
-          "onClass": [ "エアリアル" ]
-        }
+        "condition": { "onClass": [ "エアリアル" ] }
       },
       {
         "type": "レジスト",
         "value": [ 5, 6, 7, 10 ],
         "target": "味方全体",
-        "condition": {
-          "onClass": [ "エアリアル" ]
-        }
+        "condition": { "onClass": [ "エアリアル" ] }
       },
       {
         "type": "テクニック",
         "value": [ 5, 6, 7, 10 ],
         "target": "味方全体",
-        "condition": {
-          "onClass": [ "エアリアル" ]
-        }
+        "condition": { "onClass": [ "エアリアル" ] }
       }
     ],
     "tags": [ "射程+(反撃)" ]
@@ -2811,9 +2671,7 @@
         "trigger": {
           "target": "自身",
           "timing": "戦闘後",
-          "condition": {
-            "onCriticalHit": true
-          }
+          "condition": { "onCriticalHit": true }
         }
       }
     ],
@@ -2954,17 +2812,13 @@
         "type": "ダメージ耐性",
         "value": [ 10, 12, 14, 16, 20 ],
         "ephemeral": true,
-        "condition": {
-          "onCloseCombat": true
-        }
+        "condition": { "onCloseCombat": true }
       },
       {
         "type": "マジック",
         "value": [ 10, 12, 14, 16, 20 ],
         "target": "自身",
-        "condition": {
-          "onOwnTurn": true
-        }
+        "condition": { "onOwnTurn": true }
       }
     ]
   },
@@ -2982,9 +2836,7 @@
       {
         "type": "移動",
         "value": 1,
-        "condition": {
-          "hp": [ ">=", 70 ]
-        }
+        "condition": { "hp": [ ">=", 70 ] }
       },
       {
         "type": "ダメージ耐性(物理)",
@@ -2999,57 +2851,43 @@
         "type": "クリティカル率",
         "value": [ 10, 13, 16, 20 ],
         "ephemeral": true,
-        "condition": {
-          "onEnemyTurn": true
-        }
+        "condition": { "onEnemyTurn": true }
       },
       {
         "type": "ディフェンス無視",
         "value": [ 8, 10, 12, 15 ],
         "ephemeral": true,
-        "condition": {
-          "onEnemyTurn": true
-        }
+        "condition": { "onEnemyTurn": true }
       },
       {
         "type": "アタック",
         "value": [ 5, 6, 7, 10 ],
         "target": "味方全体",
-        "condition": {
-          "onClass": [ "ランサー" ]
-        }
+        "condition": { "onClass": [ "ランサー" ] }
       },
       {
         "type": "ディフェンス",
         "value": [ 5, 6, 7, 10 ],
         "target": "味方全体",
-        "condition": {
-          "onClass": [ "ランサー" ]
-        }
+        "condition": { "onClass": [ "ランサー" ] }
       },
       {
         "type": "マジック",
         "value": [ 5, 6, 7, 10 ],
         "target": "味方全体",
-        "condition": {
-          "onClass": [ "ランサー" ]
-        }
+        "condition": { "onClass": [ "ランサー" ] }
       },
       {
         "type": "レジスト",
         "value": [ 5, 6, 7, 10 ],
         "target": "味方全体",
-        "condition": {
-          "onClass": [ "ランサー" ]
-        }
+        "condition": { "onClass": [ "ランサー" ] }
       },
       {
         "type": "テクニック",
         "value": [ 5, 6, 7, 10 ],
         "target": "味方全体",
-        "condition": {
-          "onClass": [ "ランサー" ]
-        }
+        "condition": { "onClass": [ "ランサー" ] }
       }
     ],
     "tags": [ "移動+" ]
@@ -3069,9 +2907,7 @@
         "type": "アタック",
         "value": [ 10, 13, 16, 20 ],
         "ephemeral": true,
-        "condition": {
-          "onOwnTurn": true
-        }
+        "condition": { "onOwnTurn": true }
       },
       {
         "type": "ディフェンス",
@@ -3132,30 +2968,22 @@
       {
         "type": "射程(スキル)",
         "value": 1,
-        "condition": {
-          "hp": [ ">=", 75 ]
-        }
+        "condition": { "hp": [ ">=", 75 ] }
       },
       {
         "type": "範囲",
         "value": 1,
-        "condition": {
-          "hp": [ ">=", 75 ]
-        }
+        "condition": { "hp": [ ">=", 75 ] }
       },
       {
         "type": "移動",
         "value": [ 1, 1, 2, 2 ],
-        "condition": {
-          "hp": [ ">=", 75 ]
-        }
+        "condition": { "hp": [ ">=", 75 ] }
       },
       {
         "type": "与ダメージ(スキル)",
         "value": [ 20, 23, 26, 30 ],
-        "condition": {
-          "hp": [ "<=", 75 ]
-        }
+        "condition": { "hp": [ "<=", 75 ] }
       }
     ],
     "tags": [ "射程+(スキル)", "範囲+", "移動+" ],
@@ -3189,41 +3017,31 @@
         "type": "アタック",
         "value": [ 5, 6, 7, 10 ],
         "target": "味方全体",
-        "condition": {
-          "onClass": [ "ソーサラー" ]
-        }
+        "condition": { "onClass": [ "ソーサラー" ] }
       },
       {
         "type": "ディフェンス",
         "value": [ 5, 6, 7, 10 ],
         "target": "味方全体",
-        "condition": {
-          "onClass": [ "ソーサラー" ]
-        }
+        "condition": { "onClass": [ "ソーサラー" ] }
       },
       {
         "type": "マジック",
         "value": [ 5, 6, 7, 10 ],
         "target": "味方全体",
-        "condition": {
-          "onClass": [ "ソーサラー" ]
-        }
+        "condition": { "onClass": [ "ソーサラー" ] }
       },
       {
         "type": "レジスト",
         "value": [ 5, 6, 7, 10 ],
         "target": "味方全体",
-        "condition": {
-          "onClass": [ "ソーサラー" ]
-        }
+        "condition": { "onClass": [ "ソーサラー" ] }
       },
       {
         "type": "テクニック",
         "value": [ 5, 6, 7, 10 ],
         "target": "味方全体",
-        "condition": {
-          "onClass": [ "ソーサラー" ]
-        }
+        "condition": { "onClass": [ "ソーサラー" ] }
       }
     ],
     "debuff": [
@@ -3259,38 +3077,30 @@
         "type": "アタック",
         "value": [ 15, 20, 25, 30 ],
         "ephemeral": true,
-        "condition": {
-          "onOwnTurn": true
-        }
+        "condition": { "onOwnTurn": true }
       },
       {
         "type": "与ダメージ",
         "value": [ 15, 20, 25, 30 ],
         "ephemeral": true,
-        "condition": {
-          "onOwnTurn": true
-        }
+        "condition": { "onOwnTurn": true }
       },
       {
         "type": "ディフェンス",
         "value": [ 15, 20, 25, 30 ],
         "ephemeral": true,
-        "condition": {
-          "onEnemyTurn": true
-        }
+        "condition": { "onEnemyTurn": true }
       },
       {
         "type": "レジスト",
         "value": [ 15, 20, 25, 30 ],
         "ephemeral": true,
-        "condition": {
-          "onEnemyTurn": true
-        }
+        "condition": { "onEnemyTurn": true }
       }
     ],
     "heal": [
       {
-        "type": "HP割合",
+        "base": "HP割合",
         "rate": [ 0.1, 0.13, 0.16, 0.2 ],
         "target": "自身",
         "timing": "行動後"
@@ -3332,28 +3142,22 @@
         "type": "与ダメージ",
         "value": [ 15, 18, 21, 25 ],
         "ephemeral": true,
-        "condition": {
-          "onEffect": [ "3100289" ]
-        }
+        "condition": { "onEffect": [ "3100289" ] }
       },
       {
         "type": "ダメージ耐性",
         "value": [ 15, 18, 21, 25 ],
         "ephemeral": true,
-        "condition": {
-          "onEffect": [ "3100289" ]
-        }
+        "condition": { "onEffect": [ "3100289" ] }
       }
     ],
     "heal": [
       {
-        "type": "HP割合",
+        "base": "HP割合",
         "rate": 0.1,
         "target": "自身",
         "timing": "戦闘後",
-        "condition": {
-          "onCloseCombat": true
-        }
+        "condition": { "onCloseCombat": true }
       }
     ]
   },
@@ -3428,41 +3232,31 @@
         "type": "アタック",
         "value": [ 5, 6, 7, 10 ],
         "target": "味方全体",
-        "condition": {
-          "onClass": [ "セイント" ]
-        }
+        "condition": { "onClass": [ "セイント" ] }
       },
       {
         "type": "ディフェンス",
         "value": [ 5, 6, 7, 10 ],
         "target": "味方全体",
-        "condition": {
-          "onClass": [ "セイント" ]
-        }
+        "condition": { "onClass": [ "セイント" ] }
       },
       {
         "type": "マジック",
         "value": [ 5, 6, 7, 10 ],
         "target": "味方全体",
-        "condition": {
-          "onClass": [ "セイント" ]
-        }
+        "condition": { "onClass": [ "セイント" ] }
       },
       {
         "type": "レジスト",
         "value": [ 5, 6, 7, 10 ],
         "target": "味方全体",
-        "condition": {
-          "onClass": [ "セイント" ]
-        }
+        "condition": { "onClass": [ "セイント" ] }
       },
       {
         "type": "テクニック",
         "value": [ 5, 6, 7, 10 ],
         "target": "味方全体",
-        "condition": {
-          "onClass": [ "セイント" ]
-        }
+        "condition": { "onClass": [ "セイント" ] }
       }
     ],
     "debuff": [
@@ -3470,17 +3264,13 @@
         "type": "レジスト",
         "value": [ 10, 15, 20, 25 ],
         "ephemeral": true,
-        "condition": {
-          "onOwnTurn": true
-        }
+        "condition": { "onOwnTurn": true }
       }
     ],
     "multiAction": [
       {
         "ct": [ 2, 2, 2, 1 ],
-        "condition": {
-          "targetHp": [ ">=", 50 ]
-        }
+        "condition": { "targetHp": [ ">=", 50 ] }
       }
     ],
     "tags": [ "移動+" ]
@@ -3611,17 +3401,13 @@
         "type": "アタック",
         "value": 20,
         "ephemeral": true,
-        "condition": {
-          "onOwnTurn": true
-        }
+        "condition": { "onOwnTurn": true }
       },
       {
         "type": "ディフェンス",
         "value": 20,
         "ephemeral": true,
-        "condition": {
-          "onOwnTurn": true
-        }
+        "condition": { "onOwnTurn": true }
       },
       {
         "type": "与ダメージ",
@@ -3661,17 +3447,13 @@
         "type": "アタック",
         "value": 30,
         "ephemeral": true,
-        "condition": {
-          "onOwnTurn": true
-        }
+        "condition": { "onOwnTurn": true }
       },
       {
         "type": "ディフェンス",
         "value": 30,
         "ephemeral": true,
-        "condition": {
-          "onOwnTurn": true
-        }
+        "condition": { "onOwnTurn": true }
       },
       {
         "type": "与ダメージ",
@@ -3791,9 +3573,7 @@
           "max": 3,
           "by": "distance"
         },
-        "condition": {
-          "onRangedCombat": true
-        }
+        "condition": { "onRangedCombat": true }
       },
       {
         "type": "クリティカルダメージ倍率",
@@ -3803,49 +3583,37 @@
           "max": 3,
           "by": "distance"
         },
-        "condition": {
-          "onRangedCombat": true
-        }
+        "condition": { "onRangedCombat": true }
       },
       {
         "type": "アタック",
         "value": [ 5, 6, 7, 10 ],
         "target": "味方全体",
-        "condition": {
-          "onClass": [ "シューター" ]
-        }
+        "condition": { "onClass": [ "シューター" ] }
       },
       {
         "type": "ディフェンス",
         "value": [ 5, 6, 7, 10 ],
         "target": "味方全体",
-        "condition": {
-          "onClass": [ "シューター" ]
-        }
+        "condition": { "onClass": [ "シューター" ] }
       },
       {
         "type": "マジック",
         "value": [ 5, 6, 7, 10 ],
         "target": "味方全体",
-        "condition": {
-          "onClass": [ "シューター" ]
-        }
+        "condition": { "onClass": [ "シューター" ] }
       },
       {
         "type": "レジスト",
         "value": [ 5, 6, 7, 10 ],
         "target": "味方全体",
-        "condition": {
-          "onClass": [ "シューター" ]
-        }
+        "condition": { "onClass": [ "シューター" ] }
       },
       {
         "type": "テクニック",
         "value": [ 5, 6, 7, 10 ],
         "target": "味方全体",
-        "condition": {
-          "onClass": [ "シューター" ]
-        }
+        "condition": { "onClass": [ "シューター" ] }
       }
     ],
     "debuff": [
@@ -3853,20 +3621,16 @@
         "type": "ダメージ耐性(物理)",
         "value": [ 10, 11, 13, 15 ],
         "ephemeral": true,
-        "condition": {
-          "onRangedCombat": true
-        }
+        "condition": { "onRangedCombat": true }
       }
     ],
     "heal": [
       {
-        "type": "ダメージ割合",
+        "base": "ダメージ割合",
         "rate": [ 0.1, 0.12, 0.15, 0.15 ],
         "target": "自身",
         "timing": "戦闘後",
-        "condition": {
-          "onRangedCombat": true
-        }
+        "condition": { "onRangedCombat": true }
       }
     ],
     "tags": [ "固定ダメージ" ]
@@ -3894,25 +3658,19 @@
         "type": "与ダメージ",
         "value": [ 12, 16, 20, 25 ],
         "ephemeral": true,
-        "condition": {
-          "hp": [ ">=", 50 ]
-        }
+        "condition": { "hp": [ ">=", 50 ] }
       },
       {
         "type": "ディフェンス",
         "value": [ 12, 16, 20, 25 ],
         "ephemeral": true,
-        "condition": {
-          "hp": [ ">=", 50 ]
-        }
+        "condition": { "hp": [ ">=", 50 ] }
       },
       {
         "type": "レジスト",
         "value": [ 12, 16, 20, 25 ],
         "ephemeral": true,
-        "condition": {
-          "hp": [ ">=", 50 ]
-        }
+        "condition": { "hp": [ ">=", 50 ] }
       }
     ],
     "doubleAttack": [
@@ -3925,7 +3683,7 @@
     ],
     "heal": [
       {
-        "type": "HP割合",
+        "base": "HP割合",
         "rate": [ 0.1, 0.13, 0.16, 0.2 ],
         "timing": "行動後",
         "target": "味方(低HP)"
@@ -4009,41 +3767,31 @@
         "type": "アタック",
         "value": [ 8, 10, 12, 15 ],
         "ephemeral": true,
-        "condition": {
-          "onOwnTurn": true
-        }
+        "condition": { "onOwnTurn": true }
       },
       {
         "type": "ディフェンス",
         "value": [ 8, 10, 12, 15 ],
         "ephemeral": true,
-        "condition": {
-          "onOwnTurn": true
-        }
+        "condition": { "onOwnTurn": true }
       },
       {
         "type": "マジック",
         "value": [ 8, 10, 12, 15 ],
         "ephemeral": true,
-        "condition": {
-          "onOwnTurn": true
-        }
+        "condition": { "onOwnTurn": true }
       },
       {
         "type": "レジスト",
         "value": [ 8, 10, 12, 15 ],
         "ephemeral": true,
-        "condition": {
-          "onOwnTurn": true
-        }
+        "condition": { "onOwnTurn": true }
       },
       {
         "type": "テクニック",
         "value": [ 8, 10, 12, 15 ],
         "ephemeral": true,
-        "condition": {
-          "onOwnTurn": true
-        }
+        "condition": { "onOwnTurn": true }
       }
     ],
     "debuff": [
@@ -4055,9 +3803,7 @@
           "target": "範囲",
           "area": [ 3, "周囲" ],
           "timing": "攻撃後",
-          "condition": {
-            "onDamage": true
-          }
+          "condition": { "onDamage": true }
         }
       },
       {
@@ -4068,21 +3814,17 @@
           "target": "範囲",
           "area": [ 3, "周囲" ],
           "timing": "攻撃後",
-          "condition": {
-            "onDamage": true
-          }
+          "condition": { "onDamage": true }
         }
       }
     ],
     "heal": [
       {
-        "type": "ダメージ割合",
+        "base": "ダメージ割合",
         "rate": 0.1,
         "target": "自身",
         "timing": "戦闘後",
-        "condition": {
-          "onOwnTurn": true
-        }
+        "condition": { "onOwnTurn": true }
       }
     ]
   },
@@ -4112,9 +3854,7 @@
         "trigger": {
           "target": "自身",
           "timing": "戦闘後",
-          "condition": {
-            "onCriticalHit": true
-          }
+          "condition": { "onCriticalHit": true }
         }
       },
       {
@@ -4136,41 +3876,31 @@
         "type": "アタック",
         "value": [ 5, 6, 7, 10 ],
         "target": "味方全体",
-        "condition": {
-          "onClass": [ "アサシン" ]
-        }
+        "condition": { "onClass": [ "アサシン" ] }
       },
       {
         "type": "ディフェンス",
         "value": [ 5, 6, 7, 10 ],
         "target": "味方全体",
-        "condition": {
-          "onClass": [ "アサシン" ]
-        }
+        "condition": { "onClass": [ "アサシン" ] }
       },
       {
         "type": "マジック",
         "value": [ 5, 6, 7, 10 ],
         "target": "味方全体",
-        "condition": {
-          "onClass": [ "アサシン" ]
-        }
+        "condition": { "onClass": [ "アサシン" ] }
       },
       {
         "type": "レジスト",
         "value": [ 5, 6, 7, 10 ],
         "target": "味方全体",
-        "condition": {
-          "onClass": [ "アサシン" ]
-        }
+        "condition": { "onClass": [ "アサシン" ] }
       },
       {
         "type": "テクニック",
         "value": [ 5, 6, 7, 10 ],
         "target": "味方全体",
-        "condition": {
-          "onClass": [ "アサシン" ]
-        }
+        "condition": { "onClass": [ "アサシン" ] }
       }
     ],
     "debuff": [
@@ -4181,9 +3911,7 @@
         "trigger": {
           "target": "攻撃対象",
           "timing": "戦闘後",
-          "condition": {
-            "onCriticalHit": true
-          }
+          "condition": { "onCriticalHit": true }
         }
       }
     ],
@@ -4203,23 +3931,17 @@
       {
         "type": "アタック",
         "value": [ 15, 20, 25, 30 ],
-        "condition": {
-          "hp": [ ">=", 60 ]
-        }
+        "condition": { "hp": [ ">=", 60 ] }
       },
       {
         "type": "ディフェンス無視",
         "value": 10,
-        "condition": {
-          "hp": [ ">=", 60 ]
-        }
+        "condition": { "hp": [ ">=", 60 ] }
       },
       {
         "type": "ディフェンス",
         "value": [ 15, 20, 25, 30 ],
-        "condition": {
-          "hp": [ "<=", 60 ]
-        }
+        "condition": { "hp": [ "<=", 60 ] }
       }
     ],
     "debuff": [
@@ -4322,9 +4044,7 @@
         "trigger": {
           "target": "自身",
           "timing": "攻撃後",
-          "condition": {
-            "onSingleSkill": true
-          }
+          "condition": { "onSingleSkill": true }
         }
       },
       {
@@ -4334,18 +4054,14 @@
         "trigger": {
           "target": "自身",
           "timing": "攻撃後",
-          "condition": {
-            "onAreaSkill": true
-          }
+          "condition": { "onAreaSkill": true }
         }
       }
     ],
     "multiAction": [
       {
         "ct": [ 3, 3, 2, 2 ],
-        "condition": {
-          "onKill": true
-        }
+        "condition": { "onKill": true }
       }
     ]
   },
@@ -4364,17 +4080,13 @@
         "type": "アタック",
         "value": [ 15, 17, 20, 25 ],
         "ephemeral": true,
-        "condition": {
-          "onOwnTurn": true
-        }
+        "condition": { "onOwnTurn": true }
       },
       {
         "type": "ディフェンス",
         "value": [ 15, 17, 20, 25 ],
         "ephemeral": true,
-        "condition": {
-          "onOwnTurn": true
-        }
+        "condition": { "onOwnTurn": true }
       },
       {
         "type": "与ダメージ",
@@ -4384,26 +4096,18 @@
         "trigger": {
           "target": "自身",
           "timing": "戦闘後",
-          "condition": {
-            "onDamage": true
-          }
+          "condition": { "onDamage": true }
         }
       }
     ],
-    "multiMove": [
-      {
-        "type": "基本移動力"
-      }
-    ],
+    "multiMove": [ { "type": "基本移動力" } ],
     "ctReduction": [
       {
         "value": 1,
         "target": "自身",
         "targetSkill": "使用したスキル",
         "timing": "敵撃破時",
-        "condition": {
-          "onActiveSkill": true
-        }
+        "condition": { "onActiveSkill": true }
       }
     ],
     "tags": [ "蓄積バフ" ]
@@ -4449,20 +4153,16 @@
       {
         "type": "マジック",
         "value": [ 15, 18, 23, 30 ],
-        "condition": {
-          "onOwnTurn": true
-        }
+        "condition": { "onOwnTurn": true }
       }
     ],
     "heal": [
       {
-        "type": "マジック",
-        "rate": [ 1.0, 1.5, 2.0, 2.5 ],
+        "base": "マジック",
+        "rate": [ 1, 1.5, 2, 2.5 ],
         "target": "味方(低HP)",
         "timing": "行動後",
-        "condition": {
-          "onActiveSkill": true
-        }
+        "condition": { "onActiveSkill": true }
       }
     ],
     "tags": [ "バフ:リジェネ" ]
@@ -4485,30 +4185,22 @@
       {
         "type": "与ダメージ(スキル)",
         "value": [ 15, 18, 23, 30 ],
-        "condition": {
-          "hp": [ ">=", 50 ]
-        }
+        "condition": { "hp": [ ">=", 50 ] }
       },
       {
         "type": "クリティカル率",
         "value": [ 15, 18, 23, 30 ],
-        "condition": {
-          "hp": [ ">=", 50 ]
-        }
+        "condition": { "hp": [ ">=", 50 ] }
       },
       {
         "type": "クリティカルダメージ倍率",
         "value": [ 7, 9, 12, 15 ],
-        "condition": {
-          "hp": [ ">=", 50 ]
-        }
+        "condition": { "hp": [ ">=", 50 ] }
       },
       {
         "type": "ダメージ耐性",
         "value": [ 10, 12, 15, 20 ],
-        "condition": {
-          "hp": [ ">=", 50 ]
-        }
+        "condition": { "hp": [ ">=", 50 ] }
       }
     ],
     "revive": [
@@ -4564,9 +4256,7 @@
         "type": "ダメージ耐性",
         "value": [ 5, 6, 7, 10 ],
         "ephemeral": true,
-        "condition": {
-          "onEnemyTurn": true
-        }
+        "condition": { "onEnemyTurn": true }
       },
       {
         "type": "トークン",
@@ -4626,9 +4316,7 @@
         "type": "ダメージ耐性",
         "value": [ 10, 12, 15, 20 ],
         "ephemeral": true,
-        "condition": {
-          "onEnemyTurn": true
-        }
+        "condition": { "onEnemyTurn": true }
       },
       {
         "type": "クリティカル率",
@@ -4637,9 +4325,7 @@
         "trigger": {
           "target": "自身",
           "timing": "行動前",
-          "condition": {
-            "onAreaSkill": true
-          }
+          "condition": { "onAreaSkill": true }
         }
       }
     ],
@@ -4673,17 +4359,13 @@
         "type": "アタック",
         "value": [ 12, 15, 18, 23, 30 ],
         "ephemeral": true,
-        "condition": {
-          "onTargetClass": [ "ソーサラー", "セイント" ]
-        }
+        "condition": { "onTargetClass": [ "ソーサラー", "セイント" ] }
       },
       {
         "type": "レジスト",
         "value": [ 12, 15, 18, 23, 30 ],
         "ephemeral": true,
-        "condition": {
-          "onTargetClass": [ "ソーサラー", "セイント" ]
-        }
+        "condition": { "onTargetClass": [ "ソーサラー", "セイント" ] }
       },
       {
         "type": "射程(通常攻撃)",
@@ -4848,9 +4530,7 @@
         "target": "自身",
         "targetSkill": "全スキル",
         "timing": "敵撃破時",
-        "condition": {
-          "onActiveSkill": true
-        }
+        "condition": { "onActiveSkill": true }
       }
     ],
     "tags": [ "蓄積バフ" ]
@@ -4901,7 +4581,7 @@
     ],
     "heal": [
       {
-        "type": "HP割合",
+        "base": "HP割合",
         "rate": 0.2,
         "target": "自身",
         "timing": "行動後"
@@ -4932,9 +4612,7 @@
         "trigger": {
           "target": "自身",
           "timing": "戦闘後",
-          "condition": {
-            "onCriticalHit": true
-          }
+          "condition": { "onCriticalHit": true }
         }
       },
       {
@@ -4983,17 +4661,13 @@
         "type": "ディフェンス",
         "value": [ 5, 6, 7, 10 ],
         "ephemeral": true,
-        "condition": {
-          "onOwnTurn": true
-        }
+        "condition": { "onOwnTurn": true }
       },
       {
         "type": "ダメージ耐性(物理)",
         "value": [ 5, 6, 7, 10 ],
         "ephemeral": true,
-        "condition": {
-          "onOwnTurn": true
-        }
+        "condition": { "onOwnTurn": true }
       }
     ],
     "multiAction": [
@@ -5052,9 +4726,7 @@
         "value": [ 8, 10, 12, 15 ],
         "ephemeral": true,
         "timing": "戦闘前",
-        "condition": {
-          "onRangedCombat": true
-        }
+        "condition": { "onRangedCombat": true }
       }
     ],
     "doubleAttack": [
@@ -5105,27 +4777,21 @@
         "type": "マジック",
         "value": [ 10, 12, 17, 25 ],
         "ephemeral": true,
-        "condition": {
-          "onEffect": [ "3100381" ]
-        }
+        "condition": { "onEffect": [ "3100381" ] }
       },
       {
         "type": "レジスト",
         "value": [ 10, 12, 17, 25 ],
         "ephemeral": true,
-        "condition": {
-          "onEffect": [ "3100381" ]
-        }
+        "condition": { "onEffect": [ "3100381" ] }
       }
     ],
     "shield": [
       {
         "base": "マジック",
-        "rate": [ 1.0, 1.5, 2.0, 2.5 ],
+        "rate": [ 1, 1.5, 2, 2.5 ],
         "target": "自身(メイン)",
-        "condition": {
-          "onEffect": [ "3100381" ]
-        }
+        "condition": { "onEffect": [ "3100381" ] }
       }
     ]
   },
@@ -5207,11 +4873,7 @@
         "area": 3
       }
     ],
-    "multiMove": [
-      {
-        "type": "基本移動力"
-      }
-    ]
+    "multiMove": [ { "type": "基本移動力" } ]
   },
   {
     "uid": "3100382",
@@ -5236,9 +4898,7 @@
         "trigger": {
           "target": "自身",
           "timing": "行動後",
-          "condition": {
-            "onActiveSkill": true
-          }
+          "condition": { "onActiveSkill": true }
         }
       },
       {
@@ -5262,7 +4922,7 @@
     ],
     "heal": [
       {
-        "type": "ダメージ割合",
+        "base": "ダメージ割合",
         "rate": 0.2,
         "target": "自身",
         "timing": "戦闘後"
@@ -5284,32 +4944,24 @@
       {
         "type": "アタック",
         "value": [ 8, 10, 12, 15, 20 ],
-        "condition": {
-          "hp": [ ">=", 80 ]
-        }
+        "condition": { "hp": [ ">=", 80 ] }
       },
       {
         "type": "移動",
         "value": 1,
-        "condition": {
-          "hp": [ ">=", 80 ]
-        }
+        "condition": { "hp": [ ">=", 80 ] }
       },
       {
         "type": "ディフェンス",
         "value": [ 5, 6, 7, 8, 10 ],
         "ephemeral": true,
-        "condition": {
-          "onEnemyTurn": true
-        }
+        "condition": { "onEnemyTurn": true }
       },
       {
         "type": "レジスト",
         "value": [ 5, 6, 7, 8, 10 ],
         "ephemeral": true,
-        "condition": {
-          "onEnemyTurn": true
-        }
+        "condition": { "onEnemyTurn": true }
       }
     ],
     "tags": [ "移動+" ]
@@ -5351,11 +5003,7 @@
         }
       }
     ],
-    "multiMove": [
-      {
-        "type": "基本移動力"
-      }
-    ],
+    "multiMove": [ { "type": "基本移動力" } ],
     "revive": [
       {
         "rate": [ 0.2, 0.3, 0.4, 0.5 ],
@@ -5404,9 +5052,7 @@
     "multiAction": [
       {
         "ct": [ 4, 4, 3, 3 ],
-        "condition": {
-          "onActiveSkill": true
-        }
+        "condition": { "onActiveSkill": true }
       }
     ],
     "tags": [ "射程+(反撃)" ]
@@ -5434,9 +5080,7 @@
         "type": "ダメージ耐性",
         "value": [ 10, 12, 15, 20 ],
         "ephemeral": true,
-        "condition": {
-          "onCloseCombat": true
-        }
+        "condition": { "onCloseCombat": true }
       },
       {
         "type": "クリティカル率",
@@ -5445,15 +5089,13 @@
         "trigger": {
           "target": "自身",
           "timing": "行動前",
-          "condition": {
-            "onActiveSkill": true
-          }
+          "condition": { "onActiveSkill": true }
         }
       }
     ],
     "heal": [
       {
-        "type": "ダメージ割合",
+        "base": "ダメージ割合",
         "rate": 0.1,
         "target": "自身",
         "timing": "戦闘後"
@@ -5483,17 +5125,13 @@
         "type": "最大HP",
         "value": [ 6, 7, 8, 10 ],
         "target": "味方全体",
-        "condition": {
-          "onSymbol": [ "ナディア" ]
-        }
+        "condition": { "onSymbol": [ "ナディア" ] }
       },
       {
         "type": "与ダメージ",
         "value": [ 6, 7, 8, 10 ],
         "target": "味方全体",
-        "condition": {
-          "onSymbol": [ "ナディア" ]
-        }
+        "condition": { "onSymbol": [ "ナディア" ] }
       },
       {
         "type": "クリティカルダメージ倍率",
@@ -5549,9 +5187,7 @@
         "trigger": {
           "target": "攻撃対象",
           "timing": "攻撃後",
-          "condition": {
-            "onDamage": true
-          }
+          "condition": { "onDamage": true }
         }
       },
       {
@@ -5606,16 +5242,12 @@
       {
         "type": "クリティカルダメージ倍率",
         "value": [ 10, 12, 17, 25 ],
-        "condition": {
-          "hp": [ ">=", 50 ]
-        }
+        "condition": { "hp": [ ">=", 50 ] }
       },
       {
         "type": "移動",
         "value": 1,
-        "condition": {
-          "hp": [ ">=", 50 ]
-        }
+        "condition": { "hp": [ ">=", 50 ] }
       }
     ],
     "debuff": [
@@ -5623,9 +5255,7 @@
         "type": "ダメージ耐性(魔法)",
         "value": [ 8, 10, 12, 15 ],
         "ephemeral": true,
-        "condition": {
-          "onRangedCombat": true
-        }
+        "condition": { "onRangedCombat": true }
       }
     ],
     "multiAction": [
@@ -5734,9 +5364,7 @@
         "type": "ダメージ耐性",
         "value": [ 8, 10, 12, 15 ],
         "ephemeral": true,
-        "condition": {
-          "onEnemyTurn": true
-        }
+        "condition": { "onEnemyTurn": true }
       },
       {
         "type": "ダメージ耐性",
@@ -5745,9 +5373,7 @@
         "trigger": {
           "target": "自身",
           "timing": "戦闘後",
-          "condition": {
-            "onCriticalHit": true
-          }
+          "condition": { "onCriticalHit": true }
         }
       },
       {
@@ -5757,9 +5383,7 @@
         "trigger": {
           "target": "自身",
           "timing": "戦闘後",
-          "condition": {
-            "onCriticalHit": true
-          }
+          "condition": { "onCriticalHit": true }
         }
       }
     ],
@@ -5844,17 +5468,13 @@
         "type": "アタック",
         "value": [ 7, 8, 10, 12, 15 ],
         "ephemeral": true,
-        "condition": {
-          "onTargetClass": [ "ライダー", "エアリアル" ]
-        }
+        "condition": { "onTargetClass": [ "ライダー", "エアリアル" ] }
       },
       {
         "type": "クリティカル率",
         "value": [ 7, 8, 10, 12, 15 ],
         "ephemeral": true,
-        "condition": {
-          "onTargetClass": [ "ライダー", "エアリアル" ]
-        }
+        "condition": { "onTargetClass": [ "ライダー", "エアリアル" ] }
       }
     ],
     "tags": [ "特効(ライダー)", "特効(エアリアル)" ]
@@ -5886,9 +5506,7 @@
         "trigger": {
           "target": "味方全体",
           "timing": "行動後",
-          "condition": {
-            "onActiveSkill": true
-          }
+          "condition": { "onActiveSkill": true }
         }
       },
       {
@@ -5963,20 +5581,16 @@
         "target": "自身",
         "targetSkill": "全スキル",
         "timing": "自ターン開始時",
-        "condition": {
-          "hp": [ ">=", 100 ]
-        }
+        "condition": { "hp": [ ">=", 100 ] }
       }
     ],
     "heal": [
       {
-        "type": "マジック",
+        "base": "マジック",
         "rate": 3,
         "target": "味方全体",
         "timing": "行動後",
-        "condition": {
-          "onActiveSkill": true
-        }
+        "condition": { "onActiveSkill": true }
       }
     ],
     "tags": [ "デバフ解除" ]
@@ -6018,17 +5632,13 @@
         "type": "クリティカル率",
         "value": [ 15, 18, 23, 30 ],
         "ephemeral": true,
-        "condition": {
-          "onEnemyTurn": true
-        }
+        "condition": { "onEnemyTurn": true }
       },
       {
         "type": "クリティカルダメージ倍率",
         "value": [ 15, 18, 23, 30 ],
         "ephemeral": true,
-        "condition": {
-          "onEnemyTurn": true
-        }
+        "condition": { "onEnemyTurn": true }
       },
       {
         "type": "射程(通常攻撃)",
@@ -6094,33 +5704,25 @@
         "type": "最大HP",
         "value": [ 6, 7, 8, 10 ],
         "target": "味方全体",
-        "condition": {
-          "onSymbol": [ "ゼニス" ]
-        }
+        "condition": { "onSymbol": [ "ゼニス" ] }
       },
       {
         "type": "与ダメージ",
         "value": [ 6, 7, 8, 10 ],
         "target": "味方全体",
-        "condition": {
-          "onSymbol": [ "ゼニス" ]
-        }
+        "condition": { "onSymbol": [ "ゼニス" ] }
       },
       {
         "type": "クリティカル率",
         "value": [ 10, 12, 15, 20 ],
         "ephemeral": true,
-        "condition": {
-          "onCloseCombat": true
-        }
+        "condition": { "onCloseCombat": true }
       },
       {
         "type": "クリティカルダメージ倍率",
         "value": [ 10, 12, 15, 20 ],
         "ephemeral": true,
-        "condition": {
-          "onCloseCombat": true
-        }
+        "condition": { "onCloseCombat": true }
       },
       {
         "type": "ディフェンス",
@@ -6193,17 +5795,13 @@
         "type": "最大HP",
         "value": [ 6, 7, 8, 10 ],
         "target": "味方全体",
-        "condition": {
-          "onSymbol": [ "オリジン" ]
-        }
+        "condition": { "onSymbol": [ "オリジン" ] }
       },
       {
         "type": "与ダメージ",
         "value": [ 6, 7, 8, 10 ],
         "target": "味方全体",
-        "condition": {
-          "onSymbol": [ "オリジン" ]
-        }
+        "condition": { "onSymbol": [ "オリジン" ] }
       },
       {
         "type": "射程(通常攻撃)",
@@ -6350,9 +5948,7 @@
     "multiAction": [
       {
         "ct": 3,
-        "condition": {
-          "onKill": true
-        }
+        "condition": { "onKill": true }
       }
     ],
     "doubleAttack": [
@@ -6365,7 +5961,7 @@
     ],
     "heal": [
       {
-        "type": "ダメージ割合",
+        "base": "ダメージ割合",
         "rate": [ 0.06, 0.07, 0.08, 0.1 ],
         "target": "自身",
         "timing": "戦闘後"
@@ -6425,9 +6021,7 @@
         "type": "ディフェンス",
         "value": [ 10, 12, 15, 20 ],
         "ephemeral": true,
-        "condition": {
-          "onOwnTurn": true
-        }
+        "condition": { "onOwnTurn": true }
       },
       {
         "type": "ダメージ耐性",
@@ -6483,9 +6077,7 @@
         "trigger": {
           "target": "自身",
           "timing": "行動後",
-          "condition": {
-            "onActiveSkill": true
-          }
+          "condition": { "onActiveSkill": true }
         }
       },
       {
@@ -6566,9 +6158,7 @@
         "trigger": {
           "target": "自身",
           "timing": "戦闘後",
-          "condition": {
-            "onCriticalHit": true
-          }
+          "condition": { "onCriticalHit": true }
         }
       },
       {
@@ -6579,9 +6169,7 @@
         "trigger": {
           "target": "自身",
           "timing": "戦闘後",
-          "condition": {
-            "onCriticalHit": true
-          }
+          "condition": { "onCriticalHit": true }
         }
       },
       {
@@ -6594,13 +6182,7 @@
         }
       }
     ],
-    "doubleAttack": [
-      {
-        "condition": {
-          "hp": [ ">=", 100 ]
-        }
-      }
-    ],
+    "doubleAttack": [ { "condition": { "hp": [ ">=", 100 ] } } ],
     "revive": [
       {
         "rate": [ 0.2, 0.3, 0.4, 0.5 ],
@@ -6642,9 +6224,7 @@
         "trigger": {
           "target": "自身",
           "timing": "攻撃後",
-          "condition": {
-            "onDamage": true
-          }
+          "condition": { "onDamage": true }
         }
       },
       {
@@ -6660,13 +6240,11 @@
     ],
     "heal": [
       {
-        "type": "HP割合",
+        "base": "HP割合",
         "rate": [ 0.2, 0.3, 0.4, 0.5 ],
         "target": "味方(低HP)",
         "timing": "行動後",
-        "condition": {
-          "onActiveSkill": true
-        }
+        "condition": { "onActiveSkill": true }
       }
     ],
     "tags": [ "範囲+", "デバフ解除" ]
@@ -6708,9 +6286,7 @@
         "trigger": {
           "target": "味方全体",
           "timing": "行動後",
-          "condition": {
-            "onActiveSkill": true
-          }
+          "condition": { "onActiveSkill": true }
         }
       },
       {
@@ -6823,17 +6399,13 @@
         "type": "クリティカル率",
         "value": [ 10, 12, 15, 20 ],
         "ephemeral": true,
-        "condition": {
-          "onRangedCombat": true
-        }
+        "condition": { "onRangedCombat": true }
       },
       {
         "type": "クリティカルダメージ倍率",
         "value": [ 10, 12, 15, 20 ],
         "ephemeral": true,
-        "condition": {
-          "onRangedCombat": true
-        }
+        "condition": { "onRangedCombat": true }
       },
       {
         "type": "アタック",
@@ -6864,9 +6436,7 @@
         "trigger": {
           "target": "攻撃対象",
           "timing": "戦闘後",
-          "condition": {
-            "onCriticalHit": true
-          }
+          "condition": { "onCriticalHit": true }
         }
       },
       {
@@ -6876,9 +6446,7 @@
         "trigger": {
           "target": "攻撃対象",
           "timing": "戦闘後",
-          "condition": {
-            "onCriticalHit": true
-          }
+          "condition": { "onCriticalHit": true }
         }
       }
     ],
@@ -6906,33 +6474,25 @@
       {
         "type": "アタック",
         "value": [ 15, 18, 23, 30 ],
-        "condition": {
-          "hp": [ ">=", 100 ]
-        }
+        "condition": { "hp": [ ">=", 100 ] }
       },
       {
         "type": "クリティカル率",
         "value": [ 15, 18, 23, 30 ],
-        "condition": {
-          "hp": [ ">=", 100 ]
-        }
+        "condition": { "hp": [ ">=", 100 ] }
       },
       {
         "type": "与ダメージ",
         "value": [ 8, 10, 12, 15 ],
         "target": "範囲",
         "area": [ 3, "周囲" ],
-        "condition": {
-          "hp": [ ">=", 50 ]
-        }
+        "condition": { "hp": [ ">=", 50 ] }
       }
     ],
     "multiAction": [
       {
         "ct": 2,
-        "condition": {
-          "onDamage": true
-        }
+        "condition": { "onDamage": true }
       }
     ],
     "guard": [
@@ -6996,11 +6556,7 @@
         }
       }
     ],
-    "multiMove": [
-      {
-        "type": "基本移動力"
-      }
-    ],
+    "multiMove": [ { "type": "基本移動力" } ],
     "tags": [ "蓄積バフ" ]
   },
   {
@@ -7042,7 +6598,7 @@
     ],
     "heal": [
       {
-        "type": "HP割合",
+        "base": "HP割合",
         "rate": 0.2,
         "target": "味方(低HP)",
         "timing": "自ターン開始時"
@@ -7117,9 +6673,7 @@
     "multiAction": [
       {
         "ct": 2,
-        "condition": {
-          "onBattle": true
-        }
+        "condition": { "onBattle": true }
       }
     ]
   },
@@ -7154,9 +6708,7 @@
         "trigger": {
           "target": "自身",
           "timing": "行動前",
-          "condition": {
-            "onActiveSkill": true
-          }
+          "condition": { "onActiveSkill": true }
         }
       },
       {
@@ -7229,16 +6781,12 @@
         "value": 15,
         "ephemeral": true,
         "duration": 2,
-        "condition": {
-          "hp": [ ">=", 50 ]
-        },
+        "condition": { "hp": [ ">=", 50 ] },
         "trigger": {
           "target": "範囲",
           "area": [ 3, "周囲(自身を除く)" ],
           "timing": "行動後",
-          "condition": {
-            "onActiveSkill": true
-          }
+          "condition": { "onActiveSkill": true }
         }
       },
       {
@@ -7246,16 +6794,12 @@
         "value": 15,
         "ephemeral": true,
         "duration": 2,
-        "condition": {
-          "hp": [ ">=", 50 ]
-        },
+        "condition": { "hp": [ ">=", 50 ] },
         "trigger": {
           "target": "範囲",
           "area": [ 3, "周囲(自身を除く)" ],
           "timing": "行動後",
-          "condition": {
-            "onActiveSkill": true
-          }
+          "condition": { "onActiveSkill": true }
         }
       },
       {
@@ -7287,9 +6831,7 @@
         "trigger": {
           "target": "攻撃対象",
           "timing": "戦闘前",
-          "condition": {
-            "hp": [ ">=", 100 ]
-          }
+          "condition": { "hp": [ ">=", 100 ] }
         }
       }
     ],
@@ -7315,17 +6857,13 @@
         "type": "ディフェンス",
         "value": [ 12, 15, 18, 23, 30 ],
         "ephemeral": true,
-        "condition": {
-          "onTargetClass": [ "アサシン" ]
-        }
+        "condition": { "onTargetClass": [ "アサシン" ] }
       },
       {
         "type": "ダメージ耐性(物理)",
         "value": [ 12, 15, 18, 23, 30 ],
         "ephemeral": true,
-        "condition": {
-          "onTargetClass": [ "アサシン" ]
-        }
+        "condition": { "onTargetClass": [ "アサシン" ] }
       }
     ]
   },
@@ -7359,9 +6897,7 @@
         "trigger": {
           "target": "自身",
           "timing": "戦闘前",
-          "condition": {
-            "onOwnTurn": true
-          }
+          "condition": { "onOwnTurn": true }
         }
       },
       {
@@ -7371,9 +6907,7 @@
         "trigger": {
           "target": "自身",
           "timing": "戦闘前",
-          "condition": {
-            "onOwnTurn": true
-          }
+          "condition": { "onOwnTurn": true }
         }
       },
       {
@@ -7388,7 +6922,7 @@
     ],
     "heal": [
       {
-        "type": "HP割合",
+        "base": "HP割合",
         "rate": [ 0.08, 0.1, 0.12, 0.15 ],
         "target": "自身",
         "timing": "行動後"
@@ -7418,9 +6952,7 @@
         "type": "与ダメージ(物理)",
         "value": [ 25, 30, 36, 45 ],
         "ephemeral": true,
-        "condition": {
-          "onRangedCombat": true
-        }
+        "condition": { "onRangedCombat": true }
       },
       {
         "type": "移動",
@@ -7471,25 +7003,19 @@
         "type": "クリティカル率",
         "value": [ 18, 22, 26, 30 ],
         "ephemeral": true,
-        "condition": {
-          "onEffect": [ "3100464" ]
-        }
+        "condition": { "onEffect": [ "3100464" ] }
       },
       {
         "type": "クリティカルダメージ倍率",
         "value": [ 18, 22, 26, 30 ],
         "ephemeral": true,
-        "condition": {
-          "onEffect": [ "3100464" ]
-        }
+        "condition": { "onEffect": [ "3100464" ] }
       },
       {
         "type": "与ダメージ(通常攻撃)",
         "value": [ 25, 30, 36, 45 ],
         "ephemeral": true,
-        "condition": {
-          "targetActiveDebuffCount": [ ">=", 2 ]
-        }
+        "condition": { "targetActiveDebuffCount": [ ">=", 2 ] }
       },
       {
         "type": "与ダメージ",
@@ -7529,9 +7055,7 @@
         "trigger": {
           "target": "自身",
           "timing": "行動後",
-          "condition": {
-            "onActiveSkill": true
-          }
+          "condition": { "onActiveSkill": true }
         }
       },
       {
@@ -7614,7 +7138,7 @@
     ],
     "heal": [
       {
-        "type": "HP割合",
+        "base": "HP割合",
         "rate": [ 0.1, 0.12, 0.17, 0.25 ],
         "target": "自身",
         "timing": "敵撃破時"
@@ -7735,13 +7259,11 @@
     ],
     "heal": [
       {
-        "type": "ダメージ割合",
+        "base": "ダメージ割合",
         "rate": 0.3,
         "target": "自身",
         "timing": "戦闘後",
-        "condition": {
-          "probability": 50
-        }
+        "condition": { "probability": 50 }
       }
     ]
   },
@@ -7806,9 +7328,7 @@
         "target": "自身",
         "targetSkill": "全スキル",
         "timing": "戦闘後",
-        "condition": {
-          "onCriticalHit": true
-        }
+        "condition": { "onCriticalHit": true }
       }
     ]
   },
@@ -7822,9 +7342,7 @@
         "type": "アタック",
         "value": 10,
         "ephemeral": true,
-        "condition": {
-          "onOwnTurn": true
-        }
+        "condition": { "onOwnTurn": true }
       },
       {
         "type": "与ダメージ(範囲スキル)",
@@ -7886,20 +7404,16 @@
         "type": "与ダメージ",
         "value": 20,
         "ephemeral": true,
-        "condition": {
-          "onOwnTurn": true
-        }
+        "condition": { "onOwnTurn": true }
       }
     ],
     "heal": [
       {
-        "type": "ダメージ割合",
+        "base": "ダメージ割合",
         "rate": 0.2,
         "target": "自身",
         "timing": "戦闘後",
-        "condition": {
-          "probability": 50
-        }
+        "condition": { "probability": 50 }
       }
     ]
   },
@@ -7925,14 +7439,12 @@
         "type": "与ダメージ",
         "value": 20,
         "ephemeral": true,
-        "condition": {
-          "onOwnTurn": true
-        }
+        "condition": { "onOwnTurn": true }
       }
     ],
     "heal": [
       {
-        "type": "ダメージ割合",
+        "base": "ダメージ割合",
         "rate": 0.2,
         "target": "自身",
         "timing": "戦闘後"
@@ -7973,17 +7485,13 @@
         "type": "与ダメージ",
         "value": 15,
         "ephemeral": true,
-        "condition": {
-          "onOwnTurn": true
-        }
+        "condition": { "onOwnTurn": true }
       },
       {
         "type": "ダメージ耐性",
         "value": 15,
         "ephemeral": true,
-        "condition": {
-          "onEnemyTurn": true
-        }
+        "condition": { "onEnemyTurn": true }
       }
     ]
   },
@@ -7997,9 +7505,7 @@
         "type": "与ダメージ",
         "value": 20,
         "ephemeral": true,
-        "condition": {
-          "onOwnTurn": true
-        }
+        "condition": { "onOwnTurn": true }
       }
     ]
   },
@@ -8039,9 +7545,7 @@
         "target": "自身",
         "targetSkill": "全スキル",
         "timing": "戦闘後",
-        "condition": {
-          "onCriticalHit": true
-        }
+        "condition": { "onCriticalHit": true }
       }
     ]
   },
@@ -8085,25 +7589,19 @@
         "type": "レジスト",
         "value": -50,
         "ephemeral": true,
-        "condition": {
-          "onTargetClass": [ "ソーサラー" ]
-        }
+        "condition": { "onTargetClass": [ "ソーサラー" ] }
       },
       {
         "type": "ダメージ耐性",
         "value": -50,
         "ephemeral": true,
-        "condition": {
-          "onTargetClass": [ "ソーサラー" ]
-        }
+        "condition": { "onTargetClass": [ "ソーサラー" ] }
       },
       {
         "type": "ダメージ耐性",
         "value": 30,
         "ephemeral": true,
-        "condition": {
-          "onCloseCombat": true
-        }
+        "condition": { "onCloseCombat": true }
       }
     ]
   },
@@ -8117,25 +7615,19 @@
         "type": "レジスト",
         "value": -50,
         "ephemeral": true,
-        "condition": {
-          "onTargetClass": [ "ソーサラー" ]
-        }
+        "condition": { "onTargetClass": [ "ソーサラー" ] }
       },
       {
         "type": "ダメージ耐性",
         "value": -50,
         "ephemeral": true,
-        "condition": {
-          "onTargetClass": [ "ソーサラー" ]
-        }
+        "condition": { "onTargetClass": [ "ソーサラー" ] }
       },
       {
         "type": "ダメージ耐性",
         "value": 30,
         "ephemeral": true,
-        "condition": {
-          "onCloseCombat": true
-        }
+        "condition": { "onCloseCombat": true }
       }
     ]
   },
@@ -8149,25 +7641,19 @@
         "type": "レジスト",
         "value": -50,
         "ephemeral": true,
-        "condition": {
-          "onTargetClass": [ "ソーサラー" ]
-        }
+        "condition": { "onTargetClass": [ "ソーサラー" ] }
       },
       {
         "type": "ダメージ耐性",
         "value": -50,
         "ephemeral": true,
-        "condition": {
-          "onTargetClass": [ "ソーサラー" ]
-        }
+        "condition": { "onTargetClass": [ "ソーサラー" ] }
       },
       {
         "type": "ダメージ耐性",
         "value": 30,
         "ephemeral": true,
-        "condition": {
-          "onCloseCombat": true
-        }
+        "condition": { "onCloseCombat": true }
       }
     ]
   },
@@ -8181,25 +7667,19 @@
         "type": "ディフェンス",
         "value": -50,
         "ephemeral": true,
-        "condition": {
-          "onTargetClass": [ "アサシン" ]
-        }
+        "condition": { "onTargetClass": [ "アサシン" ] }
       },
       {
         "type": "ダメージ耐性",
         "value": -50,
         "ephemeral": true,
-        "condition": {
-          "onTargetClass": [ "アサシン" ]
-        }
+        "condition": { "onTargetClass": [ "アサシン" ] }
       },
       {
         "type": "ダメージ耐性",
         "value": 50,
         "ephemeral": true,
-        "condition": {
-          "onCloseCombat": true
-        }
+        "condition": { "onCloseCombat": true }
       }
     ]
   },
@@ -8213,25 +7693,19 @@
         "type": "ディフェンス",
         "value": -50,
         "ephemeral": true,
-        "condition": {
-          "onTargetClass": [ "アサシン" ]
-        }
+        "condition": { "onTargetClass": [ "アサシン" ] }
       },
       {
         "type": "ダメージ耐性",
         "value": -50,
         "ephemeral": true,
-        "condition": {
-          "onTargetClass": [ "アサシン" ]
-        }
+        "condition": { "onTargetClass": [ "アサシン" ] }
       },
       {
         "type": "ダメージ耐性",
         "value": 50,
         "ephemeral": true,
-        "condition": {
-          "onCloseCombat": true
-        }
+        "condition": { "onCloseCombat": true }
       }
     ]
   },
@@ -8245,25 +7719,19 @@
         "type": "ディフェンス",
         "value": -50,
         "ephemeral": true,
-        "condition": {
-          "onTargetClass": [ "アサシン" ]
-        }
+        "condition": { "onTargetClass": [ "アサシン" ] }
       },
       {
         "type": "ダメージ耐性",
         "value": -50,
         "ephemeral": true,
-        "condition": {
-          "onTargetClass": [ "アサシン" ]
-        }
+        "condition": { "onTargetClass": [ "アサシン" ] }
       },
       {
         "type": "ダメージ耐性",
         "value": 50,
         "ephemeral": true,
-        "condition": {
-          "onCloseCombat": true
-        }
+        "condition": { "onCloseCombat": true }
       }
     ]
   },
@@ -8277,17 +7745,13 @@
         "type": "レジスト",
         "value": -50,
         "ephemeral": true,
-        "condition": {
-          "onTargetClass": [ "セイント" ]
-        }
+        "condition": { "onTargetClass": [ "セイント" ] }
       },
       {
         "type": "ダメージ耐性",
         "value": -50,
         "ephemeral": true,
-        "condition": {
-          "onTargetClass": [ "セイント" ]
-        }
+        "condition": { "onTargetClass": [ "セイント" ] }
       }
     ]
   },
@@ -8301,17 +7765,13 @@
         "type": "レジスト",
         "value": -50,
         "ephemeral": true,
-        "condition": {
-          "onTargetClass": [ "セイント" ]
-        }
+        "condition": { "onTargetClass": [ "セイント" ] }
       },
       {
         "type": "ダメージ耐性",
         "value": -50,
         "ephemeral": true,
-        "condition": {
-          "onTargetClass": [ "セイント" ]
-        }
+        "condition": { "onTargetClass": [ "セイント" ] }
       }
     ]
   },
@@ -8325,17 +7785,13 @@
         "type": "レジスト",
         "value": -50,
         "ephemeral": true,
-        "condition": {
-          "onTargetClass": [ "セイント" ]
-        }
+        "condition": { "onTargetClass": [ "セイント" ] }
       },
       {
         "type": "ダメージ耐性",
         "value": -50,
         "ephemeral": true,
-        "condition": {
-          "onTargetClass": [ "セイント" ]
-        }
+        "condition": { "onTargetClass": [ "セイント" ] }
       }
     ]
   },
@@ -8357,16 +7813,12 @@
       {
         "type": "治療効果",
         "value": [ 20, 30, 40, 50 ],
-        "condition": {
-          "hp": [ ">=", 100 ]
-        }
+        "condition": { "hp": [ ">=", 100 ] }
       },
       {
         "type": "与ダメージ(魔法)",
         "value": [ 15, 18, 23, 30 ],
-        "condition": {
-          "hp": [ ">=", 100 ]
-        }
+        "condition": { "hp": [ ">=", 100 ] }
       },
       {
         "type": "クリティカル率",
@@ -8375,9 +7827,7 @@
         "trigger": {
           "target": "自身",
           "timing": "自ターン開始時",
-          "condition": {
-            "hp": [ ">=", 100 ]
-          }
+          "condition": { "hp": [ ">=", 100 ] }
         }
       },
       {
@@ -8388,9 +7838,7 @@
         "trigger": {
           "target": "味方全体",
           "timing": "行動後",
-          "condition": {
-            "onActiveSkill": true
-          }
+          "condition": { "onActiveSkill": true }
         }
       },
       {
@@ -8483,14 +7931,12 @@
         "target": "自身",
         "targetSkill": "全スキル",
         "timing": "自ターン開始時",
-        "condition": {
-          "hp": [ ">=", 100 ]
-        }
+        "condition": { "hp": [ ">=", 100 ] }
       }
     ],
     "heal": [
       {
-        "type": "HP割合",
+        "base": "HP割合",
         "rate": 0.1,
         "target": "自身",
         "timing": "行動後",
@@ -8531,17 +7977,13 @@
         "type": "アタック",
         "value": [ 15, 18, 23, 30 ],
         "ephemeral": true,
-        "condition": {
-          "onOwnTurn": true
-        }
+        "condition": { "onOwnTurn": true }
       },
       {
         "type": "クリティカル率",
         "value": [ 15, 18, 23, 30 ],
         "ephemeral": true,
-        "condition": {
-          "onOwnTurn": true
-        }
+        "condition": { "onOwnTurn": true }
       }
     ],
     "doubleAttack": [
@@ -8554,7 +7996,7 @@
     ],
     "heal": [
       {
-        "type": "ダメージ割合",
+        "base": "ダメージ割合",
         "rate": [ 0.1, 0.12, 0.15, 0.2 ],
         "target": "自身",
         "timing": "戦闘後"
@@ -8579,13 +8021,11 @@
     ],
     "heal": [
       {
-        "type": "HP割合",
+        "base": "HP割合",
         "rate": 0.2,
         "target": "自身",
         "timing": "戦闘後",
-        "condition": {
-          "onOwnTurn": true
-        }
+        "condition": { "onOwnTurn": true }
       }
     ]
   },
@@ -8605,25 +8045,19 @@
         "type": "ディフェンス",
         "value": -50,
         "ephemeral": true,
-        "condition": {
-          "onTargetClass": [ "ソルジャー" ]
-        }
+        "condition": { "onTargetClass": [ "ソルジャー" ] }
       },
       {
         "type": "ダメージ耐性",
         "value": -50,
         "ephemeral": true,
-        "condition": {
-          "onTargetClass": [ "ソルジャー" ]
-        }
+        "condition": { "onTargetClass": [ "ソルジャー" ] }
       },
       {
         "type": "ダメージ耐性",
         "value": 50,
         "ephemeral": true,
-        "condition": {
-          "onRangedCombat": true
-        }
+        "condition": { "onRangedCombat": true }
       }
     ]
   },
@@ -8637,25 +8071,19 @@
         "type": "ディフェンス",
         "value": -50,
         "ephemeral": true,
-        "condition": {
-          "onTargetClass": [ "ソルジャー" ]
-        }
+        "condition": { "onTargetClass": [ "ソルジャー" ] }
       },
       {
         "type": "ダメージ耐性",
         "value": -50,
         "ephemeral": true,
-        "condition": {
-          "onTargetClass": [ "ソルジャー" ]
-        }
+        "condition": { "onTargetClass": [ "ソルジャー" ] }
       },
       {
         "type": "ダメージ耐性",
         "value": 50,
         "ephemeral": true,
-        "condition": {
-          "onRangedCombat": true
-        }
+        "condition": { "onRangedCombat": true }
       }
     ]
   },
@@ -8669,25 +8097,19 @@
         "type": "ディフェンス",
         "value": -50,
         "ephemeral": true,
-        "condition": {
-          "onTargetClass": [ "ソルジャー" ]
-        }
+        "condition": { "onTargetClass": [ "ソルジャー" ] }
       },
       {
         "type": "ダメージ耐性",
         "value": -50,
         "ephemeral": true,
-        "condition": {
-          "onTargetClass": [ "ソルジャー" ]
-        }
+        "condition": { "onTargetClass": [ "ソルジャー" ] }
       },
       {
         "type": "ダメージ耐性",
         "value": 50,
         "ephemeral": true,
-        "condition": {
-          "onRangedCombat": true
-        }
+        "condition": { "onRangedCombat": true }
       }
     ]
   },
@@ -8705,9 +8127,7 @@
       {
         "type": "与ダメージ(通常攻撃)",
         "value": [ 30, 32, 37, 45 ],
-        "condition": {
-          "hp": [ ">=", 100 ]
-        }
+        "condition": { "hp": [ ">=", 100 ] }
       },
       {
         "type": "トークン",
@@ -8716,9 +8136,7 @@
         "trigger": {
           "target": "自身",
           "timing": "自ターン開始時",
-          "condition": {
-            "hp": [ ">=", 100 ]
-          }
+          "condition": { "hp": [ ">=", 100 ] }
         }
       },
       {
@@ -8805,9 +8223,7 @@
     "multiAction": [
       {
         "ct": 3,
-        "condition": {
-          "onKill": true
-        }
+        "condition": { "onKill": true }
       }
     ],
     "tags": [ "移動+" ],
@@ -8832,80 +8248,58 @@
         "type": "クリティカルダメージ倍率",
         "value": [ 10, 12, 15, 20 ],
         "ephemeral": true,
-        "condition": {
-          "onCloseCombat": true
-        }
+        "condition": { "onCloseCombat": true }
       },
       {
         "type": "与ダメージ(スキル)",
         "value": [ 10, 12, 15, 20 ],
         "ephemeral": true,
-        "condition": {
-          "onCloseCombat": true
-        }
+        "condition": { "onCloseCombat": true }
       },
       {
         "type": "アタック",
         "value": [ 8, 10, 12, 15 ],
-        "condition": {
-          "turn": [ "==", 2 ]
-        }
+        "condition": { "turn": [ "==", 2 ] }
       },
       {
         "type": "アタック",
         "value": [ 15, 18, 23, 30 ],
-        "condition": {
-          "turn": [ "==", 3 ]
-        }
+        "condition": { "turn": [ "==", 3 ] }
       },
       {
         "type": "アタック",
         "value": [ 30, 32, 37, 45 ],
-        "condition": {
-          "turn": [ ">=", 4 ]
-        }
+        "condition": { "turn": [ ">=", 4 ] }
       },
       {
         "type": "与ダメージ(物理)",
         "value": [ 8, 10, 12, 15 ],
-        "condition": {
-          "turn": [ "==", 2 ]
-        }
+        "condition": { "turn": [ "==", 2 ] }
       },
       {
         "type": "与ダメージ(物理)",
         "value": [ 15, 18, 23, 30 ],
-        "condition": {
-          "turn": [ "==", 3 ]
-        }
+        "condition": { "turn": [ "==", 3 ] }
       },
       {
         "type": "与ダメージ(物理)",
         "value": [ 30, 32, 37, 45 ],
-        "condition": {
-          "turn": [ ">=", 4 ]
-        }
+        "condition": { "turn": [ ">=", 4 ] }
       },
       {
         "type": "移動",
         "value": 1,
-        "condition": {
-          "turn": [ "==", 2 ]
-        }
+        "condition": { "turn": [ "==", 2 ] }
       },
       {
         "type": "移動",
         "value": 2,
-        "condition": {
-          "turn": [ "==", 3 ]
-        }
+        "condition": { "turn": [ "==", 3 ] }
       },
       {
         "type": "移動",
         "value": 3,
-        "condition": {
-          "turn": [ ">=", 4 ]
-        }
+        "condition": { "turn": [ ">=", 4 ] }
       }
     ],
     "multiAction": [
@@ -8963,9 +8357,7 @@
         "trigger": {
           "target": "自身",
           "timing": "自ターン開始時",
-          "condition": {
-            "hp": [ ">=", 100 ]
-          }
+          "condition": { "hp": [ ">=", 100 ] }
         }
       },
       {
@@ -9045,9 +8437,7 @@
         "trigger": {
           "target": "自身",
           "timing": "行動後",
-          "condition": {
-            "onActiveSkill": true
-          }
+          "condition": { "onActiveSkill": true }
         }
       },
       {
@@ -9066,14 +8456,12 @@
     "multiAction": [
       {
         "ct": 3,
-        "condition": {
-          "onKill": true
-        }
+        "condition": { "onKill": true }
       }
     ],
     "heal": [
       {
-        "type": "HP割合",
+        "base": "HP割合",
         "rate": [ 0.08, 0.1, 0.12, 0.15 ],
         "target": "範囲",
         "area": [ 3, "周囲" ],
@@ -9161,9 +8549,7 @@
         "trigger": {
           "target": "攻撃対象",
           "timing": "戦闘前",
-          "condition": {
-            "onOwnTurn": true
-          }
+          "condition": { "onOwnTurn": true }
         }
       },
       {
@@ -9173,9 +8559,7 @@
         "trigger": {
           "target": "攻撃対象",
           "timing": "戦闘前",
-          "condition": {
-            "onOwnTurn": true
-          }
+          "condition": { "onOwnTurn": true }
         }
       }
     ]
@@ -9198,16 +8582,12 @@
       {
         "type": "与ダメージ(物理)",
         "value": [ 10, 12, 15, 20 ],
-        "condition": {
-          "hp": [ ">=", 50 ]
-        }
+        "condition": { "hp": [ ">=", 50 ] }
       },
       {
         "type": "与ダメージ(通常攻撃)",
         "value": [ 10, 12, 15, 20 ],
-        "condition": {
-          "hp": [ ">=", 50 ]
-        }
+        "condition": { "hp": [ ">=", 50 ] }
       },
       {
         "type": "トークン",
@@ -9254,7 +8634,7 @@
     ],
     "heal": [
       {
-        "type": "ダメージ割合",
+        "base": "ダメージ割合",
         "rate": [ 0.06, 0.07, 0.08, 0.1 ],
         "target": "自身",
         "timing": "戦闘後",
@@ -9306,25 +8686,19 @@
         "type": "ディフェンス",
         "value": -50,
         "ephemeral": true,
-        "condition": {
-          "onTargetClass": [ "エアリアル" ]
-        }
+        "condition": { "onTargetClass": [ "エアリアル" ] }
       },
       {
         "type": "ダメージ耐性",
         "value": -50,
         "ephemeral": true,
-        "condition": {
-          "onTargetClass": [ "エアリアル" ]
-        }
+        "condition": { "onTargetClass": [ "エアリアル" ] }
       },
       {
         "type": "ダメージ耐性",
         "value": 50,
         "ephemeral": true,
-        "condition": {
-          "onRangedCombat": true
-        }
+        "condition": { "onRangedCombat": true }
       }
     ]
   },
@@ -9338,25 +8712,19 @@
         "type": "ディフェンス",
         "value": -50,
         "ephemeral": true,
-        "condition": {
-          "onTargetClass": [ "エアリアル" ]
-        }
+        "condition": { "onTargetClass": [ "エアリアル" ] }
       },
       {
         "type": "ダメージ耐性",
         "value": -50,
         "ephemeral": true,
-        "condition": {
-          "onTargetClass": [ "エアリアル" ]
-        }
+        "condition": { "onTargetClass": [ "エアリアル" ] }
       },
       {
         "type": "ダメージ耐性",
         "value": 50,
         "ephemeral": true,
-        "condition": {
-          "onRangedCombat": true
-        }
+        "condition": { "onRangedCombat": true }
       }
     ]
   },
@@ -9370,25 +8738,19 @@
         "type": "ディフェンス",
         "value": -50,
         "ephemeral": true,
-        "condition": {
-          "onTargetClass": [ "エアリアル" ]
-        }
+        "condition": { "onTargetClass": [ "エアリアル" ] }
       },
       {
         "type": "ダメージ耐性",
         "value": -50,
         "ephemeral": true,
-        "condition": {
-          "onTargetClass": [ "エアリアル" ]
-        }
+        "condition": { "onTargetClass": [ "エアリアル" ] }
       },
       {
         "type": "ダメージ耐性",
         "value": 50,
         "ephemeral": true,
-        "condition": {
-          "onRangedCombat": true
-        }
+        "condition": { "onRangedCombat": true }
       }
     ]
   },
@@ -9432,9 +8794,7 @@
         "trigger": {
           "target": "自身",
           "timing": "攻撃前",
-          "condition": {
-            "onAreaSkill": true
-          }
+          "condition": { "onAreaSkill": true }
         }
       }
     ],
@@ -9504,7 +8864,7 @@
     ],
     "heal": [
       {
-        "type": "マジック",
+        "base": "マジック",
         "rate": [ 2, 3, 4, 5 ],
         "target": "味方(低HP)",
         "timing": "自ターン開始時"
@@ -9534,9 +8894,7 @@
         "trigger": {
           "target": "自身",
           "timing": "行動前",
-          "condition": {
-            "onActiveSkill": true
-          }
+          "condition": { "onActiveSkill": true }
         }
       },
       {
@@ -9612,17 +8970,13 @@
         "type": "与ダメージ(スキル)",
         "value": [ 18, 23, 30, 40 ],
         "ephemeral": true,
-        "condition": {
-          "onOwnTurn": true
-        }
+        "condition": { "onOwnTurn": true }
       },
       {
         "type": "クリティカルダメージ倍率",
         "value": [ 10, 12, 17, 25 ],
         "ephemeral": true,
-        "condition": {
-          "targetActiveDebuffCount": [ ">", 0 ]
-        }
+        "condition": { "targetActiveDebuffCount": [ ">", 0 ] }
       }
     ],
     "multiAction": [
@@ -9675,22 +9029,18 @@
         "type": "与ダメージ(スキル)",
         "value": [ 10, 12, 17, 25 ],
         "ephemeral": true,
-        "condition": {
-          "onCloseCombat": true
-        }
+        "condition": { "onCloseCombat": true }
       },
       {
         "type": "クリティカルダメージ倍率",
         "value": [ 10, 12, 17, 25 ],
         "ephemeral": true,
-        "condition": {
-          "onCloseCombat": true
-        }
+        "condition": { "onCloseCombat": true }
       }
     ],
     "heal": [
       {
-        "type": "ダメージ割合",
+        "base": "ダメージ割合",
         "rate": [ 0.06, 0.07, 0.08, 0.1 ],
         "target": "自身",
         "timing": "戦闘後"
@@ -9773,25 +9123,19 @@
         "type": "ディフェンス",
         "value": -50,
         "ephemeral": true,
-        "condition": {
-          "onTargetClass": [ "シューター" ]
-        }
+        "condition": { "onTargetClass": [ "シューター" ] }
       },
       {
         "type": "ダメージ耐性",
         "value": -50,
         "ephemeral": true,
-        "condition": {
-          "onTargetClass": [ "シューター" ]
-        }
+        "condition": { "onTargetClass": [ "シューター" ] }
       },
       {
         "type": "ダメージ耐性",
         "value": 50,
         "ephemeral": true,
-        "condition": {
-          "onCloseCombat": true
-        }
+        "condition": { "onCloseCombat": true }
       }
     ]
   },
@@ -9805,25 +9149,19 @@
         "type": "ディフェンス",
         "value": -50,
         "ephemeral": true,
-        "condition": {
-          "onTargetClass": [ "シューター" ]
-        }
+        "condition": { "onTargetClass": [ "シューター" ] }
       },
       {
         "type": "ダメージ耐性",
         "value": -50,
         "ephemeral": true,
-        "condition": {
-          "onTargetClass": [ "シューター" ]
-        }
+        "condition": { "onTargetClass": [ "シューター" ] }
       },
       {
         "type": "ダメージ耐性",
         "value": 50,
         "ephemeral": true,
-        "condition": {
-          "onCloseCombat": true
-        }
+        "condition": { "onCloseCombat": true }
       }
     ]
   },
@@ -9837,25 +9175,19 @@
         "type": "ディフェンス",
         "value": -50,
         "ephemeral": true,
-        "condition": {
-          "onTargetClass": [ "シューター" ]
-        }
+        "condition": { "onTargetClass": [ "シューター" ] }
       },
       {
         "type": "ダメージ耐性",
         "value": -50,
         "ephemeral": true,
-        "condition": {
-          "onTargetClass": [ "シューター" ]
-        }
+        "condition": { "onTargetClass": [ "シューター" ] }
       },
       {
         "type": "ダメージ耐性",
         "value": 50,
         "ephemeral": true,
-        "condition": {
-          "onCloseCombat": true
-        }
+        "condition": { "onCloseCombat": true }
       }
     ]
   },
@@ -9906,9 +9238,7 @@
       {
         "type": "マジック",
         "value": 15,
-        "condition": {
-          "hp": [ ">=", 100 ]
-        }
+        "condition": { "hp": [ ">=", 100 ] }
       }
     ]
   },
@@ -9922,9 +9252,7 @@
         "type": "与ダメージ",
         "value": 15,
         "ephemeral": true,
-        "condition": {
-          "onOwnTurn": true
-        }
+        "condition": { "onOwnTurn": true }
       }
     ]
   },
@@ -9967,17 +9295,13 @@
         "type": "与ダメージ(スキル)",
         "value": [ 6, 7, 8, 10 ],
         "target": "味方全体",
-        "condition": {
-          "onSymbol": [ "ナディア" ]
-        }
+        "condition": { "onSymbol": [ "ナディア" ] }
       },
       {
         "type": "与ダメージ",
         "value": [ 6, 7, 8, 10 ],
         "target": "味方全体",
-        "condition": {
-          "onSymbol": [ "ナディア" ]
-        }
+        "condition": { "onSymbol": [ "ナディア" ] }
       },
       {
         "type": "マジック",
@@ -10004,18 +9328,14 @@
         "trigger": {
           "target": "自身",
           "timing": "攻撃前",
-          "condition": {
-            "onAreaSkill": true
-          }
+          "condition": { "onAreaSkill": true }
         }
       }
     ],
     "multiAction": [
       {
         "ct": 3,
-        "condition": {
-          "onAreaSkill": true
-        }
+        "condition": { "onAreaSkill": true }
       }
     ]
   },
@@ -10042,9 +9362,7 @@
         "trigger": {
           "target": "自身",
           "timing": "戦闘前",
-          "condition": {
-            "onSingleSkill": true
-          }
+          "condition": { "onSingleSkill": true }
         }
       },
       {
@@ -10055,26 +9373,20 @@
         "trigger": {
           "target": "自身",
           "timing": "戦闘前",
-          "condition": {
-            "onSingleSkill": true
-          }
+          "condition": { "onSingleSkill": true }
         }
       },
       {
         "type": "クリティカル率",
         "value": [ 6, 7, 8, 10 ],
         "ephemeral": true,
-        "condition": {
-          "onOwnTurn": true
-        }
+        "condition": { "onOwnTurn": true }
       },
       {
         "type": "クリティカルダメージ倍率",
         "value": [ 6, 7, 8, 10 ],
         "ephemeral": true,
-        "condition": {
-          "onOwnTurn": true
-        }
+        "condition": { "onOwnTurn": true }
       }
     ],
     "debuff": [
@@ -10115,9 +9427,7 @@
         "targetSkill": "全スキル",
         "value": 1,
         "timing": "自ターン開始時",
-        "condition": {
-          "hp": [ ">=", 100 ]
-        }
+        "condition": { "hp": [ ">=", 100 ] }
       }
     ],
     "buff": [
@@ -10133,9 +9443,7 @@
         "trigger": {
           "target": "自身",
           "timing": "自ターン開始時",
-          "condition": {
-            "hp": [ ">=", 100 ]
-          }
+          "condition": { "hp": [ ">=", 100 ] }
         }
       },
       {
@@ -10146,9 +9454,7 @@
         "trigger": {
           "target": "自身",
           "timing": "攻撃後",
-          "condition": {
-            "onDamage": true
-          }
+          "condition": { "onDamage": true }
         }
       },
       {
@@ -10239,17 +9545,13 @@
         "type": "クリティカル率",
         "value": [ 10, 12, 15, 20 ],
         "ephemeral": true,
-        "condition": {
-          "onRangedCombat": true
-        }
+        "condition": { "onRangedCombat": true }
       },
       {
         "type": "クリティカルダメージ倍率",
         "value": [ 10, 12, 15, 20 ],
         "ephemeral": true,
-        "condition": {
-          "onRangedCombat": true
-        }
+        "condition": { "onRangedCombat": true }
       },
       {
         "type": "与ダメージ(物理)",
@@ -10259,9 +9561,7 @@
         "trigger": {
           "target": "自身",
           "timing": "戦闘後",
-          "condition": {
-            "onCriticalHit": true
-          }
+          "condition": { "onCriticalHit": true }
         }
       },
       {
@@ -10272,9 +9572,7 @@
         "trigger": {
           "target": "自身",
           "timing": "戦闘後",
-          "condition": {
-            "onCriticalHit": true
-          }
+          "condition": { "onCriticalHit": true }
         }
       }
     ],
@@ -10295,25 +9593,19 @@
         "type": "ディフェンス",
         "value": -50,
         "ephemeral": true,
-        "condition": {
-          "onTargetClass": [ "ライダー" ]
-        }
+        "condition": { "onTargetClass": [ "ライダー" ] }
       },
       {
         "type": "ダメージ耐性",
         "value": -50,
         "ephemeral": true,
-        "condition": {
-          "onTargetClass": [ "ライダー" ]
-        }
+        "condition": { "onTargetClass": [ "ライダー" ] }
       },
       {
         "type": "ダメージ耐性",
         "value": 30,
         "ephemeral": true,
-        "condition": {
-          "onRangedCombat": true
-        }
+        "condition": { "onRangedCombat": true }
       }
     ]
   },
@@ -10327,25 +9619,19 @@
         "type": "ディフェンス",
         "value": -50,
         "ephemeral": true,
-        "condition": {
-          "onTargetClass": [ "ライダー" ]
-        }
+        "condition": { "onTargetClass": [ "ライダー" ] }
       },
       {
         "type": "ダメージ耐性",
         "value": -50,
         "ephemeral": true,
-        "condition": {
-          "onTargetClass": [ "ライダー" ]
-        }
+        "condition": { "onTargetClass": [ "ライダー" ] }
       },
       {
         "type": "ダメージ耐性",
         "value": 30,
         "ephemeral": true,
-        "condition": {
-          "onRangedCombat": true
-        }
+        "condition": { "onRangedCombat": true }
       }
     ]
   },
@@ -10359,25 +9645,19 @@
         "type": "ディフェンス",
         "value": -50,
         "ephemeral": true,
-        "condition": {
-          "onTargetClass": [ "ライダー" ]
-        }
+        "condition": { "onTargetClass": [ "ライダー" ] }
       },
       {
         "type": "ダメージ耐性",
         "value": -50,
         "ephemeral": true,
-        "condition": {
-          "onTargetClass": [ "ライダー" ]
-        }
+        "condition": { "onTargetClass": [ "ライダー" ] }
       },
       {
         "type": "ダメージ耐性",
         "value": 30,
         "ephemeral": true,
-        "condition": {
-          "onRangedCombat": true
-        }
+        "condition": { "onRangedCombat": true }
       }
     ]
   },
@@ -10398,13 +9678,11 @@
     ],
     "heal": [
       {
-        "type": "ダメージ割合",
+        "base": "ダメージ割合",
         "rate": 0.2,
         "target": "自身",
         "timing": "戦闘後",
-        "condition": {
-          "onOwnTurn": true
-        }
+        "condition": { "onOwnTurn": true }
       }
     ]
   },
@@ -10427,8 +9705,8 @@
     ],
     "heal": [
       {
-        "type": "マジック",
-        "rate": [ 1.2, 1.5, 1.8, 2.3, 3.0 ],
+        "base": "マジック",
+        "rate": [ 1.2, 1.5, 1.8, 2.3, 3 ],
         "target": "味方(低HP)",
         "timing": "行動後"
       }
@@ -10487,9 +9765,7 @@
         "type": "クリティカル率",
         "value": [ 18, 23, 30, 40 ],
         "ephemeral": true,
-        "condition": {
-          "onRangedCombat": true
-        }
+        "condition": { "onRangedCombat": true }
       },
       {
         "type": "与ダメージ(物理)",
@@ -10505,9 +9781,7 @@
     "multiAction": [
       {
         "ct": 3,
-        "condition": {
-          "onActiveSkill": true
-        }
+        "condition": { "onActiveSkill": true }
       }
     ],
     "tags": [ "移動+", "範囲+" ]
@@ -10599,9 +9873,7 @@
         "trigger": {
           "target": "攻撃対象",
           "timing": "攻撃後",
-          "condition": {
-            "onDamage": true
-          }
+          "condition": { "onDamage": true }
         }
       },
       {
@@ -10631,9 +9903,7 @@
         "target": "自身",
         "targetSkill": "全スキル",
         "timing": "自ターン開始時",
-        "condition": {
-          "hp": [ ">=", 50 ]
-        }
+        "condition": { "hp": [ ">=", 50 ] }
       }
     ]
   },
@@ -10660,17 +9930,13 @@
         "type": "アタック",
         "value": [ 8, 10, 12, 15 ],
         "ephemeral": true,
-        "condition": {
-          "onCloseCombat": true
-        }
+        "condition": { "onCloseCombat": true }
       },
       {
         "type": "クリティカルダメージ倍率",
         "value": [ 8, 10, 12, 15 ],
         "ephemeral": true,
-        "condition": {
-          "onCloseCombat": true
-        }
+        "condition": { "onCloseCombat": true }
       },
       {
         "type": "ダメージ耐性",
@@ -10679,9 +9945,7 @@
         "trigger": {
           "target": "自身",
           "timing": "戦闘後",
-          "condition": {
-            "onCriticalHit": true
-          }
+          "condition": { "onCriticalHit": true }
         }
       }
     ],
@@ -10693,15 +9957,13 @@
         "trigger": {
           "target": "攻撃対象",
           "timing": "戦闘前",
-          "condition": {
-            "hp": [ ">=", 100 ]
-          }
+          "condition": { "hp": [ ">=", 100 ] }
         }
       }
     ],
     "heal": [
       {
-        "type": "HP割合",
+        "base": "HP割合",
         "rate": [ 0.08, 0.1, 0.12, 0.15 ],
         "target": "自身",
         "timing": "行動後"
@@ -10777,17 +10039,13 @@
         "type": "与ダメージ(魔法)",
         "value": [ 6, 7, 8, 10 ],
         "ephemeral": true,
-        "condition": {
-          "onRangedCombat": true
-        }
+        "condition": { "onRangedCombat": true }
       },
       {
         "type": "与ダメージ(スキル)",
         "value": [ 6, 7, 8, 10 ],
         "ephemeral": true,
-        "condition": {
-          "onRangedCombat": true
-        }
+        "condition": { "onRangedCombat": true }
       }
     ],
     "debuff": [
@@ -10805,9 +10063,7 @@
     "multiAction": [
       {
         "ct": 3,
-        "condition": {
-          "onKill": true
-        }
+        "condition": { "onKill": true }
       }
     ]
   },
@@ -10831,7 +10087,7 @@
     "desc": "行動終了時、自ユニットのメイン、サポートそれぞれのHPが最大HPの25%分回復する。",
     "heal": [
       {
-        "type": "HP割合",
+        "base": "HP割合",
         "rate": 0.25,
         "target": "自身",
         "timing": "行動後"
@@ -10864,9 +10120,7 @@
         "trigger": {
           "target": "自身",
           "timing": "自ターン開始時",
-          "condition": {
-            "hp": [ ">=", 100 ]
-          }
+          "condition": { "hp": [ ">=", 100 ] }
         }
       },
       {
@@ -10876,9 +10130,7 @@
         "trigger": {
           "target": "自身",
           "timing": "自ターン開始時",
-          "condition": {
-            "hp": [ ">=", 100 ]
-          }
+          "condition": { "hp": [ ">=", 100 ] }
         }
       },
       {
@@ -10889,9 +10141,7 @@
         "trigger": {
           "target": "自身",
           "timing": "行動後",
-          "condition": {
-            "onActiveSkill": true
-          }
+          "condition": { "onActiveSkill": true }
         }
       },
       {

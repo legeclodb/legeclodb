@@ -2,7 +2,7 @@ import jsonImageTable from '../assets/image_table.json'
 import jsonConstants from '../assets/constants.json'
 import jsonRandomEffectTable from '../assets/random_effect_table.json'
 import jsonShape from '../assets/shape.json'
-import { count, enumerate } from './utils'
+import { count, enumerate, download } from './utils'
 
 export default {
   data() {
@@ -1498,20 +1498,19 @@ export default {
         setParent(v);
       }
 
-      // 確認用
-      //for (let e of [...(skill.buff ?? []), ...(skill.debuff ?? []), ...(skill.statusEffects ?? []), ...(skill.immune ?? [])]) {
-      //  if (e.stackBy == "token" && !e.tokenName) {
-      //    console.log(skill.name);
-      //  }
-      //}
-
       if (!skill.tags)
         skill.tags = [];
       if (params.includeSkillEffectTags)
         skill.tags = [...skill.tags, ...this.effectParamsToTags(skill, params)];
 
-      if (!skill.icon)
-        skill.icon = skill.uid;
+      // 確認・デバッグ用
+      if (process.env.NODE_ENV === 'development') {
+        for (let e of skill.effects) {
+          if (!e.value && !e.add && !e.variable && !["ランダム", "トークン"].includes(e.type)) {
+            throw Error(`${skill.name}: ${e.type}`);
+          }
+        }
+      }
     },
 
     setupItems(items, params = {}) {

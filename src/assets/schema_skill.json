@@ -417,10 +417,10 @@
 
     "heal": {
       "type": "object",
-      "required": [ "type", "rate" ],
+      "required": [ "base", "rate" ],
       "additionalProperties": false,
       "properties": {
-        "type": { "enum": [ "マジック", "HP割合", "ダメージ割合" ] },
+        "base": { "enum": [ "マジック", "HP割合", "ダメージ割合" ] },
         "rate": {
           "anyOf": [
             { "type": "number" },

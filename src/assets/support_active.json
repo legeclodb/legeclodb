@@ -11,7 +11,7 @@
     },
     "area": "単体",
     "range": 3,
-    "damageRate": [ 1.0, 1.1, 1.2, 1.3 ],
+    "damageRate": [ 1, 1.1, 1.2, 1.3 ],
     "debuff": [
       {
         "type": "ランダム",
@@ -39,13 +39,11 @@
     },
     "area": 2,
     "range": 2,
-    "damageRate": [ 1.9, 2.0, 2.1, 2.25 ],
+    "damageRate": [ 1.9, 2, 2.1, 2.25 ],
     "damageRateSp": [
       {
-        "value": [ 2.7, 2.8, 2.9, 3.0 ],
-        "condition": {
-          "onTargetClass": [ "ソルジャー" ]
-        }
+        "value": [ 2.7, 2.8, 2.9, 3 ],
+        "condition": { "onTargetClass": [ "ソルジャー" ] }
       }
     ]
   },
@@ -82,7 +80,7 @@
     },
     "area": "単体",
     "range": 3,
-    "damageRate": [ 2.9, 3.0, 3.1, 3.25 ],
+    "damageRate": [ 2.9, 3, 3.1, 3.25 ],
     "statusEffects": [
       {
         "type": "回復不可",
@@ -118,8 +116,8 @@
     "range": 2,
     "heal": [
       {
-        "type": "マジック",
-        "rate": [ 4.0, 4.5, 5.0, 5.0 ],
+        "base": "マジック",
+        "rate": [ 4, 4.5, 5, 5 ],
         "target": "スキル対象"
       }
     ],
@@ -188,7 +186,7 @@
     },
     "area": "単体",
     "range": 3,
-    "damageRate": [ 1.0, 1.1, 1.2, 1.3, 1.4 ],
+    "damageRate": [ 1, 1.1, 1.2, 1.3, 1.4 ],
     "buffCancel": [
       {
         "value": [ 1, 1, 2, 2, 2 ],
@@ -209,14 +207,12 @@
     },
     "area": "単体",
     "range": 3,
-    "damageRate": [ 0.8, 0.9, 1.0, 1.1, 1.2 ],
+    "damageRate": [ 0.8, 0.9, 1, 1.1, 1.2 ],
     "damageRateSp": [
       {
         "todo": "未調査",
-        "value": [ 0.8, 0.9, 1.0, 1.1, 1.2 ],
-        "condition": {
-          "onTargetClass": [ "ソルジャー" ]
-        }
+        "value": [ 0.8, 0.9, 1, 1.1, 1.2 ],
+        "condition": { "onTargetClass": [ "ソルジャー" ] }
       }
     ]
   },
@@ -284,8 +280,8 @@
     "range": 2,
     "heal": [
       {
-        "type": "マジック",
-        "rate": [ 3.0, 3.5, 3.5, 4.0, 4.5 ],
+        "base": "マジック",
+        "rate": [ 3, 3.5, 3.5, 4, 4.5 ],
         "target": "スキル対象"
       }
     ],
@@ -309,9 +305,7 @@
         "type": "与ダメージ",
         "value": [ 20, 25, 30, 35, 40 ],
         "duration": 2,
-        "condition": {
-          "onTargetClass": [ "ソルジャー", "ランサー", "ライダー" ]
-        }
+        "condition": { "onTargetClass": [ "ソルジャー", "ランサー", "ライダー" ] }
       }
     ]
   },
@@ -333,9 +327,7 @@
       {
         "todo": "未調査",
         "value": [ 0.35, 0.45, 0.55, 0.65, 0.75 ],
-        "condition": {
-          "onTargetClass": [ "ランサー" ]
-        }
+        "condition": { "onTargetClass": [ "ランサー" ] }
       }
     ]
   },
@@ -537,11 +529,7 @@
     },
     "area": "単体",
     "range": 3,
-    "buffCancel": [
-      {
-        "value": 2
-      }
-    ],
+    "buffCancel": [ { "value": 2 } ],
     "debuff": [
       {
         "type": "ランダム",
@@ -589,8 +577,8 @@
     "range": 2,
     "heal": [
       {
-        "type": "マジック",
-        "rate": [ 1.5, 2.0, 2.3, 2.6, 3.0, 3.5 ],
+        "base": "マジック",
+        "rate": [ 1.5, 2, 2.3, 2.6, 3, 3.5 ],
         "target": "スキル対象"
       }
     ]
@@ -611,8 +599,8 @@
     "range": 3,
     "heal": [
       {
-        "type": "マジック",
-        "rate": [ 3.0, 3.5, 4.0, 4.0, 4.5, 5.0 ],
+        "base": "マジック",
+        "rate": [ 3, 3.5, 4, 4, 4.5, 5 ],
         "target": "スキル対象"
       }
     ],
@@ -701,7 +689,7 @@
     },
     "area": 3,
     "range": "自ユニット",
-    "damageRate": [ 1.9, 2.0, 2.1, 2.25 ],
+    "damageRate": [ 1.9, 2, 2.1, 2.25 ],
     "buffCancel": [
       {
         "value": 1,
@@ -777,7 +765,7 @@
     },
     "area": 2,
     "range": 2,
-    "damageRate": [ 1.9, 2.0, 2.1, 2.25 ],
+    "damageRate": [ 1.9, 2, 2.1, 2.25 ],
     "fixedDamage": [
       {
         "base": "アタック",
@@ -843,13 +831,11 @@
     },
     "area": "単体",
     "range": 3,
-    "damageRate": [ 2.9, 3.0, 3.1, 3.25 ],
+    "damageRate": [ 2.9, 3, 3.1, 3.25 ],
     "damageRateSp": [
       {
-        "value": [ 3.7, 3.8, 3.9, 4.0 ],
-        "condition": {
-          "onTargetClass": [ "シューター" ]
-        }
+        "value": [ 3.7, 3.8, 3.9, 4 ],
+        "condition": { "onTargetClass": [ "シューター" ] }
       }
     ]
   },
@@ -955,7 +941,7 @@
     },
     "area": "単体",
     "range": 3,
-    "damageRate": [ 2.9, 3.0, 3.1, 3.25 ],
+    "damageRate": [ 2.9, 3, 3.1, 3.25 ],
     "statusEffects": [
       {
         "type": "アクティブスキル使用不可",
@@ -988,8 +974,8 @@
     ],
     "heal": [
       {
-        "type": "マジック",
-        "rate": [ 3.5, 4.0, 4.5, 4.5 ],
+        "base": "マジック",
+        "rate": [ 3.5, 4, 4.5, 4.5 ],
         "target": "スキル対象"
       }
     ],
@@ -1007,7 +993,7 @@
     },
     "area": "単体",
     "range": 3,
-    "damageRate": [ 2.9, 3.0, 3.1, 3.25 ],
+    "damageRate": [ 2.9, 3, 3.1, 3.25 ],
     "statusEffects": [
       {
         "type": "パッシブスキル使用不可",
@@ -1034,9 +1020,7 @@
         "value": [ 10, 12, 14, 16, 20 ],
         "ephemeral": true,
         "duration": 2,
-        "condition": {
-          "onEnemyTurn": true
-        }
+        "condition": { "onEnemyTurn": true }
       }
     ],
     "tags": [],
@@ -1123,7 +1107,7 @@
     "area": 7,
     "areaShape": "直線",
     "range": "自ユニット",
-    "damageRate": [ 1.9, 2.0, 2.1, 2.25 ],
+    "damageRate": [ 1.9, 2, 2.1, 2.25 ],
     "debuff": [
       {
         "type": "移動",
@@ -1316,7 +1300,7 @@
     },
     "area": "単体",
     "range": 3,
-    "damageRate": [ 1.0, 1.2, 1.2, 1.5, 1.5 ],
+    "damageRate": [ 1, 1.2, 1.2, 1.5, 1.5 ],
     "debuff": [
       {
         "type": "ディフェンス",
@@ -1342,7 +1326,7 @@
     },
     "area": 2,
     "range": 2,
-    "damageRate": [ 1.9, 2.0, 2.1, 2.25 ],
+    "damageRate": [ 1.9, 2, 2.1, 2.25 ],
     "buffCancel": [
       {
         "value": 1,
@@ -1606,9 +1590,7 @@
         "value": 10,
         "ephemeral": true,
         "duration": 2,
-        "condition": {
-          "onEnemyTurn": true
-        }
+        "condition": { "onEnemyTurn": true }
       }
     ],
     "tags": [],
@@ -1685,7 +1667,7 @@
     },
     "area": "単体",
     "range": 2,
-    "damageRate": [ 1.0, 1.1, 1.2, 1.3, 1.4 ],
+    "damageRate": [ 1, 1.1, 1.2, 1.3, 1.4 ],
     "buffCancel": [
       {
         "value": 1,
@@ -1714,8 +1696,8 @@
     ],
     "heal": [
       {
-        "type": "マジック",
-        "rate": [ 3.5, 4.0, 4.5, 5.0 ],
+        "base": "マジック",
+        "rate": [ 3.5, 4, 4.5, 5 ],
         "target": "スキル対象"
       }
     ]
@@ -1916,7 +1898,7 @@
     },
     "area": 3,
     "range": "自ユニット",
-    "damageRate": [ 1.9, 2.0, 2.1, 2.25 ],
+    "damageRate": [ 1.9, 2, 2.1, 2.25 ],
     "debuff": [
       {
         "type": "ランダム",
@@ -2174,7 +2156,7 @@
     "range": "自ユニット",
     "heal": [
       {
-        "type": "HP割合",
+        "base": "HP割合",
         "rate": [ 0.3, 0.35, 0.4, 0.5 ],
         "target": "スキル対象"
       }
@@ -2299,7 +2281,7 @@
     },
     "area": 3,
     "range": "自ユニット",
-    "damageRate": [ 1.9, 2.0, 2.1, 2.25 ],
+    "damageRate": [ 1.9, 2, 2.1, 2.25 ],
     "debuff": [
       {
         "type": "ディフェンス",

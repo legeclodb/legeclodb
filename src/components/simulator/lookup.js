@@ -9,7 +9,7 @@ import jsonSupportChrs from '../../assets/support_characters.json'
 import jsonNpcMainChrs from '../../assets/npc_main_characters.json'
 import jsonNpcSupportChrs from '../../assets/npc_support_characters.json'
 import jsonItems from '../../assets/items.json'
-import { enumerate } from '../utils.js'
+import { enumerate, download } from '../utils.js'
 
 export default {
   data() {
@@ -56,6 +56,21 @@ export default {
 
     setupDB() {
       let g = this;
+
+      // json の自動加工処理をやりたい場合はここに書く
+      //if (process.env.NODE_ENV === 'development') {
+      //  for (let skills of [jsonMainActive, jsonMainPassive, jsonMainTalents, jsonSupportActive, jsonSupportPassive, jsonItems]) {
+      //    for (let skill of skills) {
+      //    }
+      //  }
+      //  download("main_active.json", jsonMainActive);
+      //  download("main_passive.json", jsonMainPassive);
+      //  download("main_talents.json", jsonMainTalents);
+      //  download("support_active.json", jsonSupportActive);
+      //  download("support_passive.json", jsonSupportPassive);
+      //  download("items.json", jsonItems);
+      //}
+
 
       g.mainActive = structuredClone(jsonMainActive);
       g.mainPassive = structuredClone(jsonMainPassive);

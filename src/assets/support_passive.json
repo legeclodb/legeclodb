@@ -16,9 +16,7 @@
         "ephemeral": true,
         "target": "自身(サポート)",
         "timing": "攻撃前",
-        "condition": {
-          "onTargetClass": [ "ランサー" ]
-        }
+        "condition": { "onTargetClass": [ "ランサー" ] }
       },
       {
         "type": "マジック",
@@ -26,9 +24,7 @@
         "ephemeral": true,
         "target": "自身(サポート)",
         "timing": "攻撃前",
-        "condition": {
-          "onTargetClass": [ "ランサー" ]
-        }
+        "condition": { "onTargetClass": [ "ランサー" ] }
       },
       {
         "type": "アタック",
@@ -36,9 +32,7 @@
         "ephemeral": true,
         "target": "自身(サポート)",
         "timing": "攻撃前",
-        "condition": {
-          "onTargetClass": [ "ライダー" ]
-        }
+        "condition": { "onTargetClass": [ "ライダー" ] }
       },
       {
         "type": "マジック",
@@ -46,9 +40,7 @@
         "ephemeral": true,
         "target": "自身(サポート)",
         "timing": "攻撃前",
-        "condition": {
-          "onTargetClass": [ "ライダー" ]
-        }
+        "condition": { "onTargetClass": [ "ライダー" ] }
       }
     ]
   },
@@ -69,9 +61,7 @@
         "ephemeral": true,
         "target": "自身(サポート)",
         "timing": "攻撃前",
-        "condition": {
-          "onTargetClass": [ "ライダー" ]
-        }
+        "condition": { "onTargetClass": [ "ライダー" ] }
       },
       {
         "type": "マジック",
@@ -79,9 +69,7 @@
         "ephemeral": true,
         "target": "自身(サポート)",
         "timing": "攻撃前",
-        "condition": {
-          "onTargetClass": [ "ライダー" ]
-        }
+        "condition": { "onTargetClass": [ "ライダー" ] }
       },
       {
         "type": "アタック",
@@ -89,9 +77,7 @@
         "ephemeral": true,
         "target": "自身(サポート)",
         "timing": "攻撃前",
-        "condition": {
-          "onTargetClass": [ "ソルジャー" ]
-        }
+        "condition": { "onTargetClass": [ "ソルジャー" ] }
       },
       {
         "type": "マジック",
@@ -99,9 +85,7 @@
         "ephemeral": true,
         "target": "自身(サポート)",
         "timing": "攻撃前",
-        "condition": {
-          "onTargetClass": [ "ソルジャー" ]
-        }
+        "condition": { "onTargetClass": [ "ソルジャー" ] }
       }
     ]
   },
@@ -122,9 +106,7 @@
         "ephemeral": true,
         "target": "自身(サポート)",
         "timing": "攻撃前",
-        "condition": {
-          "onTargetClass": [ "ソルジャー" ]
-        }
+        "condition": { "onTargetClass": [ "ソルジャー" ] }
       },
       {
         "type": "マジック",
@@ -132,9 +114,7 @@
         "ephemeral": true,
         "target": "自身(サポート)",
         "timing": "攻撃前",
-        "condition": {
-          "onTargetClass": [ "ソルジャー" ]
-        }
+        "condition": { "onTargetClass": [ "ソルジャー" ] }
       },
       {
         "type": "アタック",
@@ -142,9 +122,7 @@
         "ephemeral": true,
         "target": "自身(サポート)",
         "timing": "攻撃前",
-        "condition": {
-          "onTargetClass": [ "ランサー" ]
-        }
+        "condition": { "onTargetClass": [ "ランサー" ] }
       },
       {
         "type": "マジック",
@@ -152,9 +130,7 @@
         "ephemeral": true,
         "target": "自身(サポート)",
         "timing": "攻撃前",
-        "condition": {
-          "onTargetClass": [ "ランサー" ]
-        }
+        "condition": { "onTargetClass": [ "ランサー" ] }
       }
     ]
   },
@@ -175,9 +151,7 @@
         "ephemeral": true,
         "target": "自身(サポート)",
         "timing": "攻撃前",
-        "condition": {
-          "onTargetClass": [ "アサシン" ]
-        }
+        "condition": { "onTargetClass": [ "アサシン" ] }
       },
       {
         "type": "マジック",
@@ -185,9 +159,7 @@
         "ephemeral": true,
         "target": "自身(サポート)",
         "timing": "攻撃前",
-        "condition": {
-          "onTargetClass": [ "アサシン" ]
-        }
+        "condition": { "onTargetClass": [ "アサシン" ] }
       },
       {
         "type": "アタック",
@@ -195,9 +167,7 @@
         "ephemeral": true,
         "target": "自身(サポート)",
         "timing": "攻撃前",
-        "condition": {
-          "onTargetClass": [ "シューター" ]
-        }
+        "condition": { "onTargetClass": [ "シューター" ] }
       },
       {
         "type": "マジック",
@@ -205,9 +175,7 @@
         "ephemeral": true,
         "target": "自身(サポート)",
         "timing": "攻撃前",
-        "condition": {
-          "onTargetClass": [ "シューター" ]
-        }
+        "condition": { "onTargetClass": [ "シューター" ] }
       }
     ]
   },
@@ -223,9 +191,7 @@
         "ephemeral": true,
         "target": "自身(サポート)",
         "timing": "攻撃前",
-        "condition": {
-          "onTargetClass": [ "ソルジャー", "ランサー", "ライダー" ]
-        }
+        "condition": { "onTargetClass": [ "ソルジャー", "ランサー", "ライダー" ] }
       },
       {
         "type": "マジック",
@@ -233,9 +199,7 @@
         "ephemeral": true,
         "target": "自身(サポート)",
         "timing": "攻撃前",
-        "condition": {
-          "onTargetClass": [ "ソルジャー", "ランサー", "ライダー" ]
-        }
+        "condition": { "onTargetClass": [ "ソルジャー", "ランサー", "ライダー" ] }
       },
       {
         "type": "アタック",
@@ -243,9 +207,7 @@
         "ephemeral": true,
         "target": "自身(サポート)",
         "timing": "攻撃前",
-        "condition": {
-          "onTargetClass": [ "エアリアル", "アサシン", "シューター" ]
-        }
+        "condition": { "onTargetClass": [ "エアリアル", "アサシン", "シューター" ] }
       },
       {
         "type": "マジック",
@@ -253,9 +215,7 @@
         "ephemeral": true,
         "target": "自身(サポート)",
         "timing": "攻撃前",
-        "condition": {
-          "onTargetClass": [ "エアリアル", "アサシン", "シューター" ]
-        }
+        "condition": { "onTargetClass": [ "エアリアル", "アサシン", "シューター" ] }
       }
     ]
   },
@@ -271,9 +231,7 @@
         "ephemeral": true,
         "target": "自身(サポート)",
         "timing": "攻撃前",
-        "condition": {
-          "onTargetClass": [ "エアリアル", "アサシン", "シューター" ]
-        }
+        "condition": { "onTargetClass": [ "エアリアル", "アサシン", "シューター" ] }
       },
       {
         "type": "マジック",
@@ -281,9 +239,7 @@
         "ephemeral": true,
         "target": "自身(サポート)",
         "timing": "攻撃前",
-        "condition": {
-          "onTargetClass": [ "エアリアル", "アサシン", "シューター" ]
-        }
+        "condition": { "onTargetClass": [ "エアリアル", "アサシン", "シューター" ] }
       },
       {
         "type": "アタック",
@@ -291,9 +247,7 @@
         "ephemeral": true,
         "target": "自身(サポート)",
         "timing": "攻撃前",
-        "condition": {
-          "onTargetClass": [ "ソルジャー", "ランサー", "ライダー" ]
-        }
+        "condition": { "onTargetClass": [ "ソルジャー", "ランサー", "ライダー" ] }
       },
       {
         "type": "マジック",
@@ -301,9 +255,7 @@
         "ephemeral": true,
         "target": "自身(サポート)",
         "timing": "攻撃前",
-        "condition": {
-          "onTargetClass": [ "ソルジャー", "ランサー", "ライダー" ]
-        }
+        "condition": { "onTargetClass": [ "ソルジャー", "ランサー", "ライダー" ] }
       }
     ]
   },
@@ -324,9 +276,7 @@
         "ephemeral": true,
         "target": "自身(サポート)",
         "timing": "攻撃前",
-        "condition": {
-          "onTargetClass": [ "エアリアル" ]
-        }
+        "condition": { "onTargetClass": [ "エアリアル" ] }
       },
       {
         "type": "マジック",
@@ -334,9 +284,7 @@
         "ephemeral": true,
         "target": "自身(サポート)",
         "timing": "攻撃前",
-        "condition": {
-          "onTargetClass": [ "エアリアル" ]
-        }
+        "condition": { "onTargetClass": [ "エアリアル" ] }
       },
       {
         "type": "アタック",
@@ -344,9 +292,7 @@
         "ephemeral": true,
         "target": "自身(サポート)",
         "timing": "攻撃前",
-        "condition": {
-          "onTargetClass": [ "アサシン" ]
-        }
+        "condition": { "onTargetClass": [ "アサシン" ] }
       },
       {
         "type": "マジック",
@@ -354,9 +300,7 @@
         "ephemeral": true,
         "target": "自身(サポート)",
         "timing": "攻撃前",
-        "condition": {
-          "onTargetClass": [ "アサシン" ]
-        }
+        "condition": { "onTargetClass": [ "アサシン" ] }
       }
     ]
   },
@@ -377,9 +321,7 @@
         "ephemeral": true,
         "target": "自身(サポート)",
         "timing": "攻撃前",
-        "condition": {
-          "onTargetClass": [ "シューター" ]
-        }
+        "condition": { "onTargetClass": [ "シューター" ] }
       },
       {
         "type": "マジック",
@@ -387,9 +329,7 @@
         "ephemeral": true,
         "target": "自身(サポート)",
         "timing": "攻撃前",
-        "condition": {
-          "onTargetClass": [ "シューター" ]
-        }
+        "condition": { "onTargetClass": [ "シューター" ] }
       },
       {
         "type": "アタック",
@@ -397,9 +337,7 @@
         "ephemeral": true,
         "target": "自身(サポート)",
         "timing": "攻撃前",
-        "condition": {
-          "onTargetClass": [ "エアリアル" ]
-        }
+        "condition": { "onTargetClass": [ "エアリアル" ] }
       },
       {
         "type": "マジック",
@@ -407,9 +345,7 @@
         "ephemeral": true,
         "target": "自身(サポート)",
         "timing": "攻撃前",
-        "condition": {
-          "onTargetClass": [ "エアリアル" ]
-        }
+        "condition": { "onTargetClass": [ "エアリアル" ] }
       }
     ]
   },
@@ -425,9 +361,7 @@
         "ephemeral": true,
         "target": "自身(サポート)",
         "timing": "攻撃前",
-        "condition": {
-          "onTargetClass": [ "ランサー" ]
-        }
+        "condition": { "onTargetClass": [ "ランサー" ] }
       },
       {
         "type": "マジック",
@@ -435,9 +369,7 @@
         "ephemeral": true,
         "target": "自身(サポート)",
         "timing": "攻撃前",
-        "condition": {
-          "onTargetClass": [ "ランサー" ]
-        }
+        "condition": { "onTargetClass": [ "ランサー" ] }
       },
       {
         "type": "アタック",
@@ -445,9 +377,7 @@
         "ephemeral": true,
         "target": "自身(サポート)",
         "timing": "攻撃前",
-        "condition": {
-          "onTargetClass": [ "ライダー" ]
-        }
+        "condition": { "onTargetClass": [ "ライダー" ] }
       },
       {
         "type": "マジック",
@@ -455,9 +385,7 @@
         "ephemeral": true,
         "target": "自身(サポート)",
         "timing": "攻撃前",
-        "condition": {
-          "onTargetClass": [ "ライダー" ]
-        }
+        "condition": { "onTargetClass": [ "ライダー" ] }
       }
     ]
   },
@@ -473,9 +401,7 @@
         "ephemeral": true,
         "target": "自身(サポート)",
         "timing": "攻撃前",
-        "condition": {
-          "onTargetClass": [ "ライダー" ]
-        }
+        "condition": { "onTargetClass": [ "ライダー" ] }
       },
       {
         "type": "マジック",
@@ -483,9 +409,7 @@
         "ephemeral": true,
         "target": "自身(サポート)",
         "timing": "攻撃前",
-        "condition": {
-          "onTargetClass": [ "ライダー" ]
-        }
+        "condition": { "onTargetClass": [ "ライダー" ] }
       },
       {
         "type": "アタック",
@@ -493,9 +417,7 @@
         "ephemeral": true,
         "target": "自身(サポート)",
         "timing": "攻撃前",
-        "condition": {
-          "onTargetClass": [ "ソルジャー" ]
-        }
+        "condition": { "onTargetClass": [ "ソルジャー" ] }
       },
       {
         "type": "マジック",
@@ -503,9 +425,7 @@
         "ephemeral": true,
         "target": "自身(サポート)",
         "timing": "攻撃前",
-        "condition": {
-          "onTargetClass": [ "ソルジャー" ]
-        }
+        "condition": { "onTargetClass": [ "ソルジャー" ] }
       }
     ]
   },
@@ -521,9 +441,7 @@
         "ephemeral": true,
         "target": "自身(サポート)",
         "timing": "攻撃前",
-        "condition": {
-          "onTargetClass": [ "ソルジャー" ]
-        }
+        "condition": { "onTargetClass": [ "ソルジャー" ] }
       },
       {
         "type": "マジック",
@@ -531,9 +449,7 @@
         "ephemeral": true,
         "target": "自身(サポート)",
         "timing": "攻撃前",
-        "condition": {
-          "onTargetClass": [ "ソルジャー" ]
-        }
+        "condition": { "onTargetClass": [ "ソルジャー" ] }
       },
       {
         "type": "アタック",
@@ -541,9 +457,7 @@
         "ephemeral": true,
         "target": "自身(サポート)",
         "timing": "攻撃前",
-        "condition": {
-          "onTargetClass": [ "ランサー" ]
-        }
+        "condition": { "onTargetClass": [ "ランサー" ] }
       },
       {
         "type": "マジック",
@@ -551,9 +465,7 @@
         "ephemeral": true,
         "target": "自身(サポート)",
         "timing": "攻撃前",
-        "condition": {
-          "onTargetClass": [ "ランサー" ]
-        }
+        "condition": { "onTargetClass": [ "ランサー" ] }
       }
     ]
   },
@@ -569,9 +481,7 @@
         "ephemeral": true,
         "target": "自身(サポート)",
         "timing": "攻撃前",
-        "condition": {
-          "onTargetClass": [ "アサシン" ]
-        }
+        "condition": { "onTargetClass": [ "アサシン" ] }
       },
       {
         "type": "マジック",
@@ -579,9 +489,7 @@
         "ephemeral": true,
         "target": "自身(サポート)",
         "timing": "攻撃前",
-        "condition": {
-          "onTargetClass": [ "アサシン" ]
-        }
+        "condition": { "onTargetClass": [ "アサシン" ] }
       },
       {
         "type": "アタック",
@@ -589,9 +497,7 @@
         "ephemeral": true,
         "target": "自身(サポート)",
         "timing": "攻撃前",
-        "condition": {
-          "onTargetClass": [ "シューター" ]
-        }
+        "condition": { "onTargetClass": [ "シューター" ] }
       },
       {
         "type": "マジック",
@@ -599,9 +505,7 @@
         "ephemeral": true,
         "target": "自身(サポート)",
         "timing": "攻撃前",
-        "condition": {
-          "onTargetClass": [ "シューター" ]
-        }
+        "condition": { "onTargetClass": [ "シューター" ] }
       }
     ]
   },
@@ -617,9 +521,7 @@
         "ephemeral": true,
         "target": "自身(サポート)",
         "timing": "攻撃前",
-        "condition": {
-          "onTargetClass": [ "ソルジャー", "ランサー", "ライダー" ]
-        }
+        "condition": { "onTargetClass": [ "ソルジャー", "ランサー", "ライダー" ] }
       },
       {
         "type": "マジック",
@@ -627,9 +529,7 @@
         "ephemeral": true,
         "target": "自身(サポート)",
         "timing": "攻撃前",
-        "condition": {
-          "onTargetClass": [ "ソルジャー", "ランサー", "ライダー" ]
-        }
+        "condition": { "onTargetClass": [ "ソルジャー", "ランサー", "ライダー" ] }
       },
       {
         "type": "アタック",
@@ -637,9 +537,7 @@
         "ephemeral": true,
         "target": "自身(サポート)",
         "timing": "攻撃前",
-        "condition": {
-          "onTargetClass": [ "エアリアル", "アサシン", "シューター" ]
-        }
+        "condition": { "onTargetClass": [ "エアリアル", "アサシン", "シューター" ] }
       },
       {
         "type": "マジック",
@@ -647,9 +545,7 @@
         "ephemeral": true,
         "target": "自身(サポート)",
         "timing": "攻撃前",
-        "condition": {
-          "onTargetClass": [ "エアリアル", "アサシン", "シューター" ]
-        }
+        "condition": { "onTargetClass": [ "エアリアル", "アサシン", "シューター" ] }
       }
     ]
   },
@@ -665,9 +561,7 @@
         "ephemeral": true,
         "target": "自身(サポート)",
         "timing": "攻撃前",
-        "condition": {
-          "onTargetClass": [ "エアリアル", "アサシン", "シューター" ]
-        }
+        "condition": { "onTargetClass": [ "エアリアル", "アサシン", "シューター" ] }
       },
       {
         "type": "マジック",
@@ -675,9 +569,7 @@
         "ephemeral": true,
         "target": "自身(サポート)",
         "timing": "攻撃前",
-        "condition": {
-          "onTargetClass": [ "エアリアル", "アサシン", "シューター" ]
-        }
+        "condition": { "onTargetClass": [ "エアリアル", "アサシン", "シューター" ] }
       },
       {
         "type": "アタック",
@@ -685,9 +577,7 @@
         "ephemeral": true,
         "target": "自身(サポート)",
         "timing": "攻撃前",
-        "condition": {
-          "onTargetClass": [ "ソルジャー", "ランサー", "ライダー" ]
-        }
+        "condition": { "onTargetClass": [ "ソルジャー", "ランサー", "ライダー" ] }
       },
       {
         "type": "マジック",
@@ -695,9 +585,7 @@
         "ephemeral": true,
         "target": "自身(サポート)",
         "timing": "攻撃前",
-        "condition": {
-          "onTargetClass": [ "ソルジャー", "ランサー", "ライダー" ]
-        }
+        "condition": { "onTargetClass": [ "ソルジャー", "ランサー", "ライダー" ] }
       }
     ]
   },
@@ -713,9 +601,7 @@
         "ephemeral": true,
         "target": "自身(サポート)",
         "timing": "攻撃前",
-        "condition": {
-          "onTargetClass": [ "エアリアル" ]
-        }
+        "condition": { "onTargetClass": [ "エアリアル" ] }
       },
       {
         "type": "マジック",
@@ -723,9 +609,7 @@
         "ephemeral": true,
         "target": "自身(サポート)",
         "timing": "攻撃前",
-        "condition": {
-          "onTargetClass": [ "エアリアル" ]
-        }
+        "condition": { "onTargetClass": [ "エアリアル" ] }
       },
       {
         "type": "アタック",
@@ -733,9 +617,7 @@
         "ephemeral": true,
         "target": "自身(サポート)",
         "timing": "攻撃前",
-        "condition": {
-          "onTargetClass": [ "アサシン" ]
-        }
+        "condition": { "onTargetClass": [ "アサシン" ] }
       },
       {
         "type": "マジック",
@@ -743,9 +625,7 @@
         "ephemeral": true,
         "target": "自身(サポート)",
         "timing": "攻撃前",
-        "condition": {
-          "onTargetClass": [ "アサシン" ]
-        }
+        "condition": { "onTargetClass": [ "アサシン" ] }
       }
     ]
   },
@@ -761,9 +641,7 @@
         "ephemeral": true,
         "target": "自身(サポート)",
         "timing": "攻撃前",
-        "condition": {
-          "onTargetClass": [ "シューター" ]
-        }
+        "condition": { "onTargetClass": [ "シューター" ] }
       },
       {
         "type": "マジック",
@@ -771,9 +649,7 @@
         "ephemeral": true,
         "target": "自身(サポート)",
         "timing": "攻撃前",
-        "condition": {
-          "onTargetClass": [ "シューター" ]
-        }
+        "condition": { "onTargetClass": [ "シューター" ] }
       },
       {
         "type": "アタック",
@@ -781,9 +657,7 @@
         "ephemeral": true,
         "target": "自身(サポート)",
         "timing": "攻撃前",
-        "condition": {
-          "onTargetClass": [ "エアリアル" ]
-        }
+        "condition": { "onTargetClass": [ "エアリアル" ] }
       },
       {
         "type": "マジック",
@@ -791,9 +665,7 @@
         "ephemeral": true,
         "target": "自身(サポート)",
         "timing": "攻撃前",
-        "condition": {
-          "onTargetClass": [ "エアリアル" ]
-        }
+        "condition": { "onTargetClass": [ "エアリアル" ] }
       }
     ]
   },
@@ -809,9 +681,7 @@
         "ephemeral": true,
         "target": "自身(サポート)",
         "timing": "戦闘前",
-        "condition": {
-          "onTargetClass": [ "ランサー" ]
-        }
+        "condition": { "onTargetClass": [ "ランサー" ] }
       },
       {
         "type": "マジック",
@@ -819,9 +689,7 @@
         "ephemeral": true,
         "target": "自身(サポート)",
         "timing": "戦闘前",
-        "condition": {
-          "onTargetClass": [ "ランサー" ]
-        }
+        "condition": { "onTargetClass": [ "ランサー" ] }
       }
     ]
   },
@@ -837,9 +705,7 @@
         "ephemeral": true,
         "target": "自身(サポート)",
         "timing": "戦闘前",
-        "condition": {
-          "supportHp": [ ">=", 80 ]
-        }
+        "condition": { "supportHp": [ ">=", 80 ] }
       }
     ]
   },
@@ -885,9 +751,7 @@
         "ephemeral": true,
         "target": "自身(サポート)",
         "timing": "戦闘前",
-        "condition": {
-          "onTargetClass": [ "ライダー" ]
-        }
+        "condition": { "onTargetClass": [ "ライダー" ] }
       },
       {
         "type": "マジック",
@@ -895,9 +759,7 @@
         "ephemeral": true,
         "target": "自身(サポート)",
         "timing": "戦闘前",
-        "condition": {
-          "onTargetClass": [ "ライダー" ]
-        }
+        "condition": { "onTargetClass": [ "ライダー" ] }
       }
     ]
   },
@@ -913,9 +775,7 @@
         "ephemeral": true,
         "target": "自身(サポート)",
         "timing": "戦闘前",
-        "condition": {
-          "supportHp": [ "<=", 70 ]
-        }
+        "condition": { "supportHp": [ "<=", 70 ] }
       }
     ]
   },
@@ -931,9 +791,7 @@
         "ephemeral": true,
         "target": "自身(サポート)",
         "timing": "戦闘前",
-        "condition": {
-          "onEnemyTurn": true
-        }
+        "condition": { "onEnemyTurn": true }
       },
       {
         "type": "マジック",
@@ -941,9 +799,7 @@
         "ephemeral": true,
         "target": "自身(サポート)",
         "timing": "戦闘前",
-        "condition": {
-          "onEnemyTurn": true
-        }
+        "condition": { "onEnemyTurn": true }
       }
     ]
   },
@@ -959,9 +815,7 @@
         "ephemeral": true,
         "target": "自身(サポート)",
         "timing": "戦闘前",
-        "condition": {
-          "onTargetClass": [ "ソルジャー" ]
-        }
+        "condition": { "onTargetClass": [ "ソルジャー" ] }
       },
       {
         "type": "マジック",
@@ -969,9 +823,7 @@
         "ephemeral": true,
         "target": "自身(サポート)",
         "timing": "戦闘前",
-        "condition": {
-          "onTargetClass": [ "ソルジャー" ]
-        }
+        "condition": { "onTargetClass": [ "ソルジャー" ] }
       }
     ]
   },
@@ -1021,9 +873,7 @@
         "ephemeral": true,
         "target": "自身(サポート)",
         "timing": "戦闘前",
-        "condition": {
-          "onOwnTurn": true
-        }
+        "condition": { "onOwnTurn": true }
       }
     ]
   },
@@ -1039,9 +889,7 @@
         "ephemeral": true,
         "target": "自身(サポート)",
         "timing": "戦闘前",
-        "condition": {
-          "onTerrain": [ "平地" ]
-        }
+        "condition": { "onTerrain": [ "平地" ] }
       },
       {
         "type": "マジック",
@@ -1049,9 +897,7 @@
         "ephemeral": true,
         "target": "自身(サポート)",
         "timing": "戦闘前",
-        "condition": {
-          "onTerrain": [ "平地" ]
-        }
+        "condition": { "onTerrain": [ "平地" ] }
       }
     ]
   },
@@ -1067,9 +913,7 @@
         "ephemeral": true,
         "target": "自身(サポート)",
         "timing": "戦闘前",
-        "condition": {
-          "supportHp": [ ">=", 80 ]
-        }
+        "condition": { "supportHp": [ ">=", 80 ] }
       },
       {
         "type": "レジスト",
@@ -1077,9 +921,7 @@
         "ephemeral": true,
         "target": "自身(サポート)",
         "timing": "戦闘前",
-        "condition": {
-          "supportHp": [ ">=", 80 ]
-        }
+        "condition": { "supportHp": [ ">=", 80 ] }
       }
     ]
   },
@@ -1095,9 +937,7 @@
         "ephemeral": true,
         "target": "自身(サポート)",
         "timing": "戦闘前",
-        "condition": {
-          "targetHp": [ ">=", 100 ]
-        }
+        "condition": { "targetHp": [ ">=", 100 ] }
       },
       {
         "type": "マジック",
@@ -1105,9 +945,7 @@
         "ephemeral": true,
         "target": "自身(サポート)",
         "timing": "戦闘前",
-        "condition": {
-          "targetHp": [ ">=", 100 ]
-        }
+        "condition": { "targetHp": [ ">=", 100 ] }
       }
     ]
   },
@@ -1123,9 +961,7 @@
         "ephemeral": true,
         "target": "自身(サポート)",
         "timing": "戦闘前",
-        "condition": {
-          "onTerrain": [ "平地" ]
-        }
+        "condition": { "onTerrain": [ "平地" ] }
       },
       {
         "type": "レジスト",
@@ -1133,9 +969,7 @@
         "ephemeral": true,
         "target": "自身(サポート)",
         "timing": "戦闘前",
-        "condition": {
-          "onTerrain": [ "平地" ]
-        }
+        "condition": { "onTerrain": [ "平地" ] }
       }
     ]
   },
@@ -1151,9 +985,7 @@
         "ephemeral": true,
         "target": "自身(サポート)",
         "timing": "戦闘前",
-        "condition": {
-          "onTerrain": [ "森" ]
-        }
+        "condition": { "onTerrain": [ "森" ] }
       },
       {
         "type": "マジック",
@@ -1161,9 +993,7 @@
         "ephemeral": true,
         "target": "自身(サポート)",
         "timing": "戦闘前",
-        "condition": {
-          "onTerrain": [ "森" ]
-        }
+        "condition": { "onTerrain": [ "森" ] }
       }
     ]
   },
@@ -1179,9 +1009,7 @@
         "ephemeral": true,
         "target": "自身(サポート)",
         "timing": "戦闘前",
-        "condition": {
-          "onTargetClass": [ "エアリアル" ]
-        }
+        "condition": { "onTargetClass": [ "エアリアル" ] }
       },
       {
         "type": "マジック",
@@ -1189,9 +1017,7 @@
         "ephemeral": true,
         "target": "自身(サポート)",
         "timing": "戦闘前",
-        "condition": {
-          "onTargetClass": [ "エアリアル" ]
-        }
+        "condition": { "onTargetClass": [ "エアリアル" ] }
       }
     ]
   },
@@ -1207,9 +1033,7 @@
         "ephemeral": true,
         "target": "自身(サポート)",
         "timing": "戦闘前",
-        "condition": {
-          "supportHp": [ ">=", 100 ]
-        }
+        "condition": { "supportHp": [ ">=", 100 ] }
       }
     ]
   },
@@ -1225,9 +1049,7 @@
         "ephemeral": true,
         "target": "自身(サポート)",
         "timing": "戦闘前",
-        "condition": {
-          "targetHp": [ ">=", 100 ]
-        }
+        "condition": { "targetHp": [ ">=", 100 ] }
       }
     ]
   },
@@ -1401,9 +1223,7 @@
         "ephemeral": true,
         "target": "自身",
         "timing": "戦闘前",
-        "condition": {
-          "onOwnTurn": true
-        }
+        "condition": { "onOwnTurn": true }
       },
       {
         "type": "ダメージ耐性",
@@ -1411,9 +1231,7 @@
         "ephemeral": true,
         "target": "自身",
         "timing": "戦闘前",
-        "condition": {
-          "onOwnTurn": true
-        }
+        "condition": { "onOwnTurn": true }
       }
     ]
   },
@@ -1429,9 +1247,7 @@
         "ephemeral": true,
         "target": "自身",
         "timing": "戦闘前",
-        "condition": {
-          "onEnemyTurn": true
-        }
+        "condition": { "onEnemyTurn": true }
       },
       {
         "type": "ディフェンス",
@@ -1439,9 +1255,7 @@
         "ephemeral": true,
         "target": "自身",
         "timing": "戦闘前",
-        "condition": {
-          "onEnemyTurn": true
-        }
+        "condition": { "onEnemyTurn": true }
       }
     ]
   },
@@ -1457,9 +1271,7 @@
         "ephemeral": true,
         "target": "自身",
         "timing": "戦闘前",
-        "condition": {
-          "onOwnTurn": true
-        }
+        "condition": { "onOwnTurn": true }
       },
       {
         "type": "レジスト",
@@ -1467,9 +1279,7 @@
         "ephemeral": true,
         "target": "自身",
         "timing": "戦闘前",
-        "condition": {
-          "onOwnTurn": true
-        }
+        "condition": { "onOwnTurn": true }
       }
     ]
   },
@@ -1480,7 +1290,7 @@
     "desc": "行動終了時、自身を中心とした範囲2マス以内の味方ユニットのHPをサポートのマジックの1.5倍回復する。",
     "heal": [
       {
-        "type": "マジック",
+        "base": "マジック",
         "rate": 1.5,
         "target": "範囲",
         "area": 2,
@@ -1499,9 +1309,7 @@
         "variant": "弱",
         "amount": 1,
         "timing": "戦闘後",
-        "condition": {
-          "onOwnTurn": true
-        }
+        "condition": { "onOwnTurn": true }
       }
     ],
     "note": "ランダムデバフ内訳: アタック-10%(2ターン)、ディフェンス-10%(2ターン)、マジック-10%(2ターン)、レジスト-20%(2ターン)、与ダメージ-10%(2ターン)、ダメージ耐性-10%(2ターン)"
@@ -1518,9 +1326,7 @@
         "ephemeral": true,
         "target": "自身",
         "timing": "戦闘前",
-        "condition": {
-          "onOwnTurn": true
-        }
+        "condition": { "onOwnTurn": true }
       },
       {
         "type": "ダメージ耐性",
@@ -1528,9 +1334,7 @@
         "ephemeral": true,
         "target": "自身",
         "timing": "戦闘前",
-        "condition": {
-          "onOwnTurn": true
-        }
+        "condition": { "onOwnTurn": true }
       }
     ]
   },
@@ -1562,9 +1366,7 @@
         "ephemeral": true,
         "target": "自身",
         "timing": "戦闘前",
-        "condition": {
-          "onOwnTurn": true
-        }
+        "condition": { "onOwnTurn": true }
       }
     ]
   },
@@ -1578,9 +1380,7 @@
         "type": "レジスト",
         "value": 15,
         "target": "自身",
-        "condition": {
-          "hp": [ ">=", 80 ]
-        }
+        "condition": { "hp": [ ">=", 80 ] }
       }
     ]
   },
@@ -1682,7 +1482,7 @@
     "desc": "戦闘後、自ユニットのメイン、サポートそれぞれのHPが最大HPの10%分回復する。",
     "heal": [
       {
-        "type": "HP割合",
+        "base": "HP割合",
         "rate": 0.1,
         "target": "自身",
         "timing": "戦闘後"
@@ -1746,9 +1546,7 @@
         "ephemeral": true,
         "target": "自身",
         "timing": "戦闘前",
-        "condition": {
-          "onCloseCombat": true
-        }
+        "condition": { "onCloseCombat": true }
       }
     ]
   },
@@ -1860,9 +1658,7 @@
         "ephemeral": true,
         "target": "自身",
         "timing": "戦闘前",
-        "condition": {
-          "onOwnTurn": true
-        }
+        "condition": { "onOwnTurn": true }
       }
     ]
   },
@@ -1873,7 +1669,7 @@
     "desc": "行動終了時、自ユニットのメイン、サポートそれぞれのHPが最大HPの10%分回復する。",
     "heal": [
       {
-        "type": "HP割合",
+        "base": "HP割合",
         "rate": 0.1,
         "target": "自身",
         "timing": "行動後"
@@ -1891,18 +1687,14 @@
         "value": 10,
         "ephemeral": true,
         "timing": "戦闘前",
-        "condition": {
-          "onOwnTurn": true
-        }
+        "condition": { "onOwnTurn": true }
       },
       {
         "type": "マジック",
         "value": 10,
         "ephemeral": true,
         "timing": "戦闘前",
-        "condition": {
-          "onOwnTurn": true
-        }
+        "condition": { "onOwnTurn": true }
       }
     ]
   },
@@ -1936,9 +1728,7 @@
         "ephemeral": true,
         "target": "自身",
         "timing": "戦闘前",
-        "condition": {
-          "onOwnTurn": true
-        }
+        "condition": { "onOwnTurn": true }
       }
     ]
   },
@@ -1973,9 +1763,7 @@
         "trigger": {
           "target": "自身",
           "timing": "戦闘前",
-          "condition": {
-            "onEnemyTurn": true
-          }
+          "condition": { "onEnemyTurn": true }
         }
       },
       {
@@ -1987,9 +1775,7 @@
         "trigger": {
           "target": "自身",
           "timing": "戦闘前",
-          "condition": {
-            "onEnemyTurn": true
-          }
+          "condition": { "onEnemyTurn": true }
         }
       },
       {
@@ -2001,9 +1787,7 @@
         "trigger": {
           "target": "自身",
           "timing": "戦闘前",
-          "condition": {
-            "onEnemyTurn": true
-          }
+          "condition": { "onEnemyTurn": true }
         }
       },
       {
@@ -2015,9 +1799,7 @@
         "trigger": {
           "target": "自身",
           "timing": "戦闘前",
-          "condition": {
-            "onEnemyTurn": true
-          }
+          "condition": { "onEnemyTurn": true }
         }
       },
       {
@@ -2029,9 +1811,7 @@
         "trigger": {
           "target": "自身",
           "timing": "戦闘前",
-          "condition": {
-            "onEnemyTurn": true
-          }
+          "condition": { "onEnemyTurn": true }
         }
       }
     ],
@@ -2047,9 +1827,7 @@
         "type": "マジック",
         "value": 20,
         "target": "自身",
-        "condition": {
-          "hp": [ ">=", 100 ]
-        }
+        "condition": { "hp": [ ">=", 100 ] }
       }
     ]
   },
@@ -2095,9 +1873,7 @@
         "ephemeral": true,
         "target": "自身",
         "timing": "戦闘前",
-        "condition": {
-          "onCloseCombat": true
-        }
+        "condition": { "onCloseCombat": true }
       }
     ]
   },
@@ -2113,9 +1889,7 @@
         "ephemeral": true,
         "target": "自身",
         "timing": "戦闘前",
-        "condition": {
-          "onOwnTurn": true
-        }
+        "condition": { "onOwnTurn": true }
       },
       {
         "type": "ダメージ耐性(物理)",
@@ -2123,9 +1897,7 @@
         "ephemeral": true,
         "target": "自身",
         "timing": "戦闘前",
-        "condition": {
-          "onOwnTurn": true
-        }
+        "condition": { "onOwnTurn": true }
       }
     ]
   },
@@ -2160,9 +1932,7 @@
         "ephemeral": true,
         "target": "自身",
         "timing": "戦闘前",
-        "condition": {
-          "onRangedCombat": true
-        }
+        "condition": { "onRangedCombat": true }
       },
       {
         "type": "ディフェンス",
@@ -2170,9 +1940,7 @@
         "ephemeral": true,
         "target": "自身",
         "timing": "戦闘前",
-        "condition": {
-          "onRangedCombat": true
-        }
+        "condition": { "onRangedCombat": true }
       }
     ]
   },
@@ -2183,7 +1951,7 @@
     "desc": "行動終了時、現在HP割合が最も低い味方ユニットのHPを最大HPの10%分回復する。",
     "heal": [
       {
-        "type": "HP割合",
+        "base": "HP割合",
         "rate": 0.1,
         "target": "味方(低HP)",
         "timing": "行動後"
@@ -2202,9 +1970,7 @@
         "ephemeral": true,
         "target": "自身",
         "timing": "戦闘前",
-        "condition": {
-          "onRangedCombat": true
-        }
+        "condition": { "onRangedCombat": true }
       }
     ]
   },
@@ -2220,9 +1986,7 @@
         "ephemeral": true,
         "target": "自身",
         "timing": "戦闘前",
-        "condition": {
-          "onEnemyTurn": true
-        }
+        "condition": { "onEnemyTurn": true }
       }
     ]
   },
@@ -2233,7 +1997,7 @@
     "desc": "味方ターンでの戦闘時、その戦闘前、自ユニットの弱化効果を1個解除し、その戦闘後、自ユニットのメイン、サポートそれぞれのHPが最大HPの10%分回復する。",
     "heal": [
       {
-        "type": "HP割合",
+        "base": "HP割合",
         "rate": 0.1,
         "target": "自身",
         "timing": "戦闘後"
@@ -2286,13 +2050,11 @@
     "desc": "近距離での戦闘時、その戦闘後、味方メインが与えたダメージの10%分HPを回復する。",
     "heal": [
       {
-        "type": "ダメージ割合",
+        "base": "ダメージ割合",
         "rate": 0.1,
         "target": "自身",
         "timing": "戦闘後",
-        "condition": {
-          "onCloseCombat": true
-        }
+        "condition": { "onCloseCombat": true }
       }
     ]
   },
@@ -2308,9 +2070,7 @@
         "ephemeral": true,
         "target": "自身",
         "timing": "戦闘前",
-        "condition": {
-          "onOwnTurn": true
-        }
+        "condition": { "onOwnTurn": true }
       }
     ]
   },
@@ -2373,9 +2133,7 @@
         "ephemeral": true,
         "target": "自身",
         "timing": "戦闘前",
-        "condition": {
-          "onRangedCombat": true
-        }
+        "condition": { "onRangedCombat": true }
       }
     ]
   },
@@ -2418,9 +2176,7 @@
         "ephemeral": true,
         "target": "自身",
         "timing": "戦闘前",
-        "condition": {
-          "onOwnTurn": true
-        }
+        "condition": { "onOwnTurn": true }
       },
       {
         "type": "クリティカル率",
@@ -2428,9 +2184,7 @@
         "ephemeral": true,
         "target": "自身",
         "timing": "戦闘前",
-        "condition": {
-          "onOwnTurn": true
-        }
+        "condition": { "onOwnTurn": true }
       }
     ]
   },
@@ -2446,9 +2200,7 @@
         "ephemeral": true,
         "target": "自身",
         "timing": "戦闘前",
-        "condition": {
-          "onOwnTurn": true
-        }
+        "condition": { "onOwnTurn": true }
       },
       {
         "type": "クリティカル率",
@@ -2456,9 +2208,7 @@
         "ephemeral": true,
         "target": "自身",
         "timing": "戦闘前",
-        "condition": {
-          "onOwnTurn": true
-        }
+        "condition": { "onOwnTurn": true }
       }
     ]
   },
@@ -2472,17 +2222,13 @@
         "type": "アタック",
         "value": 15,
         "target": "自身",
-        "condition": {
-          "hp": [ ">=", 75 ]
-        }
+        "condition": { "hp": [ ">=", 75 ] }
       },
       {
         "type": "ダメージ耐性",
         "value": 15,
         "target": "自身",
-        "condition": {
-          "hp": [ "<=", 75 ]
-        }
+        "condition": { "hp": [ "<=", 75 ] }
       }
     ]
   },
@@ -2556,18 +2302,14 @@
         "value": 10,
         "ephemeral": true,
         "timing": "戦闘前",
-        "condition": {
-          "onOwnTurn": true
-        }
+        "condition": { "onOwnTurn": true }
       },
       {
         "type": "ダメージ耐性(物理)",
         "value": 10,
         "ephemeral": true,
         "timing": "戦闘前",
-        "condition": {
-          "onOwnTurn": true
-        }
+        "condition": { "onOwnTurn": true }
       }
     ]
   },
@@ -2581,9 +2323,7 @@
         "type": "与ダメージ(スキル)",
         "value": 30,
         "target": "自身",
-        "condition": {
-          "hp": [ ">=", 100 ]
-        }
+        "condition": { "hp": [ ">=", 100 ] }
       }
     ]
   },
@@ -2600,9 +2340,7 @@
         "trigger": {
           "target": "攻撃対象",
           "timing": "戦闘後",
-          "condition": {
-            "onOwnTurn": true
-          }
+          "condition": { "onOwnTurn": true }
         }
       }
     ]
@@ -2618,14 +2356,12 @@
         "value": 10,
         "ephemeral": true,
         "timing": "戦闘前",
-        "condition": {
-          "onOwnTurn": true
-        }
+        "condition": { "onOwnTurn": true }
       }
     ],
     "heal": [
       {
-        "type": "HP割合",
+        "base": "HP割合",
         "rate": 0.08,
         "target": "範囲",
         "area": 2,
@@ -2644,18 +2380,14 @@
         "value": 15,
         "ephemeral": true,
         "timing": "戦闘前",
-        "condition": {
-          "onEnemyTurn": true
-        }
+        "condition": { "onEnemyTurn": true }
       },
       {
         "type": "ディフェンス",
         "value": 15,
         "ephemeral": true,
         "timing": "戦闘前",
-        "condition": {
-          "onEnemyTurn": true
-        }
+        "condition": { "onEnemyTurn": true }
       }
     ]
   },
@@ -2669,9 +2401,7 @@
         "type": "与ダメージ(物理)",
         "value": 30,
         "target": "自身",
-        "condition": {
-          "hp": [ ">=", 100 ]
-        }
+        "condition": { "hp": [ ">=", 100 ] }
       }
     ]
   },
@@ -2685,17 +2415,13 @@
         "type": "アタック",
         "value": 10,
         "target": "自身",
-        "condition": {
-          "hp": [ ">=", 80 ]
-        }
+        "condition": { "hp": [ ">=", 80 ] }
       },
       {
         "type": "ディフェンス",
         "value": 10,
         "target": "自身",
-        "condition": {
-          "hp": [ ">=", 80 ]
-        }
+        "condition": { "hp": [ ">=", 80 ] }
       }
     ]
   },
@@ -2709,9 +2435,7 @@
         "type": "与ダメージ",
         "value": 25,
         "target": "自身",
-        "condition": {
-          "hp": [ ">=", 100 ]
-        }
+        "condition": { "hp": [ ">=", 100 ] }
       }
     ]
   },
@@ -2745,9 +2469,7 @@
         "ephemeral": true,
         "target": "自身",
         "timing": "戦闘前",
-        "condition": {
-          "onOwnTurn": true
-        }
+        "condition": { "onOwnTurn": true }
       },
       {
         "type": "与ダメージ(スキル)",
@@ -2755,9 +2477,7 @@
         "ephemeral": true,
         "target": "自身",
         "timing": "戦闘前",
-        "condition": {
-          "onOwnTurn": true
-        }
+        "condition": { "onOwnTurn": true }
       }
     ]
   },
@@ -2773,9 +2493,7 @@
         "ephemeral": true,
         "target": "自身",
         "timing": "戦闘前",
-        "condition": {
-          "onOwnTurn": true
-        }
+        "condition": { "onOwnTurn": true }
       },
       {
         "type": "ディフェンス",
@@ -2783,9 +2501,7 @@
         "ephemeral": true,
         "target": "自身",
         "timing": "戦闘前",
-        "condition": {
-          "onOwnTurn": true
-        }
+        "condition": { "onOwnTurn": true }
       }
     ]
   },
@@ -2801,9 +2517,7 @@
         "ephemeral": true,
         "target": "自身",
         "timing": "戦闘前",
-        "condition": {
-          "onOwnTurn": true
-        }
+        "condition": { "onOwnTurn": true }
       }
     ]
   },
@@ -2838,9 +2552,7 @@
         "ephemeral": true,
         "target": "自身",
         "timing": "戦闘前",
-        "condition": {
-          "onRangedCombat": true
-        }
+        "condition": { "onRangedCombat": true }
       }
     ]
   },
@@ -2874,9 +2586,7 @@
         "ephemeral": true,
         "target": "自身",
         "timing": "戦闘前",
-        "condition": {
-          "onCloseCombat": true
-        }
+        "condition": { "onCloseCombat": true }
       },
       {
         "type": "クリティカルダメージ倍率",
@@ -2884,9 +2594,7 @@
         "ephemeral": true,
         "target": "自身",
         "timing": "戦闘前",
-        "condition": {
-          "onCloseCombat": true
-        }
+        "condition": { "onCloseCombat": true }
       }
     ]
   },
@@ -2900,17 +2608,13 @@
         "type": "アタック",
         "value": 15,
         "target": "自身",
-        "condition": {
-          "hp": [ ">=", 100 ]
-        }
+        "condition": { "hp": [ ">=", 100 ] }
       },
       {
         "type": "クリティカル率",
         "value": 15,
         "target": "自身",
-        "condition": {
-          "hp": [ ">=", 100 ]
-        }
+        "condition": { "hp": [ ">=", 100 ] }
       }
     ]
   },
@@ -2924,9 +2628,7 @@
         "type": "アタック",
         "value": 15,
         "target": "自身",
-        "condition": {
-          "hp": [ ">=", 100 ]
-        }
+        "condition": { "hp": [ ">=", 100 ] }
       }
     ]
   },
@@ -2940,17 +2642,13 @@
         "type": "与ダメージ(通常攻撃)",
         "value": 20,
         "target": "自身",
-        "condition": {
-          "hp": [ ">=", 80 ]
-        }
+        "condition": { "hp": [ ">=", 80 ] }
       },
       {
         "type": "クリティカルダメージ倍率",
         "value": 10,
         "target": "自身",
-        "condition": {
-          "hp": [ ">=", 80 ]
-        }
+        "condition": { "hp": [ ">=", 80 ] }
       }
     ]
   },
@@ -2965,18 +2663,14 @@
         "value": 10,
         "ephemeral": true,
         "timing": "戦闘前",
-        "condition": {
-          "onOwnTurn": true
-        }
+        "condition": { "onOwnTurn": true }
       },
       {
         "type": "ダメージ耐性(魔法)",
         "value": 10,
         "ephemeral": true,
         "timing": "戦闘前",
-        "condition": {
-          "onOwnTurn": true
-        }
+        "condition": { "onOwnTurn": true }
       }
     ]
   },
@@ -3021,9 +2715,7 @@
         "ephemeral": true,
         "target": "自身",
         "timing": "戦闘前",
-        "condition": {
-          "onRangedCombat": true
-        }
+        "condition": { "onRangedCombat": true }
       }
     ]
   },
@@ -3034,13 +2726,11 @@
     "desc": "遠距離による戦闘時、その戦闘後、味方メインが与えたダメージの10%分HPを回復する。",
     "heal": [
       {
-        "type": "ダメージ割合",
+        "base": "ダメージ割合",
         "rate": 0.1,
         "target": "自身",
         "timing": "戦闘後",
-        "condition": {
-          "onRangedCombat": true
-        }
+        "condition": { "onRangedCombat": true }
       }
     ]
   },
@@ -3106,9 +2796,7 @@
         "ephemeral": true,
         "target": "自身",
         "timing": "戦闘前",
-        "condition": {
-          "onCloseCombat": true
-        }
+        "condition": { "onCloseCombat": true }
       },
       {
         "type": "クリティカル率",
@@ -3116,9 +2804,7 @@
         "ephemeral": true,
         "target": "自身",
         "timing": "戦闘前",
-        "condition": {
-          "onCloseCombat": true
-        }
+        "condition": { "onCloseCombat": true }
       }
     ]
   },
@@ -3134,9 +2820,7 @@
         "ephemeral": true,
         "target": "自身",
         "timing": "戦闘前",
-        "condition": {
-          "onOwnTurn": true
-        }
+        "condition": { "onOwnTurn": true }
       },
       {
         "type": "クリティカル率",
@@ -3144,9 +2828,7 @@
         "ephemeral": true,
         "target": "自身",
         "timing": "戦闘前",
-        "condition": {
-          "onOwnTurn": true
-        }
+        "condition": { "onOwnTurn": true }
       }
     ]
   },
@@ -3173,17 +2855,13 @@
         "type": "与ダメージ(物理)",
         "value": 20,
         "target": "自身",
-        "condition": {
-          "hp": [ ">=", 80 ]
-        }
+        "condition": { "hp": [ ">=", 80 ] }
       },
       {
         "type": "クリティカル率",
         "value": 10,
         "target": "自身",
-        "condition": {
-          "hp": [ ">=", 80 ]
-        }
+        "condition": { "hp": [ ">=", 80 ] }
       }
     ]
   },
@@ -3215,17 +2893,13 @@
         "type": "アタック",
         "value": 10,
         "target": "自身",
-        "condition": {
-          "hp": [ ">=", 100 ]
-        }
+        "condition": { "hp": [ ">=", 100 ] }
       },
       {
         "type": "クリティカル率",
         "value": 10,
         "target": "自身",
-        "condition": {
-          "hp": [ ">=", 100 ]
-        }
+        "condition": { "hp": [ ">=", 100 ] }
       }
     ]
   },
@@ -3259,9 +2933,7 @@
         "ephemeral": true,
         "target": "自身",
         "timing": "戦闘前",
-        "condition": {
-          "onCloseCombat": true
-        }
+        "condition": { "onCloseCombat": true }
       },
       {
         "type": "クリティカルダメージ倍率",
@@ -3269,9 +2941,7 @@
         "ephemeral": true,
         "target": "自身",
         "timing": "戦闘前",
-        "condition": {
-          "onCloseCombat": true
-        }
+        "condition": { "onCloseCombat": true }
       },
       {
         "type": "与ダメージ(スキル)",
@@ -3279,9 +2949,7 @@
         "ephemeral": true,
         "target": "自身",
         "timing": "戦闘前",
-        "condition": {
-          "onCloseCombat": true
-        }
+        "condition": { "onCloseCombat": true }
       }
     ]
   },
@@ -3297,9 +2965,7 @@
         "ephemeral": true,
         "target": "自身",
         "timing": "戦闘前",
-        "condition": {
-          "onOwnTurn": true
-        }
+        "condition": { "onOwnTurn": true }
       },
       {
         "type": "ダメージ耐性(物理)",
@@ -3307,9 +2973,7 @@
         "ephemeral": true,
         "target": "自身",
         "timing": "戦闘前",
-        "condition": {
-          "onOwnTurn": true
-        }
+        "condition": { "onOwnTurn": true }
       }
     ]
   },
@@ -3323,25 +2987,19 @@
         "type": "アタック",
         "value": 25,
         "target": "自身",
-        "condition": {
-          "hp": [ ">=", 50 ]
-        }
+        "condition": { "hp": [ ">=", 50 ] }
       },
       {
         "type": "ディフェンス",
         "value": 25,
         "target": "自身",
-        "condition": {
-          "hp": [ ">=", 50 ]
-        }
+        "condition": { "hp": [ ">=", 50 ] }
       },
       {
         "type": "クリティカル率",
         "value": 10,
         "target": "自身",
-        "condition": {
-          "hp": [ ">=", 50 ]
-        }
+        "condition": { "hp": [ ">=", 50 ] }
       }
     ]
   },
@@ -3355,17 +3013,13 @@
         "type": "アタック",
         "value": 10,
         "target": "自身",
-        "condition": {
-          "hp": [ ">=", 100 ]
-        }
+        "condition": { "hp": [ ">=", 100 ] }
       },
       {
         "type": "与ダメージ(スキル)",
         "value": 10,
         "target": "自身",
-        "condition": {
-          "hp": [ ">=", 100 ]
-        }
+        "condition": { "hp": [ ">=", 100 ] }
       }
     ]
   },
@@ -3379,17 +3033,13 @@
         "type": "与ダメージ(魔法)",
         "value": 20,
         "target": "自身",
-        "condition": {
-          "hp": [ ">=", 80 ]
-        }
+        "condition": { "hp": [ ">=", 80 ] }
       },
       {
         "type": "与ダメージ(範囲スキル)",
         "value": 10,
         "target": "自身",
-        "condition": {
-          "hp": [ ">=", 80 ]
-        }
+        "condition": { "hp": [ ">=", 80 ] }
       }
     ]
   },
@@ -3405,9 +3055,7 @@
         "ephemeral": true,
         "target": "自身",
         "timing": "戦闘前",
-        "condition": {
-          "onOwnTurn": true
-        }
+        "condition": { "onOwnTurn": true }
       },
       {
         "type": "クリティカル率",
@@ -3415,9 +3063,7 @@
         "ephemeral": true,
         "target": "自身",
         "timing": "戦闘前",
-        "condition": {
-          "onOwnTurn": true
-        }
+        "condition": { "onOwnTurn": true }
       }
     ]
   },
@@ -3431,25 +3077,19 @@
         "type": "クリティカル率",
         "value": 20,
         "ephemeral": true,
-        "condition": {
-          "onRangedCombat": true
-        }
+        "condition": { "onRangedCombat": true }
       },
       {
         "type": "クリティカルダメージ倍率",
         "value": 20,
         "ephemeral": true,
-        "condition": {
-          "onRangedCombat": true
-        }
+        "condition": { "onRangedCombat": true }
       },
       {
         "type": "与ダメージ(スキル)",
         "value": 10,
         "ephemeral": true,
-        "condition": {
-          "onRangedCombat": true
-        }
+        "condition": { "onRangedCombat": true }
       }
     ]
   },
@@ -3463,9 +3103,7 @@
         "type": "レジスト",
         "value": 25,
         "ephemeral": true,
-        "condition": {
-          "onOwnTurn": true
-        }
+        "condition": { "onOwnTurn": true }
       }
     ]
   },
@@ -3478,23 +3116,17 @@
       {
         "type": "アタック",
         "value": 25,
-        "condition": {
-          "hp": [ ">=", 80 ]
-        }
+        "condition": { "hp": [ ">=", 80 ] }
       },
       {
         "type": "クリティカル率",
         "value": 25,
-        "condition": {
-          "hp": [ ">=", 80 ]
-        }
+        "condition": { "hp": [ ">=", 80 ] }
       },
       {
         "type": "クリティカルダメージ倍率",
         "value": 10,
-        "condition": {
-          "hp": [ ">=", 80 ]
-        }
+        "condition": { "hp": [ ">=", 80 ] }
       }
     ]
   },
