@@ -2164,13 +2164,15 @@ export default {
     display: flex;
     justify-content: center;
     background: white;
-    transition: all 0.1s ease,
+    transition: 0.1s ease;
+    transition-property: background, top, right, bottom, left;
   }
   .unit-cell {
     width: 50px;
     height: 50px;
     pointer-events: none;
-    transition: all 0.1s ease;
+    transition: 0.1s ease;
+    transition-property: background, top, right, bottom, left;
   }
   .bordered {
     border: 1px solid rgb(180,185,195);
