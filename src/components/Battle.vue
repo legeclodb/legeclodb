@@ -1,5 +1,5 @@
 <template>
-  <div class="root" id="root" @mousemove="onMouseMove">
+  <div class="root" id="root" ref="root" @mousemove="onMouseMove">
     <div class="header" :class="{ 'hidden': !showHeader }">
       <Navigation />
     </div>
@@ -898,7 +898,7 @@ export default {
           pf.setStart(unit.coord);
         }
       };
-      const colorDelay = 10;
+      const colorDelay = 15;
 
       this.tools = {
         // 非シミュレーション時
@@ -1518,9 +1518,9 @@ export default {
 
     confirmAction() {
       let unit = this.selectedUnit;
-      this.simulation.fireSkill(this.selectedUnit, this.selectedSkill, this.getTargetUnits(), this.targetCell?.coord);
+      let r = this.simulation.fireSkill(this.selectedUnit, this.selectedSkill, this.getTargetUnits(), this.targetCell?.coord);
+      this.addDamageBalloons(r.damage);
       this.resetTools();
-
       if (unit.isAlive && !unit?.sim.isEnded) {
         this.currentTool.onClickCell(this.findCellByCoord(unit.coord));
       }
@@ -1916,7 +1916,10 @@ export default {
       // deserializeLoadout はしない。これにより構成を変えてリプレイをなぞる
       this.beginSimulation();
       lut.timedEach(r.states, 150, (state) => {
-        this.simulation.playback(state);
+        let r = this.simulation.playback(state);
+        if (r?.damage) {
+          this.addDamageBalloons(r.damage);
+        }
         this.$forceUpdate();
       });
     },
@@ -2065,6 +2068,41 @@ export default {
     //#endregion リプレイ
 
 
+    //#region Balloon
+    addDamageBalloon(unit, damage) {
+      let str = `${damage}`;
+      let minor = `<span style='color: rgb(200,200,200);'>${str.slice(-4)}</span>`;
+      let major = `<span style='color: black;'>${str.slice(0, -4)}</span>`;
+      let content = `<h2>${major}${minor}</h2>`;
+
+      const timeout = 1000;
+      let Balloon = document.createElement('div');
+      Balloon.innerHTML = content;
+      Balloon.classList.add('Balloon');
+      Balloon.style.left = `${unit.coord[0] * 50 + 25}px`;
+      Balloon.style.top = `${unit.coord[1] * 50}px`;
+      Balloon.style.opacity = '1';
+      Balloon.style.transform = 'translate(-50%, -110%)';
+      Balloon.style.transition = 'opacity 0.3s linear 0.7s, transform 1s linear';
+      this.$refs.cells.appendChild(Balloon);
+
+      setTimeout(() => {
+        Balloon.style.opacity = '0';
+        Balloon.style.transform = 'translate(-50%, -150%)';
+        setTimeout(() => { this.$refs.cells.removeChild(Balloon); }, timeout);
+      }, 1);
+    },
+    addDamageBalloons(damageTable) {
+      for (let [fid, damage] of Object.entries(damageTable)) {
+        let u = this.allActiveUnits.find(a => a.fid == fid);
+        if (u && damage) {
+          this.addDamageBalloon(u, damage);
+        }
+      }
+    },
+    //#endregion Balloon
+
+
     //#region Misc
     // in-place array copy
     copyArray(dst, src) {
@@ -2164,15 +2202,15 @@ export default {
     display: flex;
     justify-content: center;
     background: white;
-    transition: 0.1s ease;
     transition-property: background, top, right, bottom, left;
+    transition: 0.01s ease;
   }
   .unit-cell {
     width: 50px;
     height: 50px;
     pointer-events: none;
-    transition: 0.1s ease;
     transition-property: background, top, right, bottom, left;
+    transition: 0.1s ease;
   }
   .bordered {
     border: 1px solid rgb(180,185,195);
@@ -2361,4 +2399,16 @@ export default {
     max-width: 800px !important;
     min-width: 600px !important;
   }
+
+  .Balloon {
+    position: absolute;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 0.3rem;
+    display: inline-block;
+    background: white;
+    box-shadow: 0 3px 6px rgba(140,149,159,0.5);
+    padding: 10px;
+    z-index: 99;
+  }
+
 </style>

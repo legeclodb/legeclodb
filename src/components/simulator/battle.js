@@ -213,7 +213,7 @@ export class SimContext {
           return false;
         }
       }
-      this.fireSkill(unit, skill, target, desc.cell);
+      return this.fireSkill(unit, skill, target, desc.cell);
     }
     else {
       if (state.turn != this.turn || state.phase != this.phase) {
@@ -400,10 +400,7 @@ export class SimContext {
     }
 
     let result = {
-      ctxAttackerMain: aMain,
-      ctxAttackerSupport: aSup,
-      ctxDefenderMain: dMain,
-      ctxDefenderSupport: dSup,
+      damage: {},
       attackerScore: aSup.totalDamage + aMain.totalDamage,
       defenderScore: dSup.totalDamage + dMain.totalDamage,
       apply() {
@@ -413,6 +410,9 @@ export class SimContext {
         unit.main.hp -= dSup.damageToMain + dMain.damageToMain;
       },
     };
+    result.damage[target.fid] = result.attackerScore;
+    result.damage[unit.fid] = result.defenderScore;
+
     if (result.attackerScore) {
       ctx.onCriticalHit = true; // とりあえずダメージを与えたらクリティカル扱い
       ctx.onDamage = true;
@@ -434,6 +434,7 @@ export class SimContext {
 
   getAreaAttackResult(unit, skill, targets, ctx) {
     let result = {
+      damage: {},
       attackerScore: 0,
       callbacks: [],
       contexts: [],
@@ -463,7 +464,11 @@ export class SimContext {
       for (let r of rs) {
         unit.invokeFixedDamage(r); // ライトマキシマスカ と 八咫鏡 のためとりあえず
 
+        if (!(target.fid in result.damage))
+          result.damage[target.fid] = 0;
+        result.damage[target.fid] += r.totalDamage;
         result.attackerScore += r.totalDamage;
+
         result.callbacks.push(() => {
           target.support.hp -= r.damageToSupport + r.additionalDamageToSupport;
           target.main.hp -= r.damageToMain + r.additionalDamageToMain;
@@ -500,6 +505,9 @@ export class SimContext {
     this.range = 0;
     this.move = 0;
 
+    let ret = {
+      damage: {},
+    };
     let doAction = (skill?.isSupportSkill || unit.isOnMultiMove) ? false : true;
     let doAttack = false;
     let doBattle = false;
@@ -550,6 +558,7 @@ export class SimContext {
       }
 
       if (result) {
+        ret.damage = result.damage;
         ctx.damageDealt = result.attackerScore;
         unit.score += result.attackerScore;
         if (unit.isPlayer) {
@@ -643,6 +652,7 @@ export class SimContext {
 
     this.pushState(unit, skill, target ?? targets, targetCell);
     console.log(ctx);
+    return ret;
   }
 
   updateAreaEffectsAll() {
