@@ -1599,7 +1599,7 @@ export default {
 
       for (let chr of characters) {
         if (chr.shape) {
-          chr.isNxNBoss = true;
+          chr.isNxN = true;
         }
         if (chr.talent) {
           chr.talent = grabSkill(chr.talent, chr);

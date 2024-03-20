@@ -606,7 +606,7 @@ export class SimContext {
       unit.state = UnitState.End;
     }
     else if (doAction) {
-      if (!unit.main.isNxNBoss) {
+      if (!unit.isNxN) {
         if (unit.invokeMultiAction(ctx)) {
           multiAction = true;
         }
@@ -767,9 +767,9 @@ export class SimContext {
   //#region impl
   findUnitByCoord(coord) {
     for (const u of this.activeUnits) {
-      if (u.main.shape) {
+      if (u.isNxN) {
         // NxN ボス
-        if (u.main.shape[coord[1]][coord[0]]) {
+        if (u.shape[coord[1]][coord[0]]) {
           return u;
         }
       }
@@ -781,24 +781,15 @@ export class SimContext {
   }
   enumerateUnitsInArea(center, size, shape, callback, once = false) {
     for (const u of this.activeUnits) {
-      if (u.main.shape) {
-        // NxN ボスは該当マス分コールバックを呼ぶ
-        // ただし once == true の場合 1 回で切り上げる
-        out: for (let y = 0; y < u.main.shape.length; ++y) {
-          let l = u.main.shape[y];
-          for (let x = 0; x < l.length; ++x) {
-            const pos = [x, y];
-            if (l[x] && isInside(center, pos, size, shape)) {
-              callback(u, pos);
-              if (once) {
-                break out;
-              }
-            }
+      // NxN ボスは該当マス分コールバックを呼ぶ
+      // ただし once == true の場合 1 回で切り上げる
+      for (let pos of u.occupiedCells) {
+        if (isInside(center, pos, size, shape)) {
+          callback(u, pos);
+          if (once) {
+            break;
           }
         }
-      }
-      else if (isInside(center, u.coord, size, shape)) {
-        callback(u);
       }
     }
   }

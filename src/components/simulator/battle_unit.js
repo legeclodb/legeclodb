@@ -130,6 +130,10 @@ export class BaseUnit {
   get isAlive() { return this.sim ? this.sim.isAlive : false; }
   get isActive() { return this.sim ? this.sim.isActive : false; }
 
+  get isNxN() { return Boolean(this.base.main?.shape); }
+  get shape() { return this.base.main?.shape; }
+  get occupiedCells() { return this.enumerateOccupiedCells(); }
+
   constructor(isPlayer = true) {
     if (isPlayer)
       this.isPlayer = true;
@@ -275,6 +279,22 @@ export class BaseUnit {
     this.setup();
     //console.log(this);
   }
+
+  *enumerateOccupiedCells() {
+    const shape = this.shape;
+    if (shape) {
+      for (let y = 0; y < shape.length; ++y) {
+        for (let x = 0; x < shape[y].length; ++x) {
+          if (shape[y][x]) {
+            yield [x, y];
+          }
+        }
+      }
+    }
+    else {
+      yield this.coord;
+    }
+  }
 }
 
 
@@ -326,6 +346,9 @@ export class SimUnit {
   get isPlayer() { return this.base.isPlayer; }
   get isEnemy() { return this.base.isEnemy; }
   get isSummon() { return this.base.isSummon; }
+  get isNxN() { return this.base.isNxN; }
+  get shape() { return this.base.shape; }
+  get occupiedCells() { return this.base.occupiedCells; }
   get symbol() { return this.main.symbol; }
   get mainClass() { return this.main.class; }
   get hpRate() {
@@ -1146,7 +1169,7 @@ export class SimUnit {
   onOwnTurnEnd(ctx) {
     this._callHandler("onOwnTurnEnd", ctx);
     this.resumeEffectDuration();
-    if (this.main.isNxNBoss) {
+    if (this.isNxN) {
       // NxN ボスは一連の行動が終わった直後にスキルのカウントが進むっぽいのだが、面倒なので自ターン終了時で代替する。
       this.reduceSkillCT(1);
       this.reduceEffectDuration();
@@ -1170,7 +1193,7 @@ export class SimUnit {
   }
   onActionEnd(ctx) {
     this._callHandler("onActionEnd", ctx);
-    if (!this.main.isNxNBoss) {
+    if (!this.isNxN) {
       this.reduceSkillCT(1);
       this.reduceEffectDuration();
     }

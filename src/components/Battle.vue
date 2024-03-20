@@ -39,27 +39,40 @@
         </b-tabs>
 
         <div style="padding: 10px; background-color: white; display: flex;">
-          <div ref="cells" class="grid-container">
-            <div v-for="(cell, i) in cells" :key="i" :set="unit=findUnitByCoord(cell.coord)" :class="getCellClass(cell)" :id="cell.id"
+          <div ref="cells" class="grid-container"
+              @mousedown.middle.prevent.stop=""
+              @click.middle.prevent.stop="onCellRClick()" 
+              @click.right.prevent.stop="onCellRClick()">
+            <div v-for="(cell, i) in cells" :key="`c${i}`" :class="getCellClass(cell)" :id="cell.id"
                  @click.stop="onClickCell(cell)"
-                 @click.middle.prevent.stop="onCellRClick(cell)" @mousedown.middle.prevent.stop="dummyHandler()"
-                 @click.right.prevent.stop="onCellRClick(cell)"
-                 @mouseover="onEnterCell(cell)" @mouseleave="onLeaveCell(cell)">
-              <template v-if="unit?.isEnemy && unit?.hasSupport">
-                <b-img :src="getImageURL(unit.main.class)" class="center" :class="getUnitIconClass(unit)"
-                       width="30" height="30" style="position: relative; left: 8px; top: -8px; z-index: 1;" />
-                <b-img :src="getImageURL(unit.support.class)" class="center" :class="getUnitIconClass(unit)"
-                       width="30" height="30" style="position: relative; left: -8px; top: 8px; z-index: 0;" />
-              </template>
-              <template v-else-if="unit?.isEnemy && unit?.main">
-                <b-img :src="getImageURL(unit.main.class)" class="center" :class="getUnitIconClass(unit)" width="40" height="40" />
-              </template>
-              <template v-else-if="unit?.isPlayer">
-                <div draggable @dragstart="onDragCell(cell)" @drop="onDropCell(cell)" @dragover.prevent="dummyHandler()">
-                  <b-img :src="getImageURL(unit.main.icon)" class="center" :class="getUnitIconClass(unit)" width="50" height="50" />
+                 @mouseover="onEnterCell(cell)" @mouseleave="onLeaveCell(cell)"
+                 :draggable=isCellDraggable(cell) @dragstart="onDragCell(cell)" @drop="onDropCell(cell)" @dragover.prevent="">
+            </div>
+            <template v-for="unit in allActiveUnits">
+              <template v-if="unit.isNxN">
+                <div v-for="pos in unit.occupiedCells" :key="`${unit.fid}[${pos[0]}][${pos[1]}]`" :style="getUnitStyle(unit, pos)" class="unit-cell">
+                  <b-img :src="getImageURL(unit.main.class)" class="center" :class="getUnitIconClass(unit)" width="40" height="40" />
                 </div>
               </template>
-            </div>
+              <template v-else>
+                <div :key="unit.fid" :id="unit-`unit.fid`" :style="getUnitStyle(unit)" class="unit-cell">
+                  <template v-if="unit.isEnemy && unit.hasSupport">
+                    <b-img :src="getImageURL(unit.main.class)" class="center" :class="getUnitIconClass(unit)"
+                           width="30" height="30" style="left: 17px; top: 17px; z-index: 1;" />
+                    <b-img :src="getImageURL(unit.support.class)" class="center" :class="getUnitIconClass(unit)"
+                           width="30" height="30" style="left: 33px; top: 33px; z-index: 0;" />
+                  </template>
+                  <template v-else-if="unit.isEnemy">
+                    <b-img :src="getImageURL(unit.main.class)" class="center" :class="getUnitIconClass(unit)" width="40" height="40" />
+                  </template>
+                  <template v-else-if="unit.isPlayer">
+                    <div>
+                      <b-img :src="getImageURL(unit.main.icon)" class="center" :class="getUnitIconClass(unit)" width="50" height="50" />
+                    </div>
+                  </template>
+                </div>
+              </template>
+            </template>
           </div>
 
           <div ref="enemyList" class="enemy-list">
@@ -367,7 +380,7 @@
         <b-tabs v-if="!simulation" v-model="unitTabIndex">
           <b-tab v-for="(unit, ui) in playerUnits" :key="ui" style="background-color: white;">
             <template #title>
-              <h2 style="font-size: 1em;" draggable @dragstart="onDragUnit(unit)" @drop="onDropUnit(unit)" @dragover.prevent="dummyHandler()">
+              <h2 style="font-size: 1em;" draggable @dragstart="onDragUnit(unit)" @drop="onDropUnit(unit)" @dragover.prevent="">
                 ユニット{{ui+1}}
                 <b-img-lazy :src="getImageURL(unit.main?.icon)" width="30" />
                 <b-img-lazy :src="getImageURL(unit.support?.icon)" width="30" />
@@ -1552,6 +1565,18 @@ export default {
       }
       return r;
     },
+    getUnitStyle(unit, pos) {
+      if (!pos) {
+        pos = unit.coord;
+      }
+      let r = [
+        "position: absolute",
+        `left: ${pos[0] * 50}px`,
+        `top: ${pos[1] * 50}px`,
+        `transition: 0.1s all ease`,
+      ];
+      return r.join(";");
+    },
     getUnitIconClass(unit) {
       let r = [];
       let sim = unit.sim;
@@ -1579,7 +1604,7 @@ export default {
         tool.onClickCell(cell);
       }
     },
-    onCellRClick(cell) {
+    onCellRClick() {
       this.cancelAction();
     },
     onClickWait() {
@@ -1649,7 +1674,12 @@ export default {
     onDropCell(cell) {
       this.onDropUnit(this.findUnitByCoord(cell.coord));
     },
-    dummyHandler() {
+    isCellDraggable(cell) {
+      if (!this.simulation) {
+        const u = this.findUnitByCoord(cell.coord);
+        return u?.isPlayer;
+      }
+      return false;
     },
 
     effectValuesToHtml(rate, fixed) {
@@ -1873,7 +1903,7 @@ export default {
       this.selectBattle(r.battle);
       // deserializeLoadout はしない。これにより構成を変えてリプレイをなぞる
       this.beginSimulation();
-      lut.timedEach(r.states, 100, (state) => {
+      lut.timedEach(r.states, 150, (state) => {
         this.simulation.playback(state);
         this.$forceUpdate();
       });
@@ -2116,11 +2146,17 @@ export default {
       background: rgb(180,185,195);
     */
     margin-right: 20px;
+    position: relative;
   }
   .grid-cell {
     display: flex;
     justify-content: center;
     background: white;
+  }
+  .unit-cell {
+    width: 50px;
+    height: 50px;
+    pointer-events: none;
   }
   .bordered {
     border: 1px solid rgb(180,185,195);
@@ -2187,7 +2223,10 @@ export default {
   }
 
   .center {
-    margin: auto;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
   }
 
   .unit-panel {
