@@ -1032,16 +1032,16 @@ export default {
         const mdt = ma.character.damageType;
         const sdt = sa.character.damageType;
         let list = [null, null];
-        if (mdt == "アタック" && sdt == "アタック") {
+        if (sdt == "アタック" && mdt == "アタック") {
           list[0] = find("x501");
         }
-        else if (mdt == "アタック" && sdt == "マジック") {
+        else if (sdt == "アタック" && mdt == "マジック") {
           list[0] = find("x502");
         }
-        else if (mdt == "マジック" && sdt == "アタック") {
+        else if (sdt == "マジック" && mdt == "アタック") {
           list[0] = find("x503");
         }
-        else if (mdt == "マジック" && sdt == "マジック") {
+        else if (sdt == "マジック" && mdt == "マジック") {
           list[0] = find("x504");
         }
         list[1] = find("x602");

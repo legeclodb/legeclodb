@@ -272,8 +272,8 @@ export default {
     getAmuletSkillList(slot) {
       const find = (uid) => this.searchTableWithUid.get(uid);
       const list = [
-        [find("x501"), find("x502"), find("x503"), find("x504")],
-        [find("x601"), find("x602"), find("x603"), find("x604")],
+        [find("x501"), find("x502"), find("x503"), find("x504"), find("x505"), find("x506"), find("x507"), find("x508")],
+        [find("x601"), find("x602"), find("x603"), find("x604"), find("x605"), find("x606")],
       ];
       return list[slot];
     },
