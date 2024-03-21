@@ -1705,7 +1705,11 @@ export default {
     effectValuesToHtml(rate, fixed) {
       let list = [];
       for (const [name, value] of Object.entries(rate)) {
-        list.push(`${name}${value >= 0 ? '+' : ''}${value}%`);
+        let unit = '';
+        if (!["移動", "射程(通常攻撃)", "射程(スキル)", "範囲"].includes(name)) {
+          unit = "%";
+        }
+        list.push(`${name}${value >= 0 ? '+' : ''}${value}${unit}`);
       }
       for (const [name, value] of Object.entries(fixed)) {
         list.push(`${name}${value >= 0 ? '+' : ''}${value}`);
