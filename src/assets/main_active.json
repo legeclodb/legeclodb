@@ -449,7 +449,7 @@
     "damageRate": 1.5,
     "heal": [
       {
-        "base": "ダメージ割合",
+        "base": "与ダメージ",
         "rate": 0.3,
         "target": "自身"
       }
@@ -467,7 +467,7 @@
     "damageRate": 2,
     "heal": [
       {
-        "base": "ダメージ割合",
+        "base": "与ダメージ",
         "rate": 0.3,
         "target": "自身"
       }
@@ -1105,7 +1105,7 @@
     "damageRate": 1.4,
     "heal": [
       {
-        "base": "ダメージ割合",
+        "base": "与ダメージ",
         "rate": 0.5,
         "target": "自身"
       }
@@ -1134,7 +1134,7 @@
     "damageRate": 2,
     "heal": [
       {
-        "base": "ダメージ割合",
+        "base": "与ダメージ",
         "rate": 0.7,
         "target": "自身"
       }
@@ -1298,7 +1298,7 @@
     "damageRate": 1.7,
     "heal": [
       {
-        "base": "ダメージ割合",
+        "base": "与ダメージ",
         "rate": 0.5,
         "target": "自身"
       }
@@ -1843,7 +1843,7 @@
     "damageRate": 1.5,
     "heal": [
       {
-        "base": "ダメージ割合",
+        "base": "与ダメージ",
         "rate": 0.2,
         "target": "自身"
       }
@@ -2867,7 +2867,7 @@
     "cost": 2,
     "heal": [
       {
-        "base": "HP割合",
+        "base": "最大HP",
         "rate": 0.1,
         "target": "スキル対象"
       }
@@ -2892,7 +2892,7 @@
     ],
     "heal": [
       {
-        "base": "HP割合",
+        "base": "最大HP",
         "rate": 0.2,
         "target": "スキル対象"
       }
@@ -3799,7 +3799,7 @@
     ],
     "heal": [
       {
-        "base": "HP割合",
+        "base": "最大HP",
         "rate": 0.15,
         "target": "スキル対象"
       }
@@ -4014,7 +4014,7 @@
     "damageRate": 1.3,
     "heal": [
       {
-        "base": "ダメージ割合",
+        "base": "与ダメージ",
         "rate": 0.3,
         "target": "自身"
       }
@@ -4039,7 +4039,7 @@
     "cost": 1,
     "heal": [
       {
-        "base": "HP割合",
+        "base": "最大HP",
         "rate": 1,
         "target": "自身"
       }
@@ -4195,7 +4195,7 @@
     "damageRate": 1.6,
     "heal": [
       {
-        "base": "ダメージ割合",
+        "base": "与ダメージ",
         "rate": 0.3,
         "target": "自身",
         "condition": {
@@ -4253,7 +4253,7 @@
     "damageRate": 1.7,
     "heal": [
       {
-        "base": "ダメージ割合",
+        "base": "与ダメージ",
         "rate": 0.3,
         "target": "自身",
         "condition": {
@@ -4437,7 +4437,7 @@
     "damageRate": 1.8,
     "heal": [
       {
-        "base": "ダメージ割合",
+        "base": "与ダメージ",
         "rate": 0.5,
         "target": "自身",
         "condition": { "hp": [ "<=", 50 ] }
@@ -4489,7 +4489,7 @@
     "damageRate": 1.6,
     "heal": [
       {
-        "base": "ダメージ割合",
+        "base": "与ダメージ",
         "rate": 0.3,
         "target": "自身",
         "condition": {
@@ -4766,7 +4766,7 @@
     "damageRate": 1.6,
     "heal": [
       {
-        "base": "ダメージ割合",
+        "base": "与ダメージ",
         "rate": 0.1,
         "target": "味方全体"
       }
@@ -5024,7 +5024,7 @@
     "damageRate": 2,
     "heal": [
       {
-        "base": "ダメージ割合",
+        "base": "与ダメージ",
         "rate": 0.5,
         "target": "自身"
       }
@@ -5051,7 +5051,7 @@
     "damageRate": 2.2,
     "heal": [
       {
-        "base": "ダメージ割合",
+        "base": "与ダメージ",
         "rate": 0.6,
         "target": "自身"
       }
@@ -5224,7 +5224,7 @@
     ],
     "heal": [
       {
-        "base": "HP割合",
+        "base": "最大HP",
         "rate": 0.3,
         "target": "自身"
       }
@@ -5419,7 +5419,7 @@
     "damageRate": 1.2,
     "heal": [
       {
-        "base": "ダメージ割合",
+        "base": "与ダメージ",
         "rate": 0.15,
         "target": "自身"
       }
@@ -6318,7 +6318,7 @@
     ],
     "heal": [
       {
-        "base": "HP割合",
+        "base": "最大HP",
         "rate": 0.3,
         "target": "自身",
         "timing": "戦闘後",
@@ -6371,7 +6371,7 @@
     ],
     "heal": [
       {
-        "base": "HP割合",
+        "base": "最大HP",
         "rate": 0.35,
         "target": "自身",
         "timing": "戦闘後",
@@ -6631,7 +6631,7 @@
     "damageRate": 1.8,
     "heal": [
       {
-        "base": "ダメージ割合",
+        "base": "与ダメージ",
         "rate": 0.3,
         "target": "自身"
       }
@@ -6886,7 +6886,7 @@
     "damageRate": 1.5,
     "heal": [
       {
-        "base": "ダメージ割合",
+        "base": "与ダメージ",
         "rate": 0.05,
         "target": "味方全体"
       }
@@ -6904,7 +6904,7 @@
     "damageRate": 1.8,
     "heal": [
       {
-        "base": "ダメージ割合",
+        "base": "与ダメージ",
         "rate": 0.1,
         "target": "味方全体"
       }
@@ -7221,7 +7221,7 @@
     "damageRate": 1.7,
     "heal": [
       {
-        "base": "ダメージ割合",
+        "base": "与ダメージ",
         "rate": 0.3,
         "target": "自身"
       }
@@ -7346,7 +7346,7 @@
     "damageRate": 2,
     "heal": [
       {
-        "base": "ダメージ割合",
+        "base": "与ダメージ",
         "rate": 0.25,
         "target": "自身"
       }
@@ -7499,7 +7499,7 @@
     "damageRate": 1.8,
     "heal": [
       {
-        "base": "ダメージ割合",
+        "base": "与ダメージ",
         "rate": 0.5,
         "target": "自身"
       }
@@ -8109,7 +8109,7 @@
     ],
     "heal": [
       {
-        "base": "ダメージ割合",
+        "base": "与ダメージ",
         "rate": 0.15,
         "target": "味方全体",
         "timing": "戦闘後"
@@ -8343,7 +8343,7 @@
     "damageRate": 2,
     "heal": [
       {
-        "base": "ダメージ割合",
+        "base": "与ダメージ",
         "rate": 0.3,
         "target": "自身",
         "timing": "戦闘後"
@@ -8628,7 +8628,7 @@
     "damageRate": 1.9,
     "heal": [
       {
-        "base": "ダメージ割合",
+        "base": "与ダメージ",
         "rate": 0.3,
         "target": "自身",
         "timing": "戦闘後"
@@ -8719,7 +8719,7 @@
     ],
     "heal": [
       {
-        "base": "ダメージ割合",
+        "base": "与ダメージ",
         "rate": 0.25,
         "target": "自身",
         "timing": "戦闘後"
@@ -9583,7 +9583,7 @@
     "damageRate": 0.5,
     "heal": [
       {
-        "base": "HP割合",
+        "base": "最大HP",
         "rate": 0.25,
         "target": "スキル対象"
       }
@@ -9601,7 +9601,7 @@
     "damageRate": 1.8,
     "heal": [
       {
-        "base": "ダメージ割合",
+        "base": "与ダメージ",
         "rate": 0.1,
         "target": "味方全体",
         "timing": "戦闘後",
@@ -9633,7 +9633,7 @@
     ],
     "heal": [
       {
-        "base": "ダメージ割合",
+        "base": "与ダメージ",
         "rate": 0.1,
         "target": "味方全体",
         "condition": { "onCriticalHit": true }
@@ -9754,7 +9754,7 @@
     ],
     "heal": [
       {
-        "base": "ダメージ割合",
+        "base": "与ダメージ",
         "rate": 0.1,
         "target": "自身",
         "condition": {
@@ -10121,7 +10121,7 @@
     ],
     "heal": [
       {
-        "base": "HP割合",
+        "base": "最大HP",
         "rate": 0.25,
         "target": "スキル対象"
       }
@@ -10537,7 +10537,7 @@
     "damageRate": 2,
     "heal": [
       {
-        "base": "ダメージ割合",
+        "base": "与ダメージ",
         "rate": 0.25,
         "target": "自身"
       }
@@ -10555,7 +10555,7 @@
     "damageRate": 2.1,
     "heal": [
       {
-        "base": "ダメージ割合",
+        "base": "与ダメージ",
         "rate": 0.25,
         "target": "自身"
       },
@@ -10578,7 +10578,7 @@
     "damageRate": 2,
     "heal": [
       {
-        "base": "ダメージ割合",
+        "base": "与ダメージ",
         "rate": 0.2,
         "target": "自身"
       }
@@ -10597,7 +10597,7 @@
     "damageRate": 2,
     "heal": [
       {
-        "base": "ダメージ割合",
+        "base": "与ダメージ",
         "rate": 0.2,
         "target": "自身"
       }
@@ -11371,7 +11371,7 @@
     "damageRate": 2.25,
     "heal": [
       {
-        "base": "ダメージ割合",
+        "base": "与ダメージ",
         "rate": 0.25,
         "target": "自身"
       }
@@ -11461,7 +11461,7 @@
     "damageRate": 1.6,
     "heal": [
       {
-        "base": "ダメージ割合",
+        "base": "与ダメージ",
         "rate": 0.3,
         "target": "自身"
       }
@@ -11490,7 +11490,7 @@
     "damageRate": 1.8,
     "heal": [
       {
-        "base": "ダメージ割合",
+        "base": "与ダメージ",
         "rate": 0.4,
         "target": "自身"
       }
@@ -11894,7 +11894,7 @@
     "damageRate": 1.8,
     "heal": [
       {
-        "base": "ダメージ割合",
+        "base": "与ダメージ",
         "rate": 0.15,
         "target": "自身"
       }
@@ -11913,7 +11913,7 @@
     "damageRate": 2,
     "heal": [
       {
-        "base": "ダメージ割合",
+        "base": "与ダメージ",
         "rate": 0.25,
         "target": "自身"
       }
@@ -12369,7 +12369,7 @@
     "damageRate": 1.7,
     "heal": [
       {
-        "base": "ダメージ割合",
+        "base": "与ダメージ",
         "rate": 0.1,
         "target": "自身",
         "timing": "戦闘後",
@@ -12389,7 +12389,7 @@
     "damageRate": 1.8,
     "heal": [
       {
-        "base": "ダメージ割合",
+        "base": "与ダメージ",
         "rate": 0.1,
         "target": "自身",
         "timing": "戦闘後",
@@ -12547,7 +12547,7 @@
     ],
     "heal": [
       {
-        "base": "ダメージ割合",
+        "base": "与ダメージ",
         "rate": 0.1,
         "target": "自身",
         "timing": "戦闘後"
@@ -12577,7 +12577,7 @@
     ],
     "heal": [
       {
-        "base": "ダメージ割合",
+        "base": "与ダメージ",
         "rate": 0.15,
         "target": "自身",
         "timing": "戦闘後"
@@ -12790,7 +12790,7 @@
     "damageRate": 1.9,
     "heal": [
       {
-        "base": "ダメージ割合",
+        "base": "与ダメージ",
         "rate": 0.2,
         "target": "自身"
       }
@@ -12808,7 +12808,7 @@
     "damageRate": 2.05,
     "heal": [
       {
-        "base": "ダメージ割合",
+        "base": "与ダメージ",
         "rate": 0.2,
         "target": "自身"
       }
@@ -13119,7 +13119,7 @@
     "supportAttack": [ {} ],
     "heal": [
       {
-        "base": "ダメージ割合",
+        "base": "与ダメージ",
         "rate": 0.2,
         "target": "自身",
         "timing": "戦闘後"
@@ -13151,7 +13151,7 @@
     "supportAttack": [ {} ],
     "heal": [
       {
-        "base": "ダメージ割合",
+        "base": "与ダメージ",
         "rate": 0.25,
         "target": "自身",
         "timing": "戦闘後"

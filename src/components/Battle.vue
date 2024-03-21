@@ -79,14 +79,14 @@
             <div v-if="simulation" class="character">
               <div class="info">
                 <h5>スコア</h5>
-                <template v-for="unit in activePlayerUnits">
+                <template v-for="unit in allPlayerUnits">
                   <div :key="unit.fid" class="flex">
-                    <b-img-lazy :src="getImageURL(unit.main.icon)" :title="unit.main.name" width="50" height="50" rounded />
-                    <div style="font-size: 18pt; margin-left: 10px;">{{unit.sim.score}}</div>
+                    <b-img-lazy :src="getImageURL(unit.main.icon)" :title="unit.main.name" :class="`${!unit.isAlive ? 'grayscale' : ''}`" width="50" height="50" rounded />
+                    <div style="font-size: 18pt; margin-left: 10px;">{{Math.round(unit.sim.score)}}</div>
                   </div>
                 </template>
                 <div class="flex">
-                  <h5 style="font-size: 18pt; margin-left: 0px;">合計: {{simulation.score}}</h5>
+                  <h5 style="font-size: 18pt; margin-left: 0px;">合計: {{Math.round(simulation.score)}}</h5>
                 </div>
               </div>
             </div>
@@ -474,7 +474,7 @@
                           <div class="param-box"><b-img-lazy :src="getImageURL(unit.support.damageType)" :title="'攻撃タイプ:'+unit.support.damageType" width="20" height="20" /></div>
                           <div class="param-box"><b-img-lazy :src="getImageURL('射程')" title="射程" width="18" height="18" /><span>{{unit.support.range}}</span></div>
                         </div>
-                        <div class="status2" v-html="statusToHtml(unit.support.status)" />
+                        <div class="status2" v-html="statusToHtml(unit.support.status, '', unit.support.damageType)" />
                       </div>
                       <div class="skills">
                         <div class="skill" v-for="(skill, si) in unit.support.skills" :class="getSkillClass(skill)" :key="`skill${si}`">
@@ -501,7 +501,7 @@
                             <div class="desc" v-show="displayType >= 2">
                               <div class="flex">
                                 <h6>
-                                  <b-img-lazy :src="getImageURL(skill.slot)" :title="'部位:'+skill.slot" height="20" />
+                                  <b-img-lazy v-if="skill.slot" :src="getImageURL(skill.slot)" :title="'部位:'+skill.slot" height="20" />
                                   {{ skill.name }}
                                 </h6>
                               </div>
@@ -558,7 +558,7 @@
                     <div class="param-box"><b-img-lazy :src="getImageURL(unit.support.damageType)" :title="'攻撃タイプ:'+unit.support.damageType" width="20" height="20" /></div>
                     <div class="param-box"><b-img-lazy :src="getImageURL('射程')" title="射程" width="18" height="18" /><span>{{unit.support.range}}</span></div>
                   </div>
-                  <div class="status2" v-html="statusToHtml(unit.support.status)" />
+                  <div class="status2" v-html="statusToHtml(unit.support.status, '', unit.support.damageType)" />
                 </div>
               </div>
             </div>
@@ -836,6 +836,14 @@ export default {
     activePlayerUnits() {
       if (this.simulation) {
         return this.simulation.units.filter(a => a.isPlayer && !a.isSummon && a.isActive).map(a => a.base);
+      }
+      else {
+        return this.playerUnits;
+      }
+    },
+    allPlayerUnits() {
+      if (this.simulation) {
+        return Object.values(this.simulation.fidTable).filter(a => a.isPlayer && !a.isSummon).map(a => a.base);
       }
       else {
         return this.playerUnits;
@@ -1519,7 +1527,7 @@ export default {
     confirmAction() {
       let unit = this.selectedUnit;
       let r = this.simulation.fireSkill(this.selectedUnit, this.selectedSkill, this.getTargetUnits(), this.targetCell?.coord);
-      this.addDamageBalloons(r.damage);
+      this.addBalloons(r);
       this.resetTools();
       if (unit.isAlive && !unit?.sim.isEnded) {
         this.currentTool.onClickCell(this.findCellByCoord(unit.coord));
@@ -1886,7 +1894,7 @@ export default {
       r.battle = this.battleId;
       r.loadout = this.serializeLoadout();
       r.states = this.simulation.serialize();
-      r.name = `${this.battleData.name} ${r.states.at(-1).score}`;
+      r.name = `${this.battleData.name} ${r.states.at(-1).desc.score}`;
       return r;
     },
     deserializeReplay(data) {
@@ -1917,9 +1925,7 @@ export default {
       this.beginSimulation();
       lut.timedEach(r.states, 150, (state) => {
         let r = this.simulation.playback(state);
-        if (r?.damage) {
-          this.addDamageBalloons(r.damage);
-        }
+        this.addBalloons(r);
         this.$forceUpdate();
       });
     },
@@ -2069,34 +2075,51 @@ export default {
 
 
     //#region Balloon
-    addDamageBalloon(unit, damage) {
-      let str = `${damage}`;
-      let minor = `<span style='color: rgb(200,200,200);'>${str.slice(-4)}</span>`;
-      let major = `<span style='color: black;'>${str.slice(0, -4)}</span>`;
-      let content = `<h2>${major}${minor}</h2>`;
-
+    addBaloon(unit, content) {
       const timeout = 1000;
       let Balloon = document.createElement('div');
       Balloon.innerHTML = content;
-      Balloon.classList.add('Balloon');
+      Balloon.classList.add('balloon');
       Balloon.style.left = `${unit.coord[0] * 50 + 25}px`;
       Balloon.style.top = `${unit.coord[1] * 50}px`;
       Balloon.style.opacity = '1';
       Balloon.style.transform = 'translate(-50%, -110%)';
-      Balloon.style.transition = 'opacity 0.3s linear 0.7s, transform 1s linear';
+      Balloon.style.transition = 'opacity 0.4s ease-out 0.6s, transform 0.6s ease-out';
       this.$refs.cells.appendChild(Balloon);
 
       setTimeout(() => {
         Balloon.style.opacity = '0';
-        Balloon.style.transform = 'translate(-50%, -150%)';
+        Balloon.style.transform = 'translate(-50%, -160%)';
         setTimeout(() => { this.$refs.cells.removeChild(Balloon); }, timeout);
       }, 1);
     },
-    addDamageBalloons(damageTable) {
-      for (let [fid, damage] of Object.entries(damageTable)) {
-        let u = this.allActiveUnits.find(a => a.fid == fid);
-        if (u && damage) {
-          this.addDamageBalloon(u, damage);
+    addDamageBalloon(unit, damage) {
+      let str = `${Math.round(damage)}`;
+      let minor = `<span style='color: rgb(200,200,200);'>${str.slice(-4)}</span>`;
+      let major = `<span style='color: black;'>${str.slice(0, -4)}</span>`;
+      let content = `<h1 style='font-size: 24pt;'>${major}${minor}</h1>`;
+      this.addBaloon(unit, content);
+    },
+    addHealBalloon(unit, heal) {
+      let str = `${Math.round(heal)}`;
+      let minor = `<span style='color: rgb(120,240,120);'>${str.slice(-4)}</span>`;
+      let major = `<span style='color: rgb(0,160,0);'>${str.slice(0, -4)}</span>`;
+      let content = `<h1 style='font-size: 24pt;'>${major}${minor}</h1>`;
+      this.addBaloon(unit, content);
+    },
+    addBalloons(ctx) {
+      if (ctx) {
+        for (let [fid, damage] of Object.entries(ctx.damageTaken)) {
+          if (damage.total) {
+            let u = this.simulation.findUnit(fid);
+            this.addDamageBalloon(u, damage.total);
+          }
+        }
+        for (let [fid, heal] of Object.entries(ctx.healTaken)) {
+          if (heal.total) {
+            let u = this.simulation.findUnit(fid);
+            this.addHealBalloon(u, heal.total);
+          }
         }
       }
     },
@@ -2400,15 +2423,15 @@ export default {
     min-width: 600px !important;
   }
 
-  .Balloon {
+  .balloon {
     position: absolute;
+    display: inline-block;
+    padding: 5px;
+    z-index: 99;
     border: 1px solid rgba(0, 0, 0, 0.2);
     border-radius: 0.3rem;
-    display: inline-block;
     background: white;
     box-shadow: 0 3px 6px rgba(140,149,159,0.5);
-    padding: 10px;
-    z-index: 99;
   }
 
 </style>

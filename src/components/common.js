@@ -604,7 +604,7 @@ export default {
         if (!v)
           return [];
 
-        let s = typeof (v) == "number" && !Number.isFinite(v) ? '∞' : v;
+        let s = typeof (v) == "number" && !Number.isFinite(v) ? '∞' : Math.round(v);
         if (i < 6)
           return `<div class="param-box"><img src="${this.getImageURL(n)}" title="${n}" width="18" height="18" /><span>${prefix}${s}</span></div>`;
         else
@@ -1502,6 +1502,9 @@ export default {
         skill.tags = [];
       if (params.includeSkillEffectTags)
         skill.tags = [...skill.tags, ...this.effectParamsToTags(skill, params)];
+
+      if (!skill.icon)
+        skill.icon = skill.uid;
 
       // 確認・デバッグ用
       if (process.env.NODE_ENV === 'development') {

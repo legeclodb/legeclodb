@@ -269,8 +269,6 @@
         "onIdle": { "type": "boolean" },
         "onMultiAction": { "type": "boolean" },
         "onMultiMove": { "type": "boolean" },
-        "onTargetAlly": { "type": "boolean" },
-        "onTargetEnemy": { "type": "boolean" },
         "onActiveSkill": { "type": "boolean" },
         "onSingleSkill": { "type": "boolean" },
         "onAreaSkill": { "type": "boolean" },
@@ -395,11 +393,18 @@
 
     "shield": {
       "type": "object",
-      "required": [ "base", "rate" ],
+      "required": [ "base" ],
       "additionalProperties": false,
       "properties": {
-        "base": { "$ref": "#/$defs/statusType" },
+        "base": {
+          "anyOf": [
+            { "$ref": "#/$defs/statusType" },
+            { "enum": [ "固定値" ] }
+          ]
+        },
         "rate": { "type": [ "number", "array" ] },
+        "source": { "enum": [ "メイン", "サポート" ] },
+        "value": { "type": [ "number", "array" ] },
         "target": { "$ref": "#/$defs/targetType" },
         "condition": { "$ref": "#/$defs/condition" }
       }
@@ -420,7 +425,7 @@
       "required": [ "base", "rate" ],
       "additionalProperties": false,
       "properties": {
-        "base": { "enum": [ "マジック", "HP割合", "ダメージ割合" ] },
+        "base": { "enum": [ "マジック", "最大HP", "与ダメージ" ] },
         "rate": {
           "anyOf": [
             { "type": "number" },

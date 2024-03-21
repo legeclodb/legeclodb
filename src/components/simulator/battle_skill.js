@@ -2,6 +2,10 @@ import { $g } from "./battle_globals.js";
 import { SimUnit, UnitState } from "./battle_unit.js";
 import { unique, count } from "../utils.js";
 
+export function scalar(v) {
+  return Array.isArray(v) ? v.at(-1) : v;
+}
+
 export function callHandler(funcName, ctx, ...callees) {
   for (let c of callees) {
     c[funcName](ctx);
@@ -40,7 +44,6 @@ export function evaluateCondition(ctx, cond)
 
   const boolProps = [
     "onOwnTurn", "onEnemyTurn",
-    "onTargetAlly", "onTargetEnemy",
     "onActiveSkill", "onSingleSkill", "onAreaSkill",
     "onBattle", "onCloseCombat", "onRangedCombat",
     "onDamage", "onCriticalHit", "onKill", "onClassAdvantage",
@@ -144,6 +147,21 @@ export function makeActionContext(unit, target, skill, isAttacker, parent) {
     "damageToSupport", "damageToMain",
     "additionalDamageToSupport", "additionalDamageToMain",
   ];
+  const damageRecordBase = {
+    get(fid) {
+      let r = this[fid];
+      if (r === undefined) {
+        r = this[fid] = {
+          main: 0,
+          support: 0,
+          additional: 0,
+          get total() { return this.main + this.support + this.additional; }
+        };
+      }
+      return r;
+    }
+  };
+
   let ctx = {
     get turn() { return sim.turn; },
     get phase() { return sim.phase; },
@@ -152,129 +170,105 @@ export function makeActionContext(unit, target, skill, isAttacker, parent) {
     get onRangedCombat() { return this.onBattle && this.range > 1; },
     get terrain() { return ""; },
 
-    get skill() { return this.skill_; },
-    set skill(skill) {
-      this.skill_ = skill;
-      if (!skill || skill.isNormalAttack) {
-        this.onNormalAttack = true;
-        this.onTargetEnemy = true;
+    // skill 関連
+    skill: skill,
+    get onNormalAttack() { return this.skill === null || this.skill.isNormalAttack; }, // skill が undefined の場合は false 
+    get onActiveSkill() { return this.skill && !this.skill.isNormalAttack; },
+    get onAreaSkill() { return this.skill && this.skill.isAreaTarget; },
+    get onSingleSkill() { return this.skill && !this.skill.isAreaTarget; },
+
+    // unit 関連
+    unit: unit,
+    get class() { return this.unit.mainClass; },
+    get symbol() { return this.unit.symbol; },
+    get hp() { return this.unit.hpRate; },
+    get activeBuffCount() { return this.unit.activeBuffCount },
+    get activeDebuffCount() { return this.unit.activeDebuffCount; },
+    isOnEffect(args) { return this.unit.isOnEffect(args); },
+    getTokenCount(args) { return this.unit.getTokenCount(args); },
+    getUnitsInArea(args) { return this.unit.getUnitsInArea(args); },
+    getNearAllyCount(args) { return unique(this.unit.getAlliesInArea(args)).length; },
+    getNearEnemyCount(args) { return unique(this.unit.getEnemiesInArea(args)).length; },
+
+    // target 関連
+    target: target,
+    get targetClass() { return this.target.mainClass; },
+    get targetHp() { return this.target.hpRate; },
+    get targetActiveBuffCount() { return this.target.activeBuffCount; },
+    get targetActiveDebuffCount() { return this.target.activeDebuffCount; },
+    getTargetTokenCount(args) { return this.target.getTokenCount(args); },
+
+    // ダメージ関連
+    damageDealt: Object.create(damageRecordBase),
+    damageTaken: Object.create(damageRecordBase),
+    healDealt: Object.create(damageRecordBase),
+    healTaken: Object.create(damageRecordBase),
+    addDamage(v, fromChr, toChr, additional = false) {
+      let from = fromChr.unit;
+      let to = toChr.unit;
+
+      let dealt = this.damageDealt.get(from.fid);
+      if (additional) {
+        dealt.additional += v;
+      }
+      else if (fromChr.isSupport) {
+        dealt.support += v;
       }
       else {
-        this.onActiveSkill = true;
-        if (skill.isAreaTarget) {
-          this.onAreaSkill = true;
-        }
-        else {
-          this.onSingleSkill = true;
-        }
+        dealt.main += v;
+      }
 
-        if (skill.isMainSkill && skill.isSingleTarget) {
-          if (skill.isTargetAlly) {
-            this.onTargetAlly = true;
-          }
-          if (skill.isTargetEnemy) {
-            this.onTargetEnemy = true;
-          }
-        }
+      let taken = this.damageTaken.get(to.fid);
+      if (toChr.isSupport) {
+        taken.support += v;
+      }
+      else {
+        taken.main += v;
+      }
+    },
+    addHeal(v, fromChr, toChr) {
+      let from = fromChr.unit;
+      let to = toChr.unit;
+
+      let dealt = this.healDealt.get(from.fid);
+      if (fromChr.isSupport) {
+        dealt.support += v;
+      }
+      else {
+        dealt.main += v;
+      }
+
+      let taken = this.healTaken.get(to.fid);
+      if (toChr.isSupport) {
+        taken.support += v;
+      }
+      else {
+        taken.main += v;
       }
     },
 
-    get unit() { return this.unit_; },
-    set unit(u) {
-      this.unit_ = u;
-      Object.defineProperties(this, {
-        class: {
-          configurable: true,
-          get: () => u.mainClass
-        },
-        symbol: {
-          configurable: true,
-          get: () => u.symbol
-        },
-        hp: {
-          configurable: true,
-          get: () => u.hpRate
-        },
-        activeBuffCount: {
-          configurable: true,
-          get: () => u.activeBuffCount
-        },
-        activeDebuffCount: {
-          configurable: true,
-          get: () => u.activeDebuffCount
-        },
-      });
-      this.isOnEffect = (args) => u.isOnEffect(args);
-      this.getTokenCount = (args) => u.getTokenCount(args);
-      this.getUnitsInArea = (args) => u.getUnitsInArea(args);
-      this.getNearAllyCount = (args) => unique(u.getAlliesInArea(args)).length;
-      this.getNearEnemyCount = (args) => unique(u.getEnemiesInArea(args)).length;
+    makeChild() {
+      let r = Object.create(this);
+      // base 側に変更を伝達するため、直接 base 側の関数を呼ぶ
+      r.addDamage = (...args) => { this.addDamage(...args); };
+      r.addHeal = (...args) => { this.addHeal(...args); };
+      return r;
     },
-
-    get target() { return this.target_; },
-    set target(u) {
-      this.target_ = u;
-      Object.defineProperties(this, {
-        targetClass: {
-          configurable: true,
-          get: () => u.mainClass
-        },
-        targetHp: {
-          configurable: true,
-          get: () => u.hpRate
-        },
-        targetActiveBuffCount: {
-          configurable: true,
-          get: () => u.activeBuffCount
-        },
-        targetActiveDebuffCount: {
-          configurable: true,
-          get: () => u.activeDebuffCount
-        },
-      });
-      this.getTargetTokenCount = (args) => u.getTokenCount(args);
-    },
-
-    damageDealt: 0,
-    damageTaken: 0,
-
-    damageToSupport: 0,
-    damageToMain: 0,
-    additionalDamageToSupport: 0, // 固定値ダメージなどによる追加ダメージ
-    additionalDamageToMain: 0,    // 
-    addDamage: function (v) {
-      for (const p of damageProps) {
-        this[p] += v[p];
-      }
-    },
-    get totalDamage() {
-      return damageProps.reduce((v, p) => v + this[p], 0);
+    inheritDamage(parent) {
+      this.addDamage = (...args) => { parent.addDamage(...args); };
+      this.addHeal = (...args) => { parent.addHeal(...args); };
     },
   };
 
   if (isAttacker) {
-    Object.defineProperties(ctx, {
-      "move": { get: () => sim.move },
-    });
+    ctx.move = sim.move;
     ctx.onOwnTurn = true;
   }
   else {
-    Object.defineProperties(ctx, {
-      "move": { get: () => 0 },
-    });
+    ctx.move = 0;
     ctx.onEnemyTurn = true;
-    ctx.onNormalAttack = true;
   }
 
-  if (unit) {
-    ctx.unit = unit;
-  }
-  if (target) {
-    ctx.target = target;
-  }
-  if (skill) {
-    ctx.skill = skill;
-  }
   if (parent) {
     const propsToInherit = [
       "onAttack", "onBattle", "onPhysicalDamage", "onMagicDamage"
@@ -290,10 +284,6 @@ export function makeActionContext(unit, target, skill, isAttacker, parent) {
 }
 
 export function getEffectValue(self, ctx, unit) {
-  const scalar = (v) => {
-    return Array.isArray(v) ? v.at(-1) : v;
-  };
-
   let r = 0;
   if ('value' in self) {
     r = self.value;
@@ -413,8 +403,12 @@ export function makeSimSkill(skill, ownerUnit) {
   self.owner = ownerUnit;
 
   const subactionTable = {
+    shield: {
+      prefix: 's',
+      invoke: (ctx) => self.invokeShield(ctx),
+    },
     heal: {
-      prefix: 'cr',
+      prefix: 'h',
       invoke: (ctx) => self.invokeHeal(ctx),
       triggerOnMultiMove: true
     },
@@ -546,7 +540,34 @@ export function makeSimSkill(skill, ownerUnit) {
         break;
       }
     }
-  }
+  };
+
+  self.invokeShield = function (ctx) {
+    for (let act of self?.shield ?? []) {
+      if (!act.coolTime && evaluateCondition(ctx, act.condition)) {
+        if (act.ct) {
+          act.coolTime = act.ct;
+        }
+
+        let u = ctx.unit;
+        let target = act.target == "自身(サポート)" ? u.support : u.main;
+        if (target.isAlive) {
+          let src = act.source == "サポート" ? u.support : u.main;
+          let rate = scalar(act.rate);
+          const table = {
+            "最大HP": () => { return src.baseHp * rate; },
+            "アタック": () => { return src.baseAtk * rate; },
+            "ディフェンス": () => { return src.baseDef * rate; },
+            "マジック": () => { return src.baseMag * rate; },
+            "レジスト": () => { return src.baseRes * rate; },
+            "固定値": () => { return act.value; },
+          };
+          target.shield = Math.max(table[act.base](), target.shield);
+          console.log(`!! シールド ${target.name} (${self.name})!!`);
+        }
+      }
+    }
+  };
   self.invokeHeal = function (ctx, timing = null) {
     for (let act of self?.heal ?? []) {
       if ((!timing || act.timing == timing) && !act.coolTime && evaluateCondition(ctx, act.condition)) {
@@ -555,15 +576,38 @@ export function makeSimSkill(skill, ownerUnit) {
         }
 
         let u = ctx.unit;
+        let from = self.isMainSkill ? u.main : u.support;
+        let rate = scalar(act.rate);
+        let buf = (from.getBuffValue("治療効果") / 100 + 1);
+        const doHeal = (chr, value) => {
+          chr.receiveHeal(value * buf * (chr.getBuffValue("被治療効果") / 100 + 1), from, ctx);
+        };
+        const table = {
+          "マジック": (t) => {
+            let value = from.status[3] * rate * buf;
+            doHeal(t.main, value);
+            doHeal(t.support, value);
+          },
+          "最大HP": (t) => {
+            doHeal(t.main, t.main.maxHp * rate);
+            doHeal(t.support, t.support.maxHp * rate);
+          },
+          "与ダメージ": (t) => {
+            let dmg = ctx.damageDealt.get(u.fid);
+            let value = (from.isMain ? dmg.main : dmg.support) * rate;
+            doHeal(t.main, value);
+            doHeal(t.support, value);
+          },
+        };
         for (let t of getTargetUnits(ctx, act)) {
           if (u.isPlayer == t.isPlayer) {
-            // todo
+            table[act.base](t);
             console.log(`!! 回復 ${u.main.name} (${self.name}) -> ${t.main.name}!!`);
           }
         }
       }
     }
-  }
+  };
   self.invokeAreaDamage = function (ctx, timing = null) {
     for (let act of self?.areaDamage ?? []) {
       if ((!timing || act.timing == timing) && !act.coolTime && evaluateCondition(ctx, act.condition)) {
@@ -580,16 +624,24 @@ export function makeSimSkill(skill, ownerUnit) {
         }
       }
     }
-  }
+  };
   self.invokeFixedDamage = function (ctx, timing = null) {
     for (let act of self?.fixedDamage ?? []) {
       if (act.base == "与ダメージ") {
+        // 与ダメに対する割合は攻撃と同時に発生する特殊な扱いにしておく
         if (!timing) {
           let u = ctx.unit;
-          let t = ctx.target;
-          ctx.additionalDamageToSupport += Math.round(ctx.damageToSupport * act.rate);
-          ctx.additionalDamageToMain += Math.round(ctx.damageToMain * act.rate);
-          console.log(`!! 固定値ダメージ ${u.main.name} (${self.name}) -> ${t.main.name}!!`);
+          for (const [fid, dmg] of Object.entries(ctx.damageTaken)) {
+            let t = $g.sim.findUnit(fid);
+            let fromChr = self.isMainSkill ? u.main : u.support;
+            if (t.main.isAlive) {
+              t.main.receiveDamage(dmg.main * act.rate, fromChr, ctx, true);
+            }
+            if (t.support.isAlive) {
+              t.support.receiveDamage(dmg.support * act.rate, fromChr, ctx, true);
+            }
+            console.log(`!! 固定値ダメージ ${u.main.name} (${self.name}) -> ${t.main.name}!!`);
+          }
         }
       }
       else if (act.timing == timing && !act.coolTime && evaluateCondition(ctx, act.condition)) {
@@ -605,7 +657,7 @@ export function makeSimSkill(skill, ownerUnit) {
         }
       }
     }
-  }
+  };
 
   self.invokeCtReduction = function (ctx, timing = null) {
     let succeeded = false;
@@ -633,7 +685,7 @@ export function makeSimSkill(skill, ownerUnit) {
       }
     }
     return succeeded;
-  }
+  };
 
   self.invokeSupportAttack = function (ctx) {
     let succeeded = false;
@@ -649,7 +701,7 @@ export function makeSimSkill(skill, ownerUnit) {
       }
     }
     return succeeded;
-  }
+  };
   self.invokeDoubleAttack = function (ctx) {
     let succeeded = false;
     if (ctx.onNormalAttack) {
@@ -666,7 +718,7 @@ export function makeSimSkill(skill, ownerUnit) {
       }
     }
     return succeeded;
-  }
+  };
   self.invokeMultiAction = function (ctx) {
     let succeeded = false;
     for (let act of self?.multiAction ?? []) {
@@ -688,7 +740,7 @@ export function makeSimSkill(skill, ownerUnit) {
       }
     }
     return succeeded;
-  }
+  };
   self.invokeMultiMove = function (ctx) {
     let succeeded = false;
     for (let act of skill?.multiMove ?? []) {
@@ -717,7 +769,7 @@ export function makeSimSkill(skill, ownerUnit) {
       }
     }
     return succeeded;
-  }
+  };
 
   self.invokeBattleSubactions = function (ctx) {
     for (const [name, info] of Object.entries(subactionTable)) {
@@ -725,7 +777,7 @@ export function makeSimSkill(skill, ownerUnit) {
         info.invoe(ctx);
       }
     }
-  }
+  };
 
 
   self.getDamageRate = function (ctx) {
@@ -743,7 +795,7 @@ export function makeSimSkill(skill, ownerUnit) {
       }
     }
     return getValue(self.damageRate);
-  }
+  };
 
   self.startCoolTime = function () {
     if (this.isActive) {
@@ -754,7 +806,7 @@ export function makeSimSkill(skill, ownerUnit) {
         this.coolTime = this.ct + 1;
       }
     }
-  }
+  };
 
   self.onFire = function (ctx) {
     // バフ・デバフ発動
@@ -779,7 +831,7 @@ export function makeSimSkill(skill, ownerUnit) {
     this.invokeHeal(ctx);
     this.invokeCtReduction(ctx);
     //console.log(this);
-  }
+  };
 
   self.trigger = function (ctx, timing) {
     let u = ctx.unit;
@@ -804,12 +856,12 @@ export function makeSimSkill(skill, ownerUnit) {
 
   //#region callbacks
   self.onSimulationBegin = function (ctx) {
-  }
+  };
   self.onSimulationEnd = function (ctx) {
-  }
+  };
   self.onOwnTurnBegin = function (ctx) {
     this.trigger(ctx, "自ターン開始時");
-  }
+  };
   self.onOwnTurnEnd = function (ctx) {
     this.trigger(ctx, "自ターン終了時");
 
@@ -821,46 +873,46 @@ export function makeSimSkill(skill, ownerUnit) {
         }
       }
     }
-  }
+  };
   self.onOpponentTurnBegin = function (ctx) {
     this.trigger(ctx, "敵ターン開始時");
-  }
+  };
   self.onOpponentTurnEnd = function (ctx) {
     this.trigger(ctx, "敵ターン終了時");
-  }
+  };
 
   self.onActionBegin = function (ctx) {
     this.trigger(ctx, "行動前");
-  }
+  };
   self.onActionEnd = function (ctx) {
     this.trigger(ctx, "行動後");
-  }
+  };
 
   self.onAttackBegin = function (ctx) {
     this.trigger(ctx, "攻撃前");
-  }
+  };
   self.onAttackEnd = function (ctx) {
     this.trigger(ctx, "攻撃後");
-  }
+  };
 
   self.onBattleBegin = function (ctx) {
     this.trigger(ctx, "戦闘前");
-  }
+  };
   self.onBattleEnd = function (ctx) {
     this.trigger(ctx, "戦闘後");
-  }
+  };
 
   self.onKill = function (ctx) {
     this.trigger(ctx, "敵撃破時");
-  }
+  };
 
   self.onDeath = function (ctx) {
     this.trigger(ctx, "死亡時");
-  }
+  };
 
   self.onRevive = function (ctx) {
     this.trigger(ctx, "復活時");
-  }
+  };
 
   //#endregion callbacks
   return self;
