@@ -742,6 +742,7 @@ export default {
         support: {
           items: [null, null],
           enchants: [0, 0, 0, 0, 0],
+          amuletSkills: [null, null],
         },
       };
 
@@ -1026,6 +1027,27 @@ export default {
         result.main.enchantPassive = [this.getEnchantPassive(enchant)];
       }
 
+      if (ma.character && sa.character) {
+        const find = (uid) => this.searchTableWithUid.get(uid);
+        const mdt = ma.character.damageType;
+        const sdt = sa.character.damageType;
+        let list = [null, null];
+        if (mdt == "アタック" && sdt == "アタック") {
+          list[0] = find("x501");
+        }
+        else if (mdt == "アタック" && sdt == "マジック") {
+          list[0] = find("x502");
+        }
+        else if (mdt == "マジック" && sdt == "アタック") {
+          list[0] = find("x503");
+        }
+        else if (mdt == "マジック" && sdt == "マジック") {
+          list[0] = find("x504");
+        }
+        list[1] = find("x602");
+        result.support.amuletSkills = list;
+      }
+
       return result;
     },
 
@@ -1054,10 +1076,11 @@ export default {
         this.mainItems = [...r.main.items];
         this.mainEnchantPassive = [...r.main.enchantPassive];
       }
-      if (this.tabIndex == 1 || !sa.character) {
+      {
         for (const v of Object.values(this.supportEnchants))
           v.valueP = r.support.enchants.shift();
         this.supportItems = [...r.support.items];
+        this.supportAmuletSkills = [...r.support.amuletSkills];
       }
     },
 
@@ -1395,7 +1418,7 @@ export default {
       }
       //console.log(params);
 
-      const find = uid => this.searchTableWithUid.get(uid.toString());
+      const find = uid => uid ? this.searchTableWithUid.get(uid.toString()) : null;
 
       for (let v of Object.values(this.main)) {
         if (v.type == "character")
