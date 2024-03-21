@@ -168,10 +168,10 @@ export function makeActionContext(unit, target, skill, isAttacker, parent) {
 
     // skill 関連
     skill: skill,
-    get onNormalAttack() { return !this.skill || this.skill.isNormalAttack; },
-    get onActiveSkill() { return !this.onNormalAttack; },
-    get onAreaSkill() { return this.skill?.isAreaTarget; },
-    get onSingleSkill() { return !this.skill?.isAreaTarget; },
+    get onNormalAttack() { return this.skill === null || this.skill.isNormalAttack; }, // skill が undefined の場合は false 
+    get onActiveSkill() { return this.skill && !this.skill.isNormalAttack; },
+    get onAreaSkill() { return this.skill && this.skill.isAreaTarget; },
+    get onSingleSkill() { return this.skill && !this.skill.isAreaTarget; },
 
     // unit 関連
     unit: unit,

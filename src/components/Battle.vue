@@ -82,11 +82,11 @@
                 <template v-for="unit in allPlayerUnits">
                   <div :key="unit.fid" class="flex">
                     <b-img-lazy :src="getImageURL(unit.main.icon)" :title="unit.main.name" :class="`${!unit.isAlive ? 'grayscale' : ''}`" width="50" height="50" rounded />
-                    <div style="font-size: 18pt; margin-left: 10px;">{{unit.sim.score}}</div>
+                    <div style="font-size: 18pt; margin-left: 10px;">{{Math.round(unit.sim.score)}}</div>
                   </div>
                 </template>
                 <div class="flex">
-                  <h5 style="font-size: 18pt; margin-left: 0px;">合計: {{simulation.score}}</h5>
+                  <h5 style="font-size: 18pt; margin-left: 0px;">合計: {{Math.round(simulation.score)}}</h5>
                 </div>
               </div>
             </div>
@@ -2094,14 +2094,14 @@ export default {
       }, 1);
     },
     addDamageBalloon(unit, damage) {
-      let str = `${damage}`;
+      let str = `${Math.round(damage)}`;
       let minor = `<span style='color: rgb(200,200,200);'>${str.slice(-4)}</span>`;
       let major = `<span style='color: black;'>${str.slice(0, -4)}</span>`;
       let content = `<h1 style='font-size: 24pt;'>${major}${minor}</h1>`;
       this.addBaloon(unit, content);
     },
     addHealBalloon(unit, heal) {
-      let str = `${heal}`;
+      let str = `${Math.round(heal)}`;
       let minor = `<span style='color: rgb(120,240,120);'>${str.slice(-4)}</span>`;
       let major = `<span style='color: rgb(0,160,0);'>${str.slice(0, -4)}</span>`;
       let content = `<h1 style='font-size: 24pt;'>${major}${minor}</h1>`;
