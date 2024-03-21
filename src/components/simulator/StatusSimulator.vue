@@ -181,6 +181,17 @@
               <div style="text-align:center">
                 <h6 style="margin: 5px 0px">アミュレットスキル</h6>
               </div>
+              <b-form-row>
+                <b-col style="text-align: center">
+                  <span v-for="(item, i) in supportAmuletSkills" :key="i">
+                    <b-button variant="outline-secondary" class="paddingless small-margin" :id="`ss${uid}-support-amskill${i}`">
+                      <b-img-lazy :src="getSkillIcon(item)" :title="descToTitle(item)" width="50" height="50" />
+                      <SkillSelector :target="`ss${uid}-support-amskill${i}`" nullable closeonclick
+                                     :skills="getAmuletSkillList(i)" @click="setArrayElement(supportAmuletSkills, i, $event)" />
+                    </b-button>
+                  </span>
+                </b-col>
+              </b-form-row>
               <b-form-row v-for="(param, name, i) in supportEnchants" :key="'enchant' + i">
                 <b-col style="text-align: right" align-self="end">
                   <label style="width: 10em" :for="`ss${uid}-sup-enchant-${name}P`">{{param.label}} (%)</label>
@@ -465,44 +476,7 @@ export default {
         },
       },
       supportItems: [null, null],
-      supportAmulet1Skill: null,
-      supportAmulet2Skill: null,
-
-      amulet1Skills: [
-        {
-          desc: "アタック→アタック 15%"
-        },
-        {
-          desc: "マジック→マジック 15%"
-        },
-        {
-          desc: "アタック→マジック 15%"
-        },
-        {
-          desc: "マジック→アタック 15%"
-        }
-      ],
-
-      amulet2Skills: [
-        {
-          desc: "シールド 1500"
-        },
-        {
-          desc: "最大HP→シールド 12%"
-        },
-        {
-          desc: "ダメージ耐性 12%"
-        },
-        {
-          desc: "最大HP→最大HP 15%"
-        },
-        {
-          desc: "アタック→最大HP 150%"
-        },
-        {
-          desc: "マジック→最大HP 150%"
-        },
-      ],
+      supportAmuletSkills: [null, null],
 
       autoEquipTypes: [
         "戦闘力優先",
@@ -1410,6 +1384,8 @@ export default {
 
       for (let v of this.supportItems)
         params.push(getUid(v));
+      for (let v of this.supportAmuletSkills)
+        params.push(getUid(v));
 
       return params;
     },
@@ -1465,6 +1441,10 @@ export default {
         v.valueP = params.shift();
 
       this.supportItems = [
+        find(params.shift()),
+        find(params.shift()),
+      ];
+      this.supportAmuletSkills = [
         find(params.shift()),
         find(params.shift()),
       ];
@@ -1554,6 +1534,7 @@ export default {
     supportBoosts: { handler: function () { this.onChange(); }, deep: true },
     supportItems: { handler: function () { this.onChange(); }, deep: true },
     supportEnchants: { handler: function () { this.onChange(); }, deep: true },
+    supportAmuletSkills: { handler: function () { this.onChange(); }, deep: true },
   },
 
 };

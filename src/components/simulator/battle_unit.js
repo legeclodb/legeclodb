@@ -271,7 +271,7 @@ export class BaseUnit {
     if (supChr) {
       support.skills = [...supChr.skills].filter(a => a).map(a => findItemByUid(a.uid));
     }
-    support.items = ss.supportItems.filter(a => a).map(a => findItemByUid(a.uid));
+    support.items = [...ss.supportAmuletSkills, ...ss.supportItems].filter(a => a).map(a => findItemByUid(a.uid));
     support.status = ss.statSupportResult.slice(0, 6);
     support.level = ss.support.level.value;
 

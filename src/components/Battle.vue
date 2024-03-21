@@ -501,7 +501,7 @@
                             <div class="desc" v-show="displayType >= 2">
                               <div class="flex">
                                 <h6>
-                                  <b-img-lazy :src="getImageURL(skill.slot)" :title="'部位:'+skill.slot" height="20" />
+                                  <b-img-lazy v-if="skill.slot" :src="getImageURL(skill.slot)" :title="'部位:'+skill.slot" height="20" />
                                   {{ skill.name }}
                                 </h6>
                               </div>

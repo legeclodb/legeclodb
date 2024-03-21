@@ -1522,5 +1522,19 @@
   "Ch016100207": "img/745d2696cb76663d2da86b7d87d81206.png",
   "sk_sa102": "img/19c2eecc626194406106f78dd599962c.png",
   "sk_sp2102": "img/ea4819cacca8723f990a1a0247404e40.png",
-  "Item_Equipment_SSR_0251": "img/2f858b5ee73eda455874604ccde2b90c.png"
+  "Item_Equipment_SSR_0251": "img/2f858b5ee73eda455874604ccde2b90c.png",
+  "am_attack04": "img/b9e4a22e52ed6f93c3d6d10de387e6a3.png",
+  "am_attack08": "img/75fe4f0520381424aeb2a230713ef69c.png",
+  "am_damageresist04": "img/2151ba4e6b25d52ba68191634585fdec.png",
+  "am_damageresist08": "img/55605ec2380905be23701c5b8386ca55.png",
+  "am_deffence04": "img/aa20c0f3b3ae323a84e7a62d770bd7ac.png",
+  "am_deffence08": "img/4abc30e9ea8d2308ef9e0a841cb86fdd.png",
+  "am_HP04": "img/ac0ec0170ead829948b95d1ec7788838.png",
+  "am_HP08": "img/ee31d90cdc0d5805c5a19ede1acabcf9.png",
+  "am_magic04": "img/138b31e1d5ead0bed21661e5296c0494.png",
+  "am_magic08": "img/7a24f85ee3c431c23891a312ac4ca8f3.png",
+  "am_resist04": "img/9e516f51bf0e0f9618eaa95d52c29d04.png",
+  "am_resist08": "img/81c3ebcb208ba7ba5cd60c096b2010d3.png",
+  "am_shield04": "img/5095a21f2521c7fb2b522b98076c6497.png",
+  "am_shield08": "img/d81a3374885a37dcaee7ccd52bd950fd.png"
 }

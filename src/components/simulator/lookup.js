@@ -269,6 +269,15 @@ export default {
       return enchantName in table ? table[enchantName] : [];
     },
 
+    getAmuletSkillList(slot) {
+      const find = (uid) => this.searchTableWithUid.get(uid);
+      const list = [
+        [find("x501"), find("x502"), find("x503"), find("x504")],
+        [find("x601"), find("x602"), find("x603"), find("x604")],
+      ];
+      return list[slot];
+    },
+
     filterMatchMainChr(chr, filter = this.filter) {
       return (!filter.class || this.filterMatch(filter.class, chr.classId)) &&
         (!filter.symbol || this.filterMatch(filter.symbol, chr.symbolId)) &&
