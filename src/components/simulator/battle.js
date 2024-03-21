@@ -19,6 +19,7 @@ export class SimContext {
 
   userEvents = [];
   desc = { // プレイバック用データ
+    score: 0,
     unit: "", // fid
     skill: "", // uid
     target: "", // fid or [fid]
@@ -146,6 +147,7 @@ export class SimContext {
       this.statePos_ = -1;
     }
 
+    this.desc.score = Math.round(this.score);
     this.desc.unit = unit ? unit.fid : "";
     this.desc.skill = skill ? skill.uid : "";
     this.desc.target = target ? (Array.isArray(target) ? target.map(a => a.fid) : target.fid) : "";

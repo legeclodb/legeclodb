@@ -604,7 +604,7 @@ export default {
         if (!v)
           return [];
 
-        let s = typeof (v) == "number" && !Number.isFinite(v) ? '∞' : v;
+        let s = typeof (v) == "number" && !Number.isFinite(v) ? '∞' : Math.round(v);
         if (i < 6)
           return `<div class="param-box"><img src="${this.getImageURL(n)}" title="${n}" width="18" height="18" /><span>${prefix}${s}</span></div>`;
         else

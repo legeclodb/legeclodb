@@ -359,7 +359,7 @@ export class SimUnit {
       return 100;
     }
     else {
-      return (this.main.hp + this.support.hp) / (this.main.maxHp + this.support.maxHp) * 100;
+      return Math.floor((this.main.hp + this.support.hp) / (this.main.maxHp + this.support.maxHp) * 100);
     }
   }
 
@@ -426,8 +426,13 @@ export class SimUnit {
           const props = ["最大HP", "アタック", "ディフェンス", "マジック", "レジスト", "テクニック",];
           let r = [...base.status];
           for (let i = 0; i < r.length; ++i) {
-            const prop = props[i];
-            r[i] = Math.round(r[i] * (chr.getBuffValue(prop) / 100 + 1) + chr.getConvertedBuffValue(prop));
+            if (i == 0) {
+              r[i] = chr.hp;
+            }
+            else {
+              const prop = props[i];
+              r[i] = Math.round(r[i] * (chr.getBuffValue(prop) / 100 + 1) + chr.getConvertedBuffValue(prop));
+            }
           }
           return r;
         },
@@ -454,8 +459,7 @@ export class SimUnit {
             return 0;
           }
           else {
-            //一旦無敵化
-            //this.hp = Math.max(this.hp - Math.max(value, 0), 0);
+            this.hp = Math.max(this.hp - Math.max(value, 0), 0);
             ctx.addDamage(value, fromChr, this);
             return value;
           }

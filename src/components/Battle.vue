@@ -474,7 +474,7 @@
                           <div class="param-box"><b-img-lazy :src="getImageURL(unit.support.damageType)" :title="'攻撃タイプ:'+unit.support.damageType" width="20" height="20" /></div>
                           <div class="param-box"><b-img-lazy :src="getImageURL('射程')" title="射程" width="18" height="18" /><span>{{unit.support.range}}</span></div>
                         </div>
-                        <div class="status2" v-html="statusToHtml(unit.support.status)" />
+                        <div class="status2" v-html="statusToHtml(unit.support.status, '', unit.support.damageType)" />
                       </div>
                       <div class="skills">
                         <div class="skill" v-for="(skill, si) in unit.support.skills" :class="getSkillClass(skill)" :key="`skill${si}`">
@@ -558,7 +558,7 @@
                     <div class="param-box"><b-img-lazy :src="getImageURL(unit.support.damageType)" :title="'攻撃タイプ:'+unit.support.damageType" width="20" height="20" /></div>
                     <div class="param-box"><b-img-lazy :src="getImageURL('射程')" title="射程" width="18" height="18" /><span>{{unit.support.range}}</span></div>
                   </div>
-                  <div class="status2" v-html="statusToHtml(unit.support.status)" />
+                  <div class="status2" v-html="statusToHtml(unit.support.status, '', unit.support.damageType)" />
                 </div>
               </div>
             </div>
@@ -1894,7 +1894,7 @@ export default {
       r.battle = this.battleId;
       r.loadout = this.serializeLoadout();
       r.states = this.simulation.serialize();
-      r.name = `${this.battleData.name} ${r.states.at(-1).score}`;
+      r.name = `${this.battleData.name} ${r.states.at(-1).desc.score}`;
       return r;
     },
     deserializeReplay(data) {
