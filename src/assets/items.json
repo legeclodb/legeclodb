@@ -536,7 +536,7 @@
     ],
     "heal": [
       {
-        "base": "HP割合",
+        "base": "最大HP",
         "rate": 0.15,
         "target": "自身",
         "timing": "敵撃破時"
@@ -1877,7 +1877,7 @@
     ],
     "heal": [
       {
-        "base": "HP割合",
+        "base": "最大HP",
         "rate": 0.2,
         "target": "自身",
         "timing": "行動後",
@@ -2804,7 +2804,7 @@
     ],
     "heal": [
       {
-        "base": "HP割合",
+        "base": "最大HP",
         "rate": 0.2,
         "target": "自身",
         "timing": "行動後",
@@ -3616,7 +3616,7 @@
     ],
     "heal": [
       {
-        "base": "HP割合",
+        "base": "最大HP",
         "rate": 0.15,
         "target": "範囲",
         "area": [ 1, "周囲" ],
@@ -4801,7 +4801,7 @@
     ],
     "heal": [
       {
-        "base": "HP割合",
+        "base": "最大HP",
         "rate": 0.15,
         "target": "自身",
         "timing": "行動後",
@@ -4842,7 +4842,7 @@
     ],
     "heal": [
       {
-        "base": "ダメージ割合",
+        "base": "与ダメージ",
         "rate": 0.05,
         "target": "自身",
         "timing": "戦闘後",
@@ -4912,7 +4912,7 @@
     ],
     "heal": [
       {
-        "base": "ダメージ割合",
+        "base": "与ダメージ",
         "rate": 0.05,
         "target": "自身",
         "timing": "戦闘後",
@@ -5053,7 +5053,7 @@
     ],
     "heal": [
       {
-        "base": "ダメージ割合",
+        "base": "与ダメージ",
         "rate": 0.05,
         "target": "自身",
         "timing": "戦闘後",
@@ -5421,7 +5421,7 @@
     ],
     "heal": [
       {
-        "base": "ダメージ割合",
+        "base": "与ダメージ",
         "rate": 0.05,
         "target": "自身",
         "timing": "戦闘後",
@@ -5628,7 +5628,7 @@
     ],
     "heal": [
       {
-        "base": "HP割合",
+        "base": "最大HP",
         "rate": 0.06,
         "target": "自身",
         "timing": "戦闘後"
@@ -5655,7 +5655,7 @@
     ],
     "heal": [
       {
-        "base": "HP割合",
+        "base": "最大HP",
         "rate": 0.06,
         "target": "自身",
         "timing": "戦闘後"
@@ -5682,7 +5682,7 @@
     ],
     "heal": [
       {
-        "base": "HP割合",
+        "base": "最大HP",
         "rate": 0.06,
         "target": "自身",
         "timing": "戦闘後"
@@ -6208,7 +6208,7 @@
     ],
     "heal": [
       {
-        "base": "HP割合",
+        "base": "最大HP",
         "rate": 0.15,
         "target": "味方(低HP)",
         "timing": "戦闘後",
@@ -6244,7 +6244,7 @@
     ],
     "heal": [
       {
-        "base": "ダメージ割合",
+        "base": "与ダメージ",
         "rate": 0.05,
         "target": "自身",
         "timing": "戦闘後",
@@ -6443,7 +6443,7 @@
     ],
     "heal": [
       {
-        "base": "ダメージ割合",
+        "base": "与ダメージ",
         "rate": 0.05,
         "target": "自身",
         "timing": "戦闘後",
@@ -6690,7 +6690,7 @@
     ],
     "heal": [
       {
-        "base": "HP割合",
+        "base": "最大HP",
         "rate": 0.08,
         "target": "範囲",
         "area": 2,
@@ -6818,7 +6818,7 @@
     ],
     "heal": [
       {
-        "base": "HP割合",
+        "base": "最大HP",
         "rate": 0.2,
         "target": "自身",
         "timing": "行動後"
@@ -7291,7 +7291,7 @@
     ],
     "heal": [
       {
-        "base": "ダメージ割合",
+        "base": "与ダメージ",
         "rate": 0.05,
         "target": "自身",
         "timing": "戦闘後",
@@ -7624,7 +7624,7 @@
     ],
     "heal": [
       {
-        "base": "HP割合",
+        "base": "最大HP",
         "rate": 0.1,
         "target": "範囲",
         "area": 1,
@@ -8099,7 +8099,7 @@
     ],
     "heal": [
       {
-        "base": "HP割合",
+        "base": "最大HP",
         "rate": 0.08,
         "target": "自身",
         "timing": "行動後"
@@ -8251,7 +8251,7 @@
     ],
     "heal": [
       {
-        "base": "HP割合",
+        "base": "最大HP",
         "rate": 0.08,
         "target": "自身",
         "timing": "行動後"
@@ -8313,7 +8313,7 @@
     ],
     "heal": [
       {
-        "base": "ダメージ割合",
+        "base": "与ダメージ",
         "rate": 0.08,
         "target": "自身",
         "timing": "戦闘後"
@@ -8408,7 +8408,7 @@
     ],
     "heal": [
       {
-        "base": "ダメージ割合",
+        "base": "与ダメージ",
         "rate": 0.04,
         "target": "自身",
         "timing": "戦闘後"
@@ -8498,7 +8498,7 @@
     ],
     "heal": [
       {
-        "base": "HP割合",
+        "base": "最大HP",
         "rate": 0.2,
         "target": "自身",
         "timing": "行動後"
@@ -8939,7 +8939,7 @@
     ],
     "heal": [
       {
-        "base": "ダメージ割合",
+        "base": "与ダメージ",
         "rate": 0.1,
         "target": "自身",
         "timing": "戦闘後",
@@ -8978,7 +8978,7 @@
     ],
     "heal": [
       {
-        "base": "ダメージ割合",
+        "base": "与ダメージ",
         "rate": 0.1,
         "target": "自身",
         "timing": "戦闘後",

@@ -2,6 +2,10 @@ import { $g } from "./battle_globals.js";
 import { SimUnit, UnitState } from "./battle_unit.js";
 import { unique, count } from "../utils.js";
 
+export function scalar(v) {
+  return Array.isArray(v) ? v.at(-1) : v;
+}
+
 export function callHandler(funcName, ctx, ...callees) {
   for (let c of callees) {
     c[funcName](ctx);
@@ -250,6 +254,10 @@ export function makeActionContext(unit, target, skill, isAttacker, parent) {
       r.addHeal = (...args) => { this.addHeal(...args); };
       return r;
     },
+    inheritDamage(parent) {
+      this.addDamage = (...args) => { parent.addDamage(...args); };
+      this.addHeal = (...args) => { parent.addHeal(...args); };
+    },
   };
 
   if (isAttacker) {
@@ -276,10 +284,6 @@ export function makeActionContext(unit, target, skill, isAttacker, parent) {
 }
 
 export function getEffectValue(self, ctx, unit) {
-  const scalar = (v) => {
-    return Array.isArray(v) ? v.at(-1) : v;
-  };
-
   let r = 0;
   if ('value' in self) {
     r = self.value;
@@ -399,8 +403,12 @@ export function makeSimSkill(skill, ownerUnit) {
   self.owner = ownerUnit;
 
   const subactionTable = {
+    shield: {
+      prefix: 's',
+      invoke: (ctx) => self.invokeShield(ctx),
+    },
     heal: {
-      prefix: 'cr',
+      prefix: 'h',
       invoke: (ctx) => self.invokeHeal(ctx),
       triggerOnMultiMove: true
     },
@@ -532,7 +540,34 @@ export function makeSimSkill(skill, ownerUnit) {
         break;
       }
     }
-  }
+  };
+
+  self.invokeShield = function (ctx) {
+    for (let act of self?.shield ?? []) {
+      if (!act.coolTime && evaluateCondition(ctx, act.condition)) {
+        if (act.ct) {
+          act.coolTime = act.ct;
+        }
+
+        let u = ctx.unit;
+        let target = act.target == "自身(サポート)" ? u.support : u.main;
+        if (target.isAlive) {
+          let src = act.source == "サポート" ? u.support : u.main;
+          let rate = scalar(act.rate);
+          const table = {
+            "最大HP": () => { return src.baseHp * rate; },
+            "アタック": () => { return src.baseAtk * rate; },
+            "ディフェンス": () => { return src.baseDef * rate; },
+            "マジック": () => { return src.baseMag * rate; },
+            "レジスト": () => { return src.baseRes * rate; },
+            "固定値": () => { return act.value; },
+          };
+          target.shield = Math.max(table[act.base](), target.shield);
+          console.log(`!! シールド ${target.name} (${self.name})!!`);
+        }
+      }
+    }
+  };
   self.invokeHeal = function (ctx, timing = null) {
     for (let act of self?.heal ?? []) {
       if ((!timing || act.timing == timing) && !act.coolTime && evaluateCondition(ctx, act.condition)) {
@@ -542,23 +577,24 @@ export function makeSimSkill(skill, ownerUnit) {
 
         let u = ctx.unit;
         let from = self.isMainSkill ? u.main : u.support;
+        let rate = scalar(act.rate);
         let buf = (from.getBuffValue("治療効果") / 100 + 1);
         const doHeal = (chr, value) => {
           chr.receiveHeal(value * buf * (chr.getBuffValue("被治療効果") / 100 + 1), from, ctx);
         };
         const table = {
           "マジック": (t) => {
-            let value = from.status[3] * act.rate * buf;
+            let value = from.status[3] * rate * buf;
             doHeal(t.main, value);
             doHeal(t.support, value);
           },
-          "HP割合": (t) => {
-            doHeal(t.main, t.main.maxHp * act.rate);
-            doHeal(t.support, t.support.maxHp * act.rate);
+          "最大HP": (t) => {
+            doHeal(t.main, t.main.maxHp * rate);
+            doHeal(t.support, t.support.maxHp * rate);
           },
-          "ダメージ割合": (t) => {
+          "与ダメージ": (t) => {
             let dmg = ctx.damageDealt.get(u.fid);
-            let value = (from.isMain ? dmg.main : dmg.support) * act.rate;
+            let value = (from.isMain ? dmg.main : dmg.support) * rate;
             doHeal(t.main, value);
             doHeal(t.support, value);
           },
@@ -571,7 +607,7 @@ export function makeSimSkill(skill, ownerUnit) {
         }
       }
     }
-  }
+  };
   self.invokeAreaDamage = function (ctx, timing = null) {
     for (let act of self?.areaDamage ?? []) {
       if ((!timing || act.timing == timing) && !act.coolTime && evaluateCondition(ctx, act.condition)) {
@@ -588,7 +624,7 @@ export function makeSimSkill(skill, ownerUnit) {
         }
       }
     }
-  }
+  };
   self.invokeFixedDamage = function (ctx, timing = null) {
     for (let act of self?.fixedDamage ?? []) {
       if (act.base == "与ダメージ") {
@@ -621,7 +657,7 @@ export function makeSimSkill(skill, ownerUnit) {
         }
       }
     }
-  }
+  };
 
   self.invokeCtReduction = function (ctx, timing = null) {
     let succeeded = false;
@@ -649,7 +685,7 @@ export function makeSimSkill(skill, ownerUnit) {
       }
     }
     return succeeded;
-  }
+  };
 
   self.invokeSupportAttack = function (ctx) {
     let succeeded = false;
@@ -665,7 +701,7 @@ export function makeSimSkill(skill, ownerUnit) {
       }
     }
     return succeeded;
-  }
+  };
   self.invokeDoubleAttack = function (ctx) {
     let succeeded = false;
     if (ctx.onNormalAttack) {
@@ -682,7 +718,7 @@ export function makeSimSkill(skill, ownerUnit) {
       }
     }
     return succeeded;
-  }
+  };
   self.invokeMultiAction = function (ctx) {
     let succeeded = false;
     for (let act of self?.multiAction ?? []) {
@@ -704,7 +740,7 @@ export function makeSimSkill(skill, ownerUnit) {
       }
     }
     return succeeded;
-  }
+  };
   self.invokeMultiMove = function (ctx) {
     let succeeded = false;
     for (let act of skill?.multiMove ?? []) {
@@ -733,7 +769,7 @@ export function makeSimSkill(skill, ownerUnit) {
       }
     }
     return succeeded;
-  }
+  };
 
   self.invokeBattleSubactions = function (ctx) {
     for (const [name, info] of Object.entries(subactionTable)) {
@@ -741,7 +777,7 @@ export function makeSimSkill(skill, ownerUnit) {
         info.invoe(ctx);
       }
     }
-  }
+  };
 
 
   self.getDamageRate = function (ctx) {
@@ -759,7 +795,7 @@ export function makeSimSkill(skill, ownerUnit) {
       }
     }
     return getValue(self.damageRate);
-  }
+  };
 
   self.startCoolTime = function () {
     if (this.isActive) {
@@ -770,7 +806,7 @@ export function makeSimSkill(skill, ownerUnit) {
         this.coolTime = this.ct + 1;
       }
     }
-  }
+  };
 
   self.onFire = function (ctx) {
     // バフ・デバフ発動
@@ -795,7 +831,7 @@ export function makeSimSkill(skill, ownerUnit) {
     this.invokeHeal(ctx);
     this.invokeCtReduction(ctx);
     //console.log(this);
-  }
+  };
 
   self.trigger = function (ctx, timing) {
     let u = ctx.unit;
@@ -820,12 +856,12 @@ export function makeSimSkill(skill, ownerUnit) {
 
   //#region callbacks
   self.onSimulationBegin = function (ctx) {
-  }
+  };
   self.onSimulationEnd = function (ctx) {
-  }
+  };
   self.onOwnTurnBegin = function (ctx) {
     this.trigger(ctx, "自ターン開始時");
-  }
+  };
   self.onOwnTurnEnd = function (ctx) {
     this.trigger(ctx, "自ターン終了時");
 
@@ -837,46 +873,46 @@ export function makeSimSkill(skill, ownerUnit) {
         }
       }
     }
-  }
+  };
   self.onOpponentTurnBegin = function (ctx) {
     this.trigger(ctx, "敵ターン開始時");
-  }
+  };
   self.onOpponentTurnEnd = function (ctx) {
     this.trigger(ctx, "敵ターン終了時");
-  }
+  };
 
   self.onActionBegin = function (ctx) {
     this.trigger(ctx, "行動前");
-  }
+  };
   self.onActionEnd = function (ctx) {
     this.trigger(ctx, "行動後");
-  }
+  };
 
   self.onAttackBegin = function (ctx) {
     this.trigger(ctx, "攻撃前");
-  }
+  };
   self.onAttackEnd = function (ctx) {
     this.trigger(ctx, "攻撃後");
-  }
+  };
 
   self.onBattleBegin = function (ctx) {
     this.trigger(ctx, "戦闘前");
-  }
+  };
   self.onBattleEnd = function (ctx) {
     this.trigger(ctx, "戦闘後");
-  }
+  };
 
   self.onKill = function (ctx) {
     this.trigger(ctx, "敵撃破時");
-  }
+  };
 
   self.onDeath = function (ctx) {
     this.trigger(ctx, "死亡時");
-  }
+  };
 
   self.onRevive = function (ctx) {
     this.trigger(ctx, "復活時");
-  }
+  };
 
   //#endregion callbacks
   return self;

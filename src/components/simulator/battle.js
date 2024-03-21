@@ -343,6 +343,7 @@ export class SimContext {
 
     // 防御側コンテキスト
     let dctx = makeActionContext(target, unit, null, false);
+    dctx.inheritDamage(ctx);
     dctx.onAttack = dctx.onBattle = true;
 
     let attacker = [
@@ -358,11 +359,11 @@ export class SimContext {
     callHandler("onBattleBegin", actx, unit);
     callHandler("onAttackBegin", dctx, target);
     callHandler("onBattleBegin", dctx, target);
+    unit.evaluateBuffs(actx);
+    target.evaluateBuffs(dctx);
     if (unit.invokeSupportAttack(actx)) {
       actx.forceJoinSupport = true;
     }
-    unit.evaluateBuffs(actx);
-    target.evaluateBuffs(dctx);
 
     // 攻撃側の攻撃
     this.doAttack(actx, unit.support, defender, null);

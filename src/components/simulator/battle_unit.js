@@ -1084,11 +1084,17 @@ export class SimUnit {
     return succeeded;
   }
 
+  invokeShield(ctx) {
+    return this._invokeSkillAction(ctx, "invokeShield");
+  }
   invokeFixedDamage(ctx) {
     return this._invokeSkillAction(ctx, "invokeFixedDamage");
   }
   invokeAreaDamage(ctx) {
     return this._invokeSkillAction(ctx, "invokeAreaDamage");
+  }
+  invokeHeal(ctx) {
+    return this._invokeSkillAction(ctx, "invokeHeal");
   }
 
   invokeSupportAttack(ctx) {
@@ -1235,6 +1241,7 @@ export class SimUnit {
   // 攻撃される側も呼ばれる
   onBattleBegin(ctx) {
     this._callHandler("onBattleBegin", ctx);
+    this.invokeShield(ctx);
   }
   onBattleEnd(ctx) {
     this.main.shield = 0;
