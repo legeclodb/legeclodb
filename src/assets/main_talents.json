@@ -651,8 +651,7 @@
           "target": "スキル対象",
           "timing": "行動後",
           "condition": {
-            "onActiveSkill": true,
-            "onTargetAlly": true
+            "onActiveSkill": true
           }
         }
       },
@@ -664,8 +663,7 @@
           "target": "スキル対象",
           "timing": "行動後",
           "condition": {
-            "onActiveSkill": true,
-            "onTargetAlly": true
+            "onActiveSkill": true
           }
         }
       }
@@ -955,8 +953,7 @@
           "target": "スキル対象",
           "timing": "行動後",
           "condition": {
-            "onActiveSkill": true,
-            "onTargetAlly": true
+            "onActiveSkill": true
           }
         }
       }

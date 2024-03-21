@@ -14,7 +14,6 @@ export class SimContext {
   //#region fields (serializable)
   turn = 1;
   phase = Phase.Player;
-  score = 0; // 途中でプレイヤーユニットが死ぬことがあるため、ユニット毎のスコアの合計ではなく別に持つ必要がある
   unitIdSeed = 0; // 追加ユニットの ID 生成用の数
   units = [];
 
@@ -47,6 +46,9 @@ export class SimContext {
   get isEnemyTurn() { return this.phase == Phase.Enemy; }
   get phaseId() { return `${this.turn}${this.isPlayerTurn ? 'P' : 'E'}`; }
 
+  get score() {
+    return Object.values(this.fidTable).reduce((total, u) => total + (u.isPlayer ? u.score : 0), 0);
+  }
   get statePos() { return this.statePos_; }
   set statePos(v) {
     this.loadState(this.states.at(v));
@@ -95,7 +97,6 @@ export class SimContext {
     let r = {
       turn: this.turn,
       phase: this.phase,
-      score: this.score,
       unitIdSeed: this.unitIdSeed,
       units: this.units.map(a => a.serialize()),
       userEvents: this.userEvents,
@@ -110,7 +111,6 @@ export class SimContext {
 
     this.turn = r.turn;
     this.phase = r.phase;
-    this.score = r.score;
     this.unitIdSeed = r.unitIdSeed;
 
     const constructUnit = (json) => {
@@ -182,7 +182,7 @@ export class SimContext {
       let unit = this.findUnit(desc.unit);
       if (!unit) {
         console.log("ユニットが見つからないため中断しました。");
-        return false;
+        return null;
       }
 
       const pos = state.units.find(u => u.fid == desc.unit).coord;
@@ -194,7 +194,7 @@ export class SimContext {
         skill = unit.skills.find(a => a.uid == desc.skill);
         if (!skill) {
           console.log("スキルが見つからないため中断しました。");
-          return false;
+          return null;
         }
       }
 
@@ -203,14 +203,14 @@ export class SimContext {
         target = desc.target.map(fid => this.findUnit(fid));
         if (target.find(a => a == null)) {
           console.log("スキル対象が見つからないため中断しました。");
-          return false;
+          return null;
         }
       }
       else if (desc.target) {
         target = this.findUnit(desc.target);
         if (!target) {
           console.log("スキル対象が見つからないため中断しました。");
-          return false;
+          return null;
         }
       }
       return this.fireSkill(unit, skill, target, desc.cell);
@@ -220,7 +220,7 @@ export class SimContext {
         this.passTurn();
       }
     }
-    return true;
+    return null;
   }
 
   addUserEvent(e) {
@@ -239,9 +239,9 @@ export class SimContext {
     this.updateAreaEffectsAll();
   }
   notifyDead(unit) {
-    unit.onSimulationEnd();
     this.units = this.units.filter(a => a !== unit);
-    delete this.fidTable[unit.fid];
+    // 死んだユニットの情報が必要なケースもあるため、fidTable からは消さない
+    //delete this.fidTable[unit.fid];
   }
 
   findItem(uid) {
@@ -260,11 +260,12 @@ export class SimContext {
   }
 
   // attacker: chr
-  doAttack(_ctx, attacker, targetQueue, skill) {
-    let actx = Object.create(_ctx);
+  doAttack(ctx, attacker, targetStack, skill) {
+    let actx = ctx.makeChild();
+    actx.attacker = attacker;
     actx.skill = skill;
 
-    if (!targetQueue.find(a => a.isValid)) {
+    if (!targetStack.find(a => a.isValid)) {
       return actx;
     }
 
@@ -280,7 +281,6 @@ export class SimContext {
     if (actx.onBattle && attacker.baseRange > 1 && actx.range <= 1)
       actx.onRangedPenarty = true;
 
-    aunit.evaluateBuffs(actx);
     if (!attacker.isAlive) {
       // 既に死んでたら何もしない (サポートが死んでる場合ここに来る)
       return actx;
@@ -298,86 +298,60 @@ export class SimContext {
     let rangedPenarty = actx.onRangedPenarty ? 0.6 : 1.0;
 
     const calcDamage = (t, breakOnKill) => {
-      let dunit = t.chr.unit;
+      actx.defender = t;
+      let dunit = t.unit;
       // 防御側コンテキスト
       let dctx = makeActionContext(dunit, aunit, null, false, actx);
-      let addDamage = null;
-      if (t.chr.isSupport) {
+      dctx.attacker = actx.attacker;
+      dctx.defender = actx.defender;
+      if (t.isSupport)
         dctx.onSupportDefense = true;
-        addDamage = (v) => { actx.damageToSupport += v; }
-      }
-      else {
+      else
         dctx.onMainDefense = true;
-        addDamage = (v) => { actx.damageToMain += v; }
-      }
-      dunit.evaluateBuffs(dctx);
 
       let def = dunit.getDefensePower(dctx);
       let baseDmg = Math.max(atk - def, 1);
       let dmgTakenBuff = dunit.getDamageTakenBuff(dctx);
-      let finalDmg = baseDmg * damageRate * dmgDealBuff * dmgTakenBuff * critDmgRate * rangedPenarty;
+      let damage = baseDmg * damageRate * dmgDealBuff * dmgTakenBuff * critDmgRate * rangedPenarty;
 
       let totalDamage = 0;
       while (attackCount) {
-        if (t.dealDamage(finalDmg)) {
-          totalDamage += finalDmg;
-        }
+        totalDamage += t.receiveDamage(damage, attacker, ctx);
         --attackCount;
         if (breakOnKill && !t.isAlive) {
           break;
         }
       }
-      addDamage(Math.round(totalDamage));
     };
 
     while (attackCount) {
-      let t = targetQueue.at(-1);
-      if (!t.isAlive && targetQueue.length > 1) {
-        targetQueue.pop();
+      let t = targetStack.at(-1);
+      if (!t.isAlive && targetStack.length > 1) {
+        targetStack.pop();
         continue;
       }
-      calcDamage(t, targetQueue.length > 1);
+      calcDamage(t, targetStack.length > 1);
     }
 
     return actx;
   }
 
-  makeTarget(chr) {
-    return {
-      chr: chr,
-      hp: chr.hp,
-      shield: 0,
-      get isValid() { return this.chr.maxHp > 0; },
-      get isAlive() { return this.hp > 0; },
-      dealDamage(v) {
-        if (this.shield > 0) {
-          this.shield -= v;
-          return false;
-        }
-        else {
-          this.hp -= v;
-          return true;
-        }
-      },
-    };
-  }
-
   getBattleResult(unit, skill, target, ctx) {
     // 攻撃側コンテキスト
     ctx.onAttack = ctx.onBattle = true;
-    let actx = Object.create(ctx);
+    let actx = ctx.makeChild();
 
     // 防御側コンテキスト
     let dctx = makeActionContext(target, unit, null, false);
     dctx.onAttack = dctx.onBattle = true;
 
     let attacker = [
-      this.makeTarget(unit.main),
-      this.makeTarget(unit.support),
+      unit.main,
+      unit.support,
     ];
     let defender = [
-      this.makeTarget(target.main),
-      this.makeTarget(target.support),
+      target.main,
+      target.support,
     ];
 
     callHandler("onAttackBegin", actx, unit);
@@ -387,64 +361,47 @@ export class SimContext {
     if (unit.invokeSupportAttack(actx)) {
       actx.forceJoinSupport = true;
     }
-    let aSup = this.doAttack(actx, unit.support, defender, null);
-    let aMain = this.doAttack(actx, unit.main, defender, skill);
+    unit.evaluateBuffs(actx);
+    target.evaluateBuffs(dctx);
+
+    // 攻撃側の攻撃
+    this.doAttack(actx, unit.support, defender, null);
+    this.doAttack(actx, unit.main, defender, skill);
     if (defender.at(-1).isAlive && unit.invokeDoubleAttack(actx)) {
-      aMain.addDamage(this.doAttack(actx, unit.main, defender, skill));
+      // 対象が生き残っていて2回攻撃の条件を満たしていたらもう一度攻撃
+      this.doAttack(actx, unit.main, defender, skill);
     }
 
-    let dSup = this.doAttack(dctx, target.support, attacker, null);
-    let dMain = this.doAttack(dctx, target.main, attacker, null);
-    if (attacker.at(-1).isAlive && target.invokeDoubleAttack(actx)) {
-      dMain.addDamage(this.doAttack(dctx, target.main, attacker, null));
+    // 防御側の反撃
+    this.doAttack(dctx, target.support, attacker, null);
+    this.doAttack(dctx, target.main, attacker, null);
+    if (attacker.at(-1).isAlive && target.invokeDoubleAttack(dctx)) {
+      // 対象が生き残っていて2回攻撃の条件を満たしていたらもう一度攻撃
+      this.doAttack(dctx, target.main, attacker, null);
     }
 
-    let result = {
-      damage: {},
-      attackerScore: aSup.totalDamage + aMain.totalDamage,
-      defenderScore: dSup.totalDamage + dMain.totalDamage,
-      apply() {
-        target.support.hp -= aSup.damageToSupport + aMain.damageToSupport;
-        target.main.hp -= aSup.damageToMain + aMain.damageToMain;
-        unit.support.hp -= dSup.damageToSupport + dMain.damageToSupport;
-        unit.main.hp -= dSup.damageToMain + dMain.damageToMain;
-      },
-    };
-    result.damage[target.fid] = result.attackerScore;
-    result.damage[unit.fid] = result.defenderScore;
-
-    if (result.attackerScore) {
-      ctx.onCriticalHit = true; // とりあえずダメージを与えたらクリティカル扱い
-      ctx.onDamage = true;
+    if (ctx.damageDealt.get(unit.fid).total > 0) {
+      actx.onCriticalHit = ctx.onCriticalHit = true; // とりあえずダメージを与えたらクリティカル扱い
+      actx.onDamage = ctx.onDamage = true;
     }
-    if (result.defenderScore) {
+    if (ctx.damageDealt.get(target.fid).total > 0) {
       dctx.onCriticalHit = true;
       dctx.onDamage = true;
     }
 
-    callHandler("onAttackEnd", actx, unit);
-    callHandler("onBattleEnd", actx, unit);
-    callHandler("onAttackEnd", dctx, target);
-    callHandler("onBattleEnd", dctx, target);
-
+    if (unit.isAlive) {
+      callHandler("onAttackEnd", actx, unit);
+      callHandler("onBattleEnd", actx, unit);
+    }
+    if (target.isAlive) {
+      callHandler("onAttackEnd", dctx, target);
+      callHandler("onBattleEnd", dctx, target);
+    }
     unit.eraseExpiredEffects();
     target.eraseExpiredEffects();
-    return result;
   }
 
   getAreaAttackResult(unit, skill, targets, ctx) {
-    let result = {
-      damage: {},
-      attackerScore: 0,
-      callbacks: [],
-      contexts: [],
-      apply() {
-        for (let cb of this.callbacks) {
-          cb();
-        }
-      },
-    };
-
     ctx.onAttack = !skill.isSupportSkill;
     if (ctx.onAttack) {
       callHandler("onAttackBegin", ctx, unit);
@@ -453,40 +410,29 @@ export class SimContext {
     let attacker = skill.isSupportSkill ? unit.support : unit.main;
     for (let target of targets ?? []) {
       // 攻撃側コンテキスト
-      // target に依存するバフなどがあるので、ループの内側である必要がある
-      let actx = Object.create(ctx);
+      // target に依存するバフがあるので、ループの内側である必要がある
+      let actx = ctx.makeChild();
       actx.target = target;
+      unit.evaluateBuffs(actx);
 
-      let rs = [
-        this.doAttack(actx, attacker, [this.makeTarget(target.main)], skill),
-        this.doAttack(actx, attacker, [this.makeTarget(target.support)], skill),
-      ];
-      for (let r of rs) {
-        unit.invokeFixedDamage(r); // ライトマキシマスカ と 八咫鏡 のためとりあえず
+      // 防御側コンテキスト
+      let dctx = makeActionContext(target, unit, null, false);
+      target.evaluateBuffs(dctx);
 
-        if (!(target.fid in result.damage))
-          result.damage[target.fid] = 0;
-        result.damage[target.fid] += r.totalDamage;
-        result.attackerScore += r.totalDamage;
-
-        result.callbacks.push(() => {
-          target.support.hp -= r.damageToSupport + r.additionalDamageToSupport;
-          target.main.hp -= r.damageToMain + r.additionalDamageToMain;
-        });
-      }
-      result.contexts.push(ctx);
+      this.doAttack(actx, attacker, [target.main], skill);
+      this.doAttack(actx, attacker, [target.support], skill);
     }
 
-    if (result.attackerScore) {
+    if (ctx.damageDealt.get(unit.fid).total > 0) {
       ctx.onCriticalHit = true; // とりあえずダメージを与えたらクリティカル扱い
       ctx.onDamage = true;
     }
     if (ctx.onAttack) {
       callHandler("onAttackEnd", ctx, unit);
     }
-
     unit.eraseExpiredEffects();
-    return result;
+
+    unit.invokeFixedDamage(ctx); // ライトマキシマスカ と 八咫鏡 のためとりあえず
   }
 
   fireSkill(unit, skill, targets, targetCell) {
@@ -505,9 +451,6 @@ export class SimContext {
     this.range = 0;
     this.move = 0;
 
-    let ret = {
-      damage: {},
-    };
     let doAction = (skill?.isSupportSkill || unit.isOnMultiMove) ? false : true;
     let doAttack = false;
     let doBattle = false;
@@ -523,15 +466,17 @@ export class SimContext {
     }
 
     // 条件変数を設定
-    // 攻撃側
+    // ここでは通常攻撃の場合も必ず skill が設定されている
+    // (onAttack で反撃側やサポートの場合 ctx.skill は null になる)
     let ctx = makeActionContext(unit, target, skill, true);
     ctx.targetCell = targetCell ? [...targetCell] : null;
     ctx.targets = targets;
     if (skill && skill.isMainSkill && skill.isAttackSkill) {
       doAttack = true;
-      doBattle = ctx.onTargetEnemy;
+      doBattle = ctx.onNormalAttack || ctx.onSingleSkill;
     }
     else if (skill && skill.isSupportSkill && skill.isAttackSkill) {
+      // サポートのスキルは 戦闘時/攻撃時 効果を発動しない
       doSupportAttackSkill = true;
     }
     if (doAction) { ctx.onAction = true; }
@@ -547,33 +492,20 @@ export class SimContext {
       skill.startCoolTime();
 
       // 攻撃処理
-      let result = null;
       if (doBattle) {
-        result = this.getBattleResult(unit, skill, target, ctx);
+        this.getBattleResult(unit, skill, target, ctx);
       }
       else if (doAttack || doSupportAttackSkill) {
         // 敵にダメージ味方にバフ系のスキルの場合 targets には両陣営のユニットが入っている
         let enemies = targets.filter(a => a.isPlayer != unit.isPlayer);
-        result = this.getAreaAttackResult(unit, skill, enemies, ctx);
+        this.getAreaAttackResult(unit, skill, enemies, ctx);
       }
 
-      if (result) {
-        ret.damage = result.damage;
-        ctx.damageDealt = result.attackerScore;
-        unit.score += result.attackerScore;
-        if (unit.isPlayer) {
-          this.score += result.attackerScore;
-        }
-
-        if (target) {
-          ctx.damageTaken = result.defenderScore;
-          target.score += result.defenderScore;
-          if (target.isPlayer) {
-            this.score += result.defenderScore;
-          }
-        }
-        console.log(result);
+      unit.score += ctx.damageDealt.get(unit.fid).total;
+      if (target) {
+        target.score += ctx.damageDealt.get(target.fid).total;
       }
+      console.log(ctx);
 
       skill.onFire(ctx);
     }
@@ -652,7 +584,7 @@ export class SimContext {
 
     this.pushState(unit, skill, target ?? targets, targetCell);
     console.log(ctx);
-    return ret;
+    return ctx;
   }
 
   updateAreaEffectsAll() {
@@ -702,7 +634,7 @@ export class SimContext {
     this.updateAreaEffectsAll();
   }
   onSimulationEnd() {
-    for (let u of this.units) {
+    for (let u of Object.values(this.fidTable)) {
       u.onSimulationEnd();
     }
     if ($g.sim == this) {

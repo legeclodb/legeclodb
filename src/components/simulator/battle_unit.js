@@ -151,8 +151,9 @@ export class BaseUnit {
     mergeChrData(this.base.support, null);
   }
   setup() {
-    const defineStatusGetter = (self) => {
-      const table = {
+    const setupProperties = (self) => {
+      const getterTable = {
+        isValid: function () { return Boolean(this.cid); },
         baseHp: function () { return this.status[0]; },
         baseAtk: function () { return this.status[1]; },
         baseDef: function () { return this.status[2]; },
@@ -160,15 +161,15 @@ export class BaseUnit {
         baseRes: function () { return this.status[4]; },
         baseTec: function () { return this.status[5]; },
       };
-      for (const [key, func] of Object.entries(table)) {
+      for (const [key, func] of Object.entries(getterTable)) {
         Object.defineProperty(self, key, {
           configurable: true,
           get: func,
         });
       }
     };
-    defineStatusGetter(this.base.main);
-    defineStatusGetter(this.base.support);
+    setupProperties(this.base.main);
+    setupProperties(this.base.support);
 
     const makeSummonUnit = (chr) => {
       let main = Object.create(chr);
@@ -176,7 +177,7 @@ export class BaseUnit {
         get: () => [chr.talent, ...chr.skills],
       });
       main.cid = chr.uid;
-      main.level = this.main.level ?? 114;
+      main.level = this.main.level ?? 114; // 114: 古いデータはレベルを保存しておらず、現在はレベル未設定だと問題が起きるので場当たり的 fix
       main.status = $vue().getNPCChrStatus(main, main.level);
 
       let u = new BaseUnit(this.isPlayer);
@@ -318,12 +319,14 @@ export class SimUnit {
     bufCv: {}, // 変換系バフ (アタックの n% をマジックに加算 など)。内容は {"アタック": 100} などでそのまま加算する
     hp: 0, // serializable
     maxHp: 0,
+    shield: 0,
   };
   support = {
     buf: {},
     bufCv: {},
     hp: 0, // serializable
     maxHp: 0,
+    shield: 0,
   };
   ephemeralDebuf = {}; // 戦闘時に相手にかけるデバフ
 
@@ -405,75 +408,95 @@ export class SimUnit {
       this.isDormant = true;
     }
 
-    const addBattleProps = (chr, base) => {
-      Object.defineProperty(chr, 'unit', {
-        get: () => this,
-      });
-
-      Object.defineProperty(chr, 'baseStatus', {
-        get: () => base.status,
-      });
-
-      let table = {
-        isAlive: () => { return chr.hp > 0; },
-        baseHp:  () => { return base.status[0]; },
-        baseAtk: () => { return base.status[1]; },
-        baseDef: () => { return base.status[2]; },
-        baseMag: () => { return base.status[3]; },
-        baseRes: () => { return base.status[4]; },
-        baseTec: () => { return base.status[5]; },
-        baseRange: () => { return base.range; },
+    const setupProperties = (chr, base) => {
+      let getterTable = {
+        unit: () => this,
+        isValid: () => base.isValid,
+        isAlive: () => chr.hp > 0,
+        baseStatus: () => base.status,
+        baseHp: () => base.status[0],
+        baseAtk: () => base.status[1],
+        baseDef: () => base.status[2],
+        baseMag: () => base.status[3],
+        baseRes: () => base.status[4],
+        baseTec: () => base.status[5],
+        baseRange: () => base.range,
         status: () => {
+          // バフ込みステータス
           const props = ["最大HP", "アタック", "ディフェンス", "マジック", "レジスト", "テクニック",];
           let r = [...base.status];
           for (let i = 0; i < r.length; ++i) {
             const prop = props[i];
-            r[i] = Math.round(r[i] * ((chr.buf[prop] ?? 0) / 100 + 1) + (chr.bufCv[prop] ?? 0));
+            r[i] = Math.round(r[i] * (chr.getBuffValue(prop) / 100 + 1) + chr.getConvertedBuffValue(prop));
           }
           return r;
         },
-        range: () => { return Math.max(base.range + (chr.buf["射程(通常攻撃)"] ?? 0), 0); },
+        range: () => Math.max(base.range + chr.getBuffValue("射程(通常攻撃)"), 0),
       };
       if (chr.isMain) {
-        table.baseMove = () => { return base.move; };
-        table.move = () => { return Math.max(base.move + (chr.buf["移動"] ?? 0), 0); };
+        getterTable.baseMove = () => base.move;
+        getterTable.move = () => Math.max(base.move + chr.getBuffValue("移動"), 0);
       }
-      table.baseAttackPower = chr.damageType == "アタック" ?
-        () => { return base.status[1]; } :
-        () => { return base.status[3]; };
+      if (chr.damageType == "アタック") {
+        getterTable.baseAttackPower = () => base.status[1];
+      }
+      else {
+        getterTable.baseAttackPower = () => base.status[3];
+      }
 
-      for (const [key, func] of Object.entries(table)) {
+      let funcTable = {
+        getBuffValue: (type) => chr.buf[type] ?? 0,
+        getConvertedBuffValue: (type) => chr.bufCv[type] ?? 0,
+
+        receiveDamage: function (value, fromChr, ctx) {
+          if (this.shield > 0) {
+            this.shield = Math.max(this.shield - Math.max(value, 0), 0);
+            return 0;
+          }
+          else {
+            //一旦無敵化
+            //this.hp = Math.max(this.hp - Math.max(value, 0), 0);
+            ctx.addDamage(value, fromChr, this);
+            return value;
+          }
+        },
+        receiveHeal: function (value, fromChr, ctx) {
+          this.hp = Math.min(this.hp + Math.max(value, 0), this.maxHp);
+          ctx.addHeal(value, fromChr, this);
+        },
+      };
+
+      chr.hp = chr.maxHp = chr.baseHp;
+      chr.shield = 0;
+      chr.buf = {};
+      chr.bufCv = {};
+      for (const [key, func] of Object.entries(getterTable)) {
         Object.defineProperty(chr, key, {
           configurable: true,
           get: func,
         });
       }
-      chr.hp = chr.maxHp = chr.baseHp;
-      chr.buf = {};
-      chr.bufCv = {};
-
-      chr.getBuffValue = (type) => {
-        return chr.buf[type] ?? 0;
-      }
-      chr.getConvertedBuffValue = (type) => {
-        return chr.bufCv[type] ?? 0;
+      for (const [key, func] of Object.entries(funcTable)) {
+        chr[key] = func;
       }
     };
     {
-      this.main = Object.create(unit.base.main);
-      addBattleProps(this.main, unit.base.main);
+      const base = unit.base.main;
+      this.main = Object.create(base);
+      setupProperties(this.main, base);
     }
     if (unit.base.support) {
-      this.support = Object.create(unit.base.support);
-      addBattleProps(this.support, unit.base.support);
+      const base = unit.base.support;
+      this.support = Object.create(base);
+      setupProperties(this.support, base);
     }
 
 
     let vue = $vue();
     if (unit) {
       let opt = [];
-      if (!('shape' in this.main)) {
-        // NxN ボス以外は通常攻撃追加
+      if (!this.isNxN) {
+        // 通常攻撃追加
         let atk = makeSimSkill($vue().findItemByUid(this.main.damageType == "アタック" ? "9999999" : "9999998"), this);
         opt.push(atk);
       }
@@ -1214,6 +1237,8 @@ export class SimUnit {
     this._callHandler("onBattleBegin", ctx);
   }
   onBattleEnd(ctx) {
+    this.main.shield = 0;
+    this.support.shield = 0;
     this._callHandler("onBattleEnd", ctx);
   }
 

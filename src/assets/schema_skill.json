@@ -269,8 +269,6 @@
         "onIdle": { "type": "boolean" },
         "onMultiAction": { "type": "boolean" },
         "onMultiMove": { "type": "boolean" },
-        "onTargetAlly": { "type": "boolean" },
-        "onTargetEnemy": { "type": "boolean" },
         "onActiveSkill": { "type": "boolean" },
         "onSingleSkill": { "type": "boolean" },
         "onAreaSkill": { "type": "boolean" },

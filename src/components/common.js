@@ -1503,6 +1503,9 @@ export default {
       if (params.includeSkillEffectTags)
         skill.tags = [...skill.tags, ...this.effectParamsToTags(skill, params)];
 
+      if (!skill.icon)
+        skill.icon = skill.uid;
+
       // 確認・デバッグ用
       if (process.env.NODE_ENV === 'development') {
         for (let e of skill.effects) {
