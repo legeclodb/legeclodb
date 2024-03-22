@@ -570,18 +570,27 @@ export default {
       this.autoEquip(this.embed ? 1 : 0);
     },
     updateItemScore() {
-      let dmgTypes = [];
-      let debufTypes = [];
+      let dmgTypes = {};
+      let debufTypes = {};
 
       const chr = this.main.character.value;
       if (chr) {
+        const buf = (type, rate = 1) => {
+          dmgTypes[type] = { rate: rate };
+        };
+        const debuf = (type, rate = 1) => {
+          debufTypes[type] = { rate: rate };
+        };
+
+        buf("与ダメージ"); buf("クリティカルダメージ倍率", 1.5);
+        debuf("ダメージ耐性", 1.25); 
         if (chr.damageType == "アタック") {
-          dmgTypes = ["アタック", "与ダメージ", "与ダメージ(物理)", "クリティカルダメージ倍率"];
-          debufTypes = ["ダメージ耐性", "ダメージ耐性(物理)"];
+          buf("アタック", 1.25); buf("与ダメージ(物理)"); 
+          debuf("ダメージ耐性(物理)", 1.25);
         }
         else {
-          dmgTypes = ["マジック", "与ダメージ", "与ダメージ(魔法)", "クリティカルダメージ倍率"];
-          debufTypes = ["ダメージ耐性", "ダメージ耐性(魔法)"];
+          buf("マジック", 1.25); buf("与ダメージ(魔法)");
+          debuf("ダメージ耐性(魔法)", 1.25);
         }
 
         // 攻撃スキルがセットされていたら 与ダメージ(スキル) を考慮
@@ -589,14 +598,14 @@ export default {
         for (const skill of this.mainSkills) {
           if (skill && skill.isActive && skill.damageRate) {
             isAttackSkillSet = true;
-            dmgTypes.push("与ダメージ(スキル)");
+            buf("与ダメージ(スキル)");
             break;
           }
         }
 
         // アサシン、2回攻撃持ち、攻撃スキルなしの場合 与ダメージ(通常攻撃) を考慮
         if (chr.class == "アサシン" || chr.talent?.doubleAttack || !isAttackSkillSet) {
-          dmgTypes.push("与ダメージ(通常攻撃)");
+          buf("与ダメージ(通常攻撃)", 1.01);
         }
       }
 
@@ -622,6 +631,10 @@ export default {
               return false;
             }
           }
+          if (effect.condition.onClassAdvantage) {
+            // 攻撃対象が特定のクラスの場合のみ有効な効果は現状微妙なので除外
+            return false;
+          }
         }
         return true;
       };
@@ -630,17 +643,20 @@ export default {
         let dmgEffects = new Array(this.effectTypes.length);
         let debufEffects = new Array(this.effectTypes.length);
         for (let effect of (item.buff ?? [])) {
-          if (dmgTypes.includes(effect.type) && condMatch(effect)) {
-            dmgEffects[effect.typeId] = effect.value; // += ではなく = 、ブループラネット等対策。
+          const t = dmgTypes[effect.type];
+          if (t && condMatch(effect)) {
+            dmgEffects[effect.typeId] = effect.value * t.rate; // += ではなく = 、ブループラネット等対策。
           }
         }
         for (let effect of (item.debuff ?? [])) {
-          if (debufTypes.includes(effect.type)) {
-            debufEffects[effect.typeId] = effect.value;
+          const t = debufTypes[effect.type];
+          if (t) {
+            debufEffects[effect.typeId] = effect.value * t.rate;
           }
         }
-        item.dmgScore = dmgEffects.reduce((t, v) => v ? t + v : t, 0);
-        item.debufScore = debufEffects.reduce((t, v) => v ? t + v : t, 0);
+        item.debufScore = debufEffects.reduce((total, v) => v ? total + v : total, 0);
+        item.dmgScore = dmgEffects.reduce((total, v) => v ? total + v : total, 0);
+        item.dmgScore += item.debufScore;
       }
     },
 
