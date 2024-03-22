@@ -203,12 +203,12 @@ export function makeActionContext(unit, target, skill, isAttacker, parent) {
     damageTaken: Object.create(damageRecordBase),
     healDealt: Object.create(damageRecordBase),
     healTaken: Object.create(damageRecordBase),
-    addDamage(v, fromChr, toChr, additional = false) {
+    addDamage(v, fromChr, toChr) {
       let from = fromChr.unit;
       let to = toChr.unit;
 
       let dealt = this.damageDealt.get(from.fid);
-      if (additional) {
+      if (!this.attackInProgress) {
         dealt.additional += v;
       }
       else if (fromChr.isSupport) {
@@ -283,6 +283,25 @@ export function makeActionContext(unit, target, skill, isAttacker, parent) {
   return ctx;
 }
 
+export function getEffectMultiply(self, ctx) {
+  // 効果が重複するタイプの重複率
+  const mul = self.multiply;
+  if (mul) {
+    const table = {
+      "move": () => ctx.move,
+      "distance": () => Math.max(ctx.range - 1, 0),
+      "token": () => ctx.getTokenCount(mul.tokenName),
+      "targetToken": () => ctx.getTargetTokenCount(mul.tokenName),
+      "activeBuffCount": () => ctx.activeBuffCount,
+      "targetActiveBuffCount": () => ctx.targetActiveBuffCount,
+      "nearAllyCount": () => ctx.getNearAllyCount(mul.area),
+      "nearEnemyCount": () => ctx.getNearEnemyCount(mul.area),
+    };
+    return Math.min(table[mul.by](), mul.max);
+  }
+  return 1;
+}
+
 export function getEffectValue(self, ctx, unit) {
   let r = 0;
   if ('value' in self) {
@@ -307,21 +326,7 @@ export function getEffectValue(self, ctx, unit) {
     r = Math.round(table[v.from]() * scalar(v.rate));
   }
 
-  // 効果が重複するタイプ
-  if (self.multiply) {
-    const mul = self.multiply;
-    const table = {
-      "move": () => ctx.move,
-      "distance": () => Math.max(ctx.range - 1, 0),
-      "token": () => ctx.getTokenCount(mul.tokenName),
-      "targetToken": () => ctx.getTargetTokenCount(mul.tokenName),
-      "activeBuffCount": () => ctx.activeBuffCount,
-      "targetActiveBuffCount": () => ctx.targetActiveBuffCount,
-      "nearAllyCount": () => ctx.getNearAllyCount(mul.area),
-      "nearEnemyCount": () => ctx.getNearEnemyCount(mul.area),
-    };
-    r *= Math.min(table[mul.by](), mul.max);
-  }
+  r *= getEffectMultiply(self, ctx);
   return self.isDebuff ? -r : r;
 }
 
@@ -570,7 +575,7 @@ export function makeSimSkill(skill, ownerUnit) {
   };
   self.invokeHeal = function (ctx, timing = null) {
     for (let act of self?.heal ?? []) {
-      if ((!timing || act.timing == timing) && !act.coolTime && evaluateCondition(ctx, act.condition)) {
+      if (act.timing == timing && !act.coolTime && evaluateCondition(ctx, act.condition)) {
         if (act.ct) {
           act.coolTime = act.ct;
         }
@@ -579,24 +584,27 @@ export function makeSimSkill(skill, ownerUnit) {
         let from = self.isMainSkill ? u.main : u.support;
         let rate = scalar(act.rate);
         let buf = (from.getBuffValue("治療効果") / 100 + 1);
-        const doHeal = (chr, value) => {
-          chr.receiveHeal(value * buf * (chr.getBuffValue("被治療効果") / 100 + 1), from, ctx);
+        const apply = (chr, value) => {
+          let base = value * rate;
+          // 治療効果 と 被治療効果 は乗算の関係
+          let boost = buf * (chr.getBuffValue("被治療効果") / 100 + 1);
+          chr.receiveHeal(base * boost, from, ctx);
         };
         const table = {
           "マジック": (t) => {
-            let value = from.status[3] * rate * buf;
-            doHeal(t.main, value);
-            doHeal(t.support, value);
+            let value = from.status[3];
+            apply(t.main, value);
+            apply(t.support, value);
           },
           "最大HP": (t) => {
-            doHeal(t.main, t.main.maxHp * rate);
-            doHeal(t.support, t.support.maxHp * rate);
+            apply(t.main, t.main.maxHp);
+            apply(t.support, t.support.maxHp);
           },
           "与ダメージ": (t) => {
             let dmg = ctx.damageDealt.get(u.fid);
-            let value = (from.isMain ? dmg.main : dmg.support) * rate;
-            doHeal(t.main, value);
-            doHeal(t.support, value);
+            let value = (from.isMain ? dmg.main : dmg.support);
+            apply(t.main, value);
+            apply(t.support, value);
           },
         };
         for (let t of getTargetUnits(ctx, act)) {
@@ -610,7 +618,7 @@ export function makeSimSkill(skill, ownerUnit) {
   };
   self.invokeAreaDamage = function (ctx, timing = null) {
     for (let act of self?.areaDamage ?? []) {
-      if ((!timing || act.timing == timing) && !act.coolTime && evaluateCondition(ctx, act.condition)) {
+      if (act.timing == timing && !act.coolTime && evaluateCondition(ctx, act.condition)) {
         if (act.ct) {
           act.coolTime = act.ct;
         }
@@ -627,32 +635,57 @@ export function makeSimSkill(skill, ownerUnit) {
   };
   self.invokeFixedDamage = function (ctx, timing = null) {
     for (let act of self?.fixedDamage ?? []) {
-      if (act.base == "与ダメージ") {
-        // 与ダメに対する割合は攻撃と同時に発生する特殊な扱いにしておく
-        if (!timing) {
-          let u = ctx.unit;
-          for (const [fid, dmg] of Object.entries(ctx.damageTaken)) {
-            let t = $g.sim.findUnit(fid);
-            let fromChr = self.isMainSkill ? u.main : u.support;
-            if (t.main.isAlive) {
-              t.main.receiveDamage(dmg.main * act.rate, fromChr, ctx, true);
-            }
-            if (t.support.isAlive) {
-              t.support.receiveDamage(dmg.support * act.rate, fromChr, ctx, true);
-            }
-            console.log(`!! 固定値ダメージ ${u.main.name} (${self.name}) -> ${t.main.name}!!`);
-          }
-        }
-      }
-      else if (act.timing == timing && !act.coolTime && evaluateCondition(ctx, act.condition)) {
+      if (act.timing == timing && !act.coolTime && evaluateCondition(ctx, act.condition)) {
         if (act.ct) {
           act.coolTime = act.ct;
         }
+
         let u = ctx.unit;
-        for (let t of getTargetUnits(ctx, act)) {
+        let from = self.isMainSkill ? u.main : u.support;
+        let rate = scalar(act.rate) * getEffectMultiply(act, ctx);
+        const apply = (chr, value) => {
+          if (chr.isAlive) {
+            chr.receiveDamage(value * rate, from, ctx);
+          }
+        };
+        const table = {
+          "最大HP": (t) => {
+            apply(t.main, t.main.maxHp);
+            apply(t.support, t.support.maxHp);
+          },
+          "アタック": (t) => {
+            let value = from.status[1];
+            apply(t.main, value);
+            apply(t.support, value);
+          },
+          "ディフェンス": (t) => {
+            let value = from.status[2];
+            apply(t.main, value);
+            apply(t.support, value);
+          },
+          "マジック": (t) => {
+            let value = from.status[3];
+            apply(t.main, value);
+            apply(t.support, value);
+          },
+          "レジスト": (t) => {
+            let value = from.status[4];
+            apply(t.main, value);
+            apply(t.support, value);
+          },
+          "与ダメージ": (t) => {
+            let dmg = ctx.damageTaken[t.fid];
+            apply(t.main, dmg.main);
+            apply(t.support, dmg.support);
+          },
+        };
+        for (let t of unique(getTargetUnits(ctx, act))) {
           if (u.isPlayer != t.isPlayer || act.target == "自身") {
-            // todo
-            console.log(`!! 固定値ダメージ ${u.main.name} (${self.name}) -> ${t.main.name}!!`);
+            // 自傷ダメージはオプションで有効にしない限り発動しないようにしておく
+            if (($g.config.enableSelfDamage || act.target != "自身")) {
+              table[act.base](t);
+              console.log(`!! 固定値ダメージ ${u.main.name} (${self.name}) -> ${t.main.name}!!`);
+            }
           }
         }
       }
@@ -662,7 +695,7 @@ export function makeSimSkill(skill, ownerUnit) {
   self.invokeCtReduction = function (ctx, timing = null) {
     let succeeded = false;
     for (let act of self?.ctReduction ?? []) {
-      if ((!timing || act.timing == timing) && !act.coolTime && evaluateCondition(ctx, act.condition)) {
+      if (act.timing == timing && !act.coolTime && evaluateCondition(ctx, act.condition)) {
         succeeded = true;
         if (act.ct) {
           act.coolTime = act.ct;

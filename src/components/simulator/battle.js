@@ -348,39 +348,38 @@ export class SimContext {
     dctx.inheritDamage(ctx);
     dctx.onAttack = dctx.onBattle = true;
 
-    let attacker = [
-      unit.main,
-      unit.support,
-    ];
-    let defender = [
-      target.main,
-      target.support,
-    ];
-
     callHandler("onAttackBegin", actx, unit);
     callHandler("onBattleBegin", actx, unit);
     callHandler("onAttackBegin", dctx, target);
     callHandler("onBattleBegin", dctx, target);
     unit.evaluateBuffs(actx);
     target.evaluateBuffs(dctx);
-    if (unit.invokeSupportAttack(actx)) {
-      actx.forceJoinSupport = true;
-    }
 
-    // 攻撃側の攻撃
-    this.doAttack(actx, unit.support, defender, null);
-    this.doAttack(actx, unit.main, defender, skill);
-    if (defender.at(-1).isAlive && unit.invokeDoubleAttack(actx)) {
-      // 対象が生き残っていて2回攻撃の条件を満たしていたらもう一度攻撃
+    let attacker = [ unit.main, unit.support].filter(c => c.isAlive);
+    let defender = [target.main, target.support].filter(c => c.isAlive);
+    if (attacker.length && defender.length) {
+      // 戦闘前に相手が固定ダメージで死んだ場合などはここに来ないまま戦闘終了となる
+      ctx.attackInProgress = true;
+      if (unit.invokeSupportAttack(actx)) {
+        actx.forceJoinSupport = true;
+      }
+
+      // 攻撃側の攻撃
+      this.doAttack(actx, unit.support, defender, null);
       this.doAttack(actx, unit.main, defender, skill);
-    }
+      if (defender.at(-1).isAlive && unit.invokeDoubleAttack(actx)) {
+        // 対象が生き残っていて2回攻撃の条件を満たしていたらもう一度攻撃
+        this.doAttack(actx, unit.main, defender, skill);
+      }
 
-    // 防御側の反撃
-    this.doAttack(dctx, target.support, attacker, null);
-    this.doAttack(dctx, target.main, attacker, null);
-    if (attacker.at(-1).isAlive && target.invokeDoubleAttack(dctx)) {
-      // 対象が生き残っていて2回攻撃の条件を満たしていたらもう一度攻撃
+      // 防御側の反撃
+      this.doAttack(dctx, target.support, attacker, null);
       this.doAttack(dctx, target.main, attacker, null);
+      if (attacker.at(-1).isAlive && target.invokeDoubleAttack(dctx)) {
+        // 対象が生き残っていて2回攻撃の条件を満たしていたらもう一度攻撃
+        this.doAttack(dctx, target.main, attacker, null);
+      }
+      ctx.attackInProgress = false;
     }
 
     if (ctx.damageDealt.get(unit.fid).total > 0) {
@@ -410,6 +409,7 @@ export class SimContext {
       callHandler("onAttackBegin", ctx, unit);
     }
 
+    ctx.attackInProgress = true;
     let attacker = skill.isSupportSkill ? unit.support : unit.main;
     for (let target of targets ?? []) {
       // 攻撃側コンテキスト
@@ -425,17 +425,17 @@ export class SimContext {
       this.doAttack(actx, attacker, [target.main], skill);
       this.doAttack(actx, attacker, [target.support], skill);
     }
+    ctx.attackInProgress = false;
 
     if (ctx.damageDealt.get(unit.fid).total > 0) {
       ctx.onCriticalHit = true; // とりあえずダメージを与えたらクリティカル扱い
       ctx.onDamage = true;
     }
+
     if (ctx.onAttack) {
       callHandler("onAttackEnd", ctx, unit);
     }
     unit.eraseExpiredEffects();
-
-    unit.invokeFixedDamage(ctx); // ライトマキシマスカ と 八咫鏡 のためとりあえず
   }
 
   fireSkill(unit, skill, targets, targetCell) {

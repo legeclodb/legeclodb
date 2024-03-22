@@ -1,1 +1,5 @@
-export let $g = {};
+export let $g = {
+  config: {
+    enableSelfDamage: false,
+  },
+};
