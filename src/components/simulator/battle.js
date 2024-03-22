@@ -187,9 +187,9 @@ export class SimContext {
         return null;
       }
 
-      const pos = state.units.find(u => u.fid == desc.unit).coord;
-      unit.prevCoord = unit.coord;
-      unit.coord = [...pos];
+      const su = state.units.find(u => u.fid == desc.unit);
+      unit.moveDistance = su.moveDistance;
+      unit.coord = [...su.coord];
 
       let skill = null;
       if (desc.skill) {
@@ -451,18 +451,15 @@ export class SimContext {
       targets = target ? [target] : [];
     }
 
-    this.range = 0;
-    this.move = 0;
-
     let doAction = (skill?.isSupportSkill || unit.isOnMultiMove) ? false : true;
     let doAttack = false;
     let doBattle = false;
     let multiAction = false;
     let multiMove = false;
     let doSupportAttackSkill = false;
-    if (unit.prevCoord) {
-      this.move = Math.abs(unit.coord[0] - unit.prevCoord[0]) + Math.abs(unit.coord[1] - unit.prevCoord[1]);
-    }
+
+    this.move = unit.moveDistance ?? 0;
+    this.range = 0;
     if (target) {
       // NxN ボス対策として target.coord ではなく targetCell との距離を取る
       this.range = Math.abs(unit.coord[0] - targetCell[0]) + Math.abs(unit.coord[1] - targetCell[1]);
@@ -587,6 +584,8 @@ export class SimContext {
 
     this.pushState(unit, skill, target ?? targets, targetCell);
     console.log(ctx);
+
+    unit.moveDistance = 0;
     return ctx;
   }
 
@@ -811,6 +810,13 @@ export class PathFinder
   getDistance(pos) {
     return this.getCell(pos[0], pos[1])?.shootDistance ?? -1;
   }
+  getMoveDistance(pos) {
+    return this.getCell(pos[0], pos[1])?.moveDistance ?? -1;
+  }
+  isPassable(pos) {
+    const c = this.getCell(pos[0], pos[1]);
+    return c && !c.isObstacle && !c.isOccupied;
+  }
   isInMoveRange(pos) {
     return pos && (this.getCell(pos[0], pos[1])?.moveDistance ?? -1) >= 0;
   }
@@ -877,6 +883,29 @@ export class PathFinder
         this._shootCell(x, y, range, rangeShape, dir);
       }
     }
+  }
+  getPath(pos) {
+    let path = [pos];
+    let d = this.getMoveDistance(pos);
+    let cur = [...pos];
+    while (d > 0) {
+      let len = path.length;
+      for (let n of [[0, 1], [1, 0], [0, -1], [-1, 0]]) {
+        let next = [cur[0] + n[0], cur[1] + n[1]];
+        let nd = this.getMoveDistance(next);
+        if (nd != -1 && nd < d) {
+          if (d != 0)
+            path.push(next);
+          cur = next;
+          d = nd;
+          break;
+        }
+      }
+      if (path.length == len) {
+        return null;
+      }
+    }
+    return path.toReversed();
   }
 
   _chartCell(x, y, distance) {

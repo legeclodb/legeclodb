@@ -112,6 +112,11 @@ export class BaseUnit {
     else
       this.base.coord = [...v];
   }
+  get prevCoord() { return this.sim.prevCoord; }
+  set prevCoord(v) { this.sim.prevCoord = [...v]; }
+  get moveDistance() { return this.sim.moveDistance; }
+  set moveDistance(v) { this.sim.moveDistance = v; }
+
   get isValid() { return this.main.cid; }
   get main() { return this.sim ? this.sim.main : this.base.main; }
   get support() { return this.sim ? this.sim.support : this.base.support; }
@@ -313,7 +318,10 @@ export class SimUnit {
   isDormant = false; // serializable 配置前 (出現ターン前) のユニットは true
   state = UnitState.Ready; // serializable
   move = -1; // serializable 残移動量。-1 だと main.move。
+  moveDistance = 0; // serializable
   coord = [0, 0]; // serializable
+  prevCoord = [0, 0];
+
   main = {
     buf: {},
     bufCv: {}, // 変換系バフ (アタックの n% をマジックに加算 など)。内容は {"アタック": 100} などでそのまま加算する
@@ -368,8 +376,6 @@ export class SimUnit {
   get isOnMultiAction() { return this.state == UnitState.MultiAction; }
   get isOnMultiMove() { return this.state == UnitState.MultiMove; }
 
-  get prevCoord() { return [...this.base.prevCoord]; }
-  set prevCoord(v) { this.base.prevCoord = [...v]; }
   get activeBuffCount() {
     return this.timedEffects.reduce((total, e) => {
       if (e.isActiveBuff) {
@@ -537,6 +543,7 @@ export class SimUnit {
     r.isDormant = this.isDormant;
     r.state = this.state;
     r.move = this.move;
+    r.moveDistance = this.moveDistance;
 
     r.skills = this.skills.map(a => {
       return {
@@ -585,6 +592,9 @@ export class SimUnit {
     }
     if ('move' in r) {
       this.move = r.move;
+    }
+    if ('moveDistance' in r) {
+      this.moveDistance = r.moveDistance;
     }
 
     for (const so of r.skills) {
@@ -1251,6 +1261,12 @@ export class SimUnit {
     this.main.shield = 0;
     this.support.shield = 0;
     this._callHandler("onBattleEnd", ctx);
+  }
+
+  // 再移動終了時
+  // 回復や固定ダメージなどこのタイミングでも発動する効果用
+  onMultiMoveEnd(ctx) {
+
   }
 
   // 手段を問わず敵撃破時に呼ばれる

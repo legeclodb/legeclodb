@@ -55,7 +55,7 @@
                 </div>
               </template>
               <template v-else>
-                <div :key="unit.fid" :id="unit-`unit.fid`" :style="getUnitStyle(unit)" class="unit-cell">
+                <div :key="unit.fid" :id="`unit-${unit.fid}`" :style="getUnitStyle(unit)" class="unit-cell">
                   <template v-if="unit.isEnemy && unit.hasSupport">
                     <b-img :src="getImageURL(unit.main.class)" class="center" :class="getUnitIconClass(unit)"
                            width="30" height="30" style="left: 17px; top: 17px; z-index: 1;" />
@@ -1012,13 +1012,18 @@ export default {
                 self.pushTool(self.tools.moveUnit);
               }
             }
-            else {
+            else if (self.path.isPassable(cell.coord)) {
               // ユニット移動処理
               // プレイヤーターンならプレイヤー側、敵ターンなら敵側のユニットだけ移動を許可
               // 移動力以上の距離の移動を許容するが、移動力 0 の敵ユニットはおかしなことになるので禁止
               let u = self.selectedUnit;
               if (sim.isOwnTurn(u) && !(u.isEnemy && u.move == 0)) {
                 u.coord = cell.coord;
+                let d = self.path.getDistance(cell.coord);
+                u.moveDistance = d < 0 ? u.move : d;
+                if (d > 0) {
+                  u.path = self.path.getPath(cell.coord);
+                }
               }
             }
           },
@@ -1595,6 +1600,18 @@ export default {
         `left: ${pos[0] * 50}px`,
         `top: ${pos[1] * 50}px`,
       ];
+
+      //let path = unit.path;
+      //if (path) {
+      //  unit.path = null;
+      //  let el = document.getElementById(`unit-${unit.fid}`);
+      //  if (el) {
+      //    lut.timedEach(path, 100, (c) => {
+      //      el.style.left = `${c[0] * 50}px`;
+      //      el.style.top = `${c[1] * 50}px`;
+      //    });
+      //  }
+      //}
       return r.join(";");
     },
     getUnitIconClass(unit) {
