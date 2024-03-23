@@ -478,7 +478,7 @@ export class SimUnit {
       };
 
       chr.maxHp = chr.baseHp;
-      chr.hp = 0;
+      chr.hp = -1;
       chr.shield = 0;
       chr.buf = {};
       chr.bufCv = {};
@@ -1222,7 +1222,7 @@ export class SimUnit {
 
     const setupHp = (chr) => {
       chr.maxHp = Math.round(chr.baseHp * (chr.getBuffValue("最大HP") / 100 + 1));
-      if (chr.hp == 0) {
+      if (chr.hp < 0) {
         // deserialize 後は残 HP が設定されていてここには来ない
         chr.hp = chr.maxHp;
       }

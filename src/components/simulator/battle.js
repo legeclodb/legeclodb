@@ -37,6 +37,7 @@ export class SimContext {
   fidTable = {};
   range = 0;
   move = 0;
+  deadUnits = [];
   statePos_ = -1;
   //#endregion fields (non-serializable)
 
@@ -99,7 +100,7 @@ export class SimContext {
       turn: this.turn,
       phase: this.phase,
       unitIdSeed: this.unitIdSeed,
-      units: this.units.map(a => a.serialize()),
+      units: [...this.units, ...this.deadUnits].map(a => a.serialize()),
       userEvents: this.userEvents,
       desc: this.makeDesc(this.desc),
     };
@@ -188,8 +189,14 @@ export class SimContext {
       }
 
       const su = state.units.find(u => u.fid == desc.unit);
-      unit.moveDistance = su.moveDistance;
-      unit.coord = [...su.coord];
+      if (su) {
+        unit.moveDistance = su.moveDistance;
+        unit.coord = [...su.coord];
+      }
+      else {
+        console.log("操作ユニットが見つからないため中断しました。");
+        return null;
+      }
 
       let skill = null;
       if (desc.skill) {
@@ -523,7 +530,6 @@ export class SimContext {
       ctx.onWait = true;
     }
 
-    let deadUnits = [];
     const handleDeath = (t) => {
       let r = false;
       if (!t.isAlive) {
@@ -539,12 +545,12 @@ export class SimContext {
     const checkKill = () => {
       for (let fid of Object.keys(ctx.damageTaken)) {
         let t = this.findUnit(fid);
-        if (!deadUnits.find(u => u.fid == fid) && handleDeath(t)) {
+        if (!this.deadUnits.find(u => u.fid == fid) && handleDeath(t)) {
           if (t.isPlayer != unit.isPlayer) {
             ctx.onKill = true;
           }
           if (!t.isAlive) {
-            deadUnits.push(t);
+            this.deadUnits.push(t);
           }
         }
       }
@@ -616,7 +622,10 @@ export class SimContext {
     this.pushState(unit, skill, target ?? targets, targetCell);
     console.log(ctx);
 
-    unit.moveDistance = 0;
+    if (doActionEnd) {
+      unit.moveDistance = 0;
+    }
+    this.deadUnits = [];
     return ctx;
   }
 
