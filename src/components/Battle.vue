@@ -1958,7 +1958,7 @@ export default {
       if (this.replay) {
         let r = this.replay;
         lut.compressGzip(lut.toJson(r)).then(data => {
-          lut.download(`${r.loadout.name}${r.states.at(-1).score}.replay`, data);
+          lut.download(`${r.loadout.name}${r.states.at(-1).desc.score}.replay`, data);
         });
       }
     },

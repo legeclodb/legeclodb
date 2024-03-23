@@ -962,6 +962,11 @@ export class SimUnit {
   }
 
 
+  hasResist(type) {
+    // todo:
+    // デバフ・状態異常などに対する耐性が入る予定
+    return false;
+  }
   getEphemeralDebuffValue(type) {
     return this.ephemeralDebuf[type] ?? 0;
   }

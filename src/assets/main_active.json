@@ -1513,7 +1513,7 @@
     "positionManipulate": [
       {
         "type": "後退",
-        "amount": 2
+        "value": 2
       }
     ]
   },
@@ -1563,7 +1563,7 @@
     "positionManipulate": [
       {
         "type": "後退",
-        "amount": 2
+        "value": 2
       }
     ]
   },
@@ -3569,7 +3569,7 @@
     "positionManipulate": [
       {
         "type": "後退",
-        "amount": 2
+        "value": 2
       }
     ]
   },

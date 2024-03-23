@@ -601,7 +601,7 @@
       "additionalProperties": false,
       "properties": {
         "type": { "enum": [ "引き寄せ", "後退", "テレポート" ] },
-        "amount": { "type": "number" }
+        "value": { "type": "number" }
       }
     },
 

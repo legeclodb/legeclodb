@@ -34,6 +34,7 @@ export class SimContext {
   maxTurn = 0;
   divX = 0;
   divY = 0;
+  terrain = [];
   fidTable = {};
   range = 0;
   move = 0;
@@ -64,7 +65,14 @@ export class SimContext {
     $g.sim = this;
     this.battleId = battleData.uid;
     this.maxTurn = battleData.turn;
+
     [this.divX, this.divY] = battleData.mapSize;
+    if (battleData.terrain) {
+      this.terrain = battleData.terrain.flatMap(a => a)
+    }
+    else {
+      this.terrain = Array(this.divY * this.divX).fill(0);
+    }
 
     this.units = baseUnits.filter(a => a.isValid).map(a => new SimUnit(a));
     for (let u of this.units) {
@@ -266,6 +274,21 @@ export class SimContext {
 
   isOwnTurn(unit) {
     return unit && ((unit.isPlayer && this.isPlayerTurn) || (unit.isEnemy && this.isEnemyTurn));
+  }
+
+  getTerrain(pos) {
+    const [x, y] = pos;
+    if (x >= 0 && y >= 0 && x < this.divX && y < this.divY) {
+      return this.terrain[this.divX * y + x];
+    }
+    return null;
+  }
+  isTerrainPassable(pos) {
+    // 現状通行可能か不可能かの 2 値。ちゃんとサポートするならもっと複雑になる
+    return this.getTerrain(pos) == 0;
+  }
+  isValidCoord(pos) {
+    return this.getTerrain(pos) != null;
   }
 
   // attacker: chr
@@ -778,10 +801,6 @@ export class SimContext {
       }
     }
   }
-  isValidCoord(coord) {
-    return (coord[0] >= 0 && coord[0] < this.divX) &&
-      (coord[1] >= 0 && coord[1] < this.divY);
-  }
   placeUnit(unit, coord) {
     // 指定座標が占有されていた場合はずらす
     const subCoord = [
@@ -791,7 +810,7 @@ export class SimContext {
     ];
     for (const sc of subCoord) {
       let c = [coord[0] + sc[0], coord[1] + sc[1]];
-      if (this.isValidCoord(c) && !this.findUnitByCoord(c)) {
+      if (this.isTerrainPassable(c) && !this.findUnitByCoord(c)) {
         unit.coord = c;
         unit.isDormant = false;
         this.updateAreaEffectsAll();

@@ -558,6 +558,54 @@ export function makeSimSkill(skill, ownerUnit) {
       }
     }
   };
+  self.invokePositionManipulate = function (ctx) {
+    for (let act of this.positionManipulate ?? []) {
+      let u = ctx.unit;
+      let t = ctx.target;
+      if (u && t && !t.hasResist("位置移動")) {
+        const getDir = (pos, center) => {
+          const [dx,dy] = [pos[0] - center[0], pos[1] - center[1]];
+          if (dx == 0 || dy == 0) {
+            if      (dy < 0) { return [ 0, -1]; } // top
+            else if (dx > 0) { return [ 1,  0]; } // right
+            else if (dy > 0) { return [ 0,  1]; } // down
+            else if (dx < 0) { return [-1,  0]; } // left
+          }
+          return null;
+        };
+        const canMoveTo = (pos) => {
+          return $g.sim.isTerrainPassable(pos) && !$g.sim.findUnitByCoord(pos);
+        };
+        const directionalMove = (dir, maxMove) => {
+          if (!dir) { return; }
+          let [x, y] = t.coord;
+          let [dx, dy] = dir;
+          for (let i = 0; i < maxMove; ++i) {
+            let nx = x + dx;
+            let ny = y + dy;
+            if (canMoveTo([nx, ny])) {
+              x = nx;
+              y = ny;
+            }
+            else {
+              break;
+            }
+          }
+          t.coord = [x, y];
+        };
+
+        const table = {
+          "引き寄せ": () => { directionalMove(getDir(u.coord, t.coord), self.range); },
+          "後退": () => { directionalMove(getDir(t.coord, u.coord), act.value); },
+          "テレポート": () => {
+            // todo
+          },
+        };
+        table[act.type]();
+      }
+    }
+    //positionManipulate
+  };
 
   self.invokeShield = function (ctx) {
     for (let act of self?.shield ?? []) {
@@ -566,19 +614,19 @@ export function makeSimSkill(skill, ownerUnit) {
           act.coolTime = act.ct;
         }
 
-        let u = ctx.unit;
+      let u = ctx.unit;
         let target = act.target == "自身(サポート)" ? u.support : u.main;
         if (target.isAlive) {
           let src = act.source == "サポート" ? u.support : u.main;
           let rate = scalar(act.rate);
-          const table = {
+        const table = {
             "最大HP": () => { return src.baseHp * rate; },
             "アタック": () => { return src.baseAtk * rate; },
             "ディフェンス": () => { return src.baseDef * rate; },
             "マジック": () => { return src.baseMag * rate; },
             "レジスト": () => { return src.baseRes * rate; },
             "固定値": () => { return act.value; },
-          };
+        };
           target.shield = Math.max(table[act.base](), target.shield);
           console.log(`!! シールド ${target.name} (${self.name})!!`);
         }
@@ -883,6 +931,7 @@ export function makeSimSkill(skill, ownerUnit) {
     }
 
     this.invokeSummon(ctx);
+    this.invokePositionManipulate(ctx);
     this.invokeFixedDamage(ctx);
     this.invokeAreaDamage(ctx);
     this.invokeHeal(ctx);
