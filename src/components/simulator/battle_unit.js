@@ -339,6 +339,7 @@ export class SimUnit {
   ephemeralDebuf = {}; // 戦闘時に相手にかけるデバフ
 
   summon = []; // 召喚したユニット
+  guardians = []; // ガード元。{unit: SimUnit, condition: Function} の配列
   selfEffects = []; // SimEffect
   areaEffects = []; // SimEffect
   timedEffects = []; // serializable SimEffect
@@ -734,6 +735,7 @@ export class SimUnit {
   }
   beforeUpdateAreaEffects() {
     this.areaEffects = [];
+    this.guardians = [];
   }
   updateAreaEffects() {
     const apply = (effect, cond) => {
@@ -750,10 +752,25 @@ export class SimUnit {
         }
       }, true);
     };
+    const applyGuard = (effect) => {
+      $g.sim.enumerateUnitsInArea(this.coord, ...parseArea(effect.area), (u) => {
+        if (u !== this) {
+          u.guardians.push({
+            unit: this,
+            condition(ctx) {
+              return effect.variant == "全攻撃" || ctx.unit.main.damageType == effect.variant;
+            },
+          });
+        }
+      }, true);
+    };
 
     for (let p of this.passives) {
       for (let e of p?.buff ?? []) {
-        if (e.target == "味方全体") {
+        if (e.type == "ガード") {
+          applyGuard(e);
+        }
+        else if (e.target == "味方全体") {
           apply(e, u => u.isPlayer == this.isPlayer)
         }
         else if (e.target == "範囲") {
@@ -864,11 +881,17 @@ export class SimUnit {
         }
         let value = getEffectValue(e, ctx, this);
         value = `${value >= 0 ? '+' : ''}${value}`;
-        if (!e.add && !["移動", "射程(通常攻撃)", "射程(スキル)", "範囲", "トークン"].includes(e.type)) {
+        if (!e.add && !["移動", "射程(通常攻撃)", "射程(スキル)", "範囲", "トークン", "ガード"].includes(e.type)) {
           value += "%";
         }
         if (e.type == "トークン") {
           type = e.tokenName;
+          value = "";
+        }
+        else if (e.type == "ガード") {
+          if (e.variant != "全攻撃") {
+            type += `(${e.variant})`;
+          }
           value = "";
         }
         let cnt = "";

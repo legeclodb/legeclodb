@@ -144,9 +144,11 @@
         "duration": 3
       }
     ],
-    "guard": [
+    "buff": [
       {
-        "type": "物理",
+        "type": "ガード",
+        "target": "自身",
+        "variant": "アタック",
         "area": 2,
         "duration": 3
       }
@@ -923,11 +925,11 @@
         "value": 20,
         "duration": 3,
         "target": "自身"
-      }
-    ],
-    "guard": [
+      },
       {
-        "type": "全攻撃",
+        "type": "ガード",
+        "target": "自身",
+        "variant": "全攻撃",
         "area": 2,
         "duration": 3
       }
@@ -967,11 +969,11 @@
         "value": 1,
         "duration": 3,
         "target": "自身"
-      }
-    ],
-    "guard": [
+      },
       {
-        "type": "全攻撃",
+        "type": "ガード",
+        "target": "自身",
+        "variant": "全攻撃",
         "area": 2,
         "duration": 3
       }
@@ -1657,11 +1659,11 @@
         "value": 20,
         "duration": 3,
         "target": "自身"
-      }
-    ],
-    "guard": [
+      },
       {
-        "type": "物理",
+        "type": "ガード",
+        "target": "自身",
+        "variant": "アタック",
         "area": 2,
         "duration": 3
       }
@@ -1683,18 +1685,18 @@
         "value": 20,
         "duration": 3,
         "target": "自身"
+      },
+      {
+        "type": "ガード",
+        "target": "自身",
+        "variant": "アタック",
+        "area": 2,
+        "duration": 3
       }
     ],
     "statusEffects": [
       {
         "type": "DoT",
-        "duration": 3
-      }
-    ],
-    "guard": [
-      {
-        "type": "物理",
-        "area": 2,
         "duration": 3
       }
     ],
@@ -2398,9 +2400,11 @@
     "area": "単体",
     "range": "自ユニット",
     "cost": 1,
-    "guard": [
+    "buff": [
       {
-        "type": "物理",
+        "type": "ガード",
+        "target": "自身",
+        "variant": "アタック",
         "area": 2,
         "duration": 3
       }
@@ -2416,6 +2420,13 @@
     "range": "自ユニット",
     "cost": 1,
     "buff": [
+      {
+        "type": "ガード",
+        "target": "自身",
+        "variant": "アタック",
+        "area": 2,
+        "duration": 3
+      },
       {
         "type": "アタック",
         "value": 20,
@@ -2439,13 +2450,6 @@
         "value": 2,
         "duration": 3,
         "target": "自身"
-      }
-    ],
-    "guard": [
-      {
-        "type": "物理",
-        "area": 2,
-        "duration": 3
       }
     ],
     "multiAction": [ {} ],
@@ -3580,6 +3584,13 @@
     "cost": 2,
     "buff": [
       {
+        "type": "ガード",
+        "target": "自身",
+        "variant": "全攻撃",
+        "area": 2,
+        "duration": 3
+      },
+      {
         "type": "ダメージ耐性(物理)",
         "value": 10,
         "ephemeral": true,
@@ -3604,13 +3615,6 @@
         "duration": 3
       }
     ],
-    "guard": [
-      {
-        "type": "全攻撃",
-        "area": 2,
-        "duration": 3
-      }
-    ],
     "note": "ガード時のダメージ耐性バフは他のアクティブと競合せず加算になる。"
   },
   {
@@ -3623,6 +3627,13 @@
     "range": "自ユニット",
     "cost": 2,
     "buff": [
+      {
+        "type": "ガード",
+        "target": "自身",
+        "variant": "全攻撃",
+        "area": 3,
+        "duration": 3
+      },
       {
         "type": "アタック",
         "value": 20,
@@ -3655,13 +3666,6 @@
         "slot": "♥ハゴイタイガー闘法♥",
         "target": "自身",
         "condition": { "onGuard": true }
-      }
-    ],
-    "guard": [
-      {
-        "type": "全攻撃",
-        "area": 3,
-        "duration": 3
       }
     ],
     "multiAction": [ {} ],
@@ -7531,11 +7535,11 @@
         "value": 20,
         "duration": 2,
         "target": "自身"
-      }
-    ],
-    "guard": [
+      },
       {
-        "type": "全攻撃",
+        "type": "ガード",
+        "target": "自身",
+        "variant": "全攻撃",
         "area": 2,
         "duration": 3
       }
@@ -10197,13 +10201,13 @@
         "value": 30,
         "duration": 3,
         "target": "自身"
-      }
-    ],
-    "guard": [
+      },
       {
-        "type": "全攻撃",
+        "type": "ガード",
+        "variant": "全攻撃",
         "area": 3,
-        "duration": 3
+        "duration": 3,
+        "target": "自身"
       }
     ]
   },
@@ -10235,11 +10239,11 @@
         "value": 1,
         "duration": 3,
         "target": "自身"
-      }
-    ],
-    "guard": [
+      },
       {
-        "type": "全攻撃",
+        "type": "ガード",
+        "target": "自身",
+        "variant": "全攻撃",
         "area": 3,
         "duration": 3
       }
@@ -11232,11 +11236,11 @@
         "value": 100,
         "duration": 3,
         "target": "自身"
-      }
-    ],
-    "guard": [
+      },
       {
-        "type": "全攻撃",
+        "type": "ガード",
+        "target": "自身",
+        "variant": "全攻撃",
         "area": 2,
         "duration": 2
       }
