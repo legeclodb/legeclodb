@@ -182,7 +182,7 @@ export function makeActionContext(unit, target, skill, isAttacker, parent) {
     get onNormalAttack() { return this.skill === null || this.skill.isNormalAttack; }, // skill が undefined の場合は false 
     get onActiveSkill() { return this.skill && !this.skill.isNormalAttack; },
     get onAreaSkill() { return this.onActiveSkill && this.skill.isAreaTarget; },
-    get onSingleSkill() { return this.onActiveSkill && !this.skill.isAreaTarget; },
+    get onSingleSkill() { return this.onActiveSkill && this.skill.isSingleTarget; },
 
     // unit 関連
     unit: unit,

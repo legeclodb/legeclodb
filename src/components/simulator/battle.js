@@ -466,31 +466,36 @@ export class SimContext {
     if (target) {
       // NxN ボス対策として target.coord ではなく targetCell との距離を取る
       this.range = Math.abs(unit.coord[0] - targetCell[0]) + Math.abs(unit.coord[1] - targetCell[1]);
-
-      for (let guardian of target.guardians) {
-        if (guardian.condition(makeActionContext(unit))) {
-          console.log(`!! ガード ${guardian.unit.main.name} -> ${target.main.name} !!`);
-          target = guardian.unit;
-          onGuard = true;
-          break;
-        }
-      }
     }
 
-    // 条件変数を設定
-    // ここでは通常攻撃の場合も必ず skill が設定されている
-    // (onAttack で反撃側やサポートの場合 ctx.skill は null になる)
-    let ctx = makeActionContext(unit, target, skill, true);
-    ctx.targetCell = targetCell ? [...targetCell] : null;
-    ctx.targets = targets;
+    // 戦闘・非戦闘の区分け
     if (skill && skill.isMainSkill && skill.isAttackSkill) {
       doAttack = true;
-      doBattle = ctx.onNormalAttack || ctx.onSingleSkill;
+      doBattle = skill.isNormalAttack || skill.isSingleTarget;
+      if (doBattle) {
+        // ガード処理
+        let ctx = makeActionContext(unit);
+        for (let guard of target.guardians) {
+          if (guard.condition(ctx)) {
+            console.log(`!! ガード ${guard.unit.main.name} -> ${target.main.name} !!`);
+            target = guard.unit;
+            onGuard = true;
+            break;
+          }
+        }
+      }
     }
     else if (skill && skill.isSupportSkill && skill.isAttackSkill) {
       // サポートのスキルは 戦闘時/攻撃時 効果を発動しない
       doSupportAttackSkill = true;
     }
+
+    // 条件変数を設定
+    // ここでは通常攻撃の場合も必ず skill が設定されている
+    // (getBattleResult で反撃側やサポートの場合 ctx.skill は null になる)
+    let ctx = makeActionContext(unit, target, skill, true);
+    ctx.targetCell = targetCell ? [...targetCell] : null;
+    ctx.targets = targets;
     if (doActionBegin) { ctx.onAction = true; }
     if (doAttack) { ctx.onAttack = true; }
     if (doBattle) { ctx.onBattle = true; }

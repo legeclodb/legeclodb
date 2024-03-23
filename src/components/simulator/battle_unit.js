@@ -754,7 +754,7 @@ export class SimUnit {
     };
     const applyGuard = (effect) => {
       $g.sim.enumerateUnitsInArea(this.coord, ...parseArea(effect.area), (u) => {
-        if (u !== this) {
+        if (u !== this && u.isPlayer == this.isPlayer) {
           u.guardians.push({
             unit: this,
             condition(ctx) {
