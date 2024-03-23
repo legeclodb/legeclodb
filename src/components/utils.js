@@ -114,6 +114,28 @@ export function *enumerate(...arrays) {
   }
 }
 
+export function timedLoop(count, interval, callback, onEnd = null) {
+  let i = 0;
+  const body = () => {
+    let end = false;
+    if (i < count) {
+      if (callback(i) === false) {
+        end = true;
+      }
+      else {
+        ++i;
+        setTimeout(body, interval);
+      }
+    }
+    else {
+      end = true;
+    }
+    if (end && onEnd) {
+      onEnd();
+    }
+  }
+  body();
+}
 export function timedEach(iterable, interval, callback, onEnd = null) {
   let iter = iterable[Symbol.iterator]();
   let result = iter.next();

@@ -122,8 +122,8 @@ export function evaluateCondition(ctx, cond)
 export function getTargetUnits(ctx, json) {
   let targetTable = {
     "自身": () => [ctx.unit],
-    "攻撃対象": () => ctx.targets,
-    "スキル対象": () => ctx.targets,
+    "攻撃対象": () => ctx.targets ?? (ctx.target ? [ctx.target] : []),
+    "スキル対象": () => ctx.targets ?? (ctx.target ? [ctx.target] : []),
     "範囲": () => ctx.getUnitsInArea(json.area),
     "乱択": () => ctx.getUnitsInArea(json.area),
     "味方全体": () => $g.sim.activeUnits.filter(a => a.isPlayer == ctx.unit.isPlayer),
@@ -159,6 +159,13 @@ export function makeActionContext(unit, target, skill, isAttacker, parent) {
         };
       }
       return r;
+    },
+    clear() {
+      for (const k of Object.keys(this)) {
+        if (typeof (this[k]) == "object") {
+          delete this[k];
+        }
+      }
     }
   };
 
@@ -581,7 +588,7 @@ export function makeSimSkill(skill, ownerUnit) {
         }
 
         let u = ctx.unit;
-        let from = self.isMainSkill ? u.main : u.support;
+        let from = self.isSupportSkill ? u.support : u.main;
         let rate = scalar(act.rate);
         let buf = (from.getBuffValue("治療効果") / 100 + 1);
         const apply = (chr, value) => {
@@ -641,7 +648,7 @@ export function makeSimSkill(skill, ownerUnit) {
         }
 
         let u = ctx.unit;
-        let from = self.isMainSkill ? u.main : u.support;
+        let from = self.isSupportSkill ? u.support : u.main;
         let rate = scalar(act.rate) * getEffectMultiply(act, ctx);
         const apply = (chr, value) => {
           if (chr.isAlive) {
@@ -881,10 +888,10 @@ export function makeSimSkill(skill, ownerUnit) {
         ctx.target = prevTarget;
       }
     }
-    self.invokeHeal(ctx, timing);
-    self.invokeAreaDamage(ctx, timing);
-    self.invokeFixedDamage(ctx, timing);
-    self.invokeCtReduction(ctx, timing);
+    this.invokeHeal(ctx, timing);
+    this.invokeAreaDamage(ctx, timing);
+    this.invokeFixedDamage(ctx, timing);
+    this.invokeCtReduction(ctx, timing);
   };
 
   //#region callbacks

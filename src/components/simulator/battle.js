@@ -451,7 +451,9 @@ export class SimContext {
       targets = target ? [target] : [];
     }
 
-    let doAction = (skill?.isSupportSkill || unit.isOnMultiMove) ? false : true;
+    let doActionBegin = (skill?.isSupportSkill || unit.isOnMultiMove) ? false : true;
+    // ややこしいが、行動終了時は再移動でも発動
+    let doActionEnd = (skill?.isSupportSkill) ? false : true;
     let doAttack = false;
     let doBattle = false;
     let multiAction = false;
@@ -479,18 +481,17 @@ export class SimContext {
       // サポートのスキルは 戦闘時/攻撃時 効果を発動しない
       doSupportAttackSkill = true;
     }
-    if (doAction) { ctx.onAction = true; }
+    if (doActionBegin) { ctx.onAction = true; }
     if (doAttack) { ctx.onAttack = true; }
     if (doBattle) { ctx.onBattle = true; }
 
-    if (doAction) {
+    if (doActionBegin) {
       callHandler("onActionBegin", ctx, unit);
     }
 
     // 待機の場合 skill は null
     if (skill) {
       skill.startCoolTime();
-
       // 攻撃処理
       if (doBattle) {
         this.getBattleResult(unit, skill, target, ctx);
@@ -500,53 +501,64 @@ export class SimContext {
         let enemies = targets.filter(a => a.isPlayer != unit.isPlayer);
         this.getAreaAttackResult(unit, skill, enemies, ctx);
       }
-
-      unit.score += ctx.damageDealt.get(unit.fid).total;
-      if (target) {
-        target.score += ctx.damageDealt.get(target.fid).total;
-      }
-      console.log(ctx);
-
       skill.onFire(ctx);
     }
     else {
       ctx.onWait = true;
     }
 
-    let killed = targets.filter(a => !a.isAlive);
-    if (killed.length) {
-      ctx.onKill = true;
-      for (let u of killed) {
-        this.notifyDead(u);
-      }
-    }
-    if (!unit.isAlive) {
-      this.notifyDead(unit);
-    }
-
-    if (doAction) {
-      callHandler("onActionEnd", ctx, unit);
-    }
-
-    if (killed?.length) {
-      callHandler("onKill", ctx, unit);
-
-      for (let k of killed) {
-        callHandler("onDeath", ctx, k);
-        if (k.isAlive) {
-          callHandler("onRevive", ctx, k);
+    let deadUnits = [];
+    const handleDeath = (t) => {
+      let r = false;
+      if (!t.isAlive) {
+        r = true;
+        callHandler("onDeath", ctx, t);
+        // 復活持ちは onDeath で生存状態に戻る。復活しても true を返すが意図的。
+        if (t.isAlive) {
+          callHandler("onRevive", ctx, t);
+        }
+        else {
+          this.notifyDead(t);
         }
       }
+      return r;
+    };
+    const checkKill = () => {
+      for (let fid of Object.keys(ctx.damageTaken)) {
+        let t = this.findUnit(fid);
+        if (!deadUnits.find(u => u.fid == fid) && handleDeath(t)) {
+          if (t.isPlayer != unit.isPlayer) {
+            ctx.onKill = true;
+          }
+          if (!t.isAlive) {
+            deadUnits.push(t);
+          }
+        }
+      }
+    };
+
+    checkKill();
+    if (unit.isAlive) {
+      if (doActionEnd) {
+        callHandler("onActionEnd", ctx, unit);
+        checkKill();
+      }
+      if (ctx.onKill) {
+        callHandler("onKill", ctx, unit);
+      }
+    }
+    if (target?.isAlive) {
+      if (!unit.isAlive) {
+        // 攻撃側が反撃で倒れた場合、防御側の onKill を呼ぶ
+        let dctx = makeActionContext(target, unit);
+        callHandler("onKill", dctx, target);
+      }
     }
 
     if (!unit.isAlive) {
-      callHandler("onDeath", ctx, unit);
-      if (unit.isAlive) {
-        callHandler("onRevive", ctx, unit);
-      }
       unit.state = UnitState.End;
     }
-    else if (doAction) {
+    else if (doActionEnd) {
       if (!unit.isNxN) {
         if (unit.invokeMultiAction(ctx)) {
           multiAction = true;
@@ -569,16 +581,22 @@ export class SimContext {
     }
     else {
       if (skill?.isSupportSkill) {
+        // サポートアクティブ使用時は残移動量を設定
         unit.move = unit.main.move - ctx.move;
-      }
-      else if (unit.isOnMultiMove) {
-        unit.state = UnitState.End;
       }
     }
 
+    // 移動量リセット
     if (unit.state == UnitState.MultiAction || unit.state == UnitState.End) {
       unit.move = -1;
     }
+
+    // スコア加算
+    unit.score += ctx.damageDealt.get(unit.fid).total;
+    if (target) {
+      target.score += ctx.damageDealt.get(target.fid).total;
+    }
+    console.log(ctx);
 
     this.updateAreaEffectsAll();
 

@@ -1236,7 +1236,7 @@ export class SimUnit {
   }
   onActionEnd(ctx) {
     this._callHandler("onActionEnd", ctx);
-    if (!this.isNxN) {
+    if (!this.isNxN && !this.isOnMultiMove) {
       this.reduceSkillCT(1);
       this.reduceEffectDuration();
     }
@@ -1261,12 +1261,6 @@ export class SimUnit {
     this.main.shield = 0;
     this.support.shield = 0;
     this._callHandler("onBattleEnd", ctx);
-  }
-
-  // 再移動終了時
-  // 回復や固定ダメージなどこのタイミングでも発動する効果用
-  onMultiMoveEnd(ctx) {
-
   }
 
   // 手段を問わず敵撃破時に呼ばれる
