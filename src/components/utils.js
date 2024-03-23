@@ -187,6 +187,7 @@ export function fromJson(str) {
   };
   return JSON.parse(str, conv);
 }
+// JSON 由来のオブジェクトに↑と同等の変換をかける
 export function sanitizeJsonObject(obj) {
   const conv = (v) => {
     if (Array.isArray(v) || typeof (v) == "object") {

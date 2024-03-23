@@ -525,6 +525,7 @@ export class SimContext {
         this.getAreaAttackResult(unit, skill, enemies, ctx);
       }
       skill.onFire(ctx);
+      this.updateAreaEffectsAll();
     }
     else {
       ctx.onWait = true;

@@ -805,9 +805,8 @@ export function makeSimSkill(skill, ownerUnit) {
         succeeded = true;
         ctx.onMultiMove = true;
 
-        let m = 0;
+        let m = -1; // -1: バフ込みの元の移動力
         if (act.type == "基本移動力") {
-          m = ctx.unit.main.move;
         }
         else if (act.type == "固定値移動力") {
           m = act.value;
@@ -815,7 +814,8 @@ export function makeSimSkill(skill, ownerUnit) {
         else if (act.type == "残移動力") {
           m = ctx.unit.main.move - ctx.move;
         }
-        ctx.multiMoveValue = Math.max(m, ctx.multiMoveValue ?? 0);
+        // 複数の multiMove が同時に発動する可能性があり、その場合 -1 が最優先、それ以外だと最も移動量が高い方を優先
+        ctx.multiMoveValue = m == -1 ? m : Math.max(m, ctx.multiMoveValue ?? 0);
 
         if (act.ct) {
           act.coolTime = act.ct;
