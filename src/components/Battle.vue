@@ -2043,7 +2043,8 @@ export default {
       });
     },
     async uploadReplay() {
-      const data = await lut.compressGzip(lut.toJson(this.serializeReplay()));
+      const replay = this.simulation ? this.serializeReplay() : this.replay;
+      const data = await lut.compressGzip(lut.toJson(replay));
       var form = new FormData()
       form.append('mode', 'put');
       form.append('data', new Blob([data]));
