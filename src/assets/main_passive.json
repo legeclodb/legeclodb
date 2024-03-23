@@ -2145,11 +2145,10 @@
       {
         "type": "ダメージ耐性(物理)",
         "value": 5
-      }
-    ],
-    "guard": [
+      },
       {
-        "type": "物理",
+        "type": "ガード",
+        "variant": "アタック",
         "area": 1
       }
     ]
@@ -2484,16 +2483,15 @@
     "cost": 1,
     "buff": [
       {
+        "type": "ガード",
+        "variant": "アタック",
+        "area": 1
+      },
+      {
         "type": "アタック",
         "value": 15,
         "ephemeral": true,
         "condition": { "onGuard": true }
-      }
-    ],
-    "guard": [
-      {
-        "type": "物理",
-        "area": 1
       }
     ]
   },
@@ -2743,9 +2741,10 @@
         "condition": { "onGuard": true }
       }
     ],
-    "guard": [
+    "buff": [
       {
-        "type": "全攻撃",
+        "type": "ガード",
+        "variant": "全攻撃",
         "area": 2
       }
     ]

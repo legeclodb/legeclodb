@@ -95,6 +95,7 @@
         "ランダム",
         "シールド",
         "トークン",
+        "ガード",
 
         "スタン",
         "フリーズ",
@@ -534,17 +535,6 @@
       }
     },
 
-    "guard": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "type": { "enum": [ "物理", "魔法", "全攻撃" ] },
-        "area": { "$ref": "#/$defs/areaType" },
-        "duration": { "type": "number" },
-        "condition": { "$ref": "#/$defs/condition" }
-      }
-    },
-
     "ignoreGuard": {
       "type": "object",
       "additionalProperties": false,
@@ -731,10 +721,6 @@
       "buffSteal": {
         "type": "array",
         "items": { "$ref": "#/$defs/buffSteal" }
-      },
-      "guard": {
-        "type": "array",
-        "items": { "$ref": "#/$defs/guard" }
       },
       "ignoreGuard": {
         "type": "array",

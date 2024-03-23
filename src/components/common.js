@@ -1509,7 +1509,7 @@ export default {
       // 確認・デバッグ用
       if (process.env.NODE_ENV === 'development') {
         for (let e of skill.effects) {
-          if (!e.value && !e.add && !e.variable && !["ランダム", "トークン"].includes(e.type)) {
+          if (!e.value && !e.add && !e.variable && !["ランダム", "トークン", "ガード"].includes(e.type)) {
             throw Error(`${skill.name}: ${e.type}`);
           }
         }

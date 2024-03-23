@@ -5349,6 +5349,11 @@
         }
       },
       {
+        "type": "ガード",
+        "variant": "全攻撃",
+        "area": 2
+      },
+      {
         "type": "射程(通常攻撃)",
         "value": 1,
         "ephemeral": true,
@@ -5382,12 +5387,6 @@
           "timing": "戦闘後",
           "condition": { "onCriticalHit": true }
         }
-      }
-    ],
-    "guard": [
-      {
-        "type": "全攻撃",
-        "area": 2
       }
     ],
     "tags": [ "射程+(反撃)", "移動+" ]
@@ -5638,6 +5637,11 @@
         "condition": { "onEnemyTurn": true }
       },
       {
+        "type": "ガード",
+        "variant": "全攻撃",
+        "area": 2
+      },
+      {
         "type": "射程(通常攻撃)",
         "value": 1,
         "ephemeral": true,
@@ -5667,12 +5671,6 @@
           "area": [ 3, "周囲" ],
           "timing": "行動後"
         }
-      }
-    ],
-    "guard": [
-      {
-        "type": "全攻撃",
-        "area": 2
       }
     ],
     "tags": [ "射程+(反撃)" ],
@@ -5847,6 +5845,17 @@
         }
       },
       {
+        "type": "ガード",
+        "variant": "全攻撃",
+        "area": 2,
+        "condition": {
+          "token": {
+            "tokenName": "ハートフルオリジン！",
+            "compare": [ ">=", 1 ]
+          }
+        }
+      },
+      {
         "type": "クリティカル率",
         "value": [ 8, 10, 12, 15 ],
         "condition": {
@@ -5888,18 +5897,6 @@
           "onDamage": true
         },
         "ct": 2
-      }
-    ],
-    "guard": [
-      {
-        "type": "全攻撃",
-        "area": 2,
-        "condition": {
-          "token": {
-            "tokenName": "ハートフルオリジン！",
-            "compare": [ ">=", 1 ]
-          }
-        }
       }
     ],
     "tags": [ "射程+(反撃)" ]
@@ -6484,18 +6481,17 @@
         "target": "範囲",
         "area": [ 3, "周囲" ],
         "condition": { "hp": [ ">=", 50 ] }
+      },
+      {
+        "type": "ガード",
+        "variant": "全攻撃",
+        "area": 2
       }
     ],
     "multiAction": [
       {
         "ct": 2,
         "condition": { "onDamage": true }
-      }
-    ],
-    "guard": [
-      {
-        "type": "全攻撃",
-        "area": 3
       }
     ]
   },

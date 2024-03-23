@@ -48,7 +48,7 @@ export class SimContext {
   get phaseId() { return `${this.turn}${this.isPlayerTurn ? 'P' : 'E'}`; }
 
   get score() {
-    return Object.values(this.fidTable).reduce((total, u) => total + (u.isPlayer ? u.score : 0), 0);
+    return Object.values(this.fidTable).reduce((total, u) => total + (u.isPlayer && !u.isSummon ? u.score : 0), 0);
   }
   get statePos() { return this.statePos_; }
   set statePos(v) {
