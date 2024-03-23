@@ -515,9 +515,13 @@ export class SimUnit {
 
       let classPassiveMain = [];
       let classPassiveSup = [];
-      if (unit.isEnemy || unit.isSummon) {
+      if (unit.isEnemy) {
         classPassiveMain = vue.getClassPassiveNpcMain(unit.main?.class);
         classPassiveSup = vue.getClassPassiveNpcSupport(unit.support?.class);
+      }
+      else if (unit.isSummon) {
+        classPassiveMain = vue.getClassPassiveSummonMain(unit.main?.class);
+        classPassiveSup = vue.getClassPassiveSummonSupport(unit.support?.class);
       }
       else {
         classPassiveMain = vue.getClassPassiveMain(unit.main?.class);
