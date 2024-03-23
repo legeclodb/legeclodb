@@ -1087,16 +1087,6 @@ export default {
         addTag(`再移動${postfix}`);
       }
 
-      if (skill.guard) {
-        let postfix = "";
-        for (const v of skill.guard) {
-          if (v.type == "物理") {
-            postfix = "(物理攻撃)";
-          }
-        }
-        addTag(`ガード${postfix}`);
-      }
-
       if (skill.doubleAttack) {
         let postfix = "";
         for (const da of skill.doubleAttack) {
@@ -1198,6 +1188,12 @@ export default {
             r += "(味方)";
           else if (target == "攻撃対象")
             r += "(敵)";
+          return r;
+        }
+        else if (effect.type == "ガード") {
+          let r = "ガード";
+          if (effect.variant != "全攻撃")
+            r += `(${effect.variant})`;
           return r;
         }
 

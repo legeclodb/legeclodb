@@ -285,6 +285,9 @@ export function makeActionContext(unit, target, skill, isAttacker, parent) {
         ctx[p] = parent[p];
       }
     }
+    if (parent.isTargetGuardian) {
+      ctx.onGuard = true;
+    }
   }
 
   return ctx;

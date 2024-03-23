@@ -458,6 +458,7 @@ export class SimContext {
     let doBattle = false;
     let multiAction = false;
     let multiMove = false;
+    let onGuard = false;
     let doSupportAttackSkill = false;
 
     this.move = unit.moveDistance ?? 0;
@@ -465,6 +466,15 @@ export class SimContext {
     if (target) {
       // NxN ボス対策として target.coord ではなく targetCell との距離を取る
       this.range = Math.abs(unit.coord[0] - targetCell[0]) + Math.abs(unit.coord[1] - targetCell[1]);
+
+      for (let guardian of target.guardians) {
+        if (guardian.condition(makeActionContext(unit))) {
+          console.log(`!! ガード ${guardian.unit.main.name} -> ${target.main.name} !!`);
+          target = guardian.unit;
+          onGuard = true;
+          break;
+        }
+      }
     }
 
     // 条件変数を設定
@@ -484,6 +494,7 @@ export class SimContext {
     if (doActionBegin) { ctx.onAction = true; }
     if (doAttack) { ctx.onAttack = true; }
     if (doBattle) { ctx.onBattle = true; }
+    if (onGuard) { ctx.isTargetGuardian = true; }
 
     if (doActionBegin) {
       callHandler("onActionBegin", ctx, unit);

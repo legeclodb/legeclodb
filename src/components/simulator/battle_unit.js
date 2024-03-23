@@ -339,7 +339,7 @@ export class SimUnit {
   ephemeralDebuf = {}; // 戦闘時に相手にかけるデバフ
 
   summon = []; // 召喚したユニット
-  guardians = []; // ガード
+  guardians = []; // ガード元。{unit: SimUnit, condition: Function} の配列
   selfEffects = []; // SimEffect
   areaEffects = []; // SimEffect
   timedEffects = []; // serializable SimEffect
@@ -752,10 +752,25 @@ export class SimUnit {
         }
       }, true);
     };
+    const applyGuard = (effect) => {
+      $g.sim.enumerateUnitsInArea(this.coord, ...parseArea(effect.area), (u) => {
+        if (u !== this) {
+          u.guardians.push({
+            unit: this,
+            condition(ctx) {
+              return effect.variant == "全攻撃" || ctx.unit.main.damageType == effect.variant;
+            },
+          });
+        }
+      }, true);
+    };
 
     for (let p of this.passives) {
       for (let e of p?.buff ?? []) {
-        if (e.target == "味方全体") {
+        if (e.type == "ガード") {
+          applyGuard(e);
+        }
+        else if (e.target == "味方全体") {
           apply(e, u => u.isPlayer == this.isPlayer)
         }
         else if (e.target == "範囲") {
@@ -874,7 +889,7 @@ export class SimUnit {
           value = "";
         }
         else if (e.type == "ガード") {
-          if (e.variant == "アタック") {
+          if (e.variant != "全攻撃") {
             type += `(${e.variant})`;
           }
           value = "";
