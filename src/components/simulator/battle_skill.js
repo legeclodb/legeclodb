@@ -419,15 +419,17 @@ export function makeSimSkill(skill, ownerUnit) {
       prefix: 's',
       invoke: (ctx) => self.invokeShield(ctx),
     },
+    revive: {
+      prefix: 'r',
+      invoke: (ctx) => self.invokeRevive(ctx),
+    },
     heal: {
       prefix: 'h',
       invoke: (ctx) => self.invokeHeal(ctx),
-      triggerOnMultiMove: true
     },
     areaDamage: {
       prefix: 'ad',
       invoke: (ctx) => self.invokeAreaDamage(ctx),
-      triggerOnMultiMove: true
     },
     fixedDamage: {
       prefix: 'fd',
@@ -577,6 +579,18 @@ export function makeSimSkill(skill, ownerUnit) {
           target.shield = Math.max(table[act.base](), target.shield);
           console.log(`!! シールド ${target.name} (${self.name})!!`);
         }
+      }
+    }
+  };
+  self.invokeRevive = function (ctx) {
+    for (let act of self?.revive ?? []) {
+      if (act.remain && evaluateCondition(ctx, act.condition)) {
+        --act.remain;
+        let u = ctx.unit;
+        let rate = scalar(act.rate);
+        u.main.receiveHeal(u.main.maxHp * rate, u.main, ctx);
+        u.support.receiveHeal(u.support.maxHp * rate, u.main, ctx);
+        console.log(`!! 復活 ${u.main.name} (${self.name})!!`);
       }
     }
   };

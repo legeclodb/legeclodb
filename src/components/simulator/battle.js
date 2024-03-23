@@ -512,12 +512,9 @@ export class SimContext {
       let r = false;
       if (!t.isAlive) {
         r = true;
-        callHandler("onDeath", ctx, t);
-        // 復活持ちは onDeath で生存状態に戻る。復活しても true を返すが意図的。
-        if (t.isAlive) {
-          callHandler("onRevive", ctx, t);
-        }
-        else {
+        let dctx = makeActionContext(t);
+        callHandler("onDeath", dctx, t);
+        if (!t.isAlive) {
           this.notifyDead(t);
         }
       }
@@ -782,9 +779,12 @@ export class SimContext {
   eraseUnit(unit) {
     let u = unit?.sim ?? unit;
     if (u) {
+      let ctx = makeActionContext(u);
       u.main.hp = 0;
-      u.onDeath();
-      this.notifyDead(u);
+      u.onDeath(ctx);
+      if (!u.isAlive) { // 復活持ちはここでも生きている
+        this.notifyDead(u);
+      }
       this.updateAreaEffectsAll();
 
       this.addUserEvent({

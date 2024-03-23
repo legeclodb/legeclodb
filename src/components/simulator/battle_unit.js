@@ -476,7 +476,8 @@ export class SimUnit {
         },
       };
 
-      chr.hp = chr.maxHp = chr.baseHp;
+      chr.maxHp = chr.baseHp;
+      chr.hp = 0;
       chr.shield = 0;
       chr.buf = {};
       chr.bufCv = {};
@@ -1101,14 +1102,17 @@ export class SimUnit {
   invokeShield(ctx) {
     return this._invokeSkillAction(ctx, "invokeShield");
   }
+  invokeRevive(ctx) {
+    return this._invokeSkillAction(ctx, "invokeRevive");
+  }
+  invokeHeal(ctx) {
+    return this._invokeSkillAction(ctx, "invokeHeal");
+  }
   invokeFixedDamage(ctx) {
     return this._invokeSkillAction(ctx, "invokeFixedDamage");
   }
   invokeAreaDamage(ctx) {
     return this._invokeSkillAction(ctx, "invokeAreaDamage");
-  }
-  invokeHeal(ctx) {
-    return this._invokeSkillAction(ctx, "invokeHeal");
   }
 
   invokeSupportAttack(ctx) {
@@ -1194,7 +1198,11 @@ export class SimUnit {
     //console.log(`${this.main.name}: 影響下にあるスキル -> ${unique(this.effects.map(a => a.parent.name)).join(", ")}`);
 
     const setupHp = (chr) => {
-      chr.hp = chr.maxHp = Math.round(chr.baseHp * (chr.getBuffValue("最大HP") / 100 + 1));
+      chr.maxHp = Math.round(chr.baseHp * (chr.getBuffValue("最大HP") / 100 + 1));
+      if (chr.hp == 0) {
+        // deserialize 後は残 HP が設定されていてここには来ない
+        chr.hp = chr.maxHp;
+      }
     };
     setupHp(this.main);
     setupHp(this.support);
@@ -1271,10 +1279,17 @@ export class SimUnit {
   // 手段を問わず撃破されたとき呼ばれる
   onDeath(ctx) {
     this._callHandler("onDeath", ctx);
-    if (this.summoner) {
-      let pos = this.summoner.summon.findIndex(a => a == this);
-      if (pos != -1) {
-        this.summoner.summon.splice(pos, 1);
+    this.invokeRevive(ctx);
+    if (this.isAlive) {
+      // ラストスタンドなどで復活した場合 onRevive()
+      this.onRevive(ctx);
+    }
+    if (!this.isAlive) {
+      if (this.summoner) {
+        let pos = this.summoner.summon.findIndex(a => a == this);
+        if (pos != -1) {
+          this.summoner.summon.splice(pos, 1);
+        }
       }
     }
   }
