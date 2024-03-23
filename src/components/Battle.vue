@@ -1494,7 +1494,7 @@ export default {
 
     selectUnit(unit) {
       this.selectedUnit = unit;
-      if (unit) {
+      if (unit && !this.simulation) {
         if (unit.isEnemy) {
           this.scrollTo(`unit_${unit.fid}`);
         }
@@ -1935,7 +1935,7 @@ export default {
         body(lut.fromJson(lut.binaryToString(data)));
       }
       else if (typeof (data) === 'object') {
-        body(data);
+        body(lut.sanitizeJsonObject(data));
       }
     },
     followReplay(r) {

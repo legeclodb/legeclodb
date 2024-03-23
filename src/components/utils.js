@@ -187,6 +187,31 @@ export function fromJson(str) {
   };
   return JSON.parse(str, conv);
 }
+export function sanitizeJsonObject(obj) {
+  const conv = (v) => {
+    if (Array.isArray(v) || typeof (v) == "object") {
+      return sanitizeJsonObject(v);
+    }
+    else if (v === "Infinity") {
+      return Number.POSITIVE_INFINITY;
+    }
+    else {
+      return v;
+    }
+  };
+
+  if (Array.isArray(obj)) {
+    for (let i = 0; i < obj.length; ++i) {
+      obj[i] = conv(obj[i]);
+    }
+  }
+  else if (typeof (obj) == "object") {
+    for (let k in obj) {
+      obj[k] = conv(obj[k]);
+    }
+  }
+  return obj;
+}
 
 // fileType: ".json" など
 export function openFileDialog(fileType, callback) {
