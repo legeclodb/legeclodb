@@ -843,7 +843,7 @@ export default {
     },
     allPlayerUnits() {
       if (this.simulation) {
-        return Object.values(this.simulation.fidTable).filter(a => a.isPlayer && !a.isSummon).map(a => a.base);
+        return Object.values(this.simulation.unitTable).filter(a => a.isPlayer && !a.isSummon).map(a => a.base);
       }
       else {
         return this.playerUnits;

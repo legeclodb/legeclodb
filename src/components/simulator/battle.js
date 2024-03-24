@@ -35,7 +35,7 @@ export class SimContext {
   divX = 0;
   divY = 0;
   terrain = [];
-  fidTable = {};
+  unitTable = {};
   range = 0;
   move = 0;
   deadUnits = [];
@@ -50,7 +50,7 @@ export class SimContext {
   get phaseId() { return `${this.turn}${this.isPlayerTurn ? 'P' : 'E'}`; }
 
   get score() {
-    return Object.values(this.fidTable).reduce((total, u) => total + (u.isPlayer && !u.isSummon ? u.score : 0), 0);
+    return Object.values(this.unitTable).reduce((total, u) => total + (u.isPlayer && !u.isSummon ? u.score : 0), 0);
   }
   get statePos() { return this.statePos_; }
   set statePos(v) {
@@ -60,7 +60,7 @@ export class SimContext {
   //#endregion props
 
 
-  //#region methods
+  //#region construct, serialize, playback
   constructor(battleData, baseUnits) {
     $g.sim = this;
     this.battleId = battleData.uid;
@@ -76,7 +76,7 @@ export class SimContext {
 
     this.units = baseUnits.filter(a => a.isValid).map(a => new SimUnit(a));
     for (let u of this.units) {
-      this.fidTable[u.fid] = u;
+      this.unitTable[u.fid] = u;
     }
     //console.log(this);
   }
@@ -138,7 +138,7 @@ export class SimContext {
         }
       }
       let r = new SimUnit(base);
-      this.fidTable[r.fid] = r;
+      this.unitTable[r.fid] = r;
       return r;
     };
     this.units = r.units.map(a => constructUnit(a));
@@ -248,7 +248,7 @@ export class SimContext {
   addUnit(unit) {
     ++this.unitIdSeed;
     unit.base.fid = `X${this.unitIdSeed}`;
-    this.fidTable[unit.fid] = unit;
+    this.unitTable[unit.fid] = unit;
     this.units.push(unit);
 
     unit.onSimulationBegin();
@@ -257,19 +257,50 @@ export class SimContext {
   }
   notifyDead(unit) {
     this.units = this.units.filter(a => a !== unit);
-    // 死んだユニットの情報が必要なケースもあるため、fidTable からは消さない
-    //delete this.fidTable[unit.fid];
+    // 死んだユニットの情報が必要なケースもあるため、unitTable からは消さない
+    //delete this.unitTable[unit.fid];
   }
+  //#endregion construct, serialize, playback
 
+
+  //#region unit operation
   findItem(uid) {
     return window.$vue.findItemByUid(uid);
   }
   findUnit(fid) {
-    return this.fidTable[fid];
+    return this.unitTable[fid];
   }
   findBaseUnit(fid) {
     let r = window.$vue.playerUnits.find(a => a.fid == fid) ?? window.$vue.enemyUnits.find(a => a.fid == fid);
     return r;
+  }
+  findUnitByCoord(coord) {
+    for (const u of this.activeUnits) {
+      if (u.isNxN) {
+        // NxN ボス
+        if (u.shape[coord[1]][coord[0]]) {
+          return u;
+        }
+      }
+      else if (u.coord[0] == coord[0] && u.coord[1] == coord[1]) {
+        return u;
+      }
+    }
+    return null;
+  }
+  enumerateUnitsInArea(center, size, shape, callback, once = false) {
+    for (const u of this.activeUnits) {
+      // NxN ボスは該当マス分コールバックを呼ぶ
+      // ただし once == true の場合 1 回で切り上げる
+      for (let pos of u.occupiedCells) {
+        if (isInside(center, pos, size, shape)) {
+          callback(u, pos);
+          if (once) {
+            break;
+          }
+        }
+      }
+    }
   }
 
   isOwnTurn(unit) {
@@ -287,10 +318,52 @@ export class SimContext {
     // 現状通行可能か不可能かの 2 値。ちゃんとサポートするならもっと複雑になる
     return this.getTerrain(pos) == 0;
   }
-  isValidCoord(pos) {
-    return this.getTerrain(pos) != null;
+  canMoveTo(pos) {
+    return this.isTerrainPassable(pos) && !this.findUnitByCoord(pos);
   }
 
+
+  placeUnit(unit, coord) {
+    // 指定座標が占有されていた場合はずらす
+    const subCoord = [
+      [0, 0],
+      [0, -1], [1, 0], [0, 1], [-1, 0],
+      [0, -2], [1, -1], [2, 0], [1, 1], [0, 2], [-1, 1], [-2, 0], [-1, -1]
+    ];
+    for (const sc of subCoord) {
+      let c = [coord[0] + sc[0], coord[1] + sc[1]];
+      if (this.canMoveTo(c)) {
+        unit.coord = c;
+        unit.isDormant = false;
+        return true;
+      }
+    }
+    return false;
+  }
+
+  // ユーザー操作により呼ばれる
+  eraseUnit(unit) {
+    let u = unit?.sim ?? unit;
+    if (u) {
+      let ctx = makeActionContext(u);
+      u.main.hp = 0;
+      u.onDeath(ctx);
+      if (!u.isAlive) { // 復活持ちはここでも生きている
+        this.notifyDead(u);
+      }
+      this.updateAreaEffectsAll();
+
+      this.addUserEvent({
+        type: "eraseUnit",
+        target: u.fid
+      });
+    }
+  }
+  //#endregion unit operation
+
+
+
+  //#region attack
   // attacker: chr
   doAttack(ctx, attacker, targetStack, skill) {
     let actx = ctx.makeChild();
@@ -652,7 +725,9 @@ export class SimContext {
     this.deadUnits = [];
     return ctx;
   }
+  //#endregion attack
 
+  //#region simulation & callbacks
   updateAreaEffectsAll() {
     for (let u of this.activeUnits) {
       u.beforeUpdateAreaEffects();
@@ -700,7 +775,7 @@ export class SimContext {
     this.updateAreaEffectsAll();
   }
   onSimulationEnd() {
-    for (let u of Object.values(this.fidTable)) {
+    for (let u of Object.values(this.unitTable)) {
       u.onSimulationEnd();
     }
     if ($g.sim == this) {
@@ -743,6 +818,7 @@ export class SimContext {
         this.placeUnit(u, u.coord);
       }
     }
+    this.updateAreaEffectsAll();
 
     for (let u of this.activeUnits) {
       if (u.isEnemy) {
@@ -769,76 +845,7 @@ export class SimContext {
       }
     }
   }
-  //#endregion methods
-
-
-  //#region impl
-  findUnitByCoord(coord) {
-    for (const u of this.activeUnits) {
-      if (u.isNxN) {
-        // NxN ボス
-        if (u.shape[coord[1]][coord[0]]) {
-          return u;
-        }
-      }
-      else if (u.coord[0] == coord[0] && u.coord[1] == coord[1]) {
-        return u;
-      }
-    }
-    return null;
-  }
-  enumerateUnitsInArea(center, size, shape, callback, once = false) {
-    for (const u of this.activeUnits) {
-      // NxN ボスは該当マス分コールバックを呼ぶ
-      // ただし once == true の場合 1 回で切り上げる
-      for (let pos of u.occupiedCells) {
-        if (isInside(center, pos, size, shape)) {
-          callback(u, pos);
-          if (once) {
-            break;
-          }
-        }
-      }
-    }
-  }
-  placeUnit(unit, coord) {
-    // 指定座標が占有されていた場合はずらす
-    const subCoord = [
-      [0, 0],
-      [0, -1], [1, 0], [0, 1], [-1, 0],
-      [0, -2], [1, -1], [2, 0], [1, 1], [0, 2], [-1, 1], [-2, 0], [-1, -1]
-    ];
-    for (const sc of subCoord) {
-      let c = [coord[0] + sc[0], coord[1] + sc[1]];
-      if (this.isTerrainPassable(c) && !this.findUnitByCoord(c)) {
-        unit.coord = c;
-        unit.isDormant = false;
-        this.updateAreaEffectsAll();
-        return true;
-      }
-    }
-    return false;
-  }
-
-  // ユーザー操作により呼ばれる
-  eraseUnit(unit) {
-    let u = unit?.sim ?? unit;
-    if (u) {
-      let ctx = makeActionContext(u);
-      u.main.hp = 0;
-      u.onDeath(ctx);
-      if (!u.isAlive) { // 復活持ちはここでも生きている
-        this.notifyDead(u);
-      }
-      this.updateAreaEffectsAll();
-
-      this.addUserEvent({
-        type: "eraseUnit",
-        target: u.fid
-      });
-    }
-  }
-  //#endregion impl
+  //#endregion simulation & callbacks
 }
 
 

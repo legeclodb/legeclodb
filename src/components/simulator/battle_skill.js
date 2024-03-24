@@ -562,10 +562,10 @@ export function makeSimSkill(skill, ownerUnit) {
     for (let act of this.positionManipulate ?? []) {
       let u = ctx.unit;
       let t = ctx.target;
-      if (u && t && !t.hasResist("位置移動")) {
+      if (u && t && (t.isPlayer == u.isPlayer || !t.hasResist("位置移動"))) {
         const getDir = (pos, center) => {
           const [dx,dy] = [pos[0] - center[0], pos[1] - center[1]];
-          if (dx == 0 || dy == 0) {
+          if (dx == 0 || dy == 0) { // どちらかの軸が合ってないと無効としておく
             if      (dy < 0) { return [ 0, -1]; } // top
             else if (dx > 0) { return [ 1,  0]; } // right
             else if (dy > 0) { return [ 0,  1]; } // down
@@ -573,33 +573,32 @@ export function makeSimSkill(skill, ownerUnit) {
           }
           return null;
         };
-        const canMoveTo = (pos) => {
-          return $g.sim.isTerrainPassable(pos) && !$g.sim.findUnitByCoord(pos);
-        };
         const directionalMove = (dir, maxMove) => {
-          if (!dir) { return; }
-          let [x, y] = t.coord;
-          let [dx, dy] = dir;
+          if (!dir || t.hasResist("位置移動")) {
+            return;
+          }
+          let pos = t.coord;
           for (let i = 0; i < maxMove; ++i) {
-            let nx = x + dx;
-            let ny = y + dy;
-            if (canMoveTo([nx, ny])) {
-              x = nx;
-              y = ny;
+            let next = [pos[0] + dir[0], pos[1] + dir[1]];
+            if ($g.sim.canMoveTo(next)) {
+              pos = next;
             }
             else {
               break;
             }
           }
-          t.coord = [x, y];
+          t.coord = pos;
         };
-
+        const teleport = () => {
+          if (t.isPlayer != u.isPlayer) {
+            return;
+          }
+          // todo:
+        };
         const table = {
-          "引き寄せ": () => { directionalMove(getDir(u.coord, t.coord), self.range); },
-          "後退": () => { directionalMove(getDir(t.coord, u.coord), act.value); },
-          "テレポート": () => {
-            // todo
-          },
+          "引き寄せ": () => directionalMove(getDir(u.coord, t.coord), self.range),
+          "後退": () => directionalMove(getDir(t.coord, u.coord), act.value),
+          "テレポート": () => teleport(),
         };
         table[act.type]();
       }
