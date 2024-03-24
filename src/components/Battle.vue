@@ -898,14 +898,6 @@ export default {
       const confirm = () => {
         self.pushTool(self.tools.confirm);
       };
-      const setStartCell = (pf, unit) => {
-        if ('shape' in unit.main) {
-          pf.setStartShape(unit.main.shape);
-        }
-        else {
-          pf.setStart(unit.coord);
-        }
-      };
       const colorDelay = 15;
 
       this.tools = {
@@ -968,18 +960,12 @@ export default {
         // ユニット移動＆スキル選択処理
         moveUnit: {
           buildPath(unit) {
-            let pf = new lbt.PathFinder(self.divX, self.divY);
-            pf.setObstacles(self.cells.filter(c => c.obstacle));
-            if (unit.isEnemy) {
-              pf.setObstacles(self.allActiveUnits.filter(a => a.isPlayer && a.main.cid));
-              pf.setOccupied(self.allActiveUnits.filter(a => a.isEnemy && a !== unit));
-            }
-            if (unit.isPlayer) {
-              pf.setObstacles(self.allActiveUnits.filter(a => a.isEnemy));
-              pf.setOccupied(self.allActiveUnits.filter(a => a.isPlayer && a.main.cid && a !== unit));
-            }
-            setStartCell(pf, unit);
-            pf.buildPath(unit.move, unit.sim?.isOnMultiMove ? 0 : unit.range);
+            let pf = new lbt.PathFinder(self.divX, self.divY, self.battleData.terrain);
+            pf.setObstacles(self.allActiveUnits.filter(u => u.isPlayer != unit.isPlayer));
+            pf.setOccupied(self.allActiveUnits.filter(u => u.isPlayer == unit.isPlayer));
+            pf.setStartUnit(unit);
+            let sim = unit.sim ?? unit;
+            pf.buildPath(unit.move, sim?.isOnMultiMove ? 0 : unit.range);
             self.path = pf;
           },
 
@@ -1103,8 +1089,7 @@ export default {
 
           onEnable() {
             let skill = self.selectedSkill;
-            let pf = new lbt.PathFinder(self.divX, self.divY);
-            setStartCell(pf, self.selectedUnit);
+            let pf = self.simulation.makePathFinder(self.selectedUnit);
             pf.buildPath(0, skill.range ?? 1, skill.rangeShape);
             self.skillRange = pf;
           },
@@ -1168,13 +1153,13 @@ export default {
         previewArea: {
           onEnable() {
             let skill = self.selectedSkill;
-            let pf = new lbt.PathFinder(self.divX, self.divY);
+            let pf = self.simulation.makePathFinder();
             if (skill.shapeData) {
               pf.setShootRangeShape(skill.shapeData);
             }
             else {
               if (skill.isSelfTarget || skill.isRadialAreaTarget) {
-                setStartCell(pf, self.selectedUnit);
+                pf.setStartUnit(self.selectedUnit);
               }
               else {
                 pf.setStart(self.targetCell.coord);
@@ -1231,7 +1216,7 @@ export default {
         previewDirection: {
           onEnable() {
             let skill = self.selectedSkill;
-            let pf = new lbt.PathFinder(self.divX, self.divY);
+            let pf = self.simulation.makePathFinder();
             pf.setStart(self.targetCell.coord);
             pf.buildPath(0, skill.area, skill.areaShape, self.targetDirection);
             self.skillArea = pf;

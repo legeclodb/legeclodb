@@ -35,6 +35,39 @@ export const Shape = {
   HollowDiamond: 0x10, // 自身を除く範囲
   HollowSquare: 0x11, // 自身を除く周囲
 };
+export const Direction = {
+  None: 0,
+  Up: 1,
+  Right: 2,
+  Down: 3,
+  Left: 4,
+}
+
+export function calcDirection(base, target) {
+  const dir = [target[0] - base[0], target[1] - base[1]];
+  if (dir[1] < 0) {
+    return Direction.Up;
+  }
+  else if (dir[0] > 0) {
+    return Direction.Right;
+  }
+  else if (dir[1] > 0) {
+    return Direction.Down;
+  }
+  else if (dir[0] < 0) {
+    return Direction.Left;
+  }
+  return Direction.None; // base == target
+}
+export function areaStringToEnum(s) {
+  if (s == '範囲') { return Shape.Diamond; }
+  else if (s == '周囲') { return Shape.Square; }
+  else if (s == '直線') { return Shape.Directional; }
+  else if (s == '特殊') { return Shape.Special; }
+  else if (s == '範囲(自身を除く)') { return Shape.HollowDiamond; }
+  else if (s == '周囲(自身を除く)') { return Shape.HollowSquare; }
+  return null;
+}
 export function parseArea(args) {
   let size = 0;
   let shape = Shape.Diamond;
@@ -43,33 +76,50 @@ export function parseArea(args) {
   }
   else if (Array.isArray(args)) {
     size = Array.isArray(args[0]) ? args[0].at(-1) : args[0];
-    if (args[1] == '範囲') { shape = Shape.Diamond; }
-    else if (args[1] == '周囲') { shape = Shape.Square; }
-    else if (args[1] == '直線') { shape = Shape.Directional; }
-    else if (args[1] == '特殊') { shape = Shape.Special; }
-    else if (args[1] == '範囲(自身を除く)') { shape = Shape.HollowDiamond; }
-    else if (args[1] == '周囲(自身を除く)') { shape = Shape.HollowSquare; }
+    shape = areaStringToEnum(args[1]) ?? Shape.Diamond;
   }
-  return [size, shape];
+  return {
+    size: size,
+    shape: shape
+  };
 }
 
-export function isInside(pos, center, size, shape) {
-  let dx = Math.abs(pos[0] - center[0]);
-  let dy = Math.abs(pos[1] - center[1]);
-  if ((shape & 0x10) != 0 && (dx + dy == 0)) {
+// params: {
+//  shape: Shape,
+//  center: [x,y],
+//  direction: Direction, (Shape.Directional) の場合
+//  shapeData: [], (Shape.Special) の場合
+//}
+export function isInside(pos, params) {
+  const distance = () => {
+    return [Math.abs(pos[0] - params.center[0]), Math.abs(pos[1] - params.center[1])];
+  };
+
+  let shape = params.shape;
+  if ((shape & 0x0f) == Shape.Diamond) { // 範囲
+    let [dx, dy] = distance();
+    if ((shape & 0x10) != 0 && (dx + dy == 0))
+      return false; // 自身を除く
+    return (dx + dy) <= params.size;
+  }
+  else if ((shape & 0x0f) == Shape.Square) { // 周囲
+    let [dx, dy] = distance();
+    if ((shape & 0x10) != 0 && (dx + dy == 0))
+      return false; // 自身を除く
+    return Math.max(dx, dy) <= params.size;
+  }
+  else if (shape == Shape.Directional) { // 直線
+    let [dx, dy] = distance();
+    let center = params.center;
+    if (Math.max(dx, dy) <= params.size && (pos[0] == center[0] || pos[1] == center[1])) {
+      // 4 方向いずれかに入っていたらここに来る
+      let dir = params.direction;
+      return dir == Direction.None || dir == calcDirection(center, pos);
+    }
     return false;
   }
-  if ((shape & 0x0f) == Shape.Diamond) {
-    return (dx + dy) <= size;
-  }
-  else if ((shape & 0x0f) == Shape.Square) {
-    return Math.max(dx, dy) <= size;
-  }
-  else if (shape == Shape.Directional) {
-    return Math.max(dx, dy) <= size && (pos[0] == center[0] || pos[1] == center[1]);
-  }
-  else if (shape == Shape.Special) {
-    throw new Error("isInside(): 未対応");
+  else if (shape == Shape.Special) { // 特殊
+    return params.shapeData[pos[1]][pos[0]] == 1;
   }
 }
 
@@ -750,14 +800,14 @@ export class SimUnit {
       }
     };
     const applyArea = (effect, cond) => {
-      $g.sim.enumerateUnitsInArea(this.coord, ...parseArea(effect.area), (u) => {
+      $g.sim.enumerateUnitsInArea(this.coord, parseArea(effect.area), (u) => {
         if (u !== this && cond(u)) {
           u._addAreaEffect(effect);
         }
       }, true);
     };
     const applyGuard = (effect) => {
-      $g.sim.enumerateUnitsInArea(this.coord, ...parseArea(effect.area), (u) => {
+      $g.sim.enumerateUnitsInArea(this.coord, parseArea(effect.area), (u) => {
         if (u !== this && u.isPlayer == this.isPlayer) {
           u.guardians.push({
             unit: this,
@@ -1090,8 +1140,7 @@ export class SimUnit {
   // 1 体としてカウントしたい場合 unique() を使うこと。
   getUnitsInArea(args) {
     let r = [];
-    let [size, shape] = parseArea(args);
-    $g.sim.enumerateUnitsInArea(this.coord, size, shape, (u) => {
+    $g.sim.enumerateUnitsInArea(this.coord, parseArea(args), (u) => {
       r.push(u);
     });
     return r;

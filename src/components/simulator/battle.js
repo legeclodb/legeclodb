@@ -1,7 +1,7 @@
 export * from "./battle_unit.js";
 export * from "./battle_skill.js";
 import { callHandler, makeActionContext, evaluateCondition } from "./battle_skill.js";
-import { BaseUnit, SimUnit, UnitState, isInside } from "./battle_unit.js";
+import { BaseUnit, SimUnit, UnitState, Direction, isInside } from "./battle_unit.js";
 import { $g } from "./battle_globals.js";
 
 export const Phase = {
@@ -288,12 +288,13 @@ export class SimContext {
     }
     return null;
   }
-  enumerateUnitsInArea(center, size, shape, callback, once = false) {
+  enumerateUnitsInArea(center, params, callback, once = false) {
+    params = { center: center, ...params };
     for (const u of this.activeUnits) {
       // NxN ボスは該当マス分コールバックを呼ぶ
       // ただし once == true の場合 1 回で切り上げる
       for (let pos of u.occupiedCells) {
-        if (isInside(center, pos, size, shape)) {
+        if (isInside(pos, params)) {
           callback(u, pos);
           if (once) {
             break;
@@ -301,6 +302,19 @@ export class SimContext {
         }
       }
     }
+  }
+  makePathFinder(unit) {
+    let pf = new PathFinder(this.divX, this.divY, this.terrain);
+    if (unit) {
+      pf.setObstacles(this.activeUnits.filter(u => u.isPlayer != unit.isPlayer));
+      pf.setOccupied(this.activeUnits.filter(u => u.isPlayer == unit.isPlayer && u.fid != unit.fid));
+      for (let pos of unit.occupiedCells) {
+        pf.setStart(pos);
+      }
+      //let sim = unit.sim ?? unit;
+      //pf.buildPath(unit.move, sim.isOnMultiMove ? 0 : unit.range);
+    }
+    return pf;
   }
 
   isOwnTurn(unit) {
@@ -360,7 +374,6 @@ export class SimContext {
     }
   }
   //#endregion unit operation
-
 
 
   //#region attack
@@ -727,6 +740,7 @@ export class SimContext {
   }
   //#endregion attack
 
+
   //#region simulation & callbacks
   updateAreaEffectsAll() {
     for (let u of this.activeUnits) {
@@ -855,10 +869,10 @@ export class PathFinder
   xdiv = 0;
   ydiv = 0;
 
-  constructor(xdiv, ydiv) {
+  constructor(xdiv, ydiv, terrain = null) {
     this.xdiv = xdiv;
     this.ydiv = ydiv;
-    this.cells = new Array(xdiv * ydiv);
+    this.cells = Array(xdiv * ydiv);
     for (let y = 0; y < this.ydiv; ++y) {
       for (let x = 0; x < this.xdiv; ++x) {
         this.cells[this.ydiv * y + x] = {
@@ -867,6 +881,13 @@ export class PathFinder
           isObstacle: false,
           isOccupied: false,
         };
+      }
+    }
+    if (this.cells.length == terrain?.length) {
+      for (let i = 0; i < terrain.length; ++i) {
+        if (terrain[i] != 0) {
+          this.cells[i].isObstacle = true;
+        }
       }
     }
   }
@@ -902,6 +923,17 @@ export class PathFinder
       }
     }
   }
+  setStart(pos) {
+    let c = this.getCell(pos[0], pos[1]);
+    if (c) {
+      c.moveDistance = 0;
+    }
+  }
+  setStartUnit(unit) {
+    for (let pos of unit.occupiedCells) {
+      this.setStart(pos);
+    }
+  }
   setStartShape(shape) {
     for (let y = 0; y < this.ydiv; ++y) {
       for (let x = 0; x < this.xdiv; ++x) {
@@ -909,12 +941,6 @@ export class PathFinder
           this.getCell(x, y).moveDistance = 0;
         }
       }
-    }
-  }
-  setStart(pos) {
-    let c = this.getCell(pos[0], pos[1]);
-    if (c) {
-      c.moveDistance = 0;
     }
   }
   setObstacles(units) {
@@ -1043,30 +1069,6 @@ export class PathFinder
       }
     }
   }
-}
-
-export const Direction = {
-  None: 0,
-  Up: 1,
-  Right: 2,
-  Down: 3,
-  Left: 4,
-}
-export function calcDirection(base, target) {
-  const dir = [target[0] - base[0], target[1] - base[1]];
-  if (dir[1] < 0) {
-    return Direction.Up;
-  }
-  else if (dir[0] > 0) {
-    return Direction.Right;
-  }
-  else if (dir[1] > 0) {
-    return Direction.Down;
-  }
-  else if (dir[0] < 0) {
-    return Direction.Left;
-  }
-  return Direction.None; // base == target
 }
 
 function $vue() {
