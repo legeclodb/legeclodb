@@ -70,6 +70,8 @@ export class BaseUnit {
   set prevCoord(v) { this.sim.prevCoord = [...v]; }
   get moveDistance() { return this.sim.moveDistance; }
   set moveDistance(v) { this.sim.moveDistance = v; }
+  get prevMoveDistance() { return this.sim.prevMoveDistance; }
+  set prevMoveDistance(v) { this.sim.prevMoveDistance = v; }
 
   get isValid() { return this.main.cid; }
   get main() { return this.sim ? this.sim.main : this.base.main; }
@@ -272,7 +274,8 @@ export class SimUnit {
   isDormant = false; // serializable 配置前 (出現ターン前) のユニットは true
   state = UnitState.Ready; // serializable
   move = -1; // serializable 残移動量。-1 だと main.move。
-  moveDistance = 0; // serializable
+  moveDistance = 0;
+  prevMoveDistance = 0; // serializable
   coord = [0, 0]; // serializable
   prevCoord = [0, 0];
 
@@ -503,7 +506,7 @@ export class SimUnit {
     r.isDormant = this.isDormant;
     r.state = this.state;
     r.move = this.move;
-    r.moveDistance = this.moveDistance;
+    r.prevMoveDistance = this.prevMoveDistance;
 
     r.skills = this.skills.map(a => {
       return {
@@ -550,8 +553,8 @@ export class SimUnit {
     if ('move' in r) {
       this.move = r.move;
     }
-    if ('moveDistance' in r) {
-      this.moveDistance = r.moveDistance;
+    if ('prevMoveDistance' in r) {
+      this.prevMoveDistance = r.prevMoveDistance;
     }
 
     for (const so of r.skills) {

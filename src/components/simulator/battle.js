@@ -195,10 +195,14 @@ export class SimContext {
         return null;
       }
 
-      const su = state.units.find(u => u.fid == desc.unit);
-      if (su) {
-        unit.moveDistance = su.moveDistance;
-        unit.coord = [...su.coord];
+      const uop = state.units.find(u => u.fid == desc.unit);
+      if (uop) {
+        let pf = this.makePathFinder(unit, true);
+        let d = pf.getMoveDistance(uop.coord);
+        unit.moveDistance = d < 0 ? unit.move : d;
+        unit.coord = uop.coord;
+        //console.log(`move ${unit.moveDistance} (${unit.main.name})`);
+        //console.log(pf.toString());
       }
 
       let skill = null;
@@ -290,7 +294,7 @@ export class SimContext {
     return r;
   }
 
-  makePathFinder(unit) {
+  makePathFinder(unit = null, build = false) {
     let pf = new PathFinder(this.divX, this.divY, this.terrain);
     if (unit) {
       pf.setObstacles(this.activeUnits.filter(u => u.isPlayer != unit.isPlayer));
@@ -298,8 +302,10 @@ export class SimContext {
       for (let pos of unit.occupiedCells) {
         pf.setStart(pos);
       }
-      //let sim = unit.sim ?? unit;
-      //pf.buildPath(unit.move, sim.isOnMultiMove ? 0 : unit.range);
+      if (build) {
+        let sim = unit.sim ?? unit;
+        pf.buildPath(sim.base.move, sim.isOnMultiMove ? 0 : unit.range);
+      }
     }
     return pf;
   }
@@ -582,7 +588,8 @@ export class SimContext {
     let onGuard = false;
     let doSupportAttackSkill = false;
 
-    this.move = unit.moveDistance ?? 0;
+    this.move = (unit.moveDistance ?? 0) + (unit.prevMoveDistance ?? 0);
+    //console.log(`移動: ${this.move} (${unit.main.name})`);
     this.range = 0;
     if (targetCell) {
       // NxN ボス対策として target.coord ではなく targetCell との距離を取る
@@ -724,6 +731,8 @@ export class SimContext {
     if (unit.state == UnitState.MultiAction || unit.state == UnitState.End) {
       unit.move = -1;
     }
+    unit.prevMoveDistance = doActionEnd ? 0 : unit.moveDistance;
+    unit.moveDistance = 0;
 
     // スコア加算
     unit.score += ctx.damageDealt.get(unit.fid).total;
@@ -737,9 +746,6 @@ export class SimContext {
     this.pushState(unit, skill, skillArgs);
     console.log(ctx);
 
-    if (doActionEnd) {
-      unit.moveDistance = 0;
-    }
     this.deadUnits = [];
     return ctx;
   }
@@ -1055,6 +1061,24 @@ export class PathFinder
     else {
       apply([x, y]);
     }
+  }
+  toString() {
+    const cellToChr = (c) => {
+      if (c.isObstacle) {
+        return 'x';
+      }
+      else if (c.moveDistance == -1) {
+        return ' ';
+      }
+      else {
+        return `${c.moveDistance}`
+      }
+    };
+    let r = "";
+    for (let y = 0; y < this.ydiv; ++y) {
+      r += this.cells.slice(this.ydiv * y, this.ydiv * (y + 1)).map(c => cellToChr(c)).join(', ') + '\n';
+    }
+    return r;
   }
 }
 

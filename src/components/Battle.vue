@@ -1012,11 +1012,12 @@ export default {
               let u = self.selectedUnit;
               if (sim.isOwnTurn(u) && !(u.isEnemy && u.move == 0)) {
                 u.coord = cell.coord;
-                let d = self.path.getDistance(cell.coord);
+                let d = self.path.getMoveDistance(cell.coord);
                 u.moveDistance = d < 0 ? u.move : d;
-                if (d > 0) {
-                  u.path = self.path.getPath(cell.coord);
-                }
+              //  console.log(self.path.toString());
+              //  if (d > 0) {
+              //    u.path = self.path.getPath(cell.coord);
+              //  }
               }
             }
           },
