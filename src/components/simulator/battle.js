@@ -1,7 +1,7 @@
 export * from "./battle_unit.js";
 export * from "./battle_skill.js";
 import { callHandler, makeActionContext, evaluateCondition } from "./battle_skill.js";
-import { BaseUnit, SimUnit, UnitState, Direction, isInside } from "./battle_unit.js";
+import { BaseUnit, SimUnit, UnitState, Shape, Direction, areaStringToEnum, isInside } from "./battle_unit.js";
 import { $g } from "./battle_globals.js";
 
 export const Phase = {
@@ -883,10 +883,20 @@ export class PathFinder
         };
       }
     }
+
     if (this.cells.length == terrain?.length) {
       for (let i = 0; i < terrain.length; ++i) {
         if (terrain[i] != 0) {
           this.cells[i].isObstacle = true;
+        }
+      }
+    }
+    else if (this.xdiv == terrain?.length) {
+      for (let y = 0; y < this.ydiv; ++y) {
+        for (let x = 0; x < this.xdiv; ++x) {
+          if (terrain[y][x] != 0) {
+            this.cells[this.ydiv * y + x].isObstacle = true;
+          }
         }
       }
     }
@@ -934,28 +944,23 @@ export class PathFinder
       this.setStart(pos);
     }
   }
-  setStartShape(shape) {
-    for (let y = 0; y < this.ydiv; ++y) {
-      for (let x = 0; x < this.xdiv; ++x) {
-        if (shape[y][x]) {
-          this.getCell(x, y).moveDistance = 0;
-        }
-      }
-    }
-  }
   setObstacles(units) {
     for (const u of units) {
-      let c = this.getCell(u.coord[0], u.coord[1]);
-      if (c) {
-        c.isObstacle = true;
+      for (let pos of u.occupiedCells) {
+        let c = this.getCell(pos[0], pos[1]);
+        if (c) {
+          c.isObstacle = true;
+        }
       }
     }
   }
   setOccupied(units) {
     for (const u of units) {
-      let c = this.getCell(u.coord[0], u.coord[1]);
-      if (c) {
-        c.isOccupied = true;
+      for (let pos of u.occupiedCells) {
+        let c = this.getCell(pos[0], pos[1]);
+        if (c) {
+          c.isOccupied = true;
+        }
       }
     }
   }
@@ -1026,46 +1031,22 @@ export class PathFinder
     if (c.moveDistance < 0 || c.isOccupied) {
       return;
     }
-
-    const fillCell = function (rx, ry, distance) {
-      let tc = this.getCell(x + rx, y + ry);
-      if (tc) {
-        let d = c.moveDistance + distance;
-        tc.shootDistance = tc.shootDistance == -1 ? d : Math.min(tc.shootDistance, d);
-      }
-    }.bind(this);
-
-    let df = null;
-    if (shape == "周囲") {
-      df = function (rx, ry) {
-        let d = Math.max(Math.abs(rx), Math.abs(ry));
-        if (d <= range) {
-          fillCell(rx, ry, d);
-        }
-      };
-    }
-    else if (shape == "直線") {
-      df = function (rx, ry) {
-        let d = Math.abs(rx) + Math.abs(ry);
-        if (d <= range && (rx == 0 || ry == 0)) {
-          if (dir == Direction.None || (dir == Direction.Up && ry < 0) || (dir == Direction.Right && rx > 0) || (dir == Direction.Down && ry > 0) || (dir == Direction.Left && rx < 0)) {
-            fillCell(rx, ry, d);
+    let params = {
+      shape: areaStringToEnum(shape),
+      center: [x, y],
+      size: range,
+      direction: dir,
+    };
+    for (let ry = -range; ry <= range; ++ry) {
+      for (let rx = -range; rx <= range; ++rx) {
+        let pos = [x + rx, y + ry];
+        if (isInside(pos, params)) {
+          let tc = this.getCell(pos[0], pos[1]);
+          if (tc) {
+            let d = c.moveDistance + Math.abs(rx) + Math.abs(ry);
+            tc.shootDistance = tc.shootDistance == -1 ? d : Math.min(tc.shootDistance, d);
           }
         }
-      };
-    }
-    else {
-      df = function (rx, ry) {
-        let d = Math.abs(rx) + Math.abs(ry);
-        if (d <= range) {
-          fillCell(rx, ry, d);
-        }
-      };
-    }
-
-    for (let rx = -range; rx <= range; ++rx) {
-      for (let ry = -range; ry <= range; ++ry) {
-        df(rx, ry);
       }
     }
   }
