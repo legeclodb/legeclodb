@@ -1,7 +1,7 @@
 export * from "./battle_unit.js";
 export * from "./battle_skill.js";
-import { callHandler, makeActionContext, evaluateCondition } from "./battle_skill.js";
-import { BaseUnit, SimUnit, UnitState, isInside } from "./battle_unit.js";
+import { callHandler, makeActionContext, evaluateCondition, isInside } from "./battle_skill.js";
+import { BaseUnit, SimUnit, UnitState } from "./battle_unit.js";
 import { $g } from "./battle_globals.js";
 
 export const Phase = {
@@ -67,12 +67,7 @@ export class SimContext {
     this.maxTurn = battleData.turn;
 
     [this.divX, this.divY] = battleData.mapSize;
-    if (battleData.terrain) {
-      this.terrain = battleData.terrain.flatMap(a => a)
-    }
-    else {
-      this.terrain = Array(this.divY * this.divX).fill(0);
-    }
+    this.terrain = battleData.terrain;
 
     this.units = baseUnits.filter(a => a.isValid).map(a => new SimUnit(a));
     for (let u of this.units) {
@@ -149,7 +144,7 @@ export class SimContext {
     this.onSimulationBegin();
   }
   // unit, skill, target: 説明用
-  pushState(unit = null, skill = null, target = null, cell = null) {
+  pushState(unit = null, skill = null, skillArgs = null) {
     // リプレイ再生中の場合現在位置以降のレコードを切り捨てる
     if (this.statePos_ != -1) {
       this.states.splice(this.statePos_ + 1, this.states.length);
@@ -159,8 +154,12 @@ export class SimContext {
     this.desc.score = Math.round(this.score);
     this.desc.unit = unit ? unit.fid : "";
     this.desc.skill = skill ? skill.uid : "";
-    this.desc.target = target ? (Array.isArray(target) ? target.map(a => a.fid) : target.fid) : "";
-    this.desc.cell = cell ? [...cell] : null;
+    if (skillArgs) {
+      this.desc.skillArgs = { ...skillArgs };
+    }
+    else {
+      delete this.desc.skillArgs;
+    }
     this.states.push(this.saveState());
 
     this.desc.comment = "";
@@ -201,10 +200,6 @@ export class SimContext {
         unit.moveDistance = su.moveDistance;
         unit.coord = [...su.coord];
       }
-      else {
-        console.log("操作ユニットが見つからないため中断しました。");
-        return null;
-      }
 
       let skill = null;
       if (desc.skill) {
@@ -214,23 +209,7 @@ export class SimContext {
           return null;
         }
       }
-
-      let target = null;
-      if (Array.isArray(desc.target)) {
-        target = desc.target.map(fid => this.findUnit(fid));
-        if (target.find(a => a == null)) {
-          console.log("スキル対象が見つからないため中断しました。");
-          return null;
-        }
-      }
-      else if (desc.target) {
-        target = this.findUnit(desc.target);
-        if (!target) {
-          console.log("スキル対象が見つからないため中断しました。");
-          return null;
-        }
-      }
-      return this.fireSkill(unit, skill, target, desc.cell);
+      return this.fireSkill(unit, skill, desc.skillArgs);
     }
     else {
       if (state.turn != this.turn || state.phase != this.phase) {
@@ -288,12 +267,13 @@ export class SimContext {
     }
     return null;
   }
-  enumerateUnitsInArea(center, size, shape, callback, once = false) {
+  enumerateUnitsInArea(center, params, callback, once = false) {
+    params = { center: center, ...params };
     for (const u of this.activeUnits) {
       // NxN ボスは該当マス分コールバックを呼ぶ
       // ただし once == true の場合 1 回で切り上げる
       for (let pos of u.occupiedCells) {
-        if (isInside(center, pos, size, shape)) {
+        if (isInside(pos, params)) {
           callback(u, pos);
           if (once) {
             break;
@@ -301,6 +281,27 @@ export class SimContext {
         }
       }
     }
+  }
+  getUnitsInArea(center, params) {
+    let r = [];
+    this.enumerateUnitsInArea(center, params, (u) => {
+      r.push(u);
+    });
+    return r;
+  }
+
+  makePathFinder(unit) {
+    let pf = new PathFinder(this.divX, this.divY, this.terrain);
+    if (unit) {
+      pf.setObstacles(this.activeUnits.filter(u => u.isPlayer != unit.isPlayer));
+      pf.setOccupied(this.activeUnits.filter(u => u.isPlayer == unit.isPlayer && u.fid != unit.fid));
+      for (let pos of unit.occupiedCells) {
+        pf.setStart(pos);
+      }
+      //let sim = unit.sim ?? unit;
+      //pf.buildPath(unit.move, sim.isOnMultiMove ? 0 : unit.range);
+    }
+    return pf;
   }
 
   isOwnTurn(unit) {
@@ -310,7 +311,7 @@ export class SimContext {
   getTerrain(pos) {
     const [x, y] = pos;
     if (x >= 0 && y >= 0 && x < this.divX && y < this.divY) {
-      return this.terrain[this.divX * y + x];
+      return this.terrain[y][x];
     }
     return null;
   }
@@ -360,7 +361,6 @@ export class SimContext {
     }
   }
   //#endregion unit operation
-
 
 
   //#region attack
@@ -541,17 +541,35 @@ export class SimContext {
     unit.eraseExpiredEffects();
   }
 
-  fireSkill(unit, skill, targets, targetCell) {
+  fireSkill(unit, skill, skillArgs) {
     this.updateAreaEffectsAll();
     unit = unit.sim ?? unit;
-    // targets は配列なら複数、非配列なら単体
     let target = null;
-    if (Array.isArray(targets)) {
-      targets = targets.map(a => a.sim ?? a);
+    let targets = [];
+    let targetCell = null;
+    if (skill) {
+      if (skillArgs.coord) {
+        targetCell = [...skillArgs.coord];
+      }
+      if (skill.isSelfTarget) {
+        target = unit;
+      }
+      else if (skill.isTargetCell) {
+      }
+      else if (skill.isSingleTarget) {
+        target = this.findUnitByCoord(skillArgs.coord);
+      }
+      else if (skill.isAreaTarget) {
+        if (skill.isGlobalTarget || skill.isRadialAreaTarget || skill.isDirectionalAreaTarget) {
+          targets = this.getUnitsInArea(unit.coord, { ...skillArgs, ...skill.makeAreaParams() });
+        }
+        else {
+          targets = this.getUnitsInArea(skillArgs.coord, { ...skillArgs, ...skill.makeAreaParams() });
+        }
+      }
     }
-    else {
-      target = targets?.sim ?? targets;
-      targets = target ? [target] : [];
+    if (target) {
+      targets = [target];
     }
 
     let doActionBegin = (skill?.isSupportSkill || unit.isOnMultiMove) ? false : true;
@@ -566,7 +584,7 @@ export class SimContext {
 
     this.move = unit.moveDistance ?? 0;
     this.range = 0;
-    if (target) {
+    if (targetCell) {
       // NxN ボス対策として target.coord ではなく targetCell との距離を取る
       this.range = Math.abs(unit.coord[0] - targetCell[0]) + Math.abs(unit.coord[1] - targetCell[1]);
     }
@@ -716,7 +734,7 @@ export class SimContext {
 
     this.updateAreaEffectsAll();
 
-    this.pushState(unit, skill, target ?? targets, targetCell);
+    this.pushState(unit, skill, skillArgs);
     console.log(ctx);
 
     if (doActionEnd) {
@@ -726,6 +744,7 @@ export class SimContext {
     return ctx;
   }
   //#endregion attack
+
 
   //#region simulation & callbacks
   updateAreaEffectsAll() {
@@ -855,10 +874,10 @@ export class PathFinder
   xdiv = 0;
   ydiv = 0;
 
-  constructor(xdiv, ydiv) {
+  constructor(xdiv, ydiv, terrain = null) {
     this.xdiv = xdiv;
     this.ydiv = ydiv;
-    this.cells = new Array(xdiv * ydiv);
+    this.cells = Array(xdiv * ydiv);
     for (let y = 0; y < this.ydiv; ++y) {
       for (let x = 0; x < this.xdiv; ++x) {
         this.cells[this.ydiv * y + x] = {
@@ -867,6 +886,16 @@ export class PathFinder
           isObstacle: false,
           isOccupied: false,
         };
+      }
+    }
+
+    if (this.xdiv == terrain?.length) {
+      for (let y = 0; y < this.ydiv; ++y) {
+        for (let x = 0; x < this.xdiv; ++x) {
+          if (terrain[y][x] != 0) {
+            this.cells[this.ydiv * y + x].isObstacle = true;
+          }
+        }
       }
     }
   }
@@ -902,45 +931,38 @@ export class PathFinder
       }
     }
   }
-  setStartShape(shape) {
-    for (let y = 0; y < this.ydiv; ++y) {
-      for (let x = 0; x < this.xdiv; ++x) {
-        if (shape[y][x]) {
-          this.getCell(x, y).moveDistance = 0;
-        }
-      }
-    }
-  }
   setStart(pos) {
     let c = this.getCell(pos[0], pos[1]);
     if (c) {
       c.moveDistance = 0;
     }
   }
+  setStartUnit(unit) {
+    for (let pos of unit.occupiedCells) {
+      this.setStart(pos);
+    }
+  }
   setObstacles(units) {
     for (const u of units) {
-      let c = this.getCell(u.coord[0], u.coord[1]);
-      if (c) {
-        c.isObstacle = true;
+      for (let pos of u.occupiedCells) {
+        let c = this.getCell(pos[0], pos[1]);
+        if (c) {
+          c.isObstacle = true;
+        }
       }
     }
   }
   setOccupied(units) {
     for (const u of units) {
-      let c = this.getCell(u.coord[0], u.coord[1]);
-      if (c) {
-        c.isOccupied = true;
+      for (let pos of u.occupiedCells) {
+        let c = this.getCell(pos[0], pos[1]);
+        if (c) {
+          c.isOccupied = true;
+        }
       }
     }
   }
-  buildPath(move, range, rangeShape = null, dir = Direction.None) {
-    if (range == "自ユニット")
-      range = 0;
-    else if (range == "単体" || range == "自ユニット")
-      range = 1;
-    else if (range == "全体")
-      range = 99;
-
+  buildPath(move, rangeParams = null) {
     for (let m = 0; m < move; ++m) {
       for (let y = 0; y < this.ydiv; ++y) {
         for (let x = 0; x < this.xdiv; ++x) {
@@ -948,9 +970,11 @@ export class PathFinder
         }
       }
     }
-    for (let y = 0; y < this.ydiv; ++y) {
-      for (let x = 0; x < this.xdiv; ++x) {
-        this._shootCell(x, y, range, rangeShape, dir);
+    if (rangeParams) {
+      for (let y = 0; y < this.ydiv; ++y) {
+        for (let x = 0; x < this.xdiv; ++x) {
+          this._shootCell(x, y, rangeParams);
+        }
       }
     }
   }
@@ -995,78 +1019,43 @@ export class PathFinder
       }
     }
   }
-  _shootCell(x, y, range, shape, dir) {
+  _shootCell(x, y, rangeParams) {
     let c = this.getCell(x, y);
     if (c.moveDistance < 0 || c.isOccupied) {
       return;
     }
-
-    const fillCell = function (rx, ry, distance) {
-      let tc = this.getCell(x + rx, y + ry);
-      if (tc) {
-        let d = c.moveDistance + distance;
-        tc.shootDistance = tc.shootDistance == -1 ? d : Math.min(tc.shootDistance, d);
+    let params = {
+      center: [x, y],
+      ...rangeParams,
+    };
+    const apply = (pos) => {
+      if (isInside(pos, params)) {
+        let tc = this.getCell(pos[0], pos[1]);
+        if (tc) {
+          let d = c.moveDistance + Math.abs(pos[0] - x) + Math.abs(pos[1] - y);
+          tc.shootDistance = tc.shootDistance == -1 ? d : Math.min(tc.shootDistance, d);
+        }
       }
-    }.bind(this);
-
-    let df = null;
-    if (shape == "周囲") {
-      df = function (rx, ry) {
-        let d = Math.max(Math.abs(rx), Math.abs(ry));
-        if (d <= range) {
-          fillCell(rx, ry, d);
+    };
+    if (rangeParams.shapeData) {
+      for (let y = 0; y < this.ydiv; ++y) {
+        for (let x = 0; x < this.xdiv; ++x) {
+          apply([x, y]);
         }
-      };
+      }
     }
-    else if (shape == "直線") {
-      df = function (rx, ry) {
-        let d = Math.abs(rx) + Math.abs(ry);
-        if (d <= range && (rx == 0 || ry == 0)) {
-          if (dir == Direction.None || (dir == Direction.Up && ry < 0) || (dir == Direction.Right && rx > 0) || (dir == Direction.Down && ry > 0) || (dir == Direction.Left && rx < 0)) {
-            fillCell(rx, ry, d);
-          }
+    else if (rangeParams.size) {
+      let size = rangeParams.size;
+      for (let ry = -size; ry <= size; ++ry) {
+        for (let rx = -size; rx <= size; ++rx) {
+          apply([x + rx, y + ry]);
         }
-      };
+      }
     }
     else {
-      df = function (rx, ry) {
-        let d = Math.abs(rx) + Math.abs(ry);
-        if (d <= range) {
-          fillCell(rx, ry, d);
-        }
-      };
-    }
-
-    for (let rx = -range; rx <= range; ++rx) {
-      for (let ry = -range; ry <= range; ++ry) {
-        df(rx, ry);
-      }
+      apply([x, y]);
     }
   }
-}
-
-export const Direction = {
-  None: 0,
-  Up: 1,
-  Right: 2,
-  Down: 3,
-  Left: 4,
-}
-export function calcDirection(base, target) {
-  const dir = [target[0] - base[0], target[1] - base[1]];
-  if (dir[1] < 0) {
-    return Direction.Up;
-  }
-  else if (dir[0] > 0) {
-    return Direction.Right;
-  }
-  else if (dir[1] > 0) {
-    return Direction.Down;
-  }
-  else if (dir[0] < 0) {
-    return Direction.Left;
-  }
-  return Direction.None; // base == target
 }
 
 function $vue() {

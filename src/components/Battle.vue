@@ -773,6 +773,13 @@ export default {
     this.battleList = structuredClone(jsonBattle);
     for (let battle of this.battleList) {
       battle.summon = [];
+      if (!battle.terrain) {
+        battle.terrain = Array(battle.mapSize[1]);
+        for (let y = 0; y < battle.mapSize[1]; ++y) {
+          battle.terrain[y] = Array(battle.mapSize[0]).fill(0);
+        }
+      }
+
       for (let enemy of battle.enemies) {
         let unit = new lbt.BaseUnit(false);
         unit.fid = enemy.fid;
@@ -898,14 +905,6 @@ export default {
       const confirm = () => {
         self.pushTool(self.tools.confirm);
       };
-      const setStartCell = (pf, unit) => {
-        if ('shape' in unit.main) {
-          pf.setStartShape(unit.main.shape);
-        }
-        else {
-          pf.setStart(unit.coord);
-        }
-      };
       const colorDelay = 15;
 
       this.tools = {
@@ -968,18 +967,12 @@ export default {
         // ユニット移動＆スキル選択処理
         moveUnit: {
           buildPath(unit) {
-            let pf = new lbt.PathFinder(self.divX, self.divY);
-            pf.setObstacles(self.cells.filter(c => c.obstacle));
-            if (unit.isEnemy) {
-              pf.setObstacles(self.allActiveUnits.filter(a => a.isPlayer && a.main.cid));
-              pf.setOccupied(self.allActiveUnits.filter(a => a.isEnemy && a !== unit));
-            }
-            if (unit.isPlayer) {
-              pf.setObstacles(self.allActiveUnits.filter(a => a.isEnemy));
-              pf.setOccupied(self.allActiveUnits.filter(a => a.isPlayer && a.main.cid && a !== unit));
-            }
-            setStartCell(pf, unit);
-            pf.buildPath(unit.move, unit.sim?.isOnMultiMove ? 0 : unit.range);
+            let pf = new lbt.PathFinder(self.divX, self.divY, self.battleData.terrain);
+            pf.setObstacles(self.allActiveUnits.filter(u => u.isPlayer != unit.isPlayer));
+            pf.setOccupied(self.allActiveUnits.filter(u => u.isPlayer == unit.isPlayer));
+            pf.setStartUnit(unit);
+            let sim = unit.sim ?? unit;
+            pf.buildPath(unit.move, sim?.isOnMultiMove ? null : {size: unit.range});
             self.path = pf;
           },
 
@@ -1103,9 +1096,8 @@ export default {
 
           onEnable() {
             let skill = self.selectedSkill;
-            let pf = new lbt.PathFinder(self.divX, self.divY);
-            setStartCell(pf, self.selectedUnit);
-            pf.buildPath(0, skill.range ?? 1, skill.rangeShape);
+            let pf = self.simulation.makePathFinder(self.selectedUnit);
+            pf.buildPath(0, skill.makeRangeParams());
             self.skillRange = pf;
           },
           onDisable() {
@@ -1168,18 +1160,18 @@ export default {
         previewArea: {
           onEnable() {
             let skill = self.selectedSkill;
-            let pf = new lbt.PathFinder(self.divX, self.divY);
+            let pf = self.simulation.makePathFinder();
             if (skill.shapeData) {
               pf.setShootRangeShape(skill.shapeData);
             }
             else {
               if (skill.isSelfTarget || skill.isRadialAreaTarget) {
-                setStartCell(pf, self.selectedUnit);
+                pf.setStartUnit(self.selectedUnit);
               }
               else {
                 pf.setStart(self.targetCell.coord);
               }
-              pf.buildPath(0, skill.area, skill.areaShape);
+              pf.buildPath(0, skill.makeAreaParams());
             }
             self.skillArea = pf;
             this.pf = pf;
@@ -1231,9 +1223,9 @@ export default {
         previewDirection: {
           onEnable() {
             let skill = self.selectedSkill;
-            let pf = new lbt.PathFinder(self.divX, self.divY);
+            let pf = self.simulation.makePathFinder();
             pf.setStart(self.targetCell.coord);
-            pf.buildPath(0, skill.area, skill.areaShape, self.targetDirection);
+            pf.buildPath(0, {direction: self.targetDirection, ...skill.makeAreaParams()});
             self.skillArea = pf;
             this.pf = pf;
           },
@@ -1531,7 +1523,25 @@ export default {
 
     confirmAction() {
       let unit = this.selectedUnit;
-      let r = this.simulation.fireSkill(this.selectedUnit, this.selectedSkill, this.getTargetUnits(), this.targetCell?.coord);
+      let skill = this.selectedSkill;
+      let skillArgs = null;
+      if (skill) {
+        // スキルパラメータ設定
+        skillArgs = {};
+        if (skill.isSelfTarget || skill.isRadialAreaTarget || skill.isSpecialAreaTarget) {
+          // これらは追加パラメータ不要
+        }
+        else if (skill.isDirectionalAreaTarget) {
+          // 方向指定スキルは方向情報が必要
+          skillArgs.direction = this.targetDirection;
+        }
+        else {
+          // 他は対象セルを指定
+          // (NxN ボスがあるため、ユニット指定スキルでも位置情報が必要になる)
+          skillArgs.coord = this.targetCell.coord;
+        }
+      }
+      let r = this.simulation.fireSkill(this.selectedUnit, this.selectedSkill, skillArgs);
       this.addBalloons(r);
       this.resetTools();
       if (unit.isAlive && !unit?.sim.isEnded) {

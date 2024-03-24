@@ -6,6 +6,108 @@ export function scalar(v) {
   return Array.isArray(v) ? v.at(-1) : v;
 }
 
+export const Shape = {
+  Diamond: 0x00, // 菱形(範囲)
+  Square: 0x01, // 正方形(周囲)
+  Directional: 0x02, // 直線
+  Special: 0x03, // 特殊形状指定
+  HollowDiamond: 0x10, // 自身を除く範囲
+  HollowSquare: 0x11, // 自身を除く周囲
+};
+export const Direction = {
+  None: 0,
+  Up: 1,
+  Right: 2,
+  Down: 3,
+  Left: 4,
+}
+
+export function calcDirection(base, target) {
+  const dir = [target[0] - base[0], target[1] - base[1]];
+  if (dir[1] < 0) {
+    return Direction.Up;
+  }
+  else if (dir[0] > 0) {
+    return Direction.Right;
+  }
+  else if (dir[1] > 0) {
+    return Direction.Down;
+  }
+  else if (dir[0] < 0) {
+    return Direction.Left;
+  }
+  return Direction.None; // base == target
+}
+export function areaStringToEnum(s) {
+  if (s == '範囲') { return Shape.Diamond; }
+  else if (s == '周囲') { return Shape.Square; }
+  else if (s == '直線') { return Shape.Directional; }
+  else if (s == '特殊') { return Shape.Special; }
+  else if (s == '範囲(自身を除く)') { return Shape.HollowDiamond; }
+  else if (s == '周囲(自身を除く)') { return Shape.HollowSquare; }
+  return null;
+}
+export function parseArea(args) {
+  let size = 0;
+  let shape = Shape.Diamond;
+  if (typeof (args) === 'number') {
+    size = args;
+  }
+  else if (Array.isArray(args)) {
+    size = Array.isArray(args[0]) ? args[0].at(-1) : args[0];
+    shape = areaStringToEnum(args[1]) ?? Shape.Diamond;
+  }
+  return {
+    size: size,
+    shape: shape
+  };
+}
+
+// params: {
+//  shape: Shape,
+//  center: [x,y],
+//  size: Number,
+//  direction: Direction, (Shape.Directional) の場合
+//  shapeData: [], (Shape.Special) の場合
+//}
+export function isInside(pos, params) {
+  const distance = () => {
+    return [Math.abs(pos[0] - params.center[0]), Math.abs(pos[1] - params.center[1])];
+  };
+
+  let shape = params.shape ?? Shape.Diamond;
+  if ((shape & 0x0f) == Shape.Diamond) { // 範囲
+    let [dx, dy] = distance();
+    if ((shape & 0x10) != 0 && (dx + dy == 0))
+      return false; // 自身を除く
+    return (dx + dy) <= params.size;
+  }
+  else if ((shape & 0x0f) == Shape.Square) { // 周囲
+    let [dx, dy] = distance();
+    if ((shape & 0x10) != 0 && (dx + dy == 0))
+      return false; // 自身を除く
+    return Math.max(dx, dy) <= params.size;
+  }
+  else if (shape == Shape.Directional) { // 直線
+    let [dx, dy] = distance();
+    let center = params.center;
+    if (Math.max(dx, dy) <= params.size && (pos[0] == center[0] || pos[1] == center[1])) {
+      // 4 方向いずれかに入っていたらここに来る
+      let dir = params.direction;
+      return !dir || dir == Direction.None || dir == calcDirection(center, pos);
+    }
+    return false;
+  }
+  else if (shape == Shape.Special) { // 特殊
+    if (params.shapeData) {
+      const line = params.shapeData[pos[1]];
+      if (line)
+        return line[pos[0]] == 1;
+    }
+    return false;
+  }
+}
+
 export function callHandler(funcName, ctx, ...callees) {
   for (let c of callees) {
     c[funcName](ctx);
@@ -499,6 +601,35 @@ export function makeSimSkill(skill, ownerUnit) {
       get: () => { return data[id]; },
       set: (v) => { data[id] = v; },
     });
+
+    self.makeRangeParams = function () {
+      let r = {};
+      if (this.range == "自ユニット")
+        r.size = 0;
+      else if (this.range == "単体")
+        r.size = 1;
+      else if (this.range == "全体")
+        r.size = 99;
+      else
+        r.size = this.range;
+      r.shape = areaStringToEnum(this.rangeShape) ?? Shape.Diamond;
+      return r;
+    };
+    self.makeAreaParams = function () {
+      let r = {};
+      if (this.area == "自ユニット")
+        r.size = 0;
+      else if (this.area == "単体")
+        r.size = 1;
+      else if (this.area == "全体")
+        r.size = 99;
+      else
+        r.size = this.area;
+      r.shape = areaStringToEnum(this.areaShape) ?? Shape.Diamond;
+      if (this.shapeData)
+        r.shapedata = this.shapeData;
+      return r;
+    };
   }
   Object.defineProperty(self, 'available', {
     get: function () { return !this.isActive || this.coolTime <= 0; },

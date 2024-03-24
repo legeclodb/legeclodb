@@ -1,5 +1,5 @@
 import { $g } from "./battle_globals.js";
-import { callHandler, makeSimSkill, makeSimEffect, evaluateCondition, makeActionContext, getEffectValue } from "./battle_skill.js";
+import { parseArea, callHandler, makeSimSkill, makeSimEffect, evaluateCondition, makeActionContext, getEffectValue } from "./battle_skill.js";
 import { unique, count } from "../utils.js";
 
 function $vue() {
@@ -24,52 +24,6 @@ export function mergeChrData(dst, src) {
     for (const prop of props) {
       delete dst[prop];
     }
-  }
-}
-
-export const Shape = {
-  Diamond: 0x00, // 菱形(範囲)
-  Square: 0x01, // 正方形(周囲)
-  Directional: 0x02, // 直線
-  Special: 0x03, // 特殊形状指定
-  HollowDiamond: 0x10, // 自身を除く範囲
-  HollowSquare: 0x11, // 自身を除く周囲
-};
-export function parseArea(args) {
-  let size = 0;
-  let shape = Shape.Diamond;
-  if (typeof (args) === 'number') {
-    size = args;
-  }
-  else if (Array.isArray(args)) {
-    size = Array.isArray(args[0]) ? args[0].at(-1) : args[0];
-    if (args[1] == '範囲') { shape = Shape.Diamond; }
-    else if (args[1] == '周囲') { shape = Shape.Square; }
-    else if (args[1] == '直線') { shape = Shape.Directional; }
-    else if (args[1] == '特殊') { shape = Shape.Special; }
-    else if (args[1] == '範囲(自身を除く)') { shape = Shape.HollowDiamond; }
-    else if (args[1] == '周囲(自身を除く)') { shape = Shape.HollowSquare; }
-  }
-  return [size, shape];
-}
-
-export function isInside(pos, center, size, shape) {
-  let dx = Math.abs(pos[0] - center[0]);
-  let dy = Math.abs(pos[1] - center[1]);
-  if ((shape & 0x10) != 0 && (dx + dy == 0)) {
-    return false;
-  }
-  if ((shape & 0x0f) == Shape.Diamond) {
-    return (dx + dy) <= size;
-  }
-  else if ((shape & 0x0f) == Shape.Square) {
-    return Math.max(dx, dy) <= size;
-  }
-  else if (shape == Shape.Directional) {
-    return Math.max(dx, dy) <= size && (pos[0] == center[0] || pos[1] == center[1]);
-  }
-  else if (shape == Shape.Special) {
-    throw new Error("isInside(): 未対応");
   }
 }
 
@@ -581,9 +535,6 @@ export class SimUnit {
     }
     else {
       r.score = this.score;
-      if (this.summon) {
-        r.summon = this.summon.map(a => a.fid);
-      }
     }
     return r;
   }
@@ -623,15 +574,10 @@ export class SimUnit {
     if (this.support && r.support) {
       this.support.hp = r.support.hp;
     }
-
     if (r.summoner) {
-      this.summoner = $g.sim.findUnit(r.summoner);
+      this.setSummoner($g.sim.findUnit(r.summoner));
     }
-    if (r.summon) {
-      this.summon = r.summon.map(fid => $g.sim.findUnit(fid));
-    }
-
-    if (r?.score) {
+    if ("score" in r) {
       this.score = r.score;
     }
   }
@@ -750,14 +696,14 @@ export class SimUnit {
       }
     };
     const applyArea = (effect, cond) => {
-      $g.sim.enumerateUnitsInArea(this.coord, ...parseArea(effect.area), (u) => {
+      $g.sim.enumerateUnitsInArea(this.coord, parseArea(effect.area), (u) => {
         if (u !== this && cond(u)) {
           u._addAreaEffect(effect);
         }
       }, true);
     };
     const applyGuard = (effect) => {
-      $g.sim.enumerateUnitsInArea(this.coord, ...parseArea(effect.area), (u) => {
+      $g.sim.enumerateUnitsInArea(this.coord, parseArea(effect.area), (u) => {
         if (u !== this && u.isPlayer == this.isPlayer) {
           u.guardians.push({
             unit: this,
@@ -1090,8 +1036,7 @@ export class SimUnit {
   // 1 体としてカウントしたい場合 unique() を使うこと。
   getUnitsInArea(args) {
     let r = [];
-    let [size, shape] = parseArea(args);
-    $g.sim.enumerateUnitsInArea(this.coord, size, shape, (u) => {
+    $g.sim.enumerateUnitsInArea(this.coord, parseArea(args), (u) => {
       r.push(u);
     });
     return r;

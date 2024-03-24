@@ -5560,7 +5560,10 @@
         "tokenName": "黄金に輝くモノ",
         "duration": 4,
         "stack": 2,
-        "target": "自身"
+        "trigger": {
+          "target": "自身",
+          "timing": "行動後"
+        }
       }
     ],
     "summon": [ { "uid": "Ch508500499summon" } ],
@@ -6448,7 +6451,10 @@
         "type": "ダメージ耐性",
         "value": 10,
         "duration": 2,
-        "target": "自身"
+        "trigger": {
+          "target": "自身",
+          "timing": "行動後"
+        }
       }
     ],
     "multiAction": [ {} ]
@@ -7989,7 +7995,10 @@
         "type": "与ダメージ(魔法)",
         "value": 10,
         "duration": 3,
-        "target": "自身"
+        "trigger": {
+          "target": "自身",
+          "timing": "行動後"
+        }
       }
     ],
     "summon": [ { "uid": "Ch516200499" } ],
@@ -9864,7 +9873,11 @@
       {
         "type": "与ダメージ",
         "value": 20,
-        "duration": 2
+        "duration": 2,
+        "trigger": {
+          "target": "味方全体",
+          "timing": "行動後"
+        }
       }
     ],
     "summon": [ { "uid": "Ch906000300" } ],
@@ -10042,7 +10055,10 @@
         "type": "クリティカルダメージ倍率",
         "value": 15,
         "duration": 1,
-        "target": "自身"
+        "trigger": {
+          "target": "自身",
+          "timing": "行動後"
+        }
       }
     ],
     "summon": [ { "uid": "Ch906200300" } ],

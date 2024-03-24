@@ -1263,6 +1263,9 @@ export default {
         if (skill.area == "単体") {
           skill.isSingleTarget = true;
         }
+        else if (skill.area == "全体") {
+          skill.isGlobalTarget = true;
+        }
         if (skill.range == "自ユニット") {
           if (skill.isSingleTarget) {
             skill.isSelfTarget = true;
@@ -1285,7 +1288,7 @@ export default {
           skill.isRangedTarget = true;
         }
 
-        if (typeof (skill.area) == "number") {
+        if (typeof (skill.area) == "number" || skill.area == "全体") {
           skill.isAreaTarget = true;
         }
         if (skill.damageRate) {
