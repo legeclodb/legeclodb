@@ -92,8 +92,7 @@ export class SimContext {
     if (!r.unitIcon) {
       r.unitIcon = $g.sim.findUnit(r.unit)?.main?.icon;
       r.skillIcon = $g.sim.findItem(r.skill)?.icon;
-      let t = Array.isArray(r.target) ? r.target[0] : r.target;
-      r.targetIcon = $g.sim.findUnit(r.target)?.main?.icon;
+      r.targetIcon = $g.sim.findUnitByCoord(r.skillArgs?.coord)?.main?.icon;
     }
     r.isAction = Boolean(r.unitIcon);
     return r;
@@ -258,6 +257,8 @@ export class SimContext {
     return r;
   }
   findUnitByCoord(coord) {
+    if (!coord)
+      return null;
     for (const u of this.activeUnits) {
       if (u.isNxN) {
         // NxN ボス
