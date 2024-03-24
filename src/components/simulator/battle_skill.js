@@ -99,7 +99,12 @@ export function isInside(pos, params) {
     return false;
   }
   else if (shape == Shape.Special) { // 特殊
-    return params.shapeData[pos[1]][pos[0]] == 1;
+    if (params.shapeData) {
+      const line = params.shapeData[pos[1]];
+      if (line)
+        return line[pos[0]] == 1;
+    }
+    return false;
   }
 }
 
@@ -601,7 +606,7 @@ export function makeSimSkill(skill, ownerUnit) {
       let r = {};
       if (this.range == "自ユニット")
         r.size = 0;
-      else if (this.range == "単体" || !this.range)
+      else if (this.range == "単体")
         r.size = 1;
       else if (this.range == "全体")
         r.size = 99;
@@ -614,7 +619,7 @@ export function makeSimSkill(skill, ownerUnit) {
       let r = {};
       if (this.area == "自ユニット")
         r.size = 0;
-      else if (this.area == "単体" || !this.area)
+      else if (this.area == "単体")
         r.size = 1;
       else if (this.area == "全体")
         r.size = 99;

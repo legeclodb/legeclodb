@@ -1523,7 +1523,25 @@ export default {
 
     confirmAction() {
       let unit = this.selectedUnit;
-      let r = this.simulation.fireSkill(this.selectedUnit, this.selectedSkill, this.getTargetUnits(), this.targetCell?.coord);
+      let skill = this.selectedSkill;
+      let skillArgs = null;
+      if (skill) {
+        // スキルパラメータ設定
+        skillArgs = {};
+        if (skill.isSelfTarget || skill.isRadialAreaTarget || skill.isSpecialAreaTarget) {
+          // これらは追加パラメータ不要
+        }
+        else if (skill.isDirectionalAreaTarget) {
+          // 方向指定スキルは方向情報が必要
+          skillArgs.direction = this.targetDirection;
+        }
+        else {
+          // 他は対象セルを指定
+          // (NxN ボスがあるため、ユニット指定スキルでも位置情報が必要になる)
+          skillArgs.coord = this.targetCell.coord;
+        }
+      }
+      let r = this.simulation.fireSkill(this.selectedUnit, this.selectedSkill, skillArgs);
       this.addBalloons(r);
       this.resetTools();
       if (unit.isAlive && !unit?.sim.isEnded) {

@@ -144,7 +144,7 @@ export class SimContext {
     this.onSimulationBegin();
   }
   // unit, skill, target: 説明用
-  pushState(unit = null, skill = null, target = null, cell = null) {
+  pushState(unit = null, skill = null, skillArgs = null) {
     // リプレイ再生中の場合現在位置以降のレコードを切り捨てる
     if (this.statePos_ != -1) {
       this.states.splice(this.statePos_ + 1, this.states.length);
@@ -154,8 +154,12 @@ export class SimContext {
     this.desc.score = Math.round(this.score);
     this.desc.unit = unit ? unit.fid : "";
     this.desc.skill = skill ? skill.uid : "";
-    this.desc.target = target ? (Array.isArray(target) ? target.map(a => a.fid) : target.fid) : "";
-    this.desc.cell = cell ? [...cell] : null;
+    if (skillArgs) {
+      this.desc.skillArgs = { ...skillArgs };
+    }
+    else {
+      delete this.desc.skillArgs;
+    }
     this.states.push(this.saveState());
 
     this.desc.comment = "";
@@ -196,10 +200,6 @@ export class SimContext {
         unit.moveDistance = su.moveDistance;
         unit.coord = [...su.coord];
       }
-      else {
-        console.log("操作ユニットが見つからないため中断しました。");
-        return null;
-      }
 
       let skill = null;
       if (desc.skill) {
@@ -209,23 +209,7 @@ export class SimContext {
           return null;
         }
       }
-
-      let target = null;
-      if (Array.isArray(desc.target)) {
-        target = desc.target.map(fid => this.findUnit(fid));
-        if (target.find(a => a == null)) {
-          console.log("スキル対象が見つからないため中断しました。");
-          return null;
-        }
-      }
-      else if (desc.target) {
-        target = this.findUnit(desc.target);
-        if (!target) {
-          console.log("スキル対象が見つからないため中断しました。");
-          return null;
-        }
-      }
-      return this.fireSkill(unit, skill, target, desc.cell);
+      return this.fireSkill(unit, skill, desc.skillArgs);
     }
     else {
       if (state.turn != this.turn || state.phase != this.phase) {
@@ -298,6 +282,14 @@ export class SimContext {
       }
     }
   }
+  getUnitsInArea(center, params) {
+    let r = [];
+    this.enumerateUnitsInArea(center, params, (u) => {
+      r.push(u);
+    });
+    return r;
+  }
+
   makePathFinder(unit) {
     let pf = new PathFinder(this.divX, this.divY, this.terrain);
     if (unit) {
@@ -549,17 +541,35 @@ export class SimContext {
     unit.eraseExpiredEffects();
   }
 
-  fireSkill(unit, skill, targets, targetCell) {
+  fireSkill(unit, skill, skillArgs) {
     this.updateAreaEffectsAll();
     unit = unit.sim ?? unit;
-    // targets は配列なら複数、非配列なら単体
     let target = null;
-    if (Array.isArray(targets)) {
-      targets = targets.map(a => a.sim ?? a);
+    let targets = [];
+    let targetCell = null;
+    if (skill) {
+      if (skillArgs.coord) {
+        targetCell = [...skillArgs.coord];
+      }
+      if (skill.isSelfTarget) {
+        target = unit;
+      }
+      else if (skill.isTargetCell) {
+      }
+      else if (skill.isSingleTarget) {
+        target = this.findUnitByCoord(skillArgs.coord);
+      }
+      else if (skill.isAreaTarget) {
+        if (skill.isGlobalTarget || skill.isRadialAreaTarget || skill.isDirectionalAreaTarget) {
+          targets = this.getUnitsInArea(unit.coord, { ...skillArgs, ...skill.makeAreaParams() });
+        }
+        else {
+          targets = this.getUnitsInArea(skillArgs.coord, { ...skillArgs, ...skill.makeAreaParams() });
+        }
+      }
     }
-    else {
-      target = targets?.sim ?? targets;
-      targets = target ? [target] : [];
+    if (target) {
+      targets = [target];
     }
 
     let doActionBegin = (skill?.isSupportSkill || unit.isOnMultiMove) ? false : true;
@@ -574,7 +584,7 @@ export class SimContext {
 
     this.move = unit.moveDistance ?? 0;
     this.range = 0;
-    if (target) {
+    if (targetCell) {
       // NxN ボス対策として target.coord ではなく targetCell との距離を取る
       this.range = Math.abs(unit.coord[0] - targetCell[0]) + Math.abs(unit.coord[1] - targetCell[1]);
     }
@@ -724,7 +734,7 @@ export class SimContext {
 
     this.updateAreaEffectsAll();
 
-    this.pushState(unit, skill, target ?? targets, targetCell);
+    this.pushState(unit, skill, skillArgs);
     console.log(ctx);
 
     if (doActionEnd) {
@@ -1041,6 +1051,9 @@ export class PathFinder
           apply([x + rx, y + ry]);
         }
       }
+    }
+    else {
+      apply([x, y]);
     }
   }
 }
