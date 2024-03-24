@@ -773,6 +773,13 @@ export default {
     this.battleList = structuredClone(jsonBattle);
     for (let battle of this.battleList) {
       battle.summon = [];
+      if (!battle.terrain) {
+        battle.terrain = Array(battle.mapSize[1]);
+        for (let y = 0; y < battle.mapSize[1]; ++y) {
+          battle.terrain[y] = Array(battle.mapSize[0]).fill(0);
+        }
+      }
+
       for (let enemy of battle.enemies) {
         let unit = new lbt.BaseUnit(false);
         unit.fid = enemy.fid;
@@ -965,7 +972,7 @@ export default {
             pf.setOccupied(self.allActiveUnits.filter(u => u.isPlayer == unit.isPlayer));
             pf.setStartUnit(unit);
             let sim = unit.sim ?? unit;
-            pf.buildPath(unit.move, sim?.isOnMultiMove ? 0 : unit.range);
+            pf.buildPath(unit.move, sim?.isOnMultiMove ? null : {size: unit.range});
             self.path = pf;
           },
 
@@ -1090,7 +1097,7 @@ export default {
           onEnable() {
             let skill = self.selectedSkill;
             let pf = self.simulation.makePathFinder(self.selectedUnit);
-            pf.buildPath(0, skill.range ?? 1, skill.rangeShape);
+            pf.buildPath(0, skill.makeRangeParams());
             self.skillRange = pf;
           },
           onDisable() {
@@ -1164,7 +1171,7 @@ export default {
               else {
                 pf.setStart(self.targetCell.coord);
               }
-              pf.buildPath(0, skill.area, skill.areaShape);
+              pf.buildPath(0, skill.makeAreaParams());
             }
             self.skillArea = pf;
             this.pf = pf;
@@ -1218,7 +1225,7 @@ export default {
             let skill = self.selectedSkill;
             let pf = self.simulation.makePathFinder();
             pf.setStart(self.targetCell.coord);
-            pf.buildPath(0, skill.area, skill.areaShape, self.targetDirection);
+            pf.buildPath(0, {direction: self.targetDirection, ...skill.makeAreaParams()});
             self.skillArea = pf;
             this.pf = pf;
           },

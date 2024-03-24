@@ -1,5 +1,5 @@
 import { $g } from "./battle_globals.js";
-import { callHandler, makeSimSkill, makeSimEffect, evaluateCondition, makeActionContext, getEffectValue } from "./battle_skill.js";
+import { parseArea, callHandler, makeSimSkill, makeSimEffect, evaluateCondition, makeActionContext, getEffectValue } from "./battle_skill.js";
 import { unique, count } from "../utils.js";
 
 function $vue() {
@@ -24,102 +24,6 @@ export function mergeChrData(dst, src) {
     for (const prop of props) {
       delete dst[prop];
     }
-  }
-}
-
-export const Shape = {
-  Diamond: 0x00, // 菱形(範囲)
-  Square: 0x01, // 正方形(周囲)
-  Directional: 0x02, // 直線
-  Special: 0x03, // 特殊形状指定
-  HollowDiamond: 0x10, // 自身を除く範囲
-  HollowSquare: 0x11, // 自身を除く周囲
-};
-export const Direction = {
-  None: 0,
-  Up: 1,
-  Right: 2,
-  Down: 3,
-  Left: 4,
-}
-
-export function calcDirection(base, target) {
-  const dir = [target[0] - base[0], target[1] - base[1]];
-  if (dir[1] < 0) {
-    return Direction.Up;
-  }
-  else if (dir[0] > 0) {
-    return Direction.Right;
-  }
-  else if (dir[1] > 0) {
-    return Direction.Down;
-  }
-  else if (dir[0] < 0) {
-    return Direction.Left;
-  }
-  return Direction.None; // base == target
-}
-export function areaStringToEnum(s) {
-  if (s == '範囲') { return Shape.Diamond; }
-  else if (s == '周囲') { return Shape.Square; }
-  else if (s == '直線') { return Shape.Directional; }
-  else if (s == '特殊') { return Shape.Special; }
-  else if (s == '範囲(自身を除く)') { return Shape.HollowDiamond; }
-  else if (s == '周囲(自身を除く)') { return Shape.HollowSquare; }
-  return null;
-}
-export function parseArea(args) {
-  let size = 0;
-  let shape = Shape.Diamond;
-  if (typeof (args) === 'number') {
-    size = args;
-  }
-  else if (Array.isArray(args)) {
-    size = Array.isArray(args[0]) ? args[0].at(-1) : args[0];
-    shape = areaStringToEnum(args[1]) ?? Shape.Diamond;
-  }
-  return {
-    size: size,
-    shape: shape
-  };
-}
-
-// params: {
-//  shape: Shape,
-//  center: [x,y],
-//  direction: Direction, (Shape.Directional) の場合
-//  shapeData: [], (Shape.Special) の場合
-//}
-export function isInside(pos, params) {
-  const distance = () => {
-    return [Math.abs(pos[0] - params.center[0]), Math.abs(pos[1] - params.center[1])];
-  };
-
-  let shape = params.shape;
-  if ((shape & 0x0f) == Shape.Diamond) { // 範囲
-    let [dx, dy] = distance();
-    if ((shape & 0x10) != 0 && (dx + dy == 0))
-      return false; // 自身を除く
-    return (dx + dy) <= params.size;
-  }
-  else if ((shape & 0x0f) == Shape.Square) { // 周囲
-    let [dx, dy] = distance();
-    if ((shape & 0x10) != 0 && (dx + dy == 0))
-      return false; // 自身を除く
-    return Math.max(dx, dy) <= params.size;
-  }
-  else if (shape == Shape.Directional) { // 直線
-    let [dx, dy] = distance();
-    let center = params.center;
-    if (Math.max(dx, dy) <= params.size && (pos[0] == center[0] || pos[1] == center[1])) {
-      // 4 方向いずれかに入っていたらここに来る
-      let dir = params.direction;
-      return dir == Direction.None || dir == calcDirection(center, pos);
-    }
-    return false;
-  }
-  else if (shape == Shape.Special) { // 特殊
-    return params.shapeData[pos[1]][pos[0]] == 1;
   }
 }
 

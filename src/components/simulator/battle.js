@@ -1,7 +1,7 @@
 export * from "./battle_unit.js";
 export * from "./battle_skill.js";
-import { callHandler, makeActionContext, evaluateCondition } from "./battle_skill.js";
-import { BaseUnit, SimUnit, UnitState, Shape, Direction, areaStringToEnum, isInside } from "./battle_unit.js";
+import { callHandler, makeActionContext, evaluateCondition, isInside } from "./battle_skill.js";
+import { BaseUnit, SimUnit, UnitState } from "./battle_unit.js";
 import { $g } from "./battle_globals.js";
 
 export const Phase = {
@@ -67,12 +67,7 @@ export class SimContext {
     this.maxTurn = battleData.turn;
 
     [this.divX, this.divY] = battleData.mapSize;
-    if (battleData.terrain) {
-      this.terrain = battleData.terrain.flatMap(a => a)
-    }
-    else {
-      this.terrain = Array(this.divY * this.divX).fill(0);
-    }
+    this.terrain = battleData.terrain;
 
     this.units = baseUnits.filter(a => a.isValid).map(a => new SimUnit(a));
     for (let u of this.units) {
@@ -324,7 +319,7 @@ export class SimContext {
   getTerrain(pos) {
     const [x, y] = pos;
     if (x >= 0 && y >= 0 && x < this.divX && y < this.divY) {
-      return this.terrain[this.divX * y + x];
+      return this.terrain[y][x];
     }
     return null;
   }
@@ -884,14 +879,7 @@ export class PathFinder
       }
     }
 
-    if (this.cells.length == terrain?.length) {
-      for (let i = 0; i < terrain.length; ++i) {
-        if (terrain[i] != 0) {
-          this.cells[i].isObstacle = true;
-        }
-      }
-    }
-    else if (this.xdiv == terrain?.length) {
+    if (this.xdiv == terrain?.length) {
       for (let y = 0; y < this.ydiv; ++y) {
         for (let x = 0; x < this.xdiv; ++x) {
           if (terrain[y][x] != 0) {
@@ -964,14 +952,7 @@ export class PathFinder
       }
     }
   }
-  buildPath(move, range, rangeShape = null, dir = Direction.None) {
-    if (range == "自ユニット")
-      range = 0;
-    else if (range == "単体" || range == "自ユニット")
-      range = 1;
-    else if (range == "全体")
-      range = 99;
-
+  buildPath(move, rangeParams = null) {
     for (let m = 0; m < move; ++m) {
       for (let y = 0; y < this.ydiv; ++y) {
         for (let x = 0; x < this.xdiv; ++x) {
@@ -979,9 +960,11 @@ export class PathFinder
         }
       }
     }
-    for (let y = 0; y < this.ydiv; ++y) {
-      for (let x = 0; x < this.xdiv; ++x) {
-        this._shootCell(x, y, range, rangeShape, dir);
+    if (rangeParams) {
+      for (let y = 0; y < this.ydiv; ++y) {
+        for (let x = 0; x < this.xdiv; ++x) {
+          this._shootCell(x, y, rangeParams);
+        }
       }
     }
   }
@@ -1026,26 +1009,36 @@ export class PathFinder
       }
     }
   }
-  _shootCell(x, y, range, shape, dir) {
+  _shootCell(x, y, rangeParams) {
     let c = this.getCell(x, y);
     if (c.moveDistance < 0 || c.isOccupied) {
       return;
     }
     let params = {
-      shape: areaStringToEnum(shape),
       center: [x, y],
-      size: range,
-      direction: dir,
+      ...rangeParams,
     };
-    for (let ry = -range; ry <= range; ++ry) {
-      for (let rx = -range; rx <= range; ++rx) {
-        let pos = [x + rx, y + ry];
-        if (isInside(pos, params)) {
-          let tc = this.getCell(pos[0], pos[1]);
-          if (tc) {
-            let d = c.moveDistance + Math.abs(rx) + Math.abs(ry);
-            tc.shootDistance = tc.shootDistance == -1 ? d : Math.min(tc.shootDistance, d);
-          }
+    const apply = (pos) => {
+      if (isInside(pos, params)) {
+        let tc = this.getCell(pos[0], pos[1]);
+        if (tc) {
+          let d = c.moveDistance + Math.abs(pos[0] - x) + Math.abs(pos[1] - y);
+          tc.shootDistance = tc.shootDistance == -1 ? d : Math.min(tc.shootDistance, d);
+        }
+      }
+    };
+    if (rangeParams.shapeData) {
+      for (let y = 0; y < this.ydiv; ++y) {
+        for (let x = 0; x < this.xdiv; ++x) {
+          apply([x, y]);
+        }
+      }
+    }
+    else if (rangeParams.size) {
+      let size = rangeParams.size;
+      for (let ry = -size; ry <= size; ++ry) {
+        for (let rx = -size; rx <= size; ++rx) {
+          apply([x + rx, y + ry]);
         }
       }
     }
