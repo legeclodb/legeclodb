@@ -711,7 +711,7 @@ export function makeSimSkill(skill, ownerUnit) {
           let pos = t.coord;
           for (let i = 0; i < maxMove; ++i) {
             let next = [pos[0] + dir[0], pos[1] + dir[1]];
-            if ($g.sim.canMoveTo(next)) {
+            if ($g.sim.canMoveInto(next)) {
               pos = next;
             }
             else {

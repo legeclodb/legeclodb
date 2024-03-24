@@ -993,8 +993,8 @@ export default {
             let sim = self.simulation;
             if (unit) {
               if (self.selectedUnit === unit) {
-                // 移動後再度そのユニットがクリックされたら待機
-                if (sim && (unit.coord[0] != unit.prevCoord[0] || unit.coord[1] != unit.prevCoord[1])) {
+                // 再度そのユニットがクリックされたら待機
+                if (sim) {
                   self.onClickWait();
                 }
               }

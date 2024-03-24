@@ -319,7 +319,7 @@ export class SimContext {
     // 現状通行可能か不可能かの 2 値。ちゃんとサポートするならもっと複雑になる
     return this.getTerrain(pos) == 0;
   }
-  canMoveTo(pos) {
+  canMoveInto(pos) {
     return this.isTerrainPassable(pos) && !this.findUnitByCoord(pos);
   }
 
@@ -333,7 +333,7 @@ export class SimContext {
     ];
     for (const sc of subCoord) {
       let c = [coord[0] + sc[0], coord[1] + sc[1]];
-      if (this.canMoveTo(c)) {
+      if (this.canMoveInto(c)) {
         unit.coord = c;
         unit.isDormant = false;
         return true;
@@ -914,7 +914,7 @@ export class PathFinder
   }
   isPassable(pos) {
     const c = this.getCell(pos[0], pos[1]);
-    return c && !c.isObstacle && !c.isOccupied;
+    return c && !c.isObstacle;
   }
   isInMoveRange(pos) {
     return pos && (this.getCell(pos[0], pos[1])?.moveDistance ?? -1) >= 0;
