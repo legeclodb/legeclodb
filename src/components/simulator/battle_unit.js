@@ -535,9 +535,6 @@ export class SimUnit {
     }
     else {
       r.score = this.score;
-      if (this.summon) {
-        r.summon = this.summon.map(a => a.fid);
-      }
     }
     return r;
   }
@@ -577,15 +574,10 @@ export class SimUnit {
     if (this.support && r.support) {
       this.support.hp = r.support.hp;
     }
-
     if (r.summoner) {
-      this.summoner = $g.sim.findUnit(r.summoner);
+      this.setSummoner($g.sim.findUnit(r.summoner));
     }
-    if (r.summon) {
-      this.summon = r.summon.map(fid => $g.sim.findUnit(fid));
-    }
-
-    if (r?.score) {
+    if ("score" in r) {
       this.score = r.score;
     }
   }
