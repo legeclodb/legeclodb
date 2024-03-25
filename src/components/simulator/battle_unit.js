@@ -838,7 +838,7 @@ export class SimUnit {
       }
     }
 
-    this.affectedSkills = unique([...this.passives.map(a => a.__proto__), ...this.effects.map(a => a.parent)]);
+    this.affectedSkills = unique([...this.passives, ...this.effects.map(a => a.parent)], (a, b) => a.uid == b.uid);
     this.affectedEffects = {};
 
     let deferred = [];

@@ -91,9 +91,9 @@ export function updateSubscribeLastCheck() {
 }
 
 
-export function unique(array) {
-  return array.filter((value, index, self) => {
-    return self.indexOf(value) === index;
+export function unique(array, compare = (a, b) => a === b) {
+  return array.filter((value, index) => {
+    return array.findIndex(v => compare(value, v)) === index;
   });
 }
 export function count(enumerable, cond) {

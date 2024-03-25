@@ -293,6 +293,8 @@ export function makeActionContext(unit, target, skill, isAttacker, parent) {
     get hp() { return this.unit.hpRate; },
     get activeBuffCount() { return this.unit.activeBuffCount },
     get activeDebuffCount() { return this.unit.activeDebuffCount; },
+    get onOwnTurn() { return sim.isOwnTurn(this.unit); },
+    get onEnemyTurn() { return !sim.isOwnTurn(this.unit); },
     isOnEffect(args) { return this.unit.isOnEffect(args); },
     getTokenCount(args) { return this.unit.getTokenCount(args); },
     getUnitsInArea(args) { return this.unit.getUnitsInArea(args); },
@@ -371,11 +373,9 @@ export function makeActionContext(unit, target, skill, isAttacker, parent) {
 
   if (isAttacker) {
     ctx.move = sim.move;
-    ctx.onOwnTurn = true;
   }
   else {
     ctx.move = 0;
-    ctx.onEnemyTurn = true;
   }
 
   if (parent) {
