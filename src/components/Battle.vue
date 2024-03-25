@@ -78,15 +78,19 @@
           <div ref="enemyList" class="enemy-list">
             <div v-if="simulation" class="character">
               <div class="info">
-                <h5>スコア</h5>
-                <template v-for="unit in allPlayerUnits">
-                  <div :key="unit.fid" class="flex">
-                    <b-img-lazy :src="getImageURL(unit.main.icon)" :title="unit.main.name" :class="`${!unit.isAlive ? 'grayscale' : ''}`" width="50" height="50" rounded />
-                    <div style="font-size: 18pt; margin-left: 10px;">{{Math.round(unit.sim.score)}}</div>
-                  </div>
-                </template>
-                <div class="flex">
-                  <h5 style="font-size: 18pt; margin-left: 0px;">合計: {{Math.round(simulation.score)}}</h5>
+                <h5 style="font-size: 18pt;">スコア</h5>
+                <div class="grid" style="grid-template-columns: auto auto 1fr;">
+                  <template v-for="unit in allPlayerUnits">
+                    <div :key="`score-portrait-${unit.fid}`" style="grid-column: 1;">
+                      <b-img-lazy :src="getImageURL(unit.main.icon)" :title="unit.main.name" :class="`${!unit.isAlive ? 'grayscale' : ''}`" width="50" height="50" rounded />
+                    </div>
+                    <div :key="`score-number-${unit.fid}`" style="grid-column: 2; margin-left: 10px; text-align: right;" v-html="scoreToHtml(unit.sim.score)" />
+                    <div :key="`score-pad-${unit.fid}`" style="grid-column: 3;" />
+                  </template>
+
+                  <div style="grid-column: 1; font-size: 18pt;">合計</div>
+                  <div style="grid-column: 2; margin-left: 10px; text-align: right;" v-html="scoreToHtml(simulation.score)" />
+                  <div style="grid-column: 3;" />
                 </div>
               </div>
             </div>
@@ -2156,6 +2160,18 @@ export default {
         }
       }
     },
+    scoreToHtml(num) {
+      let str = `${Math.round(num)}`;
+      let r = [];
+      r.push(`<span style='color: rgb(200,200,200); font-size: 15pt;'>${str.slice(-4)}</span>`);
+      if (str.length > 4) {
+        r.push(`<span style='color: rgb(100,100,100); font-size: 18pt;'>${str.slice(-8, -4)}</span>`);
+      }
+      if (str.length > 8) {
+        r.push(`<span style='color: rgb(0,0,0); font-size: 21pt;'>${str.slice(-12, -8)}</span>`);
+      }
+      return r.toReversed().join("");
+    },
     //#endregion Balloon
 
 
@@ -2240,6 +2256,9 @@ export default {
     box-shadow: 0 3px 6px rgba(140,149,159,0.5);
   }
 
+  .grid {
+    display: grid;
+  }
   .grid-container {
     user-select: none;
     display: grid;
