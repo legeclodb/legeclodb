@@ -1420,8 +1420,8 @@ export default {
       this.cells = cells;
 
       let cellStyle = this.$refs.cells.style;
-      cellStyle.gridTemplateColumns = Array(divX).fill("50px").join(" ");
-      cellStyle.gridTemplateRows = Array(divY).fill("50px").join(" ");
+      cellStyle.gridTemplateColumns = `repeat(${divX}, 50px)`;
+      cellStyle.gridTemplateRows = `repeat(${divY}, 50px)`;
 
       // enemyList の高さをグリッドに合わせる
       this.$refs.enemyList.style.maxHeight = "0px";
@@ -1576,14 +1576,8 @@ export default {
     },
 
     getCellClass(cell) {
-      let classes = ["grid-cell", "border-l", "border-t"];
+      let classes = ["grid-cell"];
       let styles = [];
-      if (cell.coord[0] == this.divX - 1) {
-        classes.push("border-r");
-      }
-      if (cell.coord[1] == this.divY - 1) {
-        classes.push("border-b");
-      }
       if (cell.obstacle && !cell.boss) {
         classes.push("obstacle");
       }
@@ -1611,19 +1605,18 @@ export default {
         pos = unit.coord;
       }
       let r = [
-        "position: absolute",
-        `left: ${pos[0] * 50}px`,
-        `top: ${pos[1] * 50}px`,
+        // grid-column, grid-row でも位置指定できるが、transition のアニメーションが効かなくなるので translate を使う。
+        `transform: translate(${pos[0] * 50}px, ${pos[1] * 50}px)`
       ];
 
+      // todo: 経路なぞる移動
       //let path = unit.path;
       //if (path) {
       //  unit.path = null;
       //  let el = document.getElementById(`unit-${unit.fid}`);
       //  if (el) {
       //    lut.timedEach(path, 100, (c) => {
-      //      el.style.left = `${c[0] * 50}px`;
-      //      el.style.top = `${c[1] * 50}px`;
+      //      el.style.transform = `translate(${c[0] * 50}px, ${c[1] * 50}px)`;
       //    });
       //  }
       //}
@@ -2268,14 +2261,6 @@ export default {
   .grid-container {
     user-select: none;
     display: grid;
-    /*
-      grid-gap によるボーダーの描画は、どうも画面のスケールが 100% でないときにムラができるっぽいので、
-      旧来の border-(left|right|top|bottom) でなんとかする。
-
-      grid-gap: 1px;
-      padding: 1px;
-      background: rgb(180,185,195);
-    */
     margin-right: 20px;
     position: relative;
   }
@@ -2283,30 +2268,17 @@ export default {
     display: flex;
     justify-content: center;
     background: white;
-    transition-property: background, top, right, bottom, left;
+    outline: 1px solid rgb(180,185,195);
+    transition-property: background;
     transition: 0.01s ease;
   }
   .unit-cell {
+    position: absolute;
     width: 50px;
     height: 50px;
     pointer-events: none;
-    transition-property: background, top, right, bottom, left;
+    transition-property: transform;
     transition: 0.1s ease;
-  }
-  .bordered {
-    border: 1px solid rgb(180,185,195);
-  }
-  .border-l {
-    border-left: 1px solid rgb(180,185,195);
-  }
-  .border-r {
-    border-right: 1px solid rgb(180,185,195);
-  }
-  .border-t {
-    border-top: 1px solid rgb(180,185,195);
-  }
-  .border-b {
-    border-bottom: 1px solid rgb(180,185,195);
   }
   .grid-cell.obstacle {
     background: rgb(180,185,195);
@@ -2419,10 +2391,10 @@ export default {
     transition: all 0.25s ease;
   }
   .sim-commands.player-turn {
-    background: rgba(64, 64, 200, 0.4);
+    background: rgba(128, 128, 250, 0.7);
   }
   .sim-commands.enemy-turn {
-    background: rgba(200, 64, 64, 0.4);
+    background: rgba(250, 128, 128, 0.7);
   }
 
   .sim-replay {
