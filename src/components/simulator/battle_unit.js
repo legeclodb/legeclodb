@@ -1102,6 +1102,11 @@ export class SimUnit {
     return succeeded;
   }
 
+  wait() {
+    if (this.state == UnitState.Ready) {
+      $g.sim.fireSkill(this, null, { onIdle: true });
+    }
+  }
   invokeShield(ctx) {
     return this._invokeSkillAction(ctx, "invokeShield");
   }

@@ -47,6 +47,8 @@ export class SimContext {
 
   //#region props
   get activeUnits() { return this.units.filter(u => !u.isDormant); }
+  get activePlayerUnits() { return this.units.filter(u => !u.isDormant && u.isPlayer); }
+  get activeEnemyUnits() { return this.units.filter(u => !u.isDormant && !u.isPlayer); }
   get isPlayerTurn() { return this.phase == Phase.Player; }
   get isEnemyTurn() { return this.phase == Phase.Enemy; }
   get phaseId() { return `${this.turn}${this.isPlayerTurn ? 'P' : 'E'}`; }
@@ -630,6 +632,10 @@ export class SimContext {
     if (doAttack) { ctx.onAttack = true; }
     if (doBattle) { ctx.onBattle = true; }
     if (onGuard) { ctx.isTargetGuardian = true; }
+    if (!skill) { // 待機
+      ctx.onWait = true;
+      if (skillArgs?.onIdle) { ctx.onIdle = true; } // 明示的に「待機」指示せずターン終了した場合
+    }
 
     if (doActionBegin) {
       callHandler("onActionBegin", ctx, unit);
@@ -809,29 +815,24 @@ export class SimContext {
   }
 
   onPlayerTurnBegin() {
-    for (let u of this.activeUnits) {
-      if (u.isPlayer) {
-        u.onOwnTurnBegin();
-      }
+    for (let u of this.activePlayerUnits) {
+      u.onOwnTurnBegin();
     }
-    for (let u of this.activeUnits) {
-      if (!u.isPlayer) {
-        u.onOpponentTurnBegin();
-      }
+    for (let u of this.activeEnemyUnits) {
+      u.onOpponentTurnBegin();
     }
     this.updateAreaEffectsAll();
     this.pushState();
   }
   onPlayerTurnEnd() {
-    for (let u of this.activeUnits) {
-      if (u.isPlayer) {
-        u.onOwnTurnEnd();
-      }
+    for (let u of this.activePlayerUnits) {
+      u.wait();
     }
-    for (let u of this.activeUnits) {
-      if (!u.isPlayer) {
-        u.onOpponentTurnEnd();
-      }
+    for (let u of this.activePlayerUnits) {
+      u.onOwnTurnEnd();
+    }
+    for (let u of this.activeEnemyUnits) {
+      u.onOpponentTurnEnd();
     }
   }
 
@@ -845,29 +846,24 @@ export class SimContext {
     }
     this.updateAreaEffectsAll();
 
-    for (let u of this.activeUnits) {
-      if (u.isEnemy) {
-        u.onOwnTurnBegin();
-      }
+    for (let u of this.activeEnemyUnits) {
+      u.onOwnTurnBegin();
     }
-    for (let u of this.activeUnits) {
-      if (!u.isEnemy) {
-        u.onOpponentTurnBegin();
-      }
+    for (let u of this.activePlayerUnits) {
+      u.onOpponentTurnBegin();
     }
     this.updateAreaEffectsAll();
     this.pushState();
   }
   onEnemyTurnEnd() {
-    for (let u of this.activeUnits) {
-      if (u.isEnemy) {
-        u.onOwnTurnEnd();
-      }
+    for (let u of this.activeEnemyUnits) {
+      u.wait();
     }
-    for (let u of this.activeUnits) {
-      if (!u.isEnemy) {
-        u.onOpponentTurnEnd();
-      }
+    for (let u of this.activeEnemyUnits) {
+      u.onOwnTurnEnd();
+    }
+    for (let u of this.activePlayerUnits) {
+      u.onOpponentTurnEnd();
     }
   }
   //#endregion simulation & callbacks
