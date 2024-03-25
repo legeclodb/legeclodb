@@ -929,11 +929,15 @@ export class PathFinder
   isInFireRange(pos) {
     return pos && (this.getCell(pos[0], pos[1])?.shootDistance ?? -1) >= 0;
   }
-  setShootRangeShape(shape) {
+  setShootRangeShape(shape, center) {
     for (let y = 0; y < this.ydiv; ++y) {
       for (let x = 0; x < this.xdiv; ++x) {
         if (shape[y][x]) {
-          this.getCell(x, y).shootDistance = 0;
+          let d = 0;
+          if (center) {
+            d = Math.abs(x - center[0]) + Math.abs(y - center[1]);
+          }
+          this.getCell(x, y).shootDistance = d;
         }
       }
     }
@@ -1039,17 +1043,13 @@ export class PathFinder
       if (isInside(pos, params)) {
         let tc = this.getCell(pos[0], pos[1]);
         if (tc) {
-          let d = c.moveDistance + Math.abs(pos[0] - x) + Math.abs(pos[1] - y);
+          let d = Math.max(c.moveDistance, 0) + (Math.abs(pos[0] - x) + Math.abs(pos[1] - y));
           tc.shootDistance = tc.shootDistance == -1 ? d : Math.min(tc.shootDistance, d);
         }
       }
     };
     if (rangeParams.shapeData) {
-      for (let y = 0; y < this.ydiv; ++y) {
-        for (let x = 0; x < this.xdiv; ++x) {
-          apply([x, y]);
-        }
-      }
+      apply([x, y]);
     }
     else if (rangeParams.size) {
       let size = rangeParams.size;

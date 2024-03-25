@@ -627,7 +627,7 @@ export function makeSimSkill(skill, ownerUnit) {
         r.size = this.area;
       r.shape = areaStringToEnum(this.areaShape) ?? Shape.Diamond;
       if (this.shapeData)
-        r.shapedata = this.shapeData;
+        r.shapeData = this.shapeData;
       return r;
     };
   }

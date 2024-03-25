@@ -1167,7 +1167,7 @@ export default {
             let skill = self.selectedSkill;
             let pf = self.simulation.makePathFinder();
             if (skill.shapeData) {
-              pf.setShootRangeShape(skill.shapeData);
+              pf.setShootRangeShape(skill.shapeData, self.selectedUnit?.coord);
             }
             else {
               if (skill.isSelfTarget || skill.isRadialAreaTarget) {
@@ -1960,6 +1960,8 @@ export default {
       // deserializeLoadout はしない。これにより構成を変えてリプレイをなぞる
       this.beginSimulation();
       lut.timedEach(r.states, 150, (state) => {
+        if (!this.simulation)
+          return false; // 中断された場合
         let r = this.simulation.playback(state);
         this.addBalloons(r);
         this.$forceUpdate();
