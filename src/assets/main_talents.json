@@ -4151,6 +4151,17 @@
         "type": "マジック",
         "value": [ 15, 18, 23, 30 ],
         "condition": { "onOwnTurn": true }
+      },
+      {
+        "type": "リジェネ",
+        "base": "最大HP",
+        "rate": 0.15,
+        "duration": 2,
+        "trigger": {
+          "target": "味方(低HP)",
+          "timing": "行動後",
+          "condition": { "onActiveSkill": true }
+        }
       }
     ],
     "heal": [
@@ -4161,8 +4172,7 @@
         "timing": "行動後",
         "condition": { "onActiveSkill": true }
       }
-    ],
-    "tags": [ "バフ:リジェネ" ]
+    ]
   },
   {
     "uid": "3100342",
@@ -6360,6 +6370,18 @@
         "target": "味方全体"
       },
       {
+        "type": "リジェネ",
+        "base": "最大HP",
+        "rate": 0.15,
+        "condition": {
+          "token": {
+            "tokenName": "サンパワー！",
+            "compare": [ ">=", 2 ]
+          }
+        },
+        "target": "味方全体"
+      },
+      {
         "type": "与ダメージ(スキル)",
         "value": 20,
         "condition": {
@@ -6371,8 +6393,7 @@
         },
         "target": "味方全体"
       }
-    ],
-    "tags": [ "バフ:リジェネ" ]
+    ]
   },
   {
     "uid": "3100445",
@@ -6813,6 +6834,20 @@
             "area": [ 3, "周囲" ],
             "compare": [ ">", 0 ]
           }
+        }
+      },
+      {
+        "type": "リジェネ",
+        "base": "マジック",
+        "rate": 4,
+        "duration": 2,
+        "condition": {
+          "probability": [ 50, 60, 80, 100 ]
+        },
+        "trigger": {
+          "target": "範囲",
+          "area": [ 3, "周囲(自身を除く)" ],
+          "timing": "自ターン開始時"
         }
       }
     ],

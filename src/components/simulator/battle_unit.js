@@ -1,5 +1,5 @@
 import { $g } from "./battle_globals.js";
-import { parseArea, callHandler, makeSimSkill, makeSimEffect, evaluateCondition, makeActionContext, getEffectValue } from "./battle_skill.js";
+import { scalar, parseArea, callHandler, makeSimSkill, makeSimEffect, evaluateCondition, makeActionContext, getEffectValue } from "./battle_skill.js";
 import { unique, count } from "../utils.js";
 
 function $vue() {
@@ -517,6 +517,7 @@ export class SimUnit {
     r.timedEffects = this.timedEffects.map(a => {
       return {
         uid: a.uid,
+        fid: a.parent.owner.fid,
         data: { ...a.data },
       };
     });
@@ -566,7 +567,21 @@ export class SimUnit {
 
     this.timedEffects = [];
     for (const so of r.timedEffects) {
-      let e = makeSimEffect($g.sim.findItem(so.uid));
+      let owner = $g.sim.findUnit(so.fid);
+      let e = null;
+      if (owner) {
+        found: for (const skill of owner.skills) {
+          for (const effect of skill.effects) {
+            if (effect.uid == so.uid) {
+              e = makeSimEffect(effect);
+              break found;
+            }
+          }
+        }
+      }
+      if (!e) {
+        e = makeSimEffect($g.sim.findItem(so.uid));
+      }
       Object.assign(e.data, so.data);
       this.timedEffects.push(e);
     }
@@ -596,6 +611,9 @@ export class SimUnit {
 
   // effect: BaseEffect (SimEffect ではない)
   applyEffect(effect, stop = false) {
+    const append = () => {
+      this.timedEffects.push(makeSimEffect(effect, stop));
+    };
     if (effect.stack) {
       let pos = -1, count = 0;
       for (let i = 0; i < this.timedEffects.length; ++i) {
@@ -608,7 +626,7 @@ export class SimUnit {
       if (count >= effect.stack) {
         this.timedEffects.splice(pos, 1);
       }
-      this.timedEffects.push(makeSimEffect(effect, stop));
+      append();
     }
     else if (effect.slot) {
       if (effect.hasSpecialSlot) {
@@ -621,7 +639,7 @@ export class SimUnit {
             break;
           }
         }
-        this.timedEffects.push(makeSimEffect(effect, stop));
+        append();
       }
       else {
         for (let i = 0; i < this.timedEffects.length; ++i) {
@@ -636,7 +654,7 @@ export class SimUnit {
             }
           }
         }
-        this.timedEffects.push(makeSimEffect(effect, stop));
+        append();
       }
     }
     else {
@@ -644,9 +662,9 @@ export class SimUnit {
       if (pos != -1) {
         this.timedEffects.splice(pos, 1);
       }
-      this.timedEffects.push(makeSimEffect(effect, stop));
+      append();
     }
-    console.log(`${effect.type} ${effect.value ?? effect.variant ?? effect.tokenName} ${effect.duration ?? ''}T (by ${effect.parent.name}) -> ${this.main.name}`);
+    console.log(`${effect.type} ${effect.value ?? effect.variant ?? effect.tokenName ?? ''} ${effect.duration ?? ''}T (by ${effect.parent.name}) -> ${this.main.name}`);
   }
   // ユーザーイベント版
   applyEffect_(effect) {
@@ -834,9 +852,10 @@ export class SimUnit {
         }
         let value = getEffectValue(e, ctx, this);
         value = `${value >= 0 ? '+' : ''}${value}`;
-        if (!e.add && !["移動", "射程(通常攻撃)", "射程(スキル)", "範囲", "トークン", "ガード"].includes(e.type)) {
+        if (!e.add && !["移動", "射程(通常攻撃)", "射程(スキル)", "範囲", "トークン", "ガード", "リジェネ"].includes(e.type)) {
           value += "%";
         }
+
         if (e.type == "トークン") {
           type = e.tokenName;
           value = "";
@@ -847,6 +866,10 @@ export class SimUnit {
           }
           value = "";
         }
+        else if (e.type == "リジェネ") {
+          value = "";
+        }
+
         let cnt = "";
         if (e?.isTimed) {
           cnt = ` (${e.count}T)`
@@ -1108,6 +1131,37 @@ export class SimUnit {
     return this._invokeSkillAction(ctx, "invokeMultiMove");
   }
 
+  invokeRegeneration(ctx) {
+    for (let effect of this.effects) {
+      // 極めて微妙だが battle_skill.js の invokeHeal() からコピペ
+      if (effect.type == "リジェネ" && evaluateCondition(ctx, effect.condition)) {
+        let from = this.main;
+        let rate = scalar(effect.rate);
+        let buf = (from.getBuffValue("治療効果") / 100 + 1);
+        const apply = (chr, value) => {
+          let base = value * rate;
+          // 治療効果 と 被治療効果 は乗算の関係
+          let boost = buf * (chr.getBuffValue("被治療効果") / 100 + 1);
+          chr.receiveHeal(base * boost, from, ctx);
+        };
+        const table = {
+          "最大HP": (t) => {
+            apply(t.main, t.main.maxHp);
+            apply(t.support, t.support.maxHp);
+          },
+          "マジック": (t) => {
+            let caster = effect.parent.owner.main;
+            let value = caster.status[3];
+            apply(t.main, value);
+            apply(t.support, value);
+          },
+        };
+        table[effect.base](this);
+        console.log(`!! リジェネ ${this.main.name} (${effect.parent.name}) !!`);
+      }
+    }
+  }
+
 
   // バフ・デバフの効果時間減
   reduceEffectDuration() {
@@ -1248,6 +1302,7 @@ export class SimUnit {
   onBattleEnd(ctx) {
     this.main.shield = 0;
     this.support.shield = 0;
+    this.invokeRegeneration(ctx);
     this._callHandler("onBattleEnd", ctx);
   }
 

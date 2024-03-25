@@ -1807,7 +1807,14 @@
     "area": "単体",
     "range": 2,
     "cost": 1,
-    "tags": [ "バフ:リジェネ" ]
+    "buff": [
+      {
+        "type": "リジェネ",
+        "base": "最大HP",
+        "rate": 0.1,
+        "duration": 2
+      }
+    ]
   },
   {
     "uid": "1100056",
@@ -2974,7 +2981,14 @@
         "rate": 4
       }
     ],
-    "tags": [ "バフ:リジェネ" ]
+    "buff": [
+      {
+        "type": "リジェネ",
+        "base": "最大HP",
+        "rate": 0.2,
+        "duration": 2
+      }
+    ]
   },
   {
     "uid": "1100694",
@@ -2991,7 +3005,14 @@
         "rate": 5
       }
     ],
-    "tags": [ "バフ:リジェネ" ]
+    "buff": [
+      {
+        "type": "リジェネ",
+        "base": "最大HP",
+        "rate": 0.2,
+        "duration": 3
+      }
+    ]
   },
   {
     "uid": "1100133",
@@ -7548,10 +7569,16 @@
         "variant": "全攻撃",
         "area": 2,
         "duration": 3
+      },
+      {
+        "type": "リジェネ",
+        "target": "自身",
+        "base": "最大HP",
+        "rate": 0.15,
+        "duration": 2
       }
     ],
-    "multiAction": [ {} ],
-    "tags": [ "バフ:リジェネ" ]
+    "multiAction": [ {} ]
   },
   {
     "uid": "1100318",
@@ -9551,6 +9578,12 @@
         "type": "与ダメージ(魔法)",
         "value": 15,
         "duration": 1
+      },
+      {
+        "type": "リジェネ",
+        "base": "最大HP",
+        "rate": 0.1,
+        "duration": 2
       }
     ],
     "heal": [
@@ -9559,8 +9592,7 @@
         "rate": 3,
         "target": "味方全体"
       }
-    ],
-    "tags": [ "バフ:リジェネ" ]
+    ]
   },
   {
     "uid": "1100497",
@@ -9673,10 +9705,15 @@
         "type": "ダメージ耐性",
         "value": 20,
         "duration": 4
+      },
+      {
+        "type": "リジェネ",
+        "base": "最大HP",
+        "rate": 0.15,
+        "duration": 4
       }
     ],
-    "multiAction": [ {} ],
-    "tags": [ "バフ:リジェネ" ]
+    "multiAction": [ {} ]
   },
   {
     "name": "♥看護の究意♥",
@@ -9697,10 +9734,15 @@
         "type": "ダメージ耐性",
         "value": 25,
         "duration": 4
+      },
+      {
+        "type": "リジェネ",
+        "base": "最大HP",
+        "rate": 0.2,
+        "duration": 4
       }
     ],
-    "multiAction": [ {} ],
-    "tags": [ "バフ:リジェネ" ]
+    "multiAction": [ {} ]
   },
   {
     "uid": "1100531",
@@ -11847,7 +11889,14 @@
     "range": "自ユニット",
     "cost": 2,
     "damageRate": 0.75,
-    "tags": [ "バフ:リジェネ" ]
+    "buff": [
+      {
+        "type": "リジェネ",
+        "base": "最大HP",
+        "rate": 0.1,
+        "duration": 2
+      }
+    ]
   },
   {
     "uid": "1100748",
@@ -11859,7 +11908,14 @@
     "range": "自ユニット",
     "cost": 2,
     "damageRate": 0.9,
-    "tags": [ "バフ:リジェネ" ]
+    "buff": [
+      {
+        "type": "リジェネ",
+        "base": "最大HP",
+        "rate": 0.15,
+        "duration": 2
+      }
+    ]
   },
   {
     "uid": "1100742",

@@ -591,6 +591,20 @@ export function makeSimSkill(skill, ownerUnit) {
     });
   }
 
+  const wrapEffect = (e) => {
+    let r = Object.create(e);
+    Object.defineProperty(r, 'parent', {
+      get: () => self,
+    });
+    return r;
+  };
+  if (self.buff) {
+    self.buff = self.buff.map(e => wrapEffect(e));
+  }
+  if (self.debuff) {
+    self.debuff = self.debuff.map(e => wrapEffect(e));
+  }
+
   let data = {};
   self.data = data; // serializable data
   if (self.isActive) {
@@ -1016,20 +1030,12 @@ export function makeSimSkill(skill, ownerUnit) {
 
 
   self.getDamageRate = function (ctx) {
-    const getValue = (v) => {
-      if (Array.isArray(v)) {
-        return v.at(-1);
-      }
-      else {
-        return v;
-      }
-    }
     for (const s of self.damageRateSp ?? []) {
       if (evaluateCondition(ctx, s.condition)) {
-        return getValue(s.value);
+        return scalar(s.value);
       }
     }
-    return getValue(self.damageRate);
+    return scalar(self.damageRate);
   };
 
   self.startCoolTime = function () {

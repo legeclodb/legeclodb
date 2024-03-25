@@ -1397,6 +1397,10 @@ export default {
             // トークンには種類毎に独立したスロットを与える
             effect.slot = effect.tokenName;
           }
+          else if (effect.type == "リジェネ") {
+            // リジェネは同スキル同士以外では競合しない
+            effect.slot = skill.uid;
+          }
 
           if (effect.slot) {
             effect.hasSpecialSlot = true;
@@ -1508,7 +1512,7 @@ export default {
       // 確認・デバッグ用
       if (process.env.NODE_ENV === 'development') {
         for (let e of skill.effects) {
-          if (!e.value && !e.add && !e.variable && !["ランダム", "トークン", "ガード"].includes(e.type)) {
+          if (!e.value && !e.add && !e.variable && !["ランダム", "トークン", "ガード", "リジェネ"].includes(e.type)) {
             throw Error(`${skill.name}: ${e.type}`);
           }
         }

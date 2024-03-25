@@ -96,6 +96,7 @@
         "シールド",
         "トークン",
         "ガード",
+        "リジェネ",
 
         "スタン",
         "フリーズ",
@@ -330,6 +331,8 @@
         "add": { "$ref": "#/$defs/statusConversion" },
         "replace": { "$ref": "#/$defs/statusConversion" },
         "variable": { "$ref": "#/$defs/variableStatusRate" },
+        "base": { "$ref": "#/$defs/statusType" },
+        "rate": { "type": "number" },
         "ephemeral": { "type": "boolean" },
         "duration": { "type": [ "number", "array" ] },
         "stack": { "type": "number" },

@@ -366,7 +366,7 @@ export default {
         lines.push(`<div class="effect-box"><span class="effect">再行動</span></div>`);
       }
       for (const effect of enumerate(skill.buff, skill.debuff)) {
-        if (["ランダム", "トークン"].includes(effect.type)) {
+        if (["ランダム", "トークン", "ガード", "リジェネ"].includes(effect.type)) {
           continue;
         }
 
