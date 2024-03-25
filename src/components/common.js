@@ -1428,7 +1428,9 @@ export default {
       const assignId = (list, prefix) => {
         if (list) {
           for (let i = 0; i < list.length; ++i) {
-            list[i].uid = `${skill.uid}.${prefix}${i}`;
+            const p = `${prefix}${i}`;
+            list[i].index = p;
+            list[i].uid = `${skill.uid}.${p}`;
           }
         }
       };

@@ -2114,7 +2114,7 @@ export default {
 
 
     //#region Balloon
-    addBaloon(unit, content) {
+    addBaloon(unit, content, z = -1) {
       const timeout = 1000;
       let Balloon = document.createElement('div');
       Balloon.innerHTML = content;
@@ -2124,6 +2124,9 @@ export default {
       Balloon.style.opacity = '1';
       Balloon.style.transform = 'translate(-50%, -110%)';
       Balloon.style.transition = 'opacity 0.4s ease-out 0.6s, transform 0.6s ease-out';
+      if(z !=-1){
+        Balloon.style.zIndex = z;
+      }
       this.$refs.cells.appendChild(Balloon);
 
       setTimeout(() => {
@@ -2137,14 +2140,14 @@ export default {
       let minor = `<span style='color: rgb(200,200,200);'>${str.slice(-4)}</span>`;
       let major = `<span style='color: black;'>${str.slice(0, -4)}</span>`;
       let content = `<h1 style='font-size: 24pt;'>${major}${minor}</h1>`;
-      this.addBaloon(unit, content);
+      this.addBaloon(unit, content, 99);
     },
     addHealBalloon(unit, heal) {
       let str = `${Math.round(heal)}`;
       let minor = `<span style='color: rgb(120,240,120);'>${str.slice(-4)}</span>`;
       let major = `<span style='color: rgb(0,160,0);'>${str.slice(0, -4)}</span>`;
       let content = `<h1 style='font-size: 24pt;'>${major}${minor}</h1>`;
-      this.addBaloon(unit, content);
+      this.addBaloon(unit, content, 98);
     },
     addBalloons(ctx) {
       if (ctx) {

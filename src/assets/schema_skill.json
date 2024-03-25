@@ -355,7 +355,8 @@
             "area": { "$ref": "#/$defs/areaType" },
             "unitCount": { "type": "number" },
             "timing": { "$ref": "#/$defs/timingType" },
-            "condition": { "$ref": "#/$defs/condition" }
+            "condition": { "$ref": "#/$defs/condition" },
+            "ct": { "type": "number" }
           }
         }
       }

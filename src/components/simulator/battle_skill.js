@@ -591,22 +591,9 @@ export function makeSimSkill(skill, ownerUnit) {
     });
   }
 
-  const wrapEffect = (e) => {
-    let r = Object.create(e);
-    Object.defineProperty(r, 'parent', {
-      get: () => self,
-    });
-    return r;
-  };
-  if (self.buff) {
-    self.buff = self.buff.map(e => wrapEffect(e));
-  }
-  if (self.debuff) {
-    self.debuff = self.debuff.map(e => wrapEffect(e));
-  }
-
   let data = {};
   self.data = data; // serializable data
+
   if (self.isActive) {
     let pname = 'coolTime';
     let id = `${pname}`;
@@ -648,6 +635,32 @@ export function makeSimSkill(skill, ownerUnit) {
   Object.defineProperty(self, 'available', {
     get: function () { return !this.isActive || this.coolTime <= 0; },
   });
+
+
+  const wrapEffect = (baseEffect) => {
+    let e = Object.create(baseEffect);
+    Object.defineProperty(e, 'parent', {
+      get: () => self,
+    });
+    if (baseEffect.trigger?.ct) {
+      e.trigger = Object.create(baseEffect.trigger);
+
+      let pname = 'coolTime';
+      let id = `${e.index}.${pname}`;
+      data[id] = 0;
+      Object.defineProperty(e.trigger, pname, {
+        get: () => { return data[id]; },
+        set: (v) => { data[id] = v; },
+      });
+    }
+    return e;
+  };
+  if (self.buff) {
+    self.buff = self.buff.map(e => wrapEffect(e));
+  }
+  if (self.debuff) {
+    self.debuff = self.debuff.map(e => wrapEffect(e));
+  }
 
   const setupSubaction = (name, prefix) => {
     if (!(name in self)) {
@@ -698,7 +711,7 @@ export function makeSimSkill(skill, ownerUnit) {
         unit.coord = [...ctx.targetCell];
         unit.setSummoner(ctx.unit);
         $g.sim.addUnit(unit);
-        console.log(`!! 召喚 ${ctx.unit.main.name} (${self.name}) -> ${unit.main.name}!!`);
+        $g.log(`!! 召喚 ${ctx.unit.main.name} (${self.name}) -> ${unit.main.name}!!`);
         break;
       }
     }
@@ -772,7 +785,7 @@ export function makeSimSkill(skill, ownerUnit) {
             "固定値": () => { return act.value; },
         };
           target.shield = Math.max(table[act.base](), target.shield);
-          console.log(`!! シールド ${target.name} (${self.name})!!`);
+          $g.log(`!! シールド ${target.name} (${self.name})!!`);
         }
       }
     }
@@ -785,7 +798,7 @@ export function makeSimSkill(skill, ownerUnit) {
         let rate = scalar(act.rate);
         u.main.receiveHeal(u.main.maxHp * rate, u.main, ctx);
         u.support.receiveHeal(u.support.maxHp * rate, u.main, ctx);
-        console.log(`!! 復活 ${u.main.name} (${self.name})!!`);
+        $g.log(`!! 復活 ${u.main.name} (${self.name})!!`);
       }
     }
   };
@@ -826,7 +839,7 @@ export function makeSimSkill(skill, ownerUnit) {
         for (let t of getTargetUnits(ctx, act)) {
           if (u.isPlayer == t.isPlayer) {
             table[act.base](t);
-            console.log(`!! 回復 ${u.main.name} (${self.name}) -> ${t.main.name}!!`);
+            $g.log(`!! 回復 ${u.main.name} (${self.name}) -> ${t.main.name}!!`);
           }
         }
       }
@@ -843,7 +856,7 @@ export function makeSimSkill(skill, ownerUnit) {
         for (let t of getTargetUnits(ctx, act)) {
           if (u.isPlayer != t.isPlayer) {
             // todo
-            console.log(`!! エリアダメージ ${u.main.name} (${self.name}) -> ${t.main.name}!!`);
+            $g.log(`!! エリアダメージ ${u.main.name} (${self.name}) -> ${t.main.name}!!`);
           }
         }
       }
@@ -900,7 +913,7 @@ export function makeSimSkill(skill, ownerUnit) {
             // 自傷ダメージはオプションで有効にしない限り発動しないようにしておく
             if (($g.config.enableSelfDamage || act.target != "自身")) {
               table[act.base](t);
-              console.log(`!! 固定値ダメージ ${u.main.name} (${self.name}) -> ${t.main.name}!!`);
+              $g.log(`!! 固定ダメージ ${u.main.name} (${self.name}) -> ${t.main.name}!!`);
             }
           }
         }
@@ -928,7 +941,7 @@ export function makeSimSkill(skill, ownerUnit) {
               cond = (skill) => skill !== self;
             }
             t.reduceSkillCT(act.value, cond);
-            console.log(`!! CT減 ${u.main.name} (${self.name}) -> ${t.main.name}!!`);
+            $g.log(`!! CT減 ${u.main.name} (${self.name}) -> ${t.main.name}!!`);
           }
         }
       }
@@ -946,7 +959,7 @@ export function makeSimSkill(skill, ownerUnit) {
         }
       }
       if (succeeded) {
-        console.log(`!! サポート同時攻撃 ${ctx.unit.main.name} (${self.name}) !!`);
+        $g.log(`!! サポート同時攻撃 ${ctx.unit.main.name} (${self.name}) !!`);
       }
     }
     return succeeded;
@@ -962,7 +975,7 @@ export function makeSimSkill(skill, ownerUnit) {
           }
         }
         if (succeeded) {
-          console.log(`!! 2回攻撃 ${ctx.unit.main.name} (${self.name}) !!`);
+          $g.log(`!! 2回攻撃 ${ctx.unit.main.name} (${self.name}) !!`);
         }
       }
     }
@@ -985,7 +998,7 @@ export function makeSimSkill(skill, ownerUnit) {
         }
       }
       if (succeeded) {
-        console.log(`!! 再行動 ${ctx.unit.main.name} (${self.name}) !!`);
+        $g.log(`!! 再行動 ${ctx.unit.main.name} (${self.name}) !!`);
       }
     }
     return succeeded;
@@ -1014,7 +1027,7 @@ export function makeSimSkill(skill, ownerUnit) {
         }
       }
       if (succeeded) {
-        console.log(`!! 再移動 ${ctx.unit.main.name} (${self.name}) !!`);
+        $g.log(`!! 再移動 ${ctx.unit.main.name} (${self.name}) !!`);
       }
     }
     return succeeded;
@@ -1079,7 +1092,10 @@ export function makeSimSkill(skill, ownerUnit) {
     let u = ctx.unit;
     for (let e of this.effects) {
       let tri = e.trigger;
-      if (tri && tri.timing == timing) {
+      if (tri && tri.timing == timing && !tri.coolTime) {
+        if (tri.ct) {
+          tri.coolTime = tri.ct;
+        }
         let prevTarget = ctx.target;
         for (let t of unique(getTargetUnits(ctx, tri))) {
           ctx.target = t;
@@ -1113,6 +1129,11 @@ export function makeSimSkill(skill, ownerUnit) {
         if (act.coolTime) {
           --act.coolTime;
         }
+      }
+    }
+    for (let e of this.effects) {
+      if (e.trigger?.coolTime) {
+        --e.trigger.coolTime;
       }
     }
   };

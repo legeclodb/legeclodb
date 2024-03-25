@@ -73,7 +73,6 @@ export class SimContext {
     for (let u of this.units) {
       this.unitTable[u.fid] = u;
     }
-    //console.log(this);
   }
 
   serialize() {
@@ -190,7 +189,7 @@ export class SimContext {
     if (desc.unit) {
       let unit = this.findUnit(desc.unit);
       if (!unit) {
-        console.log("ユニットが見つからないため中断しました。");
+        $g.log("ユニットが見つからないため中断しました。");
         return null;
       }
 
@@ -208,7 +207,7 @@ export class SimContext {
       if (desc.skill) {
         skill = unit.skills.find(a => a.uid == desc.skill);
         if (!skill) {
-          console.log("スキルが見つからないため中断しました。");
+          $g.log("スキルが見つからないため中断しました。");
           return null;
         }
       }
@@ -606,7 +605,7 @@ export class SimContext {
         let ctx = makeActionContext(unit);
         for (let guard of target.guardians) {
           if (guard.condition(ctx)) {
-            console.log(`!! ガード ${guard.unit.main.name} -> ${target.main.name} !!`);
+            $g.log(`!! ガード ${guard.unit.main.name} -> ${target.main.name} !!`);
             target = guard.unit;
             onGuard = true;
             break;
@@ -740,10 +739,8 @@ export class SimContext {
     if (target) {
       target.score += ctx.damageDealt.get(target.fid).total;
     }
-    console.log(ctx);
 
     this.updateAreaEffectsAll();
-
     this.pushState(unit, skill, skillArgs);
     console.log(ctx);
 
