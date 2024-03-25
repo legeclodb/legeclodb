@@ -92,13 +92,13 @@ export function updateSubscribeLastCheck() {
 
 
 export function unique(array, compare = (a, b) => a === b) {
-  return array.filter((value, index) => {
-    return array.findIndex(v => compare(value, v)) === index;
+  return array.filter((a, i) => {
+    return array.findIndex(b => compare(a, b)) === i;
   });
 }
-export function count(enumerable, cond) {
+export function count(iterable, cond) {
   let r = 0;
-  for (const e of enumerable) {
+  for (const e of iterable) {
     if (cond(e)) {
       ++r;
     }

@@ -1033,14 +1033,6 @@ export function makeSimSkill(skill, ownerUnit) {
     return succeeded;
   };
 
-  self.invokeBattleSubactions = function (ctx) {
-    for (const [name, info] of Object.entries(subactionTable)) {
-      if (info.triggerOnMultiMove) {
-        info.invoe(ctx);
-      }
-    }
-  };
-
 
   self.getDamageRate = function (ctx) {
     for (const s of self.damageRateSp ?? []) {

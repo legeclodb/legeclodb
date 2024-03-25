@@ -4,7 +4,7 @@ import { callHandler, makeActionContext, evaluateCondition, isInside } from "./b
 import { BaseUnit, SimUnit, UnitState } from "./battle_unit.js";
 import { $g } from "./battle_globals.js";
 
-export const replayVersion = 100;
+export const replayVersion = "1.0.0";
 
 export const Phase = {
   Player: 0,

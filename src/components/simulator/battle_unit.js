@@ -1234,8 +1234,6 @@ export class SimUnit {
   // onSimulationBegin() の直後に呼ばれる。ステータスの初期化を行う。
   // onSimulationBegin() の中だと自キャラ以外への影響があるバフが対応できないケースがあるため、別パスにしている。
   setup() {
-    //console.log(`${this.main.name}: 影響下にあるスキル -> ${unique(this.effects.map(a => a.parent.name)).join(", ")}`);
-
     const setupHp = (chr) => {
       chr.maxHp = Math.round(chr.baseHp * (chr.getBuffValue("最大HP") / 100 + 1));
       if (chr.hp < 0) {
@@ -1259,11 +1257,6 @@ export class SimUnit {
   onOwnTurnEnd(ctx) {
     this._callHandler("onOwnTurnEnd", ctx);
     this.resumeEffectDuration();
-    if (this.isNxN) {
-      // NxN ボスは一連の行動が終わった直後にスキルのカウントが進むっぽいのだが、面倒なので自ターン終了時で代替する。
-      this.reduceSkillCT(1);
-      this.reduceEffectDuration();
-    }
     this.state = UnitState.Ready;
   }
 
@@ -1283,7 +1276,7 @@ export class SimUnit {
   }
   onActionEnd(ctx) {
     this._callHandler("onActionEnd", ctx);
-    if (!this.isNxN && !this.isOnMultiMove) {
+    if (!this.isOnMultiMove && (!this.isNxN || ctx.onWait)) { // NxN ボスは待機時のみカウントを進める
       this.reduceSkillCT(1);
       this.reduceEffectDuration();
     }
