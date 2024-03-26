@@ -1018,6 +1018,8 @@ export default {
                 u.coord = cell.coord;
                 let d = self.path.getMoveDistance(cell.coord);
                 u.moveDistance = d < 0 ? u.move : d;
+                u.sim.evaluateBuffs();
+
               //  console.log(self.path.toString());
               //  if (d > 0) {
               //    u.path = self.path.getPath(cell.coord);
@@ -1057,7 +1059,12 @@ export default {
             }
           },
           onCancel() {
-            self.selectedUnit.coord = self.selectedUnit.prevCoord;
+            let u = self.selectedUnit;
+            u.coord = u.prevCoord;
+            u.moveDistance = 0;
+            if (u.sim) {
+              u.sim.evaluateBuffs();
+            }
           },
           onRenderCell(cell, classes, styles) {
             let sim = self.simulation;
@@ -1271,9 +1278,21 @@ export default {
         confirm: {
           onEnable() {
             self.showConfirm = true;
+
+            let unit = self.selectedUnit?.sim;
+            if (unit) {
+              let ctx = lbt.makeActionContext(self.selectedUnit.sim, self.targetUnit?.sim, self.selectedSkill, true);
+              ctx.range = lbt.calcDistace(unit.coord, self.targetCell.coord);
+              unit.evaluateBuffs(ctx);
+            }
           },
           onDisable() {
             self.showConfirm = false;
+
+            let unit = self.selectedUnit?.sim;
+            if (unit) {
+              unit.evaluateBuffs();
+            }
           },
           onClickCell(cell) {
             if (cell === self.targetCell) {

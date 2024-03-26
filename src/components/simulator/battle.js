@@ -38,8 +38,6 @@ export class SimContext {
   divY = 0;
   terrain = [];
   unitTable = {};
-  range = 0;
-  move = 0;
   deadUnits = [];
   statePos_ = -1;
   //#endregion fields (non-serializable)
@@ -591,14 +589,6 @@ export class SimContext {
     let onGuard = false;
     let doSupportAttackSkill = false;
 
-    this.move = (unit.moveDistance ?? 0) + (unit.prevMoveDistance ?? 0);
-    //console.log(`移動: ${this.move} (${unit.main.name})`);
-    this.range = 0;
-    if (targetCell) {
-      // NxN ボス対策として target.coord ではなく targetCell との距離を取る
-      this.range = Math.abs(unit.coord[0] - targetCell[0]) + Math.abs(unit.coord[1] - targetCell[1]);
-    }
-
     // 戦闘・非戦闘の区分け
     if (skill && skill.isMainSkill && skill.isAttackSkill) {
       doAttack = true;
@@ -634,6 +624,10 @@ export class SimContext {
     if (!skill) { // 待機
       ctx.onWait = true;
       if (skillArgs?.onIdle) { ctx.onIdle = true; } // 明示的に「待機」指示せずターン終了した場合
+    }
+    if (targetCell) {
+      // NxN ボス対策として target.coord ではなく targetCell との距離を取る
+      ctx.range = Math.abs(unit.coord[0] - targetCell[0]) + Math.abs(unit.coord[1] - targetCell[1]);
     }
 
     if (doActionBegin) {

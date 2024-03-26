@@ -1293,6 +1293,10 @@ export default {
         }
         if (skill.damageRate) {
           skill.isAttackSkill = true;
+          if (skill.isAreaTarget)
+            skill.isAreaAttackSkill = true;
+          else
+            skill.isBattleSkill = true;
         }
 
         const hasAreaEffect = (effects) => {

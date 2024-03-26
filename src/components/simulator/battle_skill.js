@@ -22,6 +22,9 @@ export const Direction = {
   Left: 4,
 }
 
+export function calcDistace(pos1, pos2) {
+  return Math.abs(pos1[0] - pos2[0]) + Math.abs(pos1[1] - pos2[1]);
+}
 export function calcDirection(base, target) {
   const dir = [target[0] - base[0], target[1] - base[1]];
   if (dir[1] < 0) {
@@ -307,9 +310,10 @@ export function makeActionContext(unit, target, skill, isAttacker, parent) {
   };
 
   let ctx = {
+    move: 0,
+    range: 0,
     get turn() { return sim.turn; },
     get phase() { return sim.phase; },
-    get range() { return sim.range; },
     get onCloseCombat() { return this.onBattle && this.range == 1; },
     get onRangedCombat() { return this.onBattle && this.range > 1; },
     get terrain() { return ""; },
@@ -406,16 +410,16 @@ export function makeActionContext(unit, target, skill, isAttacker, parent) {
     },
   };
 
-  if (isAttacker) {
-    ctx.move = sim.move;
+  if (skill?.isAttackSkill) {
+    ctx.onAttack = true;
+    if (skill?.isBattleSkill)
+      ctx.onBattle = true;
   }
-  else {
-    ctx.move = 0;
-  }
+  ctx.move = (unit?.moveDistance ?? 0) + (unit?.prevMoveDistance ?? 0);
 
   if (parent) {
     const propsToInherit = [
-      "onAttack", "onBattle", "onPhysicalDamage", "onMagicDamage"
+      "range", "onAttack", "onBattle", "onPhysicalDamage", "onMagicDamage"
     ];
     for (const p of propsToInherit) {
       if (p in parent) {
