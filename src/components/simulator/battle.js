@@ -1,6 +1,6 @@
 export * from "./battle_unit.js";
 export * from "./battle_skill.js";
-import { callHandler, makeActionContext, evaluateCondition, isInside } from "./battle_skill.js";
+import { genDiamondCoords, callHandler, makeActionContext, evaluateCondition, isInside } from "./battle_skill.js";
 import { BaseUnit, SimUnit, UnitState } from "./battle_unit.js";
 import { $g } from "./battle_globals.js";
 
@@ -334,19 +334,18 @@ export class SimContext {
   }
 
 
-  placeUnit(unit, coord) {
+  placeUnit(unit, pos) {
     // 指定座標が占有されていた場合はずらす
-    const subCoord = [
-      [0, 0],
-      [0, -1], [1, 0], [0, 1], [-1, 0],
-      [0, -2], [1, -1], [2, 0], [1, 1], [0, 2], [-1, 1], [-2, 0], [-1, -1]
-    ];
-    for (const sc of subCoord) {
-      let c = [coord[0] + sc[0], coord[1] + sc[1]];
-      if (this.canMoveInto(c)) {
-        unit.coord = c;
-        unit.isDormant = false;
-        return true;
+    // 上から時計回りの菱形の順でトライしていく
+    const maxRadius = 5;
+    for (let r = 0; r < maxRadius; ++r) {
+      for (let s of genDiamondCoords(r)) {
+        let c = [pos[0] + s[0], pos[1] + s[1]];
+        if (this.canMoveInto(c)) {
+          unit.coord = c;
+          unit.isDormant = false;
+          return true;
+        }
       }
     }
     return false;

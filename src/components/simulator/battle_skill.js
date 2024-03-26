@@ -63,6 +63,34 @@ export function parseArea(args) {
   };
 }
 
+export function genDiamondCoords(radius) {
+  const seqX = (n) => {
+    if (n == 0)
+      return [0];
+    let r = [];
+    for (let i = 0; i <= n; ++i)
+      r.push(i);
+    for (let i = n - 1; i >= -n; --i)
+      r.push(i);
+    for (let i = -n + 1; i < 0; ++i)
+      r.push(i);
+    return r;
+  };
+  const seqY = (n) => {
+    if (n == 0)
+      return [0];
+    let r = [];
+    for (let i = -n; i <= n; ++i)
+      r.push(i);
+    for (let i = n - 1; i > -n; --i)
+      r.push(i);
+    return r;
+  };
+  let sx = seqX(radius);
+  let sy = seqY(radius);
+  return sx.map((x, i) => [sx[i], sy[i]])
+}
+
 // params: {
 //  shape: Shape,
 //  center: [x,y],
