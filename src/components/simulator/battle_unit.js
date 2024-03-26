@@ -1209,6 +1209,7 @@ export class SimUnit {
     }
     let skills = ctx?.skill ? [ctx.skill, ...this.passives] : this.passives;
     callHandler(funcName, ctx, ...skills);
+    $vue().addBalloons(ctx);
   }
 
 

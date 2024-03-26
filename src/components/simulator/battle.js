@@ -751,6 +751,7 @@ export class SimContext {
     console.log(ctx);
 
     this.deadUnits = [];
+    $vue().addBalloons(ctx);
     return ctx;
   }
   //#endregion attack
@@ -769,9 +770,11 @@ export class SimContext {
     }
   }
 
-  start() {
+  start(replay) {
     this.onSimulationBegin();
-    this.onPlayerTurnBegin();
+    if (!replay) {
+      this.onPlayerTurnBegin();
+    }
   }
   finish() {
     this.onSimulationEnd();

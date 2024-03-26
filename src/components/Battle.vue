@@ -1573,8 +1573,7 @@ export default {
           skillArgs.coord = this.targetCell.coord;
         }
       }
-      let r = this.simulation.fireSkill(this.selectedUnit, this.selectedSkill, skillArgs);
-      this.addBalloons(r);
+      this.simulation.fireSkill(this.selectedUnit, this.selectedSkill, skillArgs);
       this.resetTools();
       if (unit.isAlive && !unit?.sim.isEnded) {
         this.currentTool.onClickCell(this.findCellByCoord(unit.coord));
@@ -1666,7 +1665,11 @@ export default {
       if (el) {
         if (path) {
           const interval = 40;
+          el.path = path;
           lut.timedEach(path, interval, (c, i) => {
+            if (el.path !== path) {
+              return false; // 途中で path が更新されたら中断
+            }
             el.style.transition = i == 0 ? 'none' : `${interval}ms linear`;
             el.style.transform = `translate(${c[0] * 50}px, ${c[1] * 50}px)`;
           });
@@ -1721,11 +1724,11 @@ export default {
     },
 
 
-    beginSimulation() {
+    beginSimulation(replay = false) {
       this.resetTools();
       if (!this.simulation) {
         this.simulation = new lbt.SimContext(this.battleData, [...this.playerUnits, ...this.enemyUnits]);
-        this.simulation.start();
+        this.simulation.start(replay);
         this.resetTools(this.tools.selectUnit);
       }
     },
@@ -1987,7 +1990,7 @@ export default {
         this.endSimulation(false);
         this.selectBattle(r.battle);
         this.deserializeLoadout(r.loadout);
-        this.beginSimulation();
+        this.beginSimulation(true);
         this.simulation.deserialize(r.states);
         this.$forceUpdate();
       };
@@ -2011,9 +2014,7 @@ export default {
       lut.timedEach(r.states, 150, (state) => {
         if (!this.simulation)
           return false; // 中断された場合
-        let r = this.simulation.playback(state);
-        this.addBalloons(r);
-        this.$forceUpdate();
+        this.simulation.playback(state);
       });
     },
 
