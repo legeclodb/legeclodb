@@ -46,16 +46,16 @@
             <div v-for="(cell, i) in cells" :key="`c${i}`" :class="getCellClass(cell)" :style="cell.style" :id="cell.id"
                  @click.stop="onClickCell(cell)"
                  @mouseover="onEnterCell(cell)" @mouseleave="onLeaveCell(cell)"
-                 :draggable=isCellDraggable(cell) @dragstart="onDragCell(cell)" @drop="onDropCell(cell)" @dragover.prevent="">
+                 :draggable="isCellDraggable(cell)" @dragstart="onDragCell(cell)" @drop="onDropCell(cell)" @dragover.prevent="">
             </div>
             <template v-for="unit in allActiveUnits">
               <template v-if="unit.isNxN">
-                <div v-for="pos in unit.occupiedCells" :key="`${unit.fid}[${pos[0]}][${pos[1]}]`" :style="getUnitStyle(unit, pos)" class="unit-cell">
+                <div v-for="pos in unit.occupiedCells" :key="`${unit.fid}[${pos[0]}][${pos[1]}]`" :style="`transform: translate(${pos[0] * 50}px, ${pos[1] * 50}px)`" class="unit-cell">
                   <b-img :src="getImageURL(unit.main.class)" class="center" :class="getUnitIconClass(unit)" width="40" height="40" />
                 </div>
               </template>
               <template v-else>
-                <div :key="unit.fid" :id="`unit-${unit.fid}`" :style="getUnitStyle(unit)" class="unit-cell">
+                <div :key="unit.fid" :id="`unit-${unit.fid}`" class="unit-cell">
                   <template v-if="unit.isEnemy && unit.hasSupport">
                     <b-img :src="getImageURL(unit.main.class)" class="center" :class="getUnitIconClass(unit)"
                            width="30" height="30" style="left: 17px; top: 17px; z-index: 1;" />
@@ -872,11 +872,21 @@ export default {
       }
     },
     allActiveUnits() {
+      // 死亡、未出現含まない現在場にいるユニット
       if (this.simulation) {
         return this.simulation.units.filter(a => a.isActive).map(a => a.base);
       }
       else {
         return [...this.playerUnits, ...this.enemyUnits].filter(a => a.phase == this.phase || a.fid == "E01");
+      }
+    },
+    allUnits() {
+      // 死亡、未出現含む全ユニット
+      if (this.simulation) {
+        return Object.values(this.simulation.unitTable).map(a => a.base);
+      }
+      else {
+        return [...this.playerUnits, ...this.enemyUnits];
       }
     },
 
@@ -1017,11 +1027,7 @@ export default {
                 let d = self.path.getMoveDistance(cell.coord);
                 u.moveDistance = d < 0 ? u.move : d;
                 sim.updateAreaEffects();
-
-              //  console.log(self.path.toString());
-              //  if (d > 0) {
-              //    u.path = self.path.getPath(cell.coord);
-              //  }
+                self.setUnitPath(u, self.path.getPath(cell.coord));
               }
             }
           },
@@ -1060,6 +1066,8 @@ export default {
             let u = self.selectedUnit;
             u.coord = u.prevCoord;
             u.moveDistance = 0;
+            u.path = null;
+            self.resetUnitPosition(u);
             self.simulation.updateAreaEffects();
           },
           onRenderCell(cell, classes, styles) {
@@ -1468,6 +1476,7 @@ export default {
         }
       }
 
+      this.resetUnitPositionAll(true);
       if (clear) {
         this.selectPhase("0", clear);
       }
@@ -1481,6 +1490,7 @@ export default {
       this.phaseTabIndex = phase.index;
       this.phase = pid;
 
+      this.resetUnitPositionAll(true);
       if (clear) {
         this.selectUnit(null);
       }
@@ -1617,27 +1627,54 @@ export default {
       }
       return r;
     },
-    getUnitStyle(unit, pos) {
-      if (!pos) {
-        pos = unit.coord;
+    resetUnitPosition(u, delay = false) {
+      const body = () => {
+        if (u.isNxN) {
+          // ここでは処置不要
+        }
+        else {
+          let el = document.getElementById(`unit-${u.fid}`);
+          if (el) {
+            const pos = u.coord;
+            el.style.transition = el.style.transform ? '100ms ease' : 'none';
+            el.style.transform = `translate(${pos[0] * 50}px, ${pos[1] * 50}px)`;
+          }
+        }
+      };
+      if (delay) {
+        this.$nextTick(body);
       }
-      let r = [
-        // grid-column, grid-row でも位置指定できるが、transition のアニメーションが効かなくなるので translate を使う。
-        `transform: translate(${pos[0] * 50}px, ${pos[1] * 50}px)`
-      ];
-
-      // todo: 経路なぞる移動
-      //let path = unit.path;
-      //if (path) {
-      //  unit.path = null;
-      //  let el = document.getElementById(`unit-${unit.fid}`);
-      //  if (el) {
-      //    lut.timedEach(path, 100, (c) => {
-      //      el.style.transform = `translate(${c[0] * 50}px, ${c[1] * 50}px)`;
-      //    });
-      //  }
-      //}
-      return r.join(";");
+      else {
+        body();
+      }
+    },
+    resetUnitPositionAll(delay = false) {
+      const body = () => {
+        for (let u of this.allUnits) {
+          this.resetUnitPosition(u);
+        }
+      };
+      if (delay) {
+        this.$nextTick(body);
+      }
+      else {
+        body();
+      }
+    },
+    setUnitPath(unit, path) {
+      let el = document.getElementById(`unit-${unit.fid}`);
+      if (el) {
+        if (path) {
+          const interval = 40;
+          lut.timedEach(path, interval, (c, i) => {
+            el.style.transition = i == 0 ? 'none' : `${interval}ms linear`;
+            el.style.transform = `translate(${c[0] * 50}px, ${c[1] * 50}px)`;
+          });
+        }
+        else {
+          this.resetUnitPosition(unit);
+        }
+      }
     },
     getUnitIconClass(unit) {
       let r = [];
@@ -1699,6 +1736,7 @@ export default {
         this.simulation.finish();
         this.simulation = null;
         this.resetTools(this.tools.nonSimulation);
+        this.resetUnitPositionAll(true);
       }
     },
 
@@ -2295,7 +2333,7 @@ export default {
     height: 50px;
     pointer-events: none;
     transition-property: transform;
-    transition: 0.1s ease;
+    transition: 40ms linear;
   }
   .grid-cell.obstacle {
     background: rgb(180,185,195);

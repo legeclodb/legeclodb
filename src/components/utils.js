@@ -152,10 +152,11 @@ export function timedLoop(count, interval, callback, onEnd = null) {
 export function timedEach(iterable, interval, callback, onEnd = null) {
   let iter = iterable[Symbol.iterator]();
   let result = iter.next();
+  let i = 0;
   const body = () => {
     let end = false;
     if (!result.done) {
-      if (callback(result.value) === false) {
+      if (callback(result.value, i++) === false) {
         end = true;
       }
       else {

@@ -58,6 +58,7 @@ export class SimContext {
   set statePos(v) {
     this.loadState(this.states.at(v));
     this.statePos_ = v;
+    $vue().resetUnitPositionAll(true);
   }
   //#endregion props
 
@@ -201,6 +202,7 @@ export class SimContext {
         let d = pf.getMoveDistance(uop.coord);
         unit.moveDistance = d < 0 ? unit.move : d;
         unit.coord = uop.coord;
+        $vue().setUnitPath(unit.base, pf.getPath(uop.coord));
         //console.log(`move ${unit.moveDistance} (${unit.main.name})`);
         //console.log(pf.toString());
       }
@@ -237,6 +239,7 @@ export class SimContext {
     unit.onSimulationBegin();
     unit.setup();
     this.updateAreaEffects();
+    $vue().resetUnitPosition(unit.base, true);
   }
   notifyDead(unit) {
     this.units = this.units.filter(a => a !== unit);
@@ -342,6 +345,7 @@ export class SimContext {
         if (this.canMoveInto(c)) {
           unit.coord = c;
           unit.isDormant = false;
+          $vue().resetUnitPosition(unit.base, true);
           return true;
         }
       }
@@ -979,8 +983,10 @@ export class PathFinder
     }
   }
   getPath(pos) {
-    let path = [pos];
     let d = this.getMoveDistance(pos);
+    if (d < 0)
+      return null;
+    let path = [pos];
     let cur = [...pos];
     while (d > 0) {
       let len = path.length;
@@ -988,8 +994,7 @@ export class PathFinder
         let next = [cur[0] + n[0], cur[1] + n[1]];
         let nd = this.getMoveDistance(next);
         if (nd != -1 && nd < d) {
-          if (d != 0)
-            path.push(next);
+          path.push(next);
           cur = next;
           d = nd;
           break;
