@@ -1,6 +1,6 @@
 import { $g } from "./battle_globals.js";
 import { SimUnit, UnitState } from "./battle_unit.js";
-import { unique, count } from "../utils.js";
+import { unique, count, minElement } from "../utils.js";
 
 export function scalar(v) {
   return Array.isArray(v) ? v.at(-1) : v;
@@ -250,12 +250,19 @@ export function evaluateCondition(ctx, cond)
 }
 
 export function getTargetUnits(ctx, json) {
+  const getAllyWithLowestHpRate = () => {
+    let allies = $g.sim.activeUnits.filter(a => a.isPlayer == ctx.unit.isPlayer);
+    let lowest = minElement(allies, (a, b) => a.hpRate < b.hpRate);
+    return lowest ? [lowest] : [];
+  };
+
   let targetTable = {
     "自身": () => [ctx.unit],
     "攻撃対象": () => ctx.targets ?? (ctx.target ? [ctx.target] : []),
     "スキル対象": () => ctx.targets ?? (ctx.target ? [ctx.target] : []),
     "範囲": () => ctx.getUnitsInArea(json.area),
     "乱択": () => ctx.getUnitsInArea(json.area),
+    "味方(低HP)": () => getAllyWithLowestHpRate(),
     "味方全体": () => $g.sim.activeUnits.filter(a => a.isPlayer == ctx.unit.isPlayer),
     "敵全体": () => $g.sim.activeUnits.filter(a => a.isPlayer != ctx.unit.isPlayer),
     "召喚先": () => ctx.unit.summon,

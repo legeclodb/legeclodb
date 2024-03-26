@@ -106,6 +106,19 @@ export function count(iterable, cond) {
   return r;
 }
 
+export function maxElement(iterable, comparator = (a, b) => a > b) {
+  let r = undefined;
+  for (let v of iterable) {
+    if (r === undefined || comparator(v, r)) {
+      r = v;
+    }
+  }
+  return r;
+}
+export function minElement(iterable, comparator = (a, b) => a < b) {
+  return maxElement(iterable, comparator);
+}
+
 export function *enumerate(...arrays) {
   for (let array of arrays) {
     if (array) {
