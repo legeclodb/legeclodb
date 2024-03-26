@@ -236,7 +236,7 @@ export class SimContext {
 
     unit.onSimulationBegin();
     unit.setup();
-    this.updateAreaEffectsAll();
+    this.updateAreaEffects();
   }
   notifyDead(unit) {
     this.units = this.units.filter(a => a !== unit);
@@ -359,7 +359,7 @@ export class SimContext {
       if (!u.isAlive) { // 復活持ちはここでも生きている
         this.notifyDead(u);
       }
-      this.updateAreaEffectsAll();
+      this.updateAreaEffects();
 
       this.addUserEvent({
         type: "eraseUnit",
@@ -413,7 +413,8 @@ export class SimContext {
       actx.defender = t;
       let dunit = t.unit;
       // 防御側コンテキスト
-      let dctx = makeActionContext(dunit, aunit, null, false, actx);
+      let dctx = makeActionContext(dunit, aunit, null);
+      dctx.inheritAttackerParams(actx);
       dctx.attacker = actx.attacker;
       dctx.defender = actx.defender;
       if (t.isSupport)
@@ -454,9 +455,9 @@ export class SimContext {
     let actx = ctx.makeChild();
 
     // 防御側コンテキスト
-    let dctx = makeActionContext(target, unit, null, false);
+    let dctx = makeActionContext(target, unit, null);
+    dctx.inheritBattleParams(actx);
     dctx.inheritDamage(ctx);
-    dctx.onAttack = dctx.onBattle = true;
 
     callHandler("onAttackBegin", actx, unit);
     callHandler("onBattleBegin", actx, unit);
@@ -528,8 +529,8 @@ export class SimContext {
       actx.target = target;
       unit.evaluateBuffs(actx);
 
-      // 防御側コンテキスト
-      let dctx = makeActionContext(target, unit, null, false);
+      // 防御側コンテキスト (継承不要)
+      let dctx = makeActionContext(target, unit, null);
       target.evaluateBuffs(dctx);
 
       this.doAttack(actx, attacker, [target.main], skill);
@@ -549,7 +550,7 @@ export class SimContext {
   }
 
   fireSkill(unit, skill, skillArgs) {
-    this.updateAreaEffectsAll();
+    this.updateAreaEffects();
     unit = unit.sim ?? unit;
     let target = null;
     let targets = [];
@@ -614,7 +615,7 @@ export class SimContext {
     // 条件変数を設定
     // ここでは通常攻撃の場合も必ず skill が設定されている
     // (getBattleResult で反撃側やサポートの場合 ctx.skill は null になる)
-    let ctx = makeActionContext(unit, target, skill, true);
+    let ctx = makeActionContext(unit, target, skill);
     ctx.targetCell = targetCell ? [...targetCell] : null;
     ctx.targets = targets;
     if (doActionBegin) { ctx.onAction = true; }
@@ -647,7 +648,7 @@ export class SimContext {
         this.getAreaAttackResult(unit, skill, enemies, ctx);
       }
       skill.onFire(ctx);
-      this.updateAreaEffectsAll();
+      this.updateAreaEffects();
     }
     else {
       ctx.onWait = true;
@@ -741,7 +742,7 @@ export class SimContext {
       target.score += ctx.damageDealt.get(target.fid).total;
     }
 
-    this.updateAreaEffectsAll();
+    this.updateAreaEffects();
     this.pushState(unit, skill, skillArgs);
     console.log(ctx);
 
@@ -752,7 +753,7 @@ export class SimContext {
 
 
   //#region simulation & callbacks
-  updateAreaEffectsAll() {
+  updateAreaEffects() {
     for (let u of this.activeUnits) {
       u.beforeUpdateAreaEffects();
     }
@@ -792,11 +793,11 @@ export class SimContext {
     for (let u of this.units) {
       u.onSimulationBegin();
     }
-    this.updateAreaEffectsAll();
+    this.updateAreaEffects();
     for (let u of this.units) {
       u.setup();
     }
-    this.updateAreaEffectsAll();
+    this.updateAreaEffects();
   }
   onSimulationEnd() {
     for (let u of Object.values(this.unitTable)) {
@@ -814,7 +815,7 @@ export class SimContext {
     for (let u of this.activeEnemyUnits) {
       u.onOpponentTurnBegin();
     }
-    this.updateAreaEffectsAll();
+    this.updateAreaEffects();
     this.pushState();
   }
   onPlayerTurnEnd() {
@@ -837,7 +838,7 @@ export class SimContext {
         this.placeUnit(u, u.coord);
       }
     }
-    this.updateAreaEffectsAll();
+    this.updateAreaEffects();
 
     for (let u of this.activeEnemyUnits) {
       u.onOwnTurnBegin();
@@ -845,7 +846,7 @@ export class SimContext {
     for (let u of this.activePlayerUnits) {
       u.onOpponentTurnBegin();
     }
-    this.updateAreaEffectsAll();
+    this.updateAreaEffects();
     this.pushState();
   }
   onEnemyTurnEnd() {

@@ -1293,7 +1293,7 @@ export default {
         }
         if (skill.damageRate) {
           skill.isAttackSkill = true;
-          if (skill.isAreaTarget)
+          if (skill.isAreaTarget || skill.isSupportSkill) // サポートのスキルは全て範囲(非戦闘)扱い
             skill.isAreaAttackSkill = true;
           else
             skill.isBattleSkill = true;

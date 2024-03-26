@@ -280,7 +280,7 @@ export function getTargetUnits(ctx, json) {
   }
 }
 
-export function makeActionContext(unit, target, skill, isAttacker, parent) {
+export function makeActionContext(unit, target, skill) {
   let sim = $g.sim;
 
   const damageProps = [
@@ -342,11 +342,11 @@ export function makeActionContext(unit, target, skill, isAttacker, parent) {
 
     // target 関連
     target: target,
-    get targetClass() { return this.target.mainClass; },
-    get targetHp() { return this.target.hpRate; },
-    get targetActiveBuffCount() { return this.target.activeBuffCount; },
-    get targetActiveDebuffCount() { return this.target.activeDebuffCount; },
-    getTargetTokenCount(args) { return this.target.getTokenCount(args); },
+    get targetClass() { return this.target?.mainClass; },
+    get targetHp() { return this.target?.hpRate ?? 0; },
+    get targetActiveBuffCount() { return this.target?.activeBuffCount ?? 0; },
+    get targetActiveDebuffCount() { return this.target?.activeDebuffCount ?? 0; },
+    getTargetTokenCount(args) { return this.target ? this.target.getTokenCount(args) : 0; },
 
     // ダメージ関連
     damageDealt: Object.create(damageRecordBase),
@@ -408,6 +408,24 @@ export function makeActionContext(unit, target, skill, isAttacker, parent) {
       this.addDamage = (...args) => { parent.addDamage(...args); };
       this.addHeal = (...args) => { parent.addHeal(...args); };
     },
+
+    _inheritProps(parent, props) {
+      for (const p of props) {
+        if (p in parent) {
+          this[p] = parent[p];
+        }
+      }
+    },
+    inheritBattleParams(parent) {
+      this._inheritProps(parent, ["range", "onAttack", "onBattle"]);
+    },
+    inheritAttackerParams(parent) {
+      this.inheritBattleParams(parent);
+      this._inheritProps(parent, ["onPhysicalDamage", "onMagicDamage"]);
+      if (parent.isTargetGuardian) {
+        this.onGuard = true;
+      }
+    },
   };
 
   if (skill?.isAttackSkill) {
@@ -416,20 +434,6 @@ export function makeActionContext(unit, target, skill, isAttacker, parent) {
       ctx.onBattle = true;
   }
   ctx.move = (unit?.moveDistance ?? 0) + (unit?.prevMoveDistance ?? 0);
-
-  if (parent) {
-    const propsToInherit = [
-      "range", "onAttack", "onBattle", "onPhysicalDamage", "onMagicDamage"
-    ];
-    for (const p of propsToInherit) {
-      if (p in parent) {
-        ctx[p] = parent[p];
-      }
-    }
-    if (parent.isTargetGuardian) {
-      ctx.onGuard = true;
-    }
-  }
 
   return ctx;
 }

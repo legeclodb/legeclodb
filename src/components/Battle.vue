@@ -998,9 +998,7 @@ export default {
             if (unit) {
               if (self.selectedUnit === unit) {
                 // 再度そのユニットがクリックされたら待機
-                if (sim) {
-                  self.onClickWait();
-                }
+                self.onClickWait();
               }
               else {
                 // 別のユニットが選択されたらそちらに切り替え
@@ -1018,7 +1016,7 @@ export default {
                 u.coord = cell.coord;
                 let d = self.path.getMoveDistance(cell.coord);
                 u.moveDistance = d < 0 ? u.move : d;
-                u.sim.evaluateBuffs();
+                sim.updateAreaEffects();
 
               //  console.log(self.path.toString());
               //  if (d > 0) {
@@ -1062,9 +1060,7 @@ export default {
             let u = self.selectedUnit;
             u.coord = u.prevCoord;
             u.moveDistance = 0;
-            if (u.sim) {
-              u.sim.evaluateBuffs();
-            }
+            self.simulation.updateAreaEffects();
           },
           onRenderCell(cell, classes, styles) {
             let sim = self.simulation;
@@ -1281,8 +1277,10 @@ export default {
 
             let unit = self.selectedUnit?.sim;
             if (unit) {
-              let ctx = lbt.makeActionContext(self.selectedUnit.sim, self.targetUnit?.sim, self.selectedSkill, true);
-              ctx.range = lbt.calcDistace(unit.coord, self.targetCell.coord);
+              let ctx = lbt.makeActionContext(self.selectedUnit.sim, self.targetUnit?.sim, self.selectedSkill);
+              if (self.targetCell) {
+                ctx.range = lbt.calcDistace(unit.coord, self.targetCell.coord);
+              }
               unit.evaluateBuffs(ctx);
             }
           },
