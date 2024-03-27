@@ -611,8 +611,10 @@ export class SimUnit {
 
   // effect: BaseEffect (SimEffect ではない)
   applyEffect(effect, stop = false) {
+    let r = null;
     const append = () => {
-      this.timedEffects.push(makeSimEffect(effect, stop));
+      r = makeSimEffect(effect, stop);
+      this.timedEffects.push(r);
     };
     if (effect.stack) {
       let pos = -1, count = 0;
@@ -665,6 +667,7 @@ export class SimUnit {
       append();
     }
     console.log(`${effect.type} ${effect.value ?? effect.variant ?? effect.tokenName ?? ''} ${effect.duration ?? ''}T (by ${effect.parent.name}) -> ${this.main.name}`);
+    return r;
   }
   // ユーザーイベント版
   applyEffect_(effect) {
@@ -678,18 +681,17 @@ export class SimUnit {
   }
 
   removeEffectsByCondition(count, cond) {
-    let n = 0;
-    for (let i = 0; i < this.timedEffects.length && n < count; /**/) {
+    let r = [];
+    for (let i = 0; i < this.timedEffects.length && r.length < count; /**/) {
       let e = this.timedEffects[i];
       if (cond(e)) {
-        this.timedEffects.splice(i, 1);
-        ++n;
+        r.push(this.timedEffects.splice(i, 1)[0]);
       }
       else {
         ++i;
       }
     }
-    return n;
+    return r;
   }
   removeEffect(effect) {
     let i = this.timedEffects.findIndex(a => a === effect);

@@ -896,6 +896,32 @@ export function makeSimSkill(skill, ownerUnit) {
       }
     }
   };
+  self.invokeBuffSteal = function (ctx, timing = null) {
+    if (!$g.config.enableAutoBuffCancel) {
+      return;
+    }
+    for (let act of self?.buffSteal ?? []) {
+      if (act.timing == timing && !act.coolTime && evaluateCondition(ctx, act.condition)) {
+        if (act.ct) {
+          act.coolTime = act.ct;
+        }
+
+        let u = ctx.unit;
+        for (let t of unique(ctx.targets)) {
+          if (u.isPlayer != t.isPlayer) {
+            let buff = t.removeEffectsByCondition(act.value, (e) => e.isBuff && e.parent.isActive);
+            for (let b of buff) {
+              let t = u.applyEffect(b.__proto__);
+              if (t) {
+                t.count = b.count + 1;
+              }
+            }
+            $g.log(`!! バフ奪取 ${u.main.name} (${self.name}) -> ${t.main.name}!!`);
+          }
+        }
+      }
+    }
+  };
   self.invokeBuffCancel = function (ctx, timing = null) {
     if (!$g.config.enableAutoBuffCancel) {
       return;
@@ -1167,6 +1193,7 @@ export function makeSimSkill(skill, ownerUnit) {
     this.invokeFixedDamage(ctx);
     this.invokeAreaDamage(ctx);
     this.invokeHeal(ctx);
+    this.invokeBuffSteal(ctx);
     this.invokeBuffCancel(ctx);
     this.invokeDebuffCancel(ctx);
     this.invokeCtReduction(ctx);
@@ -1194,6 +1221,7 @@ export function makeSimSkill(skill, ownerUnit) {
     this.invokeFixedDamage(ctx, timing);
     this.invokeAreaDamage(ctx, timing);
     this.invokeHeal(ctx, timing);
+    this.invokeBuffSteal(ctx, timing);
     this.invokeBuffCancel(ctx, timing);
     this.invokeDebuffCancel(ctx, timing);
     this.invokeCtReduction(ctx, timing);
