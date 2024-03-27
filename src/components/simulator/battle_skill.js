@@ -588,6 +588,14 @@ export function makeSimSkill(skill, ownerUnit) {
       prefix: 'cr',
       invoke: (ctx) => self.invokeCtReduction(ctx),
     },
+    buffCancel: {
+      prefix: 'bc',
+      invoke: (ctx) => self.invokeBuffCanel(ctx),
+    },
+    debuffCancel: {
+      prefix: 'dc',
+      invoke: (ctx) => self.invokeDebuffCanel(ctx),
+    },
     doubleAttack: {
       prefix: 'da',
       invoke: (ctx) => self.invokeDoubleAttack(ctx),
@@ -888,6 +896,46 @@ export function makeSimSkill(skill, ownerUnit) {
       }
     }
   };
+  self.invokeBuffCancel = function (ctx, timing = null) {
+    if (!$g.config.enableAutoBuffCancel) {
+      return;
+    }
+    for (let act of self?.buffCancel ?? []) {
+      if (act.timing == timing && !act.coolTime && evaluateCondition(ctx, act.condition)) {
+        if (act.ct) {
+          act.coolTime = act.ct;
+        }
+
+        let u = ctx.unit;
+        for (let t of unique(ctx.targets)) {
+          if (u.isPlayer != t.isPlayer) {
+            t.removeEffectsByCondition(act.value, (e) => e.isBuff && e.parent.isActive);
+            $g.log(`!! バフ解除 ${u.main.name} (${self.name}) -> ${t.main.name}!!`);
+          }
+        }
+      }
+    }
+  };
+  self.invokeDebuffCancel = function (ctx, timing = null) {
+    if (!$g.config.enableAutoDebuffCancel) {
+      return;
+    }
+    for (let act of self?.debuffCancel ?? []) {
+      if (act.timing == timing && !act.coolTime && evaluateCondition(ctx, act.condition)) {
+        if (act.ct) {
+          act.coolTime = act.ct;
+        }
+
+        let u = ctx.unit;
+        for (let t of unique(ctx.targets)) {
+          if (u.isPlayer == t.isPlayer) {
+            t.removeEffectsByCondition(act.value, (e) => e.isDebuff && e.parent.isActive);
+            $g.log(`!! デバフ解除 ${u.main.name} (${self.name}) -> ${t.main.name}!!`);
+          }
+        }
+      }
+    }
+  };
   self.invokeAreaDamage = function (ctx, timing = null) {
     for (let act of self?.areaDamage ?? []) {
       if (act.timing == timing && !act.coolTime && evaluateCondition(ctx, act.condition)) {
@@ -1119,6 +1167,8 @@ export function makeSimSkill(skill, ownerUnit) {
     this.invokeFixedDamage(ctx);
     this.invokeAreaDamage(ctx);
     this.invokeHeal(ctx);
+    this.invokeBuffCancel(ctx);
+    this.invokeDebuffCancel(ctx);
     this.invokeCtReduction(ctx);
     //console.log(this);
   };
@@ -1141,9 +1191,11 @@ export function makeSimSkill(skill, ownerUnit) {
         ctx.target = prevTarget;
       }
     }
-    this.invokeHeal(ctx, timing);
-    this.invokeAreaDamage(ctx, timing);
     this.invokeFixedDamage(ctx, timing);
+    this.invokeAreaDamage(ctx, timing);
+    this.invokeHeal(ctx, timing);
+    this.invokeBuffCancel(ctx, timing);
+    this.invokeDebuffCancel(ctx, timing);
     this.invokeCtReduction(ctx, timing);
   };
 

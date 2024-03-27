@@ -675,9 +675,22 @@ export class SimUnit {
       target: this.fid,
       effect: effect.uid,
     });
-
   }
 
+  removeEffectsByCondition(count, cond) {
+    let n = 0;
+    for (let i = 0; i < this.timedEffects.length && n < count; /**/) {
+      let e = this.timedEffects[i];
+      if (cond(e)) {
+        this.timedEffects.splice(i, 1);
+        ++n;
+      }
+      else {
+        ++i;
+      }
+    }
+    return n;
+  }
   removeEffect(effect) {
     let i = this.timedEffects.findIndex(a => a === effect);
     if (i != -1) {
