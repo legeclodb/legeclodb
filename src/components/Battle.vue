@@ -218,7 +218,7 @@
 
     <div class="content sim-replay" @click.stop="" tabindex="0" @keydown.up.stop="onKeyReplay($event)" @keydown.down.stop="onKeyReplay($event)">
       <div class="unit-panel">
-        <div style="max-height: 350px; overflow-y: auto;">
+        <div style="max-height: 350px; overflow-y: auto; overscroll-behavior: none;">
           <template v-if="simulation ?? replay">
             <template v-for="(r, i) of (simulation ?? replay).states.toReversed()">
               <div class="flex" :style="`margin: 2px 0px 2px 0px; ${ simulation?.statePos==-i-1 ? 'background: rgb(220,220,230)': '' }`" :key="i" :id="`sim-state-${-i-1}`">
@@ -988,6 +988,7 @@ export default {
             let sim = unit.sim ?? unit;
             pf.buildPath(unit.move, sim?.isOnMultiMove ? null : {size: unit.range});
             self.path = pf;
+            //console.log(self.path.toString());
           },
 
           onEnable() {
@@ -2343,7 +2344,7 @@ export default {
     pointer-events: none;
     transition-property: offset-distance;
     transition: 100ms linear;
-    transform: translate(25px,25px);
+    offset-anchor: left top;
     offset-rotate: 0deg;
   }
   .grid-cell.obstacle {
@@ -2391,6 +2392,7 @@ export default {
 
   .enemy-list {
     overflow-y: scroll;
+    overscroll-behavior: none;
   }
   .enemy-panel {
   }

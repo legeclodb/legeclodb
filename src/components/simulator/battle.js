@@ -1024,7 +1024,7 @@ export class PathFinder
     ];
     for (let n of neighbors) {
       if (n && n.moveDistance == distance) {
-        c.moveDistance = distance + 1;
+        c.shootDistance = c.moveDistance = distance + 1;
       }
     }
   }
