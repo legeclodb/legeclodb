@@ -1494,6 +1494,10 @@ export default {
             v.duration = 0;
           }
         }
+        if (skill.isActive && !["ガード"].includes(v.type)) {
+          v.isCancelable = true;
+        }
+
         setParent(v);
         setupSlot(v);
       }

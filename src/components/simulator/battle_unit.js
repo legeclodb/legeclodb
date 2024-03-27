@@ -611,6 +611,10 @@ export class SimUnit {
 
   // effect: BaseEffect (SimEffect ではない)
   applyEffect(effect, stop = false) {
+    if (effect.isBuff && effect.isCancelable && this.hasBadStatus("強化不可")) {
+      return null;
+    }
+
     let r = null;
     const append = () => {
       r = makeSimEffect(effect, stop);
@@ -952,6 +956,11 @@ export class SimUnit {
   hasResist(type) {
     // todo:
     // デバフ・状態異常などに対する耐性が入る予定
+    return false;
+  }
+  hasBadStatus(type) {
+    // todo:
+    // 状態異常の影響下にあるか
     return false;
   }
   getEphemeralDebuffValue(type) {

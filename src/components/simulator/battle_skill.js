@@ -907,9 +907,10 @@ export function makeSimSkill(skill, ownerUnit) {
         }
 
         let u = ctx.unit;
-        for (let t of unique(ctx.targets)) {
+        let count = scalar(act.value);
+        for (let t of unique(getTargetUnits(ctx, act))) {
           if (u.isPlayer != t.isPlayer) {
-            let buff = t.removeEffectsByCondition(act.value, (e) => e.isBuff && e.parent.isActive);
+            let buff = t.removeEffectsByCondition(count, (e) => e.isBuff && e.isCancelable);
             for (let b of buff) {
               let t = u.applyEffect(b.__proto__);
               if (t) {
@@ -933,9 +934,10 @@ export function makeSimSkill(skill, ownerUnit) {
         }
 
         let u = ctx.unit;
-        for (let t of unique(ctx.targets)) {
+        let count = scalar(act.value);
+        for (let t of unique(getTargetUnits(ctx, act))) {
           if (u.isPlayer != t.isPlayer) {
-            t.removeEffectsByCondition(act.value, (e) => e.isBuff && e.parent.isActive);
+            t.removeEffectsByCondition(count, (e) => e.isBuff && e.isCancelable);
             $g.log(`!! バフ解除 ${u.main.name} (${self.name}) -> ${t.main.name}!!`);
           }
         }
@@ -953,9 +955,10 @@ export function makeSimSkill(skill, ownerUnit) {
         }
 
         let u = ctx.unit;
-        for (let t of unique(ctx.targets)) {
+        let count = scalar(act.value);
+        for (let t of unique(getTargetUnits(ctx, act))) {
           if (u.isPlayer == t.isPlayer) {
-            t.removeEffectsByCondition(act.value, (e) => e.isDebuff && e.parent.isActive);
+            t.removeEffectsByCondition(count, (e) => e.isDebuff && e.isCancelable);
             $g.log(`!! デバフ解除 ${u.main.name} (${self.name}) -> ${t.main.name}!!`);
           }
         }
@@ -1099,6 +1102,9 @@ export function makeSimSkill(skill, ownerUnit) {
     return succeeded;
   };
   self.invokeMultiAction = function (ctx) {
+    if (ctx.unit.hasBadStatus("強化不可")) {
+      return false;
+    }
     let succeeded = false;
     for (let act of self?.multiAction ?? []) {
       if (!act.coolTime && ctx.onOwnTurn && evaluateCondition(ctx, act.condition)) {
