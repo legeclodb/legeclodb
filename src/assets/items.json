@@ -193,6 +193,7 @@
       {
         "value": 1,
         "timing": "戦闘後",
+        "target": "攻撃対象",
         "condition": { "onCriticalHit": true }
       }
     ],
@@ -542,7 +543,13 @@
         "timing": "敵撃破時"
       }
     ],
-    "tags": [ "デバフ解除" ]
+    "debuffCancel": [
+      {
+        "value": 1,
+        "target": "自身",
+        "timing": "敵撃破時"
+      }
+    ]
   },
   {
     "uid": "Item_Equipment_SSR_0021",
@@ -603,6 +610,7 @@
       {
         "value": 1,
         "timing": "戦闘後",
+        "target": "攻撃対象",
         "condition": {
           "onCriticalHit": true,
           "onOwnTurn": true
@@ -675,8 +683,8 @@
     ],
     "buffCancel": [
       {
-        "target": "攻撃対象",
         "value": 1,
+        "target": "攻撃対象",
         "timing": "戦闘後",
         "condition": { "onCriticalHit": true }
       }
@@ -1762,7 +1770,13 @@
         "timing": "戦闘前"
       }
     ],
-    "tags": [ "デバフ解除" ]
+    "debuffCancel": [
+      {
+        "value": 1,
+        "target": "自身",
+        "timing": "戦闘前"
+      }
+    ]
   },
   {
     "uid": "Item_Equipment_SSR_0044",
@@ -3704,6 +3718,7 @@
       {
         "value": 1,
         "timing": "攻撃後",
+        "target": "攻撃対象",
         "condition": {
           "onActiveSkill": true,
           "onOwnTurn": true
@@ -3860,7 +3875,14 @@
         "target": "自身(メイン)"
       }
     ],
-    "tags": [ "デバフ解除(味方)" ]
+    "debuffCancel": [
+      {
+        "value": 1,
+        "target": "範囲",
+        "area": 2,
+        "timing": "行動後"
+      }
+    ]
   },
   {
     "uid": "Item_Equipment_SSR_0095",
@@ -6154,8 +6176,8 @@
     ],
     "buffCancel": [
       {
-        "target": "攻撃対象",
         "value": 1,
+        "target": "攻撃対象",
         "timing": "戦闘前",
         "condition": { "targetActiveBuffCount": [ ">=", 2 ] }
       }
@@ -7337,6 +7359,7 @@
     "buffCancel": [
       {
         "value": 1,
+        "target": "攻撃対象",
         "timing": "戦闘後",
         "condition": { "onCriticalHit": true }
       }

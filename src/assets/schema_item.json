@@ -63,6 +63,10 @@
         "type": "array",
         "items": { "$ref": "schema_skill.json#/$defs/buffCancel" }
       },
+      "debuffCancel": {
+        "type": "array",
+        "items": { "$ref": "schema_skill.json#/$defs/debuffCancel" }
+      },
       "ctReduction": {
         "type": "array",
         "items": { "$ref": "schema_skill.json#/$defs/ctReduction" }

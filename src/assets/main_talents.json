@@ -817,8 +817,9 @@
     "buffSteal": [
       {
         "value": [ 1, 1, 2, 2, 2 ],
-        "condition": { "onCriticalHit": true },
-        "timing": "戦闘後"
+        "target": "攻撃対象",
+        "timing": "戦闘後",
+        "condition": { "onCriticalHit": true }
       }
     ],
     "tags": [ "蓄積バフ" ]
@@ -1134,7 +1135,13 @@
         "area": 2
       }
     ],
-    "tags": [ "デバフ解除" ]
+    "debuffCancel": [
+      {
+        "value": 1,
+        "target": "範囲",
+        "area": 2
+      }
+    ]
   },
   {
     "uid": "3100139",
@@ -6251,7 +6258,15 @@
         "condition": { "onActiveSkill": true }
       }
     ],
-    "tags": [ "範囲+", "デバフ解除" ]
+    "debuffCancel": [
+      {
+        "value": 1,
+        "target": "範囲",
+        "area": 3,
+        "timing": "行動後"
+      }
+    ],
+    "tags": [ "範囲+" ]
   },
   {
     "uid": "3100441",
@@ -9074,7 +9089,14 @@
         "timing": "戦闘後"
       }
     ],
-    "tags": [ "デバフ解除" ]
+    "debuffCancel": [
+      {
+        "value": 2,
+        "target": "範囲",
+        "area": [ 2, "周囲" ],
+        "timing": "自ターン開始時"
+      }
+    ]
   },
   {
     "uid": "3100504",

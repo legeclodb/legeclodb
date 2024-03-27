@@ -2410,6 +2410,7 @@
     "buffCancel": [
       {
         "value": 1,
+        "target": "攻撃対象",
         "timing": "戦闘前",
         "condition": { "onCloseCombat": true }
       }
@@ -2442,6 +2443,7 @@
     "buffCancel": [
       {
         "value": 2,
+        "target": "攻撃対象",
         "timing": "戦闘前",
         "condition": { "onCloseCombat": true }
       }
@@ -3918,6 +3920,7 @@
     "buffSteal": [
       {
         "value": 1,
+        "target": "攻撃対象",
         "condition": { "hp": [ ">=", 50 ] },
         "timing": "戦闘後"
       }
@@ -3948,6 +3951,7 @@
     "buffSteal": [
       {
         "value": 1,
+        "target": "攻撃対象",
         "timing": "戦闘後"
       }
     ],

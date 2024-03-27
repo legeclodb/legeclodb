@@ -304,7 +304,8 @@
     "buffSteal": [
       {
         "value": 2,
-        "timing": "戦闘前"
+        "timing": "戦闘前",
+        "target": "攻撃対象"
       }
     ],
     "ignoreGuard": [ {} ]
@@ -510,7 +511,8 @@
     "buffCancel": [
       {
         "value": 2,
-        "timing": "戦闘前"
+        "timing": "戦闘前",
+        "target": "攻撃対象"
       }
     ],
     "debuff": [
@@ -728,7 +730,8 @@
     "buffCancel": [
       {
         "value": 3,
-        "timing": "戦闘前"
+        "timing": "戦闘前",
+        "target": "攻撃対象"
       }
     ]
   },
@@ -745,7 +748,8 @@
     "buffCancel": [
       {
         "value": 3,
-        "timing": "戦闘前"
+        "timing": "戦闘前",
+        "target": "攻撃対象"
       }
     ],
     "ignoreGuard": [ {} ]
@@ -1180,7 +1184,12 @@
         "target": "スキル対象"
       }
     ],
-    "tags": [ "デバフ解除" ]
+    "debuffCancel": [
+      {
+        "value": 1,
+        "target": "スキル対象"
+      }
+    ]
   },
   {
     "uid": "1100030",
@@ -1229,7 +1238,12 @@
         "target": "スキル対象"
       }
     ],
-    "tags": [ "デバフ解除" ]
+    "debuffCancel": [
+      {
+        "value": 1,
+        "target": "スキル対象"
+      }
+    ]
   },
   {
     "uid": "1100032",
@@ -1903,7 +1917,8 @@
     "buffCancel": [
       {
         "value": 2,
-        "timing": "攻撃後"
+        "timing": "攻撃後",
+        "target": "攻撃対象"
       }
     ]
   },
@@ -2118,7 +2133,8 @@
     "buffCancel": [
       {
         "value": 1,
-        "timing": "攻撃後"
+        "timing": "攻撃後",
+        "target": "攻撃対象"
       }
     ],
     "multiMove": [ { "type": "基本移動力" } ],
@@ -2634,7 +2650,8 @@
     "buffSteal": [
       {
         "value": 3,
-        "timing": "戦闘後"
+        "timing": "戦闘後",
+        "target": "攻撃対象"
       }
     ],
     "ignoreGuard": [ {} ]
@@ -2666,7 +2683,12 @@
         "target": "スキル対象"
       }
     ],
-    "tags": [ "デバフ解除" ]
+    "debuffCancel": [
+      {
+        "value": 3,
+        "target": "スキル対象"
+      }
+    ]
   },
   {
     "uid": "1100643",
@@ -2692,10 +2714,16 @@
     "heal": [
       {
         "base": "マジック",
-        "rate": 3
+        "rate": 3,
+        "target": "スキル対象"
       }
     ],
-    "tags": [ "デバフ解除" ]
+    "debuffCancel": [
+      {
+        "value": 3,
+        "target": "スキル対象"
+      }
+    ]
   },
   {
     "uid": "1100081",
@@ -3027,7 +3055,8 @@
     "buffCancel": [
       {
         "value": 3,
-        "timing": "攻撃後"
+        "timing": "攻撃後",
+        "target": "攻撃対象"
       }
     ],
     "statusEffects": [
@@ -3050,7 +3079,9 @@
     "buffCancel": [
       {
         "value": 3,
-        "timing": "攻撃後"
+        "timing": "攻撃後",
+        "target": "攻撃対象"
+
       }
     ],
     "buff": [
@@ -3321,7 +3352,8 @@
     "buffCancel": [
       {
         "value": 1,
-        "timing": "攻撃後"
+        "timing": "攻撃後",
+        "target": "攻撃対象"
       }
     ],
     "debuff": [
@@ -3353,7 +3385,8 @@
     "buffCancel": [
       {
         "value": 2,
-        "timing": "戦闘後"
+        "timing": "戦闘後",
+        "target": "攻撃対象"
       }
     ],
     "note": "対象がアサシンの場合、2倍のダメージ"
@@ -3534,7 +3567,8 @@
     "buffCancel": [
       {
         "value": 3,
-        "timing": "戦闘前"
+        "timing": "戦闘前",
+        "target": "攻撃対象"
       }
     ],
     "buff": [
@@ -4328,7 +4362,8 @@
     "buffCancel": [
       {
         "value": 1,
-        "timing": "攻撃後"
+        "timing": "攻撃後",
+        "target": "攻撃対象"
       }
     ]
   },
@@ -4446,7 +4481,8 @@
     "buffCancel": [
       {
         "value": 2,
-        "timing": "戦闘前"
+        "timing": "戦闘前",
+        "target": "攻撃対象"
       }
     ]
   },
@@ -4631,6 +4667,7 @@
       {
         "value": 2,
         "timing": "戦闘前",
+        "target": "攻撃対象",
         "condition": {
           "token": {
             "tokenName": "忍びの極意",
@@ -4799,7 +4836,8 @@
     "buffCancel": [
       {
         "value": 3,
-        "timing": "戦闘前"
+        "timing": "戦闘前",
+        "target": "攻撃対象"
       }
     ],
     "debuff": [
@@ -4903,7 +4941,8 @@
     "buffCancel": [
       {
         "value": 2,
-        "timing": "戦闘後"
+        "timing": "戦闘後",
+        "target": "攻撃対象"
       }
     ],
     "note": "対象がアサシンの場合、2倍のダメージ"
@@ -5219,7 +5258,8 @@
     "buffCancel": [
       {
         "value": 2,
-        "timing": "戦闘前"
+        "timing": "戦闘前",
+        "target": "攻撃対象"
       }
     ],
     "ignoreGuard": [ {} ]
@@ -5509,7 +5549,8 @@
     "buffCancel": [
       {
         "value": 1,
-        "timing": "戦闘前"
+        "timing": "戦闘前",
+        "target": "攻撃対象"
       }
     ],
     "debuff": [
@@ -5537,7 +5578,8 @@
     "buffCancel": [
       {
         "value": 2,
-        "timing": "戦闘前"
+        "timing": "戦闘前",
+        "target": "攻撃対象"
       }
     ],
     "debuff": [
@@ -6001,7 +6043,8 @@
     "buffCancel": [
       {
         "value": 2,
-        "timing": "戦闘前"
+        "timing": "戦闘前",
+        "target": "攻撃対象"
       }
     ],
     "debuff": [
@@ -6637,7 +6680,8 @@
     "buffCancel": [
       {
         "value": 1,
-        "timing": "戦闘前"
+        "timing": "戦闘前",
+        "target": "攻撃対象"
       }
     ],
     "supportAttack": [ { "condition": { "targetHp": [ ">=", 50 ] } } ],
@@ -6725,7 +6769,8 @@
     "buffCancel": [
       {
         "value": 2,
-        "timing": "戦闘前"
+        "timing": "戦闘前",
+        "target": "攻撃対象"
       }
     ],
     "debuff": [
@@ -6763,7 +6808,8 @@
     "buffCancel": [
       {
         "value": 2,
-        "timing": "戦闘前"
+        "timing": "戦闘前",
+        "target": "攻撃対象"
       }
     ],
     "debuff": [
@@ -7328,7 +7374,8 @@
     "buffCancel": [
       {
         "value": 2,
-        "timing": "戦闘前"
+        "timing": "戦闘前",
+        "target": "攻撃対象"
       }
     ],
     "debuff": [
@@ -7802,7 +7849,9 @@
     "buffCancel": [
       {
         "value": 1,
-        "timing": "攻撃後"
+        "timing": "攻撃後",
+        "target": "攻撃対象"
+
       }
     ],
     "buff": [
@@ -8098,7 +8147,8 @@
     "buffCancel": [
       {
         "value": 1,
-        "timing": "戦闘前"
+        "timing": "戦闘前",
+        "target": "攻撃対象"
       }
     ],
     "supportAttack": [ {} ]
@@ -9962,7 +10012,12 @@
         "target": "スキル対象"
       }
     ],
-    "tags": [ "デバフ解除" ],
+    "debuffCancel": [
+      {
+        "value": 1,
+        "target": "スキル対象"
+      }
+    ],
     "note": "与ダメージバフは他のアクティブと競合せず加算になる。"
   },
   {
@@ -10188,7 +10243,12 @@
         "target": "スキル対象"
       }
     ],
-    "tags": [ "デバフ解除" ]
+    "debuffCancel": [
+      {
+        "value": 1,
+        "target": "スキル対象"
+      }
+    ]
   },
   {
     "uid": "1100152",
@@ -10465,7 +10525,8 @@
     "buffCancel": [
       {
         "value": 2,
-        "timing": "戦闘前"
+        "timing": "戦闘前",
+        "target": "攻撃対象"
       }
     ],
     "buff": [
@@ -10558,7 +10619,8 @@
     "buffCancel": [
       {
         "value": 2,
-        "timing": "攻撃後"
+        "timing": "攻撃後",
+        "target": "攻撃対象"
       }
     ],
     "buff": [
@@ -10838,6 +10900,12 @@
           "timing": "戦闘前"
         }
       }
+    ],
+    "debuffCancel": [
+      {
+        "value": 2,
+        "target": "自身"
+      }
     ]
   },
   {
@@ -11050,7 +11118,8 @@
     "buffCancel": [
       {
         "value": 2,
-        "timing": "攻撃後"
+        "timing": "攻撃後",
+        "target": "攻撃対象"
       }
     ],
     "debuff": [
@@ -11805,7 +11874,8 @@
     "buffSteal": [
       {
         "value": 2,
-        "timing": "戦闘前"
+        "timing": "戦闘前",
+        "target": "攻撃対象"
       }
     ]
   },
@@ -11822,10 +11892,17 @@
     "buffSteal": [
       {
         "value": 3,
-        "timing": "戦闘前"
+        "timing": "戦闘前",
+        "target": "攻撃対象"
       }
     ],
-    "tags": [ "デバフ解除" ]
+    "debuffCancel": [
+      {
+        "value": 2,
+        "timing": "戦闘前",
+        "target": "自身"
+      }
+    ]
   },
   {
     "uid": "1100707",
@@ -11876,8 +11953,13 @@
         "duration": 4
       }
     ],
-    "multiAction": [ {} ],
-    "tags": [ "デバフ解除" ]
+    "debuffCancel": [
+      {
+        "value": 2,
+        "target": "スキル対象"
+      }
+    ],
+    "multiAction": [ {} ]
   },
   {
     "uid": "1100743",
@@ -12159,7 +12241,8 @@
     "buffSteal": [
       {
         "value": 2,
-        "timing": "戦闘前"
+        "timing": "戦闘前",
+        "target": "攻撃対象"
       }
     ]
   },
@@ -12205,7 +12288,8 @@
     "buffSteal": [
       {
         "value": 3,
-        "timing": "戦闘前"
+        "timing": "戦闘前",
+        "target": "攻撃対象"
       }
     ]
   },
@@ -12257,7 +12341,25 @@
     "buffCancel": [
       {
         "value": 1,
-        "timing": "攻撃後"
+        "timing": "攻撃後",
+        "target": "攻撃対象",
+        "condition": {
+          "token": {
+            "tokenName": "新世界の探究者",
+            "compare": [ "==", 1 ]
+          }
+        }
+      },
+      {
+        "value": 2,
+        "timing": "攻撃後",
+        "target": "攻撃対象",
+        "condition": {
+          "token": {
+            "tokenName": "新世界の探究者",
+            "compare": [ ">=", 2 ]
+          }
+        }
       }
     ],
     "debuff": [
@@ -12472,7 +12574,12 @@
         "condition": { "onCriticalHit": true }
       }
     ],
-    "tags": [ "デバフ解除(自身)" ]
+    "debuffCancel": [
+      {
+        "value": 2,
+        "target": "自身"
+      }
+    ]
   },
   {
     "uid": "1100772",
@@ -12512,6 +12619,7 @@
     "buffCancel": [
       {
         "value": 2,
+        "target": "攻撃対象",
         "condition": {
           "token": {
             "tokenName": "万里を歩む微笑み",
@@ -12521,6 +12629,7 @@
       },
       {
         "value": 3,
+        "target": "攻撃対象",
         "condition": {
           "token": {
             "tokenName": "万里を歩む微笑み",
@@ -12580,6 +12689,7 @@
     "buffCancel": [
       {
         "value": 2,
+        "target": "攻撃対象",
         "condition": {
           "token": {
             "tokenName": "万里を歩む微笑み",
@@ -12589,6 +12699,7 @@
       },
       {
         "value": 3,
+        "target": "攻撃対象",
         "condition": {
           "token": {
             "tokenName": "万里を歩む微笑み",

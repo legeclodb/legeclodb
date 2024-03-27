@@ -66,7 +66,12 @@
         "duration": 2
       }
     ],
-    "tags": [ "デバフ解除" ]
+    "debuffCancel": [
+      {
+        "value": 2,
+        "target": "スキル対象"
+      }
+    ]
   },
   {
     "uid": "2100004",
@@ -121,7 +126,12 @@
         "target": "スキル対象"
       }
     ],
-    "tags": [ "デバフ解除" ]
+    "debuffCancel": [
+      {
+        "value": [ 1, 1, 1, 2 ],
+        "target": "スキル対象"
+      }
+    ]
   },
   {
     "uid": "2100006",
@@ -190,6 +200,7 @@
     "buffCancel": [
       {
         "value": [ 1, 1, 2, 2, 2 ],
+        "target": "攻撃対象",
         "timing": "攻撃後"
       }
     ]
@@ -285,7 +296,12 @@
         "target": "スキル対象"
       }
     ],
-    "tags": [ "デバフ解除" ]
+    "debuffCancel": [
+      {
+        "value": [ 1, 1, 2, 2, 2 ],
+        "target": "スキル対象"
+      }
+    ]
   },
   {
     "uid": "2100017",
@@ -529,7 +545,12 @@
     },
     "area": "単体",
     "range": 3,
-    "buffCancel": [ { "value": 2 } ],
+    "buffCancel": [
+      {
+        "value": 2,
+        "target": "スキル対象"
+      }
+    ],
     "debuff": [
       {
         "type": "ランダム",
@@ -604,7 +625,12 @@
         "target": "スキル対象"
       }
     ],
-    "tags": [ "デバフ解除" ]
+    "debuffCancel": [
+      {
+        "value": [ 1, 1, 1, 2, 2, 2 ],
+        "target": "スキル対象"
+      }
+    ]
   },
   {
     "uid": "2100028",
@@ -693,7 +719,7 @@
     "buffCancel": [
       {
         "value": 1,
-        "timing": "攻撃後"
+        "target": "攻撃対象"
       }
     ]
   },
@@ -1260,7 +1286,12 @@
         "duration": 2
       }
     ],
-    "tags": [ "デバフ解除" ]
+    "debuffCancel": [
+      {
+        "value": 2,
+        "target": "スキル対象"
+      }
+    ]
   },
   {
     "uid": "2100055",
@@ -1330,7 +1361,7 @@
     "buffCancel": [
       {
         "value": 1,
-        "timing": "攻撃後"
+        "target": "攻撃対象"
       }
     ]
   },
@@ -1483,7 +1514,7 @@
     "buffCancel": [
       {
         "value": 2,
-        "timing": "攻撃後"
+        "target": "攻撃対象"
       }
     ]
   },
@@ -1671,7 +1702,7 @@
     "buffCancel": [
       {
         "value": 1,
-        "timing": "攻撃後"
+        "target": "攻撃対象"
       }
     ]
   },
@@ -1882,7 +1913,7 @@
     "buffCancel": [
       {
         "value": 1,
-        "timing": "攻撃後"
+        "target": "攻撃対象"
       }
     ]
   },
@@ -2118,6 +2149,12 @@
         "value": [ 15, 17, 20, 25 ],
         "duration": 2
       }
+    ],
+    "debuffCancel": [
+      {
+        "value": 1,
+        "target": "スキル対象"
+      }
     ]
   },
   {
@@ -2161,7 +2198,12 @@
         "target": "スキル対象"
       }
     ],
-    "tags": [ "デバフ解除" ]
+    "debuffCancel": [
+      {
+        "value": [ 1, 1, 2, 2 ],
+        "target": "スキル対象"
+      }
+    ]
   },
   {
     "uid": "2100090",
@@ -2345,7 +2387,12 @@
         "duration": 2
       }
     ],
-    "tags": [ "デバフ解除" ]
+    "debuffCancel": [
+      {
+        "value": 2,
+        "target": "スキル対象"
+      }
+    ]
   },
   {
     "uid": "2100097",
@@ -2374,7 +2421,7 @@
     "buffCancel": [
       {
         "value": 1,
-        "timing": "攻撃後"
+        "target": "攻撃対象"
       }
     ]
   },

@@ -478,6 +478,7 @@
 
     "buffCancel": {
       "type": "object",
+      "required": [ "value", "target" ],
       "additionalProperties": false,
       "properties": {
         "value": {
@@ -490,6 +491,28 @@
           ]
         },
         "target": { "$ref": "#/$defs/targetEnum" },
+        "area": { "$ref": "#/$defs/areaType" },
+        "timing": { "$ref": "#/$defs/timingType" },
+        "condition": { "$ref": "#/$defs/condition" }
+      }
+    },
+
+    "debuffCancel": {
+      "type": "object",
+      "required": [ "value", "target" ],
+      "additionalProperties": false,
+      "properties": {
+        "value": {
+          "anyOf": [
+            { "type": "number" },
+            {
+              "type": "array",
+              "items": { "type": "number" }
+            }
+          ]
+        },
+        "target": { "$ref": "#/$defs/targetEnum" },
+        "area": { "$ref": "#/$defs/areaType" },
         "timing": { "$ref": "#/$defs/timingType" },
         "condition": { "$ref": "#/$defs/condition" }
       }
@@ -497,6 +520,7 @@
 
     "buffSteal": {
       "type": "object",
+      "required": [ "value", "target" ],
       "additionalProperties": false,
       "properties": {
         "value": {
@@ -721,6 +745,10 @@
       "buffCancel": {
         "type": "array",
         "items": { "$ref": "#/$defs/buffCancel" }
+      },
+      "debuffCancel": {
+        "type": "array",
+        "items": { "$ref": "#/$defs/debuffCancel" }
       },
       "buffSteal": {
         "type": "array",
