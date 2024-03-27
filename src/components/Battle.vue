@@ -1677,11 +1677,9 @@ export default {
           el.style.transition = 'none';
           el.style.offsetPath = makeSVGPath(path);
           el.style.offsetDistance = `0%`;
-          let duration = unit.moveDistance * 30;
-          setTimeout(() => {
-            el.style.transition = `${duration}ms linear`;
-            el.style.offsetDistance = `100%`;
-          }, 1);
+          el.offsetHeight; // reflow
+          el.style.transition = `${unit.moveDistance * 30}ms linear`;
+          el.style.offsetDistance = `100%`;
         }
         else {
           this.resetUnitPosition(unit);
@@ -2175,24 +2173,23 @@ export default {
     //#region Balloon
     addBaloon(unit, content, z = -1) {
       const timeout = 1000;
-      let Balloon = document.createElement('div');
-      Balloon.innerHTML = content;
-      Balloon.classList.add('balloon');
-      Balloon.style.left = `${unit.coord[0] * 50 + 25}px`;
-      Balloon.style.top = `${unit.coord[1] * 50}px`;
-      Balloon.style.opacity = '1';
-      Balloon.style.transform = 'translate(-50%, -110%)';
-      Balloon.style.transition = 'opacity 0.4s ease-out 0.6s, transform 0.6s ease-out';
+      let el = document.createElement('div');
+      el.innerHTML = content;
+      el.classList.add('balloon');
+      el.style.left = `${unit.coord[0] * 50 + 25}px`;
+      el.style.top = `${unit.coord[1] * 50}px`;
+      el.style.opacity = '1';
+      el.style.transform = 'translate(-50%, -110%)';
+      el.style.transition = 'opacity 0.4s ease-out 0.6s, transform 0.6s ease-out';
       if (z != -1) {
-        Balloon.style.zIndex = z;
+        el.style.zIndex = `${z}`;
       }
-      this.$refs.cells.appendChild(Balloon);
+      this.$refs.cells.appendChild(el);
 
-      setTimeout(() => {
-        Balloon.style.opacity = '0';
-        Balloon.style.transform = 'translate(-50%, -160%)';
-        setTimeout(() => { this.$refs.cells.removeChild(Balloon); }, timeout);
-      }, 1);
+      el.offsetHeight; // reflow
+      el.style.opacity = '0';
+      el.style.transform = 'translate(-50%, -160%)';
+      setTimeout(() => { this.$refs.cells.removeChild(el); }, timeout);
     },
     addDamageBalloon(unit, damage) {
       let str = `${Math.round(damage)}`;
