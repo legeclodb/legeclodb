@@ -200,9 +200,10 @@ export class SimContext {
       if (uop) {
         let pf = this.makePathFinder(unit, true);
         let d = pf.getMoveDistance(uop.coord);
+        let prev = unit.coord;
         unit.moveDistance = d < 0 ? unit.move : d;
         unit.coord = uop.coord;
-        $vue().setUnitPath(unit.base, pf.getPath(uop.coord));
+        $vue().setUnitPath(unit.base, pf.getPath(uop.coord, prev));
         //console.log(`move ${unit.moveDistance} (${unit.main.name})`);
         //console.log(pf.toString());
       }
@@ -985,10 +986,10 @@ export class PathFinder
       }
     }
   }
-  getPath(pos) {
+  getPath(pos, from) {
     let d = this.getMoveDistance(pos);
     if (d < 0)
-      return null;
+      return [from, pos];
     let path = [pos];
     let cur = [...pos];
     while (d > 0) {

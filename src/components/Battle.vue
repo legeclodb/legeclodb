@@ -1027,7 +1027,7 @@ export default {
                 let d = self.path.getMoveDistance(cell.coord);
                 u.moveDistance = d < 0 ? u.move : d;
                 sim.updateAreaEffects();
-                self.setUnitPath(u, self.path.getPath(cell.coord));
+                self.setUnitPath(u, self.path.getPath(cell.coord, u.prevCoord));
               }
             }
           },
@@ -1635,8 +1635,9 @@ export default {
           let el = document.getElementById(`unit-${u.fid}`);
           if (el) {
             const pos = u.coord;
-            el.style.transition = el.style.transform ? '100ms ease' : 'none';
-            el.style.transform = `translate(${pos[0] * 50}px, ${pos[1] * 50}px)`;
+            el.style.transition = el.style.offsetPath ? '100ms ease' : 'none';
+            el.style.offsetPath = `path('M${pos[0] * 50},${pos[1] * 50}')`;
+            el.style.offsetDistance = `0%`;
           }
         }
       };
@@ -1661,18 +1662,25 @@ export default {
       }
     },
     setUnitPath(unit, path) {
+      const makeSVGPath = (path) => {
+        // thanks: https://www.webdesignleaves.com/pr/html/svg_basic.html#path
+        const cellSize = 50;
+        let commands = path.map((c, i) => {
+          return `${i === 0 ? 'M' : 'L'}${c[0] * cellSize},${c[1] * cellSize}`;
+        });
+        return `path('${commands.join(' ')}')`;
+      }
       let el = document.getElementById(`unit-${unit.fid}`);
       if (el) {
         if (path) {
-          const interval = 40;
-          el.path = path;
-          lut.timedEach(path, interval, (c, i) => {
-            if (el.path !== path) {
-              return false; // 途中で path が更新されたら中断
-            }
-            el.style.transition = i == 0 ? 'none' : `${interval}ms linear`;
-            el.style.transform = `translate(${c[0] * 50}px, ${c[1] * 50}px)`;
-          });
+          el.style.transition = 'none';
+          el.style.offsetPath = makeSVGPath(path);
+          el.style.offsetDistance = `0%`;
+          let duration = unit.moveDistance * 30;
+          setTimeout(() => {
+            el.style.transition = `${duration}ms linear`;
+            el.style.offsetDistance = `100%`;
+          }, 1);
         }
         else {
           this.resetUnitPosition(unit);
@@ -2333,8 +2341,10 @@ export default {
     width: 50px;
     height: 50px;
     pointer-events: none;
-    transition-property: transform;
-    transition: 40ms linear;
+    transition-property: offset-distance;
+    transition: 100ms linear;
+    transform: translate(25px,25px);
+    offset-rotate: 0deg;
   }
   .grid-cell.obstacle {
     background: rgb(180,185,195);
@@ -2520,4 +2530,12 @@ export default {
     box-shadow: 0 3px 6px rgba(140,149,159,0.5);
   }
 
+  @keyframes move {
+    0% {
+      offset-distance: 0%;
+    }
+    100% {
+      offset-distance: 100%;
+    }
+  }
 </style>
