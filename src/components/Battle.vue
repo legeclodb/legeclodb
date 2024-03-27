@@ -1676,10 +1676,14 @@ export default {
         if (path) {
           el.style.transition = 'none';
           el.style.offsetPath = makeSVGPath(path);
-          el.style.offsetDistance = `0%`;
-          el.offsetHeight; // reflow
-          el.style.transition = `${unit.moveDistance * 30}ms linear`;
-          el.style.offsetDistance = `100%`;
+          el.animate(
+            { offsetDistance: ['0%', '100%'] },
+            {
+              duration: unit.moveDistance * 30,
+              easing: 'linear',
+              fill: 'forwards',
+            }
+          );
         }
         else {
           this.resetUnitPosition(unit);
@@ -2178,18 +2182,32 @@ export default {
       el.classList.add('balloon');
       el.style.left = `${unit.coord[0] * 50 + 25}px`;
       el.style.top = `${unit.coord[1] * 50}px`;
-      el.style.opacity = '1';
-      el.style.transform = 'translate(-50%, -110%)';
-      el.style.transition = 'opacity 0.4s ease-out 0.6s, transform 0.6s ease-out';
       if (z != -1) {
         el.style.zIndex = `${z}`;
       }
       this.$refs.cells.appendChild(el);
 
-      el.offsetHeight; // reflow
-      el.style.opacity = '0';
-      el.style.transform = 'translate(-50%, -160%)';
-      setTimeout(() => { this.$refs.cells.removeChild(el); }, timeout);
+      // 位置
+      el.animate(
+        { transform: ['translate(-50%, -110%)', 'translate(-50%, -160%)'] },
+        {
+          duration: 600,
+          easing: 'ease-out',
+          fill: 'forwards',
+        }
+      );
+      // 透明度
+      el.animate(
+        { opacity: ['1', '0'] },
+        {
+          duration: 500,
+          delay: 500,
+          easing: 'ease-out',
+          fill: 'forwards',
+        }
+      ).onfinish = () => {
+        el.remove();
+      };
     },
     addDamageBalloon(unit, damage) {
       let str = `${Math.round(damage)}`;
@@ -2332,7 +2350,7 @@ export default {
     background: white;
     outline: 1px solid rgb(180,185,195);
     transition-property: background;
-    transition: 0.01s ease;
+    transition: 10ms ease;
   }
   .unit-cell {
     position: absolute;
@@ -2453,7 +2471,7 @@ export default {
     bottom: 10px;
     border-radius: 0.3rem;
     padding: 5px;
-    transition: all 0.25s ease;
+    transition: all 250ms ease;
   }
   .sim-commands.player-turn {
     background: rgba(128, 128, 250, 0.7);
@@ -2468,7 +2486,7 @@ export default {
     right: 10px;
     border-radius: 0.3rem;
     padding: 5px;
-    transition: all 0.25s ease;
+    transition: all 250ms ease;
   }
   .sim-replay:focus {
     outline: none;
