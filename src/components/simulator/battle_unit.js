@@ -684,15 +684,17 @@ export class SimUnit {
     });
   }
 
-  removeEffectsByCondition(count, cond) {
+  removeEffectsByCondition(count, ...conditions) {
     let r = [];
-    for (let i = 0; i < this.timedEffects.length && r.length < count; /**/) {
-      let e = this.timedEffects[i];
-      if (cond(e)) {
-        r.push(this.timedEffects.splice(i, 1)[0]);
-      }
-      else {
-        ++i;
+    for (const cond of conditions) {
+      for (let i = 0; i < this.timedEffects.length && r.length < count; /**/) {
+        let e = this.timedEffects[i];
+        if (cond(e)) {
+          r.push(this.timedEffects.splice(i, 1)[0]);
+        }
+        else {
+          ++i;
+        }
       }
     }
     return r;
@@ -1085,11 +1087,7 @@ export class SimUnit {
   // NxN ボスは範囲内のマス分返す。
   // 1 体としてカウントしたい場合 unique() を使うこと。
   getUnitsInArea(args) {
-    let r = [];
-    $g.sim.enumerateUnitsInArea(this.coord, parseArea(args), (u) => {
-      r.push(u);
-    });
-    return r;
+    return $g.sim.getUnitsInArea(this.coord, parseArea(args));
   }
   getAlliesInArea(args) {
     return this.getUnitsInArea(args).filter(u => u.isPlayer == this.isPlayer && u !== this);

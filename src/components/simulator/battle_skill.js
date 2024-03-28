@@ -910,7 +910,7 @@ export function makeSimSkill(skill, ownerUnit) {
         let count = scalar(act.value);
         for (let t of unique(getTargetUnits(ctx, act))) {
           if (u.isPlayer != t.isPlayer) {
-            let buff = t.removeEffectsByCondition(count, (e) => e.isBuff && e.isCancelable);
+            let buff = t.removeEffectsByCondition(count, e => e.isBuff && e.isCancelable);
             for (let b of buff) {
               let t = u.applyEffect(b.__proto__);
               if (t) {
@@ -937,7 +937,12 @@ export function makeSimSkill(skill, ownerUnit) {
         let count = scalar(act.value);
         for (let t of unique(getTargetUnits(ctx, act))) {
           if (u.isPlayer != t.isPlayer) {
-            t.removeEffectsByCondition(count, (e) => e.isBuff && e.isCancelable);
+            // ダメージ耐性を優先的に消す
+            const conditions = [
+              e => e.isBuff && e.isCancelable && e.type.startsWith("ダメージ耐性"),
+              e => e.isBuff && e.isCancelable,
+            ];
+            t.removeEffectsByCondition(count, ...conditions);
             $g.log(`!! バフ解除 ${u.main.name} (${self.name}) -> ${t.main.name}!!`);
           }
         }
@@ -958,7 +963,12 @@ export function makeSimSkill(skill, ownerUnit) {
         let count = scalar(act.value);
         for (let t of unique(getTargetUnits(ctx, act))) {
           if (u.isPlayer == t.isPlayer) {
-            t.removeEffectsByCondition(count, (e) => e.isDebuff && e.isCancelable);
+            // 与ダメージに絡むものを優先的に消す
+            const conditions = [
+              e => e.isDebuff && e.isCancelable && (e.type == u.main.damageType || e.type.startsWith("与ダメージ")),
+              e => e.isDebuff && e.isCancelable,
+            ];
+            t.removeEffectsByCondition(count, ...conditions);
             $g.log(`!! デバフ解除 ${u.main.name} (${self.name}) -> ${t.main.name}!!`);
           }
         }
@@ -1215,7 +1225,48 @@ export function makeSimSkill(skill, ownerUnit) {
           tri.coolTime = tri.ct;
         }
         let prevTarget = ctx.target;
-        for (let t of unique(getTargetUnits(ctx, tri))) {
+        let targets = unique(getTargetUnits(ctx, tri));
+
+        const applyRandomSelection = function (e, unit, targets) {
+          if (e.type == "ランダム") {
+            return targets;
+          }
+          else {
+            const max = e.trigger.unitCount;
+            if (targets.length <= max) {
+              return targets;
+            }
+            // 自ユニットを最初の候補に持ってくる
+            let i = targets.findIndex((a) => a === unit);
+            if (i != -1) {
+              targets.splice(i, 1);
+              targets.splice(0, 0, unit);
+            }
+            let r = [];
+            // 効果がまだかかっていないユニットを選ぶ
+            for (let t of targets) {
+              if (!t.timedEffects.find(a => a.uid == e.uid)) {
+                if (r.push(t) >= max) {
+                  break;
+                }
+              }
+            }
+            // まだ選べる場合適当に候補を追加
+            for (let t of targets) {
+              if (!r.find(a => a === t)) {
+                if (r.push(t) >= max) {
+                  break;
+                }
+              }
+            }
+            return r;
+          }
+        };
+        if (e.trigger.target == "乱択" && $g.config.enableAutoRandomSelection) {
+          targets = applyRandomSelection(e, u, targets);
+        }
+
+        for (let t of targets) {
           ctx.target = t;
           if (((e.isBuff && t.isPlayer == u.isPlayer) || (e.isDebuff && t.isPlayer != u.isPlayer)) && evaluateCondition(ctx, tri.condition)) {
             t.applyEffect(e, u === t);
