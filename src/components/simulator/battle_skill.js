@@ -1231,6 +1231,7 @@ export function makeSimSkill(skill, ownerUnit) {
         let targets = unique(getTargetUnits(ctx, tri));
 
         const applyRandomSelection = function (e, targets) {
+          targets = targets.filter(a => e.isBuff ? a.isPlayer == u.isPlayer : a.isPlayer != u.isPlayer);
           let eid = e.uid;
           if (e.type == "ランダム") {
             if (e.isBuff) {
@@ -1255,10 +1256,12 @@ export function makeSimSkill(skill, ownerUnit) {
             }
           }
           // まだ選べる場合適当に候補を追加
-          for (let t of targets) {
-            if (!r.find(a => a === t)) {
-              if (r.push(t) >= max) {
-                break;
+          if (r.length < max) {
+            for (let t of targets) {
+              if (!r.find(a => a === t)) {
+                if (r.push(t) >= max) {
+                  break;
+                }
               }
             }
           }

@@ -124,7 +124,9 @@ export class SimContext {
       return;
     }
 
-    this.config = { ...r.config };
+    if ("config" in r) {
+      this.config = { ...r.config };
+    }
     this.turn = r.turn;
     this.phase = r.phase;
     this.unitIdSeed = r.unitIdSeed;

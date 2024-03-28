@@ -1,6 +1,6 @@
 import { $g } from "./battle_globals.js";
 import { scalar, parseArea, callHandler, makeSimSkill, makeSimEffect, evaluateCondition, makeActionContext, getEffectValue } from "./battle_skill.js";
-import { unique, count } from "../utils.js";
+import { unique, count, enumerate } from "../utils.js";
 
 function $vue() {
   return window.$vue;
@@ -571,7 +571,7 @@ export class SimUnit {
       let e = null;
       if (owner) {
         found: for (const skill of owner.skills) {
-          for (const effect of skill.effects) {
+          for (const effect of enumerate(skill.effects, skill.randomEffects)) {
             if (effect.uid == so.uid) {
               e = makeSimEffect(effect);
               break found;
