@@ -599,7 +599,7 @@
                       <p><span v-html="descToHtml(skill)"></span><span v-if="skill.note" class="note" v-html="noteToHtml(skill)"></span></p>
                       <span class="note">
                         <div class="effect-group">
-                          <template v-for="(e, ei) in [...skill.randomEffects, ...skill.effects]">
+                          <template v-for="(e, ei) in [...skill.effects, ...skill.randomEffects]">
                             <template v-for="(d, di) in (selectedUnit.sim.affectedEffects[e.uid] ?? [])">
                               <div v-if="d.isRandom" :key="`effect${ei}${di}`">
                                 <b-badge class="tag" variant="secondary" pill :id="`${selectedUnit.fid}.${e.uid}`" style="padding: 5px;">ランダム効果を追加</b-badge>

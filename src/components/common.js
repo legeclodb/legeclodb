@@ -1148,11 +1148,19 @@ export default {
       if (skill.isSymbolSkill) {
         addTag(`シンボルスキル`);
       }
+      if (skill.buffSteal) {
+        addTag(`バフ奪取`);
+      }
       if (skill.buffCancel) {
         addTag(`バフ解除`);
       }
-      if (skill.buffSteal) {
-        addTag(`バフ奪取`);
+      if (skill.debuffCancel) {
+        for (const a of skill.debuffCancel) {
+          if (a.target != "自身") {
+            addTag(`デバフ解除`);
+            break;
+          }
+        }
       }
 
       if (skill.ctReduction) {

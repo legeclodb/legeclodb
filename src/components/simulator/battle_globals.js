@@ -1,11 +1,7 @@
 export let $g = {
-  config: {
-    enableAutoBuffCancel: true,
-    enableAutoDebuffCancel: true,
-    enableAutoRandomBuff: true,
-    enableAutoRandomDebuff: true,
-    enableAutoRandomSelection: true,
-    enableSelfDamage: false,
+  sim: null,
+  get config() {
+    return this.sim?.config;
   },
   log(text) {
     console.log(text);

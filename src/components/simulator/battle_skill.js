@@ -704,6 +704,9 @@ export function makeSimSkill(skill, ownerUnit) {
         set: (v) => { data[id] = v; },
       });
     }
+    if (baseEffect.randomTable) {
+      e.randomTable = baseEffect.randomTable.map(e => wrapEffect(e));
+    }
     return e;
   };
   if (self.buff) {
@@ -897,7 +900,7 @@ export function makeSimSkill(skill, ownerUnit) {
     }
   };
   self.invokeBuffSteal = function (ctx, timing = null) {
-    if (!$g.config.enableAutoBuffCancel) {
+    if (!$g.config.autoBuffCancel) {
       return;
     }
     for (let act of self?.buffSteal ?? []) {
@@ -924,7 +927,7 @@ export function makeSimSkill(skill, ownerUnit) {
     }
   };
   self.invokeBuffCancel = function (ctx, timing = null) {
-    if (!$g.config.enableAutoBuffCancel) {
+    if (!$g.config.autoBuffCancel) {
       return;
     }
     for (let act of self?.buffCancel ?? []) {
@@ -950,7 +953,7 @@ export function makeSimSkill(skill, ownerUnit) {
     }
   };
   self.invokeDebuffCancel = function (ctx, timing = null) {
-    if (!$g.config.enableAutoDebuffCancel) {
+    if (!$g.config.autoDebuffCancel) {
       return;
     }
     for (let act of self?.debuffCancel ?? []) {
@@ -1041,7 +1044,7 @@ export function makeSimSkill(skill, ownerUnit) {
         for (let t of unique(getTargetUnits(ctx, act))) {
           if (u.isPlayer != t.isPlayer || act.target == "自身") {
             // 自傷ダメージはオプションで有効にしない限り発動しないようにしておく
-            if (($g.config.enableSelfDamage || act.target != "自身")) {
+            if (($g.config.selfDamage || act.target != "自身")) {
               table[act.base](t);
               $g.log(`!! 固定ダメージ ${u.main.name} (${self.name}) -> ${t.main.name}!!`);
             }
@@ -1227,43 +1230,48 @@ export function makeSimSkill(skill, ownerUnit) {
         let prevTarget = ctx.target;
         let targets = unique(getTargetUnits(ctx, tri));
 
-        const applyRandomSelection = function (e, unit, targets) {
+        const applyRandomSelection = function (e, targets) {
+          let eid = e.uid;
           if (e.type == "ランダム") {
+            if (e.isBuff) {
+              eid = e.randomTable.find(a => a.type == "与ダメージ")?.uid;
+            }
+            else if (e.isDebuff) {
+              eid = e.randomTable.find(a => a.type == "ダメージ耐性")?.uid;
+            }
+          }
+
+          const max = e.trigger.unitCount;
+          if (targets.length <= max) {
             return targets;
           }
-          else {
-            const max = e.trigger.unitCount;
-            if (targets.length <= max) {
-              return targets;
-            }
-            // 自ユニットを最初の候補に持ってくる
-            let i = targets.findIndex((a) => a === unit);
-            if (i != -1) {
-              targets.splice(i, 1);
-              targets.splice(0, 0, unit);
-            }
-            let r = [];
-            // 効果がまだかかっていないユニットを選ぶ
-            for (let t of targets) {
-              if (!t.timedEffects.find(a => a.uid == e.uid)) {
-                if (r.push(t) >= max) {
-                  break;
-                }
+          let r = [];
+          // 効果がまだかかっていないユニットを選ぶ
+          for (let t of targets) {
+            if (!t.timedEffects.find(a => a.uid == eid)) {
+              if (r.push(t) >= max) {
+                break;
               }
             }
-            // まだ選べる場合適当に候補を追加
-            for (let t of targets) {
-              if (!r.find(a => a === t)) {
-                if (r.push(t) >= max) {
-                  break;
-                }
-              }
-            }
-            return r;
           }
+          // まだ選べる場合適当に候補を追加
+          for (let t of targets) {
+            if (!r.find(a => a === t)) {
+              if (r.push(t) >= max) {
+                break;
+              }
+            }
+          }
+          return r;
         };
-        if (e.trigger.target == "乱択" && $g.config.enableAutoRandomSelection) {
-          targets = applyRandomSelection(e, u, targets);
+        if (e.trigger.target == "乱択") {
+          if ($g.config.autoRandomSelection) {
+            targets = applyRandomSelection(e, targets);
+          }
+          else {
+            // autoRandomSelection が無効の場合ユーザーが手動で選択するのでここではなにもしない
+            targets = [];
+          }
         }
 
         for (let t of targets) {

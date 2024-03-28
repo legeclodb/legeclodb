@@ -14,6 +14,14 @@ export const Phase = {
 export class SimContext {
 
   //#region fields (serializable)
+  config = {
+    autoBuffCancel: true,
+    autoDebuffCancel: true,
+    autoRandomBuff: true,
+    autoRandomDebuff: true,
+    autoRandomSelection: true,
+    selfDamage: false,
+  };
   turn = 1;
   phase = Phase.Player;
   unitIdSeed = 0; // 追加ユニットの ID 生成用の数
@@ -101,6 +109,7 @@ export class SimContext {
   }
   saveState() {
     let r = {
+      config: { ...this.config },
       turn: this.turn,
       phase: this.phase,
       unitIdSeed: this.unitIdSeed,
@@ -115,6 +124,7 @@ export class SimContext {
       return;
     }
 
+    this.config = { ...r.config };
     this.turn = r.turn;
     this.phase = r.phase;
     this.unitIdSeed = r.unitIdSeed;
@@ -296,6 +306,9 @@ export class SimContext {
     // ソート用距離関数
     // 同距離の場合、0 時方向から時計回り順に並べる
     const dist = (base, target) => {
+      if (!base || !target) {
+        return 0;
+      }
       let dx = target[0] - base[0];
       let dy = target[1] - base[1];
       let md = Math.abs(dx) + Math.abs(dy); // マンハッタン距離

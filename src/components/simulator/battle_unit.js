@@ -614,6 +614,18 @@ export class SimUnit {
     if (effect.isBuff && effect.isCancelable && this.hasBadStatus("強化不可")) {
       return null;
     }
+    if (effect.type == "ランダム") {
+      let tmp = null;
+      if (effect.isBuff) {
+        tmp = effect.randomTable.find(a => a.type == "与ダメージ");
+      }
+      else if (effect.isDebuff) {
+        tmp = effect.randomTable.find(a => a.type == "ダメージ耐性");
+      }
+      if (tmp) {
+        effect = tmp;
+      }
+    }
 
     let r = null;
     const append = () => {
@@ -862,7 +874,6 @@ export class SimUnit {
     this.affectedSkills = unique([...this.passives, ...this.effects.map(a => a.parent)], (a, b) => a.uid == b.uid);
     this.affectedEffects = {};
 
-    let deferred = [];
     // 表示用のエフェクトのリストを構築
     for (let e of this.effects) {
       const uid = e.uid;
@@ -913,13 +924,10 @@ export class SimUnit {
             },
           };
         });
-        // 末尾に追加したいのでここでは追加する関数を登録
-        deferred.push(() => {
-          this.affectedEffects[uid].push({
-            effect: e,
-            isRandom: true,
-            randomTable: table,
-          });
+        this.affectedEffects[uid].push({
+          effect: e,
+          isRandom: true,
+          randomTable: table,
         });
       }
       else {
@@ -932,9 +940,6 @@ export class SimUnit {
           desc: makeDesc(e),
         });
       }
-    }
-    for (let d of deferred) {
-      d();
     }
 
     const reorder = (dst) => {
