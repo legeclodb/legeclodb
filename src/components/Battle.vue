@@ -206,6 +206,7 @@
             <li><b>敵フェイズでは敵ユニットを手動で操作する必要があります</b>。正確な再現が困難なため、自動では行動しません。</li>
             <li>移動可能範囲は表示されますが、それを無視して無限に移動できます。また、無限に再行動できます。</li>
             <li>CT 中のアクティブスキルも使用可能です。</li>
+            <li>やり直したい場合、<b><b-link @mouseenter="highlight('replay-menu', true)" @mouseleave="highlight('replay-menu', false)">リプレイメニュー</b-link>から過去に遡ることができます</b>。</li>
           </ul>
         </div>
         <div v-else>
@@ -217,7 +218,7 @@
     </div>
 
     <div class="content sim-replay" @click.stop="" tabindex="0" @keydown.up.stop="onKeyReplay($event)" @keydown.down.stop="onKeyReplay($event)">
-      <div class="unit-panel">
+      <div id="replay-menu" class="unit-panel">
         <div style="max-height: 350px; overflow-y: auto; overscroll-behavior: none;">
           <template v-if="simulation ?? replay">
             <template v-for="(r, i) of (simulation ?? replay).states.toReversed()">
@@ -401,7 +402,7 @@
                   </div>
                 </b-popover>
 
-                <b-button v-if="replay" @click="followReplay(replay)" style="margin-left: 1.0em;">現在の構成でリプレイをなぞる</b-button>
+                <b-button v-if="replay" @click="playbackReplay(replay, {interval: 150})" style="margin-left: 1.0em;">現在の構成でリプレイをなぞる</b-button>
               </div>
 
               <div class="flex" style="align-items: flex-start;">
@@ -2004,29 +2005,46 @@ export default {
         this.beginSimulation(true);
         this.simulation.deserialize(r.states);
         this.$forceUpdate();
+        return r;
       };
 
       if (typeof (data) === 'string') {
-        body(lut.fromJson(data));
+        return body(lut.fromJson(data));
       }
       else if (data instanceof ArrayBuffer || data instanceof Uint8Array) {
-        body(lut.fromJson(lut.binaryToString(data)));
+        return body(lut.fromJson(lut.binaryToString(data)));
       }
       else if (typeof (data) === 'object') {
-        body(lut.sanitizeJsonObject(data));
+        return body(lut.sanitizeJsonObject(data));
       }
     },
-    followReplay(r) {
+    // opt: {
+    //   loadLoadout: Boolean,
+    //   interval: Number, // millisec
+    // }
+    playbackReplay(r, opt = {}) {
       this.scrollTo("root", true);
       this.endSimulation(false);
       this.selectBattle(r.battle);
-      // deserializeLoadout はしない。これにより構成を変えてリプレイをなぞる
+      if (opt?.loadLoadout) {
+        // loadLoadout が無効な場合構成を変えてリプレイをなぞる挙動になる
+        this.deserializeLoadout(r.loadout);
+      }
       this.beginSimulation();
-      lut.timedEach(r.states, 150, (state) => {
-        if (!this.simulation)
-          return false; // 中断された場合
-        this.simulation.playback(state);
-      });
+
+      let interval = Math.max(opt?.interval ?? 0, 0);
+      if (interval > 0) {
+        lut.timedEach(r.states, interval, (state) => {
+          if (!this.simulation)
+            return false; // 中断された場合
+          this.simulation.playback(state);
+        });
+      }
+      else {
+        for (const state of r.states) {
+          this.simulation.playback(state);
+        }
+      }
     },
 
     exportReplayAsFile() {
@@ -2063,9 +2081,9 @@ export default {
       }
       fetch(url).then((res) => {
         res.json().then((json) => {
-          this.deserializeReplay(json);
+          let r = this.deserializeReplay(json);
           if (callback) {
-            callback();
+            callback(r);
           }
         })
       });
@@ -2314,7 +2332,11 @@ export default {
           this.importLoadoutFromUrl(data.loadout);
         }
         if (data.replay) {
-          this.importReplayFromUrl(data.replay);
+          this.importReplayFromUrl(data.replay, (r) => {
+            if (data.playback) {
+              this.playbackReplay(r, { interval: data.interval });
+            }
+          });
         }
       }
     },

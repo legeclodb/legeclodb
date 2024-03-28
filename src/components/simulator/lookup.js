@@ -398,9 +398,9 @@ export default {
     highlight(id, enabled) {
       var element = document.getElementById(id);
       if (enabled)
-        element.classList.add("param-highlighted");
+        element.classList.add("highlighted");
       else
-        element.classList.remove("param-highlighted");
+        element.classList.remove("highlighted");
     },
 
     getEffectValues(effectList, dst = null) {

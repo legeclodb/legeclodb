@@ -395,7 +395,7 @@ export class SimUnit {
             }
             else {
               const prop = props[i];
-              r[i] = Math.round(r[i] * (chr.getBuffValue(prop) / 100 + 1) + chr.getConvertedBuffValue(prop));
+              r[i] = Math.round(r[i] * Math.max(chr.getBuffValue(prop) / 100 + 1, 0.3) + chr.getConvertedBuffValue(prop));
             }
           }
           return r;

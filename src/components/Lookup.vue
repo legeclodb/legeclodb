@@ -143,10 +143,6 @@ export default {
     font-size: small !important;
   }
 
-  .param-highlighted {
-    background-color: rgb(255, 190, 190) !important;
-  }
-
   .effect-group {
     display: flex;
     flex-wrap: wrap;
