@@ -293,11 +293,28 @@ export class SimContext {
     }
   }
   getUnitsInArea(center, params) {
+    // ソート用距離関数
+    // 同距離の場合、0 時方向から時計回り順に並べる
+    const dist = (base, target) => {
+      let dx = target[0] - base[0];
+      let dy = target[1] - base[1];
+      let md = Math.abs(dx) + Math.abs(dy); // マンハッタン距離
+      if (md == 0) {
+        return 0;
+      }
+      else {
+        let ed = Math.sqrt((dx * dx) + (dy * dy)); // ユークリッド距離
+        let r = Math.atan2(dx / ed, -dy / ed); // 0 時方向からのラジアン角
+        let cd = (r / (Math.PI * 2) + 1) % 1; // 時計回り距離 (0～1)
+        return md + cd;
+      }
+    };
     let r = [];
-    this.enumerateUnitsInArea(center, params, (u) => {
-      r.push(u);
+    this.enumerateUnitsInArea(center, params, (u, pos) => {
+      r.push({ unit: u, distance: dist(center, pos) });
     });
-    return r;
+    r.sort((a, b) => a.distance - b.distance);
+    return r.map(a => a.unit);
   }
 
   makePathFinder(unit = null, build = false) {
