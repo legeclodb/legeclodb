@@ -1815,6 +1815,27 @@ export default {
       }
       return r;
     },
+    blinkCell(pos) {
+      let el = document.createElement('div');
+      el.style.position = "absolute";
+      el.style.left = `${pos[0] * 50 }px`;
+      el.style.top = `${pos[1] * 50}px`;
+      el.style.width = `50px`;
+      el.style.height = `50px`;
+      el.style.borderRadius = "0.3rem";
+      el.style.zIndex = 10;
+      this.$refs.cells.appendChild(el);
+      el.animate(
+        { backgroundColor: ['rgba(255, 0, 0, 0.9)', 'rgba(255, 0, 0, 0)'] },
+        {
+          duration: 500,
+          easing: 'ease-out',
+          fill: 'forwards',
+        }
+      ).onfinish = () => {
+        el.remove();
+      };
+    },
 
     onEnterCell(cell) {
       this.hoveredCell = cell;

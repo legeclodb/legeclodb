@@ -62,8 +62,12 @@ export class SimContext {
   }
   get statePos() { return this.statePos_; }
   set statePos(v) {
-    this.loadState(this.states.at(v));
+    const state = this.states.at(v);
+    this.loadState(state);
     this.statePos_ = v;
+    if (state.desc?.skillArgs?.coord) {
+      $vue().blinkCell(state.desc.skillArgs.coord);
+    }
     $vue().resetUnitPositionAll(true);
   }
   //#endregion props
@@ -791,6 +795,9 @@ export class SimContext {
 
     this.deadUnits = [];
     $vue().addBalloons(ctx);
+    if (skillArgs?.coord) {
+      $vue().blinkCell(skillArgs.coord);
+    }
     return ctx;
   }
   //#endregion attack
