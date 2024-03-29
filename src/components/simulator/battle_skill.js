@@ -375,6 +375,11 @@ export function makeActionContext(unit, target, skill) {
       else {
         taken.main += v;
       }
+
+      // スコア加算
+      if (from.isPlayer != to.isPlayer) { // 自傷ダメージはカウントしない
+        from.score += v;
+      }
     },
     addHeal(v, fromChr, toChr) {
       let from = fromChr.unit;

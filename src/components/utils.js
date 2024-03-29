@@ -260,14 +260,14 @@ export function download(filename, data) {
   window.URL.revokeObjectURL(u);
 }
 
-export function stringToBinary(str) {
+export function stringToBytes(str) {
   return (new TextEncoder()).encode(str);
 }
-export function binaryToString(bin) {
+export function bytesToString(bin) {
   return (new TextDecoder()).decode(bin);
 }
 
-export function concatenateUint8Arrays(arrays) {
+export function concatBytes(arrays) {
   const len = arrays.reduce((acc, arr) => acc + arr.length, 0);
   const result = new Uint8Array(len);
   let offset = 0;
@@ -279,9 +279,9 @@ export function concatenateUint8Arrays(arrays) {
 }
 
 // data: String or ArrayBuffer
-export async function compressGzip(data) {
+export async function gzCompress(data) {
   if (typeof (data) == 'string') {
-    data = stringToBinary(data);
+    data = stringToBytes(data);
   }
 
   const inputStream = new ReadableStream({
@@ -301,7 +301,7 @@ export async function compressGzip(data) {
       if (done) break;
       chunks.push(value);
     }
-    return concatenateUint8Arrays(chunks);
+    return concatBytes(chunks);
   }
   finally {
     reader.releaseLock();
@@ -309,7 +309,7 @@ export async function compressGzip(data) {
 }
 
 // data: ArrayBuffer
-export async function decompressGzip(data) {
+export async function gzDecompress(data) {
   // eslint-disable-next-line
   const stream = new Response(data).body.pipeThrough(new DecompressionStream('gzip'));
   const reader = stream.getReader();
@@ -321,7 +321,7 @@ export async function decompressGzip(data) {
       if (done) break;
       chunks.push(value);
     }
-    return concatenateUint8Arrays(chunks);
+    return concatBytes(chunks);
   }
   finally {
     reader.releaseLock();
@@ -329,7 +329,7 @@ export async function decompressGzip(data) {
 }
 
 // data: ArrayByffer
-export function isGzipData(data) {
+export function gzIsCompressedData(data) {
   const check = (bytes) => {
     // gzip 圧縮されたデータは最初の 2 byte が 0x1F 0x8B になっている
     return bytes.length >= 2 && bytes[0] === 0x1F && bytes[1] === 0x8B;
@@ -340,4 +340,61 @@ export function isGzipData(data) {
   else {
     return check(new Uint8Array(data));
   }
+}
+
+export function idbInitialize(dbName, storeNames, version) {
+  let req = window.indexedDB.open(dbName, version);
+  req.onupgradeneeded = (event) => {
+    let db = event.target.result;
+    for (const name of storeNames) {
+      if (!db.objectStoreNames.contains(name)) {
+        db.createObjectStore(name, { keyPath: 'id' })
+      }
+    }
+  }
+  req.onsuccess = (event) => {
+    let db = event.target.result;
+    db.close();
+  };
+}
+export function idbWrite(dbName, storeName, id, data, onsuccess, onerror) {
+  let req = window.indexedDB.open(dbName);
+  req.onupgradeneeded = (event) => {
+    let db = event.target.result;
+    db.createObjectStore(storeName, { keyPath: 'id' })
+  }
+  req.onsuccess = (event) => {
+    let db = event.target.result;
+    let tx = db.transaction(storeName, "readwrite");
+    let store = tx.objectStore(storeName);
+    let req = store.put({ id: id, data: data });
+    req.onsuccess = (event) => {
+      if (onsuccess) {
+        onsuccess(event.target.result);
+      }
+    };
+    req.onerror = onerror;
+    db.close();
+  };
+  req.onerror = onerror;
+}
+export function idbRead(dbName, storeName, id, onsuccess, onerror) {
+  let req = window.indexedDB.open(dbName);
+  req.onsuccess = (event) => {
+    let db = event.target.result;
+    try {
+      let tx = db.transaction(storeName, "readonly");
+      let store = tx.objectStore(storeName);
+      let req = store.get(id);
+      req.onsuccess = (event) => {
+        if (onsuccess && event.target.result?.data) {
+          onsuccess(event.target.result?.data);
+        }
+      };
+      req.onerror = onerror;
+    }
+    catch (e) { }
+    db.close();
+  };
+  req.onerror = onerror;
 }

@@ -228,14 +228,14 @@
             <li><b>敵フェイズでは敵ユニットを手動で操作する必要があります</b>。正確な再現が困難なため、自動では行動しません。</li>
             <li>移動可能範囲は表示されますが、それを無視して無限に移動できます。また、無限に再行動できます。</li>
             <li>CT 中のアクティブスキルも使用可能です。</li>
-            <li>やり直したい場合、<b><b-link @mouseenter="highlight('replay-menu', true)" @mouseleave="highlight('replay-menu', false)">リプレイメニュー</b-link>から過去に遡ることができます</b>。</li>
+            <li>やり直したい場合、<b><b-link @mouseenter="highlight('history', true)" @mouseleave="highlight('history', false)">履歴</b-link>から過去に遡ることができます</b>。</li>
           </ul>
         </div>
       </div>
     </div>
 
     <div class="content sim-replay" @click.stop="" tabindex="0" @keydown.up.stop="onKeyReplay($event)" @keydown.down.stop="onKeyReplay($event)">
-      <div id="replay-menu" class="unit-panel">
+      <div id="history" class="unit-panel">
         <div style="max-height: 350px; overflow-y: auto; overscroll-behavior: none;">
           <template v-if="simulation ?? replay">
             <template v-for="(r, i) of (simulation ?? replay).states.toReversed()">
@@ -860,16 +860,31 @@ export default {
 
     this.selectBattle(this.battleList.slice(-1)[0].uid);
     this.selectPhase("0");
-    this.$nextTick(() => {
-      // 即時実行するとなんか tab の連動が追いつかないっぽいので $nextTick で行う
-      this.decodeURL();
-    });
-
     this.setupTools();
 
     window.onpopstate = () => {
       this.decodeURL(true);
     };
+
+    if (!this.decodeURL()) {
+      // URL による指定がないなら過去の状態を復元
+      lut.idbInitialize("ldb", ["loadout", "replay"], 2);
+      lut.idbRead("ldb", "loadout", "last", (data) => {
+        this.deserializeLoadout(data);
+      });
+      lut.idbRead("ldb", "replay", "last", (data) => {
+        this.replay = data;
+      });
+    }
+  },
+
+  destroyed() {
+    // 編成とリプレイを記録
+    lut.idbWrite("ldb", "loadout", "last", this.serializeLoadout());
+    let replay = this.serializeReplay() ?? this.replay;
+    if (replay) {
+      lut.idbWrite("ldb", "replay", "last", replay);
+    }
   },
 
   computed: {
@@ -938,13 +953,13 @@ export default {
           autoRandomBuff: {
             label: "自動ランダムバフ・デバフ",
             desc: `ランダムバフ・デバフを自動で適用します。<br />
-選ぶ効果はランダムではなく、<b>ランダムバフは与ダメージのみ選択、ランダムデバフはダメージ耐性のみ選択</b>となります。<br />
+選ぶ効果はランダムではなく、<b>ランダムバフは与ダメージ系を選択、ランダムデバフはダメージ耐性系を選択</b>となります。<br />
 理論値に近いダメージを出すための処置ですが、実測値と大きく違う結果を招くので注意が必要です。`,
           },
           autoRandomSelection: {
             label: "自動ランダム対象選択",
             desc: `追跡の頭帯のような「範囲内のランダムな1ユニットにバフ」といった効果を自動で適用します。<br />
-選ぶ対象はランダムではなく、自身を含む距離が最も近く、かつまだ効果がかかってない対象を選びます。同距離の場合0時方向から時計回り順に選びます。<br />`,
+選ぶ対象はランダムではなく、距離が最も近く、かつまだ効果がかかってない対象を選びます(距離0の自身は最優先となる)。同距離の場合0時方向から時計回り順に選びます。<br />`,
           },
           selfDamage: {
             label: "自傷効果",
@@ -2056,6 +2071,9 @@ export default {
 
     //#region リプレイ
     serializeReplay() {
+      if (!this.simulation) {
+        return null;
+      }
       let r = {};
       r.version = lbt.replayVersion;
       r.battle = this.battleId;
@@ -2079,7 +2097,7 @@ export default {
         return body(lut.fromJson(data));
       }
       else if (data instanceof ArrayBuffer || data instanceof Uint8Array) {
-        return body(lut.fromJson(lut.binaryToString(data)));
+        return body(lut.fromJson(lut.bytesToString(data)));
       }
       else if (typeof (data) === 'object') {
         return body(lut.sanitizeJsonObject(data));
@@ -2120,7 +2138,7 @@ export default {
       }
       if (this.replay) {
         let r = this.replay;
-        lut.compressGzip(lut.toJson(r)).then(data => {
+        lut.gzCompress(lut.toJson(r)).then(data => {
           lut.download(`${r.loadout.name}${r.states.at(-1).desc.score}.replay`, data);
         });
       }
@@ -2128,8 +2146,8 @@ export default {
     importReplayFromFile() {
       lut.openFileDialog(".replay", (file) => {
         file.arrayBuffer().then((bin) => {
-          if (lut.isGzipData(bin)) {
-            lut.decompressGzip(bin).then(data => {
+          if (lut.gzIsCompressedData(bin)) {
+            lut.gzDecompress(bin).then(data => {
               this.deserializeReplay(data);
             })
           }
@@ -2207,7 +2225,7 @@ export default {
     },
     async uploadReplay() {
       const replay = this.simulation ? this.serializeReplay() : this.replay;
-      const data = await lut.compressGzip(lut.toJson(replay));
+      const data = await lut.gzCompress(lut.toJson(replay));
       var form = new FormData()
       form.append('mode', 'put');
       form.append('data', new Blob([data]));
@@ -2378,12 +2396,7 @@ export default {
       return false;
     },
     decodeURL(initState = false) {
-      let data = new lut.URLSerializer({
-        b: "",
-        p: "",
-        u: "",
-      });
-
+      let data = new lut.URLSerializer();
       if (data.deserialize(window.location.href) || initState) {
         if (data.b)
           this.selectBattle(data.b);
@@ -2404,7 +2417,9 @@ export default {
             }
           });
         }
+        return data;
       }
+      return null;
     },
     dbgTest() {
     },

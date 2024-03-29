@@ -771,12 +771,6 @@ export class SimContext {
     unit.prevMoveDistance = doActionEnd ? 0 : unit.moveDistance;
     unit.moveDistance = 0;
 
-    // スコア加算
-    unit.score += ctx.damageDealt.get(unit.fid).total;
-    if (target) {
-      target.score += ctx.damageDealt.get(target.fid).total;
-    }
-
     this.updateAreaEffects();
     this.pushState(unit, skill, skillArgs);
     console.log(ctx);
