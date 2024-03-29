@@ -953,7 +953,7 @@ export function makeSimSkill(skill, ownerUnit) {
     }
   };
   self.invokeDebuffCancel = function (ctx, timing = null) {
-    if (!$g.config.autoDebuffCancel) {
+    if (!$g.config.autoBuffCancel) {
       return;
     }
     for (let act of self?.debuffCancel ?? []) {

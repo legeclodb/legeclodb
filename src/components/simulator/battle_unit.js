@@ -615,15 +615,20 @@ export class SimUnit {
       return null;
     }
     if (effect.type == "ランダム") {
-      let tmp = null;
-      if (effect.isBuff) {
-        tmp = effect.randomTable.find(a => a.type == "与ダメージ");
+      if ($g.config.autoRandomBuff) {
+        let tmp = null;
+        if (effect.isBuff) {
+          tmp = effect.randomTable.find(a => a.type == "与ダメージ");
+        }
+        else if (effect.isDebuff) {
+          tmp = effect.randomTable.find(a => a.type == "ダメージ耐性");
+        }
+        if (tmp) {
+          effect = tmp;
+        }
       }
-      else if (effect.isDebuff) {
-        tmp = effect.randomTable.find(a => a.type == "ダメージ耐性");
-      }
-      if (tmp) {
-        effect = tmp;
+      else {
+        return null;
       }
     }
 

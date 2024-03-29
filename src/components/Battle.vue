@@ -198,7 +198,29 @@
       </div>
 
       <div class="unit-panel">
-        <div v-if="!showConfirm">
+        <div v-if="showConfirm">
+          <b-button size="sm" @click="confirmAction()" style="width: 14em;">
+            行動を確定
+          </b-button>
+        </div>
+        <div v-else-if="selectedUnit">
+          <b-table small borderless hover :items="simOptions" :fields="simOptionFields" :tbody-tr-attr="(r)=>{ return {id: `simopt-${r.name}`}; }">
+            <template #cell(value)="r">
+              <div class="flex">
+                <div style="margin-left: auto">
+                  <b-form-checkbox v-model="r.item.value"></b-form-checkbox>
+                </div>
+              </div>
+            </template>
+            <template #cell(label)="r">
+              <div>{{r.item.label}}</div>
+              <b-popover :target="`simopt-${r.item.name}`" triggers="hover focus">
+                <div v-html="r.item.desc" />
+              </b-popover>
+            </template>
+          </b-table>
+        </div>
+        <div v-else>
           シミュレーションモードでは実際のゲームのようにユニットを操作できます。<br />
           しかし、検証のため、あるいは再現が難しいため、動作が異なる点もあります。以下大雑把な説明。<br />
           <ul>
@@ -209,11 +231,6 @@
             <li>やり直したい場合、<b><b-link @mouseenter="highlight('replay-menu', true)" @mouseleave="highlight('replay-menu', false)">リプレイメニュー</b-link>から過去に遡ることができます</b>。</li>
           </ul>
         </div>
-        <div v-else>
-          <b-button size="sm" @click="confirmAction()" style="width: 14em;">
-            行動を確定
-          </b-button>
-        </div>
       </div>
     </div>
 
@@ -222,7 +239,7 @@
         <div style="max-height: 350px; overflow-y: auto; overscroll-behavior: none;">
           <template v-if="simulation ?? replay">
             <template v-for="(r, i) of (simulation ?? replay).states.toReversed()">
-              <div class="flex" :style="`margin: 2px 0px 2px 0px; ${ simulation?.statePos==-i-1 ? 'background: rgb(220,220,230)': '' }`" :key="i" :id="`sim-state-${-i-1}`">
+              <div class="flex" :style="`margin: 2px 0px; ${ simulation?.statePos==-i-1 ? 'background: rgb(200,200,210)': '' }`" :key="i" :id="`sim-state-${-i-1}`">
                 <b-button size="sm" style="padding: 0px; width: 30px; height: 30px; margin-right: 0.25em;" @click="setReplayState(-i-1);">▶</b-button>
                 <template v-if="r.desc.isAction">
                   <b-img :src="getImageURL(r.desc.unitIcon)" width="35px" height="35px" />
@@ -402,7 +419,7 @@
                   </div>
                 </b-popover>
 
-                <b-button v-if="replay" @click="playbackReplay(replay, {interval: 150})" style="margin-left: 1.0em;">現在の構成でリプレイをなぞる</b-button>
+                <b-button v-if="replay" @click="playbackReplay(replay)" style="margin-left: 1.0em;">現在の構成でリプレイをなぞる</b-button>
               </div>
 
               <div class="flex" style="align-items: flex-start;">
@@ -763,6 +780,17 @@ export default {
         }
       ],
       fetching: false,
+
+      simOptionFields: [
+        {
+          key: "value",
+          label: "",
+        },
+        {
+          key: "label",
+          label: "",
+        },
+      ],
     };
   },
 
@@ -896,6 +924,45 @@ export default {
     },
     prevTool() {
       return this.toolStack.at(-2);
+    },
+
+    simOptions() {
+      if (this.simulation) {
+        const desc = {
+          autoBuffCancel: {
+            label: "自動バフ・デバフ解除",
+            desc: `バフ解除・デバフ解除効果を自動で適用します。<br />
+選ぶ効果はランダムではなく、<b>バフ解除はダメージ耐性系を優先で解除、デバフ解除は与ダメージ系を優先で解除</b>します。<br />
+理論値に近いダメージを出すための処置ですが、実測値と大きく違う結果を招くので注意が必要です。`,
+          },
+          autoRandomBuff: {
+            label: "自動ランダムバフ・デバフ",
+            desc: `ランダムバフ・デバフを自動で適用します。<br />
+選ぶ効果はランダムではなく、<b>ランダムバフは与ダメージのみ選択、ランダムデバフはダメージ耐性のみ選択</b>となります。<br />
+理論値に近いダメージを出すための処置ですが、実測値と大きく違う結果を招くので注意が必要です。`,
+          },
+          autoRandomSelection: {
+            label: "自動ランダム対象選択",
+            desc: `追跡の頭帯のような「範囲内のランダムな1ユニットにバフ」といった効果を自動で適用します。<br />
+選ぶ対象はランダムではなく、自身を含む距離が最も近く、かつまだ効果がかかってない対象を選びます。同距離の場合0時方向から時計回り順に選びます。<br />`,
+          },
+          selfDamage: {
+            label: "自傷効果",
+            desc: `人馬の天衣などの自傷効果の有効/無効です。<br />有効な場合、確率ではなく100%発動します。<br />`,
+          },
+        };
+        let sim = this.simulation;
+        return Object.keys(sim.config).map(k => {
+          return {
+            name: k,
+            label: desc[k]?.label ?? k,
+            desc: desc[k]?.desc ?? "",
+            get value() { return sim.config[k]; },
+            set value(v) { sim.config[k] = v; },
+          };
+        });
+      }
+      return [];
     },
   },
 
@@ -2032,7 +2099,7 @@ export default {
       }
       this.beginSimulation();
 
-      let interval = Math.max(opt?.interval ?? 0, 0);
+      let interval = Math.max(opt?.interval ?? 150, 0);
       if (interval > 0) {
         lut.timedEach(r.states, interval, (state) => {
           if (!this.simulation)
@@ -2194,7 +2261,6 @@ export default {
 
     //#region Balloon
     addBaloon(unit, content, z = -1) {
-      const timeout = 1000;
       let el = document.createElement('div');
       el.innerHTML = content;
       el.classList.add('balloon');

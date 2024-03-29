@@ -16,9 +16,7 @@ export class SimContext {
   //#region fields (serializable)
   config = {
     autoBuffCancel: true,
-    autoDebuffCancel: true,
     autoRandomBuff: true,
-    autoRandomDebuff: true,
     autoRandomSelection: true,
     selfDamage: false,
   };
