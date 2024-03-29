@@ -887,10 +887,12 @@ export default {
         this.deserializeLoadout(data);
       });
       lut.idbRead("ldb", "replay", "last", (data) => {
+        this.selectBattle(data?.battle);
         this.replay = data;
       });
     }
   },
+
 
   destroyed() {
     // 編成とリプレイを記録
@@ -1764,7 +1766,11 @@ export default {
         body();
       }
     },
-    setUnitPath(unit, path) {
+    // opt: {
+    //   interval: Number,
+    //   onfinish: Function,
+    //}
+    setUnitPath(unit, path, opt) {
       const makeSVGPath = (path) => {
         // thanks: https://www.webdesignleaves.com/pr/html/svg_basic.html#path
         const cellSize = 50;
@@ -1774,14 +1780,15 @@ export default {
         return `path('${commands.join(' ')}')`;
       }
       let el = document.getElementById(`unit-${unit.fid}`);
+      let anim = null;
       if (el) {
         if (path) {
           el.style.transition = 'none';
           el.style.offsetPath = makeSVGPath(path);
-          el.animate(
+          anim = el.animate(
             { offsetDistance: ['0%', '100%'] },
             {
-              duration: unit.moveDistance * 30,
+              duration: unit.moveDistance * (opt?.interval ?? 30),
               easing: 'linear',
               fill: 'forwards',
             }
@@ -1789,6 +1796,14 @@ export default {
         }
         else {
           this.resetUnitPosition(unit);
+        }
+      }
+      if (opt?.onfinish) {
+        if (anim) {
+          anim.onfinish = opt.onfinish;
+        }
+        else {
+          opt.onfinish();
         }
       }
     },
@@ -2138,35 +2153,29 @@ export default {
       this.beginSimulation();
 
       this.simulation.onPlayback = true;
-      let interval = Math.max(opt?.interval ?? 150, 0);
-      if (interval > 0) {
-        this.playbackBody = () => {
-          this.resetTools();
-          this.simulation.isPlaying = true;
-          lut.timedEach(r.states, interval, (state) => {
-            if (!this.simulation) {
-              return false; // 途中でシミュレーション終了した場合
-            }
-            try {
-              this.simulation.playback(state);
-            }
-            catch (e) {
-              // スキル構成が違うなどで再生が中断された場合
-              return false;
+      let interval = Math.max(opt?.interval ?? 30, 1);
+      this.playbackBody = () => {
+        this.resetTools();
+        this.simulation.isPlaying = true;
+
+        let si = 0;
+        const next = () => {
+          this.$nextTick(() => {
+            if (this.simulation && si < r.states.length) {
+              try {
+                this.simulation.playback(r.states[si++], {
+                  interval: interval,
+                  next: next,
+                });
+              }
+              catch (e) { }
             }
           });
         };
-        if (opt?.immediate) {
-          this.beginPlayback();
-        }
-      }
-      else {
-        try {
-          for (const state of r.states) {
-            this.simulation.playback(state);
-          }
-        }
-        catch (e) { }
+        next();
+      };
+      if (opt?.immediate) {
+        this.beginPlayback();
       }
     },
     beginPlayback() {

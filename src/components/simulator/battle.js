@@ -176,7 +176,15 @@ export class SimContext {
     this.desc.comment = "";
     this.userEvents = [];
   }
-  playback(state) {
+  // opt: {
+  //   interval: Number,
+  //   next: Function,
+  //}
+  playback(state, opt) {
+    const callNext = () => {
+      if (opt?.next)
+        opt.next();
+    };
     const handlers = {
       eraseUnit: (e) => {
         this.eraseUnit(this.findUnit(e.target));
@@ -204,24 +212,12 @@ export class SimContext {
     const desc = state.desc;
     if (desc.unit) {
       let unit = this.findUnit(desc.unit);
-      if (!unit) {
+      let uop = state.units.find(u => u.fid == desc.unit);
+      let skill = null;
+      if (!unit || !uop) {
         $g.log("ユニットが見つからないため中断しました。");
         throw Error("unit not found");
       }
-
-      const uop = state.units.find(u => u.fid == desc.unit);
-      if (uop) {
-        let pf = this.makePathFinder(unit, true);
-        let d = pf.getMoveDistance(uop.coord);
-        let prev = unit.coord;
-        unit.moveDistance = d < 0 ? unit.move : d;
-        unit.coord = uop.coord;
-        $vue().setUnitPath(unit.base, pf.getPath(uop.coord, prev));
-        //console.log(`move ${unit.moveDistance} (${unit.main.name})`);
-        //console.log(pf.toString());
-      }
-
-      let skill = null;
       if (desc.skill) {
         skill = unit.skills.find(a => a.uid == desc.skill);
         if (!skill) {
@@ -229,14 +225,26 @@ export class SimContext {
           throw Error("skill not found");
         }
       }
-      return this.fireSkill(unit, skill, desc.skillArgs);
+
+      let pf = this.makePathFinder(unit, true);
+      let dist = pf.getMoveDistance(uop.coord);
+      let prev = unit.coord;
+      unit.moveDistance = dist < 0 ? unit.move : dist;
+      unit.coord = uop.coord;
+      $vue().setUnitPath(unit.base, pf.getPath(uop.coord, prev), {
+        interval: opt?.interval,
+        onfinish: () => {
+          this.fireSkill(unit, skill, desc.skillArgs);
+          callNext();
+        },
+      });
     }
     else {
       if (state.turn != this.turn || state.phase != this.phase) {
         this.passTurn();
       }
+      callNext();
     }
-    return null;
   }
 
   addUserEvent(e) {
@@ -588,6 +596,9 @@ export class SimContext {
   }
 
   fireSkill(unit, skill, skillArgs) {
+    if (!$g.sim) { // シミュレーションが中断された場合対策
+      return;
+    }
     this.updateAreaEffects();
     unit = unit.sim ?? unit;
     let target = null;
