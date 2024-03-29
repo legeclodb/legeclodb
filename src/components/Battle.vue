@@ -268,8 +268,11 @@
             </template>
             <template v-else>
               <b-table small outlined sticky-header :items="replayList" :fields="replayFields" style="min-width: 90%;">
-                <template #cell(name)="row">
-                  <span>{{row.item.name}}</span>
+                <template #cell(battle)="row">
+                  <span>{{(battleList.find(a => a.uid == row.item.battle)?.name ?? "").replace(/\(.+\)/, "")}}</span>
+                </template>
+                <template #cell(units)="row">
+                  <b-img v-for="(uid, i) of row.item.units ?? []" :key="i" :src="getImageURL(uid)" width="35px" height="35px" />
                 </template>
                 <template #cell(actions)="row">
                   <div class="flex" style="">
@@ -280,7 +283,7 @@
                       URL コピー
                     </b-button>
                     <b-button v-if="row.item.delkey" size="sm" @click="deleteReplay(row.item)" style="margin-left: 0.25em">
-                      削除(確認あり)
+                      削除
                     </b-button>
                   </div>
                 </template>
@@ -766,8 +769,16 @@ export default {
       replayList: [],
       replayFields: [
         {
-          key: "name",
-          label: "マップ＆スコア",
+          key: "battle",
+          label: "マップ",
+        },
+        {
+          key: "score",
+          label: "スコア",
+        },
+        {
+          key: "units",
+          label: "ユニット",
         },
         {
           key: "comment",
@@ -2085,6 +2096,7 @@ export default {
       let r = {};
       r.version = lbt.replayVersion;
       r.battle = this.battleId;
+      r.score = Math.round(this.simulation.score);
       r.loadout = this.serializeLoadout();
       r.states = this.simulation.serialize();
       r.name = `${this.battleData.name} ${r.states.at(-1).desc.score}`;
@@ -2240,13 +2252,18 @@ export default {
       fetch(lut.ReplayServer).then((res) => {
         res.json().then((obj) => {
           this.fetching = false;
-          this.replayList = obj.sort((a, b) => b.date.localeCompare(a.date));
+          this.replayList = obj.sort((a, b) => b.date.localeCompare(a.date)).map(a => {
+            return {
+              hash: a.hash,
+              version: a.summary?.version ?? "",
+              battle: a.summary?.battle ?? "",
+              score: a.summary?.score ?? "",
+              units: a.summary?.units ?? "",
+              author: a.summary?.author ?? "",
+              comment: a.summary?.comment ?? "",
+            };
+          });
           for (let e of this.replayList) {
-            // 長すぎる名前は切り詰めておく
-            const maxNameLen = 64;
-            if (e.name.length > maxNameLen) {
-              e.name = e.name.substring(0, maxNameLen);
-            }
             const delkey = localStorage.getItem(`delkey.${e.hash}`);
             if (delkey) {
               e.delkey = delkey;
