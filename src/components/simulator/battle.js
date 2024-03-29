@@ -197,13 +197,16 @@ export class SimContext {
     for (let evt of state.userEvents ?? []) {
       handlers[evt.type](evt);
     }
+    if ("config" in state && !this.config.override) {
+      Object.assign(this.config, state.config);
+    }
 
     const desc = state.desc;
     if (desc.unit) {
       let unit = this.findUnit(desc.unit);
       if (!unit) {
         $g.log("ユニットが見つからないため中断しました。");
-        return null;
+        throw Error("unit not found");
       }
 
       const uop = state.units.find(u => u.fid == desc.unit);
@@ -223,7 +226,7 @@ export class SimContext {
         skill = unit.skills.find(a => a.uid == desc.skill);
         if (!skill) {
           $g.log("スキルが見つからないため中断しました。");
-          return null;
+          throw Error("skill not found");
         }
       }
       return this.fireSkill(unit, skill, desc.skillArgs);

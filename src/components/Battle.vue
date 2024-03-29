@@ -167,7 +167,7 @@
 
     <div v-if="simulation" :class="`content sim-commands ${simulation.isPlayerTurn ? 'player-turn' : 'enemy-turn'}` " @click.stop="">
       <div class="unit-panel">
-        <div v-if="actionsToSelect.length" style="margin-bottom: 20px; display: flex; flex-wrap: wrap;">
+        <div v-if="selectedUnit && actionsToSelect.length" style="margin-bottom: 20px; display: flex; flex-wrap: wrap;">
           <div v-if="selectedUnit.sim.isOnMultiMove" style="font-size: 16pt; color: gray; width: 100%;">再移動中</div>
           <div v-if="selectedUnit.sim.isOnMultiAction" style="font-size: 16pt; color: gray; width: 100%;">再行動中</div>
           <b-button size="sm" style="width: 45px; height: 45px; margin-right: 5px;" @click="onClickWait();">
@@ -182,9 +182,12 @@
           <h5>
             ターン{{ simulation.turn }} : {{ simulation.isPlayerTurn ? 'プレイヤー': 'エネミー' }}フェイズ
           </h5>
-          <b-button size="sm" @click="endTurn()" style="width: 10em; margin-right: 1em;"
+          <b-button v-if="!simulation.onPlayback" size="sm" @click="endTurn()" style="width: 10em; margin-right: 1em;"
                     :disabled="simulation.turn == simulation.maxTurn && simulation.isEnemyTurn">
             ターン終了
+          </b-button>
+          <b-button v-if="simulation.onPlayback && !simulation.isPlaying" size="sm" @click="beginPlayback()" style="width: 10em; margin-right: 1em;">
+            再生開始
           </b-button>
         </div>
         <div style="margin-top: 20px">
@@ -973,7 +976,12 @@ export default {
             label: desc[k]?.label ?? k,
             desc: desc[k]?.desc ?? "",
             get value() { return sim.config[k]; },
-            set value(v) { sim.config[k] = v; },
+            set value(v) {
+              sim.config[k] = v;
+              if (sim.onPlayback) {
+                sim.config.override = true;
+              }
+            },
           };
         });
       }
@@ -2117,18 +2125,42 @@ export default {
       }
       this.beginSimulation();
 
+      this.simulation.onPlayback = true;
       let interval = Math.max(opt?.interval ?? 150, 0);
       if (interval > 0) {
-        lut.timedEach(r.states, interval, (state) => {
-          if (!this.simulation)
-            return false; // 中断された場合
-          this.simulation.playback(state);
-        });
+        this.playbackBody = () => {
+          this.resetTools();
+          this.simulation.isPlaying = true;
+          lut.timedEach(r.states, interval, (state) => {
+            if (!this.simulation) {
+              return false; // 途中でシミュレーション終了した場合
+            }
+            try {
+              this.simulation.playback(state);
+            }
+            catch (e) {
+              // スキル構成が違うなどで再生が中断された場合
+              return false;
+            }
+          });
+        };
+        if (opt?.immediate) {
+          this.beginPlayback();
+        }
       }
       else {
-        for (const state of r.states) {
-          this.simulation.playback(state);
+        try {
+          for (const state of r.states) {
+            this.simulation.playback(state);
+          }
         }
+        catch (e) { }
+      }
+    },
+    beginPlayback() {
+      if (this.playbackBody) {
+        this.playbackBody();
+        this.playbackBody = null;
       }
     },
 
@@ -2413,7 +2445,7 @@ export default {
         if (data.replay) {
           this.importReplayFromUrl(data.replay, (r) => {
             if (data.playback) {
-              this.playbackReplay(r, { interval: data.interval });
+              this.playbackReplay(r, { interval: data.interval, immediate: true });
             }
           });
         }
