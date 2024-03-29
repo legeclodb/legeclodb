@@ -737,7 +737,7 @@ export class SimContext {
       unit.state = UnitState.End;
     }
     else if (doActionEnd) {
-      if (!unit.isNxN) {
+      if (!unit.isNxN || ctx.onWait) {
         if (unit.invokeMultiAction(ctx)) {
           multiAction = true;
         }
