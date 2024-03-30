@@ -3,7 +3,7 @@
     <div class="header" :class="{ 'hidden': !showHeader }">
       <Navigation />
     </div>
-    <div class="about" style="margin-top: 55px;">
+    <div class="about" style="margin-top: 60px;">
     </div>
 
     <div class="content" :style="style" style="margin-bottom: 20px;">
@@ -11,7 +11,7 @@
         <div v-if="!simulation" class="menu-widgets flex" style="margin: 0px 10px 15px 10px;">
           <div class="widget">
             <span>クエスト：</span>
-            <b-dropdown :text="battleData ? battleData.name : ''" id="battle_selector">
+            <b-dropdown :text="battleData ? battleData.name : ''" id="battle_selector" style="min-width: 20em;">
               <b-dropdown-item v-for="(battle, i) in battleList" class="d-flex flex-column" :key="i" @click="selectBattle(battle.uid, true); updateURL();">
                 {{ battle.name }}
               </b-dropdown-item>
@@ -58,6 +58,9 @@
                 </div>
               </template>
             </template>
+            <div v-if="loading" class="menu-panel" style="padding: 10px; position: absolute;">
+              <b-spinner small label="Spinning"></b-spinner>
+            </div>
           </div>
 
           <div ref="enemyList" class="enemy-list">
@@ -320,6 +323,13 @@
           <b-button style="width: 14em; margin-left: 4em;" @click="beginSimulation()">
             シミュレーション開始
           </b-button>
+          <b-button v-if="replay" id="btn-follow-replay" @click="playbackReplay(replay)" style="margin-left: 1em;">
+            現在の構成でリプレイをなぞる
+            <b-popover :target="`btn-follow-replay`" triggers="hover focus">
+              行動パターンはそのまま装備だけ変えてダメージの変化を調べるための機能です。<br />
+              射程、スキル構成、ユニットの生死が変わるような変化があるとなぞれなくなって中断される可能性があります。<br />
+            </b-popover>
+          </b-button>
         </div>
 
         <div v-if="!simulation" class="flex" style="margin: 0px 10px 10px 10px;">
@@ -346,8 +356,6 @@
                     <b-button size="sm" @click="unit.showEditor=false">閉じる</b-button>
                   </div>
                 </b-popover>
-
-                <b-button v-if="replay" @click="playbackReplay(replay)" style="margin-left: 1.0em;">現在の構成でリプレイをなぞる</b-button>
               </div>
 
               <div class="flex" style="align-items: flex-start;">
@@ -625,6 +633,7 @@ export default {
         { index: 4, id: "4E", desc: "4T敵フェイズ" },
       ],
 
+      loading: false,
       divX: 15,
       divY: 15,
 
@@ -794,17 +803,22 @@ export default {
   mounted() {
     this.userName = localStorage.getItem(`userName`) ?? "";
 
+    // とりあえず碁盤目を出す
+    this.selectBattle(null);
+    this.selectPhase("0");
+    this.setupTools();
+
     window.onpopstate = () => {
       this.decodeURL(true);
     };
     const initialize = () => {
+      this.loading = false;
       if (!this.battleData) {
         this.selectBattle(this.battleList.at(-1)?.uid);
       }
-      this.selectPhase("0");
-      this.setupTools();
     };
 
+    this.loading = true;
     let url = this.decodeURL();
     if (url) {
       if (url.replay) {
@@ -812,6 +826,7 @@ export default {
           if (url.playback) {
             this.playbackReplay(r, { interval: url.interval, immediate: true });
           }
+          initialize();
         }, () => initialize());
       }
       else {
@@ -835,7 +850,6 @@ export default {
       }, () => initialize());
     }
   },
-
 
   destroyed() {
     // 編成とリプレイを記録
@@ -1470,15 +1484,14 @@ export default {
 
     selectBattle(bid, clear = false) {
       const battle = this.battleList.find(a => a.uid == bid);
-      if (!battle)
-        return;
       this.resetTools();
       this.battleId = bid;
       this.battleData = battle;
 
-      const divX = this.divX = battle.mapSize[0];
-      const divY = this.divY = battle.mapSize[1];
-      const terrain = battle.terrain;
+      // battle == null の場合でもとりあえず 15x15 の碁盤目が出るようにしておく
+      const divX = this.divX = battle?.mapSize[0] ?? 15;
+      const divY = this.divY = battle?.mapSize[1] ?? 15;
+      const terrain = battle?.terrain;
       let cells = new Array(divX * divY);
       for (let y = 0; y < divY; ++y) {
         for (let x = 0; x < divX; ++x) {
@@ -1502,7 +1515,7 @@ export default {
         this.$refs.enemyList.style.maxHeight = `${this.$refs.cells.clientHeight}px`;
       });
 
-      this.enemyUnits = battle.enemies?.map(a => a.unit) ?? [];
+      this.enemyUnits = battle?.enemies?.map(a => a.unit) ?? [];
       for (let e of this.enemyUnits) {
         if (e.main.shape) {
           const shape = e.main.shape;
@@ -1514,7 +1527,7 @@ export default {
         }
       }
 
-      if (battle.allies) {
+      if (battle?.allies) {
         for (let i = 0; i < battle.allies.length; ++i) {
           let ally = battle.allies[i];
           ally.unit = this.playerUnits[i];
@@ -2078,7 +2091,7 @@ export default {
     },
     importReplayFromFile() {
       lut.openFileDialog(".replay", (file) => {
-        file.arrayBuffer().then((bin) => {
+        file.arrayBuffer().then(bin => {
           if (lut.gzIsCompressedData(bin)) {
             lut.gzDecompress(bin).then(data => {
               this.deserializeReplay(data);
@@ -2102,11 +2115,14 @@ export default {
         this.toast(e.toString());
         lut.call(onerror, e);
       };
-      fetch(url).then((res) => {
-        if (!res.ok) {
-          throw new Error(res.statusText);
-        }
-        res.json().then((json) => {
+      fetch(url)
+        .then(res => {
+          if (!res.ok) {
+            throw new Error(res.statusText);
+          }
+          return res.json();
+        })
+        .then(json => {
           if (json.succeeded === false) {
             throw new Error(json.message);
           }
@@ -2114,13 +2130,13 @@ export default {
             let r = this.deserializeReplay(json);
             lut.call(onsuccess, r);
           }
-        }).catch(handleError);
-      }).catch(handleError);
+        })
+        .catch(handleError);
     },
     onDropReplay(event) {
       if (event?.dataTransfer?.files?.length) {
         let file = event.dataTransfer.files[0];
-        file.text().then((text) => {
+        file.text().then(text => {
           this.deserializeReplay(lut.fromJson(text));
         });
       }
@@ -2149,8 +2165,9 @@ export default {
 
     fetchReplayList() {
       this.fetching = true;
-      fetch(lut.ReplayServer).then((res) => {
-        res.json().then((obj) => {
+      fetch(lut.ReplayServer)
+        .then(res => res.json())
+        .then(obj => {
           this.fetching = false;
           this.replayList = obj.sort((a, b) => b.date.localeCompare(a.date)).map(a => {
             return {
@@ -2169,8 +2186,7 @@ export default {
               e.delkey = delkey;
             }
           }
-        })
-      });
+        });
     },
     async uploadReplay() {
       const replay = this.simulation ? this.serializeReplay() : this.replay;
@@ -2180,19 +2196,19 @@ export default {
       form.append('data', new Blob([data]));
       form.append('author', this.userName.trim());
       form.append('comment', this.commentReplay.trim());
-      fetch(lut.ReplayServer, { method: "POST", body: form }).then((res) => {
-        res.json().then((obj) => {
-          if (obj.succeeded) {
+      fetch(lut.ReplayServer, { method: "POST", body: form })
+        .then(res => res.json())
+        .then(obj => {
+          if (obj.succeeded === false) {
+            this.toast(obj.message);
+          }
+          else {
             localStorage.setItem(`delkey.${obj.hash}`, obj.delkey);
             localStorage.setItem(`subscribe.${obj.hash}`, 'true');
             this.commentReplay = "";
             this.fetchReplayList();
           }
-          if (obj.message) {
-            this.toast(obj.message);
-          }
-        })
-      });
+        });
     },
     downloadReplay(rec) {
       this.importReplayFromUrl(`${lut.ReplayServer}?mode=get&hash=${rec.hash}`, () => {
@@ -2200,21 +2216,21 @@ export default {
       });
     },
     deleteReplay(rec) {
-      if (window.confirm(`"${this.getItemName(rec.battle)} (${rec.score})" をサーバーから削除します。よろしいですか？`)) {
-        fetch(`${lut.ReplayServer}?mode=del&hash=${rec.hash}&delkey=${rec.delkey}`).then((res) => {
-          res.json().then((obj) => {
-            if (obj.succeeded) {
+      if (window.confirm(`"${this.getItemName(rec.battle)} (スコア ${rec.score})" をサーバーから削除します。よろしいですか？`)) {
+        fetch(`${lut.ReplayServer}?mode=del&hash=${rec.hash}&delkey=${rec.delkey}`)
+          .then(res => res.json())
+          .then(obj => {
+            if (obj.succeeded === false) {
+              this.toast(obj.message);
+            }
+            else {
               localStorage.removeItem(`delkey.${rec.hash}`);
               if (rec.hash == this.replayHash) {
                 this.replayHash = null;
               }
               this.fetchReplayList();
             }
-            if (obj.message) {
-              this.toast(obj.message);
-            }
           });
-        });
       }
     },
     copyReplayUrl(rec) {
