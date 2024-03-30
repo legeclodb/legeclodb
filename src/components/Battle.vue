@@ -69,11 +69,11 @@
                 <h5 style="font-size: 18pt;">スコア</h5>
                 <div class="grid" style="grid-template-columns: auto auto 1fr;">
                   <template v-for="unit in allPlayerUnits">
-                    <div :key="`score-portrait-${unit.fid}`" style="grid-column: 1;">
+                    <div :key="`portrait-${unit.fid}`" style="grid-column: 1;">
                       <b-img-lazy :src="getImageURL(unit.main.icon)" :title="unit.main.name" :class="`${!unit.isAlive ? 'grayscale' : ''}`" width="50" height="50" rounded />
                     </div>
-                    <div :key="`score-number-${unit.fid}`" style="grid-column: 2; margin-left: 10px; text-align: right;" v-html="scoreToHtml(unit.sim.score)" />
-                    <div :key="`score-pad-${unit.fid}`" style="grid-column: 3;" />
+                    <div :key="`score-${unit.fid}`" style="grid-column: 2; margin-left: 10px; text-align: right;" v-html="scoreToHtml(unit.sim.score)" />
+                    <div :key="`pad-${unit.fid}`" style="grid-column: 3;" />
                   </template>
 
                   <div style="grid-column: 1; font-size: 18pt;">合計</div>
@@ -102,16 +102,11 @@
                       <div v-if="unit.main.status" class="status2" v-html="statusToHtml(unit.main.status)" />
                     </div>
                     <div class="skills">
-                      <template v-for="(skill, si) in unit.main.skills">
-                        <div v-if="!skill.isNormalAttack" class="skill" :class="getSkillClass(skill)" :key="si">
+                      <template v-for="skill in unit.main.skills">
+                        <div v-if="!skill.isNormalAttack" class="skill" :class="getSkillClass(skill)" :key="skill.uid">
                           <div class="flex">
-                            <div class="icon" :id="'enemy_'+unit.fid+'_skill'+si">
+                            <div class="icon">
                               <b-img-lazy :src="getImageURL(skill.icon)" with="50" height="50" />
-                              <b-popover v-if="displayType==1" :target="'enemy_'+unit.fid+'_skill'+si" triggers="hover focus" :delay="{show:0, hide:250}" no-fade :title="skill.name" placement="top">
-                                <div class="flex">
-                                  <div v-html="descToHtml(skill)"></div>
-                                </div>
-                              </b-popover>
                             </div>
                             <div class="desc" v-show="displayType >= 2">
                               <div class="flex">
@@ -161,7 +156,7 @@
           <b-button size="sm" style="width: 45px; height: 45px; margin-right: 5px;" @click="onClickWait();">
             待機
           </b-button>
-          <div v-for="(skill, si) of actionsToSelect" :key="si" :class="getActionClass(skill, selectedUnit)" :title="descToTitle(skill)" @click="onClickAction(skill)">
+          <div v-for="skill of actionsToSelect" :key="skill.uid" :class="getActionClass(skill, selectedUnit)" :title="descToTitle(skill)" @click="onClickAction(skill)">
             <b-img :src="getImageURL(skill.icon)" style="width: 100%; height: 100%;" />
             <div v-if="!skill.available" class="text-overlay">CT{{isFinite(skill.coolTime) ? skill.coolTime : "∞"}}</div>
           </div>
@@ -225,8 +220,70 @@
       </div>
     </div>
 
-    <div class="content sim-replay" @click.stop="" tabindex="0" @keydown.up.stop="onKeyReplay($event)" @keydown.down.stop="onKeyReplay($event)">
-      <div id="history" class="unit-panel">
+    <div class="grid" style="position: fixed; right: 5px; bottom: 5px; grid-template-columns: auto auto;">
+      <div v-if="showReplayList" class="unit-panel" style="min-width: 1200px; max-width: 1600px; max-height: 500px; margin-right: 5px; grid-column: 1; ">
+        <div class="flex">
+          <h5>公開されているリプレイ</h5>
+          <div style="margin-left: auto;">
+            <b-button size="sm" @click="showReplayList=false;" style="margin-left: 1em; padding: 0px 5px;">✖</b-button>
+          </div>
+        </div>
+        <template v-if="fetching">
+          <div style="padding: 10px;">
+            <b-spinner small label="Spinning"></b-spinner>
+          </div>
+        </template>
+        <template v-else>
+          <b-table small outlined sticky-header :items="replayList" :fields="replayFields" style="min-width: 90%;">
+            <template #cell(battle)="row">
+              <span style="white-space: nowrap;">{{getItemName(row.item.battle)}}</span>
+            </template>
+            <template #cell(score)="row">
+              <span style="white-space: nowrap;">{{row.item.score}}</span>
+            </template>
+            <template #cell(units)="row">
+              <span style="white-space: nowrap;">
+                <b-img v-for="(uid, i) of row.item.units ?? []" :key="i" :src="getImageURL(uid)" width="35px" height="35px" />
+              </span>
+            </template>
+            <template #cell(actions)="row">
+              <div class="flex" style="white-space: nowrap;">
+                <b-button size="sm" @click="downloadReplay(row.item); showReplayList=false;">
+                  ロード
+                </b-button>
+                <b-button size="sm" :id="`replay-${row.item.hash}`" @click="copyReplayUrl(row.item)" style="margin-left: 0.25em">
+                  URLコピー
+                </b-button>
+                <b-button v-if="row.item.delkey" size="sm" @click="deleteReplay(row.item)" style="margin-left: 0.25em">
+                  削除
+                </b-button>
+              </div>
+            </template>
+          </b-table>
+        </template>
+        <div v-if="simulation ?? replay" style="margin-bottom: 0.75em;">
+          <div class="flex" style="margin-bottom: 0.25em;">
+            <b-button size="sm" @click="uploadReplay()">
+              現在のリプレイを公開
+            </b-button>
+            <b-form-input size="sm" v-model="userName" placeholder="投稿者名" style="width: 8em; margin-left: 0.5em;"></b-form-input>
+            <b-form-input size="sm" v-model="commentReplay" placeholder="コメント" style="flex: 1; margin-left: 0.5em;"></b-form-input>
+          </div>
+          <div class="flex">
+            <span style="margin-left: 0.5em; color: rgb(160,160,160) ">(投稿者本人は投稿したデータを削除可能)</span>
+          </div>
+        </div>
+        <div class="flex" style="margin-bottom: 0.5em;">
+          <b-button v-if="simulation ?? replay" size="sm" @click="exportReplayAsFile()" style="min-width: 12em;">
+            ファイルにエクスポート
+          </b-button>
+          <b-button size="sm" @click="importReplayFromFile()" style="min-width: 12em; margin-left: 0.5em;">
+            ファイルからインポート
+          </b-button>
+        </div>
+      </div>
+
+      <div id="history" class="unit-panel" style="grid-column: 2; width: 200px; margin-top: auto;" @click.stop="" tabindex="0" @keydown.up.stop="onKeyReplay($event)" @keydown.down.stop="onKeyReplay($event)">
         <div style="max-height: 350px; overflow-y: auto; overscroll-behavior: none;">
           <template v-if="simulation ?? replay">
             <template v-for="(r, i) of (simulation ?? replay).states.toReversed()">
@@ -244,63 +301,8 @@
             </template>
           </template>
         </div>
-
-        <b-button size="sm" id="btn-replay-op" style="min-width: 10em; margin-top: 0.5em; ">
+        <b-button size="sm" style="min-width: 13em; margin-top: 0.5em;" @click="showReplayList=!showReplayList; if (showReplayList) { fetchReplayList(); }">
           リプレイ
-          <b-popover :target="`btn-replay-op`" triggers="click" custom-class="replay-popover" @show="fetchReplayList()" ref="replay_popover" placement="lefttop" boundary="window">
-            <h5>公開されているリプレイ</h5>
-            <template v-if="fetching">
-              <div style="padding: 10px;">
-                <b-spinner small label="Spinning"></b-spinner>
-              </div>
-            </template>
-            <template v-else>
-              <b-table small outlined sticky-header :items="replayList" :fields="replayFields" style="min-width: 90%;">
-                <template #cell(battle)="row">
-                  <span>{{getItemName(row.item.battle)}}</span>
-                </template>
-                <template #cell(units)="row">
-                  <b-img v-for="(uid, i) of row.item.units ?? []" :key="i" :src="getImageURL(uid)" width="35px" height="35px" />
-                </template>
-                <template #cell(actions)="row">
-                  <div class="flex" style="">
-                    <b-button size="sm" @click="downloadReplay(row.item)">
-                      ロード
-                    </b-button>
-                    <b-button size="sm" :id="`replay-${row.item.hash}`" @click="copyReplayUrl(row.item)" style="margin-left: 0.25em">
-                      URL コピー
-                    </b-button>
-                    <b-button v-if="row.item.delkey" size="sm" @click="deleteReplay(row.item)" style="margin-left: 0.25em">
-                      削除
-                    </b-button>
-                  </div>
-                </template>
-              </b-table>
-            </template>
-            <div v-if="simulation ?? replay" style="margin-bottom: 0.75em;">
-              <div class="flex" style="margin-bottom: 0.25em;">
-                <b-button size="sm" @click="uploadReplay()">
-                  現在のリプレイを公開
-                </b-button>
-                <b-form-input size="sm" v-model="userName" placeholder="投稿者名" style="width: 8em; margin-left: 0.25em;"></b-form-input>
-                <b-form-input size="sm" v-model="commentReplay" placeholder="コメント" style="flex: 1; margin-left: 0.25em;"></b-form-input>
-              </div>
-              <div class="flex">
-                <span style="margin-left: 0.5em; color: rgb(160,160,160) ">(投稿者本人は投稿したデータを削除可能)</span>
-              </div>
-            </div>
-            <div class="flex" style="margin-bottom: 0.5em;">
-              <b-button v-if="simulation ?? replay" size="sm" @click="exportReplayAsFile()" style="min-width: 12em;">
-                ファイルにエクスポート
-              </b-button>
-              <b-button size="sm" @click="importReplayFromFile()" style="min-width: 12em; margin-left: 0.25em;">
-                ファイルからインポート
-              </b-button>
-            </div>
-            <div class="flex">
-              <b-button size="sm" @click="$refs.replay_popover.$emit('close')">閉じる</b-button>
-            </div>
-          </b-popover>
         </b-button>
       </div>
     </div>
@@ -334,7 +336,7 @@
 
         <div v-if="!simulation" class="flex" style="margin: 0px 10px 10px 10px;">
           <b-form-input v-model="slotName" placeholder="編成名" style="width: 16em"></b-form-input>
-          <b-form-input v-model="slotDesc" placeholder="コメント" style="flex: 1; margin-left: 0.25em; "></b-form-input>
+          <b-form-input v-model="slotDesc" placeholder="コメント" style="flex: 1; margin-left: 0.5em; "></b-form-input>
         </div>
 
         <b-tabs v-if="!simulation" v-model="unitTabIndex">
@@ -553,22 +555,9 @@
                       <p><span v-html="descToHtml(skill)"></span><span v-if="skill.note" class="note" v-html="noteToHtml(skill)"></span></p>
                       <span class="note">
                         <div class="effect-group">
-                          <template v-for="(e, ei) in [...skill.effects, ...skill.randomEffects]">
+                          <template v-for="e in [...skill.effects, ...skill.randomEffects]">
                             <template v-for="(d, di) in (selectedUnit.sim.affectedEffects[e.uid] ?? [])">
-                              <div v-if="d.isRandom" :key="`effect${ei}${di}`">
-                                <b-badge class="tag" variant="secondary" pill :id="`${selectedUnit.fid}.${e.uid}`" style="padding: 5px;">ランダム効果を追加</b-badge>
-                                <b-popover :target="`${selectedUnit.fid}.${e.uid}`" triggers="hover focus" :delay="{show:0, hide:250}" no-fade placement="top">
-                                  <div class="effect-group">
-                                    <div v-for="(r, ri) in d.randomTable" class="effect-box" :key="`effect${ei}${di}${ri}`">
-                                      <span :class="`effect caution`">
-                                        {{r.desc}}
-                                        <b-badge class="tag" variant="secondary" pill @click="r.append()">＋</b-badge>
-                                      </span>
-                                    </div>
-                                  </div>
-                                </b-popover>
-                              </div>
-                              <div v-else class="effect-box" :key="`effect${ei}${di}`">
+                              <div class="effect-box" :key="`${e.uid}${di}`">
                                 <span :class="`effect ${d.effect.enabled ? 'caution' : ''}`">
                                   {{d.desc}}
                                   <b-badge v-if="d.isTimed" class="tag" variant="secondary" pill @click="d.remove()">×</b-badge>
@@ -587,6 +576,14 @@
         </div>
         <div v-if="simulation" style="height: 300px;"></div>
 
+      </div>
+    </div>
+
+
+    <div class="content" style="margin-top: 20px; margin-bottom: 20px;">
+      <div class="main-panel" style="width: 1000px; padding: 10px;">
+        <h2><a name="comments" href="#comments">&nbsp;</a>コメント</h2>
+        <MessageBoard thread="battlesim" @change="addPo($event.anchors);" @discard="removePo($event.anchors);" />
       </div>
     </div>
 
@@ -724,6 +721,7 @@ export default {
           label: "操作",
         }
       ],
+      showReplayList: false,
       fetching: false,
 
       simOptionFields: [
@@ -1840,7 +1838,8 @@ export default {
     endSimulation() {
       this.resetTools();
       if (this.simulation) {
-        this.replay = this.serializeReplay();
+        let rep = this.serializeReplay();
+        this.replay = rep.states.length > 1 ? rep : null;
         this.simulation.finish();
         this.simulation = null;
         this.resetTools(this.tools.nonSimulation);
@@ -2111,6 +2110,7 @@ export default {
         url = `${lut.ReplayServer}?mode=get&hash=${url}`;
       }
 
+      this.loading = true;
       const handleError = (e) => {
         this.toast(e.toString());
         lut.call(onerror, e);
@@ -2131,7 +2131,8 @@ export default {
             lut.call(onsuccess, r);
           }
         })
-        .catch(handleError);
+        .catch(handleError)
+        .finally(() => { this.loading = false; });
     },
     onDropReplay(event) {
       if (event?.dataTransfer?.files?.length) {
@@ -2404,7 +2405,7 @@ export default {
   }
 
   .grid {
-    display: grid;
+    display: grid !important;
   }
   .grid-container {
     user-select: none;

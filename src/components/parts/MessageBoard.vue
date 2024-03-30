@@ -114,7 +114,6 @@ export default {
     sanitizeText(str) {
       const callback = (c) => {
         const table = {
-          '&': '&amp;',
           '<': '&lt;',
           '>': '&gt;',
           '\n': '<br />',
