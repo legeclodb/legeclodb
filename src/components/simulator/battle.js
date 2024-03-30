@@ -220,13 +220,13 @@ export class SimContext {
       let skill = null;
       if (!unit || !uop) {
         $g.log("ユニットが見つからないため中断しました。");
-        throw Error("unit not found");
+        throw new Error("unit not found");
       }
       if (desc.skill) {
         skill = unit.skills.find(a => a.uid == desc.skill);
         if (!skill) {
           $g.log("スキルが見つからないため中断しました。");
-          throw Error("skill not found");
+          throw new Error("skill not found");
         }
       }
 

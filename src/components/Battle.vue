@@ -877,14 +877,24 @@ export default {
     };
     const initialize = () => {
       if (!this.battleData) {
-        this.selectBattle(this.battleList.slice(-1)[0].uid);
+        this.selectBattle(this.battleList.at(-1)?.uid);
       }
       this.selectPhase("0");
       this.setupTools();
     };
 
-    if (this.decodeURL()) {
-      initialize();
+    let url = this.decodeURL();
+    if (url) {
+      if (url.replay) {
+        this.importReplayFromUrl(url.replay, (r) => {
+          if (url.playback) {
+            this.playbackReplay(r, { interval: url.interval, immediate: true });
+          }
+        }, () => initialize());
+      }
+      else {
+        initialize();
+      }
     }
     else {
       // URL による指定がないなら過去の状態を復元
@@ -2242,21 +2252,32 @@ export default {
         });
       });
     },
-    importReplayFromUrl(url, callback = null) {
+    importReplayFromUrl(url, onsuccess = null, onerror = null) {
       if (url.match(/^https?:\/\//)) {
       }
       else {
         // http で始まらない場合は hash とみなす
         url = `${lut.ReplayServer}?mode=get&hash=${url}`;
       }
+
+      const handleError = (e) => {
+        this.toast(e.toString());
+        lut.call(onerror, e);
+      };
       fetch(url).then((res) => {
+        if (!res.ok) {
+          throw new Error(res.statusText);
+        }
         res.json().then((json) => {
-          let r = this.deserializeReplay(json);
-          if (callback) {
-            callback(r);
+          if (json.succeeded === false) {
+            throw new Error(json.message);
           }
-        })
-      });
+          else {
+            let r = this.deserializeReplay(json);
+            lut.call(onsuccess, r);
+          }
+        }).catch(handleError);
+      }).catch(handleError);
     },
     onDropReplay(event) {
       if (event?.dataTransfer?.files?.length) {
@@ -2501,11 +2522,7 @@ export default {
           this.importLoadoutFromUrl(data.loadout);
         }
         if (data.replay) {
-          this.importReplayFromUrl(data.replay, (r) => {
-            if (data.playback) {
-              this.playbackReplay(r, { interval: data.interval, immediate: true });
-            }
-          });
+          // 呼び出し側に委ねる
         }
         return data;
       }
@@ -2538,7 +2555,6 @@ export default {
     position: relative;
   }
   .grid-cell {
-    display: flex;
     justify-content: center;
     background: white;
     outline: 1px solid rgb(180,185,195);

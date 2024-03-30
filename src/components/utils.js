@@ -105,6 +105,11 @@ export function count(iterable, cond) {
   }
   return r;
 }
+export function call(func, ...args) {
+  if (func) {
+    func(...args);
+  }
+}
 
 export function maxElement(iterable, comparator = (a, b) => a > b) {
   let r = undefined;
