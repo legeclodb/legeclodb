@@ -44,7 +44,6 @@ export class SimContext {
   divY = 0;
   terrain = [];
   unitTable = {};
-  deadUnits = [];
   statePos_ = -1;
   //#endregion fields (non-serializable)
 
@@ -115,7 +114,8 @@ export class SimContext {
       turn: this.turn,
       phase: this.phase,
       unitIdSeed: this.unitIdSeed,
-      units: [...this.units, ...this.deadUnits].map(a => a.serialize()),
+      // 配置されたユニットは死んだものも記録
+      units: Object.values(this.unitTable).filter(a => !a.isDormant).map(a => a.serialize()),
       userEvents: this.userEvents,
       desc: this.makeDesc(this.desc),
     };
@@ -151,11 +151,12 @@ export class SimContext {
       this.unitTable[r.fid] = r;
       return r;
     };
-    this.units = r.units.map(a => constructUnit(a));
+    let units = r.units.map(a => constructUnit(a));
     for (let i = 0; i < r.units.length; ++i) {
-      let u = this.units[i];
+      let u = units[i];
       u.deserialize(r.units[i]);
     }
+    this.units = units.filter(a => a.isAlive); // 死んだユニットも入っているので除外しておく
     this.onSimulationBegin();
   }
   // unit, skill, target: 説明用
@@ -268,9 +269,8 @@ export class SimContext {
     $vue().resetUnitPosition(unit.base, true);
   }
   notifyDead(unit) {
-    this.units = this.units.filter(a => a !== unit);
+    this.units = this.units.filter(a => a.isAlive);
     // 死んだユニットの情報が必要なケースもあるため、unitTable からは消さない
-    //delete this.unitTable[unit.fid];
   }
   //#endregion construct, serialize, playback
 
@@ -719,15 +719,16 @@ export class SimContext {
       }
       return r;
     };
+    let deadUnits = [];
     const checkKill = () => {
       for (let fid of Object.keys(ctx.damageTaken)) {
         let t = this.findUnit(fid);
-        if (!this.deadUnits.find(u => u.fid == fid) && handleDeath(t)) {
+        if (!deadUnits.find(u => u.fid == fid) && handleDeath(t)) {
           if (t.isPlayer != unit.isPlayer) {
             ctx.onKill = true;
           }
           if (!t.isAlive) {
-            this.deadUnits.push(t);
+            deadUnits.push(t);
           }
         }
       }

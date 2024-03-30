@@ -138,7 +138,7 @@ export class BaseUnit {
         get: () => [chr.talent, ...chr.skills],
       });
       main.cid = chr.uid;
-      main.level = this.main.level ?? 114; // 114: 古いデータはレベルを保存しておらず、現在はレベル未設定だと問題が起きるので場当たり的 fix
+      main.level = this.main.level;
       main.status = $vue().getNPCChrStatus(main, main.level);
 
       let u = new BaseUnit(this.isPlayer);
@@ -1351,6 +1351,9 @@ export class SimUnit {
       this.onRevive(ctx);
     }
     if (!this.isAlive) {
+      this.selfEffects = [];
+      this.areaEffects = [];
+      this.timedEffects = [];
       if (this.summoner) {
         let pos = this.summoner.summon.findIndex(a => a == this);
         if (pos != -1) {
