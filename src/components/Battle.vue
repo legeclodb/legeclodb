@@ -328,56 +328,6 @@
             <b-dropdown-item @click="loadLoadout(99)">バックアップ</b-dropdown-item>
           </b-dropdown>
 
-          <b-button size="sm" id="btn-loadout-op" style="min-width: 10em; margin-left: 0.5em; ">
-            編成を共有
-            <b-popover :target="`btn-loadout-op`" triggers="click" custom-class="loadout-popover" @show="fetchLoadoutList()" ref="loadout_popover" boundary="window">
-              <h5>公開されている編成</h5>
-              <template v-if="fetching">
-                <div style="padding: 10px;">
-                  <b-spinner small label="Spinning"></b-spinner>
-                </div>
-              </template>
-              <template v-else>
-                <b-table small outlined sticky-header :items="loadoutList" :fields="loadoutFields" style="min-width: 90%;">
-                  <template #cell(name)="row">
-                    <span>{{row.item.name}}</span>
-                  </template>
-                  <template #cell(actions)="row">
-                    <div class="flex" style="">
-                      <b-button size="sm" @click="downloadLoadoutFromServer(row.item)">
-                        ロード
-                      </b-button>
-                      <b-button size="sm" :id="`loadout-${row.item.hash}`" @click="copyLoadoutUrl(row.item)" style="margin-left: 0.25em">
-                        URL コピー
-                      </b-button>
-                      <b-button v-if="row.item.delkey" size="sm" @click="deleteLoadoutFromServer(row.item)" style="margin-left: 0.25em">
-                        削除(確認あり)
-                      </b-button>
-                    </div>
-                  </template>
-                </b-table>
-              </template>
-              <div class="flex" style="margin-bottom: 0.5em;">
-                <b-button size="sm" @click="exportLoadoutToServer()" style="min-width: 12em;">
-                  現在の編成を公開
-                </b-button>
-                <b-form-input size="sm" v-model="userName" placeholder="投稿者名" style="width: 8em; margin-left: 0.25em;"></b-form-input>
-                <span style="margin-left: 0.5em; color: rgb(160,160,160) ">(投稿者本人は投稿したデータを削除可能)</span>
-              </div>
-              <div class="flex" style="margin-bottom: 0.5em;">
-                <b-button size="sm" @click="exportLoadoutAsFile()" style="min-width: 12em;">
-                  ファイルにエクスポート
-                </b-button>
-                <b-button size="sm" @click="importLoadoutFromFile()" style="min-width: 12em; margin-left: 0.25em;">
-                  ファイルからインポート
-                </b-button>
-              </div>
-              <div class="flex">
-                <b-button size="sm" @click="$refs.loadout_popover.$emit('close')">閉じる</b-button>
-              </div>
-            </b-popover>
-          </b-button>
-
           <b-button @click="clearLoadout()" style="min-width: 10em; margin-left: 0.5em; ">
             編成をクリア
           </b-button>
@@ -2028,22 +1978,6 @@ export default {
         });
       });
     },
-    importLoadoutFromUrl(url, callback = null) {
-      if (url.match(/^https?:\/\//)) {
-      }
-      else {
-        // http で始まらない場合は hash とみなす
-        url = `${lut.LoadoutServer}?mode=get&hash=${url}`;
-      }
-      fetch(url).then((res) => {
-        res.json().then((obj) => {
-          this.deserializeLoadout(obj);
-          if (callback) {
-            callback();
-          }
-        })
-      });
-    },
     onDropLoadout(event) {
       if (event?.dataTransfer?.files?.length) {
         let file = event.dataTransfer.files[0];
@@ -2065,74 +1999,6 @@ export default {
       for (let unit of this.playerUnits) {
         unit.initialize();
       }
-    },
-    fetchLoadoutList() {
-      this.fetching = true;
-      fetch(lut.LoadoutServer).then((res) => {
-        res.json().then((obj) => {
-          this.fetching = false;
-          this.loadoutList = obj.sort((a, b) => b.date.localeCompare(a.date));
-          for (let e of this.loadoutList) {
-            // 長すぎる名前は切り詰めておく
-            const maxNameLen = 64;
-            if (e.name.length > maxNameLen) {
-              e.name = e.name.substring(0, maxNameLen);
-            }
-            const delkey = localStorage.getItem(`delkey.${e.hash}`);
-            if (delkey) {
-              e.delkey = delkey;
-            }
-          }
-        })
-      });
-    },
-    exportLoadoutToServer() {
-      const data = this.serializeLoadout();
-      var form = new FormData()
-      form.append('mode', 'put');
-      form.append('data', new Blob([lut.toJson(data, null, 2)]));
-      form.append('author', this.userName.trim());
-      fetch(lut.LoadoutServer, { method: "POST", body: form }).then((res) => {
-        res.json().then((obj) => {
-          if (obj.succeeded) {
-            localStorage.setItem(`delkey.${obj.hash}`, obj.delkey);
-            localStorage.setItem(`subscribe.${obj.hash}`, 'true');
-            this.fetchLoadoutList();
-          }
-          if (obj.message) {
-            this.toast(obj.message);
-          }
-        })
-      });
-    },
-    downloadLoadoutFromServer(rec) {
-      this.importLoadoutFromUrl(`${lut.LoadoutServer}?mode=get&hash=${rec.hash}`, () => {
-        this.loadoutHash = rec.hash;
-      });
-    },
-    deleteLoadoutFromServer(rec) {
-      if (window.confirm(`"${rec.name}" をサーバーから削除します。よろしいですか？`)) {
-        fetch(`${lut.LoadoutServer}?mode=del&hash=${rec.hash}&delkey=${rec.delkey}`).then((res) => {
-          res.json().then((obj) => {
-            if (obj.succeeded) {
-              localStorage.removeItem(`delkey.${rec.hash}`);
-              if (rec.hash == this.loadoutHash) {
-                this.loadoutHash = null;
-              }
-              this.fetchLoadoutList();
-            }
-            if (obj.message) {
-              this.toast(obj.message);
-            }
-          });
-        });
-      }
-    },
-    copyLoadoutUrl(rec) {
-      let url = window.location.href.replace(/\?.+/, '').replace(/#.+/, '');
-      url += `?b=${this.battleId}&loadout=${rec.hash}`;
-      this.copyToClipboard(url);
-      this.toast(`コピーしました：${url}`);
     },
 
     onMessageChange(mb) {
