@@ -872,24 +872,35 @@ export default {
   mounted() {
     this.userName = localStorage.getItem(`userName`) ?? "";
 
-    this.selectBattle(this.battleList.slice(-1)[0].uid);
-    this.selectPhase("0");
-    this.setupTools();
-
     window.onpopstate = () => {
       this.decodeURL(true);
     };
+    const initialize = () => {
+      if (!this.battleData) {
+        this.selectBattle(this.battleList.slice(-1)[0].uid);
+      }
+      this.selectPhase("0");
+      this.setupTools();
+    };
 
-    if (!this.decodeURL()) {
+    if (this.decodeURL()) {
+      initialize();
+    }
+    else {
       // URL による指定がないなら過去の状態を復元
       lut.idbInitialize("ldb", ["loadout", "replay"], 2);
       lut.idbRead("ldb", "loadout", "last", (data) => {
-        this.deserializeLoadout(data);
+        if (data) {
+          this.deserializeLoadout(data);
+        }
       });
       lut.idbRead("ldb", "replay", "last", (data) => {
-        this.selectBattle(data?.battle);
-        this.replay = data;
-      });
+        if (data) {
+          this.selectBattle(data.battle);
+          this.replay = data;
+        }
+        initialize();
+      }, () => initialize());
     }
   },
 

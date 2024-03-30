@@ -387,7 +387,7 @@ export function idbRead(dbName, storeName, id, onsuccess, onerror) {
       let store = tx.objectStore(storeName);
       let req = store.get(id);
       req.onsuccess = (event) => {
-        if (onsuccess && event.target.result?.data) {
+        if (onsuccess) {
           onsuccess(event.target.result?.data);
         }
       };
