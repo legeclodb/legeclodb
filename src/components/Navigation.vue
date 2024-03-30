@@ -1,5 +1,5 @@
 <template>
-  <b-navbar type="dark" variant="dark">
+  <b-navbar type="dark" variant="dark" id="navigation">
     <b-navbar-brand to="/">れじぇくろDB</b-navbar-brand>
     <b-navbar-nav>
       <b-nav-item to="/main.html">メインキャラ</b-nav-item>

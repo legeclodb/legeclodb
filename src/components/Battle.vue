@@ -4,45 +4,30 @@
       <Navigation />
     </div>
     <div class="about" style="margin-top: 55px;">
-      <div v-if="!simulation" class="menu-content" style="flex-wrap: nowrap">
-        <div class="menu-panel" id="cb-settings">
-          <div class="menu-widgets flex">
-            <div class="widget">
-              <span>クエストデータ：</span>
-              <b-dropdown :text="battleData ? battleData.name : ''" size="sm" id="battle_selector">
-                <b-dropdown-item v-for="(battle, i) in battleList" class="d-flex flex-column" :key="i" @click="selectBattle(battle.uid, true); updateURL();">
-                  {{ battle.name }}
-                </b-dropdown-item>
-              </b-dropdown>
-            </div>
-          </div>
-        </div>
-        <div class="menu-panel" id="cb-settings">
-          <div class="menu-widgets flex">
-            <div class="widget">
-              <span>敵情報：</span>
-              <b-dropdown :text="displayTypes[displayType]" size="sm" id="detail_selector">
-                <b-dropdown-item class="d-flex flex-column" v-for="(c, i) in displayTypes" :key="i" @click="displayType=i">
-                  {{ c }}
-                </b-dropdown-item>
-              </b-dropdown>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
 
-    <div class="content" :style="style">
+    <div class="content" :style="style" style="margin-bottom: 20px;">
       <div class="main-panel">
+        <div v-if="!simulation" class="menu-widgets flex" style="margin: 0px 10px 15px 10px;">
+          <div class="widget">
+            <span>クエスト：</span>
+            <b-dropdown :text="battleData ? battleData.name : ''" id="battle_selector">
+              <b-dropdown-item v-for="(battle, i) in battleList" class="d-flex flex-column" :key="i" @click="selectBattle(battle.uid, true); updateURL();">
+                {{ battle.name }}
+              </b-dropdown-item>
+            </b-dropdown>
+          </div>
+        </div>
+
         <b-tabs v-if="!simulation" v-model="phaseTabIndex">
           <b-tab v-for="phase in phaseList" :title="phase.desc" @click="selectPhase(phase.id, true); updateURL();" :key="phase.id"></b-tab>
         </b-tabs>
 
         <div style="padding: 10px; background-color: white; display: flex;">
           <div ref="cells" class="grid-container"
-              @mousedown.middle.prevent.stop=""
-              @click.middle.prevent.stop="onCellRClick()" 
-              @click.right.prevent.stop="onCellRClick()">
+               @mousedown.middle.prevent.stop=""
+               @click.middle.prevent.stop="onCellRClick()"
+               @click.right.prevent.stop="onCellRClick()">
             <div v-for="(cell, i) in cells" :key="`c${i}`" :class="getCellClass(cell)" :style="cell.style" :id="cell.id"
                  @click.stop="onClickCell(cell)"
                  @mouseover="onEnterCell(cell)" @mouseleave="onLeaveCell(cell)"
@@ -269,7 +254,7 @@
             <template v-else>
               <b-table small outlined sticky-header :items="replayList" :fields="replayFields" style="min-width: 90%;">
                 <template #cell(battle)="row">
-                  <span>{{(battleList.find(a => a.uid == row.item.battle)?.name ?? "").replace(/\(.+\)/, "")}}</span>
+                  <span>{{getItemName(row.item.battle)}}</span>
                 </template>
                 <template #cell(units)="row">
                   <b-img v-for="(uid, i) of row.item.units ?? []" :key="i" :src="getImageURL(uid)" width="35px" height="35px" />
@@ -317,18 +302,18 @@
       </div>
     </div>
 
-    <div v-if="!simulation" class="content" style="margin-top: 30px">
-      <div class="unit-panel">
-        <div class="flex">
+    <div class="content" :style="style">
+      <div class="main-panel" style="margin-top: 10px; margin-bottom: 10px;">
+        <div class="flex" v-if="!simulation" style="margin: 0px 10px 20px 10px;">
           <b-dropdown text="編成をセーブ" style="min-width: 10em;">
             <b-dropdown-item v-for="(name, i) in slotNames" :key=i @click="saveLoadout(i)">スロット{{i}}: {{name}}</b-dropdown-item>
           </b-dropdown>
-          <b-dropdown text="編成をロード" style="min-width: 10em; margin-left: 0.5em; ">
+          <b-dropdown text="編成をロード" style="min-width: 10em; margin-left: 1em; ">
             <b-dropdown-item v-for="(name, i) in slotNames" :key=i @click="loadLoadout(i)">スロット{{i}}: {{name}}</b-dropdown-item>
             <b-dropdown-item @click="loadLoadout(99)">バックアップ</b-dropdown-item>
           </b-dropdown>
 
-          <b-button @click="clearLoadout()" style="min-width: 10em; margin-left: 0.5em; ">
+          <b-button @click="clearLoadout()" style="min-width: 10em; margin-left: 1em; ">
             編成をクリア
           </b-button>
 
@@ -336,23 +321,10 @@
             シミュレーション開始
           </b-button>
         </div>
-      </div>
-    </div>
 
-    <div class="content" :style="style">
-      <div class="main-panel" style="margin-top: 10px; margin-bottom: 10px;">
         <div v-if="!simulation" class="flex" style="margin: 0px 10px 10px 10px;">
-          <b-form-input size="sm" v-model="slotName" placeholder="編成名" style="width: 16em"></b-form-input>
-          <b-form-input size="sm" v-model="slotDesc" placeholder="説明など" style="flex: 1; margin-left: 0.25em; "></b-form-input>
-          <b-button size="sm" v-if="loadoutHash" id="btn-loadout-message" style="margin-left: 0.25em; ">
-            <b-icon icon="chat-text" title="この編成へのコメントを表示" />
-            <b-popover target="btn-loadout-message" triggers="click" custom-class="comment-popover" ref="message_popover">
-              <MessageBoard :thread="loadoutHash" @change="onMessageChange" @discard="onMessageDiscard" />
-              <div class="flex">
-                <b-button size="sm" @click="$refs.message_popover.$emit('close')">閉じる</b-button>
-              </div>
-            </b-popover>
-          </b-button>
+          <b-form-input v-model="slotName" placeholder="編成名" style="width: 16em"></b-form-input>
+          <b-form-input v-model="slotDesc" placeholder="コメント" style="flex: 1; margin-left: 0.25em; "></b-form-input>
         </div>
 
         <b-tabs v-if="!simulation" v-model="unitTabIndex">
@@ -720,7 +692,7 @@ export default {
       replayFields: [
         {
           key: "battle",
-          label: "マップ",
+          label: "クエスト",
         },
         {
           key: "score",
@@ -2228,7 +2200,7 @@ export default {
       });
     },
     deleteReplay(rec) {
-      if (window.confirm(`"${rec.name}" をサーバーから削除します。よろしいですか？`)) {
+      if (window.confirm(`"${this.getItemName(rec.battle)} (${rec.score})" をサーバーから削除します。よろしいですか？`)) {
         fetch(`${lut.ReplayServer}?mode=del&hash=${rec.hash}&delkey=${rec.delkey}`).then((res) => {
           res.json().then((obj) => {
             if (obj.succeeded) {
@@ -2334,6 +2306,10 @@ export default {
 
 
     //#region Misc
+    getItemName(uid) {
+      return (this.battleList.find(a => a.uid == uid)?.name ?? "").replace(/\(.+\)/, "");
+    },
+
     // in-place array copy
     copyArray(dst, src) {
       dst.length = src.length;
