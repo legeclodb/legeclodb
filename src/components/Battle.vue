@@ -2218,7 +2218,7 @@ export default {
               version: a.summary?.version ?? "",
               battle: a.summary?.battle ?? "",
               score: a.summary?.score ?? "",
-              units: a.summary?.units ?? "",
+              units: a.summary?.units ? a.summary.units.flatMap(c => c ? [c] : []) : [],
               author: a.summary?.author ?? "",
               comment: a.summary?.comment ?? "",
             };
