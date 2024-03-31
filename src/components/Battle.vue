@@ -6,6 +6,41 @@
     <div class="about" style="margin-top: 60px;">
     </div>
 
+    <div v-show="!simulation" class="content" style="margin-bottom: 20px;">
+      <div class="main-panel" style="padding: 10px;">
+        <h2 style="margin-bottom: 5px">バトルシミュレータ</h2>
+        <div>
+          ユニットを自由に編成・配置し、ダメージなどの戦闘結果を計算するシミュレータです。<br />
+          主にギルドクエストEXの攻略とキャラ評価に使うことを目的としており、これまでのEXでそれなりに信頼できる結果が得られることが実証されています。<br />
+          <br />
+        </div>
+        <div>
+          使い方は、クエスト欄でマップを選択、ユニット欄の「編集」でユニットを編成し、「シミュレーション開始」で戦闘を開始。あとはだいたい実際のゲームと同じように動作します。<br />
+          戦闘の結果は<b-link @click="toggleReplayList(true)">リプレイ</b-link>として保存することができます。まずはリプレイを見てみると機能を把握しやすいでしょう：<b-link @click="importReplayFromUrl('402fcbb55081da5fd8c47798e1a6cd38', (r) => playbackReplay(r, { immediate: true }))">リプレイを再生</b-link><br />
+          <div>
+            <b-link @click="detailedDescription=!detailedDescription">シミュレーション時の動作の詳細 (クリックで展開)</b-link><br />
+            <div v-show="detailedDescription">
+              <br />
+              できるだけ実際のゲームの動作に合わせていますが、検証しやすいように意図的に変えている部分もあります。以下目立った違いやTips：
+              <ul>
+                <li>ランダム要素を完全に排しており、ダメージのばらつきがありません</li>
+                <li>クリティカルヒットする可能性がある攻撃 (=メインの攻撃) は100%クリティカル扱いになります</li>
+                <li>本来確率で発動する効果も100%発動します (ただし、自傷効果はこれでは支障が出るため、オプションで切れるようになっています)</li>
+                <li>バフ解除やランダムバフも一定の規則に則った動作になります (シミュレーション開始後の「自動ランダムバフ」などのオプションを参照)</li>
+                <li>編成でキャラの☆の増減ができますが、タレント/サポートアクティブは現状☆に関係なく最大レベル時の効果になっています (対応が大変なため暫定処置)</li>
+                <li>デベロッパーツールを出しておくとコンソールに詳細なログが出ます (Chrome や Edge なら Ctrl + Shift + I)</li>
+              </ul>
+            </div>
+          </div>
+          <br />
+        </div>
+        <div>
+          アイテムやスキルのデータは手入力であり、ミスが残っている可能性があります。
+          ミス報告、バグ報告、要望などあれば<b-link href="#comments">コメント欄</b-link>へご一報いただけると幸いです。
+        </div>
+      </div>
+    </div>
+
     <div class="content" :style="style" style="margin-bottom: 20px;">
       <div class="main-panel">
         <div v-if="!simulation" class="menu-widgets flex" style="margin: 0px 10px 15px 10px;">
@@ -221,8 +256,8 @@
     </div>
 
     <div class="grid" style="position: fixed; right: 5px; bottom: 5px; grid-template-columns: auto auto;">
-      <div v-if="showReplayList" class="unit-panel" style="min-width: 1200px; max-width: 1600px; max-height: 500px; margin-right: 5px; grid-column: 1; ">
-        <div class="flex">
+      <div v-show="showReplayList" class="unit-panel" style="min-width: 1200px; max-width: 1600px; max-height: 500px; margin-right: 5px; grid-column: 1; ">
+        <div class="flex" style="margin-bottom: 5px;">
           <h5>公開されているリプレイ</h5>
           <div style="margin-left: auto;">
             <b-button size="sm" @click="showReplayList=false;" style="margin-left: 1em; padding: 0px 5px;">✖</b-button>
@@ -234,7 +269,7 @@
           </div>
         </template>
         <template v-else>
-          <b-table small outlined sticky-header :items="replayList" :fields="replayFields" style="min-width: 90%;">
+          <b-table small outlined sticky-header :items="replayList" :fields="replayFields" style="min-width: 90%; margin-bottom: 5px;">
             <template #cell(battle)="row">
               <span style="white-space: nowrap;">{{getItemName(row.item.battle)}}</span>
             </template>
@@ -270,10 +305,10 @@
             <b-form-input size="sm" v-model="commentReplay" placeholder="コメント" style="flex: 1; margin-left: 0.5em;"></b-form-input>
           </div>
           <div class="flex">
-            <span style="margin-left: 0.5em; color: rgb(160,160,160) ">(投稿者本人は投稿したデータを削除可能)</span>
+            <span style="margin-left: 0.5em; color: rgb(160,160,160);">(投稿者本人は投稿したデータを削除可能)</span>
           </div>
         </div>
-        <div class="flex" style="margin-bottom: 0.5em;">
+        <div class="flex">
           <b-button v-if="simulation ?? replay" size="sm" @click="exportReplayAsFile()" style="min-width: 12em;">
             ファイルにエクスポート
           </b-button>
@@ -301,7 +336,7 @@
             </template>
           </template>
         </div>
-        <b-button size="sm" style="min-width: 13em; margin-top: 0.5em;" @click="showReplayList=!showReplayList; if (showReplayList) { fetchReplayList(); }">
+        <b-button size="sm" style="min-width: 13em; margin-top: 0.5em;" @click="toggleReplayList()">
           リプレイ
         </b-button>
       </div>
@@ -310,6 +345,7 @@
     <div class="content" :style="style">
       <div class="main-panel" style="margin-top: 10px; margin-bottom: 10px;">
         <div class="flex" v-if="!simulation" style="margin: 0px 10px 20px 10px;">
+          <a name="loadout" href="#loadout"></a>
           <b-dropdown text="編成をセーブ" style="min-width: 10em;">
             <b-dropdown-item v-for="(name, i) in slotNames" :key=i @click="saveLoadout(i)">スロット{{i}}: {{name}}</b-dropdown-item>
           </b-dropdown>
@@ -358,6 +394,7 @@
                     <b-button size="sm" @click="unit.showEditor=false">閉じる</b-button>
                   </div>
                 </b-popover>
+                <div style="margin-left: 1em; color: rgb(160,160,160);">マップ上のユニットはドラッグで位置を交換できます</div>
               </div>
 
               <div class="flex" style="align-items: flex-start;">
@@ -575,13 +612,11 @@
           </template>
         </div>
         <div v-if="simulation" style="height: 300px;"></div>
-
       </div>
     </div>
 
-
-    <div class="content" style="margin-top: 20px; margin-bottom: 20px;">
-      <div class="main-panel" style="width: 1000px; padding: 10px;">
+    <div v-if="!simulation" class="content" style="margin-top: 20px; margin-bottom: 20px;">
+      <div class="main-panel" style="min-width: 1000px; max-width: 1500px; padding: 10px;">
         <h2><a name="comments" href="#comments">&nbsp;</a>コメント</h2>
         <MessageBoard thread="battlesim" @change="addPo($event.anchors);" @discard="removePo($event.anchors);" />
       </div>
@@ -630,6 +665,7 @@ export default {
         { index: 4, id: "4E", desc: "4T敵フェイズ" },
       ],
 
+      detailedDescription: false,
       loading: false,
       divX: 15,
       divY: 15,
@@ -918,23 +954,21 @@ export default {
           autoBuffCancel: {
             label: "自動バフ・デバフ解除",
             desc: `バフ解除・デバフ解除効果を自動で適用します。<br />
-選ぶ効果はランダムではなく、<b>バフ解除はダメージ耐性系を優先で解除、デバフ解除は与ダメージ系を優先で解除</b>します。<br />
-理論値に近いダメージを出すための処置ですが、実測値と大きく違う結果を招くので注意が必要です。`,
+選ぶ効果はランダムではなく、バフ解除はダメージ耐性系を優先で解除、デバフ解除は与ダメージ系を優先で解除します。`,
           },
           autoRandomBuff: {
             label: "自動ランダムバフ・デバフ",
-            desc: `ランダムバフ・デバフを自動で適用します。<br />
-選ぶ効果はランダムではなく、<b>ランダムバフは与ダメージ系を選択、ランダムデバフはダメージ耐性系を選択</b>となります。<br />
-理論値に近いダメージを出すための処置ですが、実測値と大きく違う結果を招くので注意が必要です。`,
+            desc: `ワイズエンハンスや天来弓などのランダムバフ・デバフを自動で適用します。<br />
+選ぶ効果はランダムではなく、ランダムバフは与ダメージ系を選択、ランダムデバフはダメージ耐性系を選択となります。`,
           },
           autoRandomSelection: {
             label: "自動ランダム対象選択",
             desc: `追跡の頭帯のような「範囲内のランダムな1ユニットにバフ」といった効果を自動で適用します。<br />
-選ぶ対象はランダムではなく、距離が最も近く、かつまだ効果がかかってない対象を選びます(距離0の自身は最優先となる)。同距離の場合0時方向から時計回り順に選びます。<br />`,
+選ぶ対象はランダムではなく、距離が最も近く、かつまだ効果がかかってない対象を選びます。(距離0の自身は最優先、同距離の場合0時方向から時計回り順に選択)<br />`,
           },
           selfDamage: {
             label: "自傷効果",
-            desc: `人馬の天衣などの自傷効果の有効/無効です。<br />有効な場合、確率ではなく100%発動します。<br />`,
+            desc: `人馬の天衣などの自傷効果の有効・無効です。<br />有効な場合、確率は考慮せず100%発動します。`,
           },
         };
         let sim = this.simulation;
@@ -2062,6 +2096,11 @@ export default {
               }
               catch (e) { }
             }
+            else if (this.simulation) {
+              // 再生完了
+              this.simulation.onPlayback = this.simulation.isPlaying = false;
+              this.$forceUpdate();
+            }
           });
         };
         next();
@@ -2239,6 +2278,15 @@ export default {
       url += `?replay=${rec.hash}`;
       this.copyToClipboard(url);
       this.toast(`コピーしました：${url}`);
+    },
+    toggleReplayList(v) {
+      if (v === undefined) {
+        v = !this.showReplayList;
+      }
+      this.showReplayList = v;
+      if (v) {
+        this.fetchReplayList();
+      }
     },
     //#endregion リプレイ
 
