@@ -896,7 +896,7 @@ export function makeSimSkill(skill, ownerUnit) {
           },
         };
         for (let t of getTargetUnits(ctx, act)) {
-          if (u.isPlayer == t.isPlayer) {
+          if (u.isPlayer == t.isPlayer && t.isAlive) {
             table[act.base](t);
             $g.log(`!! 回復 ${u.main.name} (${self.name}) -> ${t.main.name}!!`);
           }

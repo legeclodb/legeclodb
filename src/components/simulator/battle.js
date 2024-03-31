@@ -115,7 +115,7 @@ export class SimContext {
       phase: this.phase,
       unitIdSeed: this.unitIdSeed,
       // 配置されたユニットは死んだものも記録
-      units: Object.values(this.unitTable).filter(a => !a.isDormant).map(a => a.serialize()),
+      units: Object.values(this.unitTable).map(a => a.serialize()),
       userEvents: this.userEvents,
       desc: this.makeDesc(this.desc),
     };
@@ -516,7 +516,7 @@ export class SimContext {
     unit.evaluateBuffs(actx);
     target.evaluateBuffs(dctx);
 
-    let attacker = [ unit.main, unit.support].filter(c => c.isAlive);
+    let attacker = [unit.main, unit.support].filter(c => c.isAlive);
     let defender = [target.main, target.support].filter(c => c.isAlive);
     if (attacker.length && defender.length) {
       // 戦闘前に相手が固定ダメージで死んだ場合などはここに来ないまま戦闘終了となる
