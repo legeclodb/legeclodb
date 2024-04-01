@@ -1,6 +1,5 @@
-export const MessageServer = "https://i-saint.skr.jp/legeclodb/loadout/index.cgi";
-export const LoadoutServer = "https://i-saint.skr.jp/legeclodb/loadout/index.cgi";
-export const ReplayServer = "https://i-saint.skr.jp/legeclodb/replay/index.cgi";
+export const MessageServer = "https://i-saint.sakura.ne.jp/legeclodb/replay/index.cgi";
+export const ReplayServer = "https://i-saint.sakura.ne.jp/legeclodb/replay/index.cgi";
 
 export class BitFlags {
   constructor(arg) {

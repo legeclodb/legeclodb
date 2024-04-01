@@ -545,18 +545,9 @@ export class SimUnit {
   deserialize(r) {
     this.coord = [...r.coord];
     this.isDormant = r.isDormant;
-    if ('state' in r) {
-      this.state = r.state;
-    }
-    else if ('readyToAction' in r) { // 旧フォーマット
-      this.state = r.readyToAction ? UnitState.Ready : UnitState.End;
-    }
-    if ('move' in r) {
-      this.move = r.move;
-    }
-    if ('prevMoveDistance' in r) {
-      this.prevMoveDistance = r.prevMoveDistance;
-    }
+    this.state = r.state;
+    this.move = r.move;
+    this.prevMoveDistance = r.prevMoveDistance;
 
     for (const so of r.skills) {
       let skill = this.skills.find(a => a.uid == so.uid);
