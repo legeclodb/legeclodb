@@ -43,7 +43,9 @@
     "damageRateSp": [
       {
         "value": [ 2.7, 2.8, 2.9, 3 ],
-        "condition": { "onTargetClass": [ "ソルジャー" ] }
+        "condition": {
+          "onTargetClass": [ "ソルジャー" ]
+        }
       }
     ]
   },
@@ -223,7 +225,9 @@
       {
         "todo": "未調査",
         "value": [ 0.8, 0.9, 1, 1.1, 1.2 ],
-        "condition": { "onTargetClass": [ "ソルジャー" ] }
+        "condition": {
+          "onTargetClass": [ "ソルジャー" ]
+        }
       }
     ]
   },
@@ -321,7 +325,9 @@
         "type": "与ダメージ",
         "value": [ 20, 25, 30, 35, 40 ],
         "duration": 2,
-        "condition": { "onTargetClass": [ "ソルジャー", "ランサー", "ライダー" ] }
+        "condition": {
+          "onTargetClass": [ "ソルジャー", "ランサー", "ライダー" ]
+        }
       }
     ]
   },
@@ -343,7 +349,9 @@
       {
         "todo": "未調査",
         "value": [ 0.35, 0.45, 0.55, 0.65, 0.75 ],
-        "condition": { "onTargetClass": [ "ランサー" ] }
+        "condition": {
+          "onTargetClass": [ "ランサー" ]
+        }
       }
     ]
   },
@@ -861,7 +869,9 @@
     "damageRateSp": [
       {
         "value": [ 3.7, 3.8, 3.9, 4 ],
-        "condition": { "onTargetClass": [ "シューター" ] }
+        "condition": {
+          "onTargetClass": [ "シューター" ]
+        }
       }
     ]
   },
@@ -1046,7 +1056,9 @@
         "value": [ 10, 12, 14, 16, 20 ],
         "ephemeral": true,
         "duration": 2,
-        "condition": { "onEnemyTurn": true }
+        "condition": {
+          "onEnemyTurn": true
+        }
       }
     ],
     "tags": [],
@@ -1621,7 +1633,9 @@
         "value": 10,
         "ephemeral": true,
         "duration": 2,
-        "condition": { "onEnemyTurn": true }
+        "condition": {
+          "onEnemyTurn": true
+        }
       }
     ],
     "tags": [],
@@ -2547,6 +2561,46 @@
     "buff": [
       {
         "type": "アタック",
+        "value": [ 15, 18, 23, 30 ],
+        "duration": 2
+      },
+      {
+        "type": "与ダメージ(スキル)",
+        "value": [ 15, 18, 23, 30 ],
+        "duration": 2
+      }
+    ]
+  },
+  {
+    "uid": "2100104",
+    "icon": "sk_sa104",
+    "name": "天使の見せる夢",
+    "descs": {
+      "Lv 2": "範囲内の全ての敵ユニットに[b]0.6倍[/b]の範囲ダメージを与える。",
+      "Lv 3": "範囲内の全ての敵ユニットに[b]0.7倍[/b]の範囲ダメージを与える。",
+      "Lv 4": "範囲内の全ての敵ユニットに[b]0.8倍[/b]の範囲ダメージを与える。",
+      "Lv 5": "範囲内の全ての敵ユニットに[b]0.9倍[/b]の範囲ダメージを与える。",
+      "Lv 6": "範囲内の全ての敵ユニットに[b]1倍[/b]の範囲ダメージを与える。"
+    },
+    "area": 2,
+    "range": 2,
+    "damageRate": [ 0.6, 0.7, 0.8, 0.9, 1 ]
+  },
+  {
+    "uid": "2100103",
+    "icon": "sk_sa103",
+    "name": "掃除・洗濯・家事・天使",
+    "descs": {
+      "Lv 3": "範囲内の全ての味方ユニットのマジック[b]+15%[/b]、スキル与ダメージ[b]+15%[/b](2ターン)。",
+      "Lv 4": "範囲内の全ての味方ユニットのマジック[b]+18%[/b]、スキル与ダメージ[b]+18%[/b](2ターン)。",
+      "Lv 5": "範囲内の全ての味方ユニットのマジック[b]+23%[/b]、スキル与ダメージ[b]+23%[/b](2ターン)。",
+      "Lv 6": "範囲内の全ての味方ユニットのマジック[b]+30%[/b]、スキル与ダメージ[b]+30%[/b](2ターン)。"
+    },
+    "area": 3,
+    "range": 2,
+    "buff": [
+      {
+        "type": "マジック",
         "value": [ 15, 18, 23, 30 ],
         "duration": 2
       },

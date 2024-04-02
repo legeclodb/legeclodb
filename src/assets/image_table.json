@@ -1536,5 +1536,21 @@
   "am_resist04": "img/9e516f51bf0e0f9618eaa95d52c29d04.png",
   "am_resist08": "img/81c3ebcb208ba7ba5cd60c096b2010d3.png",
   "am_shield04": "img/5095a21f2521c7fb2b522b98076c6497.png",
-  "am_shield08": "img/d81a3374885a37dcaee7ccd52bd950fd.png"
+  "am_shield08": "img/d81a3374885a37dcaee7ccd52bd950fd.png",
+  "Ch013601104": "img/4f0cfae0f7138fba51ea7c0ca78c0a0f.png",
+  "Ch000303106": "img/d52bc32e1305669dcb9af65d1035f6d5.png",
+  "sk_p217": "img/3f5fa669e25b4bda72c2cc17f2081a77.png",
+  "sk_a483": "img/0f2253763459f6bb9337bc95c9a3c336.png",
+  "sk_p216": "img/56e643c29cad028e17ac8ddf425bba31.png",
+  "sk_a482": "img/2861b3ededdf28b4ece94a72204a79a4.png",
+  "sk_a481": "img/593bba0ed49d282fd6e2ae2e89b47c8d.png",
+  "sk_t417": "img/41cc4327235bcd75601ca4b45e7472d1.png",
+  "sk_a480": "img/1f2dffc46d8666c2c2951039c0ae6cf6.png",
+  "sk_t416": "img/fd10d0580bad6cb5e4cf9c80be5521c2.png",
+  "Ch015201204": "img/1db304b671ae189166974f5bb9dd173d.png",
+  "Ch013201206": "img/7201ddb2165fd03327ed12b9c31b0109.png",
+  "sk_sp2104": "img/0431a04256ffbb5bbb105eb77ca7bf3f.png",
+  "sk_sa104": "img/9cecc5d43cdb7cf057e74d51e649cad8.png",
+  "sk_sp2103": "img/213743a2ef2ed57c91b4b75ab56f7e92.png",
+  "sk_sa103": "img/0da66423083b57b51d0e8734e67ba33b.png"
 }

@@ -247,7 +247,9 @@ def parseSkillCsv(csv, skillType = None):
     ret = {}
     for l in csv:
         sid = l["SkillGroupId"]
-        idx = int(l["SkillSettingType"])
+
+        skillSettingType = l["SkillSettingType"];
+        idx = int(skillSettingType) if skillSettingType.isdigit() else 0
 
         value = l["MainSettingValue"]
         values = list(map(lambda a: l[a],  ["FirstSettingValue", "SecondSettingValue", "ThirdSettingValue", "FourthSettingValue", "FifthSettingValue", "SixthSettingValue"]))

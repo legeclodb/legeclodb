@@ -7,8 +7,8 @@
     "slot": "武器",
     "rarity": "SSR",
     "classes": [ "ソルジャー", "ライダー", "エアリアル" ],
-    "statusInit": [ 50, 18, 0, 0, 0, 0 ],
-    "statusLv": [ 8, 2, 0, 0, 0, 0 ],
+    "statusInit": [ 50.0, 18.0, 0, 0, 0, 0 ],
+    "statusLv": [ 8.0, 2.0, 0, 0, 0, 0 ],
     "buff": [
       {
         "type": "アタック",
@@ -30,8 +30,8 @@
     "slot": "武器",
     "rarity": "SSR",
     "classes": [ "ソルジャー", "ライダー", "エアリアル" ],
-    "statusInit": [ 50, 18, 0, 0, 0, 0 ],
-    "statusLv": [ 8, 2, 0, 0, 0, 0 ],
+    "statusInit": [ 50.0, 18.0, 0, 0, 0, 0 ],
+    "statusLv": [ 8.0, 2.0, 0, 0, 0, 0 ],
     "buff": [
       {
         "type": "アタック",
@@ -53,8 +53,8 @@
     "slot": "武器",
     "rarity": "SSR",
     "classes": [ "ソルジャー", "ライダー", "エアリアル" ],
-    "statusInit": [ 50, 18, 0, 0, 0, 0 ],
-    "statusLv": [ 8, 2, 0, 0, 0, 0 ],
+    "statusInit": [ 50.0, 18.0, 0, 0, 0, 0 ],
+    "statusLv": [ 8.0, 2.0, 0, 0, 0, 0 ],
     "buff": [
       {
         "type": "ディフェンス",
@@ -81,8 +81,8 @@
     "slot": "武器",
     "rarity": "SSR",
     "classes": [ "ソルジャー", "ライダー", "エアリアル" ],
-    "statusInit": [ 50, 18, 0, 0, 0, 0 ],
-    "statusLv": [ 8, 2, 0, 0, 0, 0 ],
+    "statusInit": [ 50.0, 18.0, 0, 0, 0, 0 ],
+    "statusLv": [ 8.0, 2.0, 0, 0, 0, 0 ],
     "buff": [
       {
         "type": "アタック",
@@ -95,7 +95,9 @@
         "ephemeral": true,
         "target": "自身(メイン)",
         "timing": "戦闘前",
-        "condition": { "onOwnTurn": true }
+        "condition": {
+          "onOwnTurn": true
+        }
       },
       {
         "type": "クリティカル率",
@@ -103,7 +105,9 @@
         "ephemeral": true,
         "target": "自身(メイン)",
         "timing": "戦闘前",
-        "condition": { "onOwnTurn": true }
+        "condition": {
+          "onOwnTurn": true
+        }
       }
     ],
     "note": "戦闘前に発動するアタック+15%は、常時発動しているアタック+5%と競合。(+20%にはならず、+15%止まり)"
@@ -116,7 +120,7 @@
     "slot": "武器",
     "rarity": "SSR",
     "classes": [ "ソルジャー", "ライダー", "エアリアル" ],
-    "statusInit": [ 0, 16, 0, 0, 0, 7.6 ],
+    "statusInit": [ 0, 16.0, 0, 0, 0, 7.6 ],
     "statusLv": [ 0, 2.04, 0, 0, 0, 0.79 ],
     "debuff": [
       {
@@ -142,7 +146,7 @@
     "slot": "武器",
     "rarity": "SSR",
     "classes": [ "ソルジャー", "ライダー", "エアリアル" ],
-    "statusInit": [ 0, 16, 0, 0, 0, 7.6 ],
+    "statusInit": [ 0, 16.0, 0, 0, 0, 7.6 ],
     "statusLv": [ 0, 2.04, 0, 0, 0, 0.79 ],
     "buff": [
       {
@@ -168,7 +172,7 @@
     "slot": "武器",
     "rarity": "SSR",
     "classes": [ "ソルジャー", "ライダー", "エアリアル" ],
-    "statusInit": [ 0, 16, 0, 0, 0, 7.6 ],
+    "statusInit": [ 0, 16.0, 0, 0, 0, 7.6 ],
     "statusLv": [ 0, 2.04, 0, 0, 0, 0.79 ],
     "buff": [
       {
@@ -185,7 +189,9 @@
         "trigger": {
           "target": "攻撃対象",
           "timing": "戦闘後",
-          "condition": { "onCriticalHit": true }
+          "condition": {
+            "onCriticalHit": true
+          }
         }
       }
     ],
@@ -194,7 +200,9 @@
         "value": 1,
         "timing": "戦闘後",
         "target": "攻撃対象",
-        "condition": { "onCriticalHit": true }
+        "condition": {
+          "onCriticalHit": true
+        }
       }
     ],
     "note": "ランダムデバフ内訳: `randomTableToString('ランダムデバフ:弱')`"
@@ -207,7 +215,7 @@
     "slot": "武器",
     "rarity": "SSR",
     "classes": [ "ソルジャー", "ライダー", "エアリアル" ],
-    "statusInit": [ 0, 16, 0, 0, 0, 7.6 ],
+    "statusInit": [ 0, 16.0, 0, 0, 0, 7.6 ],
     "statusLv": [ 0, 2.04, 0, 0, 0, 0.79 ],
     "buff": [
       {
@@ -224,7 +232,9 @@
         "trigger": {
           "target": "攻撃対象",
           "timing": "戦闘前",
-          "condition": { "onOwnTurn": true }
+          "condition": {
+            "onOwnTurn": true
+          }
         }
       }
     ]
@@ -237,8 +247,8 @@
     "slot": "武器",
     "rarity": "SSR",
     "classes": [ "ライダー", "ランサー", "エアリアル" ],
-    "statusInit": [ 68, 14, 0, 0, 0, 0 ],
-    "statusLv": [ 12, 1.59, 0, 0, 0, 0 ],
+    "statusInit": [ 68.0, 14.0, 0, 0, 0, 0 ],
+    "statusLv": [ 12.0, 1.59, 0, 0, 0, 0 ],
     "buff": [
       {
         "type": "ディフェンス",
@@ -260,8 +270,8 @@
     "slot": "武器",
     "rarity": "SSR",
     "classes": [ "ライダー", "ランサー", "エアリアル" ],
-    "statusInit": [ 68, 14, 0, 0, 0, 0 ],
-    "statusLv": [ 12, 1.59, 0, 0, 0, 0 ],
+    "statusInit": [ 68.0, 14.0, 0, 0, 0, 0 ],
+    "statusLv": [ 12.0, 1.59, 0, 0, 0, 0 ],
     "buff": [
       {
         "type": "ディフェンス",
@@ -269,7 +279,9 @@
         "ephemeral": true,
         "target": "自身(メイン)",
         "timing": "戦闘前",
-        "condition": { "onEnemyTurn": true }
+        "condition": {
+          "onEnemyTurn": true
+        }
       },
       {
         "type": "アタック",
@@ -277,7 +289,9 @@
         "ephemeral": true,
         "target": "自身(メイン)",
         "timing": "戦闘前",
-        "condition": { "onEnemyTurn": true }
+        "condition": {
+          "onEnemyTurn": true
+        }
       }
     ]
   },
@@ -289,8 +303,8 @@
     "slot": "武器",
     "rarity": "SSR",
     "classes": [ "ライダー", "ランサー", "エアリアル" ],
-    "statusInit": [ 68, 14, 0, 0, 0, 0 ],
-    "statusLv": [ 12, 1.59, 0, 0, 0, 0 ],
+    "statusInit": [ 68.0, 14.0, 0, 0, 0, 0 ],
+    "statusLv": [ 12.0, 1.59, 0, 0, 0, 0 ],
     "buff": [
       {
         "type": "射程(通常攻撃)",
@@ -312,8 +326,8 @@
     "slot": "武器",
     "rarity": "SSR",
     "classes": [ "ライダー", "ランサー", "エアリアル" ],
-    "statusInit": [ 68, 14, 0, 0, 0, 0 ],
-    "statusLv": [ 12, 1.59, 0, 0, 0, 0 ],
+    "statusInit": [ 68.0, 14.0, 0, 0, 0, 0 ],
+    "statusLv": [ 12.0, 1.59, 0, 0, 0, 0 ],
     "buff": [
       {
         "type": "アタック",
@@ -327,7 +341,9 @@
         "rate": 1,
         "timing": "攻撃後",
         "target": "攻撃対象",
-        "condition": { "onOwnTurn": true }
+        "condition": {
+          "onOwnTurn": true
+        }
       }
     ]
   },
@@ -339,8 +355,8 @@
     "slot": "武器",
     "rarity": "SSR",
     "classes": [ "ソルジャー", "ランサー", "エアリアル", "セイント" ],
-    "statusInit": [ 42, 20, 0, 0, 0, 0 ],
-    "statusLv": [ 11, 2.2, 0, 0, 0, 0 ],
+    "statusInit": [ 42.0, 20.0, 0, 0, 0, 0 ],
+    "statusLv": [ 11.0, 2.2, 0, 0, 0, 0 ],
     "buff": [
       {
         "type": "アタック",
@@ -362,8 +378,8 @@
     "slot": "武器",
     "rarity": "SSR",
     "classes": [ "ソルジャー", "ランサー", "エアリアル", "セイント" ],
-    "statusInit": [ 42, 20, 0, 0, 0, 0 ],
-    "statusLv": [ 11, 2.2, 0, 0, 0, 0 ],
+    "statusInit": [ 42.0, 20.0, 0, 0, 0, 0 ],
+    "statusLv": [ 11.0, 2.2, 0, 0, 0, 0 ],
     "buff": [
       {
         "type": "アタック",
@@ -371,7 +387,9 @@
         "ephemeral": true,
         "target": "自身(メイン)",
         "timing": "戦闘前",
-        "condition": { "onOwnTurn": true }
+        "condition": {
+          "onOwnTurn": true
+        }
       },
       {
         "type": "ディフェンス",
@@ -379,7 +397,9 @@
         "ephemeral": true,
         "target": "自身(メイン)",
         "timing": "戦闘前",
-        "condition": { "onOwnTurn": true }
+        "condition": {
+          "onOwnTurn": true
+        }
       }
     ]
   },
@@ -391,8 +411,8 @@
     "slot": "武器",
     "rarity": "SSR",
     "classes": [ "ソルジャー", "ランサー", "エアリアル", "セイント" ],
-    "statusInit": [ 42, 20, 0, 0, 0, 0 ],
-    "statusLv": [ 11, 2.2, 0, 0, 0, 0 ],
+    "statusInit": [ 42.0, 20.0, 0, 0, 0, 0 ],
+    "statusLv": [ 11.0, 2.2, 0, 0, 0, 0 ],
     "buff": [
       {
         "type": "アタック",
@@ -406,7 +426,9 @@
         "rate": 1,
         "timing": "戦闘前",
         "target": "攻撃対象",
-        "condition": { "onOwnTurn": true }
+        "condition": {
+          "onOwnTurn": true
+        }
       }
     ]
   },
@@ -418,8 +440,8 @@
     "slot": "武器",
     "rarity": "SSR",
     "classes": [ "ソルジャー", "ランサー", "エアリアル", "セイント" ],
-    "statusInit": [ 42, 20, 0, 0, 0, 0 ],
-    "statusLv": [ 11, 2.2, 0, 0, 0, 0 ],
+    "statusInit": [ 42.0, 20.0, 0, 0, 0, 0 ],
+    "statusLv": [ 11.0, 2.2, 0, 0, 0, 0 ],
     "buff": [
       {
         "type": "アタック",
@@ -451,8 +473,8 @@
     "slot": "武器",
     "rarity": "SSR",
     "classes": [ "ソルジャー", "ランサー", "エアリアル", "セイント" ],
-    "statusInit": [ 68, 14, 0, 0, 0, 0 ],
-    "statusLv": [ 10, 1.59, 0, 0, 0, 0 ],
+    "statusInit": [ 68.0, 14.0, 0, 0, 0, 0 ],
+    "statusLv": [ 10.0, 1.59, 0, 0, 0, 0 ],
     "buff": [
       {
         "type": "アタック",
@@ -474,8 +496,8 @@
     "slot": "武器",
     "rarity": "SSR",
     "classes": [ "ソルジャー", "ランサー", "エアリアル", "セイント" ],
-    "statusInit": [ 68, 14, 0, 0, 0, 0 ],
-    "statusLv": [ 10, 1.59, 0, 0, 0, 0 ],
+    "statusInit": [ 68.0, 14.0, 0, 0, 0, 0 ],
+    "statusLv": [ 10.0, 1.59, 0, 0, 0, 0 ],
     "buff": [
       {
         "type": "ディフェンス",
@@ -497,8 +519,8 @@
     "slot": "武器",
     "rarity": "SSR",
     "classes": [ "ソルジャー", "ランサー", "エアリアル", "セイント" ],
-    "statusInit": [ 68, 14, 0, 0, 0, 0 ],
-    "statusLv": [ 10, 1.59, 0, 0, 0, 0 ],
+    "statusInit": [ 68.0, 14.0, 0, 0, 0, 0 ],
+    "statusLv": [ 10.0, 1.59, 0, 0, 0, 0 ],
     "buff": [
       {
         "type": "アタック",
@@ -513,7 +535,9 @@
         "trigger": {
           "target": "攻撃対象",
           "timing": "戦闘前",
-          "condition": { "probability": 50 }
+          "condition": {
+            "probability": 50
+          }
         }
       }
     ]
@@ -526,8 +550,8 @@
     "slot": "武器",
     "rarity": "SSR",
     "classes": [ "ソルジャー", "ランサー", "エアリアル", "セイント" ],
-    "statusInit": [ 68, 14, 0, 0, 0, 0 ],
-    "statusLv": [ 10, 1.59, 0, 0, 0, 0 ],
+    "statusInit": [ 68.0, 14.0, 0, 0, 0, 0 ],
+    "statusLv": [ 10.0, 1.59, 0, 0, 0, 0 ],
     "buff": [
       {
         "type": "アタック",
@@ -559,8 +583,8 @@
     "slot": "武器",
     "rarity": "SSR",
     "classes": [ "シューター", "アサシン" ],
-    "statusInit": [ 50, 18, 0, 0, 0, 0 ],
-    "statusLv": [ 8, 2, 0, 0, 0, 0 ],
+    "statusInit": [ 50.0, 18.0, 0, 0, 0, 0 ],
+    "statusLv": [ 8.0, 2.0, 0, 0, 0, 0 ],
     "buff": [
       {
         "type": "アタック",
@@ -582,8 +606,8 @@
     "slot": "武器",
     "rarity": "SSR",
     "classes": [ "シューター", "アサシン" ],
-    "statusInit": [ 50, 18, 0, 0, 0, 0 ],
-    "statusLv": [ 8, 2, 0, 0, 0, 0 ],
+    "statusInit": [ 50.0, 18.0, 0, 0, 0, 0 ],
+    "statusLv": [ 8.0, 2.0, 0, 0, 0, 0 ],
     "buff": [
       {
         "type": "アタック",
@@ -627,8 +651,8 @@
     "slot": "武器",
     "rarity": "SSR",
     "classes": [ "シューター", "アサシン" ],
-    "statusInit": [ 50, 18, 0, 0, 0, 0 ],
-    "statusLv": [ 8, 2, 0, 0, 0, 0 ],
+    "statusInit": [ 50.0, 18.0, 0, 0, 0, 0 ],
+    "statusLv": [ 8.0, 2.0, 0, 0, 0, 0 ],
     "buff": [
       {
         "type": "アタック",
@@ -660,8 +684,8 @@
     "slot": "武器",
     "rarity": "SSR",
     "classes": [ "シューター", "アサシン" ],
-    "statusInit": [ 50, 18, 0, 0, 0, 0 ],
-    "statusLv": [ 8, 2, 0, 0, 0, 0 ],
+    "statusInit": [ 50.0, 18.0, 0, 0, 0, 0 ],
+    "statusLv": [ 8.0, 2.0, 0, 0, 0, 0 ],
     "buff": [
       {
         "type": "アタック",
@@ -677,7 +701,9 @@
         "trigger": {
           "target": "攻撃対象",
           "timing": "戦闘後",
-          "condition": { "onCriticalHit": true }
+          "condition": {
+            "onCriticalHit": true
+          }
         }
       }
     ],
@@ -686,7 +712,9 @@
         "value": 1,
         "target": "攻撃対象",
         "timing": "戦闘後",
-        "condition": { "onCriticalHit": true }
+        "condition": {
+          "onCriticalHit": true
+        }
       }
     ],
     "note": "ランダムデバフ内訳: `randomTableToString('ランダムデバフ:強')`\n凸に応じてランダムデバフの内訳も強化される。上記内訳は完凸時のもの。"
@@ -699,8 +727,8 @@
     "slot": "武器",
     "rarity": "SSR",
     "classes": [ "シューター", "アサシン" ],
-    "statusInit": [ 0, 18, 0, 0, 0, 7.6 ],
-    "statusLv": [ 0, 2, 0, 0, 0, 0.79 ],
+    "statusInit": [ 0, 18.0, 0, 0, 0, 7.6 ],
+    "statusLv": [ 0, 2.0, 0, 0, 0, 0.79 ],
     "buff": [
       {
         "type": "アタック",
@@ -708,7 +736,9 @@
         "ephemeral": true,
         "target": "自身(メイン)",
         "timing": "戦闘前",
-        "condition": { "onEnemyTurn": true }
+        "condition": {
+          "onEnemyTurn": true
+        }
       },
       {
         "type": "ディフェンス",
@@ -716,7 +746,9 @@
         "ephemeral": true,
         "target": "自身(メイン)",
         "timing": "戦闘前",
-        "condition": { "onEnemyTurn": true }
+        "condition": {
+          "onEnemyTurn": true
+        }
       }
     ]
   },
@@ -728,8 +760,8 @@
     "slot": "武器",
     "rarity": "SSR",
     "classes": [ "シューター", "アサシン" ],
-    "statusInit": [ 0, 18, 0, 0, 0, 7.6 ],
-    "statusLv": [ 0, 2, 0, 0, 0, 0.79 ],
+    "statusInit": [ 0, 18.0, 0, 0, 0, 7.6 ],
+    "statusLv": [ 0, 2.0, 0, 0, 0, 0.79 ],
     "buff": [
       {
         "type": "アタック",
@@ -751,8 +783,8 @@
     "slot": "武器",
     "rarity": "SSR",
     "classes": [ "シューター", "アサシン" ],
-    "statusInit": [ 0, 18, 0, 0, 0, 7.6 ],
-    "statusLv": [ 0, 2, 0, 0, 0, 0.79 ],
+    "statusInit": [ 0, 18.0, 0, 0, 0, 7.6 ],
+    "statusLv": [ 0, 2.0, 0, 0, 0, 0.79 ],
     "buff": [
       {
         "type": "アタック",
@@ -765,7 +797,9 @@
         "ephemeral": true,
         "target": "自身(メイン)",
         "timing": "戦闘前",
-        "condition": { "onOwnTurn": true }
+        "condition": {
+          "onOwnTurn": true
+        }
       },
       {
         "type": "ディフェンス",
@@ -773,7 +807,9 @@
         "ephemeral": true,
         "target": "自身(メイン)",
         "timing": "戦闘前",
-        "condition": { "onOwnTurn": true }
+        "condition": {
+          "onOwnTurn": true
+        }
       }
     ],
     "note": "戦闘前に発動するアタック+15%は、常時発動しているアタック+5%と競合。(+20%にはならず、+15%止まり)"
@@ -786,8 +822,8 @@
     "slot": "武器",
     "rarity": "SSR",
     "classes": [ "シューター", "アサシン" ],
-    "statusInit": [ 0, 18, 0, 0, 0, 7.6 ],
-    "statusLv": [ 0, 2, 0, 0, 0, 0.79 ],
+    "statusInit": [ 0, 18.0, 0, 0, 0, 7.6 ],
+    "statusLv": [ 0, 2.0, 0, 0, 0, 0.79 ],
     "buff": [
       {
         "type": "射程(通常攻撃)",
@@ -809,8 +845,8 @@
     "slot": "武器",
     "rarity": "SSR",
     "classes": [ "ソーサラー", "セイント" ],
-    "statusInit": [ 68.4, 0, 0, 18, 0, 0 ],
-    "statusLv": [ 12, 0, 0, 2, 0, 0 ],
+    "statusInit": [ 68.4, 0, 0, 18.0, 0, 0 ],
+    "statusLv": [ 12.0, 0, 0, 2.0, 0, 0 ],
     "buff": [
       {
         "type": "マジック",
@@ -832,8 +868,8 @@
     "slot": "武器",
     "rarity": "SSR",
     "classes": [ "ソーサラー", "セイント" ],
-    "statusInit": [ 68.4, 0, 0, 18, 0, 0 ],
-    "statusLv": [ 12, 0, 0, 2, 0, 0 ],
+    "statusInit": [ 68.4, 0, 0, 18.0, 0, 0 ],
+    "statusLv": [ 12.0, 0, 0, 2.0, 0, 0 ],
     "buff": [
       {
         "type": "治療効果",
@@ -855,8 +891,8 @@
     "slot": "武器",
     "rarity": "SSR",
     "classes": [ "ソーサラー", "セイント" ],
-    "statusInit": [ 68.4, 0, 0, 18, 0, 0 ],
-    "statusLv": [ 12, 0, 0, 2, 0, 0 ],
+    "statusInit": [ 68.4, 0, 0, 18.0, 0, 0 ],
+    "statusLv": [ 12.0, 0, 0, 2.0, 0, 0 ],
     "buff": [
       {
         "type": "マジック",
@@ -870,7 +906,9 @@
         "rate": 3,
         "target": "味方(低HP)",
         "timing": "戦闘後",
-        "condition": { "onOwnTurn": true }
+        "condition": {
+          "onOwnTurn": true
+        }
       }
     ]
   },
@@ -882,8 +920,8 @@
     "slot": "武器",
     "rarity": "SSR",
     "classes": [ "ソーサラー", "セイント" ],
-    "statusInit": [ 68.4, 0, 0, 18, 0, 0 ],
-    "statusLv": [ 12, 0, 0, 2, 0, 0 ],
+    "statusInit": [ 68.4, 0, 0, 18.0, 0, 0 ],
+    "statusLv": [ 12.0, 0, 0, 2.0, 0, 0 ],
     "buff": [
       {
         "type": "治療効果",
@@ -899,7 +937,9 @@
         "trigger": {
           "target": "攻撃対象",
           "timing": "戦闘後",
-          "condition": { "onOwnTurn": true }
+          "condition": {
+            "onOwnTurn": true
+          }
         }
       }
     ]
@@ -912,8 +952,8 @@
     "slot": "武器",
     "rarity": "SSR",
     "classes": [ "ソーサラー", "セイント" ],
-    "statusInit": [ 0, 0, 0, 18, 0, 7.6 ],
-    "statusLv": [ 0, 0, 0, 2, 0, 0.79 ],
+    "statusInit": [ 0, 0, 0, 18.0, 0, 7.6 ],
+    "statusLv": [ 0, 0, 0, 2.0, 0, 0.79 ],
     "buff": [
       {
         "type": "マジック",
@@ -935,8 +975,8 @@
     "slot": "武器",
     "rarity": "SSR",
     "classes": [ "ソーサラー", "セイント" ],
-    "statusInit": [ 0, 0, 0, 18, 0, 7.6 ],
-    "statusLv": [ 0, 0, 0, 2, 0, 0.79 ],
+    "statusInit": [ 0, 0, 0, 18.0, 0, 7.6 ],
+    "statusLv": [ 0, 0, 0, 2.0, 0, 0.79 ],
     "buff": [
       {
         "type": "与ダメージ(範囲スキル)",
@@ -969,8 +1009,8 @@
     "slot": "武器",
     "rarity": "SSR",
     "classes": [ "ソーサラー", "セイント" ],
-    "statusInit": [ 0, 0, 0, 18, 0, 7.6 ],
-    "statusLv": [ 0, 0, 0, 2, 0, 0.79 ],
+    "statusInit": [ 0, 0, 0, 18.0, 0, 7.6 ],
+    "statusLv": [ 0, 0, 0, 2.0, 0, 0.79 ],
     "buff": [
       {
         "type": "マジック",
@@ -986,7 +1026,9 @@
         "trigger": {
           "target": "攻撃対象",
           "timing": "戦闘後",
-          "condition": { "onOwnTurn": true }
+          "condition": {
+            "onOwnTurn": true
+          }
         }
       }
     ],
@@ -1000,8 +1042,8 @@
     "slot": "武器",
     "rarity": "SSR",
     "classes": [ "ソーサラー", "セイント" ],
-    "statusInit": [ 0, 0, 0, 18, 0, 7.6 ],
-    "statusLv": [ 0, 0, 0, 2, 0, 0.79 ],
+    "statusInit": [ 0, 0, 0, 18.0, 0, 7.6 ],
+    "statusLv": [ 0, 0, 0, 2.0, 0, 0.79 ],
     "buff": [
       {
         "type": "与ダメージ(スキル)",
@@ -1009,7 +1051,9 @@
         "ephemeral": true,
         "target": "自身(メイン)",
         "timing": "戦闘前",
-        "condition": { "onSingleSkill": true }
+        "condition": {
+          "onSingleSkill": true
+        }
       }
     ],
     "debuff": [
@@ -1045,7 +1089,9 @@
         "ephemeral": true,
         "target": "自身(メイン)",
         "timing": "戦闘前",
-        "condition": { "onOwnTurn": true }
+        "condition": {
+          "onOwnTurn": true
+        }
       },
       {
         "type": "マジック",
@@ -1053,7 +1099,9 @@
         "ephemeral": true,
         "target": "自身(メイン)",
         "timing": "戦闘前",
-        "condition": { "onOwnTurn": true }
+        "condition": {
+          "onOwnTurn": true
+        }
       }
     ]
   },
@@ -1065,8 +1113,8 @@
     "slot": "武器",
     "rarity": "SR",
     "classes": [ "ソルジャー", "ライダー", "エアリアル" ],
-    "statusInit": [ 34, 14, 0, 0, 0, 0 ],
-    "statusLv": [ 6, 1.28, 0, 0, 0, 0 ],
+    "statusInit": [ 34.0, 14.0, 0, 0, 0, 0 ],
+    "statusLv": [ 6.0, 1.28, 0, 0, 0, 0 ],
     "buff": [
       {
         "type": "アタック",
@@ -1083,8 +1131,8 @@
     "slot": "武器",
     "rarity": "SR",
     "classes": [ "ソルジャー", "ライダー", "エアリアル" ],
-    "statusInit": [ 34, 14, 0, 0, 0, 0 ],
-    "statusLv": [ 6, 1.28, 0, 0, 0, 0 ],
+    "statusInit": [ 34.0, 14.0, 0, 0, 0, 0 ],
+    "statusLv": [ 6.0, 1.28, 0, 0, 0, 0 ],
     "buff": [
       {
         "type": "ディフェンス",
@@ -1101,8 +1149,8 @@
     "slot": "武器",
     "rarity": "SR",
     "classes": [ "ソルジャー", "ライダー", "エアリアル" ],
-    "statusInit": [ 34, 14, 0, 0, 0, 0 ],
-    "statusLv": [ 6, 1.28, 0, 0, 0, 0 ],
+    "statusInit": [ 34.0, 14.0, 0, 0, 0, 0 ],
+    "statusLv": [ 6.0, 1.28, 0, 0, 0, 0 ],
     "buff": [
       {
         "type": "アタック",
@@ -1110,7 +1158,9 @@
         "ephemeral": true,
         "target": "自身(メイン)",
         "timing": "戦闘前",
-        "condition": { "onOwnTurn": true }
+        "condition": {
+          "onOwnTurn": true
+        }
       }
     ]
   },
@@ -1122,7 +1172,7 @@
     "slot": "武器",
     "rarity": "SR",
     "classes": [ "ソルジャー", "ライダー", "エアリアル" ],
-    "statusInit": [ 0, 12, 0, 0, 0, 5.2 ],
+    "statusInit": [ 0, 12.0, 0, 0, 0, 5.2 ],
     "statusLv": [ 0, 1.21, 0, 0, 0, 0.6 ],
     "buff": [
       {
@@ -1140,7 +1190,7 @@
     "slot": "武器",
     "rarity": "SR",
     "classes": [ "ソルジャー", "ライダー", "エアリアル" ],
-    "statusInit": [ 0, 12, 0, 0, 0, 5.2 ],
+    "statusInit": [ 0, 12.0, 0, 0, 0, 5.2 ],
     "statusLv": [ 0, 1.21, 0, 0, 0, 0.6 ],
     "buff": [
       {
@@ -1158,7 +1208,7 @@
     "slot": "武器",
     "rarity": "SR",
     "classes": [ "ソルジャー", "ライダー", "エアリアル" ],
-    "statusInit": [ 0, 12, 0, 0, 0, 5.2 ],
+    "statusInit": [ 0, 12.0, 0, 0, 0, 5.2 ],
     "statusLv": [ 0, 1.21, 0, 0, 0, 0.6 ],
     "buff": [
       {
@@ -1167,7 +1217,9 @@
         "ephemeral": true,
         "target": "自身(メイン)",
         "timing": "戦闘前",
-        "condition": { "onOwnTurn": true }
+        "condition": {
+          "onOwnTurn": true
+        }
       }
     ]
   },
@@ -1179,8 +1231,8 @@
     "slot": "武器",
     "rarity": "SR",
     "classes": [ "ライダー", "ランサー", "エアリアル" ],
-    "statusInit": [ 40, 12, 0, 0, 0, 0 ],
-    "statusLv": [ 7, 1.19, 0, 0, 0, 0 ],
+    "statusInit": [ 40.0, 12.0, 0, 0, 0, 0 ],
+    "statusLv": [ 7.0, 1.19, 0, 0, 0, 0 ],
     "buff": [
       {
         "type": "アタック",
@@ -1197,8 +1249,8 @@
     "slot": "武器",
     "rarity": "SR",
     "classes": [ "ライダー", "ランサー", "エアリアル" ],
-    "statusInit": [ 40, 12, 0, 0, 0, 0 ],
-    "statusLv": [ 7, 1.19, 0, 0, 0, 0 ],
+    "statusInit": [ 40.0, 12.0, 0, 0, 0, 0 ],
+    "statusLv": [ 7.0, 1.19, 0, 0, 0, 0 ],
     "buff": [
       {
         "type": "ディフェンス",
@@ -1215,8 +1267,8 @@
     "slot": "武器",
     "rarity": "SR",
     "classes": [ "ライダー", "ランサー", "エアリアル" ],
-    "statusInit": [ 40, 12, 0, 0, 0, 0 ],
-    "statusLv": [ 7, 1.19, 0, 0, 0, 0 ],
+    "statusInit": [ 40.0, 12.0, 0, 0, 0, 0 ],
+    "statusLv": [ 7.0, 1.19, 0, 0, 0, 0 ],
     "buff": [
       {
         "type": "最大HP",
@@ -1233,8 +1285,8 @@
     "slot": "武器",
     "rarity": "SR",
     "classes": [ "ソルジャー", "ランサー", "エアリアル", "セイント" ],
-    "statusInit": [ 34, 16, 0, 0, 0, 0 ],
-    "statusLv": [ 6, 1.26, 0, 0, 0, 0 ],
+    "statusInit": [ 34.0, 16.0, 0, 0, 0, 0 ],
+    "statusLv": [ 6.0, 1.26, 0, 0, 0, 0 ],
     "buff": [
       {
         "type": "アタック",
@@ -1251,8 +1303,8 @@
     "slot": "武器",
     "rarity": "SR",
     "classes": [ "ソルジャー", "ランサー", "エアリアル", "セイント" ],
-    "statusInit": [ 34, 16, 0, 0, 0, 0 ],
-    "statusLv": [ 6, 1.26, 0, 0, 0, 0 ],
+    "statusInit": [ 34.0, 16.0, 0, 0, 0, 0 ],
+    "statusLv": [ 6.0, 1.26, 0, 0, 0, 0 ],
     "buff": [
       {
         "type": "最大HP",
@@ -1269,8 +1321,8 @@
     "slot": "武器",
     "rarity": "SR",
     "classes": [ "ソルジャー", "ランサー", "エアリアル", "セイント" ],
-    "statusInit": [ 34, 16, 0, 0, 0, 0 ],
-    "statusLv": [ 6, 1.26, 0, 0, 0, 0 ],
+    "statusInit": [ 34.0, 16.0, 0, 0, 0, 0 ],
+    "statusLv": [ 6.0, 1.26, 0, 0, 0, 0 ],
     "buff": [
       {
         "type": "アタック",
@@ -1278,7 +1330,9 @@
         "ephemeral": true,
         "target": "自身(メイン)",
         "timing": "戦闘前",
-        "condition": { "onOwnTurn": true }
+        "condition": {
+          "onOwnTurn": true
+        }
       }
     ]
   },
@@ -1290,8 +1344,8 @@
     "slot": "武器",
     "rarity": "SR",
     "classes": [ "ソルジャー", "ランサー", "エアリアル", "セイント" ],
-    "statusInit": [ 44, 12.2, 0, 0, 0, 0 ],
-    "statusLv": [ 6, 1.07, 0, 0, 0, 0 ],
+    "statusInit": [ 44.0, 12.2, 0, 0, 0, 0 ],
+    "statusLv": [ 6.0, 1.07, 0, 0, 0, 0 ],
     "buff": [
       {
         "type": "最大HP",
@@ -1308,8 +1362,8 @@
     "slot": "武器",
     "rarity": "SR",
     "classes": [ "ソルジャー", "ランサー", "エアリアル", "セイント" ],
-    "statusInit": [ 44, 12.2, 0, 0, 0, 0 ],
-    "statusLv": [ 6, 1.07, 0, 0, 0, 0 ],
+    "statusInit": [ 44.0, 12.2, 0, 0, 0, 0 ],
+    "statusLv": [ 6.0, 1.07, 0, 0, 0, 0 ],
     "buff": [
       {
         "type": "ディフェンス",
@@ -1326,8 +1380,8 @@
     "slot": "武器",
     "rarity": "SR",
     "classes": [ "ソルジャー", "ランサー", "エアリアル", "セイント" ],
-    "statusInit": [ 44, 12.2, 0, 0, 0, 0 ],
-    "statusLv": [ 6, 1.07, 0, 0, 0, 0 ],
+    "statusInit": [ 44.0, 12.2, 0, 0, 0, 0 ],
+    "statusLv": [ 6.0, 1.07, 0, 0, 0, 0 ],
     "buff": [
       {
         "type": "ディフェンス",
@@ -1335,7 +1389,9 @@
         "ephemeral": true,
         "target": "自身(メイン)",
         "timing": "戦闘前",
-        "condition": { "onOwnTurn": true }
+        "condition": {
+          "onOwnTurn": true
+        }
       }
     ]
   },
@@ -1347,8 +1403,8 @@
     "slot": "武器",
     "rarity": "SR",
     "classes": [ "シューター", "アサシン" ],
-    "statusInit": [ 34, 14.6, 0, 0, 0, 0 ],
-    "statusLv": [ 6, 1.27, 0, 0, 0, 0 ],
+    "statusInit": [ 34.0, 14.6, 0, 0, 0, 0 ],
+    "statusLv": [ 6.0, 1.27, 0, 0, 0, 0 ],
     "buff": [
       {
         "type": "アタック",
@@ -1365,8 +1421,8 @@
     "slot": "武器",
     "rarity": "SR",
     "classes": [ "シューター", "アサシン" ],
-    "statusInit": [ 34, 14.6, 0, 0, 0, 0 ],
-    "statusLv": [ 6, 1.27, 0, 0, 0, 0 ],
+    "statusInit": [ 34.0, 14.6, 0, 0, 0, 0 ],
+    "statusLv": [ 6.0, 1.27, 0, 0, 0, 0 ],
     "buff": [
       {
         "type": "ディフェンス",
@@ -1383,8 +1439,8 @@
     "slot": "武器",
     "rarity": "SR",
     "classes": [ "シューター", "アサシン" ],
-    "statusInit": [ 34, 14.6, 0, 0, 0, 0 ],
-    "statusLv": [ 6, 1.27, 0, 0, 0, 0 ],
+    "statusInit": [ 34.0, 14.6, 0, 0, 0, 0 ],
+    "statusLv": [ 6.0, 1.27, 0, 0, 0, 0 ],
     "buff": [
       {
         "type": "アタック",
@@ -1392,7 +1448,9 @@
         "ephemeral": true,
         "target": "自身(メイン)",
         "timing": "戦闘前",
-        "condition": { "onOwnTurn": true }
+        "condition": {
+          "onOwnTurn": true
+        }
       }
     ]
   },
@@ -1449,7 +1507,9 @@
         "ephemeral": true,
         "target": "自身(メイン)",
         "timing": "戦闘前",
-        "condition": { "onOwnTurn": true }
+        "condition": {
+          "onOwnTurn": true
+        }
       }
     ]
   },
@@ -1461,8 +1521,8 @@
     "slot": "武器",
     "rarity": "SR",
     "classes": [ "ソーサラー", "セイント" ],
-    "statusInit": [ 34, 0, 0, 14.6, 0, 0 ],
-    "statusLv": [ 6, 0, 0, 1.27, 0, 0 ],
+    "statusInit": [ 34.0, 0, 0, 14.6, 0, 0 ],
+    "statusLv": [ 6.0, 0, 0, 1.27, 0, 0 ],
     "buff": [
       {
         "type": "マジック",
@@ -1479,8 +1539,8 @@
     "slot": "武器",
     "rarity": "SR",
     "classes": [ "ソーサラー", "セイント" ],
-    "statusInit": [ 34, 0, 0, 14.6, 0, 0 ],
-    "statusLv": [ 6, 0, 0, 1.27, 0, 0 ],
+    "statusInit": [ 34.0, 0, 0, 14.6, 0, 0 ],
+    "statusLv": [ 6.0, 0, 0, 1.27, 0, 0 ],
     "buff": [
       {
         "type": "治療効果",
@@ -1497,14 +1557,16 @@
     "slot": "武器",
     "rarity": "SR",
     "classes": [ "ソーサラー", "セイント" ],
-    "statusInit": [ 34, 0, 0, 14.6, 0, 0 ],
-    "statusLv": [ 6, 0, 0, 1.27, 0, 0 ],
+    "statusInit": [ 34.0, 0, 0, 14.6, 0, 0 ],
+    "statusLv": [ 6.0, 0, 0, 1.27, 0, 0 ],
     "buff": [
       {
         "type": "マジック",
         "value": 15,
         "target": "自身(メイン)",
-        "condition": { "hp": [ ">=", 80 ] }
+        "condition": {
+          "hp": [ ">=", 80 ]
+        }
       }
     ]
   },
@@ -1525,7 +1587,9 @@
         "ephemeral": true,
         "target": "自身(メイン)",
         "timing": "戦闘前",
-        "condition": { "onSingleSkill": true }
+        "condition": {
+          "onSingleSkill": true
+        }
       }
     ]
   },
@@ -1562,7 +1626,9 @@
         "type": "マジック",
         "value": 15,
         "target": "自身(メイン)",
-        "condition": { "hp": [ ">=", 80 ] }
+        "condition": {
+          "hp": [ ">=", 80 ]
+        }
       }
     ]
   },
@@ -1574,8 +1640,8 @@
     "slot": "鎧",
     "rarity": "SSR",
     "classes": [ "ソルジャー", "ランサー", "セイント" ],
-    "statusInit": [ 49, 0, 10.4, 0, 0, 0 ],
-    "statusLv": [ 8, 0, 1.32, 0, 0, 0 ],
+    "statusInit": [ 49.0, 0, 10.4, 0, 0, 0 ],
+    "statusLv": [ 8.0, 0, 1.32, 0, 0, 0 ],
     "buff": [
       {
         "type": "ディフェンス",
@@ -1597,8 +1663,8 @@
     "slot": "鎧",
     "rarity": "SSR",
     "classes": [ "ソルジャー", "ランサー", "セイント" ],
-    "statusInit": [ 49, 0, 10.4, 0, 0, 0 ],
-    "statusLv": [ 8, 0, 1.32, 0, 0, 0 ],
+    "statusInit": [ 49.0, 0, 10.4, 0, 0, 0 ],
+    "statusLv": [ 8.0, 0, 1.32, 0, 0, 0 ],
     "buff": [
       {
         "type": "レジスト",
@@ -1620,8 +1686,8 @@
     "slot": "鎧",
     "rarity": "SSR",
     "classes": [ "ソルジャー", "ランサー", "セイント" ],
-    "statusInit": [ 49, 0, 10.4, 0, 0, 0 ],
-    "statusLv": [ 8, 0, 1.32, 0, 0, 0 ],
+    "statusInit": [ 49.0, 0, 10.4, 0, 0, 0 ],
+    "statusLv": [ 8.0, 0, 1.32, 0, 0, 0 ],
     "buff": [
       {
         "type": "ディフェンス",
@@ -1632,7 +1698,9 @@
         "type": "ディフェンス",
         "value": 15,
         "target": "自身(メイン)",
-        "condition": { "hp": [ ">=", 80 ] }
+        "condition": {
+          "hp": [ ">=", 80 ]
+        }
       }
     ]
   },
@@ -1644,8 +1712,8 @@
     "slot": "鎧",
     "rarity": "SSR",
     "classes": [ "ソルジャー", "ランサー", "セイント" ],
-    "statusInit": [ 49, 0, 10.4, 0, 0, 0 ],
-    "statusLv": [ 8, 0, 1.32, 0, 0, 0 ],
+    "statusInit": [ 49.0, 0, 10.4, 0, 0, 0 ],
+    "statusLv": [ 8.0, 0, 1.32, 0, 0, 0 ],
     "buff": [
       {
         "type": "レジスト",
@@ -1656,7 +1724,9 @@
         "type": "レジスト",
         "value": 15,
         "target": "自身(メイン)",
-        "condition": { "hp": [ ">=", 80 ] }
+        "condition": {
+          "hp": [ ">=", 80 ]
+        }
       }
     ]
   },
@@ -1668,8 +1738,8 @@
     "slot": "鎧",
     "rarity": "SSR",
     "classes": [ "ソルジャー", "ランサー", "セイント" ],
-    "statusInit": [ 49, 0, 10.4, 0, 0, 0 ],
-    "statusLv": [ 8, 0, 1.32, 0, 0, 0 ],
+    "statusInit": [ 49.0, 0, 10.4, 0, 0, 0 ],
+    "statusLv": [ 8.0, 0, 1.32, 0, 0, 0 ],
     "buff": [
       {
         "type": "最大HP",
@@ -1697,8 +1767,8 @@
     "slot": "鎧",
     "rarity": "SSR",
     "classes": [ "ソルジャー", "ランサー", "セイント" ],
-    "statusInit": [ 49, 0, 10.4, 0, 0, 0 ],
-    "statusLv": [ 8, 0, 1.32, 0, 0, 0 ],
+    "statusInit": [ 49.0, 0, 10.4, 0, 0, 0 ],
+    "statusLv": [ 8.0, 0, 1.32, 0, 0, 0 ],
     "buff": [
       {
         "type": "レジスト",
@@ -1712,7 +1782,9 @@
         "rate": 3,
         "target": "攻撃対象",
         "timing": "戦闘後",
-        "condition": { "onOwnTurn": true }
+        "condition": {
+          "onOwnTurn": true
+        }
       }
     ]
   },
@@ -1724,8 +1796,8 @@
     "slot": "鎧",
     "rarity": "SSR",
     "classes": [ "ソルジャー", "ランサー", "セイント" ],
-    "statusInit": [ 49, 0, 10.4, 0, 0, 0 ],
-    "statusLv": [ 8, 0, 1.32, 0, 0, 0 ],
+    "statusInit": [ 49.0, 0, 10.4, 0, 0, 0 ],
+    "statusLv": [ 8.0, 0, 1.32, 0, 0, 0 ],
     "buff": [
       {
         "type": "ディフェンス",
@@ -1754,8 +1826,8 @@
     "slot": "鎧",
     "rarity": "SSR",
     "classes": [ "ソルジャー", "ランサー", "セイント" ],
-    "statusInit": [ 49, 0, 10.4, 0, 0, 0 ],
-    "statusLv": [ 8, 0, 1.32, 0, 0, 0 ],
+    "statusInit": [ 49.0, 0, 10.4, 0, 0, 0 ],
+    "statusLv": [ 8.0, 0, 1.32, 0, 0, 0 ],
     "buff": [
       {
         "type": "最大HP",
@@ -1786,8 +1858,8 @@
     "slot": "鎧",
     "rarity": "SSR",
     "classes": [ "ライダー", "エアリアル", "シューター", "アサシン" ],
-    "statusInit": [ 50, 0, 8.2, 0, 0, 0 ],
-    "statusLv": [ 10, 0, 1.21, 0, 0, 0 ],
+    "statusInit": [ 50.0, 0, 8.2, 0, 0, 0 ],
+    "statusLv": [ 10.0, 0, 1.21, 0, 0, 0 ],
     "buff": [
       {
         "type": "ディフェンス",
@@ -1809,8 +1881,8 @@
     "slot": "鎧",
     "rarity": "SSR",
     "classes": [ "ライダー", "エアリアル", "シューター", "アサシン" ],
-    "statusInit": [ 50, 0, 8.2, 0, 0, 0 ],
-    "statusLv": [ 10, 0, 1.21, 0, 0, 0 ],
+    "statusInit": [ 50.0, 0, 8.2, 0, 0, 0 ],
+    "statusLv": [ 10.0, 0, 1.21, 0, 0, 0 ],
     "buff": [
       {
         "type": "ディフェンス",
@@ -1832,8 +1904,8 @@
     "slot": "鎧",
     "rarity": "SSR",
     "classes": [ "ライダー", "エアリアル", "シューター", "アサシン" ],
-    "statusInit": [ 50, 0, 8.2, 0, 0, 0 ],
-    "statusLv": [ 10, 0, 1.21, 0, 0, 0 ],
+    "statusInit": [ 50.0, 0, 8.2, 0, 0, 0 ],
+    "statusLv": [ 10.0, 0, 1.21, 0, 0, 0 ],
     "buff": [
       {
         "type": "ディフェンス",
@@ -1844,7 +1916,9 @@
         "type": "ディフェンス",
         "value": 15,
         "target": "自身(メイン)",
-        "condition": { "hp": [ ">=", 80 ] }
+        "condition": {
+          "hp": [ ">=", 80 ]
+        }
       }
     ]
   },
@@ -1856,8 +1930,8 @@
     "slot": "鎧",
     "rarity": "SSR",
     "classes": [ "ライダー", "エアリアル", "シューター", "アサシン" ],
-    "statusInit": [ 50, 0, 8.2, 0, 0, 0 ],
-    "statusLv": [ 10, 0, 1.21, 0, 0, 0 ],
+    "statusInit": [ 50.0, 0, 8.2, 0, 0, 0 ],
+    "statusLv": [ 10.0, 0, 1.21, 0, 0, 0 ],
     "buff": [
       {
         "type": "レジスト",
@@ -1868,7 +1942,9 @@
         "type": "レジスト",
         "value": 15,
         "target": "自身(メイン)",
-        "condition": { "hp": [ ">=", 80 ] }
+        "condition": {
+          "hp": [ ">=", 80 ]
+        }
       }
     ]
   },
@@ -1880,8 +1956,8 @@
     "slot": "鎧",
     "rarity": "SSR",
     "classes": [ "ライダー", "エアリアル", "シューター", "アサシン" ],
-    "statusInit": [ 50, 0, 8.2, 0, 0, 0 ],
-    "statusLv": [ 10, 0, 1.21, 0, 0, 0 ],
+    "statusInit": [ 50.0, 0, 8.2, 0, 0, 0 ],
+    "statusLv": [ 10.0, 0, 1.21, 0, 0, 0 ],
     "buff": [
       {
         "type": "ディフェンス",
@@ -1895,7 +1971,9 @@
         "rate": 0.2,
         "target": "自身",
         "timing": "行動後",
-        "condition": { "hp": [ "<=", 50 ] }
+        "condition": {
+          "hp": [ "<=", 50 ]
+        }
       }
     ]
   },
@@ -1907,8 +1985,8 @@
     "slot": "鎧",
     "rarity": "SSR",
     "classes": [ "ライダー", "エアリアル", "シューター", "アサシン" ],
-    "statusInit": [ 50, 0, 8.2, 0, 0, 0 ],
-    "statusLv": [ 10, 0, 1.21, 0, 0, 0 ],
+    "statusInit": [ 50.0, 0, 8.2, 0, 0, 0 ],
+    "statusLv": [ 10.0, 0, 1.21, 0, 0, 0 ],
     "buff": [
       {
         "type": "最大HP",
@@ -1938,8 +2016,8 @@
     "slot": "鎧",
     "rarity": "SSR",
     "classes": [ "ライダー", "エアリアル", "シューター", "アサシン" ],
-    "statusInit": [ 50, 0, 8.2, 0, 0, 0 ],
-    "statusLv": [ 10, 0, 1.21, 0, 0, 0 ],
+    "statusInit": [ 50.0, 0, 8.2, 0, 0, 0 ],
+    "statusLv": [ 10.0, 0, 1.21, 0, 0, 0 ],
     "buff": [
       {
         "type": "最大HP",
@@ -1965,8 +2043,8 @@
     "slot": "鎧",
     "rarity": "SSR",
     "classes": [ "ライダー", "エアリアル", "シューター", "アサシン" ],
-    "statusInit": [ 50, 0, 8.2, 0, 0, 0 ],
-    "statusLv": [ 10, 0, 1.21, 0, 0, 0 ],
+    "statusInit": [ 50.0, 0, 8.2, 0, 0, 0 ],
+    "statusLv": [ 10.0, 0, 1.21, 0, 0, 0 ],
     "buff": [
       {
         "type": "ディフェンス",
@@ -2003,8 +2081,8 @@
     "slot": "鎧",
     "rarity": "SSR",
     "classes": [ "ソーサラー", "セイント" ],
-    "statusInit": [ 68, 0, 10, 0, 0, 0 ],
-    "statusLv": [ 11, 0, 1.1, 0, 0, 0 ],
+    "statusInit": [ 68.0, 0, 10.0, 0, 0, 0 ],
+    "statusLv": [ 11.0, 0, 1.1, 0, 0, 0 ],
     "buff": [
       {
         "type": "最大HP",
@@ -2016,7 +2094,9 @@
         "value": 10,
         "ephemeral": true,
         "target": "自身(メイン)",
-        "condition": { "onOwnTurn": true }
+        "condition": {
+          "onOwnTurn": true
+        }
       }
     ]
   },
@@ -2028,8 +2108,8 @@
     "slot": "鎧",
     "rarity": "SSR",
     "classes": [ "ソーサラー", "セイント" ],
-    "statusInit": [ 68, 0, 10, 0, 0, 0 ],
-    "statusLv": [ 11, 0, 1.1, 0, 0, 0 ],
+    "statusInit": [ 68.0, 0, 10.0, 0, 0, 0 ],
+    "statusLv": [ 11.0, 0, 1.1, 0, 0, 0 ],
     "buff": [
       {
         "type": "レジスト",
@@ -2051,8 +2131,8 @@
     "slot": "鎧",
     "rarity": "SSR",
     "classes": [ "ソーサラー", "セイント" ],
-    "statusInit": [ 68, 0, 10, 0, 0, 0 ],
-    "statusLv": [ 11, 0, 1.1, 0, 0, 0 ],
+    "statusInit": [ 68.0, 0, 10.0, 0, 0, 0 ],
+    "statusLv": [ 11.0, 0, 1.1, 0, 0, 0 ],
     "buff": [
       {
         "type": "ディフェンス",
@@ -2074,8 +2154,8 @@
     "slot": "鎧",
     "rarity": "SSR",
     "classes": [ "ソーサラー", "セイント" ],
-    "statusInit": [ 68, 0, 10, 0, 0, 0 ],
-    "statusLv": [ 11, 0, 1.1, 0, 0, 0 ],
+    "statusInit": [ 68.0, 0, 10.0, 0, 0, 0 ],
+    "statusLv": [ 11.0, 0, 1.1, 0, 0, 0 ],
     "buff": [
       {
         "type": "レジスト",
@@ -2104,8 +2184,8 @@
     "slot": "鎧",
     "rarity": "SSR",
     "classes": [ "ソーサラー", "セイント" ],
-    "statusInit": [ 68, 0, 10, 0, 0, 0 ],
-    "statusLv": [ 11, 0, 1.1, 0, 0, 0 ],
+    "statusInit": [ 68.0, 0, 10.0, 0, 0, 0 ],
+    "statusLv": [ 11.0, 0, 1.1, 0, 0, 0 ],
     "buff": [
       {
         "type": "最大HP",
@@ -2116,13 +2196,17 @@
         "type": "マジック",
         "value": 10,
         "target": "自身(メイン)",
-        "condition": { "hp": [ ">=", 100 ] }
+        "condition": {
+          "hp": [ ">=", 100 ]
+        }
       },
       {
         "type": "治療効果",
         "value": 10,
         "target": "自身(メイン)",
-        "condition": { "hp": [ ">=", 100 ] }
+        "condition": {
+          "hp": [ ">=", 100 ]
+        }
       }
     ]
   },
@@ -2134,8 +2218,8 @@
     "slot": "鎧",
     "rarity": "SSR",
     "classes": [ "ソーサラー", "セイント" ],
-    "statusInit": [ 68, 0, 10, 0, 0, 0 ],
-    "statusLv": [ 11, 0, 1.1, 0, 0, 0 ],
+    "statusInit": [ 68.0, 0, 10.0, 0, 0, 0 ],
+    "statusLv": [ 11.0, 0, 1.1, 0, 0, 0 ],
     "buff": [
       {
         "type": "最大HP",
@@ -2151,7 +2235,9 @@
         "trigger": {
           "target": "攻撃対象",
           "timing": "戦闘後",
-          "condition": { "onEnemyTurn": true }
+          "condition": {
+            "onEnemyTurn": true
+          }
         }
       }
     ],
@@ -2165,8 +2251,8 @@
     "slot": "鎧",
     "rarity": "SSR",
     "classes": [ "ソーサラー", "セイント" ],
-    "statusInit": [ 68, 0, 10, 0, 0, 0 ],
-    "statusLv": [ 11, 0, 1.1, 0, 0, 0 ],
+    "statusInit": [ 68.0, 0, 10.0, 0, 0, 0 ],
+    "statusLv": [ 11.0, 0, 1.1, 0, 0, 0 ],
     "buff": [
       {
         "type": "ディフェンス",
@@ -2203,8 +2289,8 @@
     "slot": "鎧",
     "rarity": "SR",
     "classes": [ "ソルジャー", "ランサー", "セイント" ],
-    "statusInit": [ 34, 0, 9.6, 0, 0, 0 ],
-    "statusLv": [ 6, 0, 0.88, 0, 0, 0 ],
+    "statusInit": [ 34.0, 0, 9.6, 0, 0, 0 ],
+    "statusLv": [ 6.0, 0, 0.88, 0, 0, 0 ],
     "buff": [
       {
         "type": "ディフェンス",
@@ -2221,8 +2307,8 @@
     "slot": "鎧",
     "rarity": "SR",
     "classes": [ "ソルジャー", "ランサー", "セイント" ],
-    "statusInit": [ 34, 0, 9.6, 0, 0, 0 ],
-    "statusLv": [ 6, 0, 0.88, 0, 0, 0 ],
+    "statusInit": [ 34.0, 0, 9.6, 0, 0, 0 ],
+    "statusLv": [ 6.0, 0, 0.88, 0, 0, 0 ],
     "buff": [
       {
         "type": "レジスト",
@@ -2239,8 +2325,8 @@
     "slot": "鎧",
     "rarity": "SR",
     "classes": [ "ソルジャー", "ランサー", "セイント" ],
-    "statusInit": [ 34, 0, 9.6, 0, 0, 0 ],
-    "statusLv": [ 6, 0, 0.88, 0, 0, 0 ],
+    "statusInit": [ 34.0, 0, 9.6, 0, 0, 0 ],
+    "statusLv": [ 6.0, 0, 0.88, 0, 0, 0 ],
     "buff": [
       {
         "type": "最大HP",
@@ -2257,8 +2343,8 @@
     "slot": "鎧",
     "rarity": "SR",
     "classes": [ "ソルジャー", "ランサー", "セイント" ],
-    "statusInit": [ 34, 0, 9.6, 0, 0, 0 ],
-    "statusLv": [ 6, 0, 0.88, 0, 0, 0 ],
+    "statusInit": [ 34.0, 0, 9.6, 0, 0, 0 ],
+    "statusLv": [ 6.0, 0, 0.88, 0, 0, 0 ],
     "buff": [
       {
         "type": "アタック",
@@ -2266,7 +2352,9 @@
         "ephemeral": true,
         "target": "自身(メイン)",
         "timing": "戦闘前",
-        "condition": { "onEnemyTurn": true }
+        "condition": {
+          "onEnemyTurn": true
+        }
       }
     ]
   },
@@ -2278,8 +2366,8 @@
     "slot": "鎧",
     "rarity": "SR",
     "classes": [ "ソルジャー", "ランサー", "セイント" ],
-    "statusInit": [ 34, 0, 9.6, 0, 0, 0 ],
-    "statusLv": [ 6, 0, 0.88, 0, 0, 0 ],
+    "statusInit": [ 34.0, 0, 9.6, 0, 0, 0 ],
+    "statusLv": [ 6.0, 0, 0.88, 0, 0, 0 ],
     "buff": [
       {
         "type": "クリティカル率",
@@ -2287,7 +2375,9 @@
         "ephemeral": true,
         "target": "自身(メイン)",
         "timing": "戦闘前",
-        "condition": { "onEnemyTurn": true }
+        "condition": {
+          "onEnemyTurn": true
+        }
       }
     ]
   },
@@ -2299,8 +2389,8 @@
     "slot": "鎧",
     "rarity": "SR",
     "classes": [ "ライダー", "エアリアル", "シューター", "アサシン" ],
-    "statusInit": [ 40, 0, 7.4, 0, 0, 0 ],
-    "statusLv": [ 7, 0, 0.77, 0, 0, 0 ],
+    "statusInit": [ 40.0, 0, 7.4, 0, 0, 0 ],
+    "statusLv": [ 7.0, 0, 0.77, 0, 0, 0 ],
     "buff": [
       {
         "type": "ディフェンス",
@@ -2317,8 +2407,8 @@
     "slot": "鎧",
     "rarity": "SR",
     "classes": [ "ライダー", "エアリアル", "シューター", "アサシン" ],
-    "statusInit": [ 40, 0, 7.4, 0, 0, 0 ],
-    "statusLv": [ 7, 0, 0.77, 0, 0, 0 ],
+    "statusInit": [ 40.0, 0, 7.4, 0, 0, 0 ],
+    "statusLv": [ 7.0, 0, 0.77, 0, 0, 0 ],
     "buff": [
       {
         "type": "レジスト",
@@ -2335,8 +2425,8 @@
     "slot": "鎧",
     "rarity": "SR",
     "classes": [ "ライダー", "エアリアル", "シューター", "アサシン" ],
-    "statusInit": [ 40, 0, 7.4, 0, 0, 0 ],
-    "statusLv": [ 7, 0, 0.77, 0, 0, 0 ],
+    "statusInit": [ 40.0, 0, 7.4, 0, 0, 0 ],
+    "statusLv": [ 7.0, 0, 0.77, 0, 0, 0 ],
     "buff": [
       {
         "type": "最大HP",
@@ -2353,14 +2443,16 @@
     "slot": "鎧",
     "rarity": "SR",
     "classes": [ "ライダー", "エアリアル", "シューター", "アサシン" ],
-    "statusInit": [ 40, 0, 7.4, 0, 0, 0 ],
-    "statusLv": [ 7, 0, 0.77, 0, 0, 0 ],
+    "statusInit": [ 40.0, 0, 7.4, 0, 0, 0 ],
+    "statusLv": [ 7.0, 0, 0.77, 0, 0, 0 ],
     "buff": [
       {
         "type": "アタック",
         "value": 10,
         "target": "自身(メイン)",
-        "condition": { "hp": [ ">=", 80 ] }
+        "condition": {
+          "hp": [ ">=", 80 ]
+        }
       }
     ]
   },
@@ -2372,14 +2464,16 @@
     "slot": "鎧",
     "rarity": "SR",
     "classes": [ "ライダー", "エアリアル", "シューター", "アサシン" ],
-    "statusInit": [ 40, 0, 7.4, 0, 0, 0 ],
-    "statusLv": [ 7, 0, 0.77, 0, 0, 0 ],
+    "statusInit": [ 40.0, 0, 7.4, 0, 0, 0 ],
+    "statusLv": [ 7.0, 0, 0.77, 0, 0, 0 ],
     "buff": [
       {
         "type": "アタック",
         "value": 10,
         "target": "自身(メイン)",
-        "condition": { "hp": [ ">=", 80 ] }
+        "condition": {
+          "hp": [ ">=", 80 ]
+        }
       }
     ]
   },
@@ -2391,8 +2485,8 @@
     "slot": "鎧",
     "rarity": "SR",
     "classes": [ "ソーサラー", "セイント" ],
-    "statusInit": [ 44, 0, 5.2, 0, 0, 0 ],
-    "statusLv": [ 8, 0, 0.66, 0, 0, 0 ],
+    "statusInit": [ 44.0, 0, 5.2, 0, 0, 0 ],
+    "statusLv": [ 8.0, 0, 0.66, 0, 0, 0 ],
     "buff": [
       {
         "type": "ディフェンス",
@@ -2409,8 +2503,8 @@
     "slot": "鎧",
     "rarity": "SR",
     "classes": [ "ソーサラー", "セイント" ],
-    "statusInit": [ 44, 0, 5.2, 0, 0, 0 ],
-    "statusLv": [ 8, 0, 0.66, 0, 0, 0 ],
+    "statusInit": [ 44.0, 0, 5.2, 0, 0, 0 ],
+    "statusLv": [ 8.0, 0, 0.66, 0, 0, 0 ],
     "buff": [
       {
         "type": "レジスト",
@@ -2427,8 +2521,8 @@
     "slot": "鎧",
     "rarity": "SR",
     "classes": [ "ソーサラー", "セイント" ],
-    "statusInit": [ 44, 0, 5.2, 0, 0, 0 ],
-    "statusLv": [ 8, 0, 0.66, 0, 0, 0 ],
+    "statusInit": [ 44.0, 0, 5.2, 0, 0, 0 ],
+    "statusLv": [ 8.0, 0, 0.66, 0, 0, 0 ],
     "buff": [
       {
         "type": "最大HP",
@@ -2445,8 +2539,8 @@
     "slot": "鎧",
     "rarity": "SR",
     "classes": [ "ソーサラー", "セイント" ],
-    "statusInit": [ 44, 0, 5.2, 0, 0, 0 ],
-    "statusLv": [ 8, 0, 0.66, 0, 0, 0 ],
+    "statusInit": [ 44.0, 0, 5.2, 0, 0, 0 ],
+    "statusLv": [ 8.0, 0, 0.66, 0, 0, 0 ],
     "buff": [
       {
         "type": "治療効果",
@@ -2463,14 +2557,16 @@
     "slot": "鎧",
     "rarity": "SR",
     "classes": [ "ソーサラー", "セイント" ],
-    "statusInit": [ 44, 0, 5.2, 0, 0, 0 ],
-    "statusLv": [ 8, 0, 0.66, 0, 0, 0 ],
+    "statusInit": [ 44.0, 0, 5.2, 0, 0, 0 ],
+    "statusLv": [ 8.0, 0, 0.66, 0, 0, 0 ],
     "buff": [
       {
         "type": "ディフェンス",
         "value": 15,
         "target": "自身(メイン)",
-        "condition": { "hp": [ ">=", 80 ] }
+        "condition": {
+          "hp": [ ">=", 80 ]
+        }
       }
     ]
   },
@@ -2481,8 +2577,8 @@
     "desc": "最大HP+10%。",
     "slot": "鎧",
     "rarity": "SSR",
-    "statusInit": [ 51, 0, 10, 0, 0, 0 ],
-    "statusLv": [ 8, 0, 0.99, 0, 0, 0 ],
+    "statusInit": [ 51.0, 0, 10.0, 0, 0, 0 ],
+    "statusLv": [ 8.0, 0, 0.99, 0, 0, 0 ],
     "buff": [
       {
         "type": "最大HP",
@@ -2499,8 +2595,8 @@
     "slot": "兜",
     "rarity": "SSR",
     "classes": [ "ソルジャー", "ランサー", "セイント" ],
-    "statusInit": [ 68, 0, 0, 0, 7.8, 0 ],
-    "statusLv": [ 11, 0, 0, 0, 1, 0 ],
+    "statusInit": [ 68.0, 0, 0, 0, 7.8, 0 ],
+    "statusLv": [ 11.0, 0, 0, 0, 1.0, 0 ],
     "buff": [
       {
         "type": "最大HP",
@@ -2522,8 +2618,8 @@
     "slot": "兜",
     "rarity": "SSR",
     "classes": [ "ソルジャー", "ランサー", "セイント" ],
-    "statusInit": [ 68, 0, 0, 0, 7.8, 0 ],
-    "statusLv": [ 11, 0, 0, 0, 1, 0 ],
+    "statusInit": [ 68.0, 0, 0, 0, 7.8, 0 ],
+    "statusLv": [ 11.0, 0, 0, 0, 1.0, 0 ],
     "buff": [
       {
         "type": "最大HP",
@@ -2545,8 +2641,8 @@
     "slot": "兜",
     "rarity": "SSR",
     "classes": [ "ソルジャー", "ランサー", "セイント" ],
-    "statusInit": [ 68, 0, 0, 0, 7.8, 0 ],
-    "statusLv": [ 11, 0, 0, 0, 1, 0 ],
+    "statusInit": [ 68.0, 0, 0, 0, 7.8, 0 ],
+    "statusLv": [ 11.0, 0, 0, 0, 1.0, 0 ],
     "buff": [
       {
         "type": "ディフェンス",
@@ -2557,7 +2653,9 @@
         "type": "ダメージ耐性(物理)",
         "value": 10,
         "target": "自身",
-        "condition": { "hp": [ ">=", 80 ] }
+        "condition": {
+          "hp": [ ">=", 80 ]
+        }
       }
     ]
   },
@@ -2569,8 +2667,8 @@
     "slot": "兜",
     "rarity": "SSR",
     "classes": [ "ソルジャー", "ランサー", "セイント" ],
-    "statusInit": [ 68, 0, 0, 0, 7.8, 0 ],
-    "statusLv": [ 11, 0, 0, 0, 1, 0 ],
+    "statusInit": [ 68.0, 0, 0, 0, 7.8, 0 ],
+    "statusLv": [ 11.0, 0, 0, 0, 1.0, 0 ],
     "buff": [
       {
         "type": "レジスト",
@@ -2581,7 +2679,9 @@
         "type": "ダメージ耐性(魔法)",
         "value": 10,
         "target": "自身",
-        "condition": { "hp": [ ">=", 80 ] }
+        "condition": {
+          "hp": [ ">=", 80 ]
+        }
       }
     ]
   },
@@ -2593,8 +2693,8 @@
     "slot": "兜",
     "rarity": "SSR",
     "classes": [ "ソルジャー", "ランサー", "セイント" ],
-    "statusInit": [ 68, 0, 0, 0, 7.8, 0 ],
-    "statusLv": [ 11, 0, 0, 0, 1, 0 ],
+    "statusInit": [ 68.0, 0, 0, 0, 7.8, 0 ],
+    "statusLv": [ 11.0, 0, 0, 0, 1.0, 0 ],
     "buff": [
       {
         "type": "ディフェンス",
@@ -2611,7 +2711,9 @@
           "area": 3,
           "unitCount": 1,
           "timing": "行動後",
-          "condition": { "probability": 50 }
+          "condition": {
+            "probability": 50
+          }
         }
       }
     ]
@@ -2624,8 +2726,8 @@
     "slot": "兜",
     "rarity": "SSR",
     "classes": [ "ソルジャー", "ランサー", "セイント" ],
-    "statusInit": [ 68, 0, 0, 0, 7.8, 0 ],
-    "statusLv": [ 11, 0, 0, 0, 1, 0 ],
+    "statusInit": [ 68.0, 0, 0, 0, 7.8, 0 ],
+    "statusLv": [ 11.0, 0, 0, 0, 1.0, 0 ],
     "buff": [
       {
         "type": "最大HP",
@@ -2654,8 +2756,8 @@
     "slot": "兜",
     "rarity": "SSR",
     "classes": [ "ソルジャー", "ランサー", "セイント" ],
-    "statusInit": [ 68, 0, 0, 0, 7.8, 0 ],
-    "statusLv": [ 11, 0, 0, 0, 1, 0 ],
+    "statusInit": [ 68.0, 0, 0, 0, 7.8, 0 ],
+    "statusLv": [ 11.0, 0, 0, 0, 1.0, 0 ],
     "buff": [
       {
         "type": "最大HP",
@@ -2673,7 +2775,9 @@
           "area": 2,
           "unitCount": 1,
           "timing": "行動後",
-          "condition": { "probability": 50 }
+          "condition": {
+            "probability": 50
+          }
         }
       }
     ]
@@ -2686,8 +2790,8 @@
     "slot": "兜",
     "rarity": "SSR",
     "classes": [ "ソルジャー", "ランサー", "セイント" ],
-    "statusInit": [ 68, 0, 0, 0, 7.8, 0 ],
-    "statusLv": [ 11, 0, 0, 0, 1, 0 ],
+    "statusInit": [ 68.0, 0, 0, 0, 7.8, 0 ],
+    "statusLv": [ 11.0, 0, 0, 0, 1.0, 0 ],
     "buff": [
       {
         "type": "最大HP",
@@ -2713,8 +2817,8 @@
     "slot": "兜",
     "rarity": "SSR",
     "classes": [ "ライダー", "エアリアル", "シューター", "アサシン" ],
-    "statusInit": [ 51, 0, 0, 0, 10.2, 0 ],
-    "statusLv": [ 8, 0, 0, 0, 1.21, 0 ],
+    "statusInit": [ 51.0, 0, 0, 0, 10.2, 0 ],
+    "statusLv": [ 8.0, 0, 0, 0, 1.21, 0 ],
     "buff": [
       {
         "type": "ディフェンス",
@@ -2736,8 +2840,8 @@
     "slot": "兜",
     "rarity": "SSR",
     "classes": [ "ライダー", "エアリアル", "シューター", "アサシン" ],
-    "statusInit": [ 51, 0, 0, 0, 10.2, 0 ],
-    "statusLv": [ 8, 0, 0, 0, 1.21, 0 ],
+    "statusInit": [ 51.0, 0, 0, 0, 10.2, 0 ],
+    "statusLv": [ 8.0, 0, 0, 0, 1.21, 0 ],
     "buff": [
       {
         "type": "ディフェンス",
@@ -2759,8 +2863,8 @@
     "slot": "兜",
     "rarity": "SSR",
     "classes": [ "ライダー", "エアリアル", "シューター", "アサシン" ],
-    "statusInit": [ 51, 0, 0, 0, 10.2, 0 ],
-    "statusLv": [ 8, 0, 0, 0, 1.21, 0 ],
+    "statusInit": [ 51.0, 0, 0, 0, 10.2, 0 ],
+    "statusLv": [ 8.0, 0, 0, 0, 1.21, 0 ],
     "buff": [
       {
         "type": "ディフェンス",
@@ -2771,7 +2875,9 @@
         "type": "ダメージ耐性(物理)",
         "value": 10,
         "target": "自身",
-        "condition": { "hp": [ ">=", 80 ] }
+        "condition": {
+          "hp": [ ">=", 80 ]
+        }
       }
     ]
   },
@@ -2783,8 +2889,8 @@
     "slot": "兜",
     "rarity": "SSR",
     "classes": [ "ライダー", "エアリアル", "シューター", "アサシン" ],
-    "statusInit": [ 51, 0, 0, 0, 10.2, 0 ],
-    "statusLv": [ 8, 0, 0, 0, 1.21, 0 ],
+    "statusInit": [ 51.0, 0, 0, 0, 10.2, 0 ],
+    "statusLv": [ 8.0, 0, 0, 0, 1.21, 0 ],
     "buff": [
       {
         "type": "レジスト",
@@ -2795,7 +2901,9 @@
         "type": "ダメージ耐性(魔法)",
         "value": 10,
         "target": "自身",
-        "condition": { "hp": [ ">=", 80 ] }
+        "condition": {
+          "hp": [ ">=", 80 ]
+        }
       }
     ]
   },
@@ -2807,8 +2915,8 @@
     "slot": "兜",
     "rarity": "SSR",
     "classes": [ "ライダー", "エアリアル", "シューター", "アサシン" ],
-    "statusInit": [ 51, 0, 0, 0, 10.2, 0 ],
-    "statusLv": [ 8, 0, 0, 0, 1.21, 0 ],
+    "statusInit": [ 51.0, 0, 0, 0, 10.2, 0 ],
+    "statusLv": [ 8.0, 0, 0, 0, 1.21, 0 ],
     "buff": [
       {
         "type": "ディフェンス",
@@ -2822,7 +2930,9 @@
         "rate": 0.2,
         "target": "自身",
         "timing": "行動後",
-        "condition": { "hp": [ "<=", 50 ] }
+        "condition": {
+          "hp": [ "<=", 50 ]
+        }
       }
     ]
   },
@@ -2834,8 +2944,8 @@
     "slot": "兜",
     "rarity": "SSR",
     "classes": [ "ライダー", "エアリアル", "シューター", "アサシン" ],
-    "statusInit": [ 51, 0, 0, 0, 10.2, 0 ],
-    "statusLv": [ 8, 0, 0, 0, 1.21, 0 ],
+    "statusInit": [ 51.0, 0, 0, 0, 10.2, 0 ],
+    "statusLv": [ 8.0, 0, 0, 0, 1.21, 0 ],
     "buff": [
       {
         "type": "最大HP",
@@ -2864,8 +2974,8 @@
     "slot": "兜",
     "rarity": "SSR",
     "classes": [ "ライダー", "エアリアル", "シューター", "アサシン" ],
-    "statusInit": [ 51, 0, 0, 0, 10.2, 0 ],
-    "statusLv": [ 8, 0, 0, 0, 1.21, 0 ],
+    "statusInit": [ 51.0, 0, 0, 0, 10.2, 0 ],
+    "statusLv": [ 8.0, 0, 0, 0, 1.21, 0 ],
     "buff": [
       {
         "type": "最大HP",
@@ -2891,8 +3001,8 @@
     "slot": "兜",
     "rarity": "SSR",
     "classes": [ "ライダー", "エアリアル", "シューター", "アサシン" ],
-    "statusInit": [ 51, 0, 0, 0, 10.2, 0 ],
-    "statusLv": [ 8, 0, 0, 0, 1.21, 0 ],
+    "statusInit": [ 51.0, 0, 0, 0, 10.2, 0 ],
+    "statusLv": [ 8.0, 0, 0, 0, 1.21, 0 ],
     "buff": [
       {
         "type": "最大HP",
@@ -2919,8 +3029,8 @@
     "slot": "兜",
     "rarity": "SSR",
     "classes": [ "ソーサラー", "セイント" ],
-    "statusInit": [ 42, 0, 0, 0, 12.4, 0 ],
-    "statusLv": [ 7, 0, 0, 0, 1.32, 0 ],
+    "statusInit": [ 42.0, 0, 0, 0, 12.4, 0 ],
+    "statusLv": [ 7.0, 0, 0, 0, 1.32, 0 ],
     "buff": [
       {
         "type": "最大HP",
@@ -2933,7 +3043,9 @@
         "ephemeral": true,
         "target": "自身(メイン)",
         "timing": "戦闘前",
-        "condition": { "onOwnTurn": true }
+        "condition": {
+          "onOwnTurn": true
+        }
       }
     ]
   },
@@ -2945,8 +3057,8 @@
     "slot": "兜",
     "rarity": "SSR",
     "classes": [ "ソーサラー", "セイント" ],
-    "statusInit": [ 42, 0, 0, 0, 12.4, 0 ],
-    "statusLv": [ 7, 0, 0, 0, 1.32, 0 ],
+    "statusInit": [ 42.0, 0, 0, 0, 12.4, 0 ],
+    "statusLv": [ 7.0, 0, 0, 0, 1.32, 0 ],
     "buff": [
       {
         "type": "レジスト",
@@ -2968,8 +3080,8 @@
     "slot": "兜",
     "rarity": "SSR",
     "classes": [ "ソーサラー", "セイント" ],
-    "statusInit": [ 42, 0, 0, 0, 12.4, 0 ],
-    "statusLv": [ 7, 0, 0, 0, 1.32, 0 ],
+    "statusInit": [ 42.0, 0, 0, 0, 12.4, 0 ],
+    "statusLv": [ 7.0, 0, 0, 0, 1.32, 0 ],
     "buff": [
       {
         "type": "ディフェンス",
@@ -2991,8 +3103,8 @@
     "slot": "兜",
     "rarity": "SSR",
     "classes": [ "ソーサラー", "セイント" ],
-    "statusInit": [ 42, 0, 0, 0, 12.4, 0 ],
-    "statusLv": [ 7, 0, 0, 0, 1.32, 0 ],
+    "statusInit": [ 42.0, 0, 0, 0, 12.4, 0 ],
+    "statusLv": [ 7.0, 0, 0, 0, 1.32, 0 ],
     "buff": [
       {
         "type": "レジスト",
@@ -3019,8 +3131,8 @@
     "slot": "兜",
     "rarity": "SSR",
     "classes": [ "ソーサラー", "セイント" ],
-    "statusInit": [ 42, 0, 0, 0, 12.4, 0 ],
-    "statusLv": [ 7, 0, 0, 0, 1.32, 0 ],
+    "statusInit": [ 42.0, 0, 0, 0, 12.4, 0 ],
+    "statusLv": [ 7.0, 0, 0, 0, 1.32, 0 ],
     "buff": [
       {
         "type": "最大HP",
@@ -3031,13 +3143,17 @@
         "type": "ディフェンス",
         "value": 15,
         "target": "自身(メイン)",
-        "condition": { "hp": [ ">=", 100 ] }
+        "condition": {
+          "hp": [ ">=", 100 ]
+        }
       },
       {
         "type": "レジスト",
         "value": 15,
         "target": "自身(メイン)",
-        "condition": { "hp": [ ">=", 100 ] }
+        "condition": {
+          "hp": [ ">=", 100 ]
+        }
       }
     ]
   },
@@ -3049,8 +3165,8 @@
     "slot": "兜",
     "rarity": "SSR",
     "classes": [ "ソーサラー", "セイント" ],
-    "statusInit": [ 42, 0, 0, 0, 12.4, 0 ],
-    "statusLv": [ 7, 0, 0, 0, 1.32, 0 ],
+    "statusInit": [ 42.0, 0, 0, 0, 12.4, 0 ],
+    "statusLv": [ 7.0, 0, 0, 0, 1.32, 0 ],
     "buff": [
       {
         "type": "最大HP",
@@ -3079,8 +3195,8 @@
     "slot": "兜",
     "rarity": "SSR",
     "classes": [ "ソーサラー", "セイント" ],
-    "statusInit": [ 42, 0, 0, 0, 12.4, 0 ],
-    "statusLv": [ 7, 0, 0, 0, 1.32, 0 ],
+    "statusInit": [ 42.0, 0, 0, 0, 12.4, 0 ],
+    "statusLv": [ 7.0, 0, 0, 0, 1.32, 0 ],
     "buff": [
       {
         "type": "最大HP",
@@ -3120,8 +3236,8 @@
     "desc": "最大HP+10%。",
     "slot": "兜",
     "rarity": "SSR",
-    "statusInit": [ 51, 0, 0, 0, 10, 0 ],
-    "statusLv": [ 8, 0, 0, 0, 0.99, 0 ],
+    "statusInit": [ 51.0, 0, 0, 0, 10.0, 0 ],
+    "statusLv": [ 8.0, 0, 0, 0, 0.99, 0 ],
     "buff": [
       {
         "type": "最大HP",
@@ -3138,8 +3254,8 @@
     "slot": "兜",
     "rarity": "SR",
     "classes": [ "ソルジャー", "ランサー", "セイント" ],
-    "statusInit": [ 40, 0, 0, 0, 5.2, 0 ],
-    "statusLv": [ 7, 0, 0, 0, 0.7, 0 ],
+    "statusInit": [ 40.0, 0, 0, 0, 5.2, 0 ],
+    "statusLv": [ 7.0, 0, 0, 0, 0.7, 0 ],
     "buff": [
       {
         "type": "ディフェンス",
@@ -3156,8 +3272,8 @@
     "slot": "兜",
     "rarity": "SR",
     "classes": [ "ソルジャー", "ランサー", "セイント" ],
-    "statusInit": [ 40, 0, 0, 0, 5.2, 0 ],
-    "statusLv": [ 7, 0, 0, 0, 0.7, 0 ],
+    "statusInit": [ 40.0, 0, 0, 0, 5.2, 0 ],
+    "statusLv": [ 7.0, 0, 0, 0, 0.7, 0 ],
     "buff": [
       {
         "type": "レジスト",
@@ -3174,8 +3290,8 @@
     "slot": "兜",
     "rarity": "SR",
     "classes": [ "ソルジャー", "ランサー", "セイント" ],
-    "statusInit": [ 40, 0, 0, 0, 5.2, 0 ],
-    "statusLv": [ 7, 0, 0, 0, 0.7, 0 ],
+    "statusInit": [ 40.0, 0, 0, 0, 5.2, 0 ],
+    "statusLv": [ 7.0, 0, 0, 0, 0.7, 0 ],
     "buff": [
       {
         "type": "最大HP",
@@ -3192,8 +3308,8 @@
     "slot": "兜",
     "rarity": "SR",
     "classes": [ "ソルジャー", "ランサー", "セイント" ],
-    "statusInit": [ 40, 0, 0, 0, 5.2, 0 ],
-    "statusLv": [ 7, 0, 0, 0, 0.7, 0 ],
+    "statusInit": [ 40.0, 0, 0, 0, 5.2, 0 ],
+    "statusLv": [ 7.0, 0, 0, 0, 0.7, 0 ],
     "buff": [
       {
         "type": "ディフェンス",
@@ -3201,7 +3317,9 @@
         "ephemeral": true,
         "target": "自身(メイン)",
         "timing": "戦闘前",
-        "condition": { "onEnemyTurn": true }
+        "condition": {
+          "onEnemyTurn": true
+        }
       }
     ]
   },
@@ -3213,8 +3331,8 @@
     "slot": "兜",
     "rarity": "SR",
     "classes": [ "ソルジャー", "ランサー", "セイント" ],
-    "statusInit": [ 40, 0, 0, 0, 5.2, 0 ],
-    "statusLv": [ 7, 0, 0, 0, 0.7, 0 ],
+    "statusInit": [ 40.0, 0, 0, 0, 5.2, 0 ],
+    "statusLv": [ 7.0, 0, 0, 0, 0.7, 0 ],
     "buff": [
       {
         "type": "レジスト",
@@ -3222,7 +3340,9 @@
         "ephemeral": true,
         "target": "自身(メイン)",
         "timing": "戦闘前",
-        "condition": { "onEnemyTurn": true }
+        "condition": {
+          "onEnemyTurn": true
+        }
       }
     ]
   },
@@ -3234,8 +3354,8 @@
     "slot": "兜",
     "rarity": "SR",
     "classes": [ "ライダー", "エアリアル", "シューター", "アサシン" ],
-    "statusInit": [ 34, 0, 0, 0, 7.4, 0 ],
-    "statusLv": [ 6, 0, 0, 0, 0.77, 0 ],
+    "statusInit": [ 34.0, 0, 0, 0, 7.4, 0 ],
+    "statusLv": [ 6.0, 0, 0, 0, 0.77, 0 ],
     "buff": [
       {
         "type": "ディフェンス",
@@ -3252,8 +3372,8 @@
     "slot": "兜",
     "rarity": "SR",
     "classes": [ "ライダー", "エアリアル", "シューター", "アサシン" ],
-    "statusInit": [ 34, 0, 0, 0, 7.4, 0 ],
-    "statusLv": [ 6, 0, 0, 0, 0.77, 0 ],
+    "statusInit": [ 34.0, 0, 0, 0, 7.4, 0 ],
+    "statusLv": [ 6.0, 0, 0, 0, 0.77, 0 ],
     "buff": [
       {
         "type": "レジスト",
@@ -3270,8 +3390,8 @@
     "slot": "兜",
     "rarity": "SR",
     "classes": [ "ライダー", "エアリアル", "シューター", "アサシン" ],
-    "statusInit": [ 34, 0, 0, 0, 7.4, 0 ],
-    "statusLv": [ 6, 0, 0, 0, 0.77, 0 ],
+    "statusInit": [ 34.0, 0, 0, 0, 7.4, 0 ],
+    "statusLv": [ 6.0, 0, 0, 0, 0.77, 0 ],
     "buff": [
       {
         "type": "最大HP",
@@ -3288,14 +3408,16 @@
     "slot": "兜",
     "rarity": "SR",
     "classes": [ "ライダー", "エアリアル", "シューター", "アサシン" ],
-    "statusInit": [ 34, 0, 0, 0, 7.4, 0 ],
-    "statusLv": [ 6, 0, 0, 0, 0.77, 0 ],
+    "statusInit": [ 34.0, 0, 0, 0, 7.4, 0 ],
+    "statusLv": [ 6.0, 0, 0, 0, 0.77, 0 ],
     "buff": [
       {
         "type": "レジスト",
         "value": 15,
         "target": "自身(メイン)",
-        "condition": { "hp": [ ">=", 80 ] }
+        "condition": {
+          "hp": [ ">=", 80 ]
+        }
       }
     ]
   },
@@ -3307,14 +3429,16 @@
     "slot": "兜",
     "rarity": "SR",
     "classes": [ "ライダー", "エアリアル", "シューター", "アサシン" ],
-    "statusInit": [ 34, 0, 0, 0, 7.4, 0 ],
-    "statusLv": [ 6, 0, 0, 0, 0.77, 0 ],
+    "statusInit": [ 34.0, 0, 0, 0, 7.4, 0 ],
+    "statusLv": [ 6.0, 0, 0, 0, 0.77, 0 ],
     "buff": [
       {
         "type": "ディフェンス",
         "value": 15,
         "target": "自身(メイン)",
-        "condition": { "hp": [ "<=", 80 ] }
+        "condition": {
+          "hp": [ "<=", 80 ]
+        }
       }
     ]
   },
@@ -3326,8 +3450,8 @@
     "slot": "兜",
     "rarity": "SR",
     "classes": [ "ソーサラー", "セイント" ],
-    "statusInit": [ 28, 0, 0, 0, 9.6, 0 ],
-    "statusLv": [ 5, 0, 0, 0, 0.88, 0 ],
+    "statusInit": [ 28.0, 0, 0, 0, 9.6, 0 ],
+    "statusLv": [ 5.0, 0, 0, 0, 0.88, 0 ],
     "buff": [
       {
         "type": "ディフェンス",
@@ -3344,8 +3468,8 @@
     "slot": "兜",
     "rarity": "SR",
     "classes": [ "ソーサラー", "セイント" ],
-    "statusInit": [ 28, 0, 0, 0, 9.6, 0 ],
-    "statusLv": [ 5, 0, 0, 0, 0.88, 0 ],
+    "statusInit": [ 28.0, 0, 0, 0, 9.6, 0 ],
+    "statusLv": [ 5.0, 0, 0, 0, 0.88, 0 ],
     "buff": [
       {
         "type": "レジスト",
@@ -3362,8 +3486,8 @@
     "slot": "兜",
     "rarity": "SR",
     "classes": [ "ソーサラー", "セイント" ],
-    "statusInit": [ 28, 0, 0, 0, 9.6, 0 ],
-    "statusLv": [ 5, 0, 0, 0, 0.88, 0 ],
+    "statusInit": [ 28.0, 0, 0, 0, 9.6, 0 ],
+    "statusLv": [ 5.0, 0, 0, 0, 0.88, 0 ],
     "buff": [
       {
         "type": "最大HP",
@@ -3380,14 +3504,16 @@
     "slot": "兜",
     "rarity": "SR",
     "classes": [ "ソーサラー", "セイント" ],
-    "statusInit": [ 28, 0, 0, 0, 9.6, 0 ],
-    "statusLv": [ 5, 0, 0, 0, 0.88, 0 ],
+    "statusInit": [ 28.0, 0, 0, 0, 9.6, 0 ],
+    "statusLv": [ 5.0, 0, 0, 0, 0.88, 0 ],
     "buff": [
       {
         "type": "レジスト",
         "value": 15,
         "target": "自身(メイン)",
-        "condition": { "hp": [ ">=", 80 ] }
+        "condition": {
+          "hp": [ ">=", 80 ]
+        }
       }
     ]
   },
@@ -3399,14 +3525,16 @@
     "slot": "兜",
     "rarity": "SR",
     "classes": [ "ソーサラー", "セイント" ],
-    "statusInit": [ 28, 0, 0, 0, 9.6, 0 ],
-    "statusLv": [ 5, 0, 0, 0, 0.88, 0 ],
+    "statusInit": [ 28.0, 0, 0, 0, 9.6, 0 ],
+    "statusLv": [ 5.0, 0, 0, 0, 0.88, 0 ],
     "buff": [
       {
         "type": "ディフェンス",
         "value": 15,
         "target": "自身(メイン)",
-        "condition": { "hp": [ ">=", 80 ] }
+        "condition": {
+          "hp": [ ">=", 80 ]
+        }
       }
     ]
   },
@@ -3417,8 +3545,8 @@
     "desc": "アタック+5%。味方ターンでの戦闘時、その戦闘後、敵ユニットに装備者のアタックの1倍の固定ダメージを与える。",
     "slot": "アクセサリ",
     "rarity": "SSR",
-    "statusInit": [ 0, 12, 7.6, 0, 0, 0 ],
-    "statusLv": [ 0, 1.5, 1, 0, 0, 0 ],
+    "statusInit": [ 0, 12.0, 7.6, 0, 0, 0 ],
+    "statusLv": [ 0, 1.5, 1.0, 0, 0, 0 ],
     "buff": [
       {
         "type": "アタック",
@@ -3432,7 +3560,9 @@
         "rate": 1,
         "target": "攻撃対象",
         "timing": "戦闘後",
-        "condition": { "onOwnTurn": true }
+        "condition": {
+          "onOwnTurn": true
+        }
       }
     ]
   },
@@ -3443,8 +3573,8 @@
     "desc": "味方ターンでの戦闘時、アタック/ディフェンス+8%。",
     "slot": "アクセサリ",
     "rarity": "SSR",
-    "statusInit": [ 55, 12, 0, 0, 0, 0 ],
-    "statusLv": [ 10, 1.5, 0, 0, 0, 0 ],
+    "statusInit": [ 55.0, 12.0, 0, 0, 0, 0 ],
+    "statusLv": [ 10.0, 1.5, 0, 0, 0, 0 ],
     "buff": [
       {
         "type": "アタック",
@@ -3452,7 +3582,9 @@
         "ephemeral": true,
         "target": "自身(メイン)",
         "timing": "戦闘前",
-        "condition": { "onOwnTurn": true }
+        "condition": {
+          "onOwnTurn": true
+        }
       },
       {
         "type": "アタック",
@@ -3460,7 +3592,9 @@
         "ephemeral": true,
         "target": "自身(メイン)",
         "timing": "戦闘前",
-        "condition": { "onOwnTurn": true }
+        "condition": {
+          "onOwnTurn": true
+        }
       }
     ]
   },
@@ -3471,8 +3605,8 @@
     "desc": "アタック+8%。メインが「エアリアル」の敵ユニットと戦闘時、自ユニットの与ダメージ+20%。",
     "slot": "アクセサリ",
     "rarity": "SSR",
-    "statusInit": [ 55, 12, 0, 0, 0, 0 ],
-    "statusLv": [ 10, 1.5, 0, 0, 0, 0 ],
+    "statusInit": [ 55.0, 12.0, 0, 0, 0, 0 ],
+    "statusLv": [ 10.0, 1.5, 0, 0, 0, 0 ],
     "buff": [
       {
         "type": "アタック",
@@ -3485,7 +3619,9 @@
         "ephemeral": true,
         "target": "自身",
         "timing": "戦闘前",
-        "condition": { "onTargetClass": [ "エアリアル" ] }
+        "condition": {
+          "onTargetClass": [ "エアリアル" ]
+        }
       }
     ],
     "tags": [ "特効(エアリアル)" ]
@@ -3497,8 +3633,8 @@
     "desc": "アタック+8%。メインが「ソーサラー」の敵ユニットと戦闘時、自ユニットの与ダメージ+20%。",
     "slot": "アクセサリ",
     "rarity": "SSR",
-    "statusInit": [ 0, 12, 7.6, 0, 0, 0 ],
-    "statusLv": [ 0, 1.5, 1, 0, 0, 0 ],
+    "statusInit": [ 0, 12.0, 7.6, 0, 0, 0 ],
+    "statusLv": [ 0, 1.5, 1.0, 0, 0, 0 ],
     "buff": [
       {
         "type": "アタック",
@@ -3511,7 +3647,9 @@
         "ephemeral": true,
         "target": "自身",
         "timing": "戦闘前",
-        "condition": { "onTargetClass": [ "ソーサラー" ] }
+        "condition": {
+          "onTargetClass": [ "ソーサラー" ]
+        }
       }
     ],
     "tags": [ "特効(ソーサラー)" ]
@@ -3523,8 +3661,8 @@
     "desc": "治療効果+15%。メインが「ソーサラー」の敵ユニットと戦闘時、マジック/レジスト/ディフェンス+20%。",
     "slot": "アクセサリ",
     "rarity": "SSR",
-    "statusInit": [ 55, 0, 0, 12, 0, 0 ],
-    "statusLv": [ 10, 0, 0, 1.5, 0, 0 ],
+    "statusInit": [ 55.0, 0, 0, 12.0, 0, 0 ],
+    "statusLv": [ 10.0, 0, 0, 1.5, 0, 0 ],
     "buff": [
       {
         "type": "治療効果",
@@ -3537,7 +3675,9 @@
         "ephemeral": true,
         "target": "自身(メイン)",
         "timing": "戦闘前",
-        "condition": { "onTargetClass": [ "ソーサラー" ] }
+        "condition": {
+          "onTargetClass": [ "ソーサラー" ]
+        }
       },
       {
         "type": "レジスト",
@@ -3545,7 +3685,9 @@
         "ephemeral": true,
         "target": "自身(メイン)",
         "timing": "戦闘前",
-        "condition": { "onTargetClass": [ "ソーサラー" ] }
+        "condition": {
+          "onTargetClass": [ "ソーサラー" ]
+        }
       },
       {
         "type": "ディフェンス",
@@ -3553,7 +3695,9 @@
         "ephemeral": true,
         "target": "自身(メイン)",
         "timing": "戦闘前",
-        "condition": { "onTargetClass": [ "ソーサラー" ] }
+        "condition": {
+          "onTargetClass": [ "ソーサラー" ]
+        }
       }
     ],
     "tags": [ "特効(ソーサラー)" ]
@@ -3565,8 +3709,8 @@
     "desc": "アタック+8%。敵ターンでの戦闘時、ディフェンス+10%。",
     "slot": "アクセサリ",
     "rarity": "SSR",
-    "statusInit": [ 0, 12, 7.6, 0, 0, 0 ],
-    "statusLv": [ 0, 1.5, 1, 0, 0, 0 ],
+    "statusInit": [ 0, 12.0, 7.6, 0, 0, 0 ],
+    "statusLv": [ 0, 1.5, 1.0, 0, 0, 0 ],
     "buff": [
       {
         "type": "アタック",
@@ -3579,7 +3723,9 @@
         "ephemeral": true,
         "target": "自身(メイン)",
         "timing": "戦闘前",
-        "condition": { "onEnemyTurn": true }
+        "condition": {
+          "onEnemyTurn": true
+        }
       }
     ]
   },
@@ -3590,8 +3736,8 @@
     "desc": "マジック+5%。味方ターンでの戦闘時、その戦闘後、敵ユニットの与ダメージ-15%(1ターン)。",
     "slot": "アクセサリ",
     "rarity": "SSR",
-    "statusInit": [ 0, 0, 0, 12, 7, 0 ],
-    "statusLv": [ 0, 0, 0, 1.5, 1, 0 ],
+    "statusInit": [ 0, 0, 0, 12.0, 7.0, 0 ],
+    "statusLv": [ 0, 0, 0, 1.5, 1.0, 0 ],
     "buff": [
       {
         "type": "マジック",
@@ -3607,7 +3753,9 @@
         "trigger": {
           "target": "攻撃対象",
           "timing": "戦闘後",
-          "condition": { "onOwnTurn": true }
+          "condition": {
+            "onOwnTurn": true
+          }
         }
       }
     ]
@@ -3619,8 +3767,8 @@
     "desc": "マジック+5%。味方ターンで敵ユニットに自身がダメージを与えた時、かつ行動終了時、自身を中心とした範囲1マス以内の味方ユニットのHPが最大HPの15%分回復する。",
     "slot": "アクセサリ",
     "rarity": "SSR",
-    "statusInit": [ 0, 0, 0, 12, 7, 0 ],
-    "statusLv": [ 0, 0, 0, 1.5, 1, 0 ],
+    "statusInit": [ 0, 0, 0, 12.0, 7.0, 0 ],
+    "statusLv": [ 0, 0, 0, 1.5, 1.0, 0 ],
     "buff": [
       {
         "type": "マジック",
@@ -3649,8 +3797,8 @@
     "desc": "マジック+5%。アクティブスキルで敵ユニットを倒した時、クールタイム-1。",
     "slot": "アクセサリ",
     "rarity": "SSR",
-    "statusInit": [ 55, 0, 0, 12, 0, 0 ],
-    "statusLv": [ 10, 0, 0, 1.5, 0, 0 ],
+    "statusInit": [ 55.0, 0, 0, 12.0, 0, 0 ],
+    "statusLv": [ 10.0, 0, 0, 1.5, 0, 0 ],
     "buff": [
       {
         "type": "マジック",
@@ -3664,7 +3812,9 @@
         "value": 1,
         "targetSkill": "全スキル",
         "timing": "敵撃破時",
-        "condition": { "onActiveSkill": true }
+        "condition": {
+          "onActiveSkill": true
+        }
       }
     ],
     "note": "CT減は全スキルが対象。範囲攻撃でも発動するが、複数同時に撃破しても -1 のみ。"
@@ -3676,8 +3826,8 @@
     "desc": "マジック+5%。味方ターンでの戦闘時、その戦闘後、敵ユニットのダメージ耐性-15%(1ターン)。",
     "slot": "アクセサリ",
     "rarity": "SSR",
-    "statusInit": [ 0, 0, 0, 12, 7, 0 ],
-    "statusLv": [ 0, 0, 0, 1.5, 1, 0 ],
+    "statusInit": [ 0, 0, 0, 12.0, 7.0, 0 ],
+    "statusLv": [ 0, 0, 0, 1.5, 1.0, 0 ],
     "buff": [
       {
         "type": "マジック",
@@ -3693,7 +3843,9 @@
         "trigger": {
           "target": "攻撃対象",
           "timing": "戦闘後",
-          "condition": { "onOwnTurn": true }
+          "condition": {
+            "onOwnTurn": true
+          }
         }
       }
     ]
@@ -3705,8 +3857,8 @@
     "desc": "マジック+5%。味方ターンでアクティブスキルで敵ユニットに自身がダメージを与えた時、敵ユニットの強化効果を1個解除する。",
     "slot": "アクセサリ",
     "rarity": "SSR",
-    "statusInit": [ 0, 0, 0, 12, 7, 0 ],
-    "statusLv": [ 0, 0, 0, 1.5, 1, 0 ],
+    "statusInit": [ 0, 0, 0, 12.0, 7.0, 0 ],
+    "statusLv": [ 0, 0, 0, 1.5, 1.0, 0 ],
     "buff": [
       {
         "type": "マジック",
@@ -3733,8 +3885,8 @@
     "desc": "マジック+8%。「シューター/アサシン」との戦闘時、ディフェンス+20%。",
     "slot": "アクセサリ",
     "rarity": "SSR",
-    "statusInit": [ 55, 0, 0, 12, 0, 0 ],
-    "statusLv": [ 10, 0, 0, 1.5, 0, 0 ],
+    "statusInit": [ 55.0, 0, 0, 12.0, 0, 0 ],
+    "statusLv": [ 10.0, 0, 0, 1.5, 0, 0 ],
     "buff": [
       {
         "type": "マジック",
@@ -3747,7 +3899,9 @@
         "ephemeral": true,
         "target": "自身(メイン)",
         "timing": "戦闘前",
-        "condition": { "onTargetClass": [ "シューター", "アサシン" ] }
+        "condition": {
+          "onTargetClass": [ "シューター", "アサシン" ]
+        }
       }
     ],
     "tags": [ "特効(シューター)", "特効(アサシン)" ]
@@ -3759,8 +3913,8 @@
     "desc": "マジック+8%。敵ターンで遠距離による戦闘時、その戦闘後、自ユニットが受けたダメージの30%を反射する。",
     "slot": "アクセサリ",
     "rarity": "SSR",
-    "statusInit": [ 0, 0, 0, 12, 7, 0 ],
-    "statusLv": [ 0, 0, 0, 1.5, 1, 0 ],
+    "statusInit": [ 0, 0, 0, 12.0, 7.0, 0 ],
+    "statusLv": [ 0, 0, 0, 1.5, 1.0, 0 ],
     "buff": [
       {
         "type": "マジック",
@@ -3785,8 +3939,8 @@
     "desc": "最大HP+8%。敵ターンで近距離による戦闘時、その戦闘後、自ユニットが受けたダメージの30%を反射する。",
     "slot": "アクセサリ",
     "rarity": "SSR",
-    "statusInit": [ 55, 0, 0, 0, 8, 0 ],
-    "statusLv": [ 10, 0, 0, 0, 1, 0 ],
+    "statusInit": [ 55.0, 0, 0, 0, 8.0, 0 ],
+    "statusLv": [ 10.0, 0, 0, 0, 1.0, 0 ],
     "buff": [
       {
         "type": "最大HP",
@@ -3811,8 +3965,8 @@
     "desc": "最大HP+15%。自ユニットにアクティブによる「回復不可/アクティブ強化不可」無効を付与する。",
     "slot": "アクセサリ",
     "rarity": "SSR",
-    "statusInit": [ 55, 0, 8, 0, 0, 0 ],
-    "statusLv": [ 10, 0, 1, 0, 0, 0 ],
+    "statusInit": [ 55.0, 0, 8.0, 0, 0, 0 ],
+    "statusLv": [ 10.0, 0, 1.0, 0, 0, 0 ],
     "buff": [
       {
         "type": "最大HP",
@@ -3838,8 +3992,8 @@
     "desc": "最大HP/治療効果+10%。自ユニットにアクティブによる「スタン」無効を付与する。",
     "slot": "アクセサリ",
     "rarity": "SSR",
-    "statusInit": [ 0, 0, 0, 12, 7, 0 ],
-    "statusLv": [ 0, 0, 0, 1.5, 1, 0 ],
+    "statusInit": [ 0, 0, 0, 12.0, 7.0, 0 ],
+    "statusLv": [ 0, 0, 0, 1.5, 1.0, 0 ],
     "buff": [
       {
         "type": "最大HP",
@@ -3866,8 +4020,8 @@
     "desc": "治療効果+15%。行動終了時、自身を中心とした範囲2マス以内の味方ユニットの弱化効果を1個解除する。",
     "slot": "アクセサリ",
     "rarity": "SSR",
-    "statusInit": [ 0, 0, 0, 12, 7, 0 ],
-    "statusLv": [ 0, 0, 0, 1.5, 1, 0 ],
+    "statusInit": [ 0, 0, 0, 12.0, 7.0, 0 ],
+    "statusLv": [ 0, 0, 0, 1.5, 1.0, 0 ],
     "buff": [
       {
         "type": "治療効果",
@@ -3891,8 +4045,8 @@
     "desc": "敵ターンで遠距離による戦闘時、ディフェンス/レジスト+10%。",
     "slot": "アクセサリ",
     "rarity": "SSR",
-    "statusInit": [ 55, 0, 0, 0, 8, 0 ],
-    "statusLv": [ 10, 0, 0, 0, 1, 0 ],
+    "statusInit": [ 55.0, 0, 0, 0, 8.0, 0 ],
+    "statusLv": [ 10.0, 0, 0, 0, 1.0, 0 ],
     "buff": [
       {
         "type": "ディフェンス",
@@ -3925,8 +4079,8 @@
     "desc": "敵ターンで近距離による戦闘時、ディフェンス/レジスト+10%。",
     "slot": "アクセサリ",
     "rarity": "SSR",
-    "statusInit": [ 55, 0, 8, 0, 0, 0 ],
-    "statusLv": [ 10, 0, 1, 0, 0, 0 ],
+    "statusInit": [ 55.0, 0, 8.0, 0, 0, 0 ],
+    "statusLv": [ 10.0, 0, 1.0, 0, 0, 0 ],
     "buff": [
       {
         "type": "ディフェンス",
@@ -3959,8 +4113,8 @@
     "desc": "レジスト+8%。自ユニットにアクティブによる「ディフェンスダウン/レジストダウン」無効を付与する。",
     "slot": "アクセサリ",
     "rarity": "SSR",
-    "statusInit": [ 55, 0, 0, 0, 8, 0 ],
-    "statusLv": [ 10, 0, 0, 0, 1, 0 ],
+    "statusInit": [ 55.0, 0, 0, 0, 8.0, 0 ],
+    "statusLv": [ 10.0, 0, 0, 0, 1.0, 0 ],
     "buff": [
       {
         "type": "レジスト",
@@ -3986,8 +4140,8 @@
     "desc": "全ステータス+5%。自ユニットにアクティブによる「アタックダウン/マジックダウン/ディフェンスダウン/レジストダウン/移動ダウン」無効を付与する。",
     "slot": "アクセサリ",
     "rarity": "SSR",
-    "statusInit": [ 55, 12, 0, 0, 0, 0 ],
-    "statusLv": [ 10, 1.5, 0, 0, 0, 0 ],
+    "statusInit": [ 55.0, 12.0, 0, 0, 0, 0 ],
+    "statusLv": [ 10.0, 1.5, 0, 0, 0, 0 ],
     "buff": [
       {
         "type": "最大HP",
@@ -4050,8 +4204,8 @@
     "desc": "自身を中心とした範囲2マス以内に味方ユニットがいる時、戦闘時、ディフェンス/レジスト+10%。",
     "slot": "アクセサリ",
     "rarity": "SSR",
-    "statusInit": [ 55, 0, 8, 0, 0, 0 ],
-    "statusLv": [ 10, 0, 1, 0, 0, 0 ],
+    "statusInit": [ 55.0, 0, 8.0, 0, 0, 0 ],
+    "statusLv": [ 10.0, 0, 1.0, 0, 0, 0 ],
     "buff": [
       {
         "type": "ディフェンス",
@@ -4088,8 +4242,8 @@
     "desc": "自身を中心とした範囲2マス以内に味方ユニットがいない時、戦闘時、アタック/ディフェンス+10%。",
     "slot": "アクセサリ",
     "rarity": "SSR",
-    "statusInit": [ 55, 12, 0, 0, 0, 0 ],
-    "statusLv": [ 10, 1.5, 0, 0, 0, 0 ],
+    "statusInit": [ 55.0, 12.0, 0, 0, 0, 0 ],
+    "statusLv": [ 10.0, 1.5, 0, 0, 0, 0 ],
     "buff": [
       {
         "type": "アタック",
@@ -4126,8 +4280,8 @@
     "desc": "ディフェンス+8%。\n戦闘前、敵ユニットに固定ダメージを与えて倒したとき、2マス移動することができる。\n戦闘後、2マス移動することができる。",
     "slot": "アクセサリ",
     "rarity": "SSR",
-    "statusInit": [ 55, 0, 8, 0, 0, 0 ],
-    "statusLv": [ 10, 0, 1, 0, 0, 0 ],
+    "statusInit": [ 55.0, 0, 8.0, 0, 0, 0 ],
+    "statusLv": [ 10.0, 0, 1.0, 0, 0, 0 ],
     "buff": [
       {
         "type": "ディフェンス",
@@ -4149,8 +4303,8 @@
     "desc": "最大HP+10%。自ユニットにアクティブによる「アタックダウン/マジックダウン」無効を付与する。",
     "slot": "アクセサリ",
     "rarity": "SR",
-    "statusInit": [ 0, 8, 0, 0, 0, 8 ],
-    "statusLv": [ 0, 1, 0, 0, 0, 1 ],
+    "statusInit": [ 0, 8.0, 0, 0, 0, 8.0 ],
+    "statusLv": [ 0, 1.0, 0, 0, 0, 1.0 ],
     "buff": [
       {
         "type": "最大HP",
@@ -4176,8 +4330,8 @@
     "desc": "治療効果+10%。自ユニットにアクティブによる「アクティブスキル使用不可」無効を付与する。",
     "slot": "アクセサリ",
     "rarity": "SR",
-    "statusInit": [ 40, 0, 0, 8, 0, 0 ],
-    "statusLv": [ 7, 0, 0, 1, 0, 0 ],
+    "statusInit": [ 40.0, 0, 0, 8.0, 0, 0 ],
+    "statusLv": [ 7.0, 0, 0, 1.0, 0, 0 ],
     "buff": [
       {
         "type": "治療効果",
@@ -4199,8 +4353,8 @@
     "desc": "マジック+5%。自ユニットにアクティブによる「固定ダメージ」無効を付与する。",
     "slot": "アクセサリ",
     "rarity": "SR",
-    "statusInit": [ 0, 0, 0, 8, 5, 0 ],
-    "statusLv": [ 0, 0, 0, 1, 0.5, 0 ],
+    "statusInit": [ 0, 0, 0, 8.0, 5.0, 0 ],
+    "statusLv": [ 0, 0, 0, 1.0, 0.5, 0 ],
     "buff": [
       {
         "type": "マジック",
@@ -4222,8 +4376,8 @@
     "desc": "レジスト/アタック+5%。",
     "slot": "アクセサリ",
     "rarity": "SR",
-    "statusInit": [ 0, 8, 5, 0, 0, 0 ],
-    "statusLv": [ 0, 1, 0.5, 0, 0, 0 ],
+    "statusInit": [ 0, 8.0, 5.0, 0, 0, 0 ],
+    "statusLv": [ 0, 1.0, 0.5, 0, 0, 0 ],
     "buff": [
       {
         "type": "レジスト",
@@ -4244,8 +4398,8 @@
     "desc": "レジスト+8%。",
     "slot": "アクセサリ",
     "rarity": "SR",
-    "statusInit": [ 0, 8, 5, 0, 0, 0 ],
-    "statusLv": [ 0, 1, 0.5, 0, 0, 0 ],
+    "statusInit": [ 0, 8.0, 5.0, 0, 0, 0 ],
+    "statusLv": [ 0, 1.0, 0.5, 0, 0, 0 ],
     "buff": [
       {
         "type": "レジスト",
@@ -4261,8 +4415,8 @@
     "desc": "最大HP+8%。",
     "slot": "アクセサリ",
     "rarity": "SR",
-    "statusInit": [ 40, 8, 0, 0, 0, 0 ],
-    "statusLv": [ 7, 1, 0, 0, 0, 0 ],
+    "statusInit": [ 40.0, 8.0, 0, 0, 0, 0 ],
+    "statusLv": [ 7.0, 1.0, 0, 0, 0, 0 ],
     "buff": [
       {
         "type": "最大HP",
@@ -4278,15 +4432,17 @@
     "desc": "近距離による戦闘時、ダメージ耐性+10%。",
     "slot": "アクセサリ",
     "rarity": "SR",
-    "statusInit": [ 40, 0, 5, 0, 0, 0 ],
-    "statusLv": [ 7, 0, 0.5, 0, 0, 0 ],
+    "statusInit": [ 40.0, 0, 5.0, 0, 0, 0 ],
+    "statusLv": [ 7.0, 0, 0.5, 0, 0, 0 ],
     "buff": [
       {
         "type": "ダメージ耐性",
         "value": 10,
         "target": "自身(メイン)",
         "timing": "戦闘前",
-        "condition": { "onCloseCombat": true }
+        "condition": {
+          "onCloseCombat": true
+        }
       }
     ]
   },
@@ -4297,15 +4453,17 @@
     "desc": "遠距離による戦闘時、ダメージ耐性+10%。",
     "slot": "アクセサリ",
     "rarity": "SR",
-    "statusInit": [ 40, 0, 5, 0, 0, 0 ],
-    "statusLv": [ 7, 0, 0.5, 0, 0, 0 ],
+    "statusInit": [ 40.0, 0, 5.0, 0, 0, 0 ],
+    "statusLv": [ 7.0, 0, 0.5, 0, 0, 0 ],
     "buff": [
       {
         "type": "ダメージ耐性",
         "value": 10,
         "target": "自身(メイン)",
         "timing": "戦闘前",
-        "condition": { "onRangedCombat": true }
+        "condition": {
+          "onRangedCombat": true
+        }
       }
     ]
   },
@@ -4316,8 +4474,8 @@
     "desc": "マジック/最大HP+5%。",
     "slot": "アクセサリ",
     "rarity": "SR",
-    "statusInit": [ 40, 0, 0, 8, 0, 0 ],
-    "statusLv": [ 7, 0, 0, 1, 0, 0 ],
+    "statusInit": [ 40.0, 0, 0, 8.0, 0, 0 ],
+    "statusLv": [ 7.0, 0, 0, 1.0, 0, 0 ],
     "buff": [
       {
         "type": "マジック",
@@ -4338,8 +4496,8 @@
     "desc": "レジスト+8%。",
     "slot": "アクセサリ",
     "rarity": "SR",
-    "statusInit": [ 0, 0, 8, 5.2, 0, 0 ],
-    "statusLv": [ 0, 0, 1, 0.66, 0, 0 ],
+    "statusInit": [ 0, 0, 8.0, 5.2, 0, 0 ],
+    "statusLv": [ 0, 0, 1.0, 0.66, 0, 0 ],
     "buff": [
       {
         "type": "レジスト",
@@ -4355,8 +4513,8 @@
     "desc": "最大HP+8%。",
     "slot": "アクセサリ",
     "rarity": "SR",
-    "statusInit": [ 0, 0, 0, 8, 5, 0 ],
-    "statusLv": [ 0, 0, 0, 1, 0.5, 0 ],
+    "statusInit": [ 0, 0, 0, 8.0, 5.0, 0 ],
+    "statusLv": [ 0, 0, 0, 1.0, 0.5, 0 ],
     "buff": [
       {
         "type": "最大HP",
@@ -4372,8 +4530,8 @@
     "desc": "治療効果+8%/レジスト+5%。",
     "slot": "アクセサリ",
     "rarity": "SR",
-    "statusInit": [ 0, 0, 0, 8, 5, 0 ],
-    "statusLv": [ 0, 0, 0, 1, 0.5, 0 ],
+    "statusInit": [ 0, 0, 0, 8.0, 5.0, 0 ],
+    "statusLv": [ 0, 0, 0, 1.0, 0.5, 0 ],
     "buff": [
       {
         "type": "治療効果",
@@ -4394,8 +4552,8 @@
     "desc": "治療効果+8%/最大HP+5%。",
     "slot": "アクセサリ",
     "rarity": "SR",
-    "statusInit": [ 40, 0, 0, 8, 0, 0 ],
-    "statusLv": [ 7, 0, 0, 1, 0, 0 ],
+    "statusInit": [ 40.0, 0, 0, 8.0, 0, 0 ],
+    "statusLv": [ 7.0, 0, 0, 1.0, 0, 0 ],
     "buff": [
       {
         "type": "治療効果",
@@ -4416,8 +4574,8 @@
     "desc": "ディフェンス+5%/被治療効果+10%。",
     "slot": "アクセサリ",
     "rarity": "SR",
-    "statusInit": [ 40, 0, 5, 0, 0, 0 ],
-    "statusLv": [ 7, 0, 0.5, 0, 0, 0 ],
+    "statusInit": [ 40.0, 0, 5.0, 0, 0, 0 ],
+    "statusLv": [ 7.0, 0, 0.5, 0, 0, 0 ],
     "buff": [
       {
         "type": "ディフェンス",
@@ -4438,7 +4596,7 @@
     "desc": "レジスト+8%。",
     "slot": "アクセサリ",
     "rarity": "SR",
-    "statusInit": [ 0, 0, 5, 0, 5, 0 ],
+    "statusInit": [ 0, 0, 5.0, 0, 5.0, 0 ],
     "statusLv": [ 0, 0, 0.5, 0, 0.5, 0 ],
     "buff": [
       {
@@ -4455,8 +4613,8 @@
     "desc": "最大HP+8%。",
     "slot": "アクセサリ",
     "rarity": "SR",
-    "statusInit": [ 40, 0, 5, 0, 0, 0 ],
-    "statusLv": [ 7, 0, 0.5, 0, 0, 0 ],
+    "statusInit": [ 40.0, 0, 5.0, 0, 0, 0 ],
+    "statusLv": [ 7.0, 0, 0.5, 0, 0, 0 ],
     "buff": [
       {
         "type": "最大HP",
@@ -4472,56 +4630,72 @@
     "desc": "シンボルがゼニスのキャラに装備時、全ステータス+8%/クリティカルダメージ倍率+10%/移動+1。",
     "slot": "アクセサリ",
     "rarity": "SSR",
-    "statusInit": [ 0, 13, 0, 13, 0, 0 ],
+    "statusInit": [ 0, 13.0, 0, 13.0, 0, 0 ],
     "statusLv": [ 0, 1.78, 0, 1.78, 0, 0 ],
     "buff": [
       {
         "type": "最大HP",
         "value": 8,
         "target": "自身(メイン)",
-        "condition": { "onSymbol": [ "ゼニス" ] }
+        "condition": {
+          "onSymbol": [ "ゼニス" ]
+        }
       },
       {
         "type": "アタック",
         "value": 8,
         "target": "自身(メイン)",
-        "condition": { "onSymbol": [ "ゼニス" ] }
+        "condition": {
+          "onSymbol": [ "ゼニス" ]
+        }
       },
       {
         "type": "ディフェンス",
         "value": 8,
         "target": "自身(メイン)",
-        "condition": { "onSymbol": [ "ゼニス" ] }
+        "condition": {
+          "onSymbol": [ "ゼニス" ]
+        }
       },
       {
         "type": "マジック",
         "value": 8,
         "target": "自身(メイン)",
-        "condition": { "onSymbol": [ "ゼニス" ] }
+        "condition": {
+          "onSymbol": [ "ゼニス" ]
+        }
       },
       {
         "type": "レジスト",
         "value": 8,
         "target": "自身(メイン)",
-        "condition": { "onSymbol": [ "ゼニス" ] }
+        "condition": {
+          "onSymbol": [ "ゼニス" ]
+        }
       },
       {
         "type": "テクニック",
         "value": 8,
         "target": "自身(メイン)",
-        "condition": { "onSymbol": [ "ゼニス" ] }
+        "condition": {
+          "onSymbol": [ "ゼニス" ]
+        }
       },
       {
         "type": "クリティカルダメージ倍率",
         "value": 10,
         "target": "自身(メイン)",
-        "condition": { "onSymbol": [ "ゼニス" ] }
+        "condition": {
+          "onSymbol": [ "ゼニス" ]
+        }
       },
       {
         "type": "移動",
         "value": 1,
         "target": "自身(メイン)",
-        "condition": { "onSymbol": [ "ゼニス" ] }
+        "condition": {
+          "onSymbol": [ "ゼニス" ]
+        }
       }
     ],
     "tags": [ "分類:ギルド装備" ]
@@ -4533,56 +4707,72 @@
     "desc": "シンボルがオリジンのキャラに装備時、全ステータス+8%/クリティカルダメージ倍率+10%/移動+1。",
     "slot": "アクセサリ",
     "rarity": "SSR",
-    "statusInit": [ 0, 13, 0, 13, 0, 0 ],
+    "statusInit": [ 0, 13.0, 0, 13.0, 0, 0 ],
     "statusLv": [ 0, 1.78, 0, 1.78, 0, 0 ],
     "buff": [
       {
         "type": "最大HP",
         "value": 8,
         "target": "自身(メイン)",
-        "condition": { "onSymbol": [ "オリジン" ] }
+        "condition": {
+          "onSymbol": [ "オリジン" ]
+        }
       },
       {
         "type": "アタック",
         "value": 8,
         "target": "自身(メイン)",
-        "condition": { "onSymbol": [ "オリジン" ] }
+        "condition": {
+          "onSymbol": [ "オリジン" ]
+        }
       },
       {
         "type": "ディフェンス",
         "value": 8,
         "target": "自身(メイン)",
-        "condition": { "onSymbol": [ "オリジン" ] }
+        "condition": {
+          "onSymbol": [ "オリジン" ]
+        }
       },
       {
         "type": "マジック",
         "value": 8,
         "target": "自身(メイン)",
-        "condition": { "onSymbol": [ "オリジン" ] }
+        "condition": {
+          "onSymbol": [ "オリジン" ]
+        }
       },
       {
         "type": "レジスト",
         "value": 8,
         "target": "自身(メイン)",
-        "condition": { "onSymbol": [ "オリジン" ] }
+        "condition": {
+          "onSymbol": [ "オリジン" ]
+        }
       },
       {
         "type": "テクニック",
         "value": 8,
         "target": "自身(メイン)",
-        "condition": { "onSymbol": [ "オリジン" ] }
+        "condition": {
+          "onSymbol": [ "オリジン" ]
+        }
       },
       {
         "type": "クリティカルダメージ倍率",
         "value": 10,
         "target": "自身(メイン)",
-        "condition": { "onSymbol": [ "オリジン" ] }
+        "condition": {
+          "onSymbol": [ "オリジン" ]
+        }
       },
       {
         "type": "移動",
         "value": 1,
         "target": "自身(メイン)",
-        "condition": { "onSymbol": [ "オリジン" ] }
+        "condition": {
+          "onSymbol": [ "オリジン" ]
+        }
       }
     ],
     "tags": [ "分類:ギルド装備" ]
@@ -4594,56 +4784,72 @@
     "desc": "シンボルがナディアのキャラに装備時、全ステータス+8%/クリティカルダメージ倍率+10%/移動+1。",
     "slot": "アクセサリ",
     "rarity": "SSR",
-    "statusInit": [ 0, 13, 0, 13, 0, 0 ],
+    "statusInit": [ 0, 13.0, 0, 13.0, 0, 0 ],
     "statusLv": [ 0, 1.78, 0, 1.78, 0, 0 ],
     "buff": [
       {
         "type": "最大HP",
         "value": 8,
         "target": "自身(メイン)",
-        "condition": { "onSymbol": [ "ナディア" ] }
+        "condition": {
+          "onSymbol": [ "ナディア" ]
+        }
       },
       {
         "type": "アタック",
         "value": 8,
         "target": "自身(メイン)",
-        "condition": { "onSymbol": [ "ナディア" ] }
+        "condition": {
+          "onSymbol": [ "ナディア" ]
+        }
       },
       {
         "type": "ディフェンス",
         "value": 8,
         "target": "自身(メイン)",
-        "condition": { "onSymbol": [ "ナディア" ] }
+        "condition": {
+          "onSymbol": [ "ナディア" ]
+        }
       },
       {
         "type": "マジック",
         "value": 8,
         "target": "自身(メイン)",
-        "condition": { "onSymbol": [ "ナディア" ] }
+        "condition": {
+          "onSymbol": [ "ナディア" ]
+        }
       },
       {
         "type": "レジスト",
         "value": 8,
         "target": "自身(メイン)",
-        "condition": { "onSymbol": [ "ナディア" ] }
+        "condition": {
+          "onSymbol": [ "ナディア" ]
+        }
       },
       {
         "type": "テクニック",
         "value": 8,
         "target": "自身(メイン)",
-        "condition": { "onSymbol": [ "ナディア" ] }
+        "condition": {
+          "onSymbol": [ "ナディア" ]
+        }
       },
       {
         "type": "クリティカルダメージ倍率",
         "value": 10,
         "target": "自身(メイン)",
-        "condition": { "onSymbol": [ "ナディア" ] }
+        "condition": {
+          "onSymbol": [ "ナディア" ]
+        }
       },
       {
         "type": "移動",
         "value": 1,
         "target": "自身(メイン)",
-        "condition": { "onSymbol": [ "ナディア" ] }
+        "condition": {
+          "onSymbol": [ "ナディア" ]
+        }
       }
     ],
     "tags": [ "分類:ギルド装備" ]
@@ -4656,8 +4862,8 @@
     "slot": "武器",
     "rarity": "SSR",
     "classes": [ "ソルジャー" ],
-    "statusInit": [ 80, 23, 0, 0, 0, 0 ],
-    "statusLv": [ 15, 2.2, 0, 0, 0, 0 ],
+    "statusInit": [ 80.0, 23.0, 0, 0, 0, 0 ],
+    "statusLv": [ 15.0, 2.2, 0, 0, 0, 0 ],
     "buff": [
       {
         "type": "クリティカルダメージ倍率",
@@ -4676,7 +4882,9 @@
         "trigger": {
           "target": "自身",
           "timing": "戦闘後",
-          "condition": { "onCriticalHit": true }
+          "condition": {
+            "onCriticalHit": true
+          }
         }
       }
     ],
@@ -4691,8 +4899,8 @@
     "slot": "武器",
     "rarity": "SSR",
     "classes": [ "ソルジャー" ],
-    "statusInit": [ 0, 23, 0, 0, 0, 11 ],
-    "statusLv": [ 0, 2.4, 0, 0, 0, 1 ],
+    "statusInit": [ 0, 23.0, 0, 0, 0, 11.0 ],
+    "statusLv": [ 0, 2.4, 0, 0, 0, 1.0 ],
     "buff": [
       {
         "type": "アタック",
@@ -4728,8 +4936,8 @@
     "slot": "武器",
     "rarity": "SSR",
     "classes": [ "ソルジャー" ],
-    "statusInit": [ 70, 23, 0, 0, 0, 0 ],
-    "statusLv": [ 12, 2.4, 0, 0, 0, 0 ],
+    "statusInit": [ 70.0, 23.0, 0, 0, 0, 0 ],
+    "statusLv": [ 12.0, 2.4, 0, 0, 0, 0 ],
     "buff": [
       {
         "type": "アタック",
@@ -4748,7 +4956,9 @@
         "ephemeral": true,
         "target": "自身(メイン)",
         "timing": "戦闘前",
-        "condition": { "onSingleSkill": true }
+        "condition": {
+          "onSingleSkill": true
+        }
       }
     ],
     "tags": [ "分類:マスター装備" ]
@@ -4761,8 +4971,8 @@
     "slot": "武器",
     "rarity": "SSR",
     "classes": [ "ランサー" ],
-    "statusInit": [ 80, 23, 0, 0, 0, 0 ],
-    "statusLv": [ 15, 2.2, 0, 0, 0, 0 ],
+    "statusInit": [ 80.0, 23.0, 0, 0, 0, 0 ],
+    "statusLv": [ 15.0, 2.2, 0, 0, 0, 0 ],
     "buff": [
       {
         "type": "ディフェンス",
@@ -4807,8 +5017,8 @@
     "slot": "武器",
     "rarity": "SSR",
     "classes": [ "ランサー" ],
-    "statusInit": [ 80, 23, 0, 0, 0, 0 ],
-    "statusLv": [ 15, 2.2, 0, 0, 0, 0 ],
+    "statusInit": [ 80.0, 23.0, 0, 0, 0, 0 ],
+    "statusLv": [ 15.0, 2.2, 0, 0, 0, 0 ],
     "buff": [
       {
         "type": "アタック",
@@ -4827,7 +5037,9 @@
         "rate": 0.15,
         "target": "自身",
         "timing": "行動後",
-        "condition": { "onActiveSkill": true }
+        "condition": {
+          "onActiveSkill": true
+        }
       }
     ],
     "tags": [ "分類:マスター装備" ]
@@ -4840,8 +5052,8 @@
     "slot": "武器",
     "rarity": "SSR",
     "classes": [ "ランサー" ],
-    "statusInit": [ 80, 23, 0, 0, 0, 0 ],
-    "statusLv": [ 15, 2.2, 0, 0, 0, 0 ],
+    "statusInit": [ 80.0, 23.0, 0, 0, 0, 0 ],
+    "statusLv": [ 15.0, 2.2, 0, 0, 0, 0 ],
     "buff": [
       {
         "type": "ディフェンス",
@@ -4859,7 +5071,9 @@
         "ephemeral": true,
         "target": "自身(メイン)",
         "timing": "戦闘前",
-        "condition": { "onEnemyTurn": true }
+        "condition": {
+          "onEnemyTurn": true
+        }
       }
     ],
     "heal": [
@@ -4868,7 +5082,9 @@
         "rate": 0.05,
         "target": "自身",
         "timing": "戦闘後",
-        "condition": { "onEnemyTurn": true }
+        "condition": {
+          "onEnemyTurn": true
+        }
       }
     ],
     "tags": [ "分類:マスター装備" ]
@@ -4881,8 +5097,8 @@
     "slot": "武器",
     "rarity": "SSR",
     "classes": [ "ライダー" ],
-    "statusInit": [ 80, 23, 0, 0, 0, 0 ],
-    "statusLv": [ 15, 2.2, 0, 0, 0, 0 ],
+    "statusInit": [ 80.0, 23.0, 0, 0, 0, 0 ],
+    "statusLv": [ 15.0, 2.2, 0, 0, 0, 0 ],
     "buff": [
       {
         "type": "アタック",
@@ -4915,8 +5131,8 @@
     "slot": "武器",
     "rarity": "SSR",
     "classes": [ "ライダー" ],
-    "statusInit": [ 0, 23, 0, 0, 0, 11 ],
-    "statusLv": [ 0, 2.4, 0, 0, 0, 1 ],
+    "statusInit": [ 0, 23.0, 0, 0, 0, 11.0 ],
+    "statusLv": [ 0, 2.4, 0, 0, 0, 1.0 ],
     "buff": [
       {
         "type": "アタック",
@@ -4929,7 +5145,9 @@
         "ephemeral": true,
         "target": "自身(メイン)",
         "timing": "戦闘前",
-        "condition": { "onOwnTurn": true }
+        "condition": {
+          "onOwnTurn": true
+        }
       }
     ],
     "heal": [
@@ -4938,7 +5156,9 @@
         "rate": 0.05,
         "target": "自身",
         "timing": "戦闘後",
-        "condition": { "onOwnTurn": true }
+        "condition": {
+          "onOwnTurn": true
+        }
       }
     ],
     "tags": [ "分類:マスター装備" ]
@@ -4951,8 +5171,8 @@
     "slot": "武器",
     "rarity": "SSR",
     "classes": [ "ライダー" ],
-    "statusInit": [ 70, 23, 0, 0, 0, 0 ],
-    "statusLv": [ 12, 2.4, 0, 0, 0, 0 ],
+    "statusInit": [ 70.0, 23.0, 0, 0, 0, 0 ],
+    "statusLv": [ 12.0, 2.4, 0, 0, 0, 0 ],
     "buff": [
       {
         "type": "アタック",
@@ -4979,7 +5199,9 @@
           "target": "範囲",
           "area": [ 2, "周囲" ],
           "timing": "行動後",
-          "condition": { "targetHp": [ ">=", 80 ] }
+          "condition": {
+            "targetHp": [ ">=", 80 ]
+          }
         }
       }
     ],
@@ -4993,8 +5215,8 @@
     "slot": "武器",
     "rarity": "SSR",
     "classes": [ "エアリアル" ],
-    "statusInit": [ 0, 23, 0, 0, 0, 11 ],
-    "statusLv": [ 0, 2.4, 0, 0, 0, 1 ],
+    "statusInit": [ 0, 23.0, 0, 0, 0, 11.0 ],
+    "statusLv": [ 0, 2.4, 0, 0, 0, 1.0 ],
     "buff": [
       {
         "type": "アタック",
@@ -5027,8 +5249,8 @@
     "slot": "武器",
     "rarity": "SSR",
     "classes": [ "エアリアル" ],
-    "statusInit": [ 0, 23, 0, 0, 0, 11 ],
-    "statusLv": [ 0, 2.4, 0, 0, 0, 1 ],
+    "statusInit": [ 0, 23.0, 0, 0, 0, 11.0 ],
+    "statusLv": [ 0, 2.4, 0, 0, 0, 1.0 ],
     "buff": [
       {
         "type": "アタック",
@@ -5056,8 +5278,8 @@
     "slot": "武器",
     "rarity": "SSR",
     "classes": [ "エアリアル" ],
-    "statusInit": [ 70, 23, 0, 0, 0, 0 ],
-    "statusLv": [ 12, 2.4, 0, 0, 0, 0 ],
+    "statusInit": [ 70.0, 23.0, 0, 0, 0, 0 ],
+    "statusLv": [ 12.0, 2.4, 0, 0, 0, 0 ],
     "buff": [
       {
         "type": "アタック",
@@ -5070,7 +5292,9 @@
         "ephemeral": true,
         "target": "自身(メイン)",
         "timing": "戦闘前",
-        "condition": { "onOwnTurn": true }
+        "condition": {
+          "onOwnTurn": true
+        }
       }
     ],
     "heal": [
@@ -5079,7 +5303,9 @@
         "rate": 0.05,
         "target": "自身",
         "timing": "戦闘後",
-        "condition": { "onEnemyTurn": true }
+        "condition": {
+          "onEnemyTurn": true
+        }
       }
     ],
     "tags": [ "分類:マスター装備" ]
@@ -5092,8 +5318,8 @@
     "slot": "武器",
     "rarity": "SSR",
     "classes": [ "ソーサラー" ],
-    "statusInit": [ 0, 0, 0, 23, 0, 11 ],
-    "statusLv": [ 0, 0, 0, 2.4, 0, 1 ],
+    "statusInit": [ 0, 0, 0, 23.0, 0, 11.0 ],
+    "statusLv": [ 0, 0, 0, 2.4, 0, 1.0 ],
     "buff": [
       {
         "type": "マジック",
@@ -5119,8 +5345,8 @@
     "slot": "武器",
     "rarity": "SSR",
     "classes": [ "ソーサラー" ],
-    "statusInit": [ 70, 0, 0, 23, 0, 0 ],
-    "statusLv": [ 12, 0, 0, 2.4, 0, 0 ],
+    "statusInit": [ 70.0, 0, 0, 23.0, 0, 0 ],
+    "statusLv": [ 12.0, 0, 0, 2.4, 0, 0 ],
     "buff": [
       {
         "type": "マジック",
@@ -5154,8 +5380,8 @@
     "slot": "武器",
     "rarity": "SSR",
     "classes": [ "ソーサラー" ],
-    "statusInit": [ 70, 0, 0, 23, 0, 0 ],
-    "statusLv": [ 12, 0, 0, 2.4, 0, 0 ],
+    "statusInit": [ 70.0, 0, 0, 23.0, 0, 0 ],
+    "statusLv": [ 12.0, 0, 0, 2.4, 0, 0 ],
     "buff": [
       {
         "type": "マジック",
@@ -5174,7 +5400,9 @@
         "rate": 0.1,
         "target": "攻撃対象",
         "timing": "攻撃後",
-        "condition": { "onActiveSkill": true }
+        "condition": {
+          "onActiveSkill": true
+        }
       }
     ],
     "tags": [ "分類:マスター装備" ]
@@ -5187,50 +5415,64 @@
     "slot": "武器",
     "rarity": "SSR",
     "classes": [ "セイント" ],
-    "statusInit": [ 0, 23, 0, 23, 0, 0 ],
+    "statusInit": [ 0, 23.0, 0, 23.0, 0, 0 ],
     "statusLv": [ 0, 2.4, 0, 2.4, 0, 0 ],
     "buff": [
       {
         "type": "アタック",
         "value": 12,
         "target": "自身(メイン)",
-        "condition": { "hp": [ "<=", 90 ] }
+        "condition": {
+          "hp": [ "<=", 90 ]
+        }
       },
       {
         "type": "ディフェンス",
         "value": 12,
         "target": "自身(メイン)",
-        "condition": { "hp": [ "<=", 90 ] }
+        "condition": {
+          "hp": [ "<=", 90 ]
+        }
       },
       {
         "type": "マジック",
         "value": 12,
         "target": "自身(メイン)",
-        "condition": { "hp": [ "<=", 90 ] }
+        "condition": {
+          "hp": [ "<=", 90 ]
+        }
       },
       {
         "type": "レジスト",
         "value": 12,
         "target": "自身(メイン)",
-        "condition": { "hp": [ "<=", 90 ] }
+        "condition": {
+          "hp": [ "<=", 90 ]
+        }
       },
       {
         "type": "テクニック",
         "value": 12,
         "target": "自身(メイン)",
-        "condition": { "hp": [ "<=", 90 ] }
+        "condition": {
+          "hp": [ "<=", 90 ]
+        }
       },
       {
         "type": "治療効果",
         "value": 15,
         "target": "自身(メイン)",
-        "condition": { "hp": [ "<=", 90 ] }
+        "condition": {
+          "hp": [ "<=", 90 ]
+        }
       },
       {
         "type": "移動",
         "value": 1,
         "target": "自身(メイン)",
-        "condition": { "hp": [ "<=", 90 ] }
+        "condition": {
+          "hp": [ "<=", 90 ]
+        }
       }
     ],
     "tags": [ "分類:マスター装備" ]
@@ -5243,8 +5485,8 @@
     "slot": "武器",
     "rarity": "SSR",
     "classes": [ "セイント" ],
-    "statusInit": [ 80, 0, 0, 23, 0, 0 ],
-    "statusLv": [ 15, 0, 0, 2.4, 0, 0 ],
+    "statusInit": [ 80.0, 0, 0, 23.0, 0, 0 ],
+    "statusLv": [ 15.0, 0, 0, 2.4, 0, 0 ],
     "buff": [
       {
         "type": "マジック",
@@ -5289,8 +5531,8 @@
     "slot": "武器",
     "rarity": "SSR",
     "classes": [ "セイント" ],
-    "statusInit": [ 70, 0, 0, 23, 0, 0 ],
-    "statusLv": [ 12, 0, 0, 2.4, 0, 0 ],
+    "statusInit": [ 70.0, 0, 0, 23.0, 0, 0 ],
+    "statusLv": [ 12.0, 0, 0, 2.4, 0, 0 ],
     "buff": [
       {
         "type": "マジック",
@@ -5326,8 +5568,8 @@
     "slot": "武器",
     "rarity": "SSR",
     "classes": [ "シューター" ],
-    "statusInit": [ 70, 23, 0, 0, 0, 0 ],
-    "statusLv": [ 12, 2.4, 0, 0, 0, 0 ],
+    "statusInit": [ 70.0, 23.0, 0, 0, 0, 0 ],
+    "statusLv": [ 12.0, 2.4, 0, 0, 0, 0 ],
     "buff": [
       {
         "type": "アタック",
@@ -5365,8 +5607,8 @@
     "slot": "武器",
     "rarity": "SSR",
     "classes": [ "シューター" ],
-    "statusInit": [ 0, 23, 0, 0, 0, 11 ],
-    "statusLv": [ 0, 2.4, 0, 0, 0, 1 ],
+    "statusInit": [ 0, 23.0, 0, 0, 0, 11.0 ],
+    "statusLv": [ 0, 2.4, 0, 0, 0, 1.0 ],
     "buff": [
       {
         "type": "アタック",
@@ -5385,7 +5627,9 @@
         "rate": 0.1,
         "target": "攻撃対象",
         "timing": "攻撃後",
-        "condition": { "onActiveSkill": true }
+        "condition": {
+          "onActiveSkill": true
+        }
       }
     ],
     "tags": [ "分類:マスター装備" ]
@@ -5398,8 +5642,8 @@
     "slot": "武器",
     "rarity": "SSR",
     "classes": [ "シューター" ],
-    "statusInit": [ 0, 23, 0, 0, 0, 11 ],
-    "statusLv": [ 0, 2.4, 0, 0, 0, 1 ],
+    "statusInit": [ 0, 23.0, 0, 0, 0, 11.0 ],
+    "statusLv": [ 0, 2.4, 0, 0, 0, 1.0 ],
     "buff": [
       {
         "type": "アタック",
@@ -5427,8 +5671,8 @@
     "slot": "武器",
     "rarity": "SSR",
     "classes": [ "アサシン" ],
-    "statusInit": [ 0, 23, 0, 0, 0, 11 ],
-    "statusLv": [ 0, 2.4, 0, 0, 0, 1 ],
+    "statusInit": [ 0, 23.0, 0, 0, 0, 11.0 ],
+    "statusLv": [ 0, 2.4, 0, 0, 0, 1.0 ],
     "buff": [
       {
         "type": "クリティカルダメージ倍率",
@@ -5447,7 +5691,9 @@
         "rate": 0.05,
         "target": "自身",
         "timing": "戦闘後",
-        "condition": { "onCriticalHit": true }
+        "condition": {
+          "onCriticalHit": true
+        }
       }
     ],
     "tags": [ "分類:マスター装備" ]
@@ -5460,8 +5706,8 @@
     "slot": "武器",
     "rarity": "SSR",
     "classes": [ "アサシン" ],
-    "statusInit": [ 0, 23, 0, 0, 0, 11 ],
-    "statusLv": [ 0, 2.4, 0, 0, 0, 1 ],
+    "statusInit": [ 0, 23.0, 0, 0, 0, 11.0 ],
+    "statusLv": [ 0, 2.4, 0, 0, 0, 1.0 ],
     "buff": [
       {
         "type": "アタック",
@@ -5491,8 +5737,8 @@
     "slot": "武器",
     "rarity": "SSR",
     "classes": [ "アサシン" ],
-    "statusInit": [ 0, 23, 0, 0, 0, 11 ],
-    "statusLv": [ 0, 2.4, 0, 0, 0, 1 ],
+    "statusInit": [ 0, 23.0, 0, 0, 0, 11.0 ],
+    "statusLv": [ 0, 2.4, 0, 0, 0, 1.0 ],
     "buff": [
       {
         "type": "クリティカルダメージ倍率",
@@ -5503,19 +5749,25 @@
         "type": "移動",
         "value": 1,
         "target": "自身(メイン)",
-        "condition": { "hp": [ ">=", 50 ] }
+        "condition": {
+          "hp": [ ">=", 50 ]
+        }
       },
       {
         "type": "アタック",
         "value": 10,
         "target": "自身(メイン)",
-        "condition": { "hp": [ ">=", 50 ] }
+        "condition": {
+          "hp": [ ">=", 50 ]
+        }
       },
       {
         "type": "ディフェンス",
         "value": 10,
         "target": "自身(メイン)",
-        "condition": { "hp": [ ">=", 50 ] }
+        "condition": {
+          "hp": [ ">=", 50 ]
+        }
       }
     ],
     "tags": [ "分類:マスター装備" ]
@@ -5527,32 +5779,40 @@
     "desc": "シンボルがゼニスのキャラに装備時、アタック/マジック/ディフェンス/レジスト+10%。\n更に移動する時、全ての通過可能な地形を「平地」マスとして扱う。",
     "slot": "鎧",
     "rarity": "SSR",
-    "statusInit": [ 70, 0, 15, 0, 0, 0 ],
-    "statusLv": [ 12, 0, 1.4, 0, 0, 0 ],
+    "statusInit": [ 70.0, 0, 15.0, 0, 0, 0 ],
+    "statusLv": [ 12.0, 0, 1.4, 0, 0, 0 ],
     "buff": [
       {
         "type": "アタック",
         "value": 10,
         "target": "自身(メイン)",
-        "condition": { "onSymbol": [ "ゼニス" ] }
+        "condition": {
+          "onSymbol": [ "ゼニス" ]
+        }
       },
       {
         "type": "ディフェンス",
         "value": 10,
         "target": "自身(メイン)",
-        "condition": { "onSymbol": [ "ゼニス" ] }
+        "condition": {
+          "onSymbol": [ "ゼニス" ]
+        }
       },
       {
         "type": "マジック",
         "value": 10,
         "target": "自身(メイン)",
-        "condition": { "onSymbol": [ "ゼニス" ] }
+        "condition": {
+          "onSymbol": [ "ゼニス" ]
+        }
       },
       {
         "type": "レジスト",
         "value": 10,
         "target": "自身(メイン)",
-        "condition": { "onSymbol": [ "ゼニス" ] }
+        "condition": {
+          "onSymbol": [ "ゼニス" ]
+        }
       }
     ],
     "tags": [ "分類:ギルド装備", "地形無視" ]
@@ -5564,32 +5824,40 @@
     "desc": "シンボルがオリジンのキャラに装備時、アタック/マジック/ディフェンス/レジスト+10%。\n更に移動する時、全ての通過可能な地形を「平地」マスとして扱う。",
     "slot": "鎧",
     "rarity": "SSR",
-    "statusInit": [ 70, 0, 15, 0, 0, 0 ],
-    "statusLv": [ 12, 0, 1.4, 0, 0, 0 ],
+    "statusInit": [ 70.0, 0, 15.0, 0, 0, 0 ],
+    "statusLv": [ 12.0, 0, 1.4, 0, 0, 0 ],
     "buff": [
       {
         "type": "アタック",
         "value": 10,
         "target": "自身(メイン)",
-        "condition": { "onSymbol": [ "オリジン" ] }
+        "condition": {
+          "onSymbol": [ "オリジン" ]
+        }
       },
       {
         "type": "ディフェンス",
         "value": 10,
         "target": "自身(メイン)",
-        "condition": { "onSymbol": [ "オリジン" ] }
+        "condition": {
+          "onSymbol": [ "オリジン" ]
+        }
       },
       {
         "type": "マジック",
         "value": 10,
         "target": "自身(メイン)",
-        "condition": { "onSymbol": [ "オリジン" ] }
+        "condition": {
+          "onSymbol": [ "オリジン" ]
+        }
       },
       {
         "type": "レジスト",
         "value": 10,
         "target": "自身(メイン)",
-        "condition": { "onSymbol": [ "オリジン" ] }
+        "condition": {
+          "onSymbol": [ "オリジン" ]
+        }
       }
     ],
     "tags": [ "分類:ギルド装備", "地形無視" ]
@@ -5601,32 +5869,40 @@
     "desc": "シンボルがナディアのキャラに装備時、アタック/マジック/ディフェンス/レジスト+10%。\n更に移動する時、全ての通過可能な地形を「平地」マスとして扱う。",
     "slot": "鎧",
     "rarity": "SSR",
-    "statusInit": [ 70, 0, 15, 0, 0, 0 ],
-    "statusLv": [ 12, 0, 1.4, 0, 0, 0 ],
+    "statusInit": [ 70.0, 0, 15.0, 0, 0, 0 ],
+    "statusLv": [ 12.0, 0, 1.4, 0, 0, 0 ],
     "buff": [
       {
         "type": "アタック",
         "value": 10,
         "target": "自身(メイン)",
-        "condition": { "onSymbol": [ "ナディア" ] }
+        "condition": {
+          "onSymbol": [ "ナディア" ]
+        }
       },
       {
         "type": "ディフェンス",
         "value": 10,
         "target": "自身(メイン)",
-        "condition": { "onSymbol": [ "ナディア" ] }
+        "condition": {
+          "onSymbol": [ "ナディア" ]
+        }
       },
       {
         "type": "マジック",
         "value": 10,
         "target": "自身(メイン)",
-        "condition": { "onSymbol": [ "ナディア" ] }
+        "condition": {
+          "onSymbol": [ "ナディア" ]
+        }
       },
       {
         "type": "レジスト",
         "value": 10,
         "target": "自身(メイン)",
-        "condition": { "onSymbol": [ "ナディア" ] }
+        "condition": {
+          "onSymbol": [ "ナディア" ]
+        }
       }
     ],
     "tags": [ "分類:ギルド装備", "地形無視" ]
@@ -5638,14 +5914,16 @@
     "desc": "シンボルがゼニスのキャラに装備時、最大HP+15%。更に戦闘時、その戦闘後、自ユニットのメイン、サポートそれぞれのHPが最大HPの6%分回復する。",
     "slot": "兜",
     "rarity": "SSR",
-    "statusInit": [ 70, 0, 0, 0, 12.5, 0 ],
-    "statusLv": [ 12, 0, 0, 0, 1.35, 0 ],
+    "statusInit": [ 70.0, 0, 0, 0, 12.5, 0 ],
+    "statusLv": [ 12.0, 0, 0, 0, 1.35, 0 ],
     "buff": [
       {
         "type": "最大HP",
         "value": 15,
         "target": "自身(メイン)",
-        "condition": { "onSymbol": [ "ゼニス" ] }
+        "condition": {
+          "onSymbol": [ "ゼニス" ]
+        }
       }
     ],
     "heal": [
@@ -5665,14 +5943,16 @@
     "desc": "シンボルがオリジンのキャラに装備時、最大HP+15%。更に戦闘時、その戦闘後、自ユニットのメイン、サポートそれぞれのHPが最大HPの6%分回復する。",
     "slot": "兜",
     "rarity": "SSR",
-    "statusInit": [ 70, 0, 0, 0, 12.5, 0 ],
-    "statusLv": [ 12, 0, 0, 0, 1.35, 0 ],
+    "statusInit": [ 70.0, 0, 0, 0, 12.5, 0 ],
+    "statusLv": [ 12.0, 0, 0, 0, 1.35, 0 ],
     "buff": [
       {
         "type": "最大HP",
         "value": 15,
         "target": "自身(メイン)",
-        "condition": { "onSymbol": [ "オリジン" ] }
+        "condition": {
+          "onSymbol": [ "オリジン" ]
+        }
       }
     ],
     "heal": [
@@ -5692,14 +5972,16 @@
     "desc": "シンボルがナディアのキャラに装備時、最大HP+15%。更に戦闘時、その戦闘後、自ユニットのメイン、サポートそれぞれのHPが最大HPの6%分回復する。",
     "slot": "兜",
     "rarity": "SSR",
-    "statusInit": [ 70, 0, 0, 0, 12.5, 0 ],
-    "statusLv": [ 12, 0, 0, 0, 1.35, 0 ],
+    "statusInit": [ 70.0, 0, 0, 0, 12.5, 0 ],
+    "statusLv": [ 12.0, 0, 0, 0, 1.35, 0 ],
     "buff": [
       {
         "type": "最大HP",
         "value": 15,
         "target": "自身(メイン)",
-        "condition": { "onSymbol": [ "ナディア" ] }
+        "condition": {
+          "onSymbol": [ "ナディア" ]
+        }
       }
     ],
     "heal": [
@@ -5720,8 +6002,8 @@
     "slot": "武器",
     "rarity": "SSR",
     "classes": [ "ソーサラー", "セイント" ],
-    "statusInit": [ 0, 18, 0, 18, 0, 0 ],
-    "statusLv": [ 0, 2, 0, 2, 0, 0 ],
+    "statusInit": [ 0, 18.0, 0, 18.0, 0, 0 ],
+    "statusLv": [ 0, 2.0, 0, 2.0, 0, 0 ],
     "buff": [
       {
         "type": "移動",
@@ -5751,22 +6033,26 @@
     "slot": "鎧",
     "rarity": "SSR",
     "classes": [ "シューター", "アサシン" ],
-    "statusInit": [ 50, 0, 8.2, 0, 0, 0 ],
-    "statusLv": [ 8, 0, 1.21, 0, 0, 0 ],
+    "statusInit": [ 50.0, 0, 8.2, 0, 0, 0 ],
+    "statusLv": [ 8.0, 0, 1.21, 0, 0, 0 ],
     "buff": [
       {
         "type": "与ダメージ",
         "value": 60,
         "ephemeral": true,
         "target": "自身(メイン)",
-        "condition": { "onCloseCombat": true }
+        "condition": {
+          "onCloseCombat": true
+        }
       },
       {
         "type": "与ダメージ",
         "value": -40,
         "ephemeral": true,
         "target": "自身(メイン)",
-        "condition": { "onRangedCombat": true }
+        "condition": {
+          "onRangedCombat": true
+        }
       }
     ],
     "tags": [ "分類:遺跡装備" ]
@@ -5779,8 +6065,8 @@
     "slot": "兜",
     "rarity": "SSR",
     "classes": [ "ソルジャー", "ランサー", "ライダー", "エアリアル" ],
-    "statusInit": [ 68, 0, 0, 0, 7.8, 0 ],
-    "statusLv": [ 11, 0, 0, 0, 1, 0 ],
+    "statusInit": [ 68.0, 0, 0, 0, 7.8, 0 ],
+    "statusLv": [ 11.0, 0, 0, 0, 1.0, 0 ],
     "buff": [
       {
         "type": "被治療効果",
@@ -5823,8 +6109,8 @@
     "slot": "武器",
     "rarity": "SSR",
     "classes": [ "ソルジャー", "ランサー" ],
-    "statusInit": [ 42, 20, 0, 0, 0, 0 ],
-    "statusLv": [ 11, 2.2, 0, 0, 0, 0 ],
+    "statusInit": [ 42.0, 20.0, 0, 0, 0, 0 ],
+    "statusLv": [ 11.0, 2.2, 0, 0, 0, 0 ],
     "buff": [
       {
         "type": "アタック",
@@ -5857,8 +6143,8 @@
     "slot": "鎧",
     "rarity": "SSR",
     "classes": [ "ライダー", "エアリアル" ],
-    "statusInit": [ 50, 0, 8.2, 0, 0, 0 ],
-    "statusLv": [ 10, 0, 1.21, 0, 0, 0 ],
+    "statusInit": [ 50.0, 0, 8.2, 0, 0, 0 ],
+    "statusLv": [ 10.0, 0, 1.21, 0, 0, 0 ],
     "buff": [
       {
         "type": "ディフェンス",
@@ -5886,8 +6172,8 @@
     "slot": "兜",
     "rarity": "SSR",
     "classes": [ "ソーサラー", "セイント", "シューター", "アサシン" ],
-    "statusInit": [ 51, 0, 0, 0, 10.2, 0 ],
-    "statusLv": [ 8, 0, 0, 0, 1.21, 0 ],
+    "statusInit": [ 51.0, 0, 0, 0, 10.2, 0 ],
+    "statusLv": [ 8.0, 0, 0, 0, 1.21, 0 ],
     "buff": [
       {
         "type": "与ダメージ",
@@ -5897,7 +6183,11 @@
         "timing": "戦闘前"
       }
     ],
-    "reflection": [ { "rate": 0.8 } ],
+    "reflection": [
+      {
+        "rate": 0.8
+      }
+    ],
     "tags": [ "分類:遺跡装備" ]
   },
   {
@@ -5908,8 +6198,8 @@
     "slot": "武器",
     "rarity": "SSR",
     "classes": [ "シューター", "アサシン" ],
-    "statusInit": [ 0, 18, 0, 0, 0, 7.6 ],
-    "statusLv": [ 0, 2, 0, 0, 0, 0.79 ],
+    "statusInit": [ 0, 18.0, 0, 0, 0, 7.6 ],
+    "statusLv": [ 0, 2.0, 0, 0, 0, 0.79 ],
     "buff": [
       {
         "type": "与ダメージ",
@@ -5932,26 +6222,32 @@
     "slot": "鎧",
     "rarity": "SSR",
     "classes": [ "ソーサラー", "セイント" ],
-    "statusInit": [ 68, 0, 10, 0, 0, 0 ],
-    "statusLv": [ 11, 0, 1.1, 0, 0, 0 ],
+    "statusInit": [ 68.0, 0, 10.0, 0, 0, 0 ],
+    "statusLv": [ 11.0, 0, 1.1, 0, 0, 0 ],
     "buff": [
       {
         "type": "アタック",
         "value": 20,
         "target": "自身(メイン)",
-        "condition": { "hp": [ "<=", 80 ] }
+        "condition": {
+          "hp": [ "<=", 80 ]
+        }
       },
       {
         "type": "マジック",
         "value": 20,
         "target": "自身(メイン)",
-        "condition": { "hp": [ "<=", 80 ] }
+        "condition": {
+          "hp": [ "<=", 80 ]
+        }
       },
       {
         "type": "ダメージ耐性",
         "value": -20,
         "target": "自身",
-        "condition": { "hp": [ ">=", 80 ] }
+        "condition": {
+          "hp": [ ">=", 80 ]
+        }
       }
     ],
     "tags": [ "分類:遺跡装備" ]
@@ -5964,8 +6260,8 @@
     "slot": "兜",
     "rarity": "SSR",
     "classes": [ "ソルジャー", "ランサー", "ライダー", "エアリアル" ],
-    "statusInit": [ 68, 0, 0, 0, 7.8, 0 ],
-    "statusLv": [ 11, 0, 0, 0, 1, 0 ],
+    "statusInit": [ 68.0, 0, 0, 0, 7.8, 0 ],
+    "statusLv": [ 11.0, 0, 0, 0, 1.0, 0 ],
     "buff": [
       {
         "type": "ダメージ耐性(物理)",
@@ -5998,8 +6294,8 @@
     "slot": "武器",
     "rarity": "SSR",
     "classes": [ "ソルジャー" ],
-    "statusInit": [ 0, 23, 0, 0, 0, 11 ],
-    "statusLv": [ 0, 2.4, 0, 0, 0, 1 ],
+    "statusInit": [ 0, 23.0, 0, 0, 0, 11.0 ],
+    "statusLv": [ 0, 2.4, 0, 0, 0, 1.0 ],
     "buff": [
       {
         "type": "アタック",
@@ -6015,7 +6311,9 @@
         "type": "与ダメージ(スキル)",
         "value": 15,
         "target": "自身(メイン)",
-        "condition": { "activeBuffCount": [ ">=", 4 ] }
+        "condition": {
+          "activeBuffCount": [ ">=", 4 ]
+        }
       }
     ],
     "tags": [ "分類:マスター装備" ]
@@ -6028,8 +6326,8 @@
     "slot": "武器",
     "rarity": "SSR",
     "classes": [ "ランサー" ],
-    "statusInit": [ 80, 23, 0, 0, 0, 0 ],
-    "statusLv": [ 15, 2.2, 0, 0, 0, 0 ],
+    "statusInit": [ 80.0, 23.0, 0, 0, 0, 0 ],
+    "statusLv": [ 15.0, 2.2, 0, 0, 0, 0 ],
     "buff": [
       {
         "type": "最大HP",
@@ -6073,8 +6371,8 @@
     "slot": "武器",
     "rarity": "SSR",
     "classes": [ "ライダー" ],
-    "statusInit": [ 70, 23, 0, 0, 0, 0 ],
-    "statusLv": [ 12, 2.4, 0, 0, 0, 0 ],
+    "statusInit": [ 70.0, 23.0, 0, 0, 0, 0 ],
+    "statusLv": [ 12.0, 2.4, 0, 0, 0, 0 ],
     "buff": [
       {
         "type": "アタック",
@@ -6112,8 +6410,8 @@
     "slot": "武器",
     "rarity": "SSR",
     "classes": [ "エアリアル" ],
-    "statusInit": [ 70, 23, 0, 0, 0, 0 ],
-    "statusLv": [ 12, 2.4, 0, 0, 0, 0 ],
+    "statusInit": [ 70.0, 23.0, 0, 0, 0, 0 ],
+    "statusLv": [ 12.0, 2.4, 0, 0, 0, 0 ],
     "buff": [
       {
         "type": "アタック",
@@ -6153,8 +6451,8 @@
     "slot": "武器",
     "rarity": "SSR",
     "classes": [ "ソーサラー" ],
-    "statusInit": [ 0, 0, 0, 23, 0, 11 ],
-    "statusLv": [ 0, 0, 0, 2.4, 0, 1 ],
+    "statusInit": [ 0, 0, 0, 23.0, 0, 11.0 ],
+    "statusLv": [ 0, 0, 0, 2.4, 0, 1.0 ],
     "buff": [
       {
         "type": "マジック",
@@ -6170,7 +6468,9 @@
         "trigger": {
           "target": "攻撃対象",
           "timing": "戦闘前",
-          "condition": { "targetActiveBuffCount": [ ">=", 2 ] }
+          "condition": {
+            "targetActiveBuffCount": [ ">=", 2 ]
+          }
         }
       }
     ],
@@ -6179,7 +6479,9 @@
         "value": 1,
         "target": "攻撃対象",
         "timing": "戦闘前",
-        "condition": { "targetActiveBuffCount": [ ">=", 2 ] }
+        "condition": {
+          "targetActiveBuffCount": [ ">=", 2 ]
+        }
       }
     ],
     "tags": [ "分類:マスター装備" ]
@@ -6192,7 +6494,7 @@
     "slot": "武器",
     "rarity": "SSR",
     "classes": [ "セイント" ],
-    "statusInit": [ 0, 23, 0, 23, 0, 0 ],
+    "statusInit": [ 0, 23.0, 0, 23.0, 0, 0 ],
     "statusLv": [ 0, 2.4, 0, 2.4, 0, 0 ],
     "buff": [
       {
@@ -6213,7 +6515,9 @@
         "trigger": {
           "target": "味方(低HP)",
           "timing": "戦闘後",
-          "condition": { "onOwnTurn": true }
+          "condition": {
+            "onOwnTurn": true
+          }
         }
       },
       {
@@ -6224,7 +6528,9 @@
         "trigger": {
           "target": "味方(低HP)",
           "timing": "戦闘後",
-          "condition": { "onOwnTurn": true }
+          "condition": {
+            "onOwnTurn": true
+          }
         }
       }
     ],
@@ -6234,7 +6540,9 @@
         "rate": 0.15,
         "target": "味方(低HP)",
         "timing": "戦闘後",
-        "condition": { "onOwnTurn": true }
+        "condition": {
+          "onOwnTurn": true
+        }
       }
     ],
     "tags": [ "分類:マスター装備" ]
@@ -6247,8 +6555,8 @@
     "slot": "武器",
     "rarity": "SSR",
     "classes": [ "シューター" ],
-    "statusInit": [ 70, 23, 0, 0, 0, 0 ],
-    "statusLv": [ 12, 2.4, 0, 0, 0, 0 ],
+    "statusInit": [ 70.0, 23.0, 0, 0, 0, 0 ],
+    "statusLv": [ 12.0, 2.4, 0, 0, 0, 0 ],
     "buff": [
       {
         "type": "アタック",
@@ -6261,7 +6569,9 @@
         "ephemeral": true,
         "target": "自身(メイン)",
         "timing": "戦闘前",
-        "condition": { "onOwnTurn": true }
+        "condition": {
+          "onOwnTurn": true
+        }
       }
     ],
     "heal": [
@@ -6270,7 +6580,9 @@
         "rate": 0.05,
         "target": "自身",
         "timing": "戦闘後",
-        "condition": { "onOwnTurn": true }
+        "condition": {
+          "onOwnTurn": true
+        }
       }
     ],
     "tags": [ "分類:マスター装備" ]
@@ -6283,8 +6595,8 @@
     "slot": "武器",
     "rarity": "SSR",
     "classes": [ "アサシン" ],
-    "statusInit": [ 0, 23, 0, 0, 0, 11 ],
-    "statusLv": [ 0, 2.4, 0, 0, 0, 1 ],
+    "statusInit": [ 0, 23.0, 0, 0, 0, 11.0 ],
+    "statusLv": [ 0, 2.4, 0, 0, 0, 1.0 ],
     "buff": [
       {
         "type": "与ダメージ",
@@ -6322,8 +6634,8 @@
     "slot": "武器",
     "rarity": "SSR",
     "classes": [ "ライダー", "エアリアル" ],
-    "statusInit": [ 68, 14, 0, 0, 0, 0 ],
-    "statusLv": [ 12, 1.59, 0, 0, 0, 0 ],
+    "statusInit": [ 68.0, 14.0, 0, 0, 0, 0 ],
+    "statusLv": [ 12.0, 1.59, 0, 0, 0, 0 ],
     "buff": [
       {
         "type": "与ダメージ",
@@ -6343,8 +6655,8 @@
     "slot": "鎧",
     "rarity": "SSR",
     "classes": [ "ソーサラー", "シューター", "アサシン" ],
-    "statusInit": [ 50, 0, 8.2, 0, 0, 0 ],
-    "statusLv": [ 10, 0, 1.21, 0, 0, 0 ],
+    "statusInit": [ 50.0, 0, 8.2, 0, 0, 0 ],
+    "statusLv": [ 10.0, 0, 1.21, 0, 0, 0 ],
     "buff": [
       {
         "type": "ディフェンス",
@@ -6401,38 +6713,48 @@
     "slot": "兜",
     "rarity": "SSR",
     "classes": [ "ソルジャー", "ランサー", "セイント" ],
-    "statusInit": [ 68, 0, 0, 0, 7.8, 0 ],
-    "statusLv": [ 11, 0, 0, 0, 0.99, 0 ],
+    "statusInit": [ 68.0, 0, 0, 0, 7.8, 0 ],
+    "statusLv": [ 11.0, 0, 0, 0, 0.99, 0 ],
     "buff": [
       {
         "type": "アタック",
         "value": 15,
         "target": "自身(メイン)",
-        "condition": { "turn": [ ">=", 5 ] }
+        "condition": {
+          "turn": [ ">=", 5 ]
+        }
       },
       {
         "type": "ディフェンス",
         "value": 15,
         "target": "自身(メイン)",
-        "condition": { "turn": [ ">=", 5 ] }
+        "condition": {
+          "turn": [ ">=", 5 ]
+        }
       },
       {
         "type": "マジック",
         "value": 15,
         "target": "自身(メイン)",
-        "condition": { "turn": [ ">=", 5 ] }
+        "condition": {
+          "turn": [ ">=", 5 ]
+        }
       },
       {
         "type": "レジスト",
         "value": 15,
         "target": "自身(メイン)",
-        "condition": { "turn": [ ">=", 5 ] }
+        "condition": {
+          "turn": [ ">=", 5 ]
+        }
       },
       {
         "type": "テクニック",
         "value": 15,
         "target": "自身(メイン)",
-        "condition": { "turn": [ ">=", 5 ] }
+        "condition": {
+          "turn": [ ">=", 5 ]
+        }
       },
       {
         "type": "ダメージ耐性",
@@ -6469,7 +6791,9 @@
         "rate": 0.05,
         "target": "自身",
         "timing": "戦闘後",
-        "condition": { "onOwnTurn": true }
+        "condition": {
+          "onOwnTurn": true
+        }
       }
     ],
     "tags": [ "分類:コラボ装備" ]
@@ -6482,8 +6806,8 @@
     "slot": "武器",
     "rarity": "SSR",
     "classes": [ "ソルジャー", "ライダー", "ランサー" ],
-    "statusInit": [ 42, 20, 0, 0, 0, 0 ],
-    "statusLv": [ 11, 2.2, 0, 0, 0, 0 ],
+    "statusInit": [ 42.0, 20.0, 0, 0, 0, 0 ],
+    "statusLv": [ 11.0, 2.2, 0, 0, 0, 0 ],
     "buff": [
       {
         "type": "与ダメージ",
@@ -6491,7 +6815,9 @@
         "ephemeral": true,
         "target": "自身(メイン)",
         "timing": "戦闘前",
-        "condition": { "onClassAdvantage": true }
+        "condition": {
+          "onClassAdvantage": true
+        }
       },
       {
         "type": "ディフェンス",
@@ -6514,7 +6840,7 @@
     "slot": "鎧",
     "rarity": "SSR",
     "classes": [ "エアリアル", "シューター", "アサシン" ],
-    "statusInit": [ 60, 0, 12.3, 0, 0, 0 ],
+    "statusInit": [ 60.0, 0, 12.3, 0, 0, 0 ],
     "statusLv": [ 9.3, 0, 1.11, 0, 0, 0 ],
     "buff": [
       {
@@ -6543,7 +6869,7 @@
     "slot": "兜",
     "rarity": "SSR",
     "classes": [ "ソーサラー", "セイント" ],
-    "statusInit": [ 50, 0, 0, 0, 18.6, 0 ],
+    "statusInit": [ 50.0, 0, 0, 0, 18.6, 0 ],
     "statusLv": [ 6.5, 0, 0, 0, 1.12, 0 ],
     "buff": [
       {
@@ -6566,8 +6892,8 @@
     "desc": "アタック+5%。\n自ユニットが敵ユニットのディフェンスの8%分を無視して攻撃できる。",
     "slot": "アクセサリ",
     "rarity": "SSR",
-    "statusInit": [ 60, 13, 0, 0, 0, 0 ],
-    "statusLv": [ 10, 1.78, 0, 0, 0, 0 ],
+    "statusInit": [ 60.0, 13.0, 0, 0, 0, 0 ],
+    "statusLv": [ 10.0, 1.78, 0, 0, 0, 0 ],
     "buff": [
       {
         "type": "アタック",
@@ -6589,8 +6915,8 @@
     "desc": "移動+1。\n敵ターンでの戦闘時、その戦闘前、自ユニットのダメージ耐性+8%。",
     "slot": "アクセサリ",
     "rarity": "SSR",
-    "statusInit": [ 0, 0, 9, 0, 9, 0 ],
-    "statusLv": [ 0, 0, 1, 0, 1, 0 ],
+    "statusInit": [ 0, 0, 9.0, 0, 9.0, 0 ],
+    "statusLv": [ 0, 0, 1.0, 0, 1.0, 0 ],
     "buff": [
       {
         "type": "移動",
@@ -6603,7 +6929,9 @@
         "ephemeral": true,
         "target": "自身",
         "timing": "戦闘前",
-        "condition": { "onEnemyTurn": true }
+        "condition": {
+          "onEnemyTurn": true
+        }
       }
     ],
     "tags": [ "分類:ギルド装備" ]
@@ -6615,8 +6943,8 @@
     "desc": "自身を中心とした周囲1マス以内に味方ユニットがいない時、アタック/与ダメージ+12%。",
     "slot": "アクセサリ",
     "rarity": "SSR",
-    "statusInit": [ 60, 13, 0, 0, 0, 0 ],
-    "statusLv": [ 10, 1.78, 0, 0, 0, 0 ],
+    "statusInit": [ 60.0, 13.0, 0, 0, 0, 0 ],
+    "statusLv": [ 10.0, 1.78, 0, 0, 0, 0 ],
     "buff": [
       {
         "type": "アタック",
@@ -6650,7 +6978,7 @@
     "desc": "アタック/マジック+8%。\nスキル与ダメージ+10%。",
     "slot": "アクセサリ",
     "rarity": "SSR",
-    "statusInit": [ 0, 13, 0, 13, 0, 0 ],
+    "statusInit": [ 0, 13.0, 0, 13.0, 0, 0 ],
     "statusLv": [ 0, 1.78, 0, 1.78, 0, 0 ],
     "buff": [
       {
@@ -6678,8 +7006,8 @@
     "desc": "マジック+5%。\n自ユニットが敵ユニットのレジストの8%分を無視して攻撃できる。",
     "slot": "アクセサリ",
     "rarity": "SSR",
-    "statusInit": [ 60, 0, 0, 13, 0, 0 ],
-    "statusLv": [ 10, 0, 0, 1.78, 0, 0 ],
+    "statusInit": [ 60.0, 0, 0, 13.0, 0, 0 ],
+    "statusLv": [ 10.0, 0, 0, 1.78, 0, 0 ],
     "buff": [
       {
         "type": "マジック",
@@ -6701,8 +7029,8 @@
     "desc": "最大HP+15%。\n行動終了時、自身を中心とした範囲2マス以内の全ての味方ユニットのメイン、サポートそれぞれのHPが最大HPの8%分回復する。",
     "slot": "アクセサリ",
     "rarity": "SSR",
-    "statusInit": [ 0, 0, 9, 0, 9, 0 ],
-    "statusLv": [ 0, 0, 1, 0, 1, 0 ],
+    "statusInit": [ 0, 0, 9.0, 0, 9.0, 0 ],
+    "statusLv": [ 0, 0, 1.0, 0, 1.0, 0 ],
     "buff": [
       {
         "type": "最大HP",
@@ -6728,7 +7056,7 @@
     "desc": "最大HP+10%。\n自ユニットのHPが100%の時、範囲スキル与ダメージ+15%。",
     "slot": "アクセサリ",
     "rarity": "SSR",
-    "statusInit": [ 0, 13, 0, 13, 0, 0 ],
+    "statusInit": [ 0, 13.0, 0, 13.0, 0, 0 ],
     "statusLv": [ 0, 1.78, 0, 1.78, 0, 0 ],
     "buff": [
       {
@@ -6740,7 +7068,9 @@
         "type": "与ダメージ(範囲スキル)",
         "value": 15,
         "target": "自身(メイン)",
-        "condition": { "hp": [ ">=", 100 ] }
+        "condition": {
+          "hp": [ ">=", 100 ]
+        }
       }
     ],
     "tags": [ "分類:ギルド装備" ]
@@ -6752,7 +7082,7 @@
     "desc": "クリティカル率/クリティカルダメージ倍率+10%。",
     "slot": "アクセサリ",
     "rarity": "SSR",
-    "statusInit": [ 0, 13, 0, 13, 0, 0 ],
+    "statusInit": [ 0, 13.0, 0, 13.0, 0, 0 ],
     "statusLv": [ 0, 1.78, 0, 1.78, 0, 0 ],
     "buff": [
       {
@@ -6776,7 +7106,7 @@
     "slot": "武器",
     "rarity": "SSR",
     "classes": [ "ソルジャー", "エアリアル" ],
-    "statusInit": [ 0, 16, 0, 0, 0, 7.6 ],
+    "statusInit": [ 0, 16.0, 0, 0, 0, 7.6 ],
     "statusLv": [ 0, 2.04, 0, 0, 0, 0.79 ],
     "buff": [
       {
@@ -6805,7 +7135,7 @@
     "slot": "鎧",
     "rarity": "SSR",
     "classes": [ "ソーサラー", "セイント", "シューター", "アサシン" ],
-    "statusInit": [ 60, 0, 12.3, 0, 0, 0 ],
+    "statusInit": [ 60.0, 0, 12.3, 0, 0, 0 ],
     "statusLv": [ 9.3, 0, 1.11, 0, 0, 0 ],
     "buff": [
       {
@@ -6829,8 +7159,8 @@
     "slot": "兜",
     "rarity": "SSR",
     "classes": [ "ライダー", "ランサー" ],
-    "statusInit": [ 68, 0, 0, 0, 7.8, 0 ],
-    "statusLv": [ 11, 0, 0, 0, 0.99, 0 ],
+    "statusInit": [ 68.0, 0, 0, 0, 7.8, 0 ],
+    "statusLv": [ 11.0, 0, 0, 0, 0.99, 0 ],
     "buff": [
       {
         "type": "最大HP",
@@ -6856,8 +7186,8 @@
     "slot": "鎧",
     "rarity": "SSR",
     "classes": [ "ソルジャー", "ランサー" ],
-    "statusInit": [ 49, 0, 10, 0, 0, 0 ],
-    "statusLv": [ 8, 0, 1.33, 0, 0, 0 ],
+    "statusInit": [ 49.0, 0, 10.0, 0, 0, 0 ],
+    "statusLv": [ 8.0, 0, 1.33, 0, 0, 0 ],
     "buff": [
       {
         "type": "最大HP",
@@ -6873,7 +7203,9 @@
         "type": "アタック",
         "value": 15,
         "target": "自身(メイン)",
-        "condition": { "hp": [ "<=", 80 ] }
+        "condition": {
+          "hp": [ "<=", 80 ]
+        }
       }
     ],
     "tags": [ "分類:ゴールド装備" ]
@@ -6886,8 +7218,8 @@
     "slot": "鎧",
     "rarity": "SSR",
     "classes": [ "ライダー", "エアリアル" ],
-    "statusInit": [ 50, 0, 8, 0, 0, 0 ],
-    "statusLv": [ 10, 0, 1.21, 0, 0, 0 ],
+    "statusInit": [ 50.0, 0, 8.0, 0, 0, 0 ],
+    "statusLv": [ 10.0, 0, 1.21, 0, 0, 0 ],
     "buff": [
       {
         "type": "最大HP",
@@ -6900,7 +7232,9 @@
         "ephemeral": true,
         "target": "自身(メイン)",
         "timing": "戦闘前",
-        "condition": { "onOwnTurn": true }
+        "condition": {
+          "onOwnTurn": true
+        }
       },
       {
         "type": "アタック",
@@ -6923,8 +7257,8 @@
     "slot": "鎧",
     "rarity": "SSR",
     "classes": [ "ソーサラー", "セイント" ],
-    "statusInit": [ 68, 0, 10, 0, 0, 0 ],
-    "statusLv": [ 11, 0, 1.11, 0, 0, 0 ],
+    "statusInit": [ 68.0, 0, 10.0, 0, 0, 0 ],
+    "statusLv": [ 11.0, 0, 1.11, 0, 0, 0 ],
     "buff": [
       {
         "type": "最大HP",
@@ -6973,8 +7307,8 @@
     "slot": "鎧",
     "rarity": "SSR",
     "classes": [ "シューター", "アサシン" ],
-    "statusInit": [ 50, 0, 8, 0, 0, 0 ],
-    "statusLv": [ 10, 0, 1.21, 0, 0, 0 ],
+    "statusInit": [ 50.0, 0, 8.0, 0, 0, 0 ],
+    "statusLv": [ 10.0, 0, 1.21, 0, 0, 0 ],
     "buff": [
       {
         "type": "ディフェンス",
@@ -6985,13 +7319,17 @@
         "type": "アタック",
         "value": 12,
         "target": "自身(メイン)",
-        "condition": { "hp": [ ">=", 100 ] }
+        "condition": {
+          "hp": [ ">=", 100 ]
+        }
       },
       {
         "type": "与ダメージ(範囲スキル)",
         "value": 10,
         "target": "自身(メイン)",
-        "condition": { "hp": [ ">=", 100 ] }
+        "condition": {
+          "hp": [ ">=", 100 ]
+        }
       }
     ],
     "tags": [ "分類:ゴールド装備" ]
@@ -7004,8 +7342,8 @@
     "slot": "武器",
     "rarity": "SSR",
     "classes": [ "ソーサラー", "セイント" ],
-    "statusInit": [ 0, 18, 0, 18, 0, 0 ],
-    "statusLv": [ 0, 2, 0, 2, 0, 0 ],
+    "statusInit": [ 0, 18.0, 0, 18.0, 0, 0 ],
+    "statusLv": [ 0, 2.0, 0, 2.0, 0, 0 ],
     "buff": [
       {
         "type": "マジック",
@@ -7038,7 +7376,7 @@
     "slot": "鎧",
     "rarity": "SSR",
     "classes": [ "ソルジャー", "ライダー", "ランサー" ],
-    "statusInit": [ 59, 0, 15.6, 0, 0, 0 ],
+    "statusInit": [ 59.0, 0, 15.6, 0, 0, 0 ],
     "statusLv": [ 7.4, 0, 1.14, 0, 0, 0 ],
     "buff": [
       {
@@ -7062,7 +7400,7 @@
     "slot": "兜",
     "rarity": "SSR",
     "classes": [ "エアリアル", "シューター", "アサシン" ],
-    "statusInit": [ 61, 0, 0, 0, 15.3, 0 ],
+    "statusInit": [ 61.0, 0, 0, 0, 15.3, 0 ],
     "statusLv": [ 7.4, 0, 0, 0, 1.06, 0 ],
     "buff": [
       {
@@ -7082,7 +7420,9 @@
         "rate": 0.25,
         "target": "自身",
         "timing": "行動後",
-        "condition": { "probability": 50 }
+        "condition": {
+          "probability": 50
+        }
       }
     ],
     "tags": [ "分類:遺跡装備", "デメリット:自傷効果" ]
@@ -7094,7 +7434,7 @@
     "desc": "アタック/マジック+10%。\nスキルを使用した戦闘前、敵ユニットに固定ダメージを与えて倒したとき、自身を中心とした範囲2マス以内の全ての敵ユニットのディフェンス/レジスト-10%(1ターン)。\n敵ユニットに自身がスキルでダメージを与えたとき、自身を中心とした範囲2マス以内の全ての敵ユニットのディフェンス/レジスト-10%(1ターン)。",
     "slot": "アクセサリ",
     "rarity": "SSR",
-    "statusInit": [ 0, 13, 0, 13, 0, 0 ],
+    "statusInit": [ 0, 13.0, 0, 13.0, 0, 0 ],
     "statusLv": [ 0, 1.78, 0, 1.78, 0, 0 ],
     "buff": [
       {
@@ -7148,8 +7488,8 @@
     "slot": "武器",
     "rarity": "SSR",
     "classes": [ "ソーサラー", "セイント" ],
-    "statusInit": [ 0, 0, 0, 23, 0, 11 ],
-    "statusLv": [ 0, 0, 0, 2.4, 0, 1 ],
+    "statusInit": [ 0, 0, 0, 23.0, 0, 11.0 ],
+    "statusLv": [ 0, 0, 0, 2.4, 0, 1.0 ],
     "buff": [
       {
         "type": "マジック",
@@ -7192,8 +7532,8 @@
     "slot": "武器",
     "rarity": "SSR",
     "classes": [ "シューター", "アサシン" ],
-    "statusInit": [ 0, 23, 0, 0, 0, 11 ],
-    "statusLv": [ 0, 2.4, 0, 0, 0, 1 ],
+    "statusInit": [ 0, 23.0, 0, 0, 0, 11.0 ],
+    "statusLv": [ 0, 2.4, 0, 0, 0, 1.0 ],
     "buff": [
       {
         "type": "アタック",
@@ -7210,7 +7550,9 @@
         "value": 20,
         "ephemeral": true,
         "target": "自身(メイン)",
-        "condition": { "onOwnTurn": true }
+        "condition": {
+          "onOwnTurn": true
+        }
       }
     ],
     "tags": [ "分類:真厄神装備" ]
@@ -7223,7 +7565,7 @@
     "slot": "武器",
     "rarity": "SSR",
     "classes": [ "ソルジャー", "セイント" ],
-    "statusInit": [ 0, 23, 0, 23, 0, 0 ],
+    "statusInit": [ 0, 23.0, 0, 23.0, 0, 0 ],
     "statusLv": [ 0, 2.4, 0, 2.4, 0, 0 ],
     "buff": [
       {
@@ -7275,8 +7617,8 @@
     "slot": "武器",
     "rarity": "SSR",
     "classes": [ "ライダー", "エアリアル" ],
-    "statusInit": [ 70, 23, 0, 0, 0, 0 ],
-    "statusLv": [ 12, 2.4, 0, 0, 0, 0 ],
+    "statusInit": [ 70.0, 23.0, 0, 0, 0, 0 ],
+    "statusLv": [ 12.0, 2.4, 0, 0, 0, 0 ],
     "buff": [
       {
         "type": "アタック",
@@ -7296,7 +7638,9 @@
         "trigger": {
           "target": "自身",
           "timing": "戦闘後",
-          "condition": { "onCriticalHit": true }
+          "condition": {
+            "onCriticalHit": true
+          }
         }
       },
       {
@@ -7307,7 +7651,9 @@
         "trigger": {
           "target": "自身",
           "timing": "戦闘後",
-          "condition": { "onCriticalHit": true }
+          "condition": {
+            "onCriticalHit": true
+          }
         }
       }
     ],
@@ -7317,7 +7663,9 @@
         "rate": 0.05,
         "target": "自身",
         "timing": "戦闘後",
-        "condition": { "onCriticalHit": true }
+        "condition": {
+          "onCriticalHit": true
+        }
       }
     ],
     "tags": [ "分類:真厄神装備" ],
@@ -7331,8 +7679,8 @@
     "slot": "武器",
     "rarity": "SSR",
     "classes": [ "シューター", "アサシン" ],
-    "statusInit": [ 70, 23, 0, 0, 0, 0 ],
-    "statusLv": [ 12, 2.4, 0, 0, 0, 0 ],
+    "statusInit": [ 70.0, 23.0, 0, 0, 0, 0 ],
+    "statusLv": [ 12.0, 2.4, 0, 0, 0, 0 ],
     "buff": [
       {
         "type": "アタック",
@@ -7352,7 +7700,9 @@
         "trigger": {
           "target": "自身",
           "timing": "戦闘後",
-          "condition": { "onCriticalHit": true }
+          "condition": {
+            "onCriticalHit": true
+          }
         }
       }
     ],
@@ -7361,7 +7711,9 @@
         "value": 1,
         "target": "攻撃対象",
         "timing": "戦闘後",
-        "condition": { "onCriticalHit": true }
+        "condition": {
+          "onCriticalHit": true
+        }
       }
     ],
     "tags": [ "分類:真厄神装備" ],
@@ -7375,8 +7727,8 @@
     "slot": "武器",
     "rarity": "SSR",
     "classes": [ "ライダー", "ランサー" ],
-    "statusInit": [ 80, 23, 0, 0, 0, 0 ],
-    "statusLv": [ 15, 2.2, 0, 0, 0, 0 ],
+    "statusInit": [ 80.0, 23.0, 0, 0, 0, 0 ],
+    "statusLv": [ 15.0, 2.2, 0, 0, 0, 0 ],
     "buff": [
       {
         "type": "アタック",
@@ -7394,7 +7746,9 @@
         "ephemeral": true,
         "target": "自身(メイン)",
         "timing": "戦闘前",
-        "condition": { "onOwnTurn": true }
+        "condition": {
+          "onOwnTurn": true
+        }
       }
     ],
     "tags": [ "分類:真厄神装備" ],
@@ -7408,7 +7762,7 @@
     "slot": "武器",
     "rarity": "SSR",
     "classes": [ "ソルジャー", "ソーサラー" ],
-    "statusInit": [ 0, 23, 0, 23, 0, 0 ],
+    "statusInit": [ 0, 23.0, 0, 23.0, 0, 0 ],
     "statusLv": [ 0, 2.4, 0, 2.4, 0, 0 ],
     "buff": [
       {
@@ -7427,7 +7781,9 @@
         "ephemeral": true,
         "target": "自身(メイン)",
         "timing": "戦闘前",
-        "condition": { "onOwnTurn": true }
+        "condition": {
+          "onOwnTurn": true
+        }
       },
       {
         "type": "クリティカルダメージ倍率",
@@ -7435,7 +7791,9 @@
         "ephemeral": true,
         "target": "自身(メイン)",
         "timing": "戦闘前",
-        "condition": { "onOwnTurn": true }
+        "condition": {
+          "onOwnTurn": true
+        }
       }
     ],
     "tags": [ "分類:真厄神装備" ]
@@ -7448,8 +7806,8 @@
     "slot": "武器",
     "rarity": "SSR",
     "classes": [ "ランサー", "エアリアル" ],
-    "statusInit": [ 0, 23, 0, 0, 0, 11 ],
-    "statusLv": [ 0, 2.4, 0, 0, 0, 1 ],
+    "statusInit": [ 0, 23.0, 0, 0, 0, 11.0 ],
+    "statusLv": [ 0, 2.4, 0, 0, 0, 1.0 ],
     "buff": [
       {
         "type": "アタック",
@@ -7467,7 +7825,9 @@
         "ephemeral": true,
         "target": "自身(メイン)",
         "timing": "戦闘前",
-        "condition": { "onOwnTurn": true }
+        "condition": {
+          "onOwnTurn": true
+        }
       },
       {
         "type": "ダメージ耐性",
@@ -7475,7 +7835,9 @@
         "ephemeral": true,
         "target": "自身(メイン)",
         "timing": "戦闘前",
-        "condition": { "onEnemyTurn": true }
+        "condition": {
+          "onEnemyTurn": true
+        }
       }
     ],
     "tags": [ "分類:真厄神装備" ]
@@ -7488,8 +7850,8 @@
     "slot": "武器",
     "rarity": "SSR",
     "classes": [ "シューター", "アサシン" ],
-    "statusInit": [ 0, 23, 0, 0, 0, 11 ],
-    "statusLv": [ 0, 2.4, 0, 0, 0, 1 ],
+    "statusInit": [ 0, 23.0, 0, 0, 0, 11.0 ],
+    "statusLv": [ 0, 2.4, 0, 0, 0, 1.0 ],
     "buff": [
       {
         "type": "クリティカルダメージ倍率",
@@ -7522,7 +7884,7 @@
     "slot": "鎧",
     "rarity": "SSR",
     "classes": [ "ソルジャー", "ライダー", "ランサー" ],
-    "statusInit": [ 59, 0, 15.6, 0, 0, 0 ],
+    "statusInit": [ 59.0, 0, 15.6, 0, 0, 0 ],
     "statusLv": [ 7.4, 0, 1.14, 0, 0, 0 ],
     "buff": [
       {
@@ -7546,7 +7908,7 @@
     "slot": "兜",
     "rarity": "SSR",
     "classes": [ "エアリアル", "ソーサラー", "セイント" ],
-    "statusInit": [ 61, 0, 0, 0, 15.3, 0 ],
+    "statusInit": [ 61.0, 0, 0, 0, 15.3, 0 ],
     "statusLv": [ 7.4, 0, 0, 0, 1.06, 0 ],
     "buff": [
       {
@@ -7603,8 +7965,8 @@
     "desc": "アタック+12%。\nアクティブスキルで敵ユニットを倒した時、クールタイム-1。",
     "slot": "アクセサリ",
     "rarity": "SSR",
-    "statusInit": [ 0, 13, 9, 0, 0, 0 ],
-    "statusLv": [ 0, 1.78, 1, 0, 0, 0 ],
+    "statusInit": [ 0, 13.0, 9.0, 0, 0, 0 ],
+    "statusLv": [ 0, 1.78, 1.0, 0, 0, 0 ],
     "buff": [
       {
         "type": "アタック",
@@ -7618,7 +7980,9 @@
         "value": 1,
         "targetSkill": "全スキル",
         "timing": "敵撃破時",
-        "condition": { "onActiveSkill": true }
+        "condition": {
+          "onActiveSkill": true
+        }
       }
     ],
     "tags": [ "分類:スターフォース装備" ],
@@ -7631,8 +7995,8 @@
     "desc": "最大HP/治療効果+10%。\n行動終了時、自身を中心とした範囲1マス以内の全ての味方ユニットのメイン、サポートそれぞれのHPが最大HPの10%分回復する。",
     "slot": "アクセサリ",
     "rarity": "SSR",
-    "statusInit": [ 55, 0, 8, 0, 0, 0 ],
-    "statusLv": [ 10, 0, 1, 0, 0, 0 ],
+    "statusInit": [ 55.0, 0, 8.0, 0, 0, 0 ],
+    "statusLv": [ 10.0, 0, 1.0, 0, 0, 0 ],
     "buff": [
       {
         "type": "最大HP",
@@ -7664,8 +8028,8 @@
     "slot": "武器",
     "rarity": "SSR",
     "classes": [ "ライダー", "ランサー" ],
-    "statusInit": [ 68, 14, 0, 0, 0, 0 ],
-    "statusLv": [ 12, 1.59, 0, 0, 0, 0 ],
+    "statusInit": [ 68.0, 14.0, 0, 0, 0, 0 ],
+    "statusLv": [ 12.0, 1.59, 0, 0, 0, 0 ],
     "buff": [
       {
         "type": "最大HP",
@@ -7688,7 +8052,7 @@
     "slot": "鎧",
     "rarity": "SSR",
     "classes": [ "エアリアル", "ソーサラー", "セイント" ],
-    "statusInit": [ 60, 0, 12.3, 0, 0, 0 ],
+    "statusInit": [ 60.0, 0, 12.3, 0, 0, 0 ],
     "statusLv": [ 9.3, 0, 1.11, 0, 0, 0 ],
     "buff": [
       {
@@ -7708,7 +8072,9 @@
         "rate": 0.25,
         "target": "自身",
         "timing": "行動後",
-        "condition": { "probability": 50 }
+        "condition": {
+          "probability": 50
+        }
       }
     ],
     "tags": [ "分類:遺跡装備", "デメリット:自傷効果" ]
@@ -7721,7 +8087,7 @@
     "slot": "兜",
     "rarity": "SSR",
     "classes": [ "ソルジャー", "シューター", "アサシン" ],
-    "statusInit": [ 61, 0, 0, 0, 15.3, 0 ],
+    "statusInit": [ 61.0, 0, 0, 0, 15.3, 0 ],
     "statusLv": [ 7.4, 0, 0, 0, 1.06, 0 ],
     "buff": [
       {
@@ -7744,8 +8110,8 @@
     "desc": "マジック+12%。\n範囲スキルを使用する時、範囲+1。",
     "slot": "アクセサリ",
     "rarity": "SSR",
-    "statusInit": [ 0, 0, 0, 13, 9, 0 ],
-    "statusLv": [ 0, 0, 0, 1.78, 1, 0 ],
+    "statusInit": [ 0, 0, 0, 13.0, 9.0, 0 ],
+    "statusLv": [ 0, 0, 0, 1.78, 1.0, 0 ],
     "buff": [
       {
         "type": "マジック",
@@ -7768,8 +8134,8 @@
     "slot": "武器",
     "rarity": "SSR",
     "classes": [ "ライダー", "ランサー", "エアリアル" ],
-    "statusInit": [ 68, 14, 0, 0, 0, 0 ],
-    "statusLv": [ 12, 1.59, 0, 0, 0, 0 ],
+    "statusInit": [ 68.0, 14.0, 0, 0, 0, 0 ],
+    "statusLv": [ 12.0, 1.59, 0, 0, 0, 0 ],
     "buff": [
       {
         "type": "クリティカル率",
@@ -7802,7 +8168,7 @@
     "slot": "鎧",
     "rarity": "SSR",
     "classes": [ "シューター", "アサシン" ],
-    "statusInit": [ 60, 0, 12.3, 0, 0, 0 ],
+    "statusInit": [ 60.0, 0, 12.3, 0, 0, 0 ],
     "statusLv": [ 9.3, 0, 1.11, 0, 0, 0 ],
     "buff": [
       {
@@ -7826,8 +8192,8 @@
     "slot": "兜",
     "rarity": "SSR",
     "classes": [ "ソルジャー", "ソーサラー", "セイント" ],
-    "statusInit": [ 68, 0, 0, 0, 7.8, 0 ],
-    "statusLv": [ 11, 0, 0, 0, 0.99, 0 ],
+    "statusInit": [ 68.0, 0, 0, 0, 7.8, 0 ],
+    "statusLv": [ 11.0, 0, 0, 0, 0.99, 0 ],
     "buff": [
       {
         "type": "アタック",
@@ -7858,31 +8224,41 @@
         "type": "アタック",
         "value": -50,
         "target": "自身",
-        "condition": { "turn": [ ">=", 4 ] }
+        "condition": {
+          "turn": [ ">=", 4 ]
+        }
       },
       {
         "type": "ディフェンス",
         "value": -50,
         "target": "自身",
-        "condition": { "turn": [ ">=", 4 ] }
+        "condition": {
+          "turn": [ ">=", 4 ]
+        }
       },
       {
         "type": "マジック",
         "value": -50,
         "target": "自身",
-        "condition": { "turn": [ ">=", 4 ] }
+        "condition": {
+          "turn": [ ">=", 4 ]
+        }
       },
       {
         "type": "レジスト",
         "value": -50,
         "target": "自身",
-        "condition": { "turn": [ ">=", 4 ] }
+        "condition": {
+          "turn": [ ">=", 4 ]
+        }
       },
       {
         "type": "テクニック",
         "value": -50,
         "target": "自身",
-        "condition": { "turn": [ ">=", 4 ] }
+        "condition": {
+          "turn": [ ">=", 4 ]
+        }
       }
     ],
     "tags": [ "分類:遺跡装備" ],
@@ -7895,7 +8271,7 @@
     "desc": "",
     "slot": "月のアミュレット",
     "rarity": "SSR",
-    "statusInit": [ 68.75, 15, 0, 0, 0, 0 ],
+    "statusInit": [ 68.75, 15.0, 0, 0, 0, 0 ],
     "statusLv": [ 12.5, 1.88, 0, 0, 0, 0 ],
     "amuletType": "月"
   },
@@ -7906,7 +8282,7 @@
     "desc": "",
     "slot": "月のアミュレット",
     "rarity": "SSR",
-    "statusInit": [ 68.75, 0, 0, 15, 0, 0 ],
+    "statusInit": [ 68.75, 0, 0, 15.0, 0, 0 ],
     "statusLv": [ 12.5, 0, 0, 1.88, 0, 0 ],
     "amuletType": "月"
   },
@@ -7916,7 +8292,7 @@
     "date": "2022/4/22",
     "slot": "月のアミュレット",
     "rarity": "SR",
-    "statusInit": [ 50, 10, 0, 0, 0, 0 ],
+    "statusInit": [ 50.0, 10.0, 0, 0, 0, 0 ],
     "statusLv": [ 8.75, 1.56, 0, 0, 0, 0 ],
     "amuletType": "月"
   },
@@ -7927,7 +8303,7 @@
     "desc": "",
     "slot": "月のアミュレット",
     "rarity": "SR",
-    "statusInit": [ 50, 0, 0, 10, 0, 0 ],
+    "statusInit": [ 50.0, 0, 0, 10.0, 0, 0 ],
     "statusLv": [ 8.75, 0, 0, 1.56, 0, 0 ],
     "amuletType": "月"
   },
@@ -7938,7 +8314,7 @@
     "desc": "",
     "slot": "太陽のアミュレット",
     "rarity": "SSR",
-    "statusInit": [ 135, 0, 6, 0, 0, 0 ],
+    "statusInit": [ 135.0, 0, 6.0, 0, 0, 0 ],
     "statusLv": [ 22.3, 0, 0.54, 0, 0, 0 ],
     "amuletType": "太陽"
   },
@@ -7949,7 +8325,7 @@
     "desc": "",
     "slot": "太陽のアミュレット",
     "rarity": "SSR",
-    "statusInit": [ 135, 0, 0, 0, 6, 0 ],
+    "statusInit": [ 135.0, 0, 0, 0, 6.0, 0 ],
     "statusLv": [ 22.3, 0, 0, 0, 0.54, 0 ],
     "amuletType": "太陽"
   },
@@ -7960,7 +8336,7 @@
     "desc": "",
     "slot": "太陽のアミュレット",
     "rarity": "SR",
-    "statusInit": [ 98, 0, 4, 0, 0, 0 ],
+    "statusInit": [ 98.0, 0, 4.0, 0, 0, 0 ],
     "statusLv": [ 17.75, 0, 0.45, 0, 0, 0 ],
     "amuletType": "太陽"
   },
@@ -7971,7 +8347,7 @@
     "desc": "",
     "slot": "太陽のアミュレット",
     "rarity": "SR",
-    "statusInit": [ 98, 0, 0, 0, 4, 0 ],
+    "statusInit": [ 98.0, 0, 0, 0, 4.0, 0 ],
     "statusLv": [ 17.75, 0, 0, 0, 0.45, 0 ],
     "amuletType": "太陽"
   },
@@ -7982,7 +8358,7 @@
     "desc": "アタック/マジック+10%。\n自ユニットのHPが50%以上のとき、クリティカル率/クリティカルダメージ倍率+15%。",
     "slot": "アクセサリ",
     "rarity": "SSR",
-    "statusInit": [ 0, 13, 0, 13, 0, 0 ],
+    "statusInit": [ 0, 13.0, 0, 13.0, 0, 0 ],
     "statusLv": [ 0, 1.78, 0, 1.78, 0, 0 ],
     "buff": [
       {
@@ -7999,13 +8375,17 @@
         "type": "クリティカル率",
         "value": 15,
         "target": "自身(メイン)",
-        "condition": { "hp": [ ">=", 50 ] }
+        "condition": {
+          "hp": [ ">=", 50 ]
+        }
       },
       {
         "type": "クリティカルダメージ倍率",
         "value": 15,
         "target": "自身(メイン)",
-        "condition": { "hp": [ ">=", 50 ] }
+        "condition": {
+          "hp": [ ">=", 50 ]
+        }
       }
     ],
     "tags": [ "分類:スターフォース装備" ]
@@ -8018,8 +8398,8 @@
     "rarity": "SSR",
     "classes": [ "ソーサラー", "セイント" ],
     "desc": "治療効果+50%/マジック+10%。\n[caution]自ユニットのディフェンス/レジスト-40%。[/caution]",
-    "statusInit": [ 68, 0, 0, 18, 0, 0 ],
-    "statusLv": [ 12, 0, 0, 2, 0, 0 ],
+    "statusInit": [ 68.0, 0, 0, 18.0, 0, 0 ],
+    "statusLv": [ 12.0, 0, 0, 2.0, 0, 0 ],
     "buff": [
       {
         "type": "治療効果",
@@ -8052,7 +8432,7 @@
     "rarity": "SSR",
     "classes": [ "ライダー", "エアリアル" ],
     "desc": "最大HP+40%。\n[caution]自ユニットの移動-2。[/caution]",
-    "statusInit": [ 59, 0, 15.6, 0, 0, 0 ],
+    "statusInit": [ 59.0, 0, 15.6, 0, 0, 0 ],
     "statusLv": [ 7.4, 0, 1.14, 0, 0, 0 ],
     "buff": [
       {
@@ -8076,8 +8456,8 @@
     "rarity": "SSR",
     "classes": [ "ソルジャー", "ランサー", "シューター" ],
     "desc": "スキル与ダメージ+15%。\n[caution]自ユニットの被治療効果-70%[/caution]。",
-    "statusInit": [ 68, 0, 0, 0, 7.8, 0 ],
-    "statusLv": [ 11, 0, 0, 0, 0.99, 0 ],
+    "statusInit": [ 68.0, 0, 0, 0, 7.8, 0 ],
+    "statusLv": [ 11.0, 0, 0, 0, 0.99, 0 ],
     "buff": [
       {
         "type": "与ダメージ(スキル)",
@@ -8099,8 +8479,8 @@
     "slot": "アクセサリ",
     "rarity": "SSR",
     "desc": "アタック+12%。\n行動終了時、メイン、サポートそれぞれのHPが最大HPの8%分回復する。\n「シューター/ソルジャー」のキャラに装備時、クリティカル率/クリティカルダメージ倍率+20%。",
-    "statusInit": [ 60, 13, 0, 0, 0, 0 ],
-    "statusLv": [ 10, 1.78, 0, 0, 0, 0 ],
+    "statusInit": [ 60.0, 13.0, 0, 0, 0, 0 ],
+    "statusLv": [ 10.0, 1.78, 0, 0, 0, 0 ],
     "buff": [
       {
         "type": "アタック",
@@ -8111,13 +8491,17 @@
         "type": "クリティカル率",
         "value": 20,
         "target": "自身(メイン)",
-        "condition": { "onClass": [ "シューター", "ソルジャー" ] }
+        "condition": {
+          "onClass": [ "シューター", "ソルジャー" ]
+        }
       },
       {
         "type": "クリティカルダメージ倍率",
         "value": 20,
         "target": "自身(メイン)",
-        "condition": { "onClass": [ "シューター", "ソルジャー" ] }
+        "condition": {
+          "onClass": [ "シューター", "ソルジャー" ]
+        }
       }
     ],
     "heal": [
@@ -8138,8 +8522,8 @@
     "rarity": "SSR",
     "classes": [ "ソルジャー", "ライダー", "ランサー" ],
     "desc": "アタック/通常攻撃与ダメージ+15%。\n[caution]自ユニットの被治療効果-60%。[/caution]",
-    "statusInit": [ 68, 14, 0, 0, 0, 0 ],
-    "statusLv": [ 12, 1.59, 0, 0, 0, 0 ],
+    "statusInit": [ 68.0, 14.0, 0, 0, 0, 0 ],
+    "statusLv": [ 12.0, 1.59, 0, 0, 0, 0 ],
     "buff": [
       {
         "type": "アタック",
@@ -8167,7 +8551,7 @@
     "rarity": "SSR",
     "classes": [ "ソーサラー", "セイント" ],
     "desc": "近距離による戦闘時、その戦闘前、与ダメージ/ダメージ耐性+15%。\n[caution]遠距離による戦闘時、その戦闘前、与ダメージ/ダメージ耐性-25%。[/caution]",
-    "statusInit": [ 60, 0, 12.3, 0, 0, 0 ],
+    "statusInit": [ 60.0, 0, 12.3, 0, 0, 0 ],
     "statusLv": [ 9.3, 0, 1.11, 0, 0, 0 ],
     "buff": [
       {
@@ -8176,7 +8560,9 @@
         "ephemeral": true,
         "target": "自身(メイン)",
         "timing": "戦闘前",
-        "condition": { "onCloseCombat": true }
+        "condition": {
+          "onCloseCombat": true
+        }
       },
       {
         "type": "ダメージ耐性",
@@ -8184,7 +8570,9 @@
         "ephemeral": true,
         "target": "自身(メイン)",
         "timing": "戦闘前",
-        "condition": { "onCloseCombat": true }
+        "condition": {
+          "onCloseCombat": true
+        }
       },
       {
         "type": "与ダメージ",
@@ -8192,7 +8580,9 @@
         "ephemeral": true,
         "target": "自身(メイン)",
         "timing": "戦闘前",
-        "condition": { "onRangedCombat": true }
+        "condition": {
+          "onRangedCombat": true
+        }
       },
       {
         "type": "ダメージ耐性",
@@ -8200,7 +8590,9 @@
         "ephemeral": true,
         "target": "自身(メイン)",
         "timing": "戦闘前",
-        "condition": { "onRangedCombat": true }
+        "condition": {
+          "onRangedCombat": true
+        }
       }
     ],
     "tags": [ "分類:遺跡装備" ]
@@ -8213,7 +8605,7 @@
     "rarity": "SSR",
     "classes": [ "エアリアル", "シューター", "アサシン" ],
     "desc": "最大HP+30%/被治療効果+50%。\n[caution]自ユニットのアタック/マジック-30%。[/caution]",
-    "statusInit": [ 61, 0, 0, 0, 15.3, 0 ],
+    "statusInit": [ 61.0, 0, 0, 0, 15.3, 0 ],
     "statusLv": [ 7.4, 0, 0, 0, 1.06, 0 ],
     "buff": [
       {
@@ -8246,7 +8638,7 @@
     "slot": "アクセサリ",
     "rarity": "SSR",
     "desc": "与ダメージ/ダメージ耐性+10%。\n行動終了時、メイン、サポートそれぞれのHPが最大HPの8%分回復する。\n「セイント/ランサー」のキャラに装備時、クリティカル率/クリティカルダメージ倍率+20%。",
-    "statusInit": [ 0, 13, 0, 13, 0, 0 ],
+    "statusInit": [ 0, 13.0, 0, 13.0, 0, 0 ],
     "statusLv": [ 0, 1.78, 0, 1.78, 0, 0 ],
     "buff": [
       {
@@ -8263,13 +8655,17 @@
         "type": "クリティカル率",
         "value": 20,
         "target": "自身(メイン)",
-        "condition": { "onClass": [ "セイント", "ランサー" ] }
+        "condition": {
+          "onClass": [ "セイント", "ランサー" ]
+        }
       },
       {
         "type": "クリティカルダメージ倍率",
         "value": 20,
         "target": "自身(メイン)",
-        "condition": { "onClass": [ "セイント", "ランサー" ] }
+        "condition": {
+          "onClass": [ "セイント", "ランサー" ]
+        }
       }
     ],
     "heal": [
@@ -8289,8 +8685,8 @@
     "slot": "アクセサリ",
     "rarity": "SSR",
     "desc": "アタック+12%。\n戦闘前、1マス移動につきクリティカル率+3%(最大+15%)。\n「ライダー/エアリアル」のキャラに装備時、スキル与ダメージ+25%。",
-    "statusInit": [ 60, 13, 0, 0, 0, 0 ],
-    "statusLv": [ 10, 1.78, 0, 0, 0, 0 ],
+    "statusInit": [ 60.0, 13.0, 0, 0, 0, 0 ],
+    "statusLv": [ 10.0, 1.78, 0, 0, 0, 0 ],
     "buff": [
       {
         "type": "アタック",
@@ -8312,7 +8708,9 @@
         "type": "与ダメージ(スキル)",
         "value": 25,
         "target": "自身(メイン)",
-        "condition": { "onClass": [ "ライダー", "エアリアル" ] }
+        "condition": {
+          "onClass": [ "ライダー", "エアリアル" ]
+        }
       }
     ],
     "tags": [ "分類:クラスチャレンジ装備" ]
@@ -8325,8 +8723,8 @@
     "rarity": "SSR",
     "classes": [ "シューター", "アサシン" ],
     "desc": "戦闘後、味方メインが与えたダメージの8%分HPを回復する。\n[caution]自ユニットの最大HP-30%。[/caution]",
-    "statusInit": [ 0, 23, 0, 0, 0, 11 ],
-    "statusLv": [ 0, 2.4, 0, 0, 0, 1 ],
+    "statusInit": [ 0, 23.0, 0, 0, 0, 11.0 ],
+    "statusLv": [ 0, 2.4, 0, 0, 0, 1.0 ],
     "buff": [
       {
         "type": "最大HP",
@@ -8352,7 +8750,7 @@
     "rarity": "SSR",
     "classes": [ "ソルジャー", "ランサー", "エアリアル" ],
     "desc": "アタック/物理与ダメージ+15%。\n[caution]自ユニットのダメージ耐性-40%/移動-2。[/caution]",
-    "statusInit": [ 59, 0, 15.6, 0, 0, 0 ],
+    "statusInit": [ 59.0, 0, 15.6, 0, 0, 0 ],
     "statusLv": [ 7.4, 0, 1.14, 0, 0, 0 ],
     "buff": [
       {
@@ -8386,8 +8784,8 @@
     "rarity": "SSR",
     "classes": [ "ライダー", "ソーサラー", "セイント" ],
     "desc": "自ユニットの移動+2。\n[caution]自ユニットのクリティカル率-50%。[/caution]",
-    "statusInit": [ 68, 0, 0, 0, 7.8, 0 ],
-    "statusLv": [ 11, 0, 0, 0, 0.99, 0 ],
+    "statusInit": [ 68.0, 0, 0, 0, 7.8, 0 ],
+    "statusLv": [ 11.0, 0, 0, 0, 0.99, 0 ],
     "buff": [
       {
         "type": "移動",
@@ -8409,7 +8807,7 @@
     "slot": "アクセサリ",
     "rarity": "SSR",
     "desc": "アタック/マジック+12%。\n戦闘後、味方メインが与えたダメージの4%分HPを回復する。\n「ソルジャー/ソーサラー」のキャラに装備時、スキル与ダメージ+25%。",
-    "statusInit": [ 0, 13, 0, 13, 0, 0 ],
+    "statusInit": [ 0, 13.0, 0, 13.0, 0, 0 ],
     "statusLv": [ 0, 1.78, 0, 1.78, 0, 0 ],
     "buff": [
       {
@@ -8426,7 +8824,9 @@
         "type": "与ダメージ(スキル)",
         "value": 25,
         "target": "自身(メイン)",
-        "condition": { "onClass": [ "ソルジャー", "ソーサラー" ] }
+        "condition": {
+          "onClass": [ "ソルジャー", "ソーサラー" ]
+        }
       }
     ],
     "heal": [
@@ -8446,7 +8846,7 @@
     "slot": "アクセサリ",
     "rarity": "SSR",
     "desc": "アタック/マジック+12%。\n自ユニットが敵ユニットのディフェンス/レジストの10%分を無視して攻撃できる。\n「セイント/シューター」のキャラに装備時、スキル与ダメージ+25%。",
-    "statusInit": [ 0, 13, 0, 13, 0, 0 ],
+    "statusInit": [ 0, 13.0, 0, 13.0, 0, 0 ],
     "statusLv": [ 0, 1.78, 0, 1.78, 0, 0 ],
     "buff": [
       {
@@ -8473,7 +8873,9 @@
         "type": "与ダメージ(スキル)",
         "value": 25,
         "target": "自身(メイン)",
-        "condition": { "onClass": [ "セイント", "シューター" ] }
+        "condition": {
+          "onClass": [ "セイント", "シューター" ]
+        }
       }
     ],
     "tags": [ "分類:クラスチャレンジ装備" ]
@@ -8486,8 +8888,8 @@
     "rarity": "SSR",
     "classes": [ "ソーサラー", "セイント" ],
     "desc": "自ユニットの与ダメージ+20%。\n[caution]自ユニットの最大HP-50%。[/caution]",
-    "statusInit": [ 68, 0, 0, 18, 0, 0 ],
-    "statusLv": [ 12, 0, 0, 2, 0, 0 ],
+    "statusInit": [ 68.0, 0, 0, 18.0, 0, 0 ],
+    "statusLv": [ 12.0, 0, 0, 2.0, 0, 0 ],
     "buff": [
       {
         "type": "与ダメージ",
@@ -8510,7 +8912,7 @@
     "rarity": "SSR",
     "classes": [ "ライダー", "エアリアル", "アサシン" ],
     "desc": "[caution]自ユニットの物理与ダメージ-15%。[/caution]\n行動終了時、メイン、サポートそれぞれのHPを最大HPの20%分回復する。",
-    "statusInit": [ 59, 0, 15.6, 0, 0, 0 ],
+    "statusInit": [ 59.0, 0, 15.6, 0, 0, 0 ],
     "statusLv": [ 7.4, 0, 1.14, 0, 0, 0 ],
     "buff": [
       {
@@ -8537,8 +8939,8 @@
     "rarity": "SSR",
     "classes": [ "ソルジャー", "ランサー", "シューター" ],
     "desc": "自ユニットのアタック/クリティカル率+20%。\n[caution]味方ターン開始時、自ユニットのダメージ耐性-20%(3ターン/最大3回まで重複可能)。[/caution]",
-    "statusInit": [ 68, 0, 0, 0, 7.8, 0 ],
-    "statusLv": [ 11, 0, 0, 0, 0.99, 0 ],
+    "statusInit": [ 68.0, 0, 0, 0, 7.8, 0 ],
+    "statusLv": [ 11.0, 0, 0, 0, 0.99, 0 ],
     "buff": [
       {
         "type": "アタック",
@@ -8571,8 +8973,8 @@
     "slot": "アクセサリ",
     "rarity": "SSR",
     "desc": "アタック+12%。\n戦闘前、1マス移動につき物理与ダメージ+2%(最大+8%)。\n「ランサー/アサシン」のキャラに装備時、スキル与ダメージ+25%。",
-    "statusInit": [ 60, 13, 0, 0, 0, 0 ],
-    "statusLv": [ 10, 1.78, 0, 0, 0, 0 ],
+    "statusInit": [ 60.0, 13.0, 0, 0, 0, 0 ],
+    "statusLv": [ 10.0, 1.78, 0, 0, 0, 0 ],
     "buff": [
       {
         "type": "アタック",
@@ -8594,7 +8996,9 @@
         "type": "与ダメージ(スキル)",
         "value": 25,
         "target": "自身(メイン)",
-        "condition": { "onClass": [ "ランサー", "アサシン" ] }
+        "condition": {
+          "onClass": [ "ランサー", "アサシン" ]
+        }
       }
     ],
     "tags": [ "分類:クラスチャレンジ装備" ]
@@ -8607,8 +9011,8 @@
     "rarity": "SSR",
     "classes": [ "ソルジャー", "エアリアル", "アサシン" ],
     "desc": "マジック/魔法与ダメージ+20%。\n[caution]自ユニットのディフェンス/物理与ダメージ-40%。[/caution]",
-    "statusInit": [ 68, 0, 0, 18, 0, 0 ],
-    "statusLv": [ 12, 0, 0, 2, 0, 0 ],
+    "statusInit": [ 68.0, 0, 0, 18.0, 0, 0 ],
+    "statusLv": [ 12.0, 0, 0, 2.0, 0, 0 ],
     "buff": [
       {
         "type": "マジック",
@@ -8641,7 +9045,7 @@
     "rarity": "SSR",
     "classes": [ "ランサー", "シューター" ],
     "desc": "スキル与ダメージ+15%。\n[caution]自ユニットの最大HP-40%。[/caution]",
-    "statusInit": [ 59, 0, 15.6, 0, 0, 0 ],
+    "statusInit": [ 59.0, 0, 15.6, 0, 0, 0 ],
     "statusLv": [ 7.4, 0, 1.14, 0, 0, 0 ],
     "buff": [
       {
@@ -8665,8 +9069,8 @@
     "rarity": "SSR",
     "classes": [ "ライダー", "ソーサラー", "セイント" ],
     "desc": "被治療効果+60%。\n[caution]自ユニットの最大HP-30%。[/caution]",
-    "statusInit": [ 68, 0, 0, 0, 7.8, 0 ],
-    "statusLv": [ 11, 0, 0, 0, 0.99, 0 ],
+    "statusInit": [ 68.0, 0, 0, 0, 7.8, 0 ],
+    "statusLv": [ 11.0, 0, 0, 0, 0.99, 0 ],
     "buff": [
       {
         "type": "被治療効果",
@@ -8688,7 +9092,7 @@
     "slot": "アクセサリ",
     "rarity": "SSR",
     "desc": "与ダメージ/ダメージ耐性+10%。\n敵ユニットを倒したとき、移動+1(2ターン)。\n「ソーサラー/ライダー」のキャラに装備時、戦闘前、1マス移動につきクリティカルダメージ倍率+3%(最大+15%)。",
-    "statusInit": [ 0, 13, 0, 13, 0, 0 ],
+    "statusInit": [ 0, 13.0, 0, 13.0, 0, 0 ],
     "statusLv": [ 0, 1.78, 0, 1.78, 0, 0 ],
     "buff": [
       {
@@ -8721,7 +9125,9 @@
         "ephemeral": true,
         "target": "自身(メイン)",
         "timing": "戦闘前",
-        "condition": { "onClass": [ "ソーサラー", "ライダー" ] }
+        "condition": {
+          "onClass": [ "ソーサラー", "ライダー" ]
+        }
       }
     ],
     "tags": [ "分類:クラスチャレンジ装備" ]
@@ -8733,7 +9139,7 @@
     "slot": "アクセサリ",
     "rarity": "SSR",
     "desc": "与ダメージ/ダメージ耐性+10%。\n味方ターン開始時、自ユニットのHPが100%のとき、自ユニットの移動+2(１ターン)。\n「エアリアル/セイント」のキャラに装備時、戦闘前、1マス移動につきクリティカルダメージ倍率+3%(最大+15%)。",
-    "statusInit": [ 0, 13, 0, 13, 0, 0 ],
+    "statusInit": [ 0, 13.0, 0, 13.0, 0, 0 ],
     "statusLv": [ 0, 1.78, 0, 1.78, 0, 0 ],
     "buff": [
       {
@@ -8754,7 +9160,9 @@
         "trigger": {
           "target": "自身",
           "timing": "自ターン開始時",
-          "condition": { "hp": [ ">=", 100 ] }
+          "condition": {
+            "hp": [ ">=", 100 ]
+          }
         }
       },
       {
@@ -8766,7 +9174,9 @@
         },
         "ephemeral": true,
         "target": "自身(メイン)",
-        "condition": { "onClass": [ "ソーサラー", "ライダー" ] }
+        "condition": {
+          "onClass": [ "ソーサラー", "ライダー" ]
+        }
       }
     ],
     "tags": [ "分類:クラスチャレンジ装備" ]
@@ -8778,8 +9188,8 @@
     "slot": "アクセサリ",
     "rarity": "SSR",
     "desc": "与ダメージ/ダメージ耐性+10%。\nスキルを使用した後、自ユニットのクリティカル率+20%(2ターン)。\n「シューター/アサシン」のキャラに装備時、戦闘前、1マス移動につきクリティカルダメージ倍率+3%(最大+15%)。",
-    "statusInit": [ 60, 13, 0, 0, 0, 0 ],
-    "statusLv": [ 10, 1.78, 0, 0, 0, 0 ],
+    "statusInit": [ 60.0, 13.0, 0, 0, 0, 0 ],
+    "statusLv": [ 10.0, 1.78, 0, 0, 0, 0 ],
     "buff": [
       {
         "type": "与ダメージ",
@@ -8799,7 +9209,9 @@
         "trigger": {
           "target": "自身",
           "timing": "行動後",
-          "condition": { "onActiveSkill": true }
+          "condition": {
+            "onActiveSkill": true
+          }
         }
       },
       {
@@ -8812,7 +9224,9 @@
         "ephemeral": true,
         "target": "自身(メイン)",
         "timing": "戦闘前",
-        "condition": { "onClass": [ "シューター", "アサシン" ] }
+        "condition": {
+          "onClass": [ "シューター", "アサシン" ]
+        }
       }
     ],
     "tags": [ "分類:クラスチャレンジ装備" ]
@@ -8824,8 +9238,8 @@
     "slot": "アクセサリ",
     "rarity": "SSR",
     "desc": "アタック+12%。\n自ユニットのHPが50%以上のとき、物理与ダメージ+10%。\n「ランサー/ソルジャー」のキャラに装備時、戦闘前、1マス移動につきクリティカルダメージ倍率+3%(最大+15%)。",
-    "statusInit": [ 60, 13, 0, 0, 0, 0 ],
-    "statusLv": [ 10, 1.78, 0, 0, 0, 0 ],
+    "statusInit": [ 60.0, 13.0, 0, 0, 0, 0 ],
+    "statusLv": [ 10.0, 1.78, 0, 0, 0, 0 ],
     "buff": [
       {
         "type": "アタック",
@@ -8836,7 +9250,9 @@
         "type": "与ダメージ(物理)",
         "value": 10,
         "target": "自身(メイン)",
-        "condition": { "hp": [ ">=", 50 ] }
+        "condition": {
+          "hp": [ ">=", 50 ]
+        }
       },
       {
         "type": "クリティカルダメージ倍率",
@@ -8848,7 +9264,9 @@
         "ephemeral": true,
         "target": "自身(メイン)",
         "timing": "戦闘前",
-        "condition": { "onClass": [ "ランサー", "ソルジャー" ] }
+        "condition": {
+          "onClass": [ "ランサー", "ソルジャー" ]
+        }
       }
     ],
     "tags": [ "分類:クラスチャレンジ装備" ]
@@ -8860,7 +9278,7 @@
     "slot": "アクセサリ",
     "rarity": "SSR",
     "desc": "アタック/マジック+12%。\n遠距離による戦闘時、その戦闘前、与ダメージ+8%。\n「アサシン/セイント」のキャラに装備時、通常攻撃与ダメージ+25%。",
-    "statusInit": [ 0, 13, 0, 13, 0, 0 ],
+    "statusInit": [ 0, 13.0, 0, 13.0, 0, 0 ],
     "statusLv": [ 0, 1.78, 0, 1.78, 0, 0 ],
     "buff": [
       {
@@ -8879,13 +9297,17 @@
         "ephemeral": true,
         "target": "自身(メイン)",
         "timing": "戦闘前",
-        "condition": { "onRangedCombat": true }
+        "condition": {
+          "onRangedCombat": true
+        }
       },
       {
         "type": "与ダメージ(通常攻撃)",
         "value": 25,
         "target": "自身(メイン)",
-        "condition": { "onClass": [ "セイント", "アサシン" ] }
+        "condition": {
+          "onClass": [ "セイント", "アサシン" ]
+        }
       }
     ],
     "tags": [ "分類:クラスチャレンジ装備" ]
@@ -8897,8 +9319,8 @@
     "slot": "アクセサリ",
     "rarity": "SSR",
     "desc": "アタック/マジック+12%。\n近距離による戦闘時、その戦闘前、与ダメージ+8%。\n「ソルジャー/エアリアル」のキャラに装備時、通常攻撃与ダメージ+25%。",
-    "statusInit": [ 60, 13, 0, 0, 0, 0 ],
-    "statusLv": [ 10, 1.78, 0, 0, 0, 0 ],
+    "statusInit": [ 60.0, 13.0, 0, 0, 0, 0 ],
+    "statusLv": [ 10.0, 1.78, 0, 0, 0, 0 ],
     "buff": [
       {
         "type": "アタック",
@@ -8916,13 +9338,17 @@
         "ephemeral": true,
         "target": "自身(メイン)",
         "timing": "戦闘前",
-        "condition": { "onCloseCombat": true }
+        "condition": {
+          "onCloseCombat": true
+        }
       },
       {
         "type": "与ダメージ(通常攻撃)",
         "value": 25,
         "target": "自身(メイン)",
-        "condition": { "onClass": [ "ソルジャー", "エアリアル" ] }
+        "condition": {
+          "onClass": [ "ソルジャー", "エアリアル" ]
+        }
       }
     ],
     "tags": [ "分類:クラスチャレンジ装備" ]
@@ -8934,7 +9360,7 @@
     "slot": "アクセサリ",
     "rarity": "SSR",
     "desc": "アタック/マジック+12%。\n戦闘中、クリティカルが発生したとき、その戦闘後、味方メインが与えたダメージの10%分HPを回復する。\n「エアリアル/ソーサラー」のキャラに装備時、クリティカル率/クリティカルダメージ倍率+20%。",
-    "statusInit": [ 0, 13, 0, 13, 0, 0 ],
+    "statusInit": [ 0, 13.0, 0, 13.0, 0, 0 ],
     "statusLv": [ 0, 1.78, 0, 1.78, 0, 0 ],
     "buff": [
       {
@@ -8951,13 +9377,17 @@
         "type": "クリティカル率",
         "value": 20,
         "target": "自身(メイン)",
-        "condition": { "onClass": [ "エアリアル", "ソーサラー" ] }
+        "condition": {
+          "onClass": [ "エアリアル", "ソーサラー" ]
+        }
       },
       {
         "type": "クリティカルダメージ倍率",
         "value": 20,
         "target": "自身(メイン)",
-        "condition": { "onClass": [ "エアリアル", "ソーサラー" ] }
+        "condition": {
+          "onClass": [ "エアリアル", "ソーサラー" ]
+        }
       }
     ],
     "heal": [
@@ -8966,7 +9396,9 @@
         "rate": 0.1,
         "target": "自身",
         "timing": "戦闘後",
-        "condition": { "onCriticalHit": true }
+        "condition": {
+          "onCriticalHit": true
+        }
       }
     ],
     "tags": [ "分類:クラスチャレンジ装備" ]
@@ -8978,8 +9410,8 @@
     "slot": "アクセサリ",
     "rarity": "SSR",
     "desc": "アタック+12%。\n戦闘中、クリティカルが発生したとき、その戦闘後、味方メインが与えたダメージの10%分HPを回復する。\n「アサシン/ライダー」のキャラに装備時、クリティカル率/クリティカルダメージ倍率+20%。",
-    "statusInit": [ 60, 13, 0, 0, 0, 0 ],
-    "statusLv": [ 10, 1.78, 0, 0, 0, 0 ],
+    "statusInit": [ 60.0, 13.0, 0, 0, 0, 0 ],
+    "statusLv": [ 10.0, 1.78, 0, 0, 0, 0 ],
     "buff": [
       {
         "type": "アタック",
@@ -8990,13 +9422,17 @@
         "type": "クリティカル率",
         "value": 20,
         "target": "自身(メイン)",
-        "condition": { "onClass": [ "アサシン", "ライダー" ] }
+        "condition": {
+          "onClass": [ "アサシン", "ライダー" ]
+        }
       },
       {
         "type": "クリティカルダメージ倍率",
         "value": 20,
         "target": "自身(メイン)",
-        "condition": { "onClass": [ "アサシン", "ライダー" ] }
+        "condition": {
+          "onClass": [ "アサシン", "ライダー" ]
+        }
       }
     ],
     "heal": [
@@ -9005,7 +9441,9 @@
         "rate": 0.1,
         "target": "自身",
         "timing": "戦闘後",
-        "condition": { "onCriticalHit": true }
+        "condition": {
+          "onCriticalHit": true
+        }
       }
     ],
     "tags": [ "分類:クラスチャレンジ装備" ]
@@ -9017,8 +9455,8 @@
     "slot": "アクセサリ",
     "rarity": "SSR",
     "desc": "アタック+12%。\n戦闘前、自ユニットのディフェンス/レジスト+5%(3ターン/最大3回まで重複可能)。\n「ライダー/ランサー」のキャラに装備時、通常攻撃与ダメージ+25%。",
-    "statusInit": [ 60, 13, 0, 0, 0, 0 ],
-    "statusLv": [ 10, 1.78, 0, 0, 0, 0 ],
+    "statusInit": [ 60.0, 13.0, 0, 0, 0, 0 ],
+    "statusLv": [ 10.0, 1.78, 0, 0, 0, 0 ],
     "buff": [
       {
         "type": "アタック",
@@ -9051,7 +9489,9 @@
         "type": "与ダメージ(通常攻撃)",
         "value": 25,
         "target": "自身(メイン)",
-        "condition": { "onClass": [ "ライダー", "ランサー" ] }
+        "condition": {
+          "onClass": [ "ライダー", "ランサー" ]
+        }
       }
     ],
     "tags": [ "分類:クラスチャレンジ装備", "蓄積バフ" ]
@@ -9063,7 +9503,7 @@
     "slot": "アクセサリ",
     "rarity": "SSR",
     "desc": "アタック/マジック+12%。\n戦闘前、敵ユニットのディフェンス/レジスト-8%。\n「ソーサラー/シューター」のキャラに装備時、通常攻撃与ダメージ+25%。",
-    "statusInit": [ 0, 13, 0, 13, 0, 0 ],
+    "statusInit": [ 0, 13.0, 0, 13.0, 0, 0 ],
     "statusLv": [ 0, 1.78, 0, 1.78, 0, 0 ],
     "buff": [
       {
@@ -9080,7 +9520,9 @@
         "type": "与ダメージ(通常攻撃)",
         "value": 25,
         "target": "自身(メイン)",
-        "condition": { "onClass": [ "ソーサラー", "シューター" ] }
+        "condition": {
+          "onClass": [ "ソーサラー", "シューター" ]
+        }
       }
     ],
     "debuff": [
@@ -9104,8 +9546,8 @@
     "slot": "兜",
     "rarity": "SSR",
     "desc": "通常攻撃与ダメージ+20%。",
-    "statusInit": [ 68, 0, 0, 0, 7.8, 0 ],
-    "statusLv": [ 11, 0, 0, 0, 0.99, 0 ],
+    "statusInit": [ 68.0, 0, 0, 0, 7.8, 0 ],
+    "statusLv": [ 11.0, 0, 0, 0, 0.99, 0 ],
     "buff": [
       {
         "type": "与ダメージ(通常攻撃)",
