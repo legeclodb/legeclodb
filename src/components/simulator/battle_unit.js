@@ -848,8 +848,7 @@ export class SimUnit {
           add(e, bufMain, bufMainCv);
         }
         else if (e.target == "自身(サポート)") {
-          if (!notForSupport)
-            add(e, bufSup, bufSupCv);
+          add(e, bufSup, bufSupCv);
         }
         else {
           add(e, bufMain, bufMainCv);
