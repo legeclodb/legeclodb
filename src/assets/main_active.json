@@ -14434,7 +14434,9 @@
       {
         "type": "スタン",
         "duration": 1,
-        "condition": { "probability": 50 }
+        "condition": {
+          "probability": 50
+        }
       }
     ]
   },
@@ -14462,7 +14464,9 @@
       {
         "type": "スタン",
         "duration": 1,
-        "condition": { "probability": 75 }
+        "condition": {
+          "probability": 75
+        }
       }
     ]
   },
