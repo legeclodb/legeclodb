@@ -1866,6 +1866,7 @@ export default {
 
     beginSimulation(replay = false) {
       this.resetTools();
+      this.selectPhase("0");
       if (!this.simulation) {
         this.simulation = new lbt.SimContext(this.battleData, [...this.playerUnits, ...this.enemyUnits]);
         this.simulation.start(replay);

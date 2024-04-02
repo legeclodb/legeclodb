@@ -10691,6 +10691,7 @@
         "type": "与ダメージ(物理)",
         "value": 15,
         "duration": 2,
+        "slot": "真実を求めし力",
         "trigger": {
           "target": "自身",
           "timing": "戦闘前"
@@ -10700,12 +10701,14 @@
         "type": "クリティカルダメージ倍率",
         "value": 15,
         "duration": 2,
+        "slot": "真実を求めし力",
         "trigger": {
           "target": "自身",
           "timing": "戦闘前"
         }
       }
-    ]
+    ],
+    "note": "物理与ダメージ/クリティカルダメージ倍率+15% は他のアクティブと競合せず加算になる。"
   },
   {
     "uid": "1100563",
@@ -14291,7 +14294,8 @@
     "heal": [
       {
         "base": "マジック",
-        "rate": 5
+        "rate": 5,
+        "target": "スキル対象"
       }
     ],
     "buff": [
@@ -14325,7 +14329,8 @@
     "heal": [
       {
         "base": "マジック",
-        "rate": 5
+        "rate": 5,
+        "target": "スキル対象"
       }
     ],
     "buff": [
@@ -14373,7 +14378,18 @@
         "type": "クリティカル率",
         "value": 25,
         "duration": 2,
-        "target": "自身"
+        "trigger": {
+          "target": "自身",
+          "timing": "戦闘前"
+        }
+      }
+    ],
+    "heal": [
+      {
+        "base": "マジック",
+        "rate": 3,
+        "target": "味方(低HP)",
+        "timing": "戦闘後"
       }
     ]
   },
@@ -14392,13 +14408,19 @@
         "type": "与ダメージ(魔法)",
         "value": 10,
         "duration": 2,
-        "target": "自身"
+        "trigger": {
+          "target": "自身",
+          "timing": "戦闘前"
+        }
       },
       {
         "type": "クリティカル率",
         "value": 25,
         "duration": 2,
-        "target": "自身"
+        "trigger": {
+          "target": "自身",
+          "timing": "戦闘前"
+        }
       }
     ],
     "heal": [
@@ -14425,9 +14447,10 @@
         "type": "クリティカル率",
         "value": 30,
         "duration": 2,
-        "ephemeral": true,
-        "target": "自身",
-        "timing": "攻撃前"
+        "trigger": {
+          "target": "自身",
+          "timing": "攻撃前"
+        }
       }
     ],
     "statusEffects": [
@@ -14455,9 +14478,10 @@
         "type": "クリティカル率",
         "value": 35,
         "duration": 2,
-        "ephemeral": true,
-        "target": "自身",
-        "timing": "攻撃前"
+        "trigger": {
+          "target": "自身",
+          "timing": "攻撃前"
+        }
       }
     ],
     "statusEffects": [
