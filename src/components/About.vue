@@ -16,14 +16,12 @@
             <li><a href="#damage">ダメージ計算</a></li>
             <li><a href="#status">基本ステータスについて</a></li>
             <li><a href="#battle_power">戦闘力について</a></li>
-            <li><a href="#comments">コメント</a></li>
           </ul>
         </p>
 
         <h2><a name="about" href="#about"></a>このサイトについて</h2>
         <p>
           <b-link href="https://www.legend-clover.net/" target="_blank">れじぇくろ！</b-link>の攻略データベースです。主にバフ・デバフを検索するのを目的としています。<br />
-          間違いの指摘や要望などありましたら<a href="#comments">コメント欄</a>にコメントいただけると幸いです。<br />
         </p>
 
         <h2>バフ・デバフの競合・重複<a name="buff" href="#buff">.</a></h2>
@@ -370,9 +368,6 @@
             </li>
           </ul>
         </p>
-
-        <h2><a name="comments" href="#comments"></a>コメント</h2>
-        <MessageBoard thread="0123456789abcdef" @change="addPo($event.anchors);" @discard="removePo($event.anchors);" />
       </div>
     </div>
 

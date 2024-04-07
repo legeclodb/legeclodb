@@ -1,5 +1,6 @@
 ﻿import Vue from 'vue'
 import Router from 'vue-router'
+import Info from './components/Info.vue'
 import MainCharacters from './components/MainCharacters.vue'
 import SupportCharacters from './components/SupportCharacters.vue'
 import Items from './components/Items.vue'
@@ -17,7 +18,7 @@ export default new Router({
     {
       path: '/',
       name: 'index',
-      component: MainCharacters
+      component: Info
     },
     {
       path: '/main.html',

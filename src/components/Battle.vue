@@ -39,7 +39,6 @@
         </div>
         <div>
           アイテムやスキルのデータは入力漏れやミスが残っている可能性があります。
-          ミス報告、バグ報告、要望などあれば<b-link href="#comments">コメント欄</b-link>へご一報いただけると幸いです。
         </div>
       </div>
     </div>
@@ -615,13 +614,6 @@
           </template>
         </div>
         <div v-if="simulation" style="height: 300px;"></div>
-      </div>
-    </div>
-
-    <div v-if="!simulation" class="content" style="margin-top: 20px; margin-bottom: 20px;">
-      <div class="main-panel" style="min-width: 1000px; max-width: 1500px; padding: 10px;">
-        <h2><a name="comments" href="#comments">&nbsp;</a>コメント</h2>
-        <MessageBoard thread="battlesim" @change="addPo($event.anchors);" @discard="removePo($event.anchors);" />
       </div>
     </div>
 
